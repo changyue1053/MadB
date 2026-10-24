@@ -5,6 +5,8 @@ use std::collections::{BTreeMap, BTreeSet};
 pub use crate::dag_control::GraphControl;
 use crate::{
     ErrorKind, Id, LogicalPath, Phase, QueryError, Result, Task, TaskGraph,
+    dag_control::GraphGuard,
+    input_observation::{InputObservation, InputWatchSet, ObserveWorkspace},
     inputs::{FrozenInputs, capture_inputs, validate_inventory, validate_paths},
     ports::{FileReference, ReadWorkspace},
     process::ExecutionControl,
@@ -203,6 +205,45 @@ pub fn execute_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     executor: &mut E,
     control: &GraphControl,
 ) -> Result<GraphRun<E::Run>> {
+    execute_graph_inner(graph, source, executor, control, None)
+}
+
+/// Execute against frozen bytes, additionally requiring the selected external
+/// files and explicit watch conditions to match again before graph acceptance.
+/// This is a bounded, sequential recheck, not an atomic filesystem snapshot or
+/// permission to commit/cache the result. The original execute_graph keeps its
+/// fixed-byte semantics when the active source changes after capture.
+pub fn execute_graph_observed<R: GraphRecipe, W: ObserveWorkspace, E: GraphExecutor<R>>(
+    graph: &ExecutionGraph<R>,
+    source: &W,
+    watch: &InputWatchSet,
+    executor: &mut E,
+    control: &GraphControl,
+) -> Result<GraphRun<E::Run>> {
+    execute_graph_inner(
+        graph,
+        source,
+        executor,
+        control,
+        Some(ObservationRequest {
+            workspace: source,
+            watch,
+        }),
+    )
+}
+
+struct ObservationRequest<'a> {
+    workspace: &'a dyn ObserveWorkspace,
+    watch: &'a InputWatchSet,
+}
+
+fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
+    graph: &ExecutionGraph<R>,
+    source: &W,
+    executor: &mut E,
+    control: &GraphControl,
+    observation: Option<ObservationRequest<'_>>,
+) -> Result<GraphRun<E::Run>> {
     let guard = control.begin()?;
     let mut run = GraphRun {
         status: GraphStatus::Validated,
@@ -212,57 +253,17 @@ pub fn execute_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
         nodes: Vec::new(),
         results: None,
     };
-    let mut results = BTreeMap::new();
-    if !guard.cancelled() {
-        let frozen = if graph.sources.is_empty() {
-            Ok(None)
-        } else {
-            capture_inputs(source, graph.sources.clone()).map(Some)
-        };
-        match frozen {
-            Err(error) => run.failure = Some(error),
-            Ok(frozen) => {
-                let mut result_limit = GRAPH_BYTES_LIMIT - graph.reserved_bytes;
-                for recipe in &graph.recipes {
-                    if guard.cancelled() {
-                        break;
-                    }
-                    let id = recipe.invocation().id.clone();
-                    let inputs = assemble_inputs(graph, recipe, frozen.as_ref(), &results);
-                    let inputs = match inputs {
-                        Ok(inputs) => inputs,
-                        Err(error) => {
-                            run.failure = Some(error);
-                            run.failed_task = Some(id);
-                            break;
-                        }
-                    };
-                    let Some(node_control) = guard.activate() else {
-                        break;
-                    };
-                    let mut node = executor.execute(recipe, inputs, &node_control, result_limit);
-                    guard.deactivate();
-                    let value = node.take_value();
-                    run.nodes.push((id.clone(), node));
-                    if guard.cancelled() {
-                        run.failed_task = Some(id);
-                        break;
-                    }
-                    match check_result(graph, recipe, value, result_limit) {
-                        Ok(value) => {
-                            result_limit -= value.files().total_bytes();
-                            results.insert(id, value);
-                        }
-                        Err(error) => {
-                            run.failure = Some(error);
-                            run.failed_task = Some(id);
-                            break;
-                        }
-                    }
-                }
+    let results = if guard.cancelled() {
+        BTreeMap::new()
+    } else {
+        match run_graph(graph, source, executor, &guard, &mut run, observation) {
+            Ok(results) => results,
+            Err(error) => {
+                run.failure = Some(error);
+                BTreeMap::new()
             }
         }
-    }
+    };
     let completed: BTreeSet<_> = run.nodes.iter().map(|(id, _)| id).collect();
     run.skipped = graph
         .tasks
@@ -270,7 +271,8 @@ pub fn execute_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
         .filter(|task| !completed.contains(&task.id))
         .map(|task| task.id.clone())
         .collect();
-    // Cancellation and the last acceptance are ordered by one graph lock.
+    // Both execution and optional source/watch rechecks precede this common
+    // cancellation/acceptance linearization point. No filesystem IO holds it.
     run.status = if guard.finish() {
         GraphStatus::Cancelled
     } else if run.failure.is_some() {
@@ -282,6 +284,71 @@ pub fn execute_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
         run.results = Some(results);
     }
     Ok(run)
+}
+
+fn run_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
+    graph: &ExecutionGraph<R>,
+    source: &W,
+    executor: &mut E,
+    guard: &GraphGuard<'_>,
+    run: &mut GraphRun<E::Run>,
+    observation: Option<ObservationRequest<'_>>,
+) -> Result<BTreeMap<Id, ValidatedTaskResult>> {
+    let observation = observation
+        .map(|request| {
+            // All structure checks precede even an exists/list operation.
+            request
+                .watch
+                .validate_files(graph.sources.iter().map(|file| &file.path))?;
+            let captured = InputObservation::capture(request.workspace, request.watch)?;
+            captured.validate_files(graph.sources.iter().map(|file| &file.path))?;
+            Ok((request.workspace, captured))
+        })
+        .transpose()?;
+    let frozen = if graph.sources.is_empty() {
+        None
+    } else {
+        Some(capture_inputs(source, graph.sources.clone())?)
+    };
+    if let Some((workspace, observed)) = &observation {
+        observed.verify(*workspace)?;
+    }
+    let mut results = BTreeMap::new();
+    let mut result_limit = GRAPH_BYTES_LIMIT - graph.reserved_bytes;
+    for recipe in &graph.recipes {
+        if guard.cancelled() {
+            break;
+        }
+        let id = recipe.invocation().id.clone();
+        let inputs = assemble_inputs(graph, recipe, frozen.as_ref(), &results)
+            .inspect_err(|_| run.failed_task = Some(id.clone()))?;
+        let Some(node_control) = guard.activate() else {
+            break;
+        };
+        let mut node = executor.execute(recipe, inputs, &node_control, result_limit);
+        guard.deactivate();
+        // Drain unconditionally before any cancellation/failure path retains
+        // this owner, including optional final observation failures below.
+        let value = node.take_value();
+        run.nodes.push((id.clone(), node));
+        if guard.cancelled() {
+            run.failed_task = Some(id);
+            break;
+        }
+        let value = check_result(graph, recipe, value, result_limit)
+            .inspect_err(|_| run.failed_task = Some(id.clone()))?;
+        result_limit -= value.files().total_bytes();
+        results.insert(id, value);
+    }
+    if !guard.cancelled()
+        && let Some((workspace, observed)) = &observation
+    {
+        if let Some(frozen) = &frozen {
+            frozen.verify(source)?;
+        }
+        observed.verify(*workspace)?;
+    }
+    Ok(results)
 }
 
 fn assemble_inputs<R: GraphRecipe>(

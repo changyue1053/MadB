@@ -2,8 +2,9 @@ use madb_app::{
     Digest, ErrorKind, Id, LogicalPath, Phase, QueryError, Result,
     dag::{
         ExecutionGraph, GraphControl, GraphExecutor, GraphRecipe, GraphRun, GraphStatus, NodeRun,
-        execute_graph,
+        execute_graph, execute_graph_observed,
     },
+    input_observation::{DirectoryEntry, DirectoryEntryKind, InputWatchSet, ObserveWorkspace},
     inputs::FrozenInputs,
     ports::{FileReference, ProcessRunner, ReadWorkspace},
     process::{
@@ -47,6 +48,8 @@ struct Workspace {
     files: RefCell<BTreeMap<LogicalPath, Vec<u8>>>,
     reads: RefCell<Vec<(String, usize)>>,
     on_read: RefCell<Option<Box<dyn FnOnce()>>>,
+    observation_reads: RefCell<Vec<String>>,
+    on_observe: RefCell<Option<Box<dyn FnOnce()>>>,
 }
 impl Workspace {
     fn put(&self, name: &str, bytes: &[u8]) {
@@ -70,6 +73,57 @@ impl ReadWorkspace for Workspace {
             assert!(bytes.len() <= limit);
         }
         Ok(bytes)
+    }
+}
+
+impl Workspace {
+    fn observe(&self, name: &LogicalPath) {
+        self.observation_reads
+            .borrow_mut()
+            .push(name.as_str().into());
+        let hook = self.on_observe.borrow_mut().take();
+        if let Some(hook) = hook {
+            hook();
+        }
+    }
+}
+impl ObserveWorkspace for Workspace {
+    fn exists(&self, name: &LogicalPath) -> Result<bool> {
+        self.observe(name);
+        let prefix = format!("{}/", name.as_str());
+        Ok(self
+            .files
+            .borrow()
+            .keys()
+            .any(|path| path == name || path.as_str().starts_with(&prefix)))
+    }
+    fn list_directory(
+        &self,
+        name: &LogicalPath,
+        entry_limit: usize,
+        name_bytes_limit: usize,
+    ) -> Result<Vec<DirectoryEntry>> {
+        self.observe(name);
+        let prefix = format!("{}/", name.as_str());
+        let mut entries = BTreeMap::new();
+        for name in self.files.borrow().keys() {
+            if let Some(relative) = name.as_str().strip_prefix(&prefix) {
+                let (child, kind) = match relative.split_once('/') {
+                    Some((child, _)) => (child, DirectoryEntryKind::Directory),
+                    None => (relative, DirectoryEntryKind::File),
+                };
+                entries.insert(child.to_owned(), kind);
+            }
+        }
+        assert!(entries.len() <= entry_limit);
+        assert!(entries.keys().map(String::len).sum::<usize>() <= name_bytes_limit);
+        Ok(entries
+            .into_iter()
+            .map(|(name, kind)| DirectoryEntry {
+                name: path(&name),
+                kind,
+            })
+            .collect())
     }
 }
 
@@ -952,5 +1006,318 @@ fn panic_in_source_or_executor_closes_graph_admission_and_cancels_active_child()
             ),
             "DAG001"
         );
+    }
+}
+
+#[test]
+fn observed_graph_checks_live_source_while_original_entry_keeps_frozen_semantics() {
+    for observed in [false, true] {
+        let source = Workspace::source();
+        let mut executor = Executor::new(
+            |recipe: &Recipe, inputs: &FrozenInputs, child: &ExecutionControl, limit| {
+                source.put("src/seed", b"z");
+                transform(recipe, inputs, child, limit)
+            },
+        );
+        let graph = graph(chain());
+        let control = GraphControl::default();
+        let watch = InputWatchSet::new(vec![], vec![]).unwrap();
+        let mut run = if observed {
+            execute_graph_observed(&graph, &source, &watch, &mut executor, &control)
+        } else {
+            execute_graph(&graph, &source, &mut executor, &control)
+        }
+        .unwrap();
+        assert_eq!(names(&executor.calls), ["a", "b", "c"]);
+        if observed {
+            assert_eq!(run.status, GraphStatus::Failed);
+            assert_eq!(code(run.failure.as_ref().unwrap()), "INPUT004");
+            assert!(run.failed_task.is_none());
+            assert!(run.results().is_none());
+        } else {
+            assert_eq!(run.status, GraphStatus::Validated);
+            assert_eq!(output(&run, "c"), b"xABC");
+        }
+        assert_drained(&mut run);
+        assert_eq!(executor.owners.get(), 3);
+    }
+}
+
+#[test]
+fn observed_graph_rejects_combined_source_watch_conflicts_before_any_io() {
+    for (absent, directories) in [
+        (vec![path("src")], vec![]),
+        (vec![path("src/seed/missing")], vec![]),
+        (vec![path("src/seed")], vec![]),
+        (vec![], vec![path("src/seed")]),
+        (vec![], vec![path("SRC")]),
+    ] {
+        let source = Workspace::source();
+        let watch = InputWatchSet::new(absent, directories).unwrap();
+        let mut executor = Executor::new(transform);
+        let control = GraphControl::default();
+        let run = execute_graph_observed(&graph(chain()), &source, &watch, &mut executor, &control)
+            .unwrap();
+        assert_eq!(run.status, GraphStatus::Failed);
+        assert_eq!(code(run.failure.as_ref().unwrap()), "OBS001");
+        assert!(executor.calls.is_empty());
+        assert!(source.reads.borrow().is_empty());
+        assert!(source.observation_reads.borrow().is_empty());
+        assert_eq!(control.cancel(), CancelDecision::AlreadyFinished);
+    }
+}
+
+#[test]
+fn conditions_are_rechecked_after_source_capture_before_the_first_node() {
+    let source = Rc::new(Workspace::source());
+    let mutate = source.clone();
+    *source.on_read.borrow_mut() = Some(Box::new(move || mutate.put("src/optional", b"new")));
+    let watch = InputWatchSet::new(vec![path("src/optional")], vec![path("src")]).unwrap();
+    let mut executor = Executor::new(transform);
+    let run = execute_graph_observed(
+        &graph(chain()),
+        source.as_ref(),
+        &watch,
+        &mut executor,
+        &GraphControl::default(),
+    )
+    .unwrap();
+    assert_eq!(run.status, GraphStatus::Failed);
+    assert_eq!(code(run.failure.as_ref().unwrap()), "OBS003");
+    assert!(executor.calls.is_empty());
+    assert!(run.results().is_none());
+}
+
+#[test]
+fn final_watch_change_discards_all_values_but_retains_prior_node_observations() {
+    for absence in [false, true] {
+        let source = Workspace::source();
+        let watch = InputWatchSet::new(
+            if absence {
+                vec![path("src/optional")]
+            } else {
+                vec![]
+            },
+            vec![path("src")],
+        )
+        .unwrap();
+        let mut executor = Executor::new(
+            |recipe: &Recipe, inputs: &FrozenInputs, child: &ExecutionControl, limit| {
+                source.put("src/optional", b"new");
+                transform(recipe, inputs, child, limit)
+            },
+        );
+        let mut run = execute_graph_observed(
+            &graph(chain()),
+            &source,
+            &watch,
+            &mut executor,
+            &GraphControl::default(),
+        )
+        .unwrap();
+        assert_eq!(run.status, GraphStatus::Failed);
+        assert_eq!(code(run.failure.as_ref().unwrap()), "OBS003");
+        assert_eq!(run.failure.as_ref().unwrap().kind, ErrorKind::Conflict);
+        assert!(run.failed_task.is_none());
+        assert!(run.results().is_none());
+        assert_eq!(names(&executor.calls), ["a", "b", "c"]);
+        assert!(run.nodes().iter().all(|(_, node)| node.was_validated));
+        assert_eq!(executor.owners.get(), 3);
+        assert_drained(&mut run);
+    }
+}
+
+#[test]
+fn observed_named_target_checks_only_selected_sources_and_explicit_watch() {
+    let source = Workspace::source();
+    let mut recipes = vec![leaf("a"), leaf("unselected")];
+    recipes[1].invocation.inputs = vec![reference("elsewhere/input", b"x")];
+    let graph = ExecutionGraph::new(recipes, Some(&id("a")), &[]).unwrap();
+    let watch = InputWatchSet::new(vec![path("optional/config")], vec![path("src")]).unwrap();
+    let mut executor = Executor::new(transform);
+    let run = execute_graph_observed(
+        &graph,
+        &source,
+        &watch,
+        &mut executor,
+        &GraphControl::default(),
+    )
+    .unwrap();
+    assert_eq!(run.status, GraphStatus::Validated);
+    assert_eq!(names(&executor.calls), ["a"]);
+    assert!(
+        source
+            .reads
+            .borrow()
+            .iter()
+            .all(|(name, _)| name == "src/seed")
+    );
+    assert!(
+        source
+            .observation_reads
+            .borrow()
+            .iter()
+            .all(|name| name == "src" || name == "optional/config")
+    );
+}
+
+#[test]
+fn precancelled_observed_graph_does_not_touch_source_or_watch() {
+    let source = Workspace::source();
+    let watch = InputWatchSet::new(vec![path("optional")], vec![path("src")]).unwrap();
+    let control = GraphControl::default();
+    assert_eq!(control.cancel(), CancelDecision::Requested);
+    let mut executor = Executor::new(transform);
+    let run =
+        execute_graph_observed(&graph(chain()), &source, &watch, &mut executor, &control).unwrap();
+    assert_eq!(run.status, GraphStatus::Cancelled);
+    assert!(executor.calls.is_empty());
+    assert!(source.reads.borrow().is_empty());
+    assert!(source.observation_reads.borrow().is_empty());
+    assert!(run.results().is_none());
+}
+
+#[test]
+fn cancellation_during_initial_watch_capture_never_starts_a_node() {
+    let source = Workspace::source();
+    let watch = InputWatchSet::new(vec![path("optional")], vec![]).unwrap();
+    let control = GraphControl::default();
+    let cancel = control.clone();
+    *source.on_observe.borrow_mut() = Some(Box::new(move || {
+        assert_eq!(cancel.cancel(), CancelDecision::Requested);
+    }));
+    let mut executor = Executor::new(transform);
+    let run =
+        execute_graph_observed(&graph(chain()), &source, &watch, &mut executor, &control).unwrap();
+    assert_eq!(run.status, GraphStatus::Cancelled);
+    assert!(executor.calls.is_empty());
+    assert!(run.results().is_none());
+    assert_eq!(control.cancel(), CancelDecision::AlreadyFinished);
+}
+
+#[test]
+fn cancellation_during_final_source_or_watch_check_discards_drained_values() {
+    for cancel_in_watch in [false, true] {
+        let source = Workspace::source();
+        let watch = InputWatchSet::new(vec![path("optional")], vec![path("src")]).unwrap();
+        let control = GraphControl::default();
+        let mut executor = Executor::new(
+            |recipe: &Recipe, inputs: &FrozenInputs, child: &ExecutionControl, limit| {
+                if recipe.invocation.id == id("c") {
+                    let cancel = control.clone();
+                    let hook: Box<dyn FnOnce()> = Box::new(move || {
+                        assert_eq!(cancel.cancel(), CancelDecision::Requested);
+                    });
+                    if cancel_in_watch {
+                        *source.on_observe.borrow_mut() = Some(hook);
+                    } else {
+                        *source.on_read.borrow_mut() = Some(hook);
+                    }
+                }
+                transform(recipe, inputs, child, limit)
+            },
+        );
+        let mut run =
+            execute_graph_observed(&graph(chain()), &source, &watch, &mut executor, &control)
+                .unwrap();
+        assert_eq!(run.status, GraphStatus::Cancelled);
+        assert_eq!(names(&executor.calls), ["a", "b", "c"]);
+        assert!(run.results().is_none());
+        assert_eq!(executor.owners.get(), 3);
+        assert_drained(&mut run);
+        assert_eq!(control.cancel(), CancelDecision::AlreadyFinished);
+    }
+}
+
+#[test]
+fn panic_during_final_observation_closes_graph_admission() {
+    let source = Workspace::source();
+    let watch = InputWatchSet::new(vec![path("optional")], vec![]).unwrap();
+    let control = GraphControl::default();
+    let mut executor = Executor::new(
+        |recipe: &Recipe, inputs: &FrozenInputs, child: &ExecutionControl, limit| {
+            *source.on_observe.borrow_mut() = Some(Box::new(|| panic!("observation port panic")));
+            transform(recipe, inputs, child, limit)
+        },
+    );
+    assert!(
+        catch_unwind(AssertUnwindSafe(|| execute_graph_observed(
+            &graph(chain()),
+            &source,
+            &watch,
+            &mut executor,
+            &control
+        )))
+        .is_err()
+    );
+    assert_eq!(executor.owners.get(), 0);
+    assert_eq!(control.cancel(), CancelDecision::AlreadyFinished);
+}
+
+#[test]
+fn captured_membership_must_include_selected_source_with_exact_case_and_kind() {
+    struct ListingSource {
+        inner: Workspace,
+        entries: Vec<DirectoryEntry>,
+    }
+    impl ReadWorkspace for ListingSource {
+        fn read(&self, name: &LogicalPath, limit: usize) -> Result<Option<Vec<u8>>> {
+            self.inner.read(name, limit)
+        }
+    }
+    impl ObserveWorkspace for ListingSource {
+        fn exists(&self, name: &LogicalPath) -> Result<bool> {
+            self.inner.exists(name)
+        }
+        fn list_directory(
+            &self,
+            name: &LogicalPath,
+            entries: usize,
+            bytes: usize,
+        ) -> Result<Vec<DirectoryEntry>> {
+            self.inner.observe(name);
+            assert!(self.entries.len() <= entries);
+            assert!(
+                self.entries
+                    .iter()
+                    .map(|entry| entry.name.as_str().len())
+                    .sum::<usize>()
+                    <= bytes
+            );
+            Ok(self.entries.clone())
+        }
+    }
+    for (declared, members) in [
+        ("src/Seed", vec![("seed", DirectoryEntryKind::File)]),
+        ("src/seed", vec![]),
+        ("src/sub/seed", vec![]),
+        ("src/seed", vec![("seed", DirectoryEntryKind::Directory)]),
+    ] {
+        let source = ListingSource {
+            inner: Workspace::source(),
+            entries: members
+                .into_iter()
+                .map(|(name, kind)| DirectoryEntry {
+                    name: path(name),
+                    kind,
+                })
+                .collect(),
+        };
+        let recipe = recipe("a", &[(declared, b"x")], &[], b"", b"x");
+        let watch = InputWatchSet::new(vec![], vec![path("src")]).unwrap();
+        let mut executor = Executor::new(transform);
+        let run = execute_graph_observed(
+            &graph(vec![recipe]),
+            &source,
+            &watch,
+            &mut executor,
+            &GraphControl::default(),
+        )
+        .unwrap();
+        assert_eq!(run.status, GraphStatus::Failed);
+        assert_eq!(code(run.failure.as_ref().unwrap()), "OBS001");
+        assert!(source.inner.reads.borrow().is_empty());
+        assert!(executor.calls.is_empty());
+        assert!(run.results().is_none());
     }
 }

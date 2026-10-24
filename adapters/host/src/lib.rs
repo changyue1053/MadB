@@ -1,6 +1,7 @@
 //! Host-owned bounded filesystem reads and approved process execution.
 pub mod dag;
 pub mod inputs;
+mod observation;
 pub mod process;
 pub mod task;
 use madb_app::{ErrorKind, LogicalPath, QueryError, Result, ports::ReadWorkspace};
