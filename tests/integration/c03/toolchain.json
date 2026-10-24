@@ -1,0 +1,36 @@
+{
+  "purpose": "C03/P02 probe recipe; not a released SDK support profile",
+  "rust": "1.99.1",
+  "host": "aarch64-apple-darwin",
+  "targets": [
+    "aarch64-apple-darwin",
+    "x86_64-apple-darwin"
+  ],
+  "deployment_target": "14.0",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "sdk_version": "27.0",
+  "sdk_build": "26A425",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "generators": {
+    "bindgen": {
+      "package": "bindgen-cli",
+      "version": "0.73.2",
+      "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+      "archive_sha256": "5622e043625b6d1f32c84f53699690a44d1419e657879de26eb252699f5ebb7c",
+      "cargo_lock_sha256": "141ca4c05573420c75645965cd5b09da472923a2dcae1c90a4d9cbe196b38d20"
+    },
+    "cbindgen": {
+      "package": "cbindgen",
+      "version": "0.29.4",
+      "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+      "archive_sha256": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20",
+      "cargo_lock_sha256": "ae418e51a671338591852c91797d6c4be7577093967d9c0ef94f812b4aed5109"
+    }
+  },
+  "rust_components": [
+    "rustc",
+    "cargo",
+    "rust-std",
+    "llvm-tools"
+  ]
+}

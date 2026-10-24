@@ -184,13 +184,19 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "平台维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C01"
       ],
-      "status": "not_started",
-      "verification": "missing",
-      "evidence": [],
+      "status": "implemented",
+      "verification": "passed",
+      "evidence": [
+        "reviews/2026-10-24-c03-native-probes.md",
+        "reviews/c03-native-evidence.json",
+        "https://github.com/changyue1053/MadB/pull/3",
+        "https://github.com/changyue1053/MadB/actions/runs/40076988625",
+        "https://github.com/changyue1053/MadB/actions/runs/40076950175"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -216,7 +222,7 @@
         "P01",
         "P02"
       ],
-      "notes": ""
+      "notes": "C03/P01/P02 已通过：macOS Arm64 与 Linux CI 的隔离 CLI/帮助进程；固定来源的生成器与真实 ABI 形状；Arm64 独立双向运行、x86_64 编译/链接及负例；四个实际 profile 和既有格式锁校验。交付于基于 C02 的 PR #3；尚无 SDK 认证，C04/C05 的执行器、事务、生命周期和独立 Lab 继续按计划验收。"
     },
     {
       "id": "C04",
@@ -316,7 +322,7 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "KMP / Apple / Rust 维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C05"
       ],
@@ -370,7 +376,7 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "OHOS / Rust / KMP 维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C05"
       ],
@@ -423,7 +429,7 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "原生 / 平台维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C05"
       ],
@@ -478,7 +484,7 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "验证 / 性能维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C06",
         "C07",
@@ -527,7 +533,7 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "发布维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C06",
         "C07",
@@ -723,7 +729,7 @@
       "track": "extension",
       "scope": "mainline",
       "owner_role": "平台维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C05",
         "E01",
@@ -827,7 +833,7 @@
       "track": "init",
       "scope": "mainline",
       "owner_role": "架构 / 平台维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C02"
       ],
@@ -1083,7 +1089,7 @@
       "track": "ergonomics",
       "scope": "mainline",
       "owner_role": "架构 / 平台维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C02"
       ],
@@ -1595,7 +1601,7 @@
       "track": "future",
       "scope": "extension",
       "owner_role": "OHOS / Rust / 验证维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C11"
       ],
@@ -1637,7 +1643,7 @@
       "track": "future",
       "scope": "extension",
       "owner_role": "OHOS / KMP / 验证维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C11"
       ],
@@ -1678,7 +1684,7 @@
       "track": "future",
       "scope": "extension",
       "owner_role": "构建 / 发布 / 验证维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C11"
       ],

@@ -1,4 +1,4 @@
-"""Run repository checks through C02; failures never become skipped passes."""
+"""Run repository checks through C03; failures never become skipped passes."""
 from pathlib import Path
 import importlib.metadata
 import os
@@ -47,6 +47,8 @@ def main():
         ["cargo", "test", "--workspace", "--all-features", "--locked"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/contract"],
         [node, "tests/contract/canonical_vectors.cjs"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c03"],
+        [sys.executable, "tests/integration/c03/cli_install.py"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
         [sys.executable, "docs/tools/check_docs.py", "--node", node],
@@ -56,7 +58,7 @@ def main():
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=ROOT, check=True)
-    print("Repository checks passed through C02. SDK certification remains separate.")
+    print("Repository checks passed through C03 (P02 uses its locked Apple host separately). SDK certification remains separate.")
 
 
 if __name__ == "__main__":

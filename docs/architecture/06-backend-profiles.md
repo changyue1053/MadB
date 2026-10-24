@@ -24,7 +24,7 @@
 | KJVM-CPP-JNI | JNI C++ adapter | JNI registered callback |
 | KN-C-CINTEROP | cinterop + C export surface | C-compatible callback |
 | KN-CPP-CABI | explicit C adapter + cinterop | C-compatible callback |
-| RUST-C-ABI | bindgen incoming; cbindgen outgoing | function + context callback |
+| RUST-C-ABI | bindgen incoming; cbindgen outgoing | 独立 C 提供方；另验证 function + context callback |
 | RUST-CPP-CXX | CXX | CXX supported Rust/C++ surface |
 
 ## 工具职责
@@ -118,3 +118,9 @@ OpenHarmony 的 napi_env、napi_value 和线程具有明确关联。持久引用
 当前上游文档列出 suspend→async、Flow→AsyncSequence、enum/sealed 等映射；不能沿用早期“不支持协程”的结论。同时它仍为 Alpha，当前工程集成限定 Xcode direct integration；泛型上界擦除、类与集合继承限制另做探针。X02 先验证这个具体配方，不默认套用 SKIE、NC 或 XCFramework/SwiftPM 的分发配方。[Swift export 文档](https://kotlinlang.org/docs/native-swift-export.html)
 
 反向宿主能力未确认的形状在生成前拒绝。专题图只能画已声明机制，不能靠“回调条件待验证”的脚注为任意 Kotlin→Swift 调用画一条成功路径。KNOI 独立后端由 X08/P14 承接，C07 继续负责 CPF+akinterop 主线。
+
+## Rust/C 的 S0 探针配置
+
+C03 的两个 stateless provider 使用独立 C/Rust 消费者；Arm64 运行与 x86_64 编译分别保存结果。完整 engine ABI 只验证实际生成形状，不用桩函数伪装运行实现。具体配方、生成差异与运行层级见 [C03 记录](../reviews/2026-10-24-c03-native-probes.md)；该探针不增加路线、不降低 C05 的资源/关闭要求。
+
+bindgen 的宏处理和默认 signedness 是配置的一部分：首链常量采用普通整数宏，固定 signed 生成策略，编译断言检查类型/值。Rust archive 的 bitcode 检查使用同 Rust 配套的 llvm-tools；Clang/libclang 与 C 链接器继续按 SDK 锁定。

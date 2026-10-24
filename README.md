@@ -1,6 +1,6 @@
 # MadB
 
-跨语言 SDK 工程工具。当前已建立工程基线及 C02 契约/格式库；CLI 仍只提供帮助和版本，尚无已认证的跨语言路线。
+跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；CLI 仍只提供帮助和版本，尚无已认证的跨语言路线。
 
 ## 开发环境
 
@@ -34,7 +34,7 @@ cargo run --locked -p madb-cli -- --version
 - [Agent 入口](AGENTS.md)与[贡献方法](CONTRIBUTING.md)
 - [当前设计文档](docs/README.md)
 
-MadB-Lab 是独立仓库，使用公开候选和独立预期；不能链接本仓库私有 crate。当前检查证明工程结构、契约规则和声明形状，FFI、设备和 SDK 验收由后续任务提供。
+MadB-Lab 是独立仓库，使用公开候选和独立预期；不能链接本仓库私有 crate。C03 已提供固定工具、实际生成及同步 FFI 双向运行探针，见[复现入口](tests/integration/c03/README.md)和[验收记录](docs/reviews/2026-10-24-c03-native-probes.md)。资源/并发、设备和公开 SDK 验收仍由后续任务提供。
 
 ## Quick start for contributors
 

@@ -47,3 +47,9 @@ C ABI 是“状态返回 + 输出参数”；IR 的 `result: engine/u64/unit` �
 缺释放器、错 release 签名、未知强制语义、缺 C record 布局、来源为 heuristic 都在生成前阻断。schema 正例只能证明可解码；冻结输入、策略来源、类型能力、真实字节摘要和执行证据分别检查。
 
 本目录不包含 ABI 兼容承诺；第一份对外版本前仍须完成 C03/C05 并审查实际生成差异。改变本设计要同步声明、样本、测试与对应决定，不只修改一个语言的镜像。
+
+## C03 生成验证补充
+
+[真实探针](../../../tests/integration/c03/README.md)已将本目录的完整 ABI 声明经 cbindgen/bindgen 生成并在两个 Apple 目标编译；运行部分使用独立 stateless provider，未实现这里的 engine 生命周期。
+
+`expected.h` 的状态码改用普通整数宏：锁定版本 bindgen 未导出 `INT32_C(...)` 表达式，且普通非负宏默认映射为 u32，因此参数固定 `--default-macro-constant-type signed`。全部 12 个状态码继续被编译断言为原 i32 数值；没有改变 ABI、状态机或错误语义。不能把消费者强制转型当成生成正确。

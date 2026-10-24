@@ -20,7 +20,7 @@ The host and repository checks use the following direct dependencies; the origin
 | rpds-py (checks only) | 2026.9.1 | MIT |
 | attrs (checks only) | 26.1.0 | MIT |
 
-The pinned GitHub Actions are maintained in .github/workflows/ci.yml; their upstream licenses apply. No upstream generator implementation, embedded template fragment or generated SDK is bundled. The C02 ABI fixtures are project-authored expectations, not copied generator output.
+The pinned GitHub Actions are maintained in .github/workflows/ci.yml; their upstream licenses apply. No upstream generator implementation or embedded template fragment is bundled. The C02 ABI fixtures are project-authored expectations. C03 additionally records declarations generated from these project-authored fixtures; these are test baselines, not a published SDK.
 
 The project owner authorized public visibility on 2026-10-24. The C01 publication scope covers the project baseline and authored design/research material. Historical research and cited excerpts in docs/references retain their source attribution and any applicable third-party rights. The original ZIP contains 20 Markdown/JSON records for traceability; it is not a separately licensed upstream source distribution. No third-party native library or generator implementation is embedded in it. Publication checks are recorded in [the C01 review](docs/reviews/2026-10-24-c01-public-repositories.md).
 
@@ -29,3 +29,5 @@ Future imported code, template fragments and release assets require their own so
 Package coordinates are not reserved by publish=false. The initial distribution channel is the owned GitHub repositories; future crate/Maven/Swift/HAR coordinates must be verified when those channels are enabled.
 
 C02 resolved 99 registry packages, including target-specific dependencies; their versions, registry checksums and declared license expressions are recorded in [the dependency inventory](docs/reviews/c02-dependency-licenses.json). All reported a license. The `r-efi` alternative permits MIT; Unicode data dependencies additionally require Unicode-3.0 notices. This source-only change does not publish a compiled distribution. C10 must collect applicable license texts/notices for the dependencies actually redistributed in a release; a metadata inventory alone is not that bundle.
+
+C03 invokes bindgen-cli 0.73.2 (BSD-3-Clause) and cbindgen 0.29.4 (MPL-2.0) as external development tools. Their source archive and dependency-lock hashes are in `tests/integration/c03/toolchain.json`; the verified installer fetches them from crates.io. Tool binaries, Apple SDKs and Rust standard-library archives are not committed or redistributed. Generated test declarations derive from project-authored inputs; a future compiled SDK/tool distribution still requires the C10 license/notice review.
