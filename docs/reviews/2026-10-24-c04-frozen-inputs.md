@@ -34,4 +34,4 @@
 
 独立最终复核已检查 7 项宿主、16 项真实回归及完整检查日志，未发现剩余阻塞。
 
-Linux 最终提交的远端 CI 需在 PR 发布后核实；当前本地检查不能代替该证据。MadB-Lab 未修改，没有执行新的原生 SDK/设备认证。C04 保持 in_progress/running；下一步为可执行任务绑定与结果验证，再按计划补三层事务、完整依赖追踪/缓存与 generate --check。
+交付于 [PR #6](https://github.com/changyue1053/MadB/pull/6)，基于 PR #5；实现与独立测试提交为 ee74bd0、b6082a6。Linux 远端结果以该 PR 最终 head 的两项 CI 检查为准；本地检查不能代替该证据。MadB-Lab 未修改，没有执行新的原生 SDK/设备认证。C04 保持 in_progress/running；下一步为可执行任务绑定与结果验证，再按计划补三层事务、完整依赖追踪/缓存与 generate --check。
