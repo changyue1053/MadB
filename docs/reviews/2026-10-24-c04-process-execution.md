@@ -29,4 +29,4 @@ macOS Arm64，项目固定 Rust 1.99.1、Python 3.14.4/Node 环境下，`.venv/b
 
 四种畸形工具（普通文本、空解释器、空白解释器、伪 ELF）均得到启动错误且未创建副作用标记；真实 pipe 背压、取消、TERM/KILL、同组后代清理、逃逸后代保留管道的缺口，以及执行期间工具/目录变化均按独立预期通过。退出/取消竞争采用 Barrier 确定顺序，未回收资源用独立计数验证保留；无法强制构造内核不可中断状态，真实 D-state/OS 启动卡死未测试。
 
-未修改 MadB-Lab、现有 schema、原生 SDK 或历史验收结果。没有新增 SDK/路线认证、E02 完成证据、整机沙箱、视觉验收或全事务 CRIT-06/09/10 通过声明。C04 保持 `in_progress / running`；下一步为固定输入与任务执行接入，再完成三层提交、CAS/恢复、完整依赖追踪和缓存。远端 CI 以交付 PR 的实际 head checks 为准。
+未修改 MadB-Lab、现有 schema、原生 SDK 或历史验收结果。没有新增 SDK/路线认证、E02 完成证据、整机沙箱、视觉验收或全事务 CRIT-06/09/10 通过声明。C04 保持 `in_progress / running`；下一步为固定输入与任务执行接入，再完成三层提交、CAS/恢复、完整依赖追踪和缓存。交付为 [PR #5](https://github.com/changyue1053/MadB/pull/5)，基于 PR #4；远端 CI 以该 PR 的实际 head checks 为准，未合并其他 PR。

@@ -243,7 +243,8 @@
       "evidence": [
         "reviews/2026-10-24-c04-readonly-queries.md",
         "https://github.com/changyue1053/MadB/pull/4",
-        "reviews/2026-10-24-c04-process-execution.md"
+        "reviews/2026-10-24-c04-process-execution.md",
+        "https://github.com/changyue1053/MadB/pull/5"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -272,7 +273,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C04 查询/静态图子范围已交付 PR #4。本批基于 8d909ae 实现受控进程端口、一次性执行/取消准入、Unix 进程组终止、非阻塞有界管道与清理缺口。三层提交、完整依赖闭包/缓存、generate --check 仍未实现；C04 保持进行中，E02 协议与 SDK 认证不由此推导。"
+      "notes": "C04 查询/静态图子范围交付 PR #4，受控进程切片交付 PR #5：一次性执行/取消准入、无 shell 回退启动、非阻塞有界管道、进程组终止和清理缺口；本地完整门禁通过，远端以各 PR 当前 head checks 为准。三层提交、完整依赖闭包/缓存、generate --check 仍未实现；C04 保持进行中，E02 协议与 SDK 认证不由此推导。"
     },
     {
       "id": "C05",
