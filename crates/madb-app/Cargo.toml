@@ -1,0 +1,12 @@
+[package]
+name = "madb-app"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+description = "Application use cases and their ports. Implemented in C04; no backend imports."
+
+[lints]
+workspace = true

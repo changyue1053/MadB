@@ -92,9 +92,15 @@
       "owner_role": "项目 / 核心维护者",
       "owner": "changyue1053",
       "depends_on": [],
-      "status": "in_progress",
-      "verification": "missing",
-      "evidence": [],
+      "status": "implemented",
+      "verification": "passed",
+      "evidence": [
+        "reviews/2026-10-24-c01-public-repositories.md",
+        "https://github.com/changyue1053/MadB/pull/1",
+        "https://github.com/changyue1053/MadB-Lab/pull/1",
+        "https://github.com/changyue1053/MadB/actions/runs/40072212785",
+        "https://github.com/changyue1053/MadB-Lab/actions/runs/40072220264"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -120,7 +126,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "2026-10-24 开始 C01。先落实仓库/文档归属、工具与检查环境，再建立最小 workspace、独立 Lab 和真实 CI。完整 IR/payload/ABI 归 C02，首链 P01/P02 归 C03；平台风险不阻塞本地建仓。远程仓库、合入限制和公开前权利核对未实际完成时，不将 C01 标记为已验收。"
+      "notes": "C01 双工程基线、本地与独立 CI 已通过。项目所有者授权两仓库公开，main 必需 CI、管理员约束及禁强推/删除已生效；两份非草稿 PR 在预期架构/隔离负例下 BLOCKED，撤销负例后 CI 通过并恢复 CLEAN。负例已撤销，PR 保持未合并。验收仅覆盖工程与协作基线，不代表跨语言 SDK、设备或路线认证。"
     },
     {
       "id": "C02",

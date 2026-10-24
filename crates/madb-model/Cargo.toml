@@ -1,0 +1,12 @@
+[package]
+name = "madb-model"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+description = "Domain values and invariants. C02 defines the concrete model; no IO or wire DTOs."
+
+[lints]
+workspace = true

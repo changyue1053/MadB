@@ -1,6 +1,6 @@
 # MadB 最终工程骨架、模块与端口
 
-本规范是 MadB 工具工程目录、模块职责和源码依赖的唯一维护入口。MadB-Lab 的目录由[独立验证工程](../validation/02-lab-architecture.md)维护；扩展、计划与 HTML 引用或生成阅读视图，不另写一套目录。该骨架承接 0.9 设计，表示建仓目标，尚未创建产品源码或完成相应工作包。
+本规范是 MadB 工具工程目录、模块职责和源码依赖的唯一维护入口。MadB-Lab 的目录由[独立验证工程](../validation/02-lab-architecture.md)维护；扩展、计划与 HTML 引用或生成阅读视图，不另写一套目录。该骨架承接 0.9 设计，表示最终工程目标；实际构建成员和任务证据决定当前实施范围，不能由目录存在推导功能完成。
 
 模块按变化原因划分。核心处理值、规则和计划，外层处理文件、进程、编译器与设备。工具宿主的任务调度与应用中 SDK 的资源/线程协议分别实现，不合并成跨语言万能运行时。
 
@@ -18,6 +18,9 @@ MadB/
 ├── Cargo.toml                         # 工具宿主 workspace 与成员
 ├── Cargo.lock                         # 宿主依赖；不代替各目标的工具锁
 ├── rust-toolchain.toml
+├── .python-version / .node-version  # 仓库检查环境
+├── requirements-dev.lock             # 文档校验依赖及摘要
+├── scripts/check.py                  # C01 本地与 CI 共用检查入口
 ├── README.md
 ├── AGENTS.md                         # 任务、规范和检查的简短入口；C01 落地
 ├── LICENSE

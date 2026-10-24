@@ -1,0 +1,38 @@
+use std::process::Command;
+
+#[test]
+fn help_states_the_actual_scope() {
+    let output = Command::new(env!("CARGO_BIN_EXE_madb"))
+        .arg("--help")
+        .output()
+        .expect("run the built CLI");
+    assert!(output.status.success());
+    let help = String::from_utf8(output.stdout).expect("UTF-8 help");
+    assert!(help.contains("--version"));
+    assert!(help.contains("No boundary route is implemented or certified."));
+}
+
+#[test]
+fn version_matches_the_built_package() {
+    let output = Command::new(env!("CARGO_BIN_EXE_madb"))
+        .arg("--version")
+        .output()
+        .expect("run the built CLI");
+    assert!(output.status.success());
+    assert_eq!(
+        String::from_utf8(output.stdout).expect("UTF-8 version"),
+        format!("madb {}\n", env!("CARGO_PKG_VERSION"))
+    );
+}
+
+#[test]
+fn unavailable_operations_fail_instead_of_reporting_success() {
+    for operation in ["init", "generate", "build", "verify"] {
+        let output = Command::new(env!("CARGO_BIN_EXE_madb"))
+            .arg(operation)
+            .output()
+            .expect("run the built CLI");
+        assert_eq!(output.status.code(), Some(2), "{operation}");
+        assert!(String::from_utf8_lossy(&output.stderr).contains(operation));
+    }
+}
