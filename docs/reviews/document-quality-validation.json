@@ -1,0 +1,59 @@
+{
+  "schema": "madb.documentation-validation/2",
+  "baseline": "0.8",
+  "status": "passed",
+  "scope": "static-documents-and-rendered-html",
+  "counts": {
+    "markdown": 56,
+    "json": 28,
+    "toml": 1,
+    "tables": 126,
+    "local_links": 860,
+    "html": 13,
+    "scripts": 13
+  },
+  "extension_structure": {
+    "schemas": 2,
+    "frames": 4,
+    "vectors": 20
+  },
+  "catalog": {
+    "tasks": 41,
+    "routes": 16,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_mappings": 236
+  },
+  "browser": {
+    "status": "not_executed",
+    "scope": "layout, real interactions and console",
+    "reason": "本会话本地页面访问策略限制；未使用其他通道替代浏览器验收"
+  },
+  "product_tests_executed": false,
+  "errors": [],
+  "documentation_regression": {
+    "status": "passed",
+    "tests": 10,
+    "scope": "documentation rules only"
+  },
+  "isolated_script_execution": {
+    "method": "isolated DOM-shaped unit execution; not a browser",
+    "profiles": 29,
+    "graph_filters": 173,
+    "sequence_scenarios": 87,
+    "node_keyboard_selections": 3044,
+    "deep_links": "passed",
+    "extension_categories": "passed",
+    "theme": "passed",
+    "network": false
+  },
+  "preservation": {
+    "existing_progress_and_evidence": "unchanged",
+    "historical_reviews": "byte-identical",
+    "historical_sources": 9,
+    "historical_mappings": 236,
+    "source_mapping_content": "unchanged",
+    "candidate_version_numbers": "unchanged"
+  }
+}

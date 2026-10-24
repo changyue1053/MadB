@@ -1,0 +1,69 @@
+{
+  "schema": "madb.documentation-validation/1",
+  "baseline": "0.7",
+  "verified_on": "2026-10-24",
+  "scope": "design-documents-catalogs-and-static-html",
+  "status": "passed",
+  "document_checks": {
+    "markdown_files": 51,
+    "local_links": 408,
+    "tables": 112,
+    "json_files": 16,
+    "toml_files": 1
+  },
+  "extension_checks": {
+    "schemas": 2,
+    "positive_vectors": 9,
+    "negative_vectors": 11,
+    "transcript_frames": 4
+  },
+  "catalog_checks": {
+    "routes": 16,
+    "tasks": 39,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_items": 236,
+    "audit_sources": 12,
+    "audit_mappings": 10,
+    "preserved_existing_progress": true,
+    "generated_html_drift": "none"
+  },
+  "html_static": [
+    {
+      "file": "architecture-overview.html",
+      "ids": 33,
+      "local_link_structure": "checked",
+      "inline_scripts": 1,
+      "syntax": "checked"
+    },
+    {
+      "file": "implementation-progress.html",
+      "ids": 50,
+      "local_link_structure": "checked",
+      "inline_scripts": 1,
+      "syntax": "checked"
+    },
+    {
+      "file": "kotlin-arkts-architecture.html",
+      "ids": 36,
+      "local_link_structure": "checked",
+      "inline_scripts": 1,
+      "syntax": "checked"
+    },
+    {
+      "file": "kotlin-swift-architecture.html",
+      "ids": 42,
+      "local_link_structure": "checked",
+      "inline_scripts": 1,
+      "syntax": "checked"
+    }
+  ],
+  "browser": {
+    "status": "blocked",
+    "reason": "Browser URL policy rejected file://; no workaround attempted. Visual layout and interactions were not revalidated for baseline 0.7."
+  },
+  "product_runtime_tests_executed": false,
+  "product_certified_routes": 0,
+  "errors": []
+}

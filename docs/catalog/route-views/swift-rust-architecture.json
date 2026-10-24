@@ -1,0 +1,2294 @@
+{
+  "slug": "swift-rust-architecture",
+  "title": "Swift ↔ Rust 架构全景",
+  "eyebrow": "SWIFT × RUST",
+  "summary": "UniFFI 直连路线的构建、运行、回调、取消和分发全景；应用内装配与独立 SDK 交付分别定义验收边界。",
+  "route_ids": [
+    "SWIFT-RUST-UNIFFI"
+  ],
+  "extension_task_ids": [],
+  "profiles": [
+    {
+      "id": "swift-uniffi-source",
+      "name": "Swift · 应用内构建",
+      "kind": "主线候选",
+      "summary": "UniFFI 为受支持的 Rust API 生成 Swift 绑定。应用侧通过类型化方法、async 和明确的 callback interface 使用内核；SKIE 与 KMP-NativeCoroutines 不参与这条直连路线。",
+      "route_ids": [
+        "SWIFT-RUST-UNIFFI"
+      ],
+      "task_ids": [
+        "C06",
+        "C09",
+        "C10",
+        "I04",
+        "L04"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "Rust → Swift 生成",
+          "steps": [
+            "SDK 作者声明支持的 Rust API 与反向 callback interface。",
+            "UniFFI 生成 scaffolding、Swift 绑定、C 头和模块接线。",
+            "MadB 按契约补充生命周期、线程/异步 Facade 与工程配置。",
+            "编译真实 Swift 调用点，生成文件存在不能替代公开 API 可用。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Swift 调用 Rust",
+          "steps": [
+            "Swift 业务进入类型化方法，检查资源状态与输入范围。",
+            "Facade 选择明确的 async 或同步接口，耗时工作不暗藏在属性读取中。",
+            "UniFFI 绑定转换参数，经 C 可见导出面执行 Rust。",
+            "返回值/错误解码并完成唯一所有权交接。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 调用 Swift 宿主",
+          "steps": [
+            "反向限定为显式导出的 trait/callback interface；Rust 不能任意导入整个 Swift 模块。",
+            "Swift 对象经生成桥注册并保活，跨界期间不持有会导致重入死锁的锁。",
+            "回调先满足执行器规则，再进入 MainActor/UI。",
+            "注销确认后拆除回调持有，迟到通知不得访问已经关闭的消费者。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "Task 取消与资源关闭",
+          "steps": [
+            "取消 Task 或观察表示停止等待/接收，是否停止 Rust 工作由契约决定。",
+            "owner 显式关闭共享引擎，进入 closing 并阻断新操作。",
+            "等待在途操作与回调排水，迟到结果由唯一处理方释放。",
+            "拆除跨语言引用环后释放句柄；deinit 仅用于适当的同步兜底。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "应用内构建与验证",
+          "steps": [
+            "对每个 Apple 目标构建匹配的 Rust 库和生成 Swift 绑定。",
+            "App 工程链接正确切片、系统依赖和 C 模块。",
+            "真机/模拟器分别调用同步、async、对象和 callback interface。",
+            "如果同时经 Kotlin 调用同一 Rust 内核，单独验证链接与唯一 owner。"
+          ]
+        }
+      ],
+      "generated": [
+        "UniFFI 生成受支持类型、对象、错误、回调和异步 FFI 接线。",
+        "根据契约生成受限资源包装、取消接线和执行器投递。",
+        "在明确需要时生成 Swift 值快照与强类型 ID；不强制全量复制所有模型。",
+        "生成 Apple 工程链接、模块声明和目标构建配方。",
+        "生成公开 API 消费样例及对应诊断钩子，运行证据仍须执行。"
+      ],
+      "handwritten": [
+        "Rust 算法、锁/执行器、unsafe 和副作用一致性。",
+        "Swift 宿主协议实现、UI 业务及共享引擎的实际 owner。",
+        "停止等待、停止工作和业务撤销的产品语义。",
+        "不受支持数据形状或外部资源的显式适配。"
+      ],
+      "risks": [
+        {
+          "problem": "Swift 模型过度转换",
+          "solution": "直接使用生成 Swift 类型；只为隔离、稳定 API 或值语义需求增加快照。",
+          "example": "大列表不为形式统一再复制三层 DTO。",
+          "problem_ids": [
+            "TYPE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "ARC/Rust 跨语言环",
+          "solution": "明确注册 owner、注销确认和显式 close；弱引用只解决适合的持有边。",
+          "example": "Swift handler 持有 engine，Rust engine 保留 handler，必须能解除。",
+          "problem_ids": [
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "Swift 6 并发",
+          "solution": "声明执行器和共享对象同步前提，不把 Rust Send/Sync 自动等同 Swift Sendable。",
+          "example": "后台回调更新 UI 前切到 MainActor，类型仍须满足实际并发要求。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "Task 取消误当原生停止",
+          "solution": "记录等待/工作/回调状态；迟到结果继续清理。",
+          "example": "用户离开页面后网络请求可能已发送，不能承诺撤销副作用。",
+          "problem_ids": [
+            "ASYNC-001"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "错误与 panic",
+          "solution": "业务错误映射为可处理 Swift 错误；边界故障和构建 panic 策略单独验证。",
+          "example": "Rust 业务失败进入 throws；abort 不承诺转换为普通错误。",
+          "problem_ids": [
+            "ERR-002"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "重复链接与错切片",
+          "solution": "统一库装配和内核 owner；真机/模拟器分别验证符号和运行。",
+          "example": "Swift 直连与 Kotlin 间接入口各静态链接一份内核会产生两套状态。",
+          "problem_ids": [
+            "BUILD-002",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "源码共同构建使用固定 Rust/UniFFI/Swift 工具身份与目标配置。",
+        "生成 Swift 绑定、C 头/module map 和 Rust 库必须成套。",
+        "App 工程消费预生成 SDK 时无需强迫业务安装 Rust 导出宏或生成插件。",
+        "Swift 与 Kotlin 同时接入 Rust 时，组合应用另验符号、实例和关闭责任。"
+      ],
+      "gates": [
+        "真实 Swift 代码调用所有公开 API，启用所选 Swift 6 并发检查。",
+        "设备与模拟器覆盖异步、对象释放和 callback interface。",
+        "取消/关闭/回调重入竞态测试有可重复的断言。",
+        "大字节与集合测量复制次数、峰值内存及调用频率。",
+        "独立消费者必须使用候选制品摘要，不能以源码侧单测替代。"
+      ],
+      "choices": [
+        "适合 Swift 直接消费 Rust SDK；不需要 Kotlin 或 SKIE 中转。",
+        "应用同构建与对外二进制发布分别验收，不能互相继承。",
+        "反向能力是受支持 callback interface，任意 Swift API 导出属于另一个显式设计。"
+      ],
+      "detail": {
+        "family": "uniffi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "UniFFI Rust scaffolding；UniFFI Swift / 头文件。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "按需提供资源作用域、async 与显式订阅/AsyncSequence 适配；额外 Swift 值快照仅在隔离或 API 需求明确时生成。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 算法、锁/执行器、unsafe 和副作用一致性。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust API 与宿主协议",
+              "kind": "domain",
+              "summary": "Rust 导出声明定义数据、对象、错误和 callback interface；MadB 记录线程、取消效果和资源归属。",
+              "does": [
+                "UniFFI 导出声明、语义契约",
+                "负责方：Rust SDK 作者"
+              ],
+              "constraints": [
+                "Swift 宿主协议实现、UI 业务及共享引擎的实际 owner。",
+                "停止等待、停止工作和业务撤销的产品语义。"
+              ],
+              "lines": [
+                "UniFFI 导出声明、语义契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "UniFFI 为受支持的 Rust API 生成 Swift 绑定。应用侧通过类型化方法、async 和明确的 callback interface 使用内核；SKIE 与 KMP-NativeCoroutines 不参与这条直连路线。",
+              "does": [
+                "适合 Swift 直接消费 Rust SDK；不需要 Kotlin 或 SKIE 中转。",
+                "应用同构建与对外二进制发布分别验收，不能互相继承。",
+                "反向能力是受支持 callback interface，任意 Swift API 导出属于另一个显式设计。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "Xcode/SwiftPM 配方、Rust 库"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "UniFFI Rust scaffolding",
+              "kind": "upstream",
+              "summary": "UniFFI 生成 Rust scaffolding、Swift 绑定和配套 C 声明；MadB 生成受限惯用 Facade 与工程装配。",
+              "does": [
+                "Swift API、FFI 转换代码"
+              ],
+              "constraints": [
+                "UniFFI 生成受支持类型、对象、错误、回调和异步 FFI 接线。"
+              ],
+              "lines": [
+                "Rust 导出面、类型信息、调用与释放入口"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "UniFFI Swift / 头文件",
+              "kind": "upstream",
+              "summary": "UniFFI 生成 Rust scaffolding、Swift 绑定和配套 C 声明；MadB 生成受限惯用 Facade 与工程装配。",
+              "does": [
+                "Swift API、FFI 转换代码"
+              ],
+              "constraints": [
+                "UniFFI 生成受支持类型、对象、错误、回调和异步 FFI 接线。"
+              ],
+              "lines": [
+                "Kotlin / Swift 类型、编解码与回调 vtable"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "根据契约生成受限资源包装、取消接线和执行器投递。",
+                "在明确需要时生成 Swift 值快照与强类型 ID；不强制全量复制所有模型。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "真实 Swift 消费工程",
+              "kind": "madb",
+              "summary": "完整调用公开 Swift API，验证 Swift 6 编译、设备/模拟器、异步竞态、ARC/Rust 回收和组合内核。",
+              "does": [
+                "Apple 消费测试与诊断报告",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "真实 Swift 代码调用所有公开 API，启用所选 Swift 6 并发检查。",
+                "设备与模拟器覆盖异步、对象释放和 callback interface。"
+              ],
+              "lines": [
+                "Apple 消费测试与诊断报告"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "应用工程组合生成 Swift、C 模块和目标 Rust 库，分别链接真机/模拟器切片。最终 App 是构建与验收单位。",
+              "does": [
+                "源码共同构建使用固定 Rust/UniFFI/Swift 工具身份与目标配置。",
+                "生成 Swift 绑定、C 头/module map 和 Rust 库必须成套。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "应用目标的原生装配",
+              "kind": "madb",
+              "summary": "应用工程组合生成 Swift、C 模块和目标 Rust 库，分别链接真机/模拟器切片。最终 App 是构建与验收单位。",
+              "does": [
+                "Xcode/SwiftPM 配方、Rust 库",
+                "负责方：MadB Apple 适配器"
+              ],
+              "constraints": [
+                "App 工程消费预生成 SDK 时无需强迫业务安装 Rust 导出宏或生成插件。",
+                "Swift 与 Kotlin 同时接入 Rust 时，组合应用另验符号、实例和关闭责任。"
+              ],
+              "lines": [
+                "Xcode/SwiftPM 配方、Rust 库"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Swift 业务与 UI",
+              "kind": "ui",
+              "summary": "业务直接调用 Swift API；UI owner 管理自己的观察，应用 owner 管理共享引擎。默认不要求业务理解 RustBuffer。",
+              "does": [
+                "Swift 方法、Task、观察实例",
+                "负责方：SDK 消费者"
+              ],
+              "constraints": [
+                "适合 Swift 直接消费 Rust SDK；不需要 Kotlin 或 SKIE 中转。",
+                "应用同构建与对外二进制发布分别验收，不能互相继承。"
+              ],
+              "lines": [
+                "Swift 方法、Task、观察实例"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Swift 惯用 API",
+              "kind": "madb",
+              "summary": "按需提供资源作用域、async 与显式订阅/AsyncSequence 适配；额外 Swift 值快照仅在隔离或 API 需求明确时生成。",
+              "does": [
+                "async 方法、资源/订阅封装",
+                "负责方：MadB 生成 / 普通库"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "async 方法、资源/订阅封装"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "Swift 生成绑定",
+              "kind": "upstream",
+              "summary": "Swift 通过配套 C 模块进入 Rust scaffolding，传递经验证的值、缓冲和对象句柄；这不是直接使用不稳定 Rust ABI。",
+              "does": [
+                "FFI 符号、缓冲与句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "公开类型 ↔ UniFFI FFI 表示"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "UniFFI C ABI / Rust scaffolding",
+              "kind": "upstream",
+              "summary": "Swift 通过配套 C 模块进入 Rust scaffolding，传递经验证的值、缓冲和对象句柄；这不是直接使用不稳定 Rust ABI。",
+              "does": [
+                "FFI 符号、缓冲与句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "缓冲、对象句柄、future 与回调入口"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与异步任务",
+              "kind": "domain",
+              "summary": "实现算法、同步和异步运行要求，业务错误走 Result 契约；panic 与 abort 行为按实际构建验证。",
+              "does": [
+                "Rust 对象、任务、释放器",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 算法、锁/执行器、unsafe 和副作用一致性。",
+                "Swift 宿主协议实现、UI 业务及共享引擎的实际 owner。"
+              ],
+              "lines": [
+                "Rust 对象、任务、释放器"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "ARC 与 Rust 引用 owner",
+              "kind": "madb",
+              "summary": "Swift 引用和 Rust 引用分别计数；回调可能形成跨语言环，显式停止/关闭拆除注册与持有关系。",
+              "does": [
+                "ARC 对象、订阅 token",
+                "负责方：应用 owner / SDK"
+              ],
+              "constraints": [
+                "等待在途操作与回调排水，迟到结果由唯一处理方释放。",
+                "拆除跨语言引用环后释放句柄；deinit 仅用于适当的同步兜底。"
+              ],
+              "lines": [
+                "ARC 对象、订阅 token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "Swift 6 与执行器",
+              "kind": "madb",
+              "summary": "MainActor 只包 UI 边界；跨执行器值是否可安全传递需明确。不用 @unchecked Sendable 掩盖内核数据竞争。",
+              "does": [
+                "执行器策略、回调投递",
+                "负责方：Swift/Rust 作者 / MadB"
+              ],
+              "constraints": [
+                "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "lines": [
+                "执行器策略、回调投递"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向限定为显式导出的 trait/callback interface；Rust 不能任意导入整个 Swift 模块。",
+              "does": [
+                "Swift 对象经生成桥注册并保活，跨界期间不持有会导致重入死锁的锁。",
+                "回调先满足执行器规则，再进入 MainActor/UI。"
+              ],
+              "constraints": [
+                "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Swift 业务与 UI",
+            "生成绑定 + MadB Facade",
+            "Rust 内核与异步任务",
+            "宿主回调 / 执行器"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Swift 业务进入类型化方法，检查资源状态与输入范围。",
+                "返回值/错误解码并完成唯一所有权交接。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向限定为显式导出的 trait/callback interface；Rust 不能任意导入整个 Swift 模块。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。",
+                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "记录与可空值",
+            "path": [
+              "Rust record { id, seq: Option<i64> }",
+              "UniFFI 配套记录编码",
+              "Swift 生成 record / Optional"
+            ],
+            "note": "seq 缺失保留 nil/null；数值精度与范围按字段声明，不变成 0。"
+          },
+          {
+            "title": "对象身份",
+            "path": [
+              "Rust Arc 管理的对象",
+              "生成对象句柄 / 释放入口",
+              "目标语言资源包装"
+            ],
+            "note": "目标包装持有跨界引用；显式关闭业务资源与回收对象引用是两个动作。"
+          },
+          {
+            "title": "错误与异步",
+            "path": [
+              "Result<T, E> / Rust future",
+              "已声明错误 / future 协议",
+              "typed error + suspend / async"
+            ],
+            "note": "失败、取消与桥接故障分开；panic=abort 不能由包装层恢复。"
+          }
+        ],
+        "example": {
+          "title": "一次终态与一次结果交接",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：终态与资源接收分别认领\nonNativeResult(operation, ownedResult):\n    terminal = operation.claimTerminal()\n    if terminal == rejected:\n        handleDuplicateAccordingToTransferContract(ownedResult)\n        return\n    handoff = operation.prepareResultHandoff(ownedResult)\n    resumeOnce(handoff, onUndelivered = cleanupWithMatchingBackend)\n// resume 成功不等于调用者已取走资源；不得再发送错误终态\n// native 工作归还与结果交接独立记录",
+          "note": "重复通知是否携带新的资源转移必须由后端协议规定，不能见到重复就无条件再次释放同一对象。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "Task 取消被当成 native 资源已结束",
+          "trigger": "Swift 等待结束，但 Rust 仍持有工作和返回对象。",
+          "trace": "取消等待 → 声明的停止请求 → 终态认领与结果接收分别处理 → 收尾 owner 保活。",
+          "expected": "不因 Swift Task 结束就销毁原生对象；迟到资源由唯一方接管。",
+          "oracle": "控制目标执行器与 native barrier，完成数、work-count、资源净值分别检查。"
+        },
+        "owners": [
+          {
+            "title": "App / 会话 owner",
+            "depth": 0,
+            "detail": "Swift 引用和 Rust 引用分别计数；回调可能形成跨语言环，显式停止/关闭拆除注册与持有关系。"
+          },
+          {
+            "title": "生成对象包装与回调注册",
+            "depth": 1,
+            "detail": "按需提供资源作用域、async 与显式订阅/AsyncSequence 适配；额外 Swift 值快照仅在隔离或 API 需求明确时生成。"
+          },
+          {
+            "title": "单次调用 / 订阅实例",
+            "depth": 2,
+            "detail": "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。"
+          },
+          {
+            "title": "Rust 对象、缓冲和在途工作",
+            "depth": 2,
+            "detail": "实现算法、同步和异步运行要求，业务错误走 Result 契约；panic 与 abort 行为按实际构建验证。"
+          }
+        ],
+        "thread_rules": [
+          "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+          "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
+          "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
+          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "UniFFI 导出声明、语义契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "Swift 源码、C 头、module map",
+            "pattern": "Adapter / Mapper：复用 UniFFI Rust scaffolding、UniFFI Swift / 头文件",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "async 方法、资源/订阅封装",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "Xcode/SwiftPM 配方、Rust 库",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "Apple 消费测试与诊断报告",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "SDK 作者声明支持的 Rust API 与反向 callback interface。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "UniFFI 生成 scaffolding、Swift 绑定、C 头和模块接线。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "MadB 按契约补充生命周期、线程/异步 Facade 与工程配置。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "编译真实 Swift 调用点，生成文件存在不能替代公开 API 可用。"
+        }
+      ]
+    },
+    {
+      "id": "swift-uniffi-sdk",
+      "name": "Swift · 独立 SDK 分发",
+      "kind": "可选配置",
+      "summary": "与应用内构建复用同一 SWIFT-RUST-UNIFFI 路线，但以独立 SDK 为交付边界：XCFramework/C 模块承载原生库，SwiftPM 或消费工程提供配套 Swift API。",
+      "route_ids": [
+        "SWIFT-RUST-UNIFFI"
+      ],
+      "task_ids": [
+        "C06",
+        "C09",
+        "C10",
+        "I04",
+        "L04",
+        "L07"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "Rust → Swift 生成",
+          "steps": [
+            "SDK 作者声明支持的 Rust API 与反向 callback interface。",
+            "UniFFI 生成 scaffolding、Swift 绑定、C 头和模块接线。",
+            "MadB 按契约补充生命周期、线程/异步 Facade 与工程配置。",
+            "编译真实 Swift 调用点，生成文件存在不能替代公开 API 可用。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Swift 调用 Rust",
+          "steps": [
+            "Swift 业务进入类型化方法，检查资源状态与输入范围。",
+            "Facade 选择明确的 async 或同步接口，耗时工作不暗藏在属性读取中。",
+            "UniFFI 绑定转换参数，经 C 可见导出面执行 Rust。",
+            "返回值/错误解码并完成唯一所有权交接。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 调用 Swift 宿主",
+          "steps": [
+            "反向限定为显式导出的 trait/callback interface；Rust 不能任意导入整个 Swift 模块。",
+            "Swift 对象经生成桥注册并保活，跨界期间不持有会导致重入死锁的锁。",
+            "回调先满足执行器规则，再进入 MainActor/UI。",
+            "注销确认后拆除回调持有，迟到通知不得访问已经关闭的消费者。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "Task 取消与资源关闭",
+          "steps": [
+            "取消 Task 或观察表示停止等待/接收，是否停止 Rust 工作由契约决定。",
+            "owner 显式关闭共享引擎，进入 closing 并阻断新操作。",
+            "等待在途操作与回调排水，迟到结果由唯一处理方释放。",
+            "拆除跨语言引用环后释放句柄；deinit 仅用于适当的同步兜底。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "SDK 分发与异机消费",
+          "steps": [
+            "为真机/模拟器及声明目标分别构建原生切片，绑定与二进制身份匹配。",
+            "组合 XCFramework/C 模块及 Swift API 包，锁链接方式、最低系统和依赖。",
+            "若包装以源码分发，由消费者 Swift 编译器编译；预编译 Swift 模块另设稳定性门禁。",
+            "在干净消费者验证 Release、符号、包摘要和公开 API，不依赖作者工具链。",
+            "保留 dSYM/符号与制品对应关系；按承诺矩阵验证不同 Xcode 消费。"
+          ]
+        }
+      ],
+      "generated": [
+        "UniFFI 生成受支持类型、对象、错误、回调和异步 FFI 接线。",
+        "根据契约生成受限资源包装、取消接线和执行器投递。",
+        "在明确需要时生成 Swift 值快照与强类型 ID；不强制全量复制所有模型。",
+        "生成 Apple 工程链接、模块声明和目标构建配方。",
+        "生成公开 API 消费样例及对应诊断钩子，运行证据仍须执行。"
+      ],
+      "handwritten": [
+        "Rust 算法、锁/执行器、unsafe 和副作用一致性。",
+        "Swift 宿主协议实现、UI 业务及共享引擎的实际 owner。",
+        "停止等待、停止工作和业务撤销的产品语义。",
+        "不受支持数据形状或外部资源的显式适配。"
+      ],
+      "risks": [
+        {
+          "problem": "Swift 模型过度转换",
+          "solution": "直接使用生成 Swift 类型；只为隔离、稳定 API 或值语义需求增加快照。",
+          "example": "大列表不为形式统一再复制三层 DTO。",
+          "problem_ids": [
+            "TYPE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "ARC/Rust 跨语言环",
+          "solution": "明确注册 owner、注销确认和显式 close；弱引用只解决适合的持有边。",
+          "example": "Swift handler 持有 engine，Rust engine 保留 handler，必须能解除。",
+          "problem_ids": [
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "Swift 6 并发",
+          "solution": "声明执行器和共享对象同步前提，不把 Rust Send/Sync 自动等同 Swift Sendable。",
+          "example": "后台回调更新 UI 前切到 MainActor，类型仍须满足实际并发要求。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "Task 取消误当原生停止",
+          "solution": "记录等待/工作/回调状态；迟到结果继续清理。",
+          "example": "用户离开页面后网络请求可能已发送，不能承诺撤销副作用。",
+          "problem_ids": [
+            "ASYNC-001"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "错误与 panic",
+          "solution": "业务错误映射为可处理 Swift 错误；边界故障和构建 panic 策略单独验证。",
+          "example": "Rust 业务失败进入 throws；abort 不承诺转换为普通错误。",
+          "problem_ids": [
+            "ERR-002"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "重复链接与错切片",
+          "solution": "统一库装配和内核 owner；真机/模拟器分别验证符号和运行。",
+          "example": "Swift 直连与 Kotlin 间接入口各静态链接一份内核会产生两套状态。",
+          "problem_ids": [
+            "BUILD-002",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "XCFramework 与生成 Swift 包装同一契约/生成器身份，SwiftPM 只暴露正式消费入口。",
+        "Swift 源码包装与预编译 Swift 模块是不同发布形式，分别记录消费编译器约束。",
+        "真机/模拟器、最低系统、链接依赖、Release 与架构切片完整列明。",
+        "符号文件、制品校验值、许可证与来源进入候选清单。",
+        "干净机器消费不需要 Rust 生成器；若某配置要求源码构建则显式说明其工具依赖。"
+      ],
+      "gates": [
+        "新仓库/新机器可通过公开依赖解析并调用 SDK。",
+        "错切片、绑定/二进制错配、缺依赖均有负例与可定位诊断。",
+        "Release、最低系统与承诺的 Xcode 消费矩阵通过实际验证。",
+        "dSYM/符号与发布制品身份匹配，可完成样例崩溃符号化。",
+        "资源/并发套件仍必须通过，打包完成不能替代运行正确性。"
+      ],
+      "choices": [
+        "适合别人直接安装使用的 Swift SDK。",
+        "采用生成 Swift 源码包装时，不声称它是预编译 Swift ABI。",
+        "公开分发范围由真实消费者矩阵决定，不承诺任意 Swift/Xcode 版本。"
+      ],
+      "detail": {
+        "family": "uniffi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "UniFFI 配套生成；Apple 打包与模块装配。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "按需提供资源作用域、async 与显式订阅/AsyncSequence 适配；额外 Swift 值快照仅在隔离或 API 需求明确时生成。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 算法、锁/执行器、unsafe 和副作用一致性。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust API 与宿主协议",
+              "kind": "domain",
+              "summary": "Rust 导出声明定义数据、对象、错误和 callback interface；MadB 记录线程、取消效果和资源归属。",
+              "does": [
+                "UniFFI 导出声明、语义契约",
+                "负责方：Rust SDK 作者"
+              ],
+              "constraints": [
+                "Swift 宿主协议实现、UI 业务及共享引擎的实际 owner。",
+                "停止等待、停止工作和业务撤销的产品语义。"
+              ],
+              "lines": [
+                "UniFFI 导出声明、语义契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "与应用内构建复用同一 SWIFT-RUST-UNIFFI 路线，但以独立 SDK 为交付边界：XCFramework/C 模块承载原生库，SwiftPM 或消费工程提供配套 Swift API。",
+              "does": [
+                "适合别人直接安装使用的 Swift SDK。",
+                "采用生成 Swift 源码包装时，不声称它是预编译 Swift ABI。",
+                "公开分发范围由真实消费者矩阵决定，不承诺任意 Swift/Xcode 版本。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "XCFramework、Swift 源码包、摘要"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "UniFFI 配套生成",
+              "kind": "upstream",
+              "summary": "UniFFI 生成 Rust scaffolding、Swift 绑定和配套 C 声明；MadB 生成受限惯用 Facade 与工程装配。",
+              "does": [
+                "Swift API、FFI 转换代码"
+              ],
+              "constraints": [
+                "UniFFI 生成受支持类型、对象、错误、回调和异步 FFI 接线。"
+              ],
+              "lines": [
+                "Rust 导出面、类型信息、调用与释放入口"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "Apple 打包与模块装配",
+              "kind": "upstream",
+              "summary": "UniFFI 生成 Rust scaffolding、Swift 绑定和配套 C 声明；MadB 生成受限惯用 Facade 与工程装配。",
+              "does": [
+                "Swift API、FFI 转换代码"
+              ],
+              "constraints": [
+                "UniFFI 生成受支持类型、对象、错误、回调和异步 FFI 接线。"
+              ],
+              "lines": [
+                "Kotlin / Swift 类型、编解码与回调 vtable"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "根据契约生成受限资源包装、取消接线和执行器投递。",
+                "在明确需要时生成 Swift 值快照与强类型 ID；不强制全量复制所有模型。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "异机与发布配置消费",
+              "kind": "madb",
+              "summary": "在干净环境验证包解析、校验值、切片、最低系统、Release 和符号化；跨 Xcode 支持只按承诺矩阵测试。",
+              "does": [
+                "发行候选消费报告、符号档案",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "新仓库/新机器可通过公开依赖解析并调用 SDK。",
+                "错切片、绑定/二进制错配、缺依赖均有负例与可定位诊断。"
+              ],
+              "lines": [
+                "发行候选消费报告、符号档案"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "原生目标切片与 C 头/module map 组成配套制品，生成 Swift 包装可作为源码随 SwiftPM 分发；若分发预编译 Swift 模块，还需明确模块稳定性与工具链约束。",
+              "does": [
+                "XCFramework 与生成 Swift 包装同一契约/生成器身份，SwiftPM 只暴露正式消费入口。",
+                "Swift 源码包装与预编译 Swift 模块是不同发布形式，分别记录消费编译器约束。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "XCFramework + SwiftPM",
+              "kind": "madb",
+              "summary": "原生目标切片与 C 头/module map 组成配套制品，生成 Swift 包装可作为源码随 SwiftPM 分发；若分发预编译 Swift 模块，还需明确模块稳定性与工具链约束。",
+              "does": [
+                "XCFramework、Swift 源码包、摘要",
+                "负责方：MadB Apple 发布适配器"
+              ],
+              "constraints": [
+                "符号文件、制品校验值、许可证与来源进入候选清单。",
+                "干净机器消费不需要 Rust 生成器；若某配置要求源码构建则显式说明其工具依赖。"
+              ],
+              "lines": [
+                "XCFramework、Swift 源码包、摘要"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "独立 Swift SDK 消费者",
+              "kind": "ui",
+              "summary": "新工程仅通过公开分发入口依赖 SDK，不读取 MadB 工作区、生成器或临时路径。",
+              "does": [
+                "SwiftPM/Xcode 消费工程",
+                "负责方：SDK 消费者"
+              ],
+              "constraints": [
+                "适合别人直接安装使用的 Swift SDK。",
+                "采用生成 Swift 源码包装时，不声称它是预编译 Swift ABI。"
+              ],
+              "lines": [
+                "SwiftPM/Xcode 消费工程"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Swift 惯用 API",
+              "kind": "madb",
+              "summary": "按需提供资源作用域、async 与显式订阅/AsyncSequence 适配；额外 Swift 值快照仅在隔离或 API 需求明确时生成。",
+              "does": [
+                "async 方法、资源/订阅封装",
+                "负责方：MadB 生成 / 普通库"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "async 方法、资源/订阅封装"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "Swift SDK 包装",
+              "kind": "upstream",
+              "summary": "Swift 通过配套 C 模块进入 Rust scaffolding，传递经验证的值、缓冲和对象句柄；这不是直接使用不稳定 Rust ABI。",
+              "does": [
+                "FFI 符号、缓冲与句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "公开类型 ↔ UniFFI FFI 表示"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "同候选 UniFFI ABI",
+              "kind": "upstream",
+              "summary": "Swift 通过配套 C 模块进入 Rust scaffolding，传递经验证的值、缓冲和对象句柄；这不是直接使用不稳定 Rust ABI。",
+              "does": [
+                "FFI 符号、缓冲与句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "缓冲、对象句柄、future 与回调入口"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与异步任务",
+              "kind": "domain",
+              "summary": "实现算法、同步和异步运行要求，业务错误走 Result 契约；panic 与 abort 行为按实际构建验证。",
+              "does": [
+                "Rust 对象、任务、释放器",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 算法、锁/执行器、unsafe 和副作用一致性。",
+                "Swift 宿主协议实现、UI 业务及共享引擎的实际 owner。"
+              ],
+              "lines": [
+                "Rust 对象、任务、释放器"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "ARC 与 Rust 引用 owner",
+              "kind": "madb",
+              "summary": "Swift 引用和 Rust 引用分别计数；回调可能形成跨语言环，显式停止/关闭拆除注册与持有关系。",
+              "does": [
+                "ARC 对象、订阅 token",
+                "负责方：应用 owner / SDK"
+              ],
+              "constraints": [
+                "等待在途操作与回调排水，迟到结果由唯一处理方释放。",
+                "拆除跨语言引用环后释放句柄；deinit 仅用于适当的同步兜底。"
+              ],
+              "lines": [
+                "ARC 对象、订阅 token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "Swift 6 与执行器",
+              "kind": "madb",
+              "summary": "MainActor 只包 UI 边界；跨执行器值是否可安全传递需明确。不用 @unchecked Sendable 掩盖内核数据竞争。",
+              "does": [
+                "执行器策略、回调投递",
+                "负责方：Swift/Rust 作者 / MadB"
+              ],
+              "constraints": [
+                "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "lines": [
+                "执行器策略、回调投递"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向限定为显式导出的 trait/callback interface；Rust 不能任意导入整个 Swift 模块。",
+              "does": [
+                "Swift 对象经生成桥注册并保活，跨界期间不持有会导致重入死锁的锁。",
+                "回调先满足执行器规则，再进入 MainActor/UI。"
+              ],
+              "constraints": [
+                "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "独立 Swift SDK 消费者",
+            "生成绑定 + MadB Facade",
+            "Rust 内核与异步任务",
+            "宿主回调 / 执行器"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Swift 业务进入类型化方法，检查资源状态与输入范围。",
+                "返回值/错误解码并完成唯一所有权交接。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向限定为显式导出的 trait/callback interface；Rust 不能任意导入整个 Swift 模块。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。",
+                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "记录与可空值",
+            "path": [
+              "Rust record { id, seq: Option<i64> }",
+              "UniFFI 配套记录编码",
+              "Swift 生成 record / Optional"
+            ],
+            "note": "seq 缺失保留 nil/null；数值精度与范围按字段声明，不变成 0。"
+          },
+          {
+            "title": "对象身份",
+            "path": [
+              "Rust Arc 管理的对象",
+              "生成对象句柄 / 释放入口",
+              "目标语言资源包装"
+            ],
+            "note": "目标包装持有跨界引用；显式关闭业务资源与回收对象引用是两个动作。"
+          },
+          {
+            "title": "错误与异步",
+            "path": [
+              "Result<T, E> / Rust future",
+              "已声明错误 / future 协议",
+              "typed error + suspend / async"
+            ],
+            "note": "失败、取消与桥接故障分开；panic=abort 不能由包装层恢复。"
+          }
+        ],
+        "example": {
+          "title": "一次终态与一次结果交接",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：终态与资源接收分别认领\nonNativeResult(operation, ownedResult):\n    terminal = operation.claimTerminal()\n    if terminal == rejected:\n        handleDuplicateAccordingToTransferContract(ownedResult)\n        return\n    handoff = operation.prepareResultHandoff(ownedResult)\n    resumeOnce(handoff, onUndelivered = cleanupWithMatchingBackend)\n// resume 成功不等于调用者已取走资源；不得再发送错误终态\n// native 工作归还与结果交接独立记录",
+          "note": "重复通知是否携带新的资源转移必须由后端协议规定，不能见到重复就无条件再次释放同一对象。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "绑定与 XCFramework 来自不同候选",
+          "trigger": "Swift 源码包装升级，native 切片仍是上一版本。",
+          "trace": "核对候选清单/摘要与目标切片 → 阻断错配 → 新目录实际消费正确候选。",
+          "expected": "不能只因 Swift module 可导入就发布；源码包装和二进制身份配套。",
+          "oracle": "真机/模拟器、Release、缺传递库及错绑定负例；发布同一候选字节。"
+        },
+        "owners": [
+          {
+            "title": "App / 会话 owner",
+            "depth": 0,
+            "detail": "Swift 引用和 Rust 引用分别计数；回调可能形成跨语言环，显式停止/关闭拆除注册与持有关系。"
+          },
+          {
+            "title": "生成对象包装与回调注册",
+            "depth": 1,
+            "detail": "按需提供资源作用域、async 与显式订阅/AsyncSequence 适配；额外 Swift 值快照仅在隔离或 API 需求明确时生成。"
+          },
+          {
+            "title": "单次调用 / 订阅实例",
+            "depth": 2,
+            "detail": "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。"
+          },
+          {
+            "title": "Rust 对象、缓冲和在途工作",
+            "depth": 2,
+            "detail": "实现算法、同步和异步运行要求，业务错误走 Result 契约；panic 与 abort 行为按实际构建验证。"
+          }
+        ],
+        "thread_rules": [
+          "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+          "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
+          "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
+          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "UniFFI 导出声明、语义契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "Swift 源码、C 头、module map",
+            "pattern": "Adapter / Mapper：复用 UniFFI 配套生成、Apple 打包与模块装配",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "async 方法、资源/订阅封装",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "XCFramework、Swift 源码包、摘要",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "发行候选消费报告、符号档案",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "SDK 作者声明支持的 Rust API 与反向 callback interface。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "UniFFI 生成 scaffolding、Swift 绑定、C 头和模块接线。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "MadB 按契约补充生命周期、线程/异步 Facade 与工程配置。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "编译真实 Swift 调用点，生成文件存在不能替代公开 API 可用。"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "Swift/Rust 后端边界",
+      "path": "architecture/06-backend-profiles.md"
+    },
+    {
+      "label": "构建、打包与发布",
+      "path": "architecture/09-build-packaging-release.md"
+    },
+    {
+      "label": "Swift 惯用 API",
+      "path": "architecture/15-developer-ergonomics.md"
+    },
+    {
+      "label": "UniFFI 官方指南",
+      "url": "https://mozilla.github.io/uniffi-rs/latest/"
+    }
+  ],
+  "view_schema": "madb.route-detail-view/3"
+}

@@ -1,0 +1,791 @@
+{
+  "schema": "madb.documentation-inventory/1",
+  "baseline": "0.8",
+  "as_of": "2026-10-24",
+  "scope": "all files under MadB/docs",
+  "original_files": 103,
+  "total_files": 111,
+  "modified": 58,
+  "added": 8,
+  "retained": 45,
+  "self_digest_policy": "inventory-0.8.json omits its own digest to avoid a cycle",
+  "files": [
+    {
+      "path": "README.md",
+      "status": "modified",
+      "sha256_before": "c5a8951b4dd1886bd07cda7ef5b9d51f940b93274b845e65f3aace52bb3e47d4",
+      "sha256_after": "5002fa235d633e648269e3f4a42a3dcd1d827a2ca2e91df62b5e333e20656a76",
+      "review": "升级设计基线 0.8；补上最新完整修改清单、质量规范和关键场景入口，历史审查保留为独立快照。"
+    },
+    {
+      "path": "adr/0001-product-and-authority.md",
+      "status": "retained",
+      "sha256_before": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+      "sha256_after": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "adr/0002-core-and-adapters.md",
+      "status": "retained",
+      "sha256_before": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+      "sha256_after": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "adr/0003-lab-and-release.md",
+      "status": "retained",
+      "sha256_before": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+      "sha256_after": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "adr/0004-language-extension.md",
+      "status": "retained",
+      "sha256_before": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+      "sha256_after": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "adr/0005-project-initialization.md",
+      "status": "retained",
+      "sha256_before": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "sha256_after": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "adr/0006-developer-ergonomics.md",
+      "status": "retained",
+      "sha256_before": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+      "sha256_after": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "adr/0007-technology-stack-and-cpf.md",
+      "status": "modified",
+      "sha256_before": "95a41ee73d8c2ac11301f9814d8e05712d77fcd5d6dd7f0ad66ab848723fd8b7",
+      "sha256_after": "ed7eb34c5ea22d1f821448ebe74657549c6c24e0ec24973d3b8fa68363ba625c",
+      "review": "修正 Swift/C++ 探针关联：由不相关的 P06 改为 P07/P12，并明确 C08 工作包；保留原决策日期与历史基线。"
+    },
+    {
+      "path": "adr/0008-route-selection-and-distribution.md",
+      "status": "retained",
+      "sha256_before": "a18d21edc796a7a7c1619251c23089b777a8387935ec4fcdf9f0bb494618f588",
+      "sha256_after": "a18d21edc796a7a7c1619251c23089b777a8387935ec4fcdf9f0bb494618f588",
+      "review": "原有 ADR 的决策与本次修订一致；保留决定和历史上下文。"
+    },
+    {
+      "path": "architecture/01-system-architecture.md",
+      "status": "retained",
+      "sha256_before": "c1ceff5addb5700735de8e220072a3ea044a65c7235ebc627536d3d3a21b1441",
+      "sha256_after": "c1ceff5addb5700735de8e220072a3ea044a65c7235ebc627536d3d3a21b1441",
+      "review": "双工程、核心/适配器与构建/运行分层继续适用，无需改动总体架构。"
+    },
+    {
+      "path": "architecture/02-modules-and-ports.md",
+      "status": "retained",
+      "sha256_before": "904694ecbdbfd6107d0f6ec8a11ca3c866bf4e5e231cebf351fc2e111e0283b6",
+      "sha256_after": "904694ecbdbfd6107d0f6ec8a11ca3c866bf4e5e231cebf351fc2e111e0283b6",
+      "review": "现有小端口和依赖方向可容纳本次补充；没有另造平行核心。"
+    },
+    {
+      "path": "architecture/03-contract-and-ir.md",
+      "status": "modified",
+      "sha256_before": "cc0534ccf6044dde3bb9a1561d2c8c474b6df4ba9d671d4c3af9b7c1b94650f4",
+      "sha256_after": "7ab65061de44abb7e8b24417aa6c8c7622b084447e6114d5da1be2c96be50df3",
+      "review": "规定 ContractSnapshot 新鲜度、MetadataRequired 和显式 metadata 前置图；防止查询隐式编译及生成依赖循环。"
+    },
+    {
+      "path": "architecture/04-data-and-errors.md",
+      "status": "modified",
+      "sha256_before": "2cd4854b69f33dc154f626de3fc6fbfa5dd114901b830476d5c76a3068a8c039",
+      "sha256_after": "d131a78127e46f59c3ff93257b4a3b1a1f2e33b67cbffe124017e6f4ee1a4270",
+      "review": "补齐 JNI Modified UTF-8、长度溢出和编码边界；快照须同一 revision，并区分不可变值复制与对象身份。"
+    },
+    {
+      "path": "architecture/05-lifecycle-and-concurrency.md",
+      "status": "modified",
+      "sha256_before": "3f4979dfe9a94ce05ceb6c7dff5d7351685962ad50ec98e24221cbf59d4a5de8",
+      "sha256_after": "2da4f08ec8b1935cfd2e25392cf824acbaf32ccdb18fbd341e91797fde63dd22",
+      "review": "补齐源端租约、排队票据、执行器准入、停止与资源释放两个确认点；拆开终态认领和结果实际消费。"
+    },
+    {
+      "path": "architecture/06-backend-profiles.md",
+      "status": "modified",
+      "sha256_before": "f507ce9508bafed57e642dee78c53503a038bfb4c3518a3cb97c4177ff74f200",
+      "sha256_after": "fb29fe251482d78f40373d59c339e3a94b6ebfb91d7c4c7a41030b5db3626938",
+      "review": "更新 Swift export 当前协程映射、Alpha/集成限制和反向能力拒绝；明确 KNOI 独立 X08/P14。"
+    },
+    {
+      "path": "architecture/07-code-generation.md",
+      "status": "modified",
+      "sha256_before": "70de691f991c89c50e9c0fb506e31cc5dff47fcc0d13f3bef8fab5522161d4c5",
+      "sha256_after": "8aa564857dd967652172140f5cc18041f40f98eff806c50cf596af43fc77463f",
+      "review": "区分只读查询、metadata 准备和 generate --check 的临时复算；保留有效源码与锁。"
+    },
+    {
+      "path": "architecture/08-runtime-and-idiomatic-api.md",
+      "status": "modified",
+      "sha256_before": "5961c4b11c007436d600775275335ec8735e426a1068bcacecc362ddecfd3c80",
+      "sha256_after": "4f9e9dbd70070bd168fc43f32cdc6ff64c9d4b2f67b3491047cdf40ad8bc349f",
+      "review": "将队列门控、载荷回收和未交付资源清理纳入语言适配职责；宏或便利 API 不改变协议。"
+    },
+    {
+      "path": "architecture/09-build-packaging-release.md",
+      "status": "modified",
+      "sha256_before": "8aa9855a957089b217e6797d38e9496ad2b32f295462ecccf192826f52f64f63",
+      "sha256_after": "bd2455d549c237791d77d88fa06caa6ecc251cd93e7b3844a1eba7f1a3f8f8ee",
+      "review": "补齐远程存储的宿主校验/提交权及取消边界；组合消费验证唯一内核，不能只比较结果值。"
+    },
+    {
+      "path": "architecture/10-diagnostics-and-performance.md",
+      "status": "retained",
+      "sha256_before": "ad510a83fd95e6a061feabaa1311f5e1ef53dbfb9016adc32a57c507fcc4b45f",
+      "sha256_after": "ad510a83fd95e6a061feabaa1311f5e1ef53dbfb9016adc32a57c507fcc4b45f",
+      "review": "可选诊断与必需保护分离、预算和 Release 对照已有规定，修正展示图来遵循该规范。"
+    },
+    {
+      "path": "architecture/11-language-extension.md",
+      "status": "retained",
+      "sha256_before": "e0f6583b5685398ab84aeaaa17ec754aab310b1a1e5d147a37239248f460bc9b",
+      "sha256_after": "e0f6583b5685398ab84aeaaa17ec754aab310b1a1e5d147a37239248f460bc9b",
+      "review": "新增语言与后端的扩展流程继续适用；具体缺项在 X08/X09 和协议规范补齐。"
+    },
+    {
+      "path": "architecture/12-extension-protocol.md",
+      "status": "modified",
+      "sha256_before": "a8bb84349940f31366b436935cc7dbc589cdc2d0388ab640447f2007ba487ae2",
+      "sha256_after": "2d7b74b6f1e6ff9a525137e3728e1de3a9a9bda49739d46d28e6a20d20f9f185",
+      "review": "明确现有 wire 协议范围；存储与 IDE 新 payload 必须另行演进，禁止借 package 请求偷渡能力。"
+    },
+    {
+      "path": "architecture/13-contract-evolution.md",
+      "status": "retained",
+      "sha256_before": "7daf67a187f7a4e9ef6dde746af724f6a0c6d8a5970cde058cd3cdb633ddcf10",
+      "sha256_after": "7daf67a187f7a4e9ef6dde746af724f6a0c6d8a5970cde058cd3cdb633ddcf10",
+      "review": "未知能力拒绝、公共语义演进和证据失效流程继续适用。"
+    },
+    {
+      "path": "architecture/14-project-initialization.md",
+      "status": "retained",
+      "sha256_before": "c4cce9343133599e53c9da3c4145d6de3765fdfac4f1d667774ed8597a48200c",
+      "sha256_after": "c4cce9343133599e53c9da3c4145d6de3765fdfac4f1d667774ed8597a48200c",
+      "review": "已有最终路径提交后构建、取消保留用户工程的准确规则，本次修正图来对齐它。"
+    },
+    {
+      "path": "architecture/15-developer-ergonomics.md",
+      "status": "retained",
+      "sha256_before": "08a45472164e56c642378b486318ab84a7db7463ec3a0aa13a9f0c6fa9b270b4",
+      "sha256_after": "08a45472164e56c642378b486318ab84a7db7463ec3a0aa13a9f0c6fa9b270b4",
+      "review": "普通 API、宏/注解边界和可选便利层职责保持一致。"
+    },
+    {
+      "path": "architecture/16-technology-stack-and-versions.md",
+      "status": "modified",
+      "sha256_before": "2eee513600cfe26c5e4fc08b92d1ed44f67c7f9845713cd567f6b8fdf45e7fb6",
+      "sha256_after": "e8aa00d2abbf408335b78357c5a38c7d3174da595de748b4c55b19d065aa2efe",
+      "review": "同步 0.8 和新的能力说明、KNOI/存储任务；纠正 Apple 探针归属，保留既有候选版本数值。"
+    },
+    {
+      "path": "catalog/architecture-map.json",
+      "status": "modified",
+      "sha256_before": "890c1c495652654c65fc254ecd4e62c6754bf33698f1b38a7005714d6d572817",
+      "sha256_after": "99c89b3a13a63f8508a129ffb5a055cda1ad197209d985dbe416f03a228ee8c9",
+      "review": "同步当前基线 0.8；模块与依赖结构保持原设计。"
+    },
+    {
+      "path": "catalog/case-groups.json",
+      "status": "modified",
+      "sha256_before": "32d5d23f2eb1b59726dc4711d2185846cab66197d2434e3cacabd3e0807e27f4",
+      "sha256_after": "bab816b4a6b392740012adff417013f860bce7b8415c571737f993a8336c31e9",
+      "review": "48 个正例由重复占位改为问题专属场景；增加 CRIT 场景引用，96 组 ID 和执行状态保留。"
+    },
+    {
+      "path": "catalog/implementation-plan.json",
+      "status": "modified",
+      "sha256_before": "fbefce66e44eb8e64d7c49928b08fb9cf3bc25002dc3d3c275aad9cdae2697dd",
+      "sha256_after": "1c01fe7c4655e6f198a9988e59667ad29b40f579dbc15bd354e9bae0c215549a",
+      "review": "补齐 X08/KNOI、X09/远程制品及 C02/C04/C09 验收；共 41 个任务，保持未开始、缺证据。"
+    },
+    {
+      "path": "catalog/problems.json",
+      "status": "modified",
+      "sha256_before": "51e330ef908eed1a1d61a4b2212e726cc3d41932def2c8a4a8252e0768d7a61a",
+      "sha256_after": "bad04ae1c6c11c9eb049e61bfdc24bea91c435b09c6a9adfcf040ee0ae6bc678",
+      "review": "同步 0.8；修正 CAP-002 到契约与 IR 规范的关联，48 个问题及状态保留。"
+    },
+    {
+      "path": "catalog/route-views/arkts-c-cpp-architecture.json",
+      "status": "modified",
+      "sha256_before": "05d1778942de435946575161a30332e088576df8081d724d9b65991179c06cb8",
+      "sha256_after": "bac758b773be19fd946dd1c2a966e8bbac7868514a1b09282771848f6de48409",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；清除 Rust 机制混入，分别呈现 C/C++ 与 Node-API 的注册、线程和队列载荷责任。"
+    },
+    {
+      "path": "catalog/route-views/arkts-rust-architecture.json",
+      "status": "modified",
+      "sha256_before": "794d1d494b64b282ddab11fb51e0f2407342ed41da62df99872de190eb734774",
+      "sha256_after": "8490b89731d151edfa2f128d0d0e513ac8efd06570df324d76bc6f7876c0e526",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；画出社区 UniFFI-ArkTS 的序列化→Node-API→UniFFI 链，和 napi-ohos 主线分开；不支持的同步反向调用直接拒绝。"
+    },
+    {
+      "path": "catalog/route-views/extensions-architecture.json",
+      "status": "modified",
+      "sha256_before": "343fd8a9b883733af8dd904a95d7923f13ad7d39dccdb24d06d6bfd76bd3ccb1",
+      "sha256_after": "e1495248c2133aa96068d58cfd85bc2c13074fbaa3133677fa2a68759bd984ac",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；重写存储、IDE、诊断各自的数据/时序/owner/示例；修正 IDE 先提交源码再构建，诊断为旁路观察；补 KNOI/存储任务和 Swift export/ANI 能力限制。"
+    },
+    {
+      "path": "catalog/route-views/kotlin-c-cpp-architecture.json",
+      "status": "modified",
+      "sha256_before": "92c7db76c8785a5478b17610289372fa9a98f386a1dfe39a486551ef7d8d6b9e",
+      "sha256_after": "ab9b8722266f66e823c84967175b7f43148ea8468738bbc8919c37ea405e72c3",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；区分 JNI/cinterop 与 C++ 包装，补齐 Modified UTF-8、描述符、目标布局和释放器案例。"
+    },
+    {
+      "path": "catalog/route-views/kotlin-rust-architecture.json",
+      "status": "modified",
+      "sha256_before": "80b551e8ddf9bef51e3f73489924a91a6db6c8b4c94674b97ea731eebca1a8ff",
+      "sha256_after": "b6e373d1ca44c44a46b83fb721beda1ba4ca00d03a58c006885a580badf49324",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；区分 JVM JNI 与 Native C ABI 的类型/编码、模板交接和构建条件，补充有针对性的失败场景。"
+    },
+    {
+      "path": "catalog/route-views/rust-c-cpp-architecture.json",
+      "status": "modified",
+      "sha256_before": "138ff1a6cf537f92c63eba7c0c25bc7af80856b969306e8bb13236441ab5683f",
+      "sha256_after": "3357fea938e393d465d2b70bdbce1fc4049d1cb7563631ec12a6e1f4b275ef6b",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；区分 bindgen、cbindgen、CXX/Crubit 的真实边界，突出符号、布局、panic 和同步回调责任。"
+    },
+    {
+      "path": "catalog/route-views/swift-c-cpp-architecture.json",
+      "status": "modified",
+      "sha256_before": "0c1df889d138644af78c02a7e1a88429bce905e1ab1085f47eb07f2071a7c431",
+      "sha256_after": "e82ba41476a2c7cc04025dc7d7c800218f5210d8effce0c54dae6b7756c6d528",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；区分 C/ObjC++ 包装、direct C++ 与反向导出；修正 NSError/Swift 错误归属和发行场景。"
+    },
+    {
+      "path": "catalog/route-views/swift-rust-architecture.json",
+      "status": "modified",
+      "sha256_before": "dd5d5f7d5e8024a1ccc64c2164f18ccc10bc5504412468a3c339929697b61bcc",
+      "sha256_after": "3d8c3175301e178796a8f77e35dd26be1c1ab5193b551667e63aa76549a736b8",
+      "review": "升级描述视图 v3，显式问题/任务/规范关联、构建步骤与伪代码性质；区分 UniFFI 与显式 C ABI，明确资源交付和停止确认；避免把终态一次当作消费一次。"
+    },
+    {
+      "path": "catalog/routes.json",
+      "status": "modified",
+      "sha256_before": "dddac76aa02e8e0a4b16388c9d91e13059e5774e2966ba6e44e82778e0da24db",
+      "sha256_after": "f3d6dba35be30e3008396b70ed82b628b2c7ab27bf5d222a14882f5c209ea6e9",
+      "review": "以 extension_work_packages 显式关联 11 个扩展方向及责任；主线仍为 16 条。"
+    },
+    {
+      "path": "catalog/source-coverage.json",
+      "status": "modified",
+      "sha256_before": "ff4c9e70a0988cd9f908e2f575a698683801456be5e376c10d0b12047250f7c4",
+      "sha256_after": "0c6849192f3f40e81552f502d77e4e99b8729b3a9ac1d507f95f8244eabae4fd",
+      "review": "仅同步当前目录基线；9 份原始资料、236 条历史映射和既有专项映射内容保持原样。"
+    },
+    {
+      "path": "delivery/01-implementation-plan.md",
+      "status": "modified",
+      "sha256_before": "7e1493d4d12b2eb9299cb6570818cf8e452d7ca7fe8870ea20b2d9e0e64b213f",
+      "sha256_after": "77a8fba7a3299a7a6e7732ecdba52f23c7ffb1189cfa8dc260071ff2db7a0e48",
+      "review": "同步 41 项计划、30 主线/11 扩展分母、P14/P15 和关键验收；S0 探针与 S6 扩展验收分开。"
+    },
+    {
+      "path": "delivery/02-open-source-and-contributing.md",
+      "status": "retained",
+      "sha256_before": "59fc6c8a285f5f9b749a0607e34acdaafdbccb41db562fac6c86de21f3f70bc2",
+      "sha256_after": "59fc6c8a285f5f9b749a0607e34acdaafdbccb41db562fac6c86de21f3f70bc2",
+      "review": "发布、许可、贡献与证据要求继续适用，不以文档完成替代发布准备。"
+    },
+    {
+      "path": "delivery/03-decisions-and-risks.md",
+      "status": "modified",
+      "sha256_before": "ed5ca4f47d3bdde28ac8f536583b54d713d6b63f5eaf61b5b39adbf037668907",
+      "sha256_after": "0a0308a324f64687d823f3d103ea0eec8b2f0f45d7ce728a9fad182b092c24a6",
+      "review": "加入 P14/P15 的未知项、交付和阻断条件，以及本次全文复核结论和报告入口。"
+    },
+    {
+      "path": "engineering/01-architecture-principles.md",
+      "status": "retained",
+      "sha256_before": "759570a92b9118335a3498eef1157b7a3fcd0f0fa9040aa84ca5019c87c20e70",
+      "sha256_after": "759570a92b9118335a3498eef1157b7a3fcd0f0fa9040aa84ca5019c87c20e70",
+      "review": "依赖倒置、单一职责、明确语义和组合原则继续适用。"
+    },
+    {
+      "path": "engineering/02-clean-code.md",
+      "status": "modified",
+      "sha256_before": "456ea403e5258e344ff2eaeb21cf24e96697160adaaaeee5e51c124372fa623c",
+      "sha256_after": "a2b1c17cbd3c056584951932ee518b6385ceb409d9d0889ab05e822ae0190a66",
+      "review": "补充边界示例与生成逻辑的整洁约束：明确责任，禁止通用布尔检查掩盖资源交接和并发协议。"
+    },
+    {
+      "path": "engineering/03-design-patterns.md",
+      "status": "retained",
+      "sha256_before": "360157421cda891fd4aa8a9b3c20b57b833556fda9702115e29ab6d8d20ab112",
+      "sha256_after": "360157421cda891fd4aa8a9b3c20b57b833556fda9702115e29ab6d8d20ab112",
+      "review": "既有模式按职责选用，不因图形质量问题增加抽象层。"
+    },
+    {
+      "path": "engineering/04-language-guidelines.md",
+      "status": "retained",
+      "sha256_before": "a7499a578187d2f721e9d6a797414a38a1989d63ba92c2af546a7f4c6a16e833",
+      "sha256_after": "a7499a578187d2f721e9d6a797414a38a1989d63ba92c2af546a7f4c6a16e833",
+      "review": "各语言静态检查、unsafe 与惯用资源管理要求仍一致。"
+    },
+    {
+      "path": "engineering/05-review-and-quality-gates.md",
+      "status": "modified",
+      "sha256_before": "796c2b417cb844504ddf2aaf9c2ebcfe8d7d1acc89721e040acb85cc819b5021",
+      "sha256_after": "51473c1d9efb5764d287608803f831b14772da47922f54f771a584f00ac92c6a",
+      "review": "把文档投影、机制差异、所有权示例及真实证据纳入评审；静态通过不代替产品和视觉验证。"
+    },
+    {
+      "path": "engineering/06-documentation-quality.md",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "34db22ed0592b8b6553bab52bf6e5f5410ebeced9949e1217973215de3b777b9",
+      "review": "新增文档权威层级、路线必答问题和三层检查标准；取消凑节点/卡片/代码行数的门槛。"
+    },
+    {
+      "path": "examples/case.example.json",
+      "status": "modified",
+      "sha256_before": "6d764af9d31609d96b75fc0760b1537e156829378d1c72b84aec7f57a551c8b0",
+      "sha256_after": "b476391e6c98a9ef635e0a063955000ac920e673a225fd38b307afa8434ff21e",
+      "review": "移除没有对应测试步骤的重入断言；watchdog 超时记 error-with-trace，避免虚报已验证。"
+    },
+    {
+      "path": "examples/extensions/README.md",
+      "status": "retained",
+      "sha256_before": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "sha256_after": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "examples/extensions/dart-ffi.extension.example.json",
+      "status": "retained",
+      "sha256_before": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "sha256_after": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "examples/extensions/protocol-session.example.json",
+      "status": "retained",
+      "sha256_before": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+      "sha256_after": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "examples/extensions/schema-vectors.json",
+      "status": "retained",
+      "sha256_before": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+      "sha256_after": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "examples/madb.example.toml",
+      "status": "retained",
+      "sha256_before": "9be69d8185748ded5a00779919de3f862589634e677e8174a6c96314b6a9095a",
+      "sha256_after": "9be69d8185748ded5a00779919de3f862589634e677e8174a6c96314b6a9095a",
+      "review": "项目配置示意与当前范围一致；保持设计示例性质。"
+    },
+    {
+      "path": "product/01-positioning-and-requirements.md",
+      "status": "retained",
+      "sha256_before": "db64ba16c23da8a8f87648d76dc42976d6c220769ec50872b244fd08a3c7e03a",
+      "sha256_after": "db64ba16c23da8a8f87648d76dc42976d6c220769ec50872b244fd08a3c7e03a",
+      "review": "产品范围、双工程和角色责任没有改变。"
+    },
+    {
+      "path": "product/02-capabilities-and-roadmap.md",
+      "status": "modified",
+      "sha256_before": "a94d0ed6131611c41c9785ef5864ef5ce2c0623f9816fdc779581140993fcc1a",
+      "sha256_after": "25c13d827f64d161f429803039370106e41dd9c3366915b5c101ccdd1fe4487c",
+      "review": "明确 KNOI、存储、IDE 和插桩各自工作包，扩展机制通过不等于具体扩展已完成。"
+    },
+    {
+      "path": "product/03-developer-experience.md",
+      "status": "modified",
+      "sha256_before": "1fc4210707899eeb7265a4f3bed0a9e9b603f9a7b831f360e7f6bd87ab427fc3",
+      "sha256_after": "7e2ded20925d0e502f93185f7357f8c5006ba769fb1622db88f3151be11f1863",
+      "review": "明确查询命令只读、元数据缺失/过期的修复路径，以及生成检查的副作用范围。"
+    },
+    {
+      "path": "product/04-project-initialization.md",
+      "status": "retained",
+      "sha256_before": "6a5c09a20ed9f948d5901c6fc57cb6f9d7b50cc86e77aad2d098f9ba30099ae3",
+      "sha256_after": "6a5c09a20ed9f948d5901c6fc57cb6f9d7b50cc86e77aad2d098f9ba30099ae3",
+      "review": "一键初始化和原生 IDE 可用性仍为既有产品承诺。"
+    },
+    {
+      "path": "references/README.md",
+      "status": "modified",
+      "sha256_before": "14c10f1276c0518b5f6c34773db0bb7192755b61090b87254601ecec0aba68c5",
+      "sha256_after": "166807d96cd67bba5f54c73c1bcabbf306f09682ef11b88df50afc32ac2aa0ea",
+      "review": "登记本次复核的 Swift export、JNI、协程取消和社区 ArkTS 后端一手资料；区分上游事实和 MadB 设计。"
+    },
+    {
+      "path": "references/glossary.md",
+      "status": "modified",
+      "sha256_before": "8e53c0b7d7f0f7a47bfffb214c8d9d1e61a6f59a59d6e969c8fe98077aaccec6",
+      "sha256_after": "88e3279d3f6307892be15e30cb5f39db73692f85e22ecd23e517d4eb42aa1773",
+      "review": "增加交付票据、终态认领、描述性配置三个术语，避免把 HTML 配置和已认证 profile 混用。"
+    },
+    {
+      "path": "reviews/2026-10-24-atlas-depth-revision.md",
+      "status": "retained",
+      "sha256_before": "7642ac5e1974e3cdf136912f7ee9bb6971458c4ea2647380f6a2382696d772e8",
+      "sha256_after": "7642ac5e1974e3cdf136912f7ee9bb6971458c4ea2647380f6a2382696d772e8",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/2026-10-24-document-quality-audit.md",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "7b37fe87eeb8bdbed50a6fb737f20f402030a1b41fa2f7d1ed2a4e9bb28f1ac2",
+      "review": "新增本次发现、完整逐文件变化、保留理由、验证范围和剩余事项。"
+    },
+    {
+      "path": "reviews/2026-10-24-final-audit.md",
+      "status": "retained",
+      "sha256_before": "7138a6a1a8c35f1a1ed02bd0a4547a94d0d9fa617fda00b8217d9c079241b398",
+      "sha256_after": "7138a6a1a8c35f1a1ed02bd0a4547a94d0d9fa617fda00b8217d9c079241b398",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/2026-10-24-route-atlas.md",
+      "status": "retained",
+      "sha256_before": "9c300ab50221882b7244a05e9bad3d769000cdc33afa8b870415af22aa7feaf7",
+      "sha256_after": "9c300ab50221882b7244a05e9bad3d769000cdc33afa8b870415af22aa7feaf7",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/2026-10-24-route-reconciliation.md",
+      "status": "retained",
+      "sha256_before": "3fc1e7fcfdfb9bdb9c177e1c44122ab42b4d4e103b90ddd58eb92d9a46101312",
+      "sha256_after": "3fc1e7fcfdfb9bdb9c177e1c44122ab42b4d4e103b90ddd58eb92d9a46101312",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/document-quality-validation.json",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "19b06830e244d3a2930a8d75d52b7e3c5d9e88d53f9983f99bbcc278b7be6736",
+      "review": "保存本次静态、文档工具回归、隔离脚本执行与进度保留检查的真实结果，浏览器及产品测试明确未执行。"
+    },
+    {
+      "path": "reviews/inventory-0.4.json",
+      "status": "retained",
+      "sha256_before": "0f361ed3f764fb6b6e91fd15e2e72d79641dda88182abc38a520c7ff93383b6d",
+      "sha256_after": "0f361ed3f764fb6b6e91fd15e2e72d79641dda88182abc38a520c7ff93383b6d",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/inventory-0.7.json",
+      "status": "retained",
+      "sha256_before": "561f156fdd3b6169962160bc20e661f11d82a92b0ddf8cc40ca19dd5c30913b9",
+      "sha256_after": "561f156fdd3b6169962160bc20e661f11d82a92b0ddf8cc40ca19dd5c30913b9",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/inventory-0.8.json",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": null,
+      "review": "保存全部文件的原摘要/新摘要、状态和逐项说明；自身摘要留空避免循环。"
+    },
+    {
+      "path": "reviews/route-atlas-validation.json",
+      "status": "retained",
+      "sha256_before": "ba3fb6c1ad5b89c41bd85298e7db941ad85c8cf6da6cfabde717a1279efe13ad",
+      "sha256_after": "ba3fb6c1ad5b89c41bd85298e7db941ad85c8cf6da6cfabde717a1279efe13ad",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/route-depth-validation.json",
+      "status": "retained",
+      "sha256_before": "1f9c5430027731cbf8e01dfd45fbc5f6ff7249762a005bd4ff694f69468d8035",
+      "sha256_after": "1f9c5430027731cbf8e01dfd45fbc5f6ff7249762a005bd4ff694f69468d8035",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/validation-result-0.5.json",
+      "status": "retained",
+      "sha256_before": "76a74576089797c89bff562ffc687e42c842ed6a977a79522a4b4a03c2aed2bd",
+      "sha256_after": "76a74576089797c89bff562ffc687e42c842ed6a977a79522a4b4a03c2aed2bd",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "reviews/validation-result.json",
+      "status": "retained",
+      "sha256_before": "27577b0a94ffec9dde981fca6d04ba0fd38f7d46ae8140a84774b9db037227ea",
+      "sha256_after": "27577b0a94ffec9dde981fca6d04ba0fd38f7d46ae8140a84774b9db037227ea",
+      "review": "历史快照按原字节保留，不把本次审查结果回填到旧记录。"
+    },
+    {
+      "path": "schemas/README.md",
+      "status": "retained",
+      "sha256_before": "58ea9dd49b9ea6893d679754e87dff541829f5a134d90c8b73c66ee7ebc4bab1",
+      "sha256_after": "58ea9dd49b9ea6893d679754e87dff541829f5a134d90c8b73c66ee7ebc4bab1",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "schemas/extension-manifest.schema.json",
+      "status": "retained",
+      "sha256_before": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "sha256_after": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "schemas/extension-wire.schema.json",
+      "status": "retained",
+      "sha256_before": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+      "sha256_after": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+      "review": "现有扩展协议范围和正反例仍一致；结构验证通过，本次未扩展 wire schema。"
+    },
+    {
+      "path": "tools/check_docs.py",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "5c5c612e85d4065af7009ff182b214cb0aa2b9afe28d5c6d87aab2e5d749d9d0",
+      "review": "新增可重复的全文静态入口：Markdown/JSON/TOML、引用、案例映射、来源摘要、schema、HTML 脚本与生成漂移。"
+    },
+    {
+      "path": "tools/render_visuals.py",
+      "status": "modified",
+      "sha256_before": "c8450b5164cc05d3559794292a10b1fa333fc72d16e1022cefb1ace35905c407",
+      "sha256_after": "211c06b273c75125a8a290f5ad58b46ded5d675b73160375842177295e39efa5",
+      "review": "校验显式问题/任务映射与规范来源；支持可变节点和生命线数量，检查重叠及步骤一致性；删除人为数量门槛。"
+    },
+    {
+      "path": "tools/templates/architecture-overview.html",
+      "status": "modified",
+      "sha256_before": "0cc324b92c709482c4f19119e27f1fcee992466c8d7cb1f5f4c56074dc4439a2",
+      "sha256_after": "8190c3579f5d3b40a7ca8186cb5d581807d49f6284a61cf8d3c40f1e98441a38",
+      "review": "把社区 UniFFI-ArkTS 后端的归属标注正确，继续从共享目录投影全局架构。"
+    },
+    {
+      "path": "tools/templates/implementation-progress.html",
+      "status": "modified",
+      "sha256_before": "ed4e650af6d9fda1e11b1dd049919143936290e2fbf5e148eeefd18c8d928019",
+      "sha256_after": "884d36b3d0024cd6c3e89df2ce62a2435cc323f763ea3604d5e4641ce13bccce",
+      "review": "纠正社区后端归属；从共享目录展现 41 项任务与独立扩展进度。"
+    },
+    {
+      "path": "tools/templates/kotlin-arkts-architecture.html",
+      "status": "modified",
+      "sha256_before": "62dc3ae205d22363da62e8d9e6e64980be1169b428a4dcafe69c325d74ebdfdf",
+      "sha256_after": "7094ce073858162f4e3ef43d337d2dc9838c1e81260be59c5d28a6f7745be410",
+      "review": "加入 X08/P14 归属以及队列投递、env 退出的生命周期约束。"
+    },
+    {
+      "path": "tools/templates/kotlin-swift-architecture.html",
+      "status": "modified",
+      "sha256_before": "3bb3f7108132a43b60a453c870fe6fe946dc293fc2cf06d3a17051f491f96bea",
+      "sha256_after": "10a6c94da2443ad04ec8ef16c2f0c1e50446c92f4ed5d3f40c16680b3df323ba",
+      "review": "补充 resume 后取消和排队投递两个容易遗漏的交接点，链接具体 CRIT 验收场景。"
+    },
+    {
+      "path": "tools/templates/route-atlas.html",
+      "status": "retained",
+      "sha256_before": "6f7a68418cfb6d0a936e7b45d33242862d86f7a8e7b7ca126979fcc6b937f17a",
+      "sha256_after": "6f7a68418cfb6d0a936e7b45d33242862d86f7a8e7b7ca126979fcc6b937f17a",
+      "review": "布局/CSS/导航模板仍可复用；机制与映射改在描述数据或脚本层。"
+    },
+    {
+      "path": "tools/templates/route-panorama.css",
+      "status": "retained",
+      "sha256_before": "7f1db03604fedd893c545e489b281ee2e1d47be51af7b9e2e543873522fc4326",
+      "sha256_after": "7f1db03604fedd893c545e489b281ee2e1d47be51af7b9e2e543873522fc4326",
+      "review": "布局/CSS/导航模板仍可复用；机制与映射改在描述数据或脚本层。"
+    },
+    {
+      "path": "tools/templates/route-panorama.html",
+      "status": "retained",
+      "sha256_before": "5fee1fa86d5f8a116679dd144c1f78d37deb9b015d9cfc531ece32741d2c7e3a",
+      "sha256_after": "5fee1fa86d5f8a116679dd144c1f78d37deb9b015d9cfc531ece32741d2c7e3a",
+      "review": "布局/CSS/导航模板仍可复用；机制与映射改在描述数据或脚本层。"
+    },
+    {
+      "path": "tools/templates/route-panorama.js",
+      "status": "modified",
+      "sha256_before": "5488ce009fe8205cb7b698ba2ab6d471986d601a75184da1424c2310d593badb",
+      "sha256_after": "00d6566896a46b6dd9f42c8fe2dd78c893e6a6a3ce025a60c854214f1a81736d",
+      "review": "删除关键词猜任务逻辑；读取显式风险映射、构建步骤和子分区，按生命线数量计算时序布局。"
+    },
+    {
+      "path": "tools/templates/shared.css",
+      "status": "retained",
+      "sha256_before": "1f19a817a5a1d50ba902e1c9d63845bdf8791240e608f597d67392e2fd3f669a",
+      "sha256_after": "1f19a817a5a1d50ba902e1c9d63845bdf8791240e608f597d67392e2fd3f669a",
+      "review": "布局/CSS/导航模板仍可复用；机制与映射改在描述数据或脚本层。"
+    },
+    {
+      "path": "tools/tests/panorama_smoke.cjs",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "84177436a808ec357284b05c89d69c8e89f691b50bb8a8536460e95c00daf74a",
+      "review": "新增隔离 DOM 替身测试：配置、风险/步骤、图筛选、节点键盘、时序、深链接、分类和主题；不是浏览器测试。"
+    },
+    {
+      "path": "tools/tests/test_document_contracts.py",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "969b98b04a541f47e51430c53fb4e1713a491764c6c22cb1c8ebdf661967f3c4",
+      "review": "新增 10 项文档工具回归：错误归属/问题、编译证据、步骤漂移、重叠、重复键及精简图可接受。"
+    },
+    {
+      "path": "validation/01-testing-strategy.md",
+      "status": "modified",
+      "sha256_before": "f42892a4dc47902dd4d9e41830d3d5a7ad5809278e60b1a7a7d7d73af57724bf",
+      "sha256_after": "81ac43728f4f5a1d659b7180f1ca0a3bd362b7343482c074870723b265b8a099",
+      "review": "同步 0.8；强调原生工作、队列、消费者和结果分别观察，关联 6 组确定性关键场景。"
+    },
+    {
+      "path": "validation/02-lab-architecture.md",
+      "status": "modified",
+      "sha256_before": "48d3e9307d5e41ef7bade06e08524076b5223335215ac4295789bb83f18146be",
+      "sha256_after": "6b92a8144b36a48eac99b321ebf556492f25a6329d352951e15a88303ad3a47d",
+      "review": "补齐 barrier、独立计数、唯一内核及结果交接的 Lab 观测要求，避免用生产状态机当预期。"
+    },
+    {
+      "path": "validation/03-case-specification.md",
+      "status": "modified",
+      "sha256_before": "3ba48a3c6020dd951dda4320ba25465b111dd6a43dfa10d32084e315e6712bda",
+      "sha256_after": "0b14e7174eaa58bae4367f4476fdb71fa56cdbe554a2f8cfe5944e0a14043fd8",
+      "review": "规定每项断言需要实际步骤支撑；超时与清理失败分类，禁止杀进程就算停止协议通过。"
+    },
+    {
+      "path": "validation/04-problem-catalog.md",
+      "status": "modified",
+      "sha256_before": "caf97eea9f8a66412394a8cb07872a6796e64e54c9aa6871c1987b5355926c1c",
+      "sha256_after": "6250bdf9f59198db73592707f0964e4157fc429fa957ebf6ea6e4fd2fe80738a",
+      "review": "为全部 48 问题补充具体正例，同步 CAP-002 规范链接，并关联 CRIT 场景；保留原历史映射章节。"
+    },
+    {
+      "path": "validation/05-language-onboarding.md",
+      "status": "retained",
+      "sha256_before": "c8e17caaa92adc5912dbca382d04297913098977c862cc2b32a63b5253440faf",
+      "sha256_after": "c8e17caaa92adc5912dbca382d04297913098977c862cc2b32a63b5253440faf",
+      "review": "EXT 验收继续适用于新补工作包，不将声明能力当认证。"
+    },
+    {
+      "path": "validation/06-project-initialization.md",
+      "status": "retained",
+      "sha256_before": "6f428ef0c7a341b18285d59590dc86fcf88fa2e1c1749272e2a61966afd47773",
+      "sha256_after": "6f428ef0c7a341b18285d59590dc86fcf88fa2e1c1749272e2a61966afd47773",
+      "review": "INIT 门禁继续适用；最终路径构建和 IDE 检查不降级。"
+    },
+    {
+      "path": "validation/07-developer-ergonomics.md",
+      "status": "retained",
+      "sha256_before": "5a2e3e33b55f7152c07ddc42ed1a7e7d5c1bf6fa4ffc81e4cf94c3c002a61079",
+      "sha256_after": "5a2e3e33b55f7152c07ddc42ed1a7e7d5c1bf6fa4ffc81e4cf94c3c002a61079",
+      "review": "DX 的普通入口、便利层和生命周期验收仍适用。"
+    },
+    {
+      "path": "validation/08-critical-scenarios.md",
+      "status": "added",
+      "sha256_before": null,
+      "sha256_after": "d74084d05d9e301af09e8b4e5974e595c3315c90ae702ef3e77f0857ef2c61b4",
+      "review": "新增 6 组前提、可控交错、独立预期与清理规范：队列停止、结果取消、源端 context、唯一内核、查询副作用、取消提交。"
+    },
+    {
+      "path": "visuals/README.md",
+      "status": "modified",
+      "sha256_before": "81a39d326d68e0f827befefce316568a4cfb8fab0db568d23ba0e761eda3cbb0",
+      "sha256_after": "4b1b431a9c699387bd048a25d8e6a79918e2a80040a10046ab0f9146a0d22a79",
+      "review": "说明 route-detail-view/3、显式映射和可重复检查；更新任务数与维护流程，区分静态、替身和真实浏览器结果。"
+    },
+    {
+      "path": "visuals/architecture-overview.html",
+      "status": "modified",
+      "sha256_before": "262aeaef68e57b20e39c8ace787be5c5772df669aae42232a0140837e791654f",
+      "sha256_after": "6c8d581aaad0657d79e61ef1d4a0934b48339946c4869e1fd59df1cc6abb46dc",
+      "review": "重新生成：基线 0.8、共享计划和社区后端正确归属；保留全局模块结构。"
+    },
+    {
+      "path": "visuals/arkts-c-cpp-architecture.html",
+      "status": "modified",
+      "sha256_before": "feeb4798dc37ee018d6cd6fc9ba7f6f93672f9fe3550d340f42221b5379d76d8",
+      "sha256_after": "7d20346a3adee03658eeac100c2ab71f93dd8bfd88d5f91a8e3a358e6f237dee",
+      "review": "由更新后的描述视图和模板重新生成；清除 Rust 机制混入，分别呈现 C/C++ 与 Node-API 的注册、线程和队列载荷责任。"
+    },
+    {
+      "path": "visuals/arkts-rust-architecture.html",
+      "status": "modified",
+      "sha256_before": "5c586ba4888278569afaa25ead14c767deacfc85cc60ae35395b291b40710af3",
+      "sha256_after": "e17a1db63abdd2b1794783a93a1ff0f7ec808654cde68fbc70af3e7d7dfc32ab",
+      "review": "由更新后的描述视图和模板重新生成；画出社区 UniFFI-ArkTS 的序列化→Node-API→UniFFI 链，和 napi-ohos 主线分开；不支持的同步反向调用直接拒绝。"
+    },
+    {
+      "path": "visuals/extensions-architecture.html",
+      "status": "modified",
+      "sha256_before": "d007465aee100cf324ab94810fee24e855e5690f0424be8b4027e2a30663e2fd",
+      "sha256_after": "862abd1d57554f50ae222a5b2ec6573d1f31b627143cee514367b499183516bc",
+      "review": "由更新后的描述视图和模板重新生成；重写存储、IDE、诊断各自的数据/时序/owner/示例；修正 IDE 先提交源码再构建，诊断为旁路观察；补 KNOI/存储任务和 Swift export/ANI 能力限制。"
+    },
+    {
+      "path": "visuals/implementation-progress.html",
+      "status": "modified",
+      "sha256_before": "5d909c89542f68708ca7ba7d493d26fea991465ecdaa97d04bccc34483721b07",
+      "sha256_after": "d23f03229ddad81e5c6b44a6c640f6d49d86ff3509108b3545c36a7919192527",
+      "review": "重新生成：41 项工作包、新扩展归属和验收要求；实施与认证状态保持不变。"
+    },
+    {
+      "path": "visuals/kotlin-arkts-architecture.html",
+      "status": "modified",
+      "sha256_before": "065d4f692ddd2d852e5456434840fddbee26acf08af304e51845609fce216303",
+      "sha256_after": "01c84c9567b76b8b4bee0800911033b950146c9206398bba87d10e6541888478",
+      "review": "重新生成：补 KNOI 独立任务、P14 及队列/env 清理边界，保留 CPF+akinterop 主线。"
+    },
+    {
+      "path": "visuals/kotlin-c-cpp-architecture.html",
+      "status": "modified",
+      "sha256_before": "2c9223290b5befcd945024cf5a01fff07d3c7463d32206892ce01dc0b8b9002c",
+      "sha256_after": "abffd159fbd9c12d961177d3efa7f11b612ea8da9adf83f17ee9a82da5bae670",
+      "review": "由更新后的描述视图和模板重新生成；区分 JNI/cinterop 与 C++ 包装，补齐 Modified UTF-8、描述符、目标布局和释放器案例。"
+    },
+    {
+      "path": "visuals/kotlin-rust-architecture.html",
+      "status": "modified",
+      "sha256_before": "8acd8886036e9d42333cd962e2c216b7f7b5c4e5588dea34265683a9e58b1f32",
+      "sha256_after": "559b2f95306b9563881d25ee6d32c2fe03db671f5f13c354fb8e3f8faa86f841",
+      "review": "由更新后的描述视图和模板重新生成；区分 JVM JNI 与 Native C ABI 的类型/编码、模板交接和构建条件，补充有针对性的失败场景。"
+    },
+    {
+      "path": "visuals/kotlin-swift-architecture.html",
+      "status": "modified",
+      "sha256_before": "e867c3076a9300ebab49f04f4ee0c4fbb1bf78820dcf27787a38237066e954cc",
+      "sha256_after": "77428167d027a951e35281b3b2e7675706d88727364f9835beda8ce84635b426",
+      "review": "重新生成：保留参考页组织，补齐队列交付、及时取消和关键场景入口。"
+    },
+    {
+      "path": "visuals/route-atlas.html",
+      "status": "modified",
+      "sha256_before": "140ce8fc8532246f8b8421eabe31667aa6dc278cef1de5a75dab75b8885147ae",
+      "sha256_after": "a1c23ccc6508e28823ef305f859d92db7d0fb64d72b9215fd0c2438718cf20b4",
+      "review": "重新生成：同步 0.8 与新的描述视图目录；九组语言边界、十六条主线数量不变。"
+    },
+    {
+      "path": "visuals/rust-c-cpp-architecture.html",
+      "status": "modified",
+      "sha256_before": "2f0d2912e0060de4200a8f87ee80a5db4ad9c5649452bc646121ccbae72cb542",
+      "sha256_after": "bb50389308683d2843631436b03988eb0921eeb16b52fb1cbf68d918a8fd03ac",
+      "review": "由更新后的描述视图和模板重新生成；区分 bindgen、cbindgen、CXX/Crubit 的真实边界，突出符号、布局、panic 和同步回调责任。"
+    },
+    {
+      "path": "visuals/swift-c-cpp-architecture.html",
+      "status": "modified",
+      "sha256_before": "39859ca4940609ad60e76d1b86c3ea8e75f37cb3e80d4edd6ffc667be721f5e8",
+      "sha256_after": "48d875c49a74e706d4789925b7080f30515d52d2e71962ba6b183a7a0154e92c",
+      "review": "由更新后的描述视图和模板重新生成；区分 C/ObjC++ 包装、direct C++ 与反向导出；修正 NSError/Swift 错误归属和发行场景。"
+    },
+    {
+      "path": "visuals/swift-rust-architecture.html",
+      "status": "modified",
+      "sha256_before": "cb968a4d15c1c938d35c6d7894ea3044b084d8d8ceee82341f86a73c9a9a3037",
+      "sha256_after": "8fb07d1e4c2a79e1ca404ab94ba33c4e654960cfc5da7f868e794c2562fa9a52",
+      "review": "由更新后的描述视图和模板重新生成；区分 UniFFI 与显式 C ABI，明确资源交付和停止确认；避免把终态一次当作消费一次。"
+    }
+  ]
+}

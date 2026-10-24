@@ -1,0 +1,654 @@
+{
+  "schema": "madb.architecture-map/1",
+  "baseline": "0.9",
+  "as_of": "2026-10-24",
+  "status": "design",
+  "lanes": [
+    "输入与启动",
+    "MadB · 纯核心与应用编排",
+    "MadB · 工程、生成与候选",
+    "使用者应用 · 运行时",
+    "MadB-Lab · 独立验收与发布"
+  ],
+  "nodes": [
+    {
+      "id": "author",
+      "title": "SDK 作者",
+      "subtitle": "接口声明 · 显式行为策略",
+      "lane": 0,
+      "column": 0,
+      "document": "architecture/03-contract-and-ir.md",
+      "owns": "选择公开能力与业务语义；已有后端声明直接复用",
+      "inputs": "领域实现和公开接口",
+      "outputs": "单一结构来源、所有权/线程/取消策略",
+      "guard": "不从函数名或签名猜测业务副作用"
+    },
+    {
+      "id": "cli",
+      "title": "CLI / 可选 IDE 向导",
+      "subtitle": "用户入口 · 组合根",
+      "lane": 0,
+      "column": 1,
+      "document": "product/03-developer-experience.md",
+      "owns": "commands 只处理请求与展示；crates/madb-cli/src/bootstrap.rs 装配 app 和具体端口实现",
+      "inputs": "命令参数、项目配置",
+      "outputs": "应用请求、退出码、诊断",
+      "guard": "组合根不承载规则；IDE 向导调用既有用例，不复制构建引擎"
+    },
+    {
+      "id": "initialize",
+      "title": "InitializeProject",
+      "subtitle": "模板配方 · ProjectPlan",
+      "lane": 0,
+      "column": 2,
+      "document": "architecture/14-project-initialization.md",
+      "owns": "规划模块、文件、IDE 入口与验证级别",
+      "inputs": "模板配置、宿主观察、目标请求",
+      "outputs": "ProjectPlan、创建/验证/打开结果",
+      "guard": "模板配置引用边界配置；不改变 ContractIR 语义"
+    },
+    {
+      "id": "extensions",
+      "title": "扩展注册与协商",
+      "subtitle": "清单 · 版本 · 能力",
+      "lane": 0,
+      "column": 3,
+      "document": "architecture/12-extension-protocol.md",
+      "owns": "app/extensions 解析清单和锁、请求受控组件装配；extensions 目录仅保存交付索引",
+      "inputs": "扩展清单、版本锁、组件依赖",
+      "outputs": "受检组件绑定和协议会话",
+      "guard": "不复制 adapter/SDK 实现；不向全局暴露 Registry 或最终提交权限"
+    },
+    {
+      "id": "tools",
+      "title": "生态工具与平台 SDK",
+      "subtitle": "KSP · 编译器 · Xcode 等",
+      "lane": 0,
+      "column": 4,
+      "document": "architecture/06-backend-profiles.md",
+      "owns": "提供语言元数据、编译、链接和平台运行机制",
+      "inputs": "固定版本/摘要、目标配置",
+      "outputs": "工具输出与能力观察",
+      "guard": "工具版本存在不等于组合认证；编译器、生成器补丁、CLI、SDK、IDE 与宿主分别锁定"
+    },
+    {
+      "id": "reader",
+      "title": "ContractReader",
+      "subtitle": "helpers / contracts adapters",
+      "lane": 1,
+      "column": 0,
+      "document": "architecture/02-modules-and-ports.md",
+      "owns": "adapters/contracts 读取权威源码或元数据，转换为带来源的领域快照",
+      "inputs": "源码、头文件、绑定元数据",
+      "outputs": "ContractSnapshot + source map",
+      "guard": "wire 格式有效后仍做语义检查；未知所有权/线程信息不得伪造"
+    },
+    {
+      "id": "model",
+      "title": "ContractIR / model",
+      "subtitle": "纯值模型 · 语义权威",
+      "lane": 1,
+      "column": 1,
+      "document": "architecture/03-contract-and-ir.md",
+      "owns": "统一类型、错误、所有权、线程与取消语义",
+      "inputs": "结构快照和显式策略",
+      "outputs": "可追踪的规范化边界模型",
+      "guard": "不依赖 IO、UI 框架或任何语言后端"
+    },
+    {
+      "id": "rules",
+      "title": "rules / capabilities",
+      "subtitle": "纯规则 · Finding / Gap",
+      "lane": 1,
+      "column": 2,
+      "document": "architecture/04-data-and-errors.md",
+      "owns": "检查可表达性、完整性及能力匹配",
+      "inputs": "模型、能力、带来源的观察",
+      "outputs": "受检能力、平台限制与精确诊断；包含不可调用 API 和构建方向检查",
+      "guard": "未知必需语义必须阻断，不能静默降级"
+    },
+    {
+      "id": "plan",
+      "title": "plan / TaskGraph",
+      "subtitle": "输入 · 输出 · 依赖",
+      "lane": 1,
+      "column": 3,
+      "document": "architecture/02-modules-and-ports.md",
+      "owns": "madb-plan 生成 TaskGraph、ProjectPlan 和输入身份，规则结果由应用先行取得",
+      "inputs": "需求、工具锁、目标、预算",
+      "outputs": "构建 DAG 与缓存身份",
+      "guard": "计划与执行分离；依赖环和混目标输出被拒绝"
+    },
+    {
+      "id": "adapters",
+      "title": "app / 端口编排",
+      "subtitle": "Generator · Toolchain 等",
+      "lane": 1,
+      "column": 4,
+      "document": "architecture/02-modules-and-ports.md",
+      "owns": "madb-app 的 use_cases、execution、outputs 编排任务与提交；ports 定义所需能力",
+      "inputs": "任务图、绑定组件、受管工作区",
+      "outputs": "执行结果、产物、诊断",
+      "guard": "app 不导入具体适配器；通过注入端口调用，不把调用图当源码依赖图"
+    },
+    {
+      "id": "project",
+      "title": "用户原生工程",
+      "subtitle": "Gradle · Xcode · Hvigor",
+      "lane": 2,
+      "column": 0,
+      "document": "architecture/14-project-initialization.md",
+      "owns": "承载应用源码、Wrapper、正常 IDE 构建与运行",
+      "inputs": "受检 ProjectPlan 和模板资产",
+      "outputs": "用户项目 + 持续受管绑定目录",
+      "guard": "源树提交后在最终路径构建；用户文件不被覆盖"
+    },
+    {
+      "id": "generator",
+      "title": "绑定与 API 生成",
+      "subtitle": "已有后端 + 受限 Facade",
+      "lane": 2,
+      "column": 1,
+      "document": "architecture/07-code-generation.md",
+      "owns": "机械生成类型转换、接口、资源/异步接线",
+      "inputs": "IR、能力、策略和模板",
+      "outputs": "可再生源码、来源清单",
+      "guard": "复用上游生成；已知 foreign future 模板缺陷必须修复并锁补丁；不一律复制模型"
+    },
+    {
+      "id": "build",
+      "title": "构建与打包准备",
+      "subtitle": "目标 sysroot · 锁 · 缓存",
+      "lane": 2,
+      "column": 2,
+      "document": "architecture/09-build-packaging-release.md",
+      "owns": "执行目标编译、链接和制品准备",
+      "inputs": "源码、目标工具链和完整构建身份",
+      "outputs": "原生库、语言包装、编译结果",
+      "guard": "宿主编译不能替代目标运行；Android 模块配方与 Swift C++ 构建方向明确"
+    },
+    {
+      "id": "packager",
+      "title": "ArtifactPackager",
+      "subtitle": "候选集合 · manifest",
+      "lane": 2,
+      "column": 3,
+      "document": "architecture/09-build-packaging-release.md",
+      "owns": "adapters/artifacts 按生态准备候选内容；最终提交由 host 执行",
+      "inputs": "已校验原生库、包装、公开声明、独立坐标和分发 profile",
+      "outputs": "待提交的候选包与文件摘要",
+      "guard": "仅写受管暂存；官方/CPF 不覆盖同一根 publication；SKIE 二进制显式可分发"
+    },
+    {
+      "id": "store",
+      "title": "ArtifactStore",
+      "subtitle": "宿主校验 · 提交冻结",
+      "lane": 2,
+      "column": 4,
+      "document": "architecture/02-modules-and-ports.md",
+      "owns": "adapters/host 实现受控存储、输出域锁、读取租约及最终原子提交；app/outputs 编排准入",
+      "inputs": "待提交候选",
+      "outputs": "不可变候选身份",
+      "guard": "扩展只写被授权 staging；源码/产物/候选分层提交，正式候选不可变"
+    },
+    {
+      "id": "consumer",
+      "title": "业务应用 / UI",
+      "subtitle": "Compose · SwiftUI · ArkUI",
+      "lane": 3,
+      "column": 0,
+      "document": "architecture/08-runtime-and-idiomatic-api.md",
+      "owns": "业务协调、输入状态、页面观察和共享资源 owner",
+      "inputs": "普通 SDK API、业务状态",
+      "outputs": "业务行为和生命周期请求",
+      "guard": "页面停止观察不自动关闭共享引擎"
+    },
+    {
+      "id": "api",
+      "title": "语言惯用 SDK",
+      "subtitle": "await · Flow · 属性与宏",
+      "lane": 3,
+      "column": 1,
+      "document": "architecture/15-developer-ergonomics.md",
+      "owns": "sdk 按语言/能力交付普通 API、异步/状态及选用便利入口",
+      "inputs": "业务调用、可选便利入口",
+      "outputs": "类型化调用和状态观察",
+      "guard": "SDK 不依赖 CLI/app；便利入口复用同一运行机制"
+    },
+    {
+      "id": "runtime",
+      "title": "按需语义运行时",
+      "subtitle": "资源 · 异步 · 订阅 · 执行器",
+      "lane": 3,
+      "column": 2,
+      "document": "architecture/05-lifecycle-and-concurrency.md",
+      "owns": "执行准入、结果认领、取消、排水和清理协议",
+      "inputs": "已声明契约与绑定能力",
+      "outputs": "可测试的公开后条件",
+      "guard": "诊断关闭不能关掉必要保护；复用后端已有机制"
+    },
+    {
+      "id": "binding",
+      "title": "实际语言绑定",
+      "subtitle": "UniFFI · JNI · N-API · CXX",
+      "lane": 3,
+      "column": 3,
+      "document": "architecture/06-backend-profiles.md",
+      "owns": "执行实际调用与表示转换",
+      "inputs": "类型化参数、句柄和已验证调用协议",
+      "outputs": "原生结果、回调与错误",
+      "guard": "JSON 仅按接口选择；调用桥不等于载荷协议"
+    },
+    {
+      "id": "native",
+      "title": "原生 / 宿主实现",
+      "subtitle": "算法 · 同步 · 业务副作用",
+      "lane": 3,
+      "column": 4,
+      "document": "engineering/04-language-guidelines.md",
+      "owns": "实现算法、资源、平台服务与原生同步",
+      "inputs": "绑定调用或已声明宿主回调",
+      "outputs": "业务结果及明确定义的停止能力",
+      "guard": "任意指针有效性、unsafe 和事务撤销需作者保证"
+    },
+    {
+      "id": "lab",
+      "title": "真实消费者",
+      "subtitle": "独立 MadB-Lab 工程",
+      "lane": 4,
+      "column": 0,
+      "document": "validation/02-lab-architecture.md",
+      "owns": "独立消费者从公开候选安装和运行；fixtures/scenarios/harness 协作，expected 独立维护",
+      "inputs": "冻结候选、Lab revision、目标环境",
+      "outputs": "跨语言和 IDE 运行观察",
+      "guard": "不导入 MadB 私有 crate，不用生产规则当 oracle；报告绑定候选与 Lab revision"
+    },
+    {
+      "id": "cases",
+      "title": "独立预期与场景",
+      "subtitle": "48 问题 · 基础/EXT/INIT/DX",
+      "lane": 4,
+      "column": 1,
+      "document": "validation/01-testing-strategy.md",
+      "owns": "维护正反例、可控交错、故障与平台特例",
+      "inputs": "公共契约及历史案例",
+      "outputs": "48 公共问题/96 基础组与平台特例；研究发现不冒充运行结果",
+      "guard": "不由同一生成器计算唯一 oracle"
+    },
+    {
+      "id": "evidence",
+      "title": "版本化证据",
+      "subtitle": "结果 · 环境 · 制品摘要",
+      "lane": 4,
+      "column": 2,
+      "document": "validation/03-case-specification.md",
+      "owns": "关联实际结果、环境、日志和候选身份",
+      "inputs": "消费者观察和独立预期",
+      "outputs": "通过/失败/错误/跳过/不支持/阻塞",
+      "guard": "证据依赖变化即失效；build-only smoke 不算设备运行；不把 skip 当通过"
+    },
+    {
+      "id": "gate",
+      "title": "发布 Gate",
+      "subtitle": "范围覆盖 · 身份一致",
+      "lane": 4,
+      "column": 3,
+      "document": "architecture/09-build-packaging-release.md",
+      "owns": "核对必需证据、许可、范围和候选身份",
+      "inputs": "完整报告及发布范围",
+      "outputs": "允许或阻断发布的明确结论",
+      "guard": "构建成功、扩展自报与手动勾选不能代替证据"
+    },
+    {
+      "id": "release",
+      "title": "公开交付",
+      "subtitle": "工具 + SDK + 模板 + 示例",
+      "lane": 4,
+      "column": 4,
+      "document": "delivery/02-open-source-and-contributing.md",
+      "owns": "发布已验收内容和可复现使用说明",
+      "inputs": "通过 Gate 的同一候选",
+      "outputs": "可安装产品与支持矩阵",
+      "guard": "发布后校验下载及安装；不重新编译沿用旧证据"
+    }
+  ],
+  "flows": [
+    {
+      "id": "build",
+      "title": "构建与生成",
+      "color": "#2577a6",
+      "description": "从作者声明到冻结候选。纯核心判断规则，外层端口执行工具。",
+      "nodes": [
+        "author",
+        "reader",
+        "model",
+        "rules",
+        "plan",
+        "adapters",
+        "generator",
+        "build",
+        "packager",
+        "store",
+        "api"
+      ],
+      "steps": [
+        "读取单一结构来源并合并显式策略",
+        "验证类型、所有权、线程和取消能力",
+        "按锁建立任务 DAG；复用生成器与工具链",
+        "形成完整候选，宿主校验后冻结身份"
+      ]
+    },
+    {
+      "id": "runtime",
+      "title": "应用运行",
+      "color": "#b26a21",
+      "description": "普通业务 API 调用按需语义运行时和绑定后端；结果及宿主回调沿受管通路返回。",
+      "nodes": [
+        "consumer",
+        "api",
+        "runtime",
+        "binding",
+        "native"
+      ],
+      "steps": [
+        "普通 API 或可选属性/宏发起操作",
+        "执行准入、引用保活和执行器协议",
+        "后端完成调用与数据转换",
+        "回调按同一契约认领结果，停止后排水清理"
+      ]
+    },
+    {
+      "id": "init",
+      "title": "一键初始化",
+      "color": "#6976bb",
+      "description": "ProjectPlan 创建用户工程，再接入同一套边界构建；初始化不创造第二套 FFI。",
+      "nodes": [
+        "cli",
+        "initialize",
+        "project",
+        "generator",
+        "build"
+      ],
+      "steps": [
+        "选择模板配置并预检宿主与目标条件",
+        "确定性渲染；新目录无覆盖提交",
+        "在最终路径生成、构建和按请求级别验证",
+        "可选打开 IDE；后续由 Wrapper 触发正常重建"
+      ]
+    },
+    {
+      "id": "extension",
+      "title": "语言与后端扩展",
+      "color": "#8b609b",
+      "description": "开放身份、受检语义。扩展绑定小型端口，未知必需功能在生成前阻断。",
+      "nodes": [
+        "extensions",
+        "reader",
+        "model",
+        "rules",
+        "plan",
+        "adapters",
+        "tools"
+      ],
+      "steps": [
+        "锁定清单、组件身份、来源和协议版本",
+        "协商必需语义、目标与端口能力",
+        "复用现有 IR；缺少公共语义时版本化演进",
+        "通过独立 EXT 消费与禁用隔离验证"
+      ]
+    },
+    {
+      "id": "validation",
+      "title": "独立验收与发布",
+      "color": "#24826f",
+      "description": "MadB-Lab 从公开候选出发验证真实消费。认证只对证据中的版本、目标与方向成立。",
+      "nodes": [
+        "store",
+        "lab",
+        "cases",
+        "evidence",
+        "gate",
+        "release"
+      ],
+      "steps": [
+        "冻结候选交给独立消费者和独立预期",
+        "覆盖基础语义、EXT、INIT、DX 与平台特例",
+        "记录六类结果、环境和候选身份",
+        "Gate 通过后发布同一候选并复核安装"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "author",
+      "target": "reader",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "reader",
+      "target": "model",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "model",
+      "target": "rules",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "rules",
+      "target": "plan",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "plan",
+      "target": "adapters",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "adapters",
+      "target": "generator",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "generator",
+      "target": "build",
+      "flows": [
+        "build",
+        "init"
+      ],
+      "overview": true
+    },
+    {
+      "source": "build",
+      "target": "packager",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "packager",
+      "target": "store",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    },
+    {
+      "source": "consumer",
+      "target": "api",
+      "flows": [
+        "runtime"
+      ],
+      "overview": true
+    },
+    {
+      "source": "api",
+      "target": "runtime",
+      "flows": [
+        "runtime"
+      ],
+      "overview": true
+    },
+    {
+      "source": "runtime",
+      "target": "binding",
+      "flows": [
+        "runtime"
+      ],
+      "overview": true
+    },
+    {
+      "source": "binding",
+      "target": "native",
+      "flows": [
+        "runtime"
+      ],
+      "overview": true
+    },
+    {
+      "source": "cli",
+      "target": "initialize",
+      "flows": [
+        "init"
+      ],
+      "overview": true
+    },
+    {
+      "source": "initialize",
+      "target": "project",
+      "flows": [
+        "init"
+      ],
+      "overview": true
+    },
+    {
+      "source": "project",
+      "target": "generator",
+      "flows": [
+        "init"
+      ],
+      "overview": true
+    },
+    {
+      "source": "extensions",
+      "target": "adapters",
+      "flows": [
+        "extension"
+      ],
+      "overview": true
+    },
+    {
+      "source": "tools",
+      "target": "adapters",
+      "flows": [
+        "extension"
+      ],
+      "overview": true
+    },
+    {
+      "source": "extensions",
+      "target": "rules",
+      "flows": [
+        "extension"
+      ],
+      "overview": false
+    },
+    {
+      "source": "store",
+      "target": "lab",
+      "flows": [
+        "validation"
+      ],
+      "overview": true
+    },
+    {
+      "source": "lab",
+      "target": "evidence",
+      "flows": [
+        "validation"
+      ],
+      "overview": true
+    },
+    {
+      "source": "cases",
+      "target": "evidence",
+      "flows": [
+        "validation"
+      ],
+      "overview": true
+    },
+    {
+      "source": "evidence",
+      "target": "gate",
+      "flows": [
+        "validation"
+      ],
+      "overview": true
+    },
+    {
+      "source": "gate",
+      "target": "release",
+      "flows": [
+        "validation"
+      ],
+      "overview": true
+    },
+    {
+      "source": "store",
+      "target": "api",
+      "flows": [
+        "build"
+      ],
+      "overview": true
+    }
+  ],
+  "principles": [
+    [
+      "依赖倒置",
+      "数据向下流转，不代表源码依赖向外。model / rules / plan 不引用适配器。"
+    ],
+    [
+      "单一职责",
+      "CLI、模型、规则、任务图、端口和语言 SDK 按变化原因分开。"
+    ],
+    [
+      "Adapter + Strategy",
+      "隔离生态工具；按显式能力选择表示和策略，禁止暗中降级。"
+    ],
+    [
+      "状态机 + 作用域",
+      "Open → Closing → Closed；超时不假报关闭；取消效果逐接口说明。"
+    ],
+    [
+      "Facade + 组合",
+      "普通 API 优先，便利入口复用协议，不重复建立 owner 或运行时。"
+    ],
+    [
+      "独立验证",
+      "范围、实现、验证分开；测试预期、运行证据与发布权限分开。"
+    ],
+    [
+      "场景决定配置",
+      "路线不只由语言配对决定；构建系统、调用方向和源码/二进制分发共同约束后端。"
+    ]
+  ]
+}

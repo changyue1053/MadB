@@ -1,0 +1,3390 @@
+{
+  "slug": "rust-c-cpp-architecture",
+  "title": "Rust ↔ C / C++ 架构全景",
+  "eyebrow": "ABI · OWNERSHIP · BIDIRECTIONAL BRIDGE",
+  "summary": "C 路线按接口提供方拆分 bindgen 导入与 cbindgen 导出；受控 C++ 桥接使用 CXX。各配置共享契约与验证体系，保持自身的 ABI、资源和工具链约束。",
+  "route_ids": [
+    "RUST-C-ABI",
+    "RUST-CPP-CXX"
+  ],
+  "extension_task_ids": [
+    "X05"
+  ],
+  "profiles": [
+    {
+      "id": "bindgen-import",
+      "name": "Rust 消费 C：bindgen",
+      "kind": "主线候选",
+      "summary": "已有 C 头文件是外部 ABI 声明来源。bindgen 生成 Rust 底层声明；MadB 根据显式契约提供受限安全包装、构建接入和验证。",
+      "route_ids": [
+        "RUST-C-ABI"
+      ],
+      "task_ids": [
+        "C05",
+        "C09",
+        "C10",
+        "L06"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "导入与生成",
+          "steps": [
+            "作者给出目标头文件、宏、include 路径与边界语义。",
+            "bindgen 生成 raw FFI 声明，MadB 生成受限包装并保留源位置。",
+            "将生成参数、libclang 与目标库身份写入配置。",
+            "真实编译和链接验证头文件与库一致，再交付 Rust crate。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Rust 调用 C",
+          "steps": [
+            "Rust 调用包装 API，先检查句柄状态和长度/数值。",
+            "在明确借用窗口内进入 raw C ABI 调用。",
+            "根据 C 状态码处理返回值，未初始化输出不得读取。",
+            "复制、借用或接管输出按契约执行，失败路径调用对应释放器。",
+            "Result 表达业务失败；原生未定义行为不是可捕获业务错误。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "C 回调 Rust",
+          "steps": [
+            "C 库持有已注册的 function + context，不能把 Rust 闭包地址直接当 C 函数。",
+            "trampoline 仅在有效 context 和约定线程条件下读取数据。",
+            "回调转换为受控 Rust 消息或合法执行器任务。",
+            "异常路径不得展开跨过 C ABI；panic 策略明确区分 unwind 与 abort。",
+            "退订与晚到回调按代次及排水协议协调。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "停止与释放",
+          "steps": [
+            "owner 关闭准入并撤销/停止原生操作。",
+            "停止等待并不表示 C 线程终止，context 保留到原生确认。",
+            "等待回调排水，检查父子资源和借用均已结束。",
+            "调用原生匹配的 destroy/free，随后销毁 Rust context。",
+            "异步收口通过显式 close 完成，Drop 不伪装成可等待协议。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "构建与 ABI 验证",
+          "steps": [
+            "按目标组合固定头文件、库、宏和工具链。",
+            "执行真实编译的布局/常量/符号检查。",
+            "独立 Cargo 工程消费 crate 和 native 依赖。",
+            "跨平台结果分别关联锁、库摘要及测试报告。"
+          ]
+        }
+      ],
+      "generated": [
+        "bindgen 生成符合所选头文件/宏/目标的 Rust raw FFI。",
+        "MadB 依据明确契约生成参数校验、错误转换和资源包装。",
+        "生成回调注册、context 封装、关闭准入和配对释放接线。",
+        "生成 Cargo 构建接入、绑定漂移及 ABI 检查骨架。",
+        "生成 source map 和诊断钩子，不让代码生成替代 unsafe 审查。"
+      ],
+      "handwritten": [
+        "C 库本身的算法、锁、并发和停止/排水实现。",
+        "指针来源有效性、别名、所有权、释放线程与 Send/Sync 的语义前提。",
+        "复杂结构、自定义回调和不规则 C API 的适配。",
+        "需要手写的最小 unsafe 实现及其安全说明。"
+      ],
+      "risks": [
+        {
+          "problem": "宿主布局污染目标绑定",
+          "solution": "传入目标 triple/sysroot/宏，并用目标编译验证布局与常量。",
+          "example": "macOS 生成时不能拿宿主 long 的大小替代另一个平台。",
+          "problem_ids": [
+            "TYPE-007",
+            "BUILD-001"
+          ],
+          "task_ids": [
+            "C05",
+            "C10"
+          ]
+        },
+        {
+          "problem": "内存分配器不匹配",
+          "solution": "输出只交给声明的原生释放器，不把外部分配指针直接交给 Rust 容器回收。",
+          "example": "C malloc 的缓冲不随意变成 Vec 让 Rust allocator 释放。",
+          "problem_ids": [
+            "LIFE-001"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "裸指针被包装成过强借用",
+          "solution": "只在来源、有效期、别名和长度前提成立时构造 Rust 引用。",
+          "example": "原生库下次调用会重用的缓冲不能暴露为长期 &static 数据。",
+          "problem_ids": [
+            "LIFE-002",
+            "LIFE-003"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "线程能力被错误推导",
+          "solution": "原生对象默认按已知线程约束包装；unsafe Send/Sync 需要作者证明。",
+          "example": "C cache 内部无锁时不能因为 handle 是整数就跨线程共享。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "panic 或晚到回调越界",
+          "solution": "trampoline 采用明确 panic 策略；unwind 配置的捕获不覆盖 abort，context 仍需 drain。",
+          "example": "回调 panic 不得穿过 C 栈；关闭后 queued 回调不得读取已释放 context。",
+          "problem_ids": [
+            "ERR-002",
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "错误与空输出混淆",
+          "solution": "状态码先判定，再读取已初始化输出；null/empty 与业务失败不同。",
+          "example": "返回失败时输出指针未写入，包装层不能尝试解引用或释放垃圾值。",
+          "problem_ids": [
+            "ERR-001",
+            "TYPE-002"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        }
+      ],
+      "delivery": [
+        "提供 Rust crate、绑定生成配置及 native 库获取/链接规则。",
+        "按 OS/ABI/架构锁定原生依赖，保留 symbols 和调试信息匹配。",
+        "生成物或构建期生成二选一作为明确交付模式，普通消费者无需猜测 libclang 是否必装。",
+        "包含独立消费者和最小 C ABI 兼容验证。"
+      ],
+      "gates": [
+        "目标布局/常量/调用约定与真实 native 库一致。",
+        "空指针、无效形状、长度溢出、错误码和分配失败正反例。",
+        "重复关闭、回调排水、借用结束和 allocator 配对。",
+        "实际目标线程约束与适用 sanitizer 检查。",
+        "无本地源码路径依赖的独立 Cargo 消费。"
+      ],
+      "choices": [
+        "适合 Rust 使用已有 C ABI；bindgen 的方向是 C 声明 → Rust 声明。",
+        "已有 C++ 库若选择本配置，先手写受控 C facade；不把复杂 C++ 布局导入当安全互操作。",
+        "Rust 向 C 导出选下一配置；两种方向可组合，但其契约和生成物身份分别管理。"
+      ],
+      "detail": {
+        "family": "cabi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "Clang 解析既有 C 头；bindgen 导入声明。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "用 RAII 管理确定可同步释放的句柄；异步对象保留显式 close，不随意赋予 Send/Sync。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "C 库本身的算法、锁、并发和停止/排水实现。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "C 头文件与调用契约",
+              "kind": "domain",
+              "summary": "固定真实目标头文件、宏、include 路径及所有权/错误/回调契约；不从宿主默认布局推导目标 ABI。",
+              "does": [
+                "header + target flags + 契约",
+                "负责方：C 库作者 + SDK 作者"
+              ],
+              "constraints": [
+                "指针来源有效性、别名、所有权、释放线程与 Send/Sync 的语义前提。",
+                "复杂结构、自定义回调和不规则 C API 的适配。"
+              ],
+              "lines": [
+                "header + target flags + 契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "已有 C 头文件是外部 ABI 声明来源。bindgen 生成 Rust 底层声明；MadB 根据显式契约提供受限安全包装、构建接入和验证。",
+              "does": [
+                "适合 Rust 使用已有 C ABI；bindgen 的方向是 C 声明 → Rust 声明。",
+                "已有 C++ 库若选择本配置，先手写受控 C facade；不把复杂 C++ 布局导入当安全互操作。",
+                "Rust 向 C 导出选下一配置；两种方向可组合，但其契约和生成物身份分别管理。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "crate + 原生依赖清单"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "Clang 解析既有 C 头",
+              "kind": "upstream",
+              "summary": "bindgen 结合 libclang 和目标参数生成底层 Rust 声明；MadB 生成受检包装与诊断，不能证明任意外部地址有效。",
+              "does": [
+                "bindings.rs + Rust wrapper"
+              ],
+              "constraints": [
+                "bindgen 生成符合所选头文件/宏/目标的 Rust raw FFI。"
+              ],
+              "lines": [
+                "C 可见 ABI、布局、错误码与 callback context"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "bindgen 导入声明",
+              "kind": "upstream",
+              "summary": "bindgen 结合 libclang 和目标参数生成底层 Rust 声明；MadB 生成受检包装与诊断，不能证明任意外部地址有效。",
+              "does": [
+                "bindings.rs + Rust wrapper"
+              ],
+              "constraints": [
+                "bindgen 生成符合所选头文件/宏/目标的 Rust raw FFI。"
+              ],
+              "lines": [
+                "导入声明 + 受限资源 facade"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "MadB 依据明确契约生成参数校验、错误转换和资源包装。",
+                "生成回调注册、context 封装、关闭准入和配对释放接线。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "独立 Rust/C ABI Lab",
+              "kind": "madb",
+              "summary": "实际链接目标库并检查布局、符号、释放器和竞态；宿主测试成功不能代表移动端 ABI。",
+              "does": [
+                "layout/symbol/consumer reports",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "目标布局/常量/调用约定与真实 native 库一致。",
+                "空指针、无效形状、长度溢出、错误码和分配失败正反例。"
+              ],
+              "lines": [
+                "layout/symbol/consumer reports"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "build.rs 或受控构建任务引入 C 库；锁定 target、宏、链接器、sysroot、库与生成器摘要。",
+              "does": [
+                "提供 Rust crate、绑定生成配置及 native 库获取/链接规则。",
+                "按 OS/ABI/架构锁定原生依赖，保留 symbols 和调试信息匹配。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "Cargo 与原生链接",
+              "kind": "madb",
+              "summary": "build.rs 或受控构建任务引入 C 库；锁定 target、宏、链接器、sysroot、库与生成器摘要。",
+              "does": [
+                "crate + 原生依赖清单",
+                "负责方：MadB 构建适配器"
+              ],
+              "constraints": [
+                "生成物或构建期生成二选一作为明确交付模式，普通消费者无需猜测 libclang 是否必装。",
+                "包含独立消费者和最小 C ABI 兼容验证。"
+              ],
+              "lines": [
+                "crate + 原生依赖清单"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Rust SDK 消费者",
+              "kind": "ui",
+              "summary": "使用 Result、newtype 和资源对象；调用 unsafe 底层入口时仍承担其显式前提。",
+              "does": [
+                "typed Rust SDK",
+                "负责方：Rust 业务开发者"
+              ],
+              "constraints": [
+                "适合 Rust 使用已有 C ABI；bindgen 的方向是 C 声明 → Rust 声明。",
+                "已有 C++ 库若选择本配置，先手写受控 C facade；不把复杂 C++ 布局导入当安全互操作。"
+              ],
+              "lines": [
+                "typed Rust SDK"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "受限安全 Facade",
+              "kind": "madb",
+              "summary": "用 RAII 管理确定可同步释放的句柄；异步对象保留显式 close，不随意赋予 Send/Sync。",
+              "does": [
+                "Resource / Result / borrowed view",
+                "负责方：MadB + SDK 作者"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "Resource / Result / borrowed view"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "unsafe extern C 声明",
+              "kind": "upstream",
+              "summary": "在最窄 unsafe 区域调用原生函数；校验可验证的边界条件，不让 Rust 借用超过真实原生寿命。",
+              "does": [
+                "extern C + unsafe island"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "opaque handle、ptr/len、status"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "既有 C 原生库",
+              "kind": "domain",
+              "summary": "提供真实函数、状态码、分配/释放、停止和回调约定；库内数据竞争不能由 bindgen 自动消除。",
+              "does": [
+                "native .a/.so/.dylib/.dll",
+                "负责方：C SDK 作者"
+              ],
+              "constraints": [
+                "C 库本身的算法、锁、并发和停止/排水实现。",
+                "指针来源有效性、别名、所有权、释放线程与 Send/Sync 的语义前提。"
+              ],
+              "lines": [
+                "native .a/.so/.dylib/.dll"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "Rust owner 与借用",
+              "kind": "madb",
+              "summary": "资源对象持有原生句柄；借用或父子资源关系由 wrapper 类型及运行时准入共同表达。",
+              "does": [
+                "RAII owner / scoped borrow",
+                "负责方：Rust SDK + 调用方"
+              ],
+              "constraints": [
+                "调用原生匹配的 destroy/free，随后销毁 Rust context。",
+                "异步收口通过显式 close 完成，Drop 不伪装成可等待协议。"
+              ],
+              "lines": [
+                "RAII owner / scoped borrow"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "原生线程与回调桥",
+              "kind": "madb",
+              "summary": "C 回调进入最小 extern trampoline；把数据交给合法 Rust 执行器，线程边界按 Send/Sync 前提限制。",
+              "does": [
+                "callback fn + context + executor",
+                "负责方：MadB + 作者契约"
+              ],
+              "constraints": [
+                "裸指针、句柄和可变共享状态的线程安全由作者契约说明。",
+                "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。"
+              ],
+              "lines": [
+                "callback fn + context + executor"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "C 库持有已注册的 function + context，不能把 Rust 闭包地址直接当 C 函数。",
+              "does": [
+                "trampoline 仅在有效 context 和约定线程条件下读取数据。",
+                "回调转换为受控 Rust 消息或合法执行器任务。"
+              ],
+              "constraints": [
+                "撤销注册不自动证明回调已结束；确认所有在途回调退出后，才能回收 context 和原生资源。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "provider",
+              "label": "调用边界",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Rust SDK 消费者",
+            "bindgen unsafe 声明",
+            "既有 C 原生库",
+            "Rust callback context"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Rust 调用包装 API，先检查句柄状态和长度/数值。",
+                "Result 表达业务失败；原生未定义行为不是可捕获业务错误。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "C 库持有已注册的 function + context，不能把 Rust 闭包地址直接当 C 函数。",
+                "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "撤销注册不自动证明回调已结束；确认所有在途回调退出后，才能回收 context 和原生资源。",
+                "超时不是排水完成；必要时资源保持 Closing 并报告仍在工作。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "导入值与借用",
+            "path": [
+              "Rust 值 / slice",
+              "bindgen ABI 声明 + ptr/len",
+              "C 结构体与缓冲"
+            ],
+            "note": "bindgen 只生成声明；头文件宏、布局和编译参数须与真正 C 库一致。"
+          },
+          {
+            "title": "不透明资源",
+            "path": [
+              "受管资源包装",
+              "opaque handle + destroy",
+              "provider 独占或共享资源"
+            ],
+            "note": "create/destroy 配对，析构回到创建方分配器；关闭中的句柄拒绝新操作。"
+          },
+          {
+            "title": "错误与回调",
+            "path": [
+              "业务 Result / status",
+              "固定错误表示 / function + context",
+              "目标语言错误 / 宿主实现"
+            ],
+            "note": "异常不越过 C ABI；callback context 保活到最后一次允许的调用退出。"
+          }
+        ],
+        "example": {
+          "title": "停止确认之后再释放",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：先建立 context 持有，再允许同步首回调\nregistration = prepareCallbackOwner()\ntoken = subscribe(registration.context)\nrequest_stop(token)\nresult = await_stopped(token)\nif result == confirmed:\n    release_callback_context(registration)\n    destroy_with_provider_releaser(handle)\nelse:\n    cleanupOwner.retainUntilConfirmed(token, registration, handle)\n// 超时不释放；此调用只能在允许等待的位置执行",
+          "note": "仅适用于提供注销屏障或安全登记租约的后端；没有确认时保留收尾责任，不顺序执行 destroy。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "绑定布局用了宿主而非目标头文件",
+          "trigger": "生成时遗漏目标 sysroot、宏或 pack，字段偏移与实际 C 库不同。",
+          "trace": "目标编译上下文 → bindgen 声明 → C 探针报告 size/alignment/offset → Rust 消费比较。",
+          "expected": "不依据 Rust 生成文件自身推导正确布局。",
+          "oracle": "独立目标 C 探针与真实调用；故意改 pack/宏的负例必须失败。"
+        },
+        "owners": [
+          {
+            "title": "应用 / native owner",
+            "depth": 0,
+            "detail": "资源对象持有原生句柄；借用或父子资源关系由 wrapper 类型及运行时准入共同表达。"
+          },
+          {
+            "title": "资源包装与父子句柄",
+            "depth": 1,
+            "detail": "用 RAII 管理确定可同步释放的句柄；异步对象保留显式 close，不随意赋予 Send/Sync。"
+          },
+          {
+            "title": "借用窗口 / callback lease",
+            "depth": 2,
+            "detail": "撤销注册不自动证明回调已结束；确认所有在途回调退出后，才能回收 context 和原生资源。"
+          },
+          {
+            "title": "allocator、对象与 callback context",
+            "depth": 2,
+            "detail": "提供真实函数、状态码、分配/释放、停止和回调约定；库内数据竞争不能由 bindgen 自动消除。"
+          }
+        ],
+        "thread_rules": [
+          "裸指针、句柄和可变共享状态的线程安全由作者契约说明。",
+          "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。",
+          "外部回调离开持锁区；回调内关闭不等待自身完成。",
+          "超时不是排水完成；必要时资源保持 Closing 并报告仍在工作。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "header + target flags + 契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "生成命令、allowlist 与转换配方",
+            "pattern": "Adapter / Mapper：复用 Clang 解析既有 C 头、bindgen 导入声明",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "Resource / Result / borrowed view",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "crate + 原生依赖清单",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "layout/symbol/consumer reports",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "撤销注册不自动证明回调已结束；确认所有在途回调退出后，才能回收 context 和原生资源。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "作者给出目标头文件、宏、include 路径与边界语义。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "bindgen 生成 raw FFI 声明，MadB 生成受限包装并保留源位置。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "将生成参数、libclang 与目标库身份写入配置。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "真实编译和链接验证头文件与库一致，再交付 Rust crate。"
+        }
+      ]
+    },
+    {
+      "id": "cbindgen-export",
+      "name": "C 消费 Rust：cbindgen",
+      "kind": "主线候选",
+      "summary": "Rust 提供显式 C ABI 实现，cbindgen 根据 C 可见声明生成头文件。MadB 封装状态码、句柄和资源协议；生成头文件不会自动创造可链接函数实现。",
+      "route_ids": [
+        "RUST-C-ABI"
+      ],
+      "task_ids": [
+        "C05",
+        "C09",
+        "C10",
+        "L06"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "导出与生成",
+          "steps": [
+            "作者实现显式 C ABI 并定义支持的公开形状。",
+            "cbindgen 从 Rust C 可见声明生成头文件，不生成业务实现。",
+            "MadB 生成受限 facade/检查代码并验证头文件与导出符号。",
+            "Cargo 构建目标库，再以真实 C 编译器验证消费。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "C 调用 Rust",
+          "steps": [
+            "C 按公开头文件传入参数与输出位置。",
+            "ABI 层验证可验证的形状和句柄准入。",
+            "转换为内部 Rust 类型并执行业务 Result。",
+            "输出按借用、复制或转移协议写回，错误时保持约定的有效状态。",
+            "Rust 分配输出由对应 Rust 释放函数回收。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 调用宿主",
+          "steps": [
+            "宿主注册 C ABI function pointer 和 context。",
+            "Rust 在约定线程调用或投递回调，不推导 context 可任意跨线程。",
+            "回调中重入和关闭遵循明确准入策略。",
+            "宿主回调结束前保持数据和 context 的有效性。",
+            "退出或取消后仍到达的完成按协议认领/丢弃，不重复调用宿主。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "关闭与销毁",
+          "steps": [
+            "C owner 发起 close，边界拒绝新工作。",
+            "停止请求与真实 Rust 任务完成分别记录。",
+            "等待工作及宿主回调排水，不能提前释放 user data。",
+            "释放由 Rust 持有的数据和句柄，遵循版本化 destroy 约定。",
+            "不可等待的 finalizer 或析构路径只做协议允许的兜底。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "独立原生 SDK",
+          "steps": [
+            "目标库、头文件、符号和契约摘要一同冻结。",
+            "C/C++ 消费者使用发布包，不依赖 Rust 工作区内部文件。",
+            "执行 Release 链接、ABI、分配器和 panic 策略验证。",
+            "每个平台生成独立证据，不能用宿主布局代表全部目标。"
+          ]
+        }
+      ],
+      "generated": [
+        "cbindgen 生成对应导出面的 C 头文件。",
+        "MadB 为受支持声明生成参数/输出转换和错误码接线。",
+        "生成不透明资源的使用包装、配对释放声明及 C++ RAII 便利层。",
+        "生成 native SDK 包清单、符号比对和独立 C 消费者。",
+        "生成回调身份与关闭协议测试骨架。"
+      ],
+      "handwritten": [
+        "Rust 业务实现以及需要人工审查的 extern/unsafe 适配。",
+        "公开 C ABI、对象所有权、回调线程、取消效果及版本演进决策。",
+        "panic 策略和不可恢复故障的处理；catch_unwind 不等同于恢复一切故障。",
+        "宿主回调 context 的真实有效性与原生业务线程同步。"
+      ],
+      "risks": [
+        {
+          "problem": "头文件存在但无导出实现",
+          "solution": "真实符号和入口实现必须与头文件一致，发布门禁实际链接并调用。",
+          "example": "只运行 cbindgen 不会自动得到可用的 engine_create。",
+          "problem_ids": [
+            "BUILD-003"
+          ],
+          "task_ids": [
+            "C05",
+            "C10"
+          ]
+        },
+        {
+          "problem": "Rust 内部布局泄漏",
+          "solution": "限制 C ABI 类型；String/Vec 等由显式缓冲或句柄包装，不直接暴露内部布局。",
+          "example": "Rust Vec 元数据不作为稳定 C 结构传给调用者。",
+          "problem_ids": [
+            "TYPE-007"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "分配与释放不配对",
+          "solution": "Rust 所有的输出用同一 SDK 释放函数；消费方不得调用自己的 free。",
+          "example": "字符串输出通过 SDK string_release 清理。",
+          "problem_ids": [
+            "LIFE-001"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "panic 与外部异常穿越 ABI",
+          "solution": "明确 panic=abort/unwind 的取舍；可捕获 unwind 在最外层转换，禁止跨界异常。",
+          "example": "业务 Result 失败映射状态码；进程 abort 不伪装成普通错误。",
+          "problem_ids": [
+            "ERR-002"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "宿主 context 过早释放",
+          "solution": "注册、撤销和排水协议成套；释放 user data 前确认回调停止。",
+          "example": "C++ 对象析构后 Rust 后台回调仍在队列中会形成悬垂指针。",
+          "problem_ids": [
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        },
+        {
+          "problem": "数值/版本与错误输出不明确",
+          "solution": "固定数值宽度、版本握手和输出有效状态，兼容检查覆盖签名与行为。",
+          "example": "错误分支必须说明 out handle 是否为 null，不能让调用者猜测。",
+          "problem_ids": [
+            "TYPE-001",
+            "ERR-001"
+          ],
+          "task_ids": [
+            "C05",
+            "C09"
+          ]
+        }
+      ],
+      "delivery": [
+        "发布按目标构建的 staticlib/cdylib、头文件、必要系统链接说明及调试符号。",
+        "明确 C ABI 版本、资源 API 和所有权规则，跨编译器仍需遵守目标调用约定。",
+        "C++ RAII 包装作为便利层，不扩大 Rust 原生类型的 ABI 承诺。",
+        "独立消费测试覆盖头文件与错库/旧库不匹配场景。"
+      ],
+      "gates": [
+        "头文件、真实符号、调用约定和公开布局一致。",
+        "Create/call/close/destroy 的正反路径及重复关闭策略。",
+        "C allocator 与 Rust allocator 各自只回收自己的内存。",
+        "回调重入、关闭竞争、错误完成与 panic 配置验证。",
+        "无 Rust 工程内部依赖的 C/C++ Release 消费。"
+      ],
+      "choices": [
+        "适合 Rust 库供 C、C++ 或其他语言统一通过 C ABI 使用。",
+        "cbindgen 是 Rust 声明 → C 头文件；与 bindgen 反向互补。",
+        "若已有受支持的 Rust/C++ 共同桥接面，可选择 CXX；不会自动替换既有 C ABI。"
+      ],
+      "detail": {
+        "family": "cabi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "Rust extern C 实现；cbindgen 导出头。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "提供 create/call/close/destroy 等已声明操作；资源转移与输出缓冲释放有明确配对。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 业务实现以及需要人工审查的 extern/unsafe 适配。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust C 可见导出面",
+              "kind": "domain",
+              "summary": "定义 extern C 入口、导出符号、repr(C) 数据和不透明句柄，并声明错误、资源和回调协议。",
+              "does": [
+                "Rust ABI facade + 契约",
+                "负责方：Rust SDK 作者"
+              ],
+              "constraints": [
+                "公开 C ABI、对象所有权、回调线程、取消效果及版本演进决策。",
+                "panic 策略和不可恢复故障的处理；catch_unwind 不等同于恢复一切故障。"
+              ],
+              "lines": [
+                "Rust ABI facade + 契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "Rust 提供显式 C ABI 实现，cbindgen 根据 C 可见声明生成头文件。MadB 封装状态码、句柄和资源协议；生成头文件不会自动创造可链接函数实现。",
+              "does": [
+                "适合 Rust 库供 C、C++ 或其他语言统一通过 C ABI 使用。",
+                "cbindgen 是 Rust 声明 → C 头文件；与 bindgen 反向互补。",
+                "若已有受支持的 Rust/C++ 共同桥接面，可选择 CXX；不会自动替换既有 C ABI。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "native SDK package"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "Rust extern C 实现",
+              "kind": "upstream",
+              "summary": "cbindgen 输出 C/C++ 可见头文件；MadB 按受限契约生成包装、检查及产物身份。",
+              "does": [
+                "header + extern C adapters"
+              ],
+              "constraints": [
+                "cbindgen 生成对应导出面的 C 头文件。"
+              ],
+              "lines": [
+                "C 可见 ABI、布局、错误码与 callback context"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "cbindgen 导出头",
+              "kind": "upstream",
+              "summary": "cbindgen 输出 C/C++ 可见头文件；MadB 按受限契约生成包装、检查及产物身份。",
+              "does": [
+                "header + extern C adapters"
+              ],
+              "constraints": [
+                "cbindgen 生成对应导出面的 C 头文件。"
+              ],
+              "lines": [
+                "导入声明 + 受限资源 facade"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "MadB 为受支持声明生成参数/输出转换和错误码接线。",
+                "生成不透明资源的使用包装、配对释放声明及 C++ RAII 便利层。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "真实 C/C++ 消费 Lab",
+              "kind": "madb",
+              "summary": "用外部 C/C++ 编译器构建调用者，验证导出符号、布局、释放及错库负例。",
+              "does": [
+                "ABI consumer + release reports",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "头文件、真实符号、调用约定和公开布局一致。",
+                "Create/call/close/destroy 的正反路径及重复关闭策略。"
+              ],
+              "lines": [
+                "ABI consumer + release reports"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "为目标构建 staticlib 或 cdylib，交付头文件、库、版本信息及必要系统依赖。",
+              "does": [
+                "发布按目标构建的 staticlib/cdylib、头文件、必要系统链接说明及调试符号。",
+                "明确 C ABI 版本、资源 API 和所有权规则，跨编译器仍需遵守目标调用约定。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "Rust 静态/动态 SDK",
+              "kind": "madb",
+              "summary": "为目标构建 staticlib 或 cdylib，交付头文件、库、版本信息及必要系统依赖。",
+              "does": [
+                "native SDK package",
+                "负责方：MadB 构建适配器"
+              ],
+              "constraints": [
+                "C++ RAII 包装作为便利层，不扩大 Rust 原生类型的 ABI 承诺。",
+                "独立消费测试覆盖头文件与错库/旧库不匹配场景。"
+              ],
+              "lines": [
+                "native SDK package"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "C 或 C++ 消费者",
+              "kind": "ui",
+              "summary": "通过 C 函数、opaque handle 和状态码调用 Rust；C++ 可另用薄 RAII wrapper。",
+              "does": [
+                "C API / C++ RAII API",
+                "负责方：原生业务开发者"
+              ],
+              "constraints": [
+                "适合 Rust 库供 C、C++ 或其他语言统一通过 C ABI 使用。",
+                "cbindgen 是 Rust 声明 → C 头文件；与 bindgen 反向互补。"
+              ],
+              "lines": [
+                "C API / C++ RAII API"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "C 语义 Facade",
+              "kind": "madb",
+              "summary": "提供 create/call/close/destroy 等已声明操作；资源转移与输出缓冲释放有明确配对。",
+              "does": [
+                "status + output + release API",
+                "负责方：MadB + SDK 作者"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "status + output + release API"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "C 调用者 / 公开头",
+              "kind": "upstream",
+              "summary": "集中检查形状、长度、数值和句柄状态；不承诺识别任意伪造指针，不让 panic 跨语言展开。",
+              "does": [
+                "小范围 unsafe + panic policy"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "opaque handle、ptr/len、status"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "Rust extern C 入口",
+              "kind": "upstream",
+              "summary": "集中检查形状、长度、数值和句柄状态；不承诺识别任意伪造指针，不让 panic 跨语言展开。",
+              "does": [
+                "小范围 unsafe + panic policy"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "所有权转移、异常截断与业务调用"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 领域实现",
+              "kind": "domain",
+              "summary": "使用普通 Rust 类型与 Result 实现业务；适配层负责 ABI 转换，领域代码不感知 C 内存布局。",
+              "does": [
+                "safe domain service",
+                "负责方：Rust 业务作者"
+              ],
+              "constraints": [
+                "Rust 业务实现以及需要人工审查的 extern/unsafe 适配。",
+                "公开 C ABI、对象所有权、回调线程、取消效果及版本演进决策。"
+              ],
+              "lines": [
+                "safe domain service"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "C owner 与 Rust 句柄",
+              "kind": "madb",
+              "summary": "C 消费者按契约持有并释放句柄；Rust 管理其内部对象，引用共享和关闭准入明确。",
+              "does": [
+                "opaque resource + owner protocol",
+                "负责方：消费方 + Rust SDK"
+              ],
+              "constraints": [
+                "释放由 Rust 持有的数据和句柄，遵循版本化 destroy 约定。",
+                "不可等待的 finalizer 或析构路径只做协议允许的兜底。"
+              ],
+              "lines": [
+                "opaque resource + owner protocol"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "任务与宿主回调",
+              "kind": "madb",
+              "summary": "Rust 工作线程按能力决定是否调用或投递 C 回调；C context 的线程与生命周期仍属契约。",
+              "does": [
+                "function pointer + user data",
+                "负责方：Rust 调度器 + 宿主作者"
+              ],
+              "constraints": [
+                "裸指针、句柄和可变共享状态的线程安全由作者契约说明。",
+                "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。"
+              ],
+              "lines": [
+                "function pointer + user data"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "宿主注册 C ABI function pointer 和 context。",
+              "does": [
+                "Rust 在约定线程调用或投递回调，不推导 context 可任意跨线程。",
+                "回调中重入和关闭遵循明确准入策略。"
+              ],
+              "constraints": [
+                "异步任务结束和回调退出后释放宿主 context；close 与 destroy 的等待或非等待效果明确。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "C 或 C++ 消费者",
+            "Rust extern C facade",
+            "Rust 领域实现",
+            "C callback + context"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "C 按公开头文件传入参数与输出位置。",
+                "Rust 分配输出由对应 Rust 释放函数回收。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "宿主注册 C ABI function pointer 和 context。",
+                "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "异步任务结束和回调退出后释放宿主 context；close 与 destroy 的等待或非等待效果明确。",
+                "超时不是排水完成；必要时资源保持 Closing 并报告仍在工作。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "导出值与布局",
+            "path": [
+              "C 调用端的公开头",
+              "repr(C) / 固定宽度 / opaque handle",
+              "手写 Rust extern C 实现"
+            ],
+            "note": "cbindgen 输出头文件，不生成 extern 实现；Rust String / Vec 不直接作为稳定 C ABI。"
+          },
+          {
+            "title": "不透明资源",
+            "path": [
+              "受管资源包装",
+              "opaque handle + destroy",
+              "provider 独占或共享资源"
+            ],
+            "note": "create/destroy 配对，析构回到创建方分配器；关闭中的句柄拒绝新操作。"
+          },
+          {
+            "title": "错误与回调",
+            "path": [
+              "业务 Result / status",
+              "固定错误表示 / function + context",
+              "目标语言错误 / 宿主实现"
+            ],
+            "note": "异常不越过 C ABI；callback context 保活到最后一次允许的调用退出。"
+          }
+        ],
+        "example": {
+          "title": "停止确认之后再释放",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：先建立 context 持有，再允许同步首回调\nregistration = prepareCallbackOwner()\ntoken = subscribe(registration.context)\nrequest_stop(token)\nresult = await_stopped(token)\nif result == confirmed:\n    release_callback_context(registration)\n    destroy_with_provider_releaser(handle)\nelse:\n    cleanupOwner.retainUntilConfirmed(token, registration, handle)\n// 超时不释放；此调用只能在允许等待的位置执行",
+          "note": "仅适用于提供注销屏障或安全登记租约的后端；没有确认时保留收尾责任，不顺序执行 destroy。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "头文件声明存在，导出实现或释放协议缺失",
+          "trigger": "cbindgen 生成了头，但库未导出对应符号或返回缓冲被 C free。",
+          "trace": "明确 Rust extern C 实现 → 生成头 → 检查符号 → C 消费并调用配套释放器。",
+          "expected": "cbindgen 不生成业务 extern 实现，Rust 分配由声明的 Rust 释放函数回收。",
+          "oracle": "符号缺失负例、边界长度、错误输出安全状态、释放计数与独立 C 消费。"
+        },
+        "owners": [
+          {
+            "title": "应用 / native owner",
+            "depth": 0,
+            "detail": "C 消费者按契约持有并释放句柄；Rust 管理其内部对象，引用共享和关闭准入明确。"
+          },
+          {
+            "title": "资源包装与父子句柄",
+            "depth": 1,
+            "detail": "提供 create/call/close/destroy 等已声明操作；资源转移与输出缓冲释放有明确配对。"
+          },
+          {
+            "title": "借用窗口 / callback lease",
+            "depth": 2,
+            "detail": "异步任务结束和回调退出后释放宿主 context；close 与 destroy 的等待或非等待效果明确。"
+          },
+          {
+            "title": "allocator、对象与 callback context",
+            "depth": 2,
+            "detail": "使用普通 Rust 类型与 Result 实现业务；适配层负责 ABI 转换，领域代码不感知 C 内存布局。"
+          }
+        ],
+        "thread_rules": [
+          "裸指针、句柄和可变共享状态的线程安全由作者契约说明。",
+          "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。",
+          "外部回调离开持锁区；回调内关闭不等待自身完成。",
+          "超时不是排水完成；必要时资源保持 Closing 并报告仍在工作。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "Rust ABI facade + 契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "header generation + facade recipe",
+            "pattern": "Adapter / Mapper：复用 Rust extern C 实现、cbindgen 导出头",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "status + output + release API",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "native SDK package",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "ABI consumer + release reports",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "异步任务结束和回调退出后释放宿主 context；close 与 destroy 的等待或非等待效果明确。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "作者实现显式 C ABI 并定义支持的公开形状。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "cbindgen 从 Rust C 可见声明生成头文件，不生成业务实现。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "MadB 生成受限 facade/检查代码并验证头文件与导出符号。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "Cargo 构建目标库，再以真实 C 编译器验证消费。"
+        }
+      ]
+    },
+    {
+      "id": "cxx-bridge",
+      "name": "Rust ↔ C++：CXX",
+      "kind": "主线候选",
+      "summary": "双方共同维护明确的 CXX 桥接声明，以受支持的类型和函数双向互调。CXX 生成两端 glue 与一致性检查；对象语义、线程和异步协议由作者承担。",
+      "route_ids": [
+        "RUST-CPP-CXX"
+      ],
+      "task_ids": [
+        "C08",
+        "L06",
+        "I06",
+        "C09",
+        "C10"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "双端接线生成",
+          "steps": [
+            "双方先收敛 cxx::bridge 支持的公开声明和 C++ facade。",
+            "CXX 生成 Rust/C++ glue，并编译一致性检查。",
+            "MadB 增加明确的资源、错误、回调与线程语义包装。",
+            "固定 CXX 组件版本、C++ 标准库与构建参数，执行真实双端链接。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Rust 调用 C++",
+          "steps": [
+            "Rust 调用受控 wrapper，并建立合法借用/保活窗口。",
+            "CXX 按桥接声明转换受支持类型，转交 C++ facade。",
+            "C++ 在约定执行器运行，受支持 Result 签名按 CXX 规则映射异常。",
+            "返回类型按移动/借用/复制语义处理，不能留存已结束的 Rust 临时借用。",
+            "共享对象仍依赖原生同步，不由桥自动串行化。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "C++ 调用 Rust",
+          "steps": [
+            "C++ 通过已声明 extern Rust 函数或受支持回调接口调用 Rust。",
+            "线程切换先通过显式适配器，不把任意 C++ 线程当 Rust executor。",
+            "调用期间保持对象和引用有效，遵循受支持的借用/Pin 约束。",
+            "Rust 返回正常值或声明的错误；panic 不用于跨界业务错误传播。",
+            "异步/事件使用单独协议，不承诺 CXX 自动桥接任意 Future。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "跨端资源关闭",
+          "steps": [
+            "owner 拒绝新工作并通知双方停止观察或任务。",
+            "原生执行器与 Rust 任务各自报告真实完成。",
+            "等待已借出的引用、执行中的调用和回调排水。",
+            "在约定线程触发 Box/UniquePtr 等资源的最终析构。",
+            "异步 close 独立于 Drop/析构函数；不能在析构里无约束等待互相依赖的线程。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "共同工具链验证",
+          "steps": [
+            "将桥接源码、生成配置和编译依赖纳入可复现包。",
+            "独立 Rust 和 C++ 消费者分别构建并调用。",
+            "核对标准库、编译宏、目标 ABI、符号和运行时依赖。",
+            "跨编译器二进制分发需求应评估显式 C ABI，不直接许诺 C++ ABI 稳定。"
+          ]
+        }
+      ],
+      "generated": [
+        "CXX 生成声明对应的 Rust/C++ glue 和编译期一致性检查。",
+        "MadB 生成受限的资源与错误便利包装，依据已有桥接声明减少重复。",
+        "生成显式回调和关闭协议接线；异步能力须由对应配置声明。",
+        "生成 Cargo/C++ 构建接入与两侧独立消费者模板。",
+        "生成布局/签名漂移检查、调用追踪及回归骨架。"
+      ],
+      "handwritten": [
+        "共同桥接 API 的选择及 CXX 不支持类型的窄 facade。",
+        "C++ 对象生命周期、借用别名、Pin/移动和线程安全前提。",
+        "原生算法、锁顺序、执行器以及停止/排水实现。",
+        "需要的 unsafe Rust 与异常/panic 故障策略。"
+      ],
+      "risks": [
+        {
+          "problem": "把 CXX 当任意 C++ 导入器",
+          "solution": "只接受受支持桥接类型；复杂模板/继承通过明确 facade 收敛。",
+          "example": "第三方模板容器需要自定义包装，不能只加一个 derive 就安全导出。",
+          "problem_ids": [
+            "CAP-003"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "借用和对象移动无效",
+          "solution": "严格遵循桥接引用/Pin/移动约束，外部库借出内存的实际寿命仍需作者证明。",
+          "example": "C++ 保存 Rust 临时字符串的地址在返回后就无效。",
+          "problem_ids": [
+            "LIFE-002",
+            "LIFE-003"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "线程特征承诺过强",
+          "solution": "对象是否可 Send/Sync 或多线程调用需原生语义支持。",
+          "example": "UniquePtr 表达单一所有权，不证明对象允许换线程析构。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "异常与 panic 跨界",
+          "solution": "使用 CXX 支持的 Result 错误边界；Rust panic 不是可跨语言随意恢复的业务机制。",
+          "example": "未声明的 C++ 异常不能作为普通成功返回；Rust 失败用 Result 表达。",
+          "problem_ids": [
+            "ERR-002"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "异步关闭导致互等",
+          "solution": "分开等待者、工作和回调计数，排水不能持有回调必须取得的锁。",
+          "example": "Rust 等 C++ worker，而 worker 等 Rust 回调完成，需明确无死锁顺序。",
+          "problem_ids": [
+            "THR-004",
+            "LIFE-005"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "生成器/标准库不配套",
+          "solution": "CXX 组件成套锁定；C++ ABI、编译选项和依赖跟随包验证。",
+          "example": "升级 cxx-build 却保留不匹配生成物可能造成编译或链接不一致。",
+          "problem_ids": [
+            "CAP-004",
+            "BUILD-001"
+          ],
+          "task_ids": [
+            "C08",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "面向共同工具链交付桥接源码、构建配方和必要二进制依赖。",
+        "CXX/cxx-build/可选命令行工具及 C++ 标准库身份进入锁。",
+        "发布包须允许独立 Rust 与 C++ 消费者实际调用公开接口。",
+        "面向无关编译器的稳定二进制 SDK，可显式选择已有 C ABI 配置，不静默切换。"
+      ],
+      "gates": [
+        "受支持共享类型、opaque 类型和双向函数实际消费。",
+        "资源移动、借用窗口、析构线程及关闭竞争验证。",
+        "Result/异常/panic 配置、通知失败与取消语义验证。",
+        "不同目标的编译器/标准库矩阵及未插桩 Release 验证。",
+        "公开 API 变更、生成漂移和错版本负例。"
+      ],
+      "choices": [
+        "适合双方能共同控制桥接面与构建工具链的 Rust/C++ 工程。",
+        "已有 C ABI 保持有效；CXX 不自动替代 bindgen/cbindgen 的分工。",
+        "Crubit 由 X05 按固定 commit 和受支持工具链独立评估；其他导入器先核实维护状态、生成能力和限制。"
+      ],
+      "detail": {
+        "family": "cxx",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "cxx::bridge 受限声明；cxx-build 双端生成。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "Rust 使用 Result 与资源类型，C++ 使用受控 RAII；封装 callback、cancel 和 async close 的领域中立协议。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "共同桥接 API 的选择及 CXX 不支持类型的窄 facade。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "显式 CXX 桥接面",
+              "kind": "domain",
+              "summary": "用 cxx::bridge 声明共享结构、extern Rust/C++ 类型和函数；只导出 CXX 当前支持的形状。",
+              "does": [
+                "bridge module + C++ facade header",
+                "负责方：Rust/C++ SDK 作者"
+              ],
+              "constraints": [
+                "C++ 对象生命周期、借用别名、Pin/移动和线程安全前提。",
+                "原生算法、锁顺序、执行器以及停止/排水实现。"
+              ],
+              "lines": [
+                "bridge module + C++ facade header"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "双方共同维护明确的 CXX 桥接声明，以受支持的类型和函数双向互调。CXX 生成两端 glue 与一致性检查；对象语义、线程和异步协议由作者承担。",
+              "does": [
+                "适合双方能共同控制桥接面与构建工具链的 Rust/C++ 工程。",
+                "已有 C ABI 保持有效；CXX 不自动替代 bindgen/cbindgen 的分工。",
+                "Crubit 由 X05 按固定 commit 和受支持工具链独立评估；其他导入器先核实维护状态、生成能力和限制。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "crate + compiled C++ bridge"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "cxx::bridge 受限声明",
+              "kind": "upstream",
+              "summary": "CXX 生成双端接线与类型一致性检查；MadB 选择受支持能力、补资源/线程契约和工程集成。",
+              "does": [
+                "generated Rust + C++ code"
+              ],
+              "constraints": [
+                "CXX 生成声明对应的 Rust/C++ glue 和编译期一致性检查。"
+              ],
+              "lines": [
+                "CXX bridge / 编译器可支持的 C++ API"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "cxx-build 双端生成",
+              "kind": "upstream",
+              "summary": "CXX 生成双端接线与类型一致性检查；MadB 选择受支持能力、补资源/线程契约和工程集成。",
+              "does": [
+                "generated Rust + C++ code"
+              ],
+              "constraints": [
+                "CXX 生成声明对应的 Rust/C++ glue 和编译期一致性检查。"
+              ],
+              "lines": [
+                "Rust glue、C++ thunk 与头文件"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "MadB 生成受限的资源与错误便利包装，依据已有桥接声明减少重复。",
+                "生成显式回调和关闭协议接线；异步能力须由对应配置声明。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "双向独立消费 Lab",
+              "kind": "madb",
+              "summary": "分别从 Rust 与 C++ 实际调用公开桥，验证共同工具链和非插桩 Release；不能据桥编译成功声称稳定通用 C++ ABI。",
+              "does": [
+                "two-sided consumer evidence",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "受支持共享类型、opaque 类型和双向函数实际消费。",
+                "资源移动、借用窗口、析构线程及关闭竞争验证。"
+              ],
+              "lines": [
+                "two-sided consumer evidence"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "锁定 cxx/cxx-build/cxxbridge-cmd 配套版本、C++ 编译器和标准库，组织 Cargo 与 C++ 编译。",
+              "does": [
+                "面向共同工具链交付桥接源码、构建配方和必要二进制依赖。",
+                "CXX/cxx-build/可选命令行工具及 C++ 标准库身份进入锁。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "共同编译与链接",
+              "kind": "madb",
+              "summary": "锁定 cxx/cxx-build/cxxbridge-cmd 配套版本、C++ 编译器和标准库，组织 Cargo 与 C++ 编译。",
+              "does": [
+                "crate + compiled C++ bridge",
+                "负责方：MadB 构建适配器"
+              ],
+              "constraints": [
+                "发布包须允许独立 Rust 与 C++ 消费者实际调用公开接口。",
+                "面向无关编译器的稳定二进制 SDK，可显式选择已有 C ABI 配置，不静默切换。"
+              ],
+              "lines": [
+                "crate + compiled C++ bridge"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Rust 或 C++ 调用方",
+              "kind": "ui",
+              "summary": "双方可调用已声明的桥接函数；双向支持不代表任意 closure、对象图或异步运行时自动互通。",
+              "does": [
+                "明确桥接 API",
+                "负责方：两端业务开发者"
+              ],
+              "constraints": [
+                "适合双方能共同控制桥接面与构建工具链的 Rust/C++ 工程。",
+                "已有 C ABI 保持有效；CXX 不自动替代 bindgen/cbindgen 的分工。"
+              ],
+              "lines": [
+                "明确桥接 API"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "惯用语义包装",
+              "kind": "madb",
+              "summary": "Rust 使用 Result 与资源类型，C++ 使用受控 RAII；封装 callback、cancel 和 async close 的领域中立协议。",
+              "does": [
+                "Rust/C++ facade",
+                "负责方：MadB + SDK 作者"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "Rust/C++ facade"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "CXX bridge / 双端 thunk",
+              "kind": "upstream",
+              "summary": "生成器校验双方声明与布局；传递时遵守借用、移动、Pin 和异常限制。",
+              "does": [
+                "bridge ABI + generated assertions"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "引用 / 智能指针 / 明确的返回协议"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust/C++ 原生实现",
+              "kind": "domain",
+              "summary": "Rust 与 C++ 各自实现业务与同步；unsafe 前提、对象数据竞争和外部引用有效性仍需人工保证。",
+              "does": [
+                "domain implementation",
+                "负责方：两端 SDK 作者"
+              ],
+              "constraints": [
+                "共同桥接 API 的选择及 CXX 不支持类型的窄 facade。",
+                "C++ 对象生命周期、借用别名、Pin/移动和线程安全前提。"
+              ],
+              "lines": [
+                "domain implementation"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "移动与资源 owner",
+              "kind": "madb",
+              "summary": "Box/UniquePtr 等所有权容器表达可转移资源；不透明对象的析构、借用和线程限制仍显式定义。",
+              "does": [
+                "RAII / move / borrowed reference",
+                "负责方：作者 + 生成包装"
+              ],
+              "constraints": [
+                "在约定线程触发 Box/UniquePtr 等资源的最终析构。",
+                "异步 close 独立于 Drop/析构函数；不能在析构里无约束等待互相依赖的线程。"
+              ],
+              "lines": [
+                "RAII / move / borrowed reference"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "双方执行器与回调",
+              "kind": "madb",
+              "summary": "原生线程与 Rust executor 的切换由声明的调度适配处理；不自动从指针类型推导 Send/Sync。",
+              "does": [
+                "registered callback / queue",
+                "负责方：MadB 接线 + 原生调度器"
+              ],
+              "constraints": [
+                "智能指针解决拥有关系，不自动使 pointee 可并发访问。",
+                "构建方向、C++ 标准库、部署目标和 ABI 与打包方式共同约束。"
+              ],
+              "lines": [
+                "registered callback / queue"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "C++ 通过已声明 extern Rust 函数或受支持回调接口调用 Rust。",
+              "does": [
+                "线程切换先通过显式适配器，不把任意 C++ 线程当 Rust executor。",
+                "调用期间保持对象和引用有效，遵循受支持的借用/Pin 约束。"
+              ],
+              "constraints": [
+                "停止工作与关闭观察独立；借用结束、回调排水之后，才允许最终析构 opaque 对象。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "provider",
+              "label": "调用边界",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Rust 或 C++ 调用方",
+            "CXX 生成 glue / thunk",
+            "Rust/C++ 原生实现",
+            "受支持的反向桥"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Rust 调用受控 wrapper，并建立合法借用/保活窗口。",
+                "共享对象仍依赖原生同步，不由桥自动串行化。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "C++ 通过已声明 extern Rust 函数或受支持回调接口调用 Rust。",
+                "构建方向、C++ 标准库、部署目标和 ABI 与打包方式共同约束。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "停止工作与关闭观察独立；借用结束、回调排水之后，才允许最终析构 opaque 对象。",
+                "结构化异常、abort 和未定义行为不是通用错误转换可恢复的失败。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "值与容器",
+            "path": [
+              "公开受支持类型",
+              "桥接类型与转换规则",
+              "目标语言可用类型"
+            ],
+            "note": "只按实际工具支持的形状生成；不能因为 STL 容器可表达就承诺所有模板可跨界。"
+          },
+          {
+            "title": "独占对象与借用",
+            "path": [
+              "C++ std::unique_ptr<Engine>",
+              "CXX UniquePtr<Engine> / 借用引用",
+              "Rust 包装与受限调用"
+            ],
+            "note": "UniquePtr 拥有对象；借用引用不能逃逸 owner。智能指针不证明内部可并发访问。"
+          },
+          {
+            "title": "CXX Result 与异常",
+            "path": [
+              "显式 Result 返回的 bridge 声明",
+              "CXX 定义的异常/错误转换",
+              "另一端可处理的错误"
+            ],
+            "note": "只适用于声明支持的边界；Rust panic 不等同于 Result，C 入口仍不可泄露异常。"
+          }
+        ],
+        "example": {
+          "title": "拥有对象与借用视图分开",
+          "language": "接口语义示意",
+          "code": "owner = createEngine()\nwithBorrow(owner, view -> inspect(view))\n\n// 不把 view 保存到超出 owner 的异步任务\nstopNewCalls(owner)\nawaitInFlight(owner)\nreleaseOwner(owner)\n\n// 正向可调用 ≠ 反向任意类型均可导出",
+          "note": "这是所有权要求，不是 Rust/Swift 编译器能够替任意外部 C++ 实现完成的安全证明。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "把 Result 当成能恢复 Rust panic",
+          "trigger": "桥声明返回 Result，但实现发生 panic。",
+          "trace": "业务失败按 CXX Result 转换；panic 作为独立致命策略，不变成普通业务 Err。",
+          "expected": "CXX 的异常翻译不是通用 unwind 防护；未声明 Result 的 C++ throw 不得进入正常路径。",
+          "oracle": "业务 Result 正例；异常与 panic 负例隔离进程，匹配实际退出原因和阶段。"
+        },
+        "owners": [
+          {
+            "title": "应用 / native owner",
+            "depth": 0,
+            "detail": "Box/UniquePtr 等所有权容器表达可转移资源；不透明对象的析构、借用和线程限制仍显式定义。"
+          },
+          {
+            "title": "桥接 owning wrapper",
+            "depth": 1,
+            "detail": "Rust 使用 Result 与资源类型，C++ 使用受控 RAII；封装 callback、cancel 和 async close 的领域中立协议。"
+          },
+          {
+            "title": "同步借用 / operation lease",
+            "depth": 2,
+            "detail": "停止工作与关闭观察独立；借用结束、回调排水之后，才允许最终析构 opaque 对象。"
+          },
+          {
+            "title": "C++ 对象及依赖的 allocator",
+            "depth": 2,
+            "detail": "Rust 与 C++ 各自实现业务与同步；unsafe 前提、对象数据竞争和外部引用有效性仍需人工保证。"
+          }
+        ],
+        "thread_rules": [
+          "智能指针解决拥有关系，不自动使 pointee 可并发访问。",
+          "构建方向、C++ 标准库、部署目标和 ABI 与打包方式共同约束。",
+          "跨界前释放可重入业务锁；host 反调要明确线程与同步要求。",
+          "结构化异常、abort 和未定义行为不是通用错误转换可恢复的失败。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "bridge module + C++ facade header → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "cxx/cxx-build 配套生成",
+            "pattern": "Adapter / Mapper：复用 cxx::bridge 受限声明、cxx-build 双端生成",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "Rust/C++ facade",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "crate + compiled C++ bridge",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "two-sided consumer evidence",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "停止工作与关闭观察独立；借用结束、回调排水之后，才允许最终析构 opaque 对象。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "双方先收敛 cxx::bridge 支持的公开声明和 C++ facade。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "CXX 生成 Rust/C++ glue，并编译一致性检查。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "MadB 增加明确的资源、错误、回调与线程语义包装。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "固定 CXX 组件版本、C++ 标准库与构建参数，执行真实双端链接。"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "后端接入方案",
+      "path": "architecture/06-backend-profiles.md"
+    },
+    {
+      "label": "生成与适配职责",
+      "path": "architecture/07-code-generation.md"
+    },
+    {
+      "label": "生命周期与并发",
+      "path": "architecture/05-lifecycle-and-concurrency.md"
+    },
+    {
+      "label": "技术栈与版本候选",
+      "path": "architecture/16-technology-stack-and-versions.md"
+    },
+    {
+      "label": "bindgen 官方说明",
+      "url": "https://rust-lang.github.io/rust-bindgen/"
+    },
+    {
+      "label": "cbindgen 官方说明",
+      "url": "https://github.com/mozilla/cbindgen"
+    },
+    {
+      "label": "CXX 官方说明",
+      "url": "https://cxx.rs/"
+    },
+    {
+      "label": "CXX：Result、异常与 panic 边界",
+      "url": "https://cxx.rs/binding/result.html"
+    }
+  ],
+  "view_schema": "madb.route-detail-view/3"
+}

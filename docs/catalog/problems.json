@@ -1,0 +1,878 @@
+{
+  "schema": "madb.problem-catalog/1",
+  "status": "design-baseline",
+  "problems": [
+    {
+      "id": "CAP-001",
+      "title": "运行时与调用路线",
+      "solution": "按运行时、方向和目标选择后端能力",
+      "invariant": "只在已声明的能力单元生成",
+      "adverse_case": "间接路径通过但直接路径未实现",
+      "spec": "../architecture/06-backend-profiles.md",
+      "required_case_groups": [
+        "CAP-001/positive",
+        "CAP-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-006",
+          "classification": "design-gap",
+          "scenario": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持"
+        },
+        {
+          "audit_id": "AUD-007",
+          "classification": "experimental-option",
+          "scenario": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过"
+        }
+      ]
+    },
+    {
+      "id": "CAP-002",
+      "title": "接口权威源与读取精度",
+      "solution": "编译器元数据或头文件为结构来源，策略只补充语义",
+      "invariant": "每条边界只有一个结构权威源",
+      "adverse_case": "声明与库版本不匹配或只能启发式扫描",
+      "spec": "../architecture/03-contract-and-ir.md",
+      "required_case_groups": [
+        "CAP-002/positive",
+        "CAP-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-008",
+          "classification": "design-gap",
+          "scenario": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达"
+        }
+      ]
+    },
+    {
+      "id": "CAP-003",
+      "title": "语言特性支持",
+      "solution": "按后端检查泛型、继承、闭包、枚举和可见性",
+      "invariant": "不支持的类型明确阻断",
+      "adverse_case": "复杂泛型或带数据变体无法表达",
+      "spec": "../architecture/06-backend-profiles.md",
+      "required_case_groups": [
+        "CAP-003/positive",
+        "CAP-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-005",
+          "classification": "design-gap",
+          "scenario": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配"
+        }
+      ]
+    },
+    {
+      "id": "CAP-004",
+      "title": "生成器与编译插件组合",
+      "solution": "锁定版本、补丁与功能责任方",
+      "invariant": "同一接口每种语义只有一个桥接责任方",
+      "adverse_case": "两个协程桥同时包装同一接口",
+      "spec": "../architecture/06-backend-profiles.md",
+      "required_case_groups": [
+        "CAP-004/positive",
+        "CAP-004/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-001",
+          "classification": "upstream-known-defect",
+          "scenario": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次"
+        },
+        {
+          "audit_id": "AUD-007",
+          "classification": "experimental-option",
+          "scenario": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过"
+        },
+        {
+          "audit_id": "AUD-010",
+          "classification": "configuration-clarification",
+          "scenario": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同"
+        }
+      ]
+    },
+    {
+      "id": "TYPE-001",
+      "title": "数值范围与单位",
+      "solution": "受检映射、固定宽度、必要时强类型单位",
+      "invariant": "数值不截断，单位不隐式混淆",
+      "adverse_case": "超过 JS 安全整数或窄化范围",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-001/positive",
+        "TYPE-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-002",
+      "title": "空值与缺失",
+      "solution": "区分 null、nil、undefined、缺字段和默认值",
+      "invariant": "空值不变成零或有效业务对象",
+      "adverse_case": "缺字段错误地套用默认值",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-002/positive",
+        "TYPE-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-003",
+      "title": "稳定身份",
+      "solution": "区分业务 ID、对象身份和运行时句柄",
+      "invariant": "业务身份不依赖调试字符串或内存地址",
+      "adverse_case": "用 toString 或枚举 ordinal 作为持久 ID",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-003/positive",
+        "TYPE-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-004",
+      "title": "模型与值语义",
+      "solution": "按需直接导出、Facade 或不可变快照",
+      "invariant": "独立快照的嵌套数据也满足独立性契约",
+      "adverse_case": "struct 内仍持有可变外部对象",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-004/positive",
+        "TYPE-004/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-005",
+      "title": "字符串与二进制表示",
+      "solution": "显式编码、长度和载荷格式",
+      "invariant": "字节和文本不会未经声明相互转换",
+      "adverse_case": "嵌入 NUL、无效 UTF、空指针加零长度",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-005/positive",
+        "TYPE-005/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-006",
+      "title": "输入与载荷校验",
+      "solution": "入口验证结构、范围、容量和版本",
+      "invariant": "可检查的非法形状、长度和数值在边界被拒绝；未知裸指针的有效性仍需来源契约保证",
+      "adverse_case": "畸形 JSON、超大长度或整数溢出",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-006/positive",
+        "TYPE-006/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-007",
+      "title": "ABI 布局与调用约定",
+      "solution": "按目标编译上下文生成和验证布局",
+      "invariant": "签名、布局、对齐与库属于同一目标",
+      "adverse_case": "宏、pack、位宽或调用约定不一致",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-007/positive",
+        "TYPE-007/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-008",
+          "classification": "design-gap",
+          "scenario": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达"
+        }
+      ]
+    },
+    {
+      "id": "TYPE-008",
+      "title": "公开名称与可见性",
+      "solution": "稳定命名和冲突检查",
+      "invariant": "生成名称在目标作用域唯一",
+      "adverse_case": "保留字、重载、大小写或扩展方法冲突",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "TYPE-008/positive",
+        "TYPE-008/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-005",
+          "classification": "design-gap",
+          "scenario": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配"
+        }
+      ]
+    },
+    {
+      "id": "ERR-001",
+      "title": "错误分类与宿主失败",
+      "solution": "区分缺失、业务失败、取消和内部故障",
+      "invariant": "失败不能伪装成成功或空结果",
+      "adverse_case": "回调失败或 pending exception 被吞掉",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "ERR-001/positive",
+        "ERR-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-001",
+          "classification": "upstream-known-defect",
+          "scenario": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次"
+        }
+      ]
+    },
+    {
+      "id": "ERR-002",
+      "title": "panic 与异常封闭",
+      "solution": "依后端约束在所属语言内处理异常",
+      "invariant": "无约定的异常不穿越边界",
+      "adverse_case": "panic=abort、C++ 异常或析构异常",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "ERR-002/positive",
+        "ERR-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "ERR-003",
+      "title": "失败后的对象一致性",
+      "solution": "声明可恢复、失效或致命故障",
+      "invariant": "返回错误后对象状态可判定",
+      "adverse_case": "部分修改后再次调用不一致对象",
+      "spec": "../architecture/04-data-and-errors.md",
+      "required_case_groups": [
+        "ERR-003/positive",
+        "ERR-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-001",
+      "title": "所有权与释放器",
+      "solution": "每个资源记录分配方、持有方和释放函数",
+      "invariant": "释放器匹配且最终释放一次",
+      "adverse_case": "混用 free、delete 与 Rust from_raw",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-001/positive",
+        "LIFE-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-002",
+      "title": "借用与异步保留",
+      "solution": "借用限制在有效范围，异步改为保活或复制",
+      "invariant": "等待者消失不提前释放工作输入",
+      "adverse_case": "原生在 Future 丢弃后继续读缓冲",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-002/positive",
+        "LIFE-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-003",
+      "title": "别名与移动",
+      "solution": "按实际可变性提供借用、Pin 或不透明对象",
+      "invariant": "别名与移动符合两端约束",
+      "adverse_case": "共享 Rust 引用期间原生写入或移动 C++ 对象",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-003/positive",
+        "LIFE-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-004",
+      "title": "回调引用与引用环",
+      "solution": "注册对象持有上下文，注销后排水再释放",
+      "invariant": "上下文存活覆盖所有获准回调",
+      "adverse_case": "同步首回调、GC 引用环、注销后迟到回调",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-004/positive",
+        "LIFE-004/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-005",
+      "title": "关闭与句柄准入",
+      "solution": "关闭原子地停止准入，排水后释放",
+      "invariant": "关闭检查与实际借用没有竞态窗口",
+      "adverse_case": "关闭和调用并发、句柄复用或重复关闭",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-005/positive",
+        "LIFE-005/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-006",
+      "title": "父子资源依赖",
+      "solution": "持有关系或借用寿命表达资源依赖",
+      "invariant": "子资源使用期间依赖资源仍有效",
+      "adverse_case": "先释放模型再使用上下文",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-006/positive",
+        "LIFE-006/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-007",
+      "title": "环境退出与代码寿命",
+      "solution": "环境退出执行拒绝、撤销、排水与释放",
+      "invariant": "回调和析构不进入已销毁环境或已卸载代码",
+      "adverse_case": "Worker 退出、动态卸载或未完成异步清理",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-007/positive",
+        "LIFE-007/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-008",
+      "title": "结果交接",
+      "solution": "结果必须由接收方或回收方唯一认领",
+      "invariant": "取消竞争不丢失有资源的结果",
+      "adverse_case": "完成后恢复前取消，或重复通知携带同一资源",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "LIFE-008/positive",
+        "LIFE-008/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-001",
+          "classification": "upstream-known-defect",
+          "scenario": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-001",
+      "title": "取消与超时效果",
+      "solution": "分别表达停止等待、观察、工作与业务撤销",
+      "invariant": "取消效果不强于后端实际保证",
+      "adverse_case": "超时后工作继续或副作用已经发生",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "ASYNC-001/positive",
+        "ASYNC-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-002",
+      "title": "完成与注册竞争",
+      "solution": "先登记后启动，统一终态认领",
+      "invariant": "每个操作只有一次终态交付",
+      "adverse_case": "同步完成、启动失败、重复完成和迟到完成",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "ASYNC-002/positive",
+        "ASYNC-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-001",
+          "classification": "upstream-known-defect",
+          "scenario": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-003",
+      "title": "通知与受理确认",
+      "solution": "声明单向通知、同步返回、异步应答及阶段",
+      "invariant": "入队不能冒充受理或持久化完成",
+      "adverse_case": "先返回成功而宿主实际执行失败",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "ASYNC-003/positive",
+        "ASYNC-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-004",
+      "title": "流与背压",
+      "solution": "区分状态和事件，声明容量、顺序与溢出",
+      "invariant": "数据丢弃和恢复策略可观测",
+      "adverse_case": "慢消费者、乱序、多生产者、溢出和重订阅",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "ASYNC-004/positive",
+        "ASYNC-004/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-005",
+      "title": "任务与执行器归属",
+      "solution": "明确运行时、作用域和清理责任",
+      "invariant": "操作生命周期有归属且后台收尾可追踪",
+      "adverse_case": "关闭运行时后 Future 或任务仍被唤醒",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "ASYNC-005/positive",
+        "ASYNC-005/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-001",
+      "title": "运行环境线程约束",
+      "solution": "通过环境专属入口调度并隔离引用",
+      "invariant": "环境句柄不跨线程或跨环境滥用",
+      "adverse_case": "JNIEnv、napi_env 或 UI 引用被错误复用",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "THR-001/positive",
+        "THR-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-002",
+      "title": "线程亲和性与阻塞",
+      "solution": "分别声明固定线程、串行执行与阻塞等级",
+      "invariant": "串行调度不冒充固定 OS 线程",
+      "adverse_case": "把同步 I/O 或 native join 放到 UI 线程",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "THR-002/positive",
+        "THR-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-003",
+      "title": "共享状态同步",
+      "solution": "统一两端的访问协议和线程能力声明",
+      "invariant": "Arc、GC、const 不作为线程安全证明",
+      "adverse_case": "未经证明生成 Send、Sync 或 Sendable",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "THR-003/positive",
+        "THR-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-004",
+      "title": "重入与锁顺序",
+      "solution": "持锁区避免调用外部代码，采用两阶段处理",
+      "invariant": "回调与关闭没有自等待和环形等待",
+      "adverse_case": "回调内重入关闭或反向获取同一把锁",
+      "spec": "../architecture/05-lifecycle-and-concurrency.md",
+      "required_case_groups": [
+        "THR-004/positive",
+        "THR-004/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-001",
+      "title": "页面与订阅生命周期",
+      "solution": "页面只持有观察令牌，共享资源由业务 owner 管理",
+      "invariant": "退订不误关闭共享资源",
+      "adverse_case": "反复进入页面重复订阅或后台继续无界更新",
+      "spec": "../architecture/08-runtime-and-idiomatic-api.md",
+      "required_case_groups": [
+        "UI-001/positive",
+        "UI-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-002",
+      "title": "输入与权威状态",
+      "solution": "版本和来源标记保护草稿及输入法组合态",
+      "invariant": "旧快照不覆盖新的本地输入",
+      "adverse_case": "回声、重排、中文组合态和受理前清空",
+      "spec": "../architecture/08-runtime-and-idiomatic-api.md",
+      "required_case_groups": [
+        "UI-002/positive",
+        "UI-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-003",
+      "title": "响应式模型与列表身份",
+      "solution": "按框架生成受限适配与稳定键",
+      "invariant": "状态更新和列表身份遵循 UI 框架约束",
+      "adverse_case": "装饰器不触发更新或列表复用错行",
+      "spec": "../architecture/08-runtime-and-idiomatic-api.md",
+      "required_case_groups": [
+        "UI-003/positive",
+        "UI-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "PERF-001",
+      "title": "跨界性能与内存",
+      "solution": "测量复制、频率、队列、保留量后优化",
+      "invariant": "优化保留生命周期与数据正确性",
+      "adverse_case": "大缓冲保活、细粒度调用或全量列表刷新",
+      "spec": "../architecture/10-diagnostics-and-performance.md",
+      "required_case_groups": [
+        "PERF-001/positive",
+        "PERF-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "BUILD-001",
+      "title": "工具链与目标上下文",
+      "solution": "锁定编译器、SDK、宏、特性、ABI 和原生依赖",
+      "invariant": "构建身份覆盖会影响输出的参数",
+      "adverse_case": "交叉编译意外读取宿主头文件",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "BUILD-001/positive",
+        "BUILD-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-002",
+          "classification": "design-gap",
+          "scenario": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用"
+        },
+        {
+          "audit_id": "AUD-006",
+          "classification": "design-gap",
+          "scenario": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持"
+        },
+        {
+          "audit_id": "AUD-009",
+          "classification": "existing-design-validation",
+          "scenario": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证"
+        },
+        {
+          "audit_id": "AUD-010",
+          "classification": "configuration-clarification",
+          "scenario": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-002",
+      "title": "装载与重复实例",
+      "solution": "显式打包依赖和装载拓扑",
+      "invariant": "同一逻辑实例不会被重复静态链接无意复制",
+      "adverse_case": "ClassLoader、多个 Framework 或动态注册顺序冲突",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "BUILD-002/positive",
+        "BUILD-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "BUILD-003",
+      "title": "符号可达性",
+      "solution": "验证导出、裁剪、R8 和反向入口",
+      "invariant": "Release 中回调入口仍可达",
+      "adverse_case": "Debug 正常而 strip 或 R8 后失效",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "BUILD-003/positive",
+        "BUILD-003/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-008",
+          "classification": "design-gap",
+          "scenario": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-004",
+      "title": "制品与全新消费",
+      "solution": "绑定、库、运行时和包作为一组交付",
+      "invariant": "干净消费工程只靠声明依赖能构建",
+      "adverse_case": "依赖作者绝对路径、缓存或本地仓库",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "BUILD-004/positive",
+        "BUILD-004/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-002",
+          "classification": "design-gap",
+          "scenario": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用"
+        },
+        {
+          "audit_id": "AUD-003",
+          "classification": "design-gap",
+          "scenario": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线"
+        },
+        {
+          "audit_id": "AUD-004",
+          "classification": "design-gap",
+          "scenario": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付"
+        },
+        {
+          "audit_id": "AUD-006",
+          "classification": "design-gap",
+          "scenario": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-005",
+      "title": "平台装载限制",
+      "solution": "按目标校验页大小、最低系统和二进制属性",
+      "invariant": "声明支持的设备可以装载制品",
+      "adverse_case": "Android 大页设备或旧系统装载失败",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "BUILD-005/positive",
+        "BUILD-005/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-009",
+          "classification": "existing-design-validation",
+          "scenario": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证"
+        }
+      ]
+    },
+    {
+      "id": "COMP-001",
+      "title": "API 与 ABI 兼容",
+      "solution": "比较导出形状、布局、符号与旧消费者",
+      "invariant": "兼容判断与分发模型一致",
+      "adverse_case": "新增重载造成歧义或布局变化",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "COMP-001/positive",
+        "COMP-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-003",
+          "classification": "design-gap",
+          "scenario": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线"
+        },
+        {
+          "audit_id": "AUD-004",
+          "classification": "design-gap",
+          "scenario": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付"
+        },
+        {
+          "audit_id": "AUD-006",
+          "classification": "design-gap",
+          "scenario": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持"
+        }
+      ]
+    },
+    {
+      "id": "COMP-002",
+      "title": "行为兼容",
+      "solution": "把线程、取消、受理阶段和关闭策略纳入版本",
+      "invariant": "行为变更不会悄悄穿过接口检查",
+      "adverse_case": "签名不变但同步返回变为仅入队",
+      "spec": "../architecture/09-build-packaging-release.md",
+      "required_case_groups": [
+        "COMP-002/positive",
+        "COMP-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "GEN-001",
+      "title": "生成确定性与追溯",
+      "solution": "可再生输出、来源映射、目录所有权与漂移检查",
+      "invariant": "相同输入生成相同结果且不覆盖手写代码",
+      "adverse_case": "失败留下半套代码或非受管文件被删除",
+      "spec": "../architecture/07-code-generation.md",
+      "required_case_groups": [
+        "GEN-001/positive",
+        "GEN-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "VERIFY-001",
+      "title": "真实双向消费",
+      "solution": "按目标从消费端验证公开制品",
+      "invariant": "替代环境的结果不升级为真实目标通过",
+      "adverse_case": "Node/JVM 模拟代替 ArkTS/Kotlin Native 运行",
+      "spec": "../validation/01-testing-strategy.md",
+      "required_case_groups": [
+        "VERIFY-001/positive",
+        "VERIFY-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-002",
+          "classification": "design-gap",
+          "scenario": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用"
+        },
+        {
+          "audit_id": "AUD-005",
+          "classification": "design-gap",
+          "scenario": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配"
+        },
+        {
+          "audit_id": "AUD-007",
+          "classification": "experimental-option",
+          "scenario": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过"
+        },
+        {
+          "audit_id": "AUD-008",
+          "classification": "design-gap",
+          "scenario": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达"
+        },
+        {
+          "audit_id": "AUD-009",
+          "classification": "existing-design-validation",
+          "scenario": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-002",
+      "title": "能力与证据可信度",
+      "solution": "区分声明、实现、运行证据和证据精度",
+      "invariant": "未运行、过期、不支持与通过互不混同",
+      "adverse_case": "启发式零命中或 skipped 被当作合格",
+      "spec": "../validation/01-testing-strategy.md",
+      "required_case_groups": [
+        "VERIFY-002/positive",
+        "VERIFY-002/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-007",
+          "classification": "experimental-option",
+          "scenario": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过"
+        }
+      ]
+    },
+    {
+      "id": "OBS-001",
+      "title": "诊断与符号化",
+      "solution": "稳定诊断码、关联 ID、符号摘要和脱敏",
+      "invariant": "故障能追溯到边界、阶段、目标和制品",
+      "adverse_case": "符号文件不匹配或日志泄露业务载荷",
+      "spec": "../architecture/10-diagnostics-and-performance.md",
+      "required_case_groups": [
+        "OBS-001/positive",
+        "OBS-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing"
+    },
+    {
+      "id": "DIST-001",
+      "title": "开放分发与供应链",
+      "solution": "依赖许可、制品校验、来源和可复现安装",
+      "invariant": "发布包与验证包是同一内容",
+      "adverse_case": "依赖未声明、下载被替换或生成物许可不清",
+      "spec": "../delivery/02-open-source-and-contributing.md",
+      "required_case_groups": [
+        "DIST-001/positive",
+        "DIST-001/adverse"
+      ],
+      "implementation": "planned",
+      "evidence": "missing",
+      "review_cases": [
+        {
+          "audit_id": "AUD-003",
+          "classification": "design-gap",
+          "scenario": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线"
+        },
+        {
+          "audit_id": "AUD-010",
+          "classification": "configuration-clarification",
+          "scenario": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同"
+        }
+      ]
+    }
+  ],
+  "baseline": "0.9"
+}

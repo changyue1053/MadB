@@ -1,0 +1,501 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:extension-wire:1",
+  "title": "MadB extension wire envelope v1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/hello"
+    },
+    {
+      "$ref": "#/$defs/hello_ack"
+    },
+    {
+      "$ref": "#/$defs/reject"
+    },
+    {
+      "$ref": "#/$defs/invoke"
+    },
+    {
+      "$ref": "#/$defs/cancel"
+    },
+    {
+      "$ref": "#/$defs/result"
+    }
+  ],
+  "$defs": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "description": "Relative package/workspace path; filesystem canonicalization and link checks remain mandatory.",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "^/"
+          }
+        },
+        {
+          "not": {
+            "pattern": "(^|/)[.][.](/|$)"
+          }
+        },
+        {
+          "not": {
+            "pattern": ":"
+          }
+        },
+        {
+          "not": {
+            "pattern": "[\\\\]"
+          }
+        },
+        {
+          "not": {
+            "pattern": "[\\u0000-\\u001f]"
+          }
+        }
+      ]
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "path",
+        "schema",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "stage": {
+          "enum": [
+            "handshake",
+            "protocol",
+            "read",
+            "generate",
+            "build",
+            "verify",
+            "package",
+            "cleanup"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "stage"
+      ],
+      "additionalProperties": false
+    },
+    "hello": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "madb.extension-wire/1"
+        },
+        "kind": {
+          "const": "hello"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "extension_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]*[.][a-z0-9][a-z0-9.-]*$",
+          "maxLength": 128
+        },
+        "extension_version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-[A-Za-z0-9.-]+)?$"
+        },
+        "component_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]*$",
+          "maxLength": 128
+        },
+        "manifest_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "protocol_versions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "ir_versions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "required_features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]*@[1-9][0-9]*$"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "session_id",
+        "extension_id",
+        "extension_version",
+        "component_id",
+        "manifest_digest",
+        "protocol_versions",
+        "ir_versions",
+        "required_features"
+      ],
+      "additionalProperties": false
+    },
+    "hello_ack": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "madb.extension-wire/1"
+        },
+        "kind": {
+          "const": "hello_ack"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "extension_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]*[.][a-z0-9][a-z0-9.-]*$",
+          "maxLength": 128
+        },
+        "extension_version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-[A-Za-z0-9.-]+)?$"
+        },
+        "component_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]*$",
+          "maxLength": 128
+        },
+        "manifest_digest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "protocol": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "ir": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9.-]*@[1-9][0-9]*$"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "session_id",
+        "extension_id",
+        "extension_version",
+        "component_id",
+        "manifest_digest",
+        "protocol",
+        "ir",
+        "features"
+      ],
+      "additionalProperties": false
+    },
+    "reject": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "madb.extension-wire/1"
+        },
+        "kind": {
+          "const": "reject"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "session_id",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "invoke": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "madb.extension-wire/1"
+        },
+        "kind": {
+          "const": "invoke"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "protocol": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "ir": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "component": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9.-]*[.][a-z0-9][a-z0-9.-]*/[a-z][a-z0-9.-]*$"
+        },
+        "operation": {
+          "enum": [
+            "read",
+            "generate",
+            "build",
+            "verify",
+            "package"
+          ]
+        },
+        "input": {
+          "$ref": "#/$defs/file"
+        },
+        "output_root": {
+          "$ref": "#/$defs/path"
+        },
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 43200000
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "session_id",
+        "protocol",
+        "ir",
+        "request_id",
+        "component",
+        "operation",
+        "input",
+        "output_root",
+        "timeout_ms"
+      ],
+      "additionalProperties": false
+    },
+    "cancel": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "madb.extension-wire/1"
+        },
+        "kind": {
+          "const": "cancel"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "protocol": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "ir": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "session_id",
+        "protocol",
+        "ir",
+        "request_id"
+      ],
+      "additionalProperties": false
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "madb.extension-wire/1"
+        },
+        "kind": {
+          "const": "result"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "protocol": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "ir": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "maxLength": 128
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "error",
+            "cancelled"
+          ]
+        },
+        "output": {
+          "$ref": "#/$defs/file"
+        },
+        "error": {
+          "$ref": "#/$defs/error"
+        }
+      },
+      "required": [
+        "schema",
+        "kind",
+        "session_id",
+        "protocol",
+        "ir",
+        "request_id",
+        "status"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "status": {
+              "const": "ok"
+            }
+          },
+          "required": [
+            "output"
+          ],
+          "not": {
+            "required": [
+              "error"
+            ]
+          }
+        },
+        {
+          "properties": {
+            "status": {
+              "const": "error"
+            }
+          },
+          "required": [
+            "error"
+          ],
+          "not": {
+            "required": [
+              "output"
+            ]
+          }
+        },
+        {
+          "properties": {
+            "status": {
+              "const": "cancelled"
+            }
+          },
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "output"
+                ]
+              },
+              {
+                "required": [
+                  "error"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

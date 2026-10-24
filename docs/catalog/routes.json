@@ -1,0 +1,405 @@
+{
+  "schema": "madb.routes/1",
+  "status": "design-targets-not-certified",
+  "version_policy": "Exact compiler/backend/SDK/IDE/host and generator-patch identities are resolved by profiles after probes; candidate selection is not certification. See architecture/16-technology-stack-and-versions.md.",
+  "routes": [
+    {
+      "id": "KN-SWIFT-OBJC",
+      "pair": "Kotlin_Swift",
+      "runtimes": [
+        "Kotlin/Native",
+        "Swift"
+      ],
+      "backend": "Objective-C export + SKIE",
+      "candidate_targets": "iOS device + simulator; macOS",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "Objective-C 可见协议或回调",
+      "stage": "S2",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kn-swift-objc",
+      "profile_constraints": [
+        "Swift 实际调用检查 SKIE 不可调用占位；custom cinterop 来源与 lambda 泛型限制显式处理",
+        "本机构建与跨机器 framework 分发 profile 分开；后者显式配置可分发构建"
+      ]
+    },
+    {
+      "id": "KN-ARKTS-NAPI",
+      "pair": "Kotlin_ArkTS",
+      "runtimes": [
+        "Kotlin/Native OHOS",
+        "ArkTS Node-API"
+      ],
+      "backend": "CPF-KMP-CMP + akinterop; KNOI as separate extension",
+      "candidate_targets": "HarmonyOS/OpenHarmony pinned SDK",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "后端公开的代理或宿主回调",
+      "stage": "S3",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kn-arkts-napi",
+      "profile_constraints": [
+        "CPF 与官方 Kotlin 独立构建及独立 Maven GAV；akinterop、正式应用 SDK 与 Konan sysroot 分开锁定",
+        "HarmonyOS 与 OpenHarmony 分别形成环境证据，CMP 为可选 UI 组合"
+      ]
+    },
+    {
+      "id": "KJVM-RUST-UNIFFI",
+      "pair": "Kotlin_Rust",
+      "runtimes": [
+        "Kotlin/JVM",
+        "Rust"
+      ],
+      "backend": "UniFFI Kotlin",
+      "candidate_targets": "Android; JVM desktop",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "callback interface",
+      "stage": "S2",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kjvm-rust-uniffi",
+      "profile_constraints": [
+        "Android KMP 新插件、native 包装和 app 分工显式；JNA runtime 及 native 依赖随 SDK 交付",
+        "使用受影响旧生成模板的 async/foreign future 配置必须通过双完成回归"
+      ]
+    },
+    {
+      "id": "KN-RUST-GOBLEY",
+      "pair": "Kotlin_Rust",
+      "runtimes": [
+        "Kotlin/Native",
+        "Rust"
+      ],
+      "backend": "Gobley UniFFI backend",
+      "candidate_targets": "iOS device + simulator; OHOS separately",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "callback interface if profile supports",
+      "stage": "S2",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kn-rust-gobley",
+      "profile_constraints": [
+        "Gobley 0.3.7 / UniFFI 0.29.4 仅为补丁候选；修复 foreign future 双完成模板并锁补丁，不能只升 Rust runtime",
+        "官方 Kotlin 与 CPF 的编译和运行证据独立，不从 iOS 成功推断 OHOS"
+      ]
+    },
+    {
+      "id": "SWIFT-RUST-UNIFFI",
+      "pair": "Swift_Rust",
+      "runtimes": [
+        "Swift",
+        "Rust"
+      ],
+      "backend": "UniFFI Swift",
+      "candidate_targets": "iOS device + simulator; macOS",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "trait/callback interface",
+      "stage": "S2",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.swift-rust-uniffi"
+    },
+    {
+      "id": "ARKTS-RUST-NAPI",
+      "pair": "ArkTS_Rust",
+      "runtimes": [
+        "ArkTS Node-API",
+        "Rust"
+      ],
+      "backend": "ohos-rs / napi-ohos",
+      "candidate_targets": "HarmonyOS/OpenHarmony pinned SDK",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "environment-bound callback",
+      "stage": "S3",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.arkts-rust-napi",
+      "profile_constraints": [
+        "Rust napi-ohos crate 家族与 ohrs CLI 独立锁；正式 SDK 的注册/env/TSFN/设备运行分别验证",
+        "UniFFI ArkTS beta 作为独立实验后端，只通过 X07/P13 追踪"
+      ]
+    },
+    {
+      "id": "ARKTS-C-NAPI",
+      "pair": "ArkTS_C_CPP",
+      "runtimes": [
+        "ArkTS Node-API",
+        "C"
+      ],
+      "backend": "Node-API C/C++ adapter",
+      "candidate_targets": "HarmonyOS/OpenHarmony pinned SDK",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "function + context callback",
+      "stage": "S3",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.arkts-c-napi"
+    },
+    {
+      "id": "ARKTS-CPP-NAPI",
+      "pair": "ArkTS_C_CPP",
+      "runtimes": [
+        "ArkTS Node-API",
+        "C++"
+      ],
+      "backend": "Node-API C++ adapter",
+      "candidate_targets": "HarmonyOS/OpenHarmony pinned SDK",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "environment-bound callback",
+      "stage": "S3",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.arkts-cpp-napi"
+    },
+    {
+      "id": "SWIFT-C-CLANG",
+      "pair": "Swift_C_CPP",
+      "runtimes": [
+        "Swift",
+        "C"
+      ],
+      "backend": "Clang importer + C export adapters",
+      "candidate_targets": "iOS device + simulator; macOS",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "C callback with context",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.swift-c-clang"
+    },
+    {
+      "id": "SWIFT-CPP-INTEROP",
+      "pair": "Swift_C_CPP",
+      "runtimes": [
+        "Swift",
+        "C++"
+      ],
+      "backend": "Swift C++ interop; explicit C/ObjC++ alternative",
+      "candidate_targets": "Apple pinned compiler matrix",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "supported Swift export or explicit adapter",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.swift-cpp-interop",
+      "profile_constraints": [
+        "profile 同时声明 build system、direction、包装与分发形式；direct-source 与 C/ObjC++ facade 分开",
+        "SwiftPM 当前不承诺 C++ 直接消费 Swift；interop 编译配置向依赖传播需要消费验证"
+      ]
+    },
+    {
+      "id": "KJVM-C-JNI",
+      "pair": "Kotlin_C_CPP",
+      "runtimes": [
+        "Kotlin/JVM",
+        "C"
+      ],
+      "backend": "JNI + constrained generation",
+      "candidate_targets": "Android; JVM desktop",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "JNI registered callback",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kjvm-c-jni",
+      "profile_constraints": [
+        "显式导出契约加真实 JVM 描述符；javac -h 仅适用于 Java 声明，Kotlin external 不能被误认为自动生成 C/C++ JNI 实现",
+        "验证 RegisterNatives、ClassLoader、线程附着与 R8"
+      ]
+    },
+    {
+      "id": "KJVM-CPP-JNI",
+      "pair": "Kotlin_C_CPP",
+      "runtimes": [
+        "Kotlin/JVM",
+        "C++"
+      ],
+      "backend": "JNI C++ adapter",
+      "candidate_targets": "Android; JVM desktop",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "JNI registered callback",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kjvm-cpp-jni",
+      "profile_constraints": [
+        "JNI 与 C++ 语义包装分开；机械生成签名/注册/转换，所有权、异常与线程由明确策略决定",
+        "C++ 任意 API 不承诺完整自动绑定；JNI 描述符必须与实际 class 文件一致"
+      ]
+    },
+    {
+      "id": "KN-C-CINTEROP",
+      "pair": "Kotlin_C_CPP",
+      "runtimes": [
+        "Kotlin/Native",
+        "C"
+      ],
+      "backend": "cinterop + C export surface",
+      "candidate_targets": "iOS; macOS; OHOS separately",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "C-compatible callback",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kn-c-cinterop"
+    },
+    {
+      "id": "KN-CPP-CABI",
+      "pair": "Kotlin_C_CPP",
+      "runtimes": [
+        "Kotlin/Native",
+        "C++"
+      ],
+      "backend": "explicit C adapter + cinterop",
+      "candidate_targets": "iOS; macOS; OHOS separately",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "C-compatible callback",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.kn-cpp-cabi"
+    },
+    {
+      "id": "RUST-C-ABI",
+      "pair": "Rust_C_CPP",
+      "runtimes": [
+        "Rust",
+        "C"
+      ],
+      "backend": "bindgen incoming; cbindgen outgoing",
+      "candidate_targets": "macOS; Linux; Windows; mobile per package",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "function + context callback",
+      "stage": "S1",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.rust-c-abi"
+    },
+    {
+      "id": "RUST-CPP-CXX",
+      "pair": "Rust_C_CPP",
+      "runtimes": [
+        "Rust",
+        "C++"
+      ],
+      "backend": "CXX",
+      "candidate_targets": "macOS; Linux; Windows; mobile per package",
+      "directions": [
+        "consumer-to-provider",
+        "provider-to-host-callback"
+      ],
+      "reverse_scope": "CXX supported Rust/C++ surface",
+      "stage": "S4",
+      "implementation": "planned",
+      "verification": "missing",
+      "certified_profiles": [],
+      "protocol_route_id": "madb.rust-cpp-cxx"
+    }
+  ],
+  "extension_tracks": [
+    "Kotlin Swift export",
+    "KMP-NativeCoroutines Async/Combine/RxSwift plus non-overlapping SKIE",
+    "KNOI as an independent Kotlin/ArkTS backend",
+    "ANI Rust and C++",
+    "JDK FFM and JNA",
+    "Crubit and other C++ importers",
+    "remote artifact storage and editor integration",
+    "UniFFI ArkTS beta as isolated experimental backend; X07/P13, no new mainline route"
+  ],
+  "baseline": "0.9",
+  "extension_work_packages": {
+    "kmp-nativecoroutines": [
+      "X01"
+    ],
+    "swift-export": [
+      "X02"
+    ],
+    "knoi": [
+      "X08"
+    ],
+    "ani": [
+      "X03"
+    ],
+    "jvm-ffm-jna": [
+      "X04"
+    ],
+    "crubit": [
+      "X05"
+    ],
+    "new-languages-targets": [
+      "X06"
+    ],
+    "uniffi-arkts": [
+      "X07"
+    ],
+    "remote-artifacts": [
+      "X09"
+    ],
+    "ide-wizard": [
+      "I07"
+    ],
+    "deep-instrumentation": [
+      "L08"
+    ]
+  }
+}

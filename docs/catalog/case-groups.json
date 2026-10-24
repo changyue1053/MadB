@@ -1,0 +1,2407 @@
+{
+  "schema": "madb.case-groups/1",
+  "status": "design-requirements",
+  "groups": [
+    {
+      "id": "CAP-001/positive",
+      "problem_ids": [
+        "CAP-001"
+      ],
+      "kind": "positive",
+      "scenario": "指定运行时、目标、调用方向和交付形态，解析唯一匹配 profile；列出其实际生成与消费入口",
+      "expected_invariant": "只在已声明的能力单元生成",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "受支持构建系统和方向的 direct-source/包装 profile 消费"
+        },
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "隔离 beta 配置在真实 ArkTS/HAP 目标执行其声明能力"
+        }
+      ]
+    },
+    {
+      "id": "CAP-001/adverse",
+      "problem_ids": [
+        "CAP-001"
+      ],
+      "kind": "adverse",
+      "scenario": "间接路径通过但直接路径未实现",
+      "expected_invariant": "只在已声明的能力单元生成",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "请求 SwiftPM 的 C++ 直接消费 Swift 或遗漏 interop 依赖传播被拒绝"
+        },
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "仅构建 smoke、错 UniFFI 组合或缺设备证据不得标为运行通过"
+        }
+      ]
+    },
+    {
+      "id": "CAP-002/positive",
+      "problem_ids": [
+        "CAP-002"
+      ],
+      "kind": "positive",
+      "scenario": "编译元数据和补充策略合并为带精度的快照；每个导出字段能回到唯一源声明",
+      "expected_invariant": "每条边界只有一个结构权威源",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "生成描述符与实际 JVM class 相同，注册及 Release 回调成功"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-05",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-07",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "CAP-002/adverse",
+      "problem_ids": [
+        "CAP-002"
+      ],
+      "kind": "adverse",
+      "scenario": "声明与库版本不匹配或只能启发式扫描",
+      "expected_invariant": "每条边界只有一个结构权威源",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错描述符、错 ClassLoader、R8 裁剪或把 javac -h 套给 Kotlin external 触发明确失败"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-05",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-07",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "CAP-003/positive",
+      "problem_ids": [
+        "CAP-003"
+      ],
+      "kind": "positive",
+      "scenario": "对锁定后端支持的 record、enum、variant、callback 子集分别生成并实际调用",
+      "expected_invariant": "不支持的类型明确阻断",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-005",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "已支持的 cinterop/类型接口在 Swift 实际调用"
+        }
+      ]
+    },
+    {
+      "id": "CAP-003/adverse",
+      "problem_ids": [
+        "CAP-003"
+      ],
+      "kind": "adverse",
+      "scenario": "复杂泛型或带数据变体无法表达",
+      "expected_invariant": "不支持的类型明确阻断",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-005",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "custom cinterop 来源缺失、lambda 泛型参数不可调用被阻断或显式适配"
+        }
+      ]
+    },
+    {
+      "id": "CAP-004/positive",
+      "problem_ids": [
+        "CAP-004"
+      ],
+      "kind": "positive",
+      "scenario": "一个声明只有一个协程桥责任方；生成器、模板补丁、runtime 与目标库身份一致",
+      "expected_invariant": "同一接口每种语义只有一个桥接责任方",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功/失败各完成一次，结果交接与关闭遵守契约"
+        },
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "隔离 beta 配置在真实 ArkTS/HAP 目标执行其声明能力"
+        },
+        {
+          "audit_id": "AUD-010",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "独立锁的 napi crate 家族和 ohrs CLI 完成生成/构建/运行"
+        }
+      ]
+    },
+    {
+      "id": "CAP-004/adverse",
+      "problem_ids": [
+        "CAP-004"
+      ],
+      "kind": "adverse",
+      "scenario": "两个协程桥同时包装同一接口",
+      "expected_invariant": "同一接口每种语义只有一个桥接责任方",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功完成回调后注入异常，并加入取消/迟到结果交错"
+        },
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "仅构建 smoke、错 UniFFI 组合或缺设备证据不得标为运行通过"
+        },
+        {
+          "audit_id": "AUD-010",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "按同名项目假定同版本或换 CLI 后沿用旧身份被拒绝"
+        }
+      ]
+    },
+    {
+      "id": "TYPE-001/positive",
+      "problem_ids": [
+        "TYPE-001"
+      ],
+      "kind": "positive",
+      "scenario": "每种公开整数的最小值、最大值和单位往返；额外测试大于 2^53−1 的受支持表示",
+      "expected_invariant": "数值不截断，单位不隐式混淆",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-001/adverse",
+      "problem_ids": [
+        "TYPE-001"
+      ],
+      "kind": "adverse",
+      "scenario": "超过 JS 安全整数或窄化范围",
+      "expected_invariant": "数值不截断，单位不隐式混淆",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-002/positive",
+      "problem_ids": [
+        "TYPE-002"
+      ],
+      "kind": "positive",
+      "scenario": "分别传送存在值、显式空值、缺字段与默认值，接收端按契约保留四种含义",
+      "expected_invariant": "空值不变成零或有效业务对象",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-002/adverse",
+      "problem_ids": [
+        "TYPE-002"
+      ],
+      "kind": "adverse",
+      "scenario": "缺字段错误地套用默认值",
+      "expected_invariant": "空值不变成零或有效业务对象",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-003/positive",
+      "problem_ids": [
+        "TYPE-003"
+      ],
+      "kind": "positive",
+      "scenario": "相同业务 ID 在重建对象后保持相等，不同资源实例和代次不能混用",
+      "expected_invariant": "业务身份不依赖调试字符串或内存地址",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-003/adverse",
+      "problem_ids": [
+        "TYPE-003"
+      ],
+      "kind": "adverse",
+      "scenario": "用 toString 或枚举 ordinal 作为持久 ID",
+      "expected_invariant": "业务身份不依赖调试字符串或内存地址",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-004/positive",
+      "problem_ids": [
+        "TYPE-004"
+      ],
+      "kind": "positive",
+      "scenario": "在一个明确 revision 取得快照，修改源对象及嵌套对象后快照仍符合声明的独立性",
+      "expected_invariant": "独立快照的嵌套数据也满足独立性契约",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-004/adverse",
+      "problem_ids": [
+        "TYPE-004"
+      ],
+      "kind": "adverse",
+      "scenario": "struct 内仍持有可变外部对象",
+      "expected_invariant": "独立快照的嵌套数据也满足独立性契约",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-005/positive",
+      "problem_ids": [
+        "TYPE-005"
+      ],
+      "kind": "positive",
+      "scenario": "多字节、NUL、补充平面字符和空缓冲往返；JNI 单独使用约定的 Modified UTF-8 或 UTF-16 路径",
+      "expected_invariant": "字节和文本不会未经声明相互转换",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-005/adverse",
+      "problem_ids": [
+        "TYPE-005"
+      ],
+      "kind": "adverse",
+      "scenario": "嵌入 NUL、无效 UTF、空指针加零长度",
+      "expected_invariant": "字节和文本不会未经声明相互转换",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-006/positive",
+      "problem_ids": [
+        "TYPE-006"
+      ],
+      "kind": "positive",
+      "scenario": "合法输入在声明的深度、容量和数值上限内被接收，输出与独立构造的期望一致",
+      "expected_invariant": "可检查的非法形状、长度和数值在边界被拒绝；未知裸指针的有效性仍需来源契约保证",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-006/adverse",
+      "problem_ids": [
+        "TYPE-006"
+      ],
+      "kind": "adverse",
+      "scenario": "畸形 JSON、超大长度或整数溢出",
+      "expected_invariant": "可检查的非法形状、长度和数值在边界被拒绝；未知裸指针的有效性仍需来源契约保证",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "TYPE-007/positive",
+      "problem_ids": [
+        "TYPE-007"
+      ],
+      "kind": "positive",
+      "scenario": "目标编译器探针报告 sizeof、alignment、offsetof，与生成绑定及真实库调用交叉核对",
+      "expected_invariant": "签名、布局、对齐与库属于同一目标",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "生成描述符与实际 JVM class 相同，注册及 Release 回调成功"
+        }
+      ]
+    },
+    {
+      "id": "TYPE-007/adverse",
+      "problem_ids": [
+        "TYPE-007"
+      ],
+      "kind": "adverse",
+      "scenario": "宏、pack、位宽或调用约定不一致",
+      "expected_invariant": "签名、布局、对齐与库属于同一目标",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错描述符、错 ClassLoader、R8 裁剪或把 javac -h 套给 Kotlin external 触发明确失败"
+        }
+      ]
+    },
+    {
+      "id": "TYPE-008/positive",
+      "problem_ids": [
+        "TYPE-008"
+      ],
+      "kind": "positive",
+      "scenario": "同名、重载和命名空间按明确规则生成稳定公开名称，消费端逐项实际引用",
+      "expected_invariant": "生成名称在目标作用域唯一",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-005",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "已支持的 cinterop/类型接口在 Swift 实际调用"
+        }
+      ]
+    },
+    {
+      "id": "TYPE-008/adverse",
+      "problem_ids": [
+        "TYPE-008"
+      ],
+      "kind": "adverse",
+      "scenario": "保留字、重载、大小写或扩展方法冲突",
+      "expected_invariant": "生成名称在目标作用域唯一",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-005",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "custom cinterop 来源缺失、lambda 泛型参数不可调用被阻断或显式适配"
+        }
+      ]
+    },
+    {
+      "id": "ERR-001/positive",
+      "problem_ids": [
+        "ERR-001"
+      ],
+      "kind": "positive",
+      "scenario": "不存在、业务拒绝、取消、环境关闭和内部故障各用独立实例验证可辨认的结果",
+      "expected_invariant": "失败不能伪装成成功或空结果",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功/失败各完成一次，结果交接与关闭遵守契约"
+        }
+      ]
+    },
+    {
+      "id": "ERR-001/adverse",
+      "problem_ids": [
+        "ERR-001"
+      ],
+      "kind": "adverse",
+      "scenario": "回调失败或 pending exception 被吞掉",
+      "expected_invariant": "失败不能伪装成成功或空结果",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功完成回调后注入异常，并加入取消/迟到结果交错"
+        }
+      ]
+    },
+    {
+      "id": "ERR-002/positive",
+      "problem_ids": [
+        "ERR-002"
+      ],
+      "kind": "positive",
+      "scenario": "声明为可处理的原生失败在所属边界内转换；消费者收到约定错误且无需捕获越界异常",
+      "expected_invariant": "无约定的异常不穿越边界",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ERR-002/adverse",
+      "problem_ids": [
+        "ERR-002"
+      ],
+      "kind": "adverse",
+      "scenario": "panic=abort、C++ 异常或析构异常",
+      "expected_invariant": "无约定的异常不穿越边界",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ERR-003/positive",
+      "problem_ids": [
+        "ERR-003"
+      ],
+      "kind": "positive",
+      "scenario": "可恢复错误后再次调用成功；失效错误后拒绝操作但仍执行声明的安全清理",
+      "expected_invariant": "返回错误后对象状态可判定",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ERR-003/adverse",
+      "problem_ids": [
+        "ERR-003"
+      ],
+      "kind": "adverse",
+      "scenario": "部分修改后再次调用不一致对象",
+      "expected_invariant": "返回错误后对象状态可判定",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-001/positive",
+      "problem_ids": [
+        "LIFE-001"
+      ],
+      "kind": "positive",
+      "scenario": "创建、返回、关闭与配套释放路径计数匹配；正常结果仅交给一个 owner",
+      "expected_invariant": "释放器匹配且最终释放一次",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-08",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-001/adverse",
+      "problem_ids": [
+        "LIFE-001"
+      ],
+      "kind": "adverse",
+      "scenario": "混用 free、delete 与 Rust from_raw",
+      "expected_invariant": "释放器匹配且最终释放一次",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-08",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-002/positive",
+      "problem_ids": [
+        "LIFE-002"
+      ],
+      "kind": "positive",
+      "scenario": "同步借用在窗口内使用；允许的异步调用复制输入或持有明确 owner，调用方退出不提前回收",
+      "expected_invariant": "等待者消失不提前释放工作输入",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-03",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-002/adverse",
+      "problem_ids": [
+        "LIFE-002"
+      ],
+      "kind": "adverse",
+      "scenario": "原生在 Future 丢弃后继续读缓冲",
+      "expected_invariant": "等待者消失不提前释放工作输入",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-03",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-003/positive",
+      "problem_ids": [
+        "LIFE-003"
+      ],
+      "kind": "positive",
+      "scenario": "移动后旧 owner 不再使用资源；受支持借用与可变访问遵守其别名/Pin 协议",
+      "expected_invariant": "别名与移动符合两端约束",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-003/adverse",
+      "problem_ids": [
+        "LIFE-003"
+      ],
+      "kind": "adverse",
+      "scenario": "共享 Rust 引用期间原生写入或移动 C++ 对象",
+      "expected_invariant": "别名与移动符合两端约束",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-004/positive",
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "kind": "positive",
+      "scenario": "注册前建立 context，源端与队列票据排水后解除引用，跨语言引用环可被显式 close 打断",
+      "expected_invariant": "上下文存活覆盖所有获准回调",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-01",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-03",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-004/adverse",
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "kind": "adverse",
+      "scenario": "同步首回调、GC 引用环、注销后迟到回调",
+      "expected_invariant": "上下文存活覆盖所有获准回调",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-01",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-03",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-005/positive",
+      "problem_ids": [
+        "LIFE-005"
+      ],
+      "kind": "positive",
+      "scenario": "调用许可和关闭共享同步协议；新调用在 Closing 被拒绝，已获准调用结束后只释放一次",
+      "expected_invariant": "关闭检查与实际借用没有竞态窗口",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-01",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-04",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-08",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-005/adverse",
+      "problem_ids": [
+        "LIFE-005"
+      ],
+      "kind": "adverse",
+      "scenario": "关闭和调用并发、句柄复用或重复关闭",
+      "expected_invariant": "关闭检查与实际借用没有竞态窗口",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-01",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-04",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-08",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-006/positive",
+      "problem_ids": [
+        "LIFE-006"
+      ],
+      "kind": "positive",
+      "scenario": "子资源存在时按契约保留父 owner；最终按子后父的合法顺序关闭",
+      "expected_invariant": "子资源使用期间依赖资源仍有效",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-04",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-006/adverse",
+      "problem_ids": [
+        "LIFE-006"
+      ],
+      "kind": "adverse",
+      "scenario": "先释放模型再使用上下文",
+      "expected_invariant": "子资源使用期间依赖资源仍有效",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-04",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-007/positive",
+      "problem_ids": [
+        "LIFE-007"
+      ],
+      "kind": "positive",
+      "scenario": "env/Worker 或 JVM 线程退出按所属机制处理引用；动态库保持至最后一次回调与析构结束",
+      "expected_invariant": "回调和析构不进入已销毁环境或已卸载代码",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-007/adverse",
+      "problem_ids": [
+        "LIFE-007"
+      ],
+      "kind": "adverse",
+      "scenario": "Worker 退出、动态卸载或未完成异步清理",
+      "expected_invariant": "回调和析构不进入已销毁环境或已卸载代码",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "LIFE-008/positive",
+      "problem_ids": [
+        "LIFE-008"
+      ],
+      "kind": "positive",
+      "scenario": "正常结果由消费者接管；取消后未交付结果由清理方接管，最终责任计数恰好一次",
+      "expected_invariant": "取消竞争不丢失有资源的结果",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功/失败各完成一次，结果交接与关闭遵守契约"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-02",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-008/adverse",
+      "problem_ids": [
+        "LIFE-008"
+      ],
+      "kind": "adverse",
+      "scenario": "完成后恢复前取消，或重复通知携带同一资源",
+      "expected_invariant": "取消竞争不丢失有资源的结果",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功完成回调后注入异常，并加入取消/迟到结果交错"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-02",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-001/positive",
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "kind": "positive",
+      "scenario": "分别请求取消等待、停止观察和停止工作，验证公开效果与独立确认事件",
+      "expected_invariant": "取消效果不强于后端实际保证",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-02",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-001/adverse",
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "kind": "adverse",
+      "scenario": "超时后工作继续或副作用已经发生",
+      "expected_invariant": "取消效果不强于后端实际保证",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-02",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-002/positive",
+      "problem_ids": [
+        "ASYNC-002"
+      ],
+      "kind": "positive",
+      "scenario": "注册过程中同步完成、正常异步完成及完成通知后异常均保持一次终态，结果交接另行检查",
+      "expected_invariant": "每个操作只有一次终态交付",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功/失败各完成一次，结果交接与关闭遵守契约"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-02",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-002/adverse",
+      "problem_ids": [
+        "ASYNC-002"
+      ],
+      "kind": "adverse",
+      "scenario": "同步完成、启动失败、重复完成和迟到完成",
+      "expected_invariant": "每个操作只有一次终态交付",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-001",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "成功完成回调后注入异常，并加入取消/迟到结果交错"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-02",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "ASYNC-003/positive",
+      "problem_ids": [
+        "ASYNC-003"
+      ],
+      "kind": "positive",
+      "scenario": "方法返回受理确认后继续观察真实完成事件，两个阶段及操作身份可以区分",
+      "expected_invariant": "入队不能冒充受理或持久化完成",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-003/adverse",
+      "problem_ids": [
+        "ASYNC-003"
+      ],
+      "kind": "adverse",
+      "scenario": "先返回成功而宿主实际执行失败",
+      "expected_invariant": "入队不能冒充受理或持久化完成",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-004/positive",
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "kind": "positive",
+      "scenario": "慢消费者下验证状态合并、事件顺序域、有界容量和明确溢出策略，计数与期望一致",
+      "expected_invariant": "数据丢弃和恢复策略可观测",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-004/adverse",
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "kind": "adverse",
+      "scenario": "慢消费者、乱序、多生产者、溢出和重订阅",
+      "expected_invariant": "数据丢弃和恢复策略可观测",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-005/positive",
+      "problem_ids": [
+        "ASYNC-005"
+      ],
+      "kind": "positive",
+      "scenario": "正常结束与等待者退出均有明确收尾 owner；其作用域关闭后无无主后台任务",
+      "expected_invariant": "操作生命周期有归属且后台收尾可追踪",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "ASYNC-005/adverse",
+      "problem_ids": [
+        "ASYNC-005"
+      ],
+      "kind": "adverse",
+      "scenario": "关闭运行时后 Future 或任务仍被唤醒",
+      "expected_invariant": "操作生命周期有归属且后台收尾可追踪",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-001/positive",
+      "problem_ids": [
+        "THR-001"
+      ],
+      "kind": "positive",
+      "scenario": "宿主引用只在合法 env/线程访问，外部生产者使用该 profile 支持的投递机制",
+      "expected_invariant": "环境句柄不跨线程或跨环境滥用",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "THR-001/adverse",
+      "problem_ids": [
+        "THR-001"
+      ],
+      "kind": "adverse",
+      "scenario": "JNIEnv、napi_env 或 UI 引用被错误复用",
+      "expected_invariant": "环境句柄不跨线程或跨环境滥用",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "THR-002/positive",
+      "problem_ids": [
+        "THR-002"
+      ],
+      "kind": "positive",
+      "scenario": "固定线程调用及析构回到同一线程；串行执行器只验证互斥，耗时操作不阻塞 UI",
+      "expected_invariant": "串行调度不冒充固定 OS 线程",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "THR-002/adverse",
+      "problem_ids": [
+        "THR-002"
+      ],
+      "kind": "adverse",
+      "scenario": "把同步 I/O 或 native join 放到 UI 线程",
+      "expected_invariant": "串行调度不冒充固定 OS 线程",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "THR-003/positive",
+      "problem_ids": [
+        "THR-003"
+      ],
+      "kind": "positive",
+      "scenario": "所有语言入口同时访问共享状态，经同一同步协议得到一致版本，无未经证明的 Send/Sync/Sendable",
+      "expected_invariant": "Arc、GC、const 不作为线程安全证明",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-003/adverse",
+      "problem_ids": [
+        "THR-003"
+      ],
+      "kind": "adverse",
+      "scenario": "未经证明生成 Send、Sync 或 Sendable",
+      "expected_invariant": "Arc、GC、const 不作为线程安全证明",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "THR-004/positive",
+      "problem_ids": [
+        "THR-004"
+      ],
+      "kind": "positive",
+      "scenario": "宿主回调重入查询或发起停止正常返回；外部 owner 等待确认，无持锁调用或自等待",
+      "expected_invariant": "回调与关闭没有自等待和环形等待",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-01",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-08",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "THR-004/adverse",
+      "problem_ids": [
+        "THR-004"
+      ],
+      "kind": "adverse",
+      "scenario": "回调内重入关闭或反向获取同一把锁",
+      "expected_invariant": "回调与关闭没有自等待和环形等待",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-01",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-08",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-11",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "UI-001/positive",
+      "problem_ids": [
+        "UI-001"
+      ],
+      "kind": "positive",
+      "scenario": "两页面共享引擎，各自拥有观察；关闭一个页面后另一页面继续更新，最终 owner 关闭",
+      "expected_invariant": "退订不误关闭共享资源",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-001/adverse",
+      "problem_ids": [
+        "UI-001"
+      ],
+      "kind": "adverse",
+      "scenario": "反复进入页面重复订阅或后台继续无界更新",
+      "expected_invariant": "退订不误关闭共享资源",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-002/positive",
+      "problem_ids": [
+        "UI-002"
+      ],
+      "kind": "positive",
+      "scenario": "编辑期间交错旧快照和新输入，保留组合态与新草稿，仅在契约的受理阶段清空",
+      "expected_invariant": "旧快照不覆盖新的本地输入",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-002/adverse",
+      "problem_ids": [
+        "UI-002"
+      ],
+      "kind": "adverse",
+      "scenario": "回声、重排、中文组合态和受理前清空",
+      "expected_invariant": "旧快照不覆盖新的本地输入",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-003/positive",
+      "problem_ids": [
+        "UI-003"
+      ],
+      "kind": "positive",
+      "scenario": "正确构造可观察实例并在 UI 隔离域更新；列表增删重排保持稳定业务键",
+      "expected_invariant": "状态更新和列表身份遵循 UI 框架约束",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "UI-003/adverse",
+      "problem_ids": [
+        "UI-003"
+      ],
+      "kind": "adverse",
+      "scenario": "装饰器不触发更新或列表复用错行",
+      "expected_invariant": "状态更新和列表身份遵循 UI 框架约束",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "PERF-001/positive",
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "kind": "positive",
+      "scenario": "固定 Release、设备、预热和负载，记录原始延迟样本、复制字节、队列及内存峰值",
+      "expected_invariant": "优化保留生命周期与数据正确性",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "PERF-001/adverse",
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "kind": "adverse",
+      "scenario": "大缓冲保活、细粒度调用或全量列表刷新",
+      "expected_invariant": "优化保留生命周期与数据正确性",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "BUILD-001/positive",
+      "problem_ids": [
+        "BUILD-001"
+      ],
+      "kind": "positive",
+      "scenario": "从锁重建目标，记录 sysroot、宏、编译器/SDK、标准库及依赖摘要，消费端完成链接调用",
+      "expected_invariant": "构建身份覆盖会影响输出的参数",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-002",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "新 KMP、独立 app 与选定 native 包装配方真实构建运行"
+        },
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "受支持构建系统和方向的 direct-source/包装 profile 消费"
+        },
+        {
+          "audit_id": "AUD-009",
+          "route_ids": [
+            "KN-ARKTS-NAPI"
+          ],
+          "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "固定 CPF/正式 SDK/sysroot 组合完成目标构建和设备运行"
+        },
+        {
+          "audit_id": "AUD-010",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "独立锁的 napi crate 家族和 ohrs CLI 完成生成/构建/运行"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-09",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-10",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-001/adverse",
+      "problem_ids": [
+        "BUILD-001"
+      ],
+      "kind": "adverse",
+      "scenario": "交叉编译意外读取宿主头文件",
+      "expected_invariant": "构建身份覆盖会影响输出的参数",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-002",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "误用旧同模块插件、遗漏 native 库或默认关闭测试时准确暴露缺口"
+        },
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "请求 SwiftPM 的 C++ 直接消费 Swift 或遗漏 interop 依赖传播被拒绝"
+        },
+        {
+          "audit_id": "AUD-009",
+          "route_ids": [
+            "KN-ARKTS-NAPI"
+          ],
+          "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "Beta 参考结果、错误 sysroot 或替代环境不得升级为正式目标认证"
+        },
+        {
+          "audit_id": "AUD-010",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "按同名项目假定同版本或换 CLI 后沿用旧身份被拒绝"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-09",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-10",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-002/positive",
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "kind": "positive",
+      "scenario": "同一应用的两条受支持入口读写同一个测试内核实例，链接清单与创建/释放计数一致",
+      "expected_invariant": "同一逻辑实例不会被重复静态链接无意复制",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-04",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-002/adverse",
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "kind": "adverse",
+      "scenario": "ClassLoader、多个 Framework 或动态注册顺序冲突",
+      "expected_invariant": "同一逻辑实例不会被重复静态链接无意复制",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-04",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-003/positive",
+      "problem_ids": [
+        "BUILD-003"
+      ],
+      "kind": "positive",
+      "scenario": "Release/R8/链接裁剪后真实正向与反向入口仍可达；JNI 注册名与实际 class 描述符对应",
+      "expected_invariant": "Release 中回调入口仍可达",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "生成描述符与实际 JVM class 相同，注册及 Release 回调成功"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-003/adverse",
+      "problem_ids": [
+        "BUILD-003"
+      ],
+      "kind": "adverse",
+      "scenario": "Debug 正常而 strip 或 R8 后失效",
+      "expected_invariant": "Release 中回调入口仍可达",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错描述符、错 ClassLoader、R8 裁剪或把 javac -h 套给 Kotlin external 触发明确失败"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-004/positive",
+      "problem_ids": [
+        "BUILD-004"
+      ],
+      "kind": "positive",
+      "scenario": "无作者仓库的新目录安装冻结包，绑定、native 库及运行依赖完整，公开 API 实际可调用",
+      "expected_invariant": "干净消费工程只靠声明依赖能构建",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-002",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "新 KMP、独立 app 与选定 native 包装配方真实构建运行"
+        },
+        {
+          "audit_id": "AUD-003",
+          "route_ids": [
+            "KN-ARKTS-NAPI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "官方与 CPF 候选以独立 GAV 发布和消费"
+        },
+        {
+          "audit_id": "AUD-004",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "显式可分发 SKIE framework 在另一台受支持机器消费"
+        },
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "受支持构建系统和方向的 direct-source/包装 profile 消费"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-004/adverse",
+      "problem_ids": [
+        "BUILD-004"
+      ],
+      "kind": "adverse",
+      "scenario": "依赖作者绝对路径、缓存或本地仓库",
+      "expected_invariant": "干净消费工程只靠声明依赖能构建",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-002",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "误用旧同模块插件、遗漏 native 库或默认关闭测试时准确暴露缺口"
+        },
+        {
+          "audit_id": "AUD-003",
+          "route_ids": [
+            "KN-ARKTS-NAPI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错坐标、根 metadata 覆盖或目标变体缺失被检测"
+        },
+        {
+          "audit_id": "AUD-004",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "仅本机构建成功、缺模块或残留绝对路径不能满足分发门禁"
+        },
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "请求 SwiftPM 的 C++ 直接消费 Swift 或遗漏 interop 依赖传播被拒绝"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-005/positive",
+      "problem_ids": [
+        "BUILD-005"
+      ],
+      "kind": "positive",
+      "scenario": "在声明的最低 OS、目标 ABI 和页大小条件下安装并真实加载全部传递原生库",
+      "expected_invariant": "声明支持的设备可以装载制品",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-009",
+          "route_ids": [
+            "KN-ARKTS-NAPI"
+          ],
+          "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "固定 CPF/正式 SDK/sysroot 组合完成目标构建和设备运行"
+        }
+      ]
+    },
+    {
+      "id": "BUILD-005/adverse",
+      "problem_ids": [
+        "BUILD-005"
+      ],
+      "kind": "adverse",
+      "scenario": "Android 大页设备或旧系统装载失败",
+      "expected_invariant": "声明支持的设备可以装载制品",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-009",
+          "route_ids": [
+            "KN-ARKTS-NAPI"
+          ],
+          "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "Beta 参考结果、错误 sysroot 或替代环境不得升级为正式目标认证"
+        }
+      ]
+    },
+    {
+      "id": "COMP-001/positive",
+      "problem_ids": [
+        "COMP-001"
+      ],
+      "kind": "positive",
+      "scenario": "旧消费者对声明兼容的新 SDK 执行编译、链接和行为冒烟，核对公开符号与布局差异",
+      "expected_invariant": "兼容判断与分发模型一致",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-003",
+          "route_ids": [
+            "KN-ARKTS-NAPI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "官方与 CPF 候选以独立 GAV 发布和消费"
+        },
+        {
+          "audit_id": "AUD-004",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "显式可分发 SKIE framework 在另一台受支持机器消费"
+        },
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "受支持构建系统和方向的 direct-source/包装 profile 消费"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "COMP-001/adverse",
+      "problem_ids": [
+        "COMP-001"
+      ],
+      "kind": "adverse",
+      "scenario": "新增重载造成歧义或布局变化",
+      "expected_invariant": "兼容判断与分发模型一致",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-003",
+          "route_ids": [
+            "KN-ARKTS-NAPI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错坐标、根 metadata 覆盖或目标变体缺失被检测"
+        },
+        {
+          "audit_id": "AUD-004",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "仅本机构建成功、缺模块或残留绝对路径不能满足分发门禁"
+        },
+        {
+          "audit_id": "AUD-006",
+          "route_ids": [
+            "SWIFT-CPP-INTEROP"
+          ],
+          "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "请求 SwiftPM 的 C++ 直接消费 Swift 或遗漏 interop 依赖传播被拒绝"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "COMP-002/positive",
+      "problem_ids": [
+        "COMP-002"
+      ],
+      "kind": "positive",
+      "scenario": "升级前后比较回调线程、取消效果、受理阶段与关闭后条件；兼容声明由独立预期支持",
+      "expected_invariant": "行为变更不会悄悄穿过接口检查",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-07",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "COMP-002/adverse",
+      "problem_ids": [
+        "COMP-002"
+      ],
+      "kind": "adverse",
+      "scenario": "签名不变但同步返回变为仅入队",
+      "expected_invariant": "行为变更不会悄悄穿过接口检查",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-07",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "GEN-001/positive",
+      "problem_ids": [
+        "GEN-001"
+      ],
+      "kind": "positive",
+      "scenario": "不同临时路径重生成得到相同文本；漂移检查不改有效输出，失败后手写与旧生成内容保持完整",
+      "expected_invariant": "相同输入生成相同结果且不覆盖手写代码",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-05",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-06",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-07",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-09",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-10",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "GEN-001/adverse",
+      "problem_ids": [
+        "GEN-001"
+      ],
+      "kind": "adverse",
+      "scenario": "失败留下半套代码或非受管文件被删除",
+      "expected_invariant": "相同输入生成相同结果且不覆盖手写代码",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "scenario_refs": [
+        {
+          "id": "CRIT-05",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-06",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-07",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-09",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-10",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-001/positive",
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "kind": "positive",
+      "scenario": "从冻结候选在真实消费语言执行正向调用和已声明反向接口，按目标保存实际结果",
+      "expected_invariant": "替代环境的结果不升级为真实目标通过",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-002",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "新 KMP、独立 app 与选定 native 包装配方真实构建运行"
+        },
+        {
+          "audit_id": "AUD-005",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "已支持的 cinterop/类型接口在 Swift 实际调用"
+        },
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "隔离 beta 配置在真实 ArkTS/HAP 目标执行其声明能力"
+        },
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "生成描述符与实际 JVM class 相同，注册及 Release 回调成功"
+        },
+        {
+          "audit_id": "AUD-009",
+          "route_ids": [
+            "KN-ARKTS-NAPI"
+          ],
+          "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "固定 CPF/正式 SDK/sysroot 组合完成目标构建和设备运行"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-001/adverse",
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "kind": "adverse",
+      "scenario": "Node/JVM 模拟代替 ArkTS/Kotlin Native 运行",
+      "expected_invariant": "替代环境的结果不升级为真实目标通过",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-002",
+          "route_ids": [
+            "KJVM-RUST-UNIFFI",
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "误用旧同模块插件、遗漏 native 库或默认关闭测试时准确暴露缺口"
+        },
+        {
+          "audit_id": "AUD-005",
+          "route_ids": [
+            "KN-SWIFT-OBJC"
+          ],
+          "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "custom cinterop 来源缺失、lambda 泛型参数不可调用被阻断或显式适配"
+        },
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "仅构建 smoke、错 UniFFI 组合或缺设备证据不得标为运行通过"
+        },
+        {
+          "audit_id": "AUD-008",
+          "route_ids": [
+            "KJVM-C-JNI",
+            "KJVM-CPP-JNI"
+          ],
+          "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错描述符、错 ClassLoader、R8 裁剪或把 javac -h 套给 Kotlin external 触发明确失败"
+        },
+        {
+          "audit_id": "AUD-009",
+          "route_ids": [
+            "KN-ARKTS-NAPI"
+          ],
+          "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "Beta 参考结果、错误 sysroot 或替代环境不得升级为正式目标认证"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-002/positive",
+      "problem_ids": [
+        "VERIFY-002"
+      ],
+      "kind": "positive",
+      "scenario": "报告分别记录实现、执行结果、证据层级和新鲜度；只有对应候选的有效结果可进入认证",
+      "expected_invariant": "未运行、过期、不支持与通过互不混同",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "隔离 beta 配置在真实 ArkTS/HAP 目标执行其声明能力"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-06",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "VERIFY-002/adverse",
+      "problem_ids": [
+        "VERIFY-002"
+      ],
+      "kind": "adverse",
+      "scenario": "启发式零命中或 skipped 被当作合格",
+      "expected_invariant": "未运行、过期、不支持与通过互不混同",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-007",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "仅构建 smoke、错 UniFFI 组合或缺设备证据不得标为运行通过"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-06",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "OBS-001/positive",
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "kind": "positive",
+      "scenario": "一次跨端故障关联符号、操作、目标和正确 build ID/dSYM，日志脱敏且不含业务载荷",
+      "expected_invariant": "故障能追溯到边界、阶段、目标和制品",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "OBS-001/adverse",
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "kind": "adverse",
+      "scenario": "符号文件不匹配或日志泄露业务载荷",
+      "expected_invariant": "故障能追溯到边界、阶段、目标和制品",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing"
+    },
+    {
+      "id": "DIST-001/positive",
+      "problem_ids": [
+        "DIST-001"
+      ],
+      "kind": "positive",
+      "scenario": "从公开候选通道下载相同字节，核对来源与许可清单并运行安装冒烟，发布不重新构建",
+      "expected_invariant": "发布包与验证包是同一内容",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-003",
+          "route_ids": [
+            "KN-ARKTS-NAPI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "官方与 CPF 候选以独立 GAV 发布和消费"
+        },
+        {
+          "audit_id": "AUD-010",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+          "kind": "positive",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "独立锁的 napi crate 家族和 ohrs CLI 完成生成/构建/运行"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-06",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    },
+    {
+      "id": "DIST-001/adverse",
+      "problem_ids": [
+        "DIST-001"
+      ],
+      "kind": "adverse",
+      "scenario": "依赖未声明、下载被替换或生成物许可不清",
+      "expected_invariant": "发布包与验证包是同一内容",
+      "applicability": "instantiate-per-profile-target-direction",
+      "readiness": "specified-not-implemented",
+      "evidence": "missing",
+      "platform_scenarios": [
+        {
+          "audit_id": "AUD-003",
+          "route_ids": [
+            "KN-ARKTS-NAPI",
+            "KN-RUST-GOBLEY"
+          ],
+          "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "错坐标、根 metadata 覆盖或目标变体缺失被检测"
+        },
+        {
+          "audit_id": "AUD-010",
+          "route_ids": [
+            "ARKTS-RUST-NAPI"
+          ],
+          "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+          "kind": "adverse",
+          "readiness": "specified-not-implemented",
+          "evidence": "missing",
+          "scenario": "按同名项目假定同版本或换 CLI 后沿用旧身份被拒绝"
+        }
+      ],
+      "scenario_refs": [
+        {
+          "id": "CRIT-06",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        },
+        {
+          "id": "CRIT-12",
+          "document": "validation/08-critical-scenarios.md",
+          "readiness": "specified-not-implemented"
+        }
+      ]
+    }
+  ],
+  "baseline": "0.9"
+}

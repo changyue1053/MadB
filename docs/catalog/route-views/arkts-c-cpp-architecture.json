@@ -1,0 +1,2314 @@
+{
+  "slug": "arkts-c-cpp-architecture",
+  "title": "ArkTS ↔ C / C++ 架构全景",
+  "eyebrow": "NATIVE MODULE · ENV · LIFETIME",
+  "summary": "以目标 SDK 的 Node-API 为主线，将类型化 ArkTS API、原生 ABI、env 线程和资源关闭协议拆成明确模块；C 与 C++ 分别采用受控公开面。",
+  "route_ids": [
+    "ARKTS-C-NAPI",
+    "ARKTS-CPP-NAPI"
+  ],
+  "extension_task_ids": [
+    "X03"
+  ],
+  "profiles": [
+    {
+      "id": "node-api-c",
+      "name": "Node-API → C ABI",
+      "kind": "主线候选",
+      "summary": "ArkTS 通过目标 SDK 的 Node-API 适配器访问明确的 C 接口。MadB 生成机械接线，C 作者定义句柄、缓冲和回调协议。",
+      "route_ids": [
+        "ARKTS-C-NAPI"
+      ],
+      "task_ids": [
+        "C07",
+        "I05",
+        "L05",
+        "C09",
+        "C10"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "契约与生成",
+          "steps": [
+            "作者提供 C 头文件和显式边界语义。",
+            "MadB 检查数值、句柄、缓冲、回调及释放配对。",
+            "生成 ArkTS facade 与使用 SDK Node-API 的接线代码。",
+            "平台工具链编译原生模块并打包 HAR，绑定与二进制记录共同身份。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "正向调用",
+          "steps": [
+            "ArkTS 调用类型化方法，参数先经过范围与形状校验。",
+            "Node-API 入口取得受准入保护的原生句柄。",
+            "耗时任务交给原生工作队列，不长期阻塞 env 线程。",
+            "结果按契约复制或转移所有权，转换失败也必须清理原生输出。",
+            "回投所属 env 后完成一次 Promise 或同步返回。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "反向回调",
+          "steps": [
+            "反向范围是已注册的 C function + context，不是任意 C 主动执行 ArkTS。",
+            "原生侧根据协议保活 context；工作线程只构造可转交的结果。",
+            "通过目标 SDK 支持的线程安全回投进入所属 env。",
+            "检查订阅代次、取消和关闭状态，再调用 ArkTS 观察者。",
+            "迟到或重复通知走丢弃与释放路径，不再次完成操作。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "取消与关闭",
+          "steps": [
+            "取消观察、停止等待和停止原生工作是不同状态。",
+            "关闭准入后请求原生停止，并保留回调 context。",
+            "等待工作终止与回调排水；不能只凭 Promise 已取消就释放。",
+            "所属 env 仍可用时释放引用；环境退出按清理钩子协议收口。",
+            "最终配对调用 C destroy/free，重复 close 不重复释放。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "交付与验证",
+          "steps": [
+            "锁定 HarmonyOS 或 OpenHarmony 的具体 SDK 与 ABI，分别认证。",
+            "核对 native 依赖、模块注册、声明文件和 HAR 内容。",
+            "在没有源码仓库路径的独立工程消费。",
+            "设备执行错误、取消、env 退出和 Release 场景后关联报告。"
+          ]
+        }
+      ],
+      "generated": [
+        "根据契约生成 ArkTS 参数/返回模型、类型声明和 facade。",
+        "生成 Node-API 注册、参数提取、状态码映射与 function/context 接线。",
+        "生成配对释放包装、关闭准入和订阅代次检查。",
+        "按 profile 生成 CMake/Hvigor/ohpm 接入与独立消费者模板。",
+        "生成边界计数、调用身份及正反向契约测试骨架。"
+      ],
+      "handwritten": [
+        "C 算法、并发同步、停止工作的真实实现。",
+        "句柄归属、缓冲复制/转移、回调排水与资源释放语义。",
+        "业务受理确认、重试及状态回放策略。",
+        "无法机械判定的自定义类型转换与 ABI 适配。"
+      ],
+      "risks": [
+        {
+          "problem": "整数与字符串损失",
+          "solution": "整数按范围校验并选择明确编码；字符串声明编码与长度，不默认所有数字都可用 ArkTS number 表示。",
+          "example": "64 位业务序号超出安全整数范围时拒绝或采用已声明的无损表示。",
+          "problem_ids": [
+            "TYPE-001",
+            "TYPE-005"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "缓冲借用越界",
+          "solution": "同步借用只覆盖调用窗口，异步操作复制或转移到受控 owner。",
+          "example": "不能把 ArrayBuffer 的临时指针缓存到稍后执行的 C 任务。",
+          "problem_ids": [
+            "LIFE-002",
+            "TYPE-006"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "env/线程误用",
+          "solution": "napi_ref 只延长持有，不授权跨线程访问；回投与清理均按目标 SDK 验证。",
+          "example": "后台回调遇到页面/Worker env 已退出时释放结果而不调用 ArkTS。",
+          "problem_ids": [
+            "THR-001"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "重复释放与迟到回调",
+          "solution": "句柄状态机、代次和工作计数分离，回调排水后才释放 context。",
+          "example": "close 与读取完成并发时，结果最多被认领一次。",
+          "problem_ids": [
+            "LIFE-004",
+            "LIFE-008"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "取消被当成停止",
+          "solution": "声明取消效果；原生不支持停止时继续保活到工作终止。",
+          "example": "停止观察下载进度不代表 C 下载线程已经退出。",
+          "problem_ids": [
+            "ASYNC-001"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "状态码被吞或 ABI 漂移",
+          "solution": "C 状态码映射业务/系统错误；header、宏、结构布局与 .so 摘要成套验证。",
+          "example": "错误绑定加载到同名但不同布局的库时，加载门禁应阻断。",
+          "problem_ids": [
+            "ERR-001",
+            "TYPE-007"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        }
+      ],
+      "delivery": [
+        "按目标 ABI 交付 .so、其原生依赖、ArkTS 声明和 HAR。",
+        "SDK 编译、模块注册与 hvigor/ohpm 版本分别锁定。",
+        "单独验证应用包安装、实际模块装载、Release 和真机回调。",
+        "若提供外部缓冲零拷贝路径，另附 allocator/owner/结束条件的配置证据。"
+      ],
+      "gates": [
+        "参数边界、null/empty、错误码和大整数的正反例。",
+        "跨线程回投、同线程重入、迟到/重复回调与 env 销毁竞态。",
+        "释放计数归零且无回调访问已销毁 context。",
+        "独立 HAR 消费及目标 ABI 的 Release 设备执行。",
+        "关闭日志与追踪后，资源和线程保证仍成立。"
+      ],
+      "choices": [
+        "适合已有稳定 C ABI 或需要多语言共享同一原生库的场景。",
+        "C++ 实现可以先提供受控 C ABI；不将任意 C++ 头文件直接视作此配置。",
+        "ANI 由 X03 独立评估，不替换 Node-API 的 env/引用协议，也不继承其认证。"
+      ],
+      "detail": {
+        "family": "napi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "受限 C ABI 读取；Node-API C 接线生成。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "校验数值范围和输入形状；把平台错误、业务失败与取消分开；公开方法不泄漏 void*。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "C 算法、并发同步、停止工作的真实实现。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "C 头文件＋边界契约",
+              "kind": "domain",
+              "summary": "C 可见函数声明结合所有权、长度、错误、回调线程和取消效果；头文件不能自行表达完整语义。",
+              "does": [
+                "C header + 显式导出规则",
+                "负责方：SDK 作者"
+              ],
+              "constraints": [
+                "句柄归属、缓冲复制/转移、回调排水与资源释放语义。",
+                "业务受理确认、重试及状态回放策略。"
+              ],
+              "lines": [
+                "C header + 显式导出规则"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "ArkTS 通过目标 SDK 的 Node-API 适配器访问明确的 C 接口。MadB 生成机械接线，C 作者定义句柄、缓冲和回调协议。",
+              "does": [
+                "适合已有稳定 C ABI 或需要多语言共享同一原生库的场景。",
+                "C++ 实现可以先提供受控 C ABI；不将任意 C++ 头文件直接视作此配置。",
+                "ANI 由 X03 独立评估，不替换 Node-API 的 env/引用协议，也不继承其认证。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "HAR/原生依赖 + profile lock"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "受限 C ABI 读取",
+              "kind": "upstream",
+              "summary": "校验支持类型与配对释放器，生成 ArkTS 类型化入口、Node-API shim 和可定位诊断；不从裸指针猜测生命周期。",
+              "does": [
+                "C/C++ adapter + ArkTS 声明"
+              ],
+              "constraints": [
+                "根据契约生成 ArkTS 参数/返回模型、类型声明和 facade。"
+              ],
+              "lines": [
+                "env、引用、模块注册与回调能力"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "Node-API C 接线生成",
+              "kind": "upstream",
+              "summary": "校验支持类型与配对释放器，生成 ArkTS 类型化入口、Node-API shim 和可定位诊断；不从裸指针猜测生命周期。",
+              "does": [
+                "C/C++ adapter + ArkTS 声明"
+              ],
+              "constraints": [
+                "根据契约生成 ArkTS 参数/返回模型、类型声明和 facade。"
+              ],
+              "lines": [
+                "Rust 宏或受限 C/C++ glue、类型声明"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "生成 Node-API 注册、参数提取、状态码映射与 function/context 接线。",
+                "生成配对释放包装、关闭准入和订阅代次检查。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "独立 ArkTS 消费者",
+              "kind": "madb",
+              "summary": "构建、安装和运行真实 HAP，覆盖 Release、目标 ABI、env 退出与独立 HAR 消费；构建成功不代表运行通过。",
+              "does": [
+                "设备报告 + 制品摘要",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "参数边界、null/empty、错误码和大整数的正反例。",
+                "跨线程回投、同线程重入、迟到/重复回调与 env 销毁竞态。"
+              ],
+              "lines": [
+                "设备报告 + 制品摘要"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "按目标 ABI 编译 .so、类型声明及 ArkTS facade；记录 SDK、Clang、sysroot、依赖库和符号身份。",
+              "does": [
+                "按目标 ABI 交付 .so、其原生依赖、ArkTS 声明和 HAR。",
+                "SDK 编译、模块注册与 hvigor/ohpm 版本分别锁定。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "原生模块与 HAR",
+              "kind": "madb",
+              "summary": "按目标 ABI 编译 .so、类型声明及 ArkTS facade；记录 SDK、Clang、sysroot、依赖库和符号身份。",
+              "does": [
+                "HAR/原生依赖 + profile lock",
+                "负责方：平台维护者"
+              ],
+              "constraints": [
+                "单独验证应用包安装、实际模块装载、Release 和真机回调。",
+                "若提供外部缓冲零拷贝路径，另附 allocator/owner/结束条件的配置证据。"
+              ],
+              "lines": [
+                "HAR/原生依赖 + profile lock"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "ArkTS 业务调用方",
+              "kind": "ui",
+              "summary": "调用类型化方法和显式订阅；理解操作受理、取消和资源关闭的业务含义。",
+              "does": [
+                "Promise/订阅/资源 API",
+                "负责方：业务开发者"
+              ],
+              "constraints": [
+                "适合已有稳定 C ABI 或需要多语言共享同一原生库的场景。",
+                "C++ 实现可以先提供受控 C ABI；不将任意 C++ 头文件直接视作此配置。"
+              ],
+              "lines": [
+                "Promise/订阅/资源 API"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "类型化 Facade",
+              "kind": "madb",
+              "summary": "校验数值范围和输入形状；把平台错误、业务失败与取消分开；公开方法不泄漏 void*。",
+              "does": [
+                "ArkTS 包装 + 转换器",
+                "负责方：MadB"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "ArkTS 包装 + 转换器"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "Node-API C 注册与转换",
+              "kind": "upstream",
+              "summary": "仅在所属 env 的合法线程访问 napi_value；工作线程通过目标 SDK 支持的回投机制处理结果。",
+              "does": [
+                "handle scope / napi_ref / 回投队列"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "napi_value / callback / Promise"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "既有 C ABI provider",
+              "kind": "upstream",
+              "summary": "仅在所属 env 的合法线程访问 napi_value；工作线程通过目标 SDK 支持的回投机制处理结果。",
+              "does": [
+                "handle scope / napi_ref / 回投队列"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "Rust 对象或 C/C++ 句柄与错误协议"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "C 库实现",
+              "kind": "domain",
+              "summary": "执行算法与原生同步；通过约定分配器返回数据，并按协议停止任务和回调。",
+              "does": [
+                "C 函数 + opaque handle",
+                "负责方：C SDK 作者"
+              ],
+              "constraints": [
+                "C 算法、并发同步、停止工作的真实实现。",
+                "句柄归属、缓冲复制/转移、回调排水与资源释放语义。"
+              ],
+              "lines": [
+                "C 函数 + opaque handle"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "业务 owner 与订阅",
+              "kind": "madb",
+              "summary": "owner 控制引擎的显式关闭；页面只管理自身观察，不能因为页面销毁关闭共享引擎。",
+              "does": [
+                "资源对象 / subscription token",
+                "负责方：业务 owner"
+              ],
+              "constraints": [
+                "所属 env 仍可用时释放引用；环境退出按清理钩子协议收口。",
+                "最终配对调用 C destroy/free，重复 close 不重复释放。"
+              ],
+              "lines": [
+                "资源对象 / subscription token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "工作队列与 env 回投",
+              "kind": "madb",
+              "summary": "耗时 C 调用离开 UI 线程；回调携带调用身份，并在投递前检查 env 与订阅是否仍有效。",
+              "does": [
+                "call ID + dispatcher",
+                "负责方：MadB + 原生调度器"
+              ],
+              "constraints": [
+                "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "lines": [
+                "call ID + dispatcher"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向范围是已注册的 C function + context，不是任意 C 主动执行 ArkTS。",
+              "does": [
+                "原生侧根据协议保活 context；工作线程只构造可转交的结果。",
+                "通过目标 SDK 支持的线程安全回投进入所属 env。"
+              ],
+              "constraints": [
+                "关闭先拒绝新调用，等待原生工作与已在途回调达成协议，再释放 context、引用和句柄。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "ArkTS 业务调用方",
+            "N-API 适配与队列",
+            "C 库实现",
+            "ArkTS 回调与页面 owner"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "ArkTS 调用类型化方法，参数先经过范围与形状校验。",
+                "回投所属 env 后完成一次 Promise 或同步返回。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向范围是已注册的 C function + context，不是任意 C 主动执行 ArkTS。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "关闭先拒绝新调用，等待原生工作与已在途回调达成协议，再释放 context、引用和句柄。",
+                "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "整数与二进制载荷",
+            "path": [
+              "ArkTS 已检查的整数 / ArrayBuffer",
+              "明确范围与长度 / 所有权策略",
+              "C 整数 / ptr-length"
+            ],
+            "note": "大整数不能静默经过不精确的 number；大缓冲的复制或借用必须有明确寿命。"
+          },
+          {
+            "title": "资源对象",
+            "path": [
+              "ArkTS 包装对象",
+              "env 关联引用 + 原生句柄",
+              "明确 owner 的 native 对象"
+            ],
+            "note": "持久引用不赋予跨线程访问 env/value 的权利；finalizer 不能代替可等待关闭。"
+          },
+          {
+            "title": "结果与通知",
+            "path": [
+              "C status 与有效输出",
+              "显式错误边界与完成通道",
+              "ArkTS 值 / 失败 / Promise"
+            ],
+            "note": "业务错误、调用取消与桥接故障分开；异常按此后端规则封闭，不能因 Promise 只能兑现一次就省略 native 终态协议。"
+          }
+        ],
+        "example": {
+          "title": "环境票据与排队清理",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：这些不是 N-API 原始函数名\npayload = nativeWork(ownedInput)\nticket = ownerEnv.tryAcquireDelivery(payload, subscriptionGeneration)\nif ticket == rejected:\n    releaseWithNativeOwner(payload)\nelse:\n    ticket.enqueueOrCleanup() // 排队失败也只回收一次\n// 执行器中与 requestStop 共享准入同步；停止后只回收，不调用用户\n// env 可用时才打开 handle scope；关闭按工作/队列/用户回调分别排水",
+          "note": "设计协议，需由对应后端的环境/线程机制实现；票据在同一同步协议中取得，不能改写成先检查布尔值再投递。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "C 缓冲长度溢出",
+          "trigger": "ArkTS 输入的元素数乘元素宽度超出允许字节数。",
+          "trace": "受检乘法 → 检查上限 → 分配或借用 → 失败保持空输出。",
+          "expected": "不分配截断长度，不把越界 ptr/len 交给 C；错误可定位到输入字段。",
+          "oracle": "边界整数、嵌入 NUL、null+0 与超上限输入；核对 C 实际收到的长度及分配数。"
+        },
+        "owners": [
+          {
+            "title": "应用 / env owner",
+            "depth": 0,
+            "detail": "owner 控制引擎的显式关闭；页面只管理自身观察，不能因为页面销毁关闭共享引擎。"
+          },
+          {
+            "title": "ArkTS 对象包装 + native registry",
+            "depth": 1,
+            "detail": "校验数值范围和输入形状；把平台错误、业务失败与取消分开；公开方法不泄漏 void*。"
+          },
+          {
+            "title": "订阅 token / worker / 排队回调",
+            "depth": 2,
+            "detail": "关闭先拒绝新调用，等待原生工作与已在途回调达成协议，再释放 context、引用和句柄。"
+          },
+          {
+            "title": "native 对象、缓冲与持久引用",
+            "depth": 2,
+            "detail": "执行算法与原生同步；通过约定分配器返回数据，并按协议停止任务和回调。"
+          }
+        ],
+        "thread_rules": [
+          "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+          "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。",
+          "native worker 只操作其允许的值和资源；回投后再构造 ArkTS 可见值。",
+          "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "C header + 显式导出规则 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "生成配方 + 源符号映射",
+            "pattern": "Adapter / Mapper：复用 受限 C ABI 读取、Node-API C 接线生成",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "ArkTS 包装 + 转换器",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "HAR/原生依赖 + profile lock",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "设备报告 + 制品摘要",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "关闭先拒绝新调用，等待原生工作与已在途回调达成协议，再释放 context、引用和句柄。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "作者提供 C 头文件和显式边界语义。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "MadB 检查数值、句柄、缓冲、回调及释放配对。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "生成 ArkTS facade 与使用 SDK Node-API 的接线代码。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "平台工具链编译原生模块并打包 HAR，绑定与二进制记录共同身份。"
+        }
+      ]
+    },
+    {
+      "id": "node-api-cpp",
+      "name": "Node-API → C++ 资源模型",
+      "kind": "主线候选",
+      "summary": "ArkTS 使用类型化 SDK，Node-API 适配层把方法调用映射到显式 C++ facade。RAII 管理局部资源，异步关闭和回调排水仍由明确协议完成。",
+      "route_ids": [
+        "ARKTS-CPP-NAPI"
+      ],
+      "task_ids": [
+        "C07",
+        "I05",
+        "L05",
+        "L06",
+        "C09",
+        "C10"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "契约与生成",
+          "steps": [
+            "SDK 作者收敛公开 C++ facade，并声明方法线程与对象所有权。",
+            "MadB 按受支持形状生成 ArkTS facade、对象接线和诊断。",
+            "SDK Node-API 提供实际注册与 env 操作，C++ 编译器检查本地类型。",
+            "产物绑定编译选项、标准库、生成器和契约摘要。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "正向方法调用",
+          "steps": [
+            "ArkTS 方法进入类型化包装并检查句柄状态。",
+            "shim 获取本次调用的对象保活和准入权。",
+            "在约定执行器调用 C++ 方法，捕获声明允许的错误。",
+            "结果转换到 ArkTS 前维持正确 owner；失败路径释放临时资源。",
+            "成功通知异常不能触发第二次错误完成。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "C++ 事件回投",
+          "steps": [
+            "反向范围是注册的回调或观察接口，不是任意跨线程调用 ArkTS。",
+            "C++ 生成独立事件数据或受控共享数据。",
+            "经队列回到所属 env，再检查订阅代次与关闭状态。",
+            "调用 ArkTS 观察者，错误按通知策略记录。",
+            "事件被丢弃时也完成缓冲和原生引用释放。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "资源关闭协议",
+          "steps": [
+            "业务 owner 停止新操作并触发 async close。",
+            "向原生执行器发停止请求；取消 await 不能代替工作退出。",
+            "等待活动调用与回调排水，不在 finalizer 中阻塞 UI。",
+            "移除合法 env 引用与回调注册，随后析构 C++ 对象。",
+            "关闭失败或超时保留诊断与约定状态，不谎称资源已经释放。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "SDK 交付",
+          "steps": [
+            "按 SDK/ABI/标准库组合生成独立包。",
+            "校验 native 依赖、符号可见性及 Release 装载。",
+            "新工程使用发布包调用实际对象方法和异步关闭。",
+            "设备报告固定工具链、候选摘要与环境身份。"
+          ]
+        }
+      ],
+      "generated": [
+        "受支持方法的 ArkTS wrapper、错误模型和 Node-API shim。",
+        "按显式策略生成对象句柄、close 准入和回调注册包装。",
+        "生成 RAII 局部资源封装与异常到错误的接线。",
+        "生成 CMake/Hvigor 接入、包内容清单与调用追踪钩子。",
+        "生成对象创建/关闭/取消/晚到回调的验证骨架。"
+      ],
+      "handwritten": [
+        "C++ 对象线程安全、锁顺序、算法和业务事务。",
+        "异步 stop/drain 的真实实现及不可恢复失败策略。",
+        "自定义类型、所有权迁移、共享对象和异常分类的语义。",
+        "超出受限导出面的模板/继承/第三方库包装。"
+      ],
+      "risks": [
+        {
+          "problem": "RAII 被误当完整异步协议",
+          "solution": "析构只负责最终释放；公开 close 可等待停止与回调排水。",
+          "example": "销毁 Engine 时仍有 worker 回调，必须先排水再析构。",
+          "problem_ids": [
+            "LIFE-005"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "C++ 异常越界",
+          "solution": "在受控适配器截断异常并转换错误；析构与通知路径避免再次抛出。",
+          "example": "decode 抛出的异常变成一次失败，不穿越 Node-API 栈。",
+          "problem_ids": [
+            "ERR-002"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "共享指针被误当线程安全",
+          "solution": "shared_ptr 解决持有关系，锁或执行器隔离解决对象内部数据并发。",
+          "example": "两个 ArkTS 操作共享 Engine 不等于可以同时修改同一缓存。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "env 与回调保活混淆",
+          "solution": "引用保活、线程回投和环境有效性分别检查。",
+          "example": "Worker 退出后 queued event 清理 native payload，不读取 napi_value。",
+          "problem_ids": [
+            "LIFE-004",
+            "THR-001"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "整数与容器转换成本",
+          "solution": "检查精度与容量，规定复制/快照策略并记录复制字节数。",
+          "example": "大列表采用分批结果，不能把一次属性读取变成整库扫描。",
+          "problem_ids": [
+            "TYPE-001",
+            "PERF-001"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "标准库与依赖不匹配",
+          "solution": "固定 ABI、C++ 标准库、编译宏与动态依赖，并验证独立消费者。",
+          "example": "同名 .so 从另一 SDK 编译而来时不因链接成功就认定兼容。",
+          "problem_ids": [
+            "BUILD-001",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C07",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "交付 ArkTS 类型声明、facade、原生模块及其合法分发的依赖。",
+        "C++ 标准库和 RTTI/异常相关编译配置进入 profile 与包验证。",
+        "真实设备验证对象方法、事件、取消与显式关闭。",
+        "调试符号和 native 产物摘要对应，支持跨层崩溃定位。"
+      ],
+      "gates": [
+        "对象双 close、关闭后调用、调用中 close、晚到事件。",
+        "跨线程并发、同步重入、env 退出与执行器关停。",
+        "异常转换、通知异常和分配失败不会重复完成或泄漏。",
+        "Release HAR 的独立消费、ABI 与原生依赖装载。",
+        "按适用目标执行内存/线程检测，并保留未插桩验证。"
+      ],
+      "choices": [
+        "适合受控 C++ facade 与资源对象模型，公开 API 不直接泄漏 STL 或任意模板。",
+        "需要稳定的多语言 C 可见面时可选上一配置，C++ 实现保留在库内。",
+        "ANI 属于 X03 的另一个运行时后端，引用与线程规则要重新实现和验证。"
+      ],
+      "detail": {
+        "family": "napi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "C++ 公开 facade 契约；Node-API C++ glue。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "保留业务错误、取消和基础设施错误区别；显式 close 与只读状态可预测，不在属性读取暗做耗时调用。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "C++ 对象线程安全、锁顺序、算法和业务事务。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "C++ Facade＋导出契约",
+              "kind": "domain",
+              "summary": "选择有限的类、方法和数据类型；标明不可复制资源、对象线程亲和性、错误和异步关闭效果。",
+              "does": [
+                "受控 header + 边界契约",
+                "负责方：C++ SDK 作者"
+              ],
+              "constraints": [
+                "异步 stop/drain 的真实实现及不可恢复失败策略。",
+                "自定义类型、所有权迁移、共享对象和异常分类的语义。"
+              ],
+              "lines": [
+                "受控 header + 边界契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "ArkTS 使用类型化 SDK，Node-API 适配层把方法调用映射到显式 C++ facade。RAII 管理局部资源，异步关闭和回调排水仍由明确协议完成。",
+              "does": [
+                "适合受控 C++ facade 与资源对象模型，公开 API 不直接泄漏 STL 或任意模板。",
+                "需要稳定的多语言 C 可见面时可选上一配置，C++ 实现保留在库内。",
+                "ANI 属于 X03 的另一个运行时后端，引用与线程规则要重新实现和验证。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                ".so + ArkTS facade + HAR"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "C++ 公开 facade 契约",
+              "kind": "upstream",
+              "summary": "机械生成 ArkTS API、shim、资源包装和检查代码；模板、继承和自定义容器按支持表处理。",
+              "does": [
+                "对象注册/方法 shim"
+              ],
+              "constraints": [
+                "受支持方法的 ArkTS wrapper、错误模型和 Node-API shim。"
+              ],
+              "lines": [
+                "env、引用、模块注册与回调能力"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "Node-API C++ glue",
+              "kind": "upstream",
+              "summary": "机械生成 ArkTS API、shim、资源包装和检查代码；模板、继承和自定义容器按支持表处理。",
+              "does": [
+                "对象注册/方法 shim"
+              ],
+              "constraints": [
+                "受支持方法的 ArkTS wrapper、错误模型和 Node-API shim。"
+              ],
+              "lines": [
+                "Rust 宏或受限 C/C++ glue、类型声明"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "按显式策略生成对象句柄、close 准入和回调注册包装。",
+                "生成 RAII 局部资源封装与异常到错误的接线。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "独立 HAP 与压力案例",
+              "kind": "madb",
+              "summary": "通过真实消费者验证对象生命周期、异常、ABI、线程与环境退出，不以 C++ 单元测试代替 ArkTS 运行。",
+              "does": [
+                "consumer HAP + race reports",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "对象双 close、关闭后调用、调用中 close、晚到事件。",
+                "跨线程并发、同步重入、env 退出与执行器关停。"
+              ],
+              "lines": [
+                "consumer HAP + race reports"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "锁定目标 SDK、Clang、C++ 标准库和链接选项；默认 C++17，额外语言特性单独声明。",
+              "does": [
+                "交付 ArkTS 类型声明、facade、原生模块及其合法分发的依赖。",
+                "C++ 标准库和 RTTI/异常相关编译配置进入 profile 与包验证。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "C++ 库与 ArkTS 包",
+              "kind": "madb",
+              "summary": "锁定目标 SDK、Clang、C++ 标准库和链接选项；默认 C++17，额外语言特性单独声明。",
+              "does": [
+                ".so + ArkTS facade + HAR",
+                "负责方：平台维护者"
+              ],
+              "constraints": [
+                "真实设备验证对象方法、事件、取消与显式关闭。",
+                "调试符号和 native 产物摘要对应，支持跨层崩溃定位。"
+              ],
+              "lines": [
+                ".so + ArkTS facade + HAR"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "ArkTS 业务对象",
+              "kind": "ui",
+              "summary": "使用普通方法、Promise 和观察 API；引擎生命周期由业务 owner 决定。",
+              "does": [
+                "Engine / Operation / Subscription",
+                "负责方：业务开发者"
+              ],
+              "constraints": [
+                "适合受控 C++ facade 与资源对象模型，公开 API 不直接泄漏 STL 或任意模板。",
+                "需要稳定的多语言 C 可见面时可选上一配置，C++ 实现保留在库内。"
+              ],
+              "lines": [
+                "Engine / Operation / Subscription"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "类型化错误与资源包装",
+              "kind": "madb",
+              "summary": "保留业务错误、取消和基础设施错误区别；显式 close 与只读状态可预测，不在属性读取暗做耗时调用。",
+              "does": [
+                "惯用 API + resource token",
+                "负责方：MadB"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "惯用 API + resource token"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "N-API C++ 包装",
+              "kind": "upstream",
+              "summary": "负责 env 绑定、handle scope、参数转换及对象准入；finalizer 作为兜底，不承诺能够等待异步排水。",
+              "does": [
+                "napi 引用 + admission guard"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "napi_value / callback / Promise"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "RAII / C++ 语义 facade",
+              "kind": "upstream",
+              "summary": "负责 env 绑定、handle scope、参数转换及对象准入；finalizer 作为兜底，不承诺能够等待异步排水。",
+              "does": [
+                "napi 引用 + admission guard"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "Rust 对象或 C/C++ 句柄与错误协议"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "C++ Domain / Engine",
+              "kind": "domain",
+              "summary": "实现业务与线程同步；RAII 持有原生资源，原生对象是否可并发访问由作者定义。",
+              "does": [
+                "unique/shared ownership + worker",
+                "负责方：C++ 作者"
+              ],
+              "constraints": [
+                "C++ 对象线程安全、锁顺序、算法和业务事务。",
+                "异步 stop/drain 的真实实现及不可恢复失败策略。"
+              ],
+              "lines": [
+                "unique/shared ownership + worker"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "业务 owner 与 RAII",
+              "kind": "madb",
+              "summary": "ArkTS owner 发起显式关闭，C++ 包装器管理局部与最终释放；页面观察者仅释放自身订阅。",
+              "does": [
+                "显式 close + 作用域资源",
+                "负责方：业务 + C++ 作者"
+              ],
+              "constraints": [
+                "移除合法 env 引用与回调注册，随后析构 C++ 对象。",
+                "关闭失败或超时保留诊断与约定状态，不谎称资源已经释放。"
+              ],
+              "lines": [
+                "显式 close + 作用域资源"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "执行器与回投",
+              "kind": "madb",
+              "summary": "原生工作线程只操作合法 C++ 数据；env 调度器把完成和事件回投到目标 ArkTS 执行环境。",
+              "does": [
+                "queue + callback generation",
+                "负责方：MadB + 原生执行器"
+              ],
+              "constraints": [
+                "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "lines": [
+                "queue + callback generation"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向范围是注册的回调或观察接口，不是任意跨线程调用 ArkTS。",
+              "does": [
+                "C++ 生成独立事件数据或受控共享数据。",
+                "经队列回到所属 env，再检查订阅代次与关闭状态。"
+              ],
+              "constraints": [
+                "维护活动调用、任务及回调状态；停止、排水、释放顺序有界，析构函数不冒充可等待的关闭接口。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "ArkTS 业务对象",
+            "N-API 适配与队列",
+            "C++ Domain / Engine",
+            "ArkTS 回调与页面 owner"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "ArkTS 方法进入类型化包装并检查句柄状态。",
+                "成功通知异常不能触发第二次错误完成。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向范围是注册的回调或观察接口，不是任意跨线程调用 ArkTS。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "维护活动调用、任务及回调状态；停止、排水、释放顺序有界，析构函数不冒充可等待的关闭接口。",
+                "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "整数与二进制载荷",
+            "path": [
+              "ArkTS 已检查的整数 / ArrayBuffer",
+              "明确范围与长度 / 所有权策略",
+              "C++ 值 / 受管 buffer"
+            ],
+            "note": "大整数不能静默经过不精确的 number；大缓冲的复制或借用必须有明确寿命。"
+          },
+          {
+            "title": "资源对象",
+            "path": [
+              "ArkTS 包装对象",
+              "env 关联引用 + 原生句柄",
+              "明确 owner 的 native 对象"
+            ],
+            "note": "持久引用不赋予跨线程访问 env/value 的权利；finalizer 不能代替可等待关闭。"
+          },
+          {
+            "title": "结果与通知",
+            "path": [
+              "C++ 内捕获的异常 / 业务结果",
+              "显式错误边界与完成通道",
+              "ArkTS 值 / 失败 / Promise"
+            ],
+            "note": "业务错误、调用取消与桥接故障分开；异常按此后端规则封闭，不能因 Promise 只能兑现一次就省略 native 终态协议。"
+          }
+        ],
+        "example": {
+          "title": "环境票据与排队清理",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：这些不是 N-API 原始函数名\npayload = nativeWork(ownedInput)\nticket = ownerEnv.tryAcquireDelivery(payload, subscriptionGeneration)\nif ticket == rejected:\n    releaseWithNativeOwner(payload)\nelse:\n    ticket.enqueueOrCleanup() // 排队失败也只回收一次\n// 执行器中与 requestStop 共享准入同步；停止后只回收，不调用用户\n// env 可用时才打开 handle scope；关闭按工作/队列/用户回调分别排水",
+          "note": "设计协议，需由对应后端的环境/线程机制实现；票据在同一同步协议中取得，不能改写成先检查布尔值再投递。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "析构先于排队的 C++ 回调",
+          "trigger": "工作线程持有任务，ArkTS 包装已不可达，finalizer 开始回收。",
+          "trace": "显式关闭准入 → 保活任务与投递票据 → env 内认领或回收 → 排水后析构。",
+          "expected": "shared_ptr 只提供寿命，不提供互斥；finalizer 不同步等待当前 env 回调。",
+          "oracle": "暂停投递队列再触发回收，析构次数为一且排队项无 UAF；以 CRIT-01 验证。"
+        },
+        "owners": [
+          {
+            "title": "应用 / env owner",
+            "depth": 0,
+            "detail": "ArkTS owner 发起显式关闭，C++ 包装器管理局部与最终释放；页面观察者仅释放自身订阅。"
+          },
+          {
+            "title": "ArkTS 对象包装 + native registry",
+            "depth": 1,
+            "detail": "保留业务错误、取消和基础设施错误区别；显式 close 与只读状态可预测，不在属性读取暗做耗时调用。"
+          },
+          {
+            "title": "订阅 token / worker / 排队回调",
+            "depth": 2,
+            "detail": "维护活动调用、任务及回调状态；停止、排水、释放顺序有界，析构函数不冒充可等待的关闭接口。"
+          },
+          {
+            "title": "native 对象、缓冲与持久引用",
+            "depth": 2,
+            "detail": "实现业务与线程同步；RAII 持有原生资源，原生对象是否可并发访问由作者定义。"
+          }
+        ],
+        "thread_rules": [
+          "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+          "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。",
+          "native worker 只操作其允许的值和资源；回投后再构造 ArkTS 可见值。",
+          "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "受控 header + 边界契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "受检映射与诊断",
+            "pattern": "Adapter / Mapper：复用 C++ 公开 facade 契约、Node-API C++ glue",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "惯用 API + resource token",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": ".so + ArkTS facade + HAR",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "consumer HAP + race reports",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "维护活动调用、任务及回调状态；停止、排水、释放顺序有界，析构函数不冒充可等待的关闭接口。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "SDK 作者收敛公开 C++ facade，并声明方法线程与对象所有权。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "MadB 按受支持形状生成 ArkTS facade、对象接线和诊断。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "SDK Node-API 提供实际注册与 env 操作，C++ 编译器检查本地类型。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "产物绑定编译选项、标准库、生成器和契约摘要。"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "后端接入方案",
+      "path": "architecture/06-backend-profiles.md"
+    },
+    {
+      "label": "生成与适配职责",
+      "path": "architecture/07-code-generation.md"
+    },
+    {
+      "label": "生命周期与并发",
+      "path": "architecture/05-lifecycle-and-concurrency.md"
+    },
+    {
+      "label": "技术栈与版本候选",
+      "path": "architecture/16-technology-stack-and-versions.md"
+    },
+    {
+      "label": "真实消费者与 Lab 验证",
+      "path": "validation/02-lab-architecture.md"
+    },
+    {
+      "label": "OpenHarmony Node-API 稳定性说明",
+      "url": "https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/napi/napi-faq-about-stability.md"
+    }
+  ],
+  "view_schema": "madb.route-detail-view/3"
+}

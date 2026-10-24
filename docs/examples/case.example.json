@@ -1,0 +1,62 @@
+{
+  "schema": "madb.case/1",
+  "example": true,
+  "readiness": "planned",
+  "id": "CASE-LIFE-004-stop-race",
+  "problem_ids": [
+    "LIFE-004",
+    "THR-004"
+  ],
+  "source_ids": [
+    "Rust_C_CPP:13"
+  ],
+  "profile": null,
+  "direction": "provider-to-host-callback",
+  "target": null,
+  "requires": [
+    "controllable-callback-barrier",
+    "resource-counter"
+  ],
+  "fixture": "SampleEngine.Subscription",
+  "setup": [
+    "open-engine",
+    "register-observer"
+  ],
+  "steps": [
+    {
+      "action": "pause",
+      "at": "callback-entered"
+    },
+    {
+      "action": "request-stop"
+    },
+    {
+      "action": "assert-stop-pending"
+    },
+    {
+      "action": "resume",
+      "at": "callback-entered"
+    },
+    {
+      "action": "await-stopped"
+    },
+    {
+      "action": "emit-source-event"
+    }
+  ],
+  "assertions": [
+    "no-consumer-callback-after-stop-completed",
+    "context-release-count-equals-one"
+  ],
+  "expected_result": "passed",
+  "cleanup": [
+    "close-engine",
+    "verify-no-live-resources"
+  ],
+  "timeout_policy": {
+    "kind": "isolated-process-watchdog",
+    "duration_source": "profile-budget",
+    "on_timeout": "error-with-trace"
+  },
+  "route": "RUST-C-ABI"
+}

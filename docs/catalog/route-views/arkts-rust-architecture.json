@@ -1,0 +1,2341 @@
+{
+  "slug": "arkts-rust-architecture",
+  "title": "ArkTS ↔ Rust 架构全景",
+  "eyebrow": "ARKTS × RUST",
+  "summary": "napi-ohos 直连为主线；UniFFI-ArkTS 为隔离实验。共同关注 env、线程、所有权与真实设备，分别锁定生成器和制品身份。",
+  "route_ids": [
+    "ARKTS-RUST-NAPI"
+  ],
+  "extension_task_ids": [
+    "X07"
+  ],
+  "profiles": [
+    {
+      "id": "napi-direct",
+      "name": "ArkTS · napi-ohos 直连",
+      "kind": "主线候选",
+      "summary": "napi-ohos 为 Rust 导出 ArkTS 可消费的 Node-API 模块；MadB 补充契约、环境/线程/资源协议、类型化门面和正式鸿蒙消费工程。",
+      "route_ids": [
+        "ARKTS-RUST-NAPI"
+      ],
+      "task_ids": [
+        "C07",
+        "C09",
+        "C10",
+        "I05",
+        "L05"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "Rust 到 ArkTS 模块",
+          "steps": [
+            "作者声明 Rust 导出和环境、线程、取消契约。",
+            "napi-ohos 生成支持的低层接线，MadB 生成受限 ArkTS 门面/声明与诊断。",
+            "使用正式 SDK 的目标 linker/sysroot 编译原生模块。",
+            "打包后由 ArkTS 编译器和真实调用点核对声明/注册/实现一致性。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "ArkTS 调用 Rust",
+          "steps": [
+            "门面检查参数、资源存活与 API 语义。",
+            "Node-API 在合法 env/thread 中解码 ArkTS 值，创建必要持久引用或复制。",
+            "Rust 计算在约定线程执行，耗时工作避免阻塞 ArkTS 事件线程。",
+            "结果按 env 存活和 Promise/回调状态交接，错误分类返回。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 回投 ArkTS",
+          "steps": [
+            "工作线程生成原生数据，不能直接携带 napi_value 跨线程访问。",
+            "经目标 SDK 验证的线程安全回投机制排队，遵守容量和退出策略。",
+            "合法 env 线程创建 ArkTS 值，再调用存活的宿主回调。",
+            "反向范围为已注册的 environment-bound callback，不是任意 ArkTS 模块导入。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "页面 / 引擎 / env 清理",
+          "steps": [
+            "页面销毁先退订自己的观察，不自动销毁共享引擎。",
+            "引擎关闭停止新调用，取消或排水仍在运行的原生工作。",
+            "env 退出后不再回调 ArkTS；排队结果只执行允许的原生清理。",
+            "最后释放 refs、队列和 native 对象，避免迟到通知访问失效环境。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "正式鸿蒙消费",
+          "steps": [
+            "napi、derive、build、sys 与 ohrs CLI 分别锁定，记录 SDK 和目标 ABI。",
+            "打包原生模块、依赖、类型声明及 ohpm/HAR 消费入口。",
+            "真实应用设备运行同步、Promise、callback、关闭与 env teardown。",
+            "Release、缺库/错注册、混淆和多 env 隔离进入分发门禁。"
+          ]
+        }
+      ],
+      "generated": [
+        "napi-ohos 为支持的 Rust 导出声明生成 Node-API 接线。",
+        "MadB 生成 ArkTS 类型化门面、声明一致性检查和明确的错误映射。",
+        "按已声明策略生成 Promise/订阅、资源准入和线程回投包装。",
+        "生成目标库装配、HAR/应用工程配置和消费者示例。",
+        "生成 env/队列/资源诊断钩子；正确性保护不随关闭诊断而移除。"
+      ],
+      "handwritten": [
+        "Rust 业务、线程池/执行器、同步协议和 unsafe。",
+        "队列溢出、重放、取消副作用与业务受理确认策略。",
+        "环境、引擎、页面的真实 owner 和生命周期接入。",
+        "受支持类型以外的明确适配及零复制的借用/所有权协议。"
+      ],
+      "risks": [
+        {
+          "problem": "数值和字节不保真",
+          "solution": "明确整数范围与目标 SDK 支持的表示；字节缓冲声明复制或转移及释放器。",
+          "example": "64 位 ID 不经超出安全范围的 number 隐式转换；不能靠类型断言补救。",
+          "problem_ids": [
+            "TYPE-001",
+            "TYPE-005"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "跨线程使用 env/value",
+          "solution": "工作线程只操作安全原生数据，经验证机制回投创建 ArkTS 值。",
+          "example": "长期保存 napi_ref 不等于可以在任意 Rust 线程读取它。",
+          "problem_ids": [
+            "THR-001"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "env 退出与迟到回调",
+          "solution": "关闭准入与 env 存活检查配合排水，失效环境只允许原生清理。",
+          "example": "页面已退出、队列仍有结果时不能调用过期回调。",
+          "problem_ids": [
+            "LIFE-007"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "取消与 Promise 完成竞争",
+          "solution": "一次完成闸门与结果清理；Promise 取消包装不承诺业务撤销。",
+          "example": "取消先发生后 Rust 返回对象，仍须释放而不能 resolve 两次。",
+          "problem_ids": [
+            "ASYNC-001",
+            "ASYNC-002"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "同步回调与重入",
+          "solution": "声明允许的同步/异步调用范围，跨界前释放业务锁。",
+          "example": "ArkTS callback 立即再次调用 Rust 时避免死锁和重复关闭。",
+          "problem_ids": [
+            "THR-004"
+          ],
+          "task_ids": [
+            "C07",
+            "C09"
+          ]
+        },
+        {
+          "problem": "参考运行时冒充目标支持",
+          "solution": "正式 SDK/设备验证注册、线程和 Release；缺环境不能算通过。",
+          "example": "Node.js fixture 或仅 HAP 构建成功不能认证 HarmonyOS。",
+          "problem_ids": [
+            "VERIFY-001",
+            "VERIFY-002"
+          ],
+          "task_ids": [
+            "C07",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "目标 Rust 库使用对应正式 SDK 的 linker/sysroot 和 ABI。",
+        "原生模块、类型声明、装载名、依赖与 HAR/应用配方成套交付。",
+        "napi crate 家族与 ohrs CLI 分别记录版本，不能用同一版本号代替。",
+        "HarmonyOS 与 OpenHarmony 环境、设备和运行报告分别登记。",
+        "独立 ArkTS 消费者仅依赖 SDK，验证 Debug/Release 和真实设备调用。"
+      ],
+      "gates": [
+        "参数范围、字节所有权、业务错误和桥接错误有正反例。",
+        "多 env、env teardown、队列排水、重复关闭和迟到回调均验证。",
+        "Promise/异步完成保持一次，取消后的资源计数收敛。",
+        "Release 注册/装载与独立 HAR/应用消费通过实际运行。",
+        "构建-only、缺设备与 skipped 均不能生成路线认证。"
+      ],
+      "choices": [
+        "适合 Rust 直接提供 ArkTS SDK，避免无需求的 Kotlin 中转。",
+        "Node-API 是调用机制，类型化值、JSON、字节是独立载荷决策。",
+        "ANI 是独立实验运行时；不从本 profile 的结果推导 ANI 支持。"
+      ],
+      "detail": {
+        "family": "napi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "napi-ohos 宏与声明；ohrs / OHOS 构建。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "包装受检的参数、业务错误、Promise、订阅和关闭协议；@Trace 是 UI 属性观测，不是 FFI 调用追踪。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 业务、线程池/执行器、同步协议和 unsafe。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust 导出声明与 env 契约",
+              "kind": "domain",
+              "summary": "明确 API、数值/字节表示、错误、取消效果、回调线程及 env 归属。Node-API 运行机制不要求业务强制使用 JSON。",
+              "does": [
+                "napi 导出声明、边界契约",
+                "负责方：Rust SDK 作者"
+              ],
+              "constraints": [
+                "队列溢出、重放、取消副作用与业务受理确认策略。",
+                "环境、引擎、页面的真实 owner 和生命周期接入。"
+              ],
+              "lines": [
+                "napi 导出声明、边界契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "napi-ohos 为 Rust 导出 ArkTS 可消费的 Node-API 模块；MadB 补充契约、环境/线程/资源协议、类型化门面和正式鸿蒙消费工程。",
+              "does": [
+                "适合 Rust 直接提供 ArkTS SDK，避免无需求的 Kotlin 中转。",
+                "Node-API 是调用机制，类型化值、JSON、字节是独立载荷决策。",
+                "ANI 是独立实验运行时；不从本 profile 的结果推导 ANI 支持。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "lib*.so、ohpm/HAR 消费配方"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "napi-ohos 宏与声明",
+              "kind": "upstream",
+              "summary": "napi-ohos 宏处理支持的声明；MadB 组织能力检查、类型化门面、声明文件和工程装配。crate 家族与 ohrs CLI 独立锁定。",
+              "does": [
+                "类型声明、模块注册、装载名"
+              ],
+              "constraints": [
+                "napi-ohos 为支持的 Rust 导出声明生成 Node-API 接线。"
+              ],
+              "lines": [
+                "env、引用、模块注册与回调能力"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "ohrs / OHOS 构建",
+              "kind": "upstream",
+              "summary": "napi-ohos 宏处理支持的声明；MadB 组织能力检查、类型化门面、声明文件和工程装配。crate 家族与 ohrs CLI 独立锁定。",
+              "does": [
+                "类型声明、模块注册、装载名"
+              ],
+              "constraints": [
+                "napi-ohos 为支持的 Rust 导出声明生成 Node-API 接线。"
+              ],
+              "lines": [
+                "Rust 宏或受限 C/C++ glue、类型声明"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "MadB 生成 ArkTS 类型化门面、声明一致性检查和明确的错误映射。",
+                "按已声明策略生成 Promise/订阅、资源准入和线程回投包装。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "正式 SDK + 真机 + Release",
+              "kind": "madb",
+              "summary": "Node.js 上的 N-API 测试只提供有限参考；HarmonyOS/OpenHarmony 目标分别验证装载、回调、env 和资源释放。",
+              "does": [
+                "设备/HAP 执行、Release 报告",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "参数范围、字节所有权、业务错误和桥接错误有正反例。",
+                "多 env、env teardown、队列排水、重复关闭和迟到回调均验证。"
+              ],
+              "lines": [
+                "设备/HAP 执行、Release 报告"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "Rust 使用目标 SDK 的 linker/sysroot；原生模块及依赖进入 HAR/应用包装，实际装载由正式设备验证。",
+              "does": [
+                "目标 Rust 库使用对应正式 SDK 的 linker/sysroot 和 ABI。",
+                "原生模块、类型声明、装载名、依赖与 HAR/应用配方成套交付。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "OHOS so + HAR/HAP 配方",
+              "kind": "madb",
+              "summary": "Rust 使用目标 SDK 的 linker/sysroot；原生模块及依赖进入 HAR/应用包装，实际装载由正式设备验证。",
+              "does": [
+                "lib*.so、ohpm/HAR 消费配方",
+                "负责方：MadB OHOS 适配器"
+              ],
+              "constraints": [
+                "HarmonyOS 与 OpenHarmony 环境、设备和运行报告分别登记。",
+                "独立 ArkTS 消费者仅依赖 SDK，验证 Debug/Release 和真实设备调用。"
+              ],
+              "lines": [
+                "lib*.so、ohpm/HAR 消费配方"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "ArkTS 业务与 ArkUI",
+              "kind": "ui",
+              "summary": "业务使用类型化方法、Promise 与订阅；UI 状态在合法执行线程更新，资源 owner 与页面 observer 分离。",
+              "does": [
+                "ArkTS API、状态/事件观察",
+                "负责方：SDK 消费者"
+              ],
+              "constraints": [
+                "适合 Rust 直接提供 ArkTS SDK，避免无需求的 Kotlin 中转。",
+                "Node-API 是调用机制，类型化值、JSON、字节是独立载荷决策。"
+              ],
+              "lines": [
+                "ArkTS API、状态/事件观察"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "ArkTS 类型化门面",
+              "kind": "madb",
+              "summary": "包装受检的参数、业务错误、Promise、订阅和关闭协议；@Trace 是 UI 属性观测，不是 FFI 调用追踪。",
+              "does": [
+                "SDK 门面、资源/订阅对象",
+                "负责方：MadB 生成 / 普通库"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "SDK 门面、资源/订阅对象"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "N-API 导出 / env",
+              "kind": "upstream",
+              "summary": "napi_env/napi_value 关联环境与线程，引用持久化不授予跨线程访问权。参数解码与资源取用要验证存活及归属。",
+              "does": [
+                "env、scope、ref、原生句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "napi_value / callback / Promise"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "napi-ohos Rust 转换",
+              "kind": "upstream",
+              "summary": "napi_env/napi_value 关联环境与线程，引用持久化不授予跨线程访问权。参数解码与资源取用要验证存活及归属。",
+              "does": [
+                "env、scope、ref、原生句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "Rust 对象或 C/C++ 句柄与错误协议"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与工作线程",
+              "kind": "domain",
+              "summary": "Rust 核心处理算法与异步任务；工作线程不直接访问 ArkTS 值，按已验证回投机制发送数据。",
+              "does": [
+                "Rust 任务、原生数据与锁",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 业务、线程池/执行器、同步协议和 unsafe。",
+                "队列溢出、重放、取消副作用与业务受理确认策略。"
+              ],
+              "lines": [
+                "Rust 任务、原生数据与锁"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "env / engine / observer",
+              "kind": "madb",
+              "summary": "环境、共享引擎和页面订阅分别有 owner；环境退出意味着宿主对象不能再被调用。",
+              "does": [
+                "关闭顺序、订阅与 env 注册",
+                "负责方：应用 owner / MadB"
+              ],
+              "constraints": [
+                "env 退出后不再回调 ArkTS；排队结果只执行允许的原生清理。",
+                "最后释放 refs、队列和 native 对象，避免迟到通知访问失效环境。"
+              ],
+              "lines": [
+                "关闭顺序、订阅与 env 注册"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "线程回投与队列策略",
+              "kind": "madb",
+              "summary": "用目标 SDK 验证的线程安全回投机制或 TSFN 配套；声明队列容量、丢弃/阻塞与回调顺序，不能假定无界可靠。",
+              "does": [
+                "线程投递、任务队列、主线程消费",
+                "负责方：napi-ohos / MadB 策略"
+              ],
+              "constraints": [
+                "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "lines": [
+                "线程投递、任务队列、主线程消费"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "工作线程生成原生数据，不能直接携带 napi_value 跨线程访问。",
+              "does": [
+                "经目标 SDK 验证的线程安全回投机制排队，遵守容量和退出策略。",
+                "合法 env 线程创建 ArkTS 值，再调用存活的宿主回调。"
+              ],
+              "constraints": [
+                "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "ArkTS 业务与 ArkUI",
+            "N-API 适配与队列",
+            "Rust 内核与工作线程",
+            "ArkTS 回调与页面 owner"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "门面检查参数、资源存活与 API 语义。",
+                "结果按 env 存活和 Promise/回调状态交接，错误分类返回。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "工作线程生成原生数据，不能直接携带 napi_value 跨线程访问。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。",
+                "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "整数与二进制载荷",
+            "path": [
+              "ArkTS 已检查的整数 / ArrayBuffer",
+              "明确范围与长度 / 所有权策略",
+              "Rust 整数 / 受管 buffer"
+            ],
+            "note": "大整数不能静默经过不精确的 number；大缓冲的复制或借用必须有明确寿命。"
+          },
+          {
+            "title": "资源对象",
+            "path": [
+              "ArkTS 包装对象",
+              "env 关联引用 + 原生句柄",
+              "明确 owner 的 native 对象"
+            ],
+            "note": "持久引用不赋予跨线程访问 env/value 的权利；finalizer 不能代替可等待关闭。"
+          },
+          {
+            "title": "结果与通知",
+            "path": [
+              "Rust Result 与后端完成协议",
+              "显式错误边界与完成通道",
+              "ArkTS 值 / 失败 / Promise"
+            ],
+            "note": "业务错误、调用取消与桥接故障分开；异常按此后端规则封闭，不能因 Promise 只能兑现一次就省略 native 终态协议。"
+          }
+        ],
+        "example": {
+          "title": "环境票据与排队清理",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：这些不是 N-API 原始函数名\npayload = nativeWork(ownedInput)\nticket = ownerEnv.tryAcquireDelivery(payload, subscriptionGeneration)\nif ticket == rejected:\n    releaseWithNativeOwner(payload)\nelse:\n    ticket.enqueueOrCleanup() // 排队失败也只回收一次\n// 执行器中与 requestStop 共享准入同步；停止后只回收，不调用用户\n// env 可用时才打开 handle scope；关闭按工作/队列/用户回调分别排水",
+          "note": "设计协议，需由对应后端的环境/线程机制实现；票据在同一同步协议中取得，不能改写成先检查布尔值再投递。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "工作线程向已退出 env 投递",
+          "trigger": "Rust 任务完成时，原 env 正在清理，另一个 Worker 已创建。",
+          "trace": "载荷保留在 native → 按原 env 代次取得投递票据 → 拒绝则原生回收。",
+          "expected": "不可把原 env 的引用投给新 Worker；不能先判断布尔值再使用 env。",
+          "oracle": "隔离 env 重建与迟到完成，统计每个 env 的引用与资源释放，真实 HAP 运行。"
+        },
+        "owners": [
+          {
+            "title": "应用 / env owner",
+            "depth": 0,
+            "detail": "环境、共享引擎和页面订阅分别有 owner；环境退出意味着宿主对象不能再被调用。"
+          },
+          {
+            "title": "ArkTS 对象包装 + native registry",
+            "depth": 1,
+            "detail": "包装受检的参数、业务错误、Promise、订阅和关闭协议；@Trace 是 UI 属性观测，不是 FFI 调用追踪。"
+          },
+          {
+            "title": "订阅 token / worker / 排队回调",
+            "depth": 2,
+            "detail": "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。"
+          },
+          {
+            "title": "native 对象、缓冲与持久引用",
+            "depth": 2,
+            "detail": "Rust 核心处理算法与异步任务；工作线程不直接访问 ArkTS 值，按已验证回投机制发送数据。"
+          }
+        ],
+        "thread_rules": [
+          "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+          "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。",
+          "native worker 只操作其允许的值和资源；回投后再构造 ArkTS 可见值。",
+          "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "napi 导出声明、边界契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "Rust 接线、ArkTS 声明/门面",
+            "pattern": "Adapter / Mapper：复用 napi-ohos 宏与声明、ohrs / OHOS 构建",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "SDK 门面、资源/订阅对象",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "lib*.so、ohpm/HAR 消费配方",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "设备/HAP 执行、Release 报告",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "作者声明 Rust 导出和环境、线程、取消契约。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "napi-ohos 生成支持的低层接线，MadB 生成受限 ArkTS 门面/声明与诊断。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "使用正式 SDK 的目标 linker/sysroot 编译原生模块。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "打包后由 ArkTS 编译器和真实调用点核对声明/注册/实现一致性。"
+        }
+      ]
+    },
+    {
+      "id": "uniffi-arkts-beta",
+      "name": "ArkTS · UniFFI 实验生成",
+      "kind": "实验扩展",
+      "summary": "为已有 UniFFI Rust 能力生成 ArkTS API 和 napi-ohos Rust adapter，再链接配套 UniFFI 动态库。X07/P13 独立评估，不能继承 napi 直连或其他 UniFFI 版本的认证。",
+      "route_ids": [
+        "ARKTS-RUST-NAPI"
+      ],
+      "task_ids": [
+        "X07",
+        "C07",
+        "C09",
+        "C10",
+        "I05"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "UniFFI 复用与 adapter 生成",
+          "steps": [
+            "读取已声明的 UniFFI API，检查实验后端受支持子集。",
+            "固定 beta 生成器及独立 UniFFI 配套身份，生成 ArkTS 包装和 N-API Rust adapter。",
+            "编译 adapter 与其所链接的 UniFFI 动态库，分别记录摘要。",
+            "MadB 添加约束诊断、工程包装与 X07/P13 独立消费样例。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "ArkTS 经两级桥调用 Rust",
+          "steps": [
+            "ArkTS 使用实验配置明确公开的类型化 API。",
+            "N-API adapter 在正确 env 解码，转换为配套 UniFFI ABI 表示。",
+            "UniFFI 动态库执行业务；对象与缓冲不能与直连 napi 句柄混用。",
+            "结果逆向转换并配对释放，两级转换成本纳入基准。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "受限 UniFFI 宿主回调",
+          "steps": [
+            "反向仅限实验生成器支持的 callback interface。",
+            "按目标线程和 env 约束验证回调路径，禁止带失效值跨线程。",
+            "异线程同步回调在当前候选中属于拒绝范围，不静默改成异步。",
+            "支持的回投路径仍需一次完成、注销、env teardown 和释放竞态验证。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "页面 / 引擎 / env 清理",
+          "steps": [
+            "页面销毁先退订自己的观察，不自动销毁共享引擎。",
+            "引擎关闭停止新调用，取消或排水仍在运行的原生工作。",
+            "env 退出后不再回调 ArkTS；排队结果只执行允许的原生清理。",
+            "最后释放 refs、队列和 native 对象，避免迟到通知访问失效环境。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "实验制品独立验证",
+          "steps": [
+            "锁定 beta 生成器、UniFFI 配套、napi 组件、SDK 和两级库身份。",
+            "独立 ArkTS 应用打包装载 adapter 与目标 UniFFI 库。",
+            "设备实际执行用例，区分 smoke 的 skipped、build-only 与运行结果。",
+            "实验报告不改变 16 条主线，也不扩大 napi 直连或其他 UniFFI 配置认证。"
+          ]
+        }
+      ],
+      "generated": [
+        "实验生成器从受支持 UniFFI 接口生成 ArkTS API。",
+        "生成基于 napi-ohos 的 Rust adapter 与配套 UniFFI 编解码接线。",
+        "MadB 生成两级库装配、身份核对和不支持能力诊断。",
+        "按明确契约生成资源/Promise Facade 与诊断，不隐式放宽回调限制。",
+        "生成 X07/P13 的独立消费者与能力探针输入。"
+      ],
+      "handwritten": [
+        "Rust 业务、线程池/执行器、同步协议和 unsafe。",
+        "队列溢出、重放、取消副作用与业务受理确认策略。",
+        "环境、引擎、页面的真实 owner 和生命周期接入。",
+        "受支持类型以外的明确适配及零复制的借用/所有权协议。"
+      ],
+      "risks": [
+        {
+          "problem": "独立 UniFFI 配套被混用",
+          "solution": "实验生成器的依赖与目标库一起锁，不能套用 Swift/JVM 当前候选版本。",
+          "example": "相似类型名不代表二进制编码和对象句柄兼容。",
+          "problem_ids": [
+            "CAP-004",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "X07"
+          ]
+        },
+        {
+          "problem": "异线程同步回调不支持",
+          "solution": "生成前暴露能力限制，目标探针验证拒绝路径，不隐式切换异步。",
+          "example": "Rust worker 请求同步 ArkTS 结果时应明确阻断该组合。",
+          "problem_ids": [
+            "CAP-001",
+            "THR-002"
+          ],
+          "task_ids": [
+            "X07"
+          ]
+        },
+        {
+          "problem": "两级缓冲和对象释放",
+          "solution": "N-API adapter 与 UniFFI 库的所有权交接分别登记，迟到结果走唯一清理路径。",
+          "example": "Promise 已结束后返回 UniFFI 对象，不能泄漏或交给错误释放器。",
+          "problem_ids": [
+            "LIFE-001",
+            "LIFE-008"
+          ],
+          "task_ids": [
+            "X07"
+          ]
+        },
+        {
+          "problem": "跨 env 与取消",
+          "solution": "复用明确 env/工作/回调状态机，但需要实验后端自己的证据。",
+          "example": "两个 env 的 callback handle 不得相互使用；环境退出后不再完成宿主 Promise。",
+          "problem_ids": [
+            "LIFE-007",
+            "ASYNC-001"
+          ],
+          "task_ids": [
+            "X07"
+          ]
+        },
+        {
+          "problem": "缺失类型或 async 能力",
+          "solution": "支持清单逐项探针，未覆盖声明阻断而非静默改 API。",
+          "example": "custom type 未支持不能通过“全部当字符串”冒充语义等价。",
+          "problem_ids": [
+            "CAP-003"
+          ],
+          "task_ids": [
+            "X07"
+          ]
+        },
+        {
+          "problem": "烟测被误认运行通过",
+          "solution": "检查真实设备执行与用例完成记录，缺 SDK/设备分类处理。",
+          "example": "上游脚本返回成功但实际只构建 HAP，不能记为设备测试通过。",
+          "problem_ids": [
+            "VERIFY-002"
+          ],
+          "task_ids": [
+            "X07"
+          ]
+        }
+      ],
+      "delivery": [
+        "adapter 与 UniFFI 动态库、ArkTS 包装及其配套身份一起交付。",
+        "当前实验候选按技术栈规范中的 beta/0.31.x 配套单独锁，不能混装其他后端产物。",
+        "正式 SDK 设备上验证装载依赖、符号和实际 API；类型声明编译不算运行通过。",
+        "X07 独立交付实验能力矩阵，P13 可以提前探针，正式扩展验收仍遵循计划前置。"
+      ],
+      "gates": [
+        "X07/P13 覆盖类型、对象、async、错误、取消、同步回调限制与 env。",
+        "实际设备用例完成，明确区分 build-only、skipped 与 passed。",
+        "两级转换/复制成本与原生对象计数有基准和关闭后断言。",
+        "依赖错配、缺库及跨后端句柄混用产生明确失败。",
+        "实验成功只认证其精确配置，不自动替换 napi 默认主线。"
+      ],
+      "choices": [
+        "适合已有 UniFFI Rust API，希望评估复用到 ArkTS 的场景。",
+        "这是 X07 实验候选，不将 beta 生成能力包装成正式 SDK 承诺。",
+        "若依赖异线程同步 callback 或其他未支持类型，应先保留缺口并重新设计显式接口。"
+      ],
+      "detail": {
+        "family": "napi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "UniFFI Rust 元数据；ArkTS beta 生成器；napi-ohos adapter 构建。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "MadB 检查实验后端的实际类型、对象、async 与回调能力；不能用抹去类型、强制 JSON 或删接口掩盖缺口。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 业务、线程池/执行器、同步协议和 unsafe。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "已有 UniFFI Rust 接口",
+              "kind": "domain",
+              "summary": "复用 UniFFI 元数据/导出声明；实验后端只接受明确支持的形状，custom types 等未覆盖能力在生成前诊断。",
+              "does": [
+                "UniFFI 接口、扩展能力声明",
+                "负责方：Rust SDK 作者"
+              ],
+              "constraints": [
+                "队列溢出、重放、取消副作用与业务受理确认策略。",
+                "环境、引擎、页面的真实 owner 和生命周期接入。"
+              ],
+              "lines": [
+                "UniFFI 接口、扩展能力声明"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "为已有 UniFFI Rust 能力生成 ArkTS API 和 napi-ohos Rust adapter，再链接配套 UniFFI 动态库。X07/P13 独立评估，不能继承 napi 直连或其他 UniFFI 版本的认证。",
+              "does": [
+                "适合已有 UniFFI Rust API，希望评估复用到 ArkTS 的场景。",
+                "这是 X07 实验候选，不将 beta 生成能力包装成正式 SDK 承诺。",
+                "若依赖异线程同步 callback 或其他未支持类型，应先保留缺口并重新设计显式接口。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "两个角色的库、加载/链接清单"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "UniFFI Rust 元数据",
+              "kind": "upstream",
+              "summary": "实验生成器生成 ArkTS API 与 N-API Rust adapter；使用其独立 UniFFI 配套，不把 Swift/JVM 的候选版本强行混入。",
+              "does": [
+                "ArkTS API、adapter 原生模块"
+              ],
+              "constraints": [
+                "实验生成器从受支持 UniFFI 接口生成 ArkTS API。"
+              ],
+              "lines": [
+                "env、引用、模块注册与回调能力"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 275.0,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "ArkTS beta 生成器",
+              "kind": "upstream",
+              "summary": "实验生成器生成 ArkTS API 与 N-API Rust adapter；使用其独立 UniFFI 配套，不把 Swift/JVM 的候选版本强行混入。",
+              "does": [
+                "ArkTS API、adapter 原生模块"
+              ],
+              "constraints": [
+                "实验生成器从受支持 UniFFI 接口生成 ArkTS API。"
+              ],
+              "lines": [
+                "Rust 宏或受限 C/C++ glue、类型声明"
+              ],
+              "kicker": "TOOL1",
+              "x": 335.0,
+              "y": 300,
+              "w": 275.0,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool2",
+              "title": "napi-ohos adapter 构建",
+              "kind": "upstream",
+              "summary": "实验生成器生成 ArkTS API 与 N-API Rust adapter；使用其独立 UniFFI 配套，不把 Swift/JVM 的候选版本强行混入。",
+              "does": [
+                "ArkTS API、adapter 原生模块"
+              ],
+              "constraints": [
+                "实验生成器从受支持 UniFFI 接口生成 ArkTS API。"
+              ],
+              "lines": [
+                "Rust 宏或受限 C/C++ glue、类型声明"
+              ],
+              "kicker": "TOOL2",
+              "x": 630.0,
+              "y": 300,
+              "w": 275.0,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "生成基于 napi-ohos 的 Rust adapter 与配套 UniFFI 编解码接线。",
+                "MadB 生成两级库装配、身份核对和不支持能力诊断。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 925.0,
+              "y": 300,
+              "w": 275.0,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "X07 / P13 独立实验",
+              "kind": "madb",
+              "summary": "在目标设备证明类型、对象、async、取消、线程、env 和库装载；上游 smoke 可能缺环境跳过或仅构建，不能直接计为运行通过。",
+              "does": [
+                "实验能力矩阵、设备报告",
+                "负责方：MadB-Lab 实验轨道"
+              ],
+              "constraints": [
+                "X07/P13 覆盖类型、对象、async、错误、取消、同步回调限制与 env。",
+                "实际设备用例完成，明确区分 build-only、skipped 与 passed。"
+              ],
+              "lines": [
+                "实验能力矩阵、设备报告"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "同时装配 N-API adapter 与配套 UniFFI 原生库；装载关系、导出符号和版本身份进入发布候选。",
+              "does": [
+                "adapter 与 UniFFI 动态库、ArkTS 包装及其配套身份一起交付。",
+                "当前实验候选按技术栈规范中的 beta/0.31.x 配套单独锁，不能混装其他后端产物。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "adapter + UniFFI 动态库",
+              "kind": "madb",
+              "summary": "同时装配 N-API adapter 与配套 UniFFI 原生库；装载关系、导出符号和版本身份进入发布候选。",
+              "does": [
+                "两个角色的库、加载/链接清单",
+                "负责方：MadB 实验构建适配器"
+              ],
+              "constraints": [
+                "正式 SDK 设备上验证装载依赖、符号和实际 API；类型声明编译不算运行通过。",
+                "X07 独立交付实验能力矩阵，P13 可以提前探针，正式扩展验收仍遵循计划前置。"
+              ],
+              "lines": [
+                "两个角色的库、加载/链接清单"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "ArkTS 业务与 ArkUI",
+              "kind": "ui",
+              "summary": "业务使用类型化方法、Promise 与订阅；UI 状态在合法执行线程更新，资源 owner 与页面 observer 分离。",
+              "does": [
+                "ArkTS API、状态/事件观察",
+                "负责方：SDK 消费者"
+              ],
+              "constraints": [
+                "适合已有 UniFFI Rust API，希望评估复用到 ArkTS 的场景。",
+                "这是 X07 实验候选，不将 beta 生成能力包装成正式 SDK 承诺。"
+              ],
+              "lines": [
+                "ArkTS API、状态/事件观察"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "受支持子集的 ArkTS API",
+              "kind": "madb",
+              "summary": "MadB 检查实验后端的实际类型、对象、async 与回调能力；不能用抹去类型、强制 JSON 或删接口掩盖缺口。",
+              "does": [
+                "类型化 API、能力诊断",
+                "负责方：MadB 能力规则 / 生成器"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "类型化 API、能力诊断"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "N-API → Rust adapter",
+              "kind": "upstream",
+              "summary": "经 env-bound N-API adapter 后再进入 UniFFI ABI；两级转换、缓冲、对象句柄与释放顺序都需要验证。",
+              "does": [
+                "N-API 值、UniFFI 缓冲/句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "napi_value / callback / Promise"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "UniFFI ABI → Rust 内核",
+              "kind": "upstream",
+              "summary": "经 env-bound N-API adapter 后再进入 UniFFI ABI；两级转换、缓冲、对象句柄与释放顺序都需要验证。",
+              "does": [
+                "N-API 值、UniFFI 缓冲/句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "Rust 对象或 C/C++ 句柄与错误协议"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与工作线程",
+              "kind": "domain",
+              "summary": "Rust 核心处理算法与异步任务；工作线程不直接访问 ArkTS 值，按已验证回投机制发送数据。",
+              "does": [
+                "Rust 任务、原生数据与锁",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 业务、线程池/执行器、同步协议和 unsafe。",
+                "队列溢出、重放、取消副作用与业务受理确认策略。"
+              ],
+              "lines": [
+                "Rust 任务、原生数据与锁"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "env / engine / observer",
+              "kind": "madb",
+              "summary": "环境、共享引擎和页面订阅分别有 owner；环境退出意味着宿主对象不能再被调用。",
+              "does": [
+                "关闭顺序、订阅与 env 注册",
+                "负责方：应用 owner / MadB"
+              ],
+              "constraints": [
+                "env 退出后不再回调 ArkTS；排队结果只执行允许的原生清理。",
+                "最后释放 refs、队列和 native 对象，避免迟到通知访问失效环境。"
+              ],
+              "lines": [
+                "关闭顺序、订阅与 env 注册"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "回调限制与线程探针",
+              "kind": "madb",
+              "summary": "当前实验代码拒绝异线程同步回调。不能自动转为异步或阻塞等待来伪造同一语义；不支持组合应前置诊断。",
+              "does": [
+                "线程约束、拒绝路径、回投验证",
+                "负责方：实验后端 / MadB 规则"
+              ],
+              "constraints": [
+                "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+                "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。"
+              ],
+              "lines": [
+                "线程约束、拒绝路径、回投验证"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向仅限实验生成器支持的 callback interface。",
+              "does": [
+                "按目标线程和 env 约束验证回调路径，禁止带失效值跨线程。",
+                "异线程同步回调在当前候选中属于拒绝范围，不静默改成异步。"
+              ],
+              "constraints": [
+                "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H177.5 V300",
+              "lx": 177.5,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M177.5 420 V461 H620 V495",
+              "lx": 177.5,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H472.5 V300",
+              "lx": 472.5,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M472.5 420 V461 H620 V495",
+              "lx": 472.5,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool2",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H767.5 V300",
+              "lx": 767.5,
+              "ly": null
+            },
+            {
+              "a": "tool2",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M767.5 420 V461 H620 V495",
+              "lx": 767.5,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1062.5 V300",
+              "lx": 1062.5,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1062.5 420 V461 H620 V495",
+              "lx": 1062.5,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "ArkTS 业务与 ArkUI",
+            "N-API 适配与队列",
+            "Rust 内核与工作线程",
+            "ArkTS 回调与页面 owner"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "ArkTS 使用实验配置明确公开的类型化 API。",
+                "结果逆向转换并配对释放，两级转换成本纳入基准。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "异线程同步回调：拒绝路径",
+              "notes": [
+                "这个子场景要求同步返回，而当前独立后端不支持异线程同步调用 ArkTS。",
+                "可用的异步宿主接口另建契约；不能排队后返回伪造的同步值。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "声明要求异线程同步返回宿主值",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 1,
+                  "text": "能力检查识别当前限制",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "CapabilityUnsupported 定位声明",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 0,
+                  "to_lane": 0,
+                  "text": "作者显式选择新接口再生成",
+                  "kind": "self"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。",
+                "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "整数与二进制载荷",
+            "path": [
+              "ArkTS 检查后的类型化值",
+              "UniFFI 记录序列化 / RustBuffer",
+              "生成的 N-API adapter 调 UniFFI FFI",
+              "Rust 领域值"
+            ],
+            "note": "两级接线各自有缓冲与对象释放责任；不把 adapter 的句柄或协议版本与其他后端混用。"
+          },
+          {
+            "title": "资源对象",
+            "path": [
+              "ArkTS 包装对象",
+              "env 关联引用 + 原生句柄",
+              "明确 owner 的 native 对象"
+            ],
+            "note": "持久引用不赋予跨线程访问 env/value 的权利；finalizer 不能代替可等待关闭。"
+          },
+          {
+            "title": "结果与通知",
+            "path": [
+              "Rust Result 与后端完成协议",
+              "显式错误边界与完成通道",
+              "ArkTS 值 / 失败 / Promise"
+            ],
+            "note": "业务错误、调用取消与桥接故障分开；异常按此后端规则封闭，不能因 Promise 只能兑现一次就省略 native 终态协议。"
+          }
+        ],
+        "example": {
+          "title": "环境票据与排队清理",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：这些不是 N-API 原始函数名\npayload = nativeWork(ownedInput)\nticket = ownerEnv.tryAcquireDelivery(payload, subscriptionGeneration)\nif ticket == rejected:\n    releaseWithNativeOwner(payload)\nelse:\n    ticket.enqueueOrCleanup() // 排队失败也只回收一次\n// 执行器中与 requestStop 共享准入同步；停止后只回收，不调用用户\n// env 可用时才打开 handle scope；关闭按工作/队列/用户回调分别排水",
+          "note": "设计协议，需由对应后端的环境/线程机制实现；票据在同一同步协议中取得，不能改写成先检查布尔值再投递。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "异线程同步宿主回调被误转异步",
+          "trigger": "Rust 在工作线程要求同步返回宿主值，adapter 无法在该线程合法调用 ArkTS。",
+          "trace": "读取同步返回契约 → 核对独立后端限制 → 生成前拒绝；不排队后返回默认值。",
+          "expected": "原同步语义不被偷偷改成 Promise；需要新异步接口时由作者显式改契约。",
+          "oracle": "精确错误位置与能力类别；受支持回调另在真实目标验证。"
+        },
+        "owners": [
+          {
+            "title": "应用 / env owner",
+            "depth": 0,
+            "detail": "环境、共享引擎和页面订阅分别有 owner；环境退出意味着宿主对象不能再被调用。"
+          },
+          {
+            "title": "ArkTS 对象包装 + native registry",
+            "depth": 1,
+            "detail": "MadB 检查实验后端的实际类型、对象、async 与回调能力；不能用抹去类型、强制 JSON 或删接口掩盖缺口。"
+          },
+          {
+            "title": "订阅 token / worker / 排队回调",
+            "depth": 2,
+            "detail": "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。"
+          },
+          {
+            "title": "native 对象、缓冲与持久引用",
+            "depth": 2,
+            "detail": "Rust 核心处理算法与异步任务；工作线程不直接访问 ArkTS 值，按已验证回投机制发送数据。"
+          }
+        ],
+        "thread_rules": [
+          "napi_env、handle scope 与值的使用遵循所属线程和环境。",
+          "线程安全函数或 async work 能力逐 SDK 认证，不套用桌面 Node.js 结论。",
+          "native worker 只操作其允许的值和资源；回投后再构造 ArkTS 可见值。",
+          "关闭时同时处理 worker、排队回调和引用；env 清理回调不承诺任意阻塞。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "UniFFI 接口、扩展能力声明 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "ArkTS 绑定、Rust N-API adapter",
+            "pattern": "Adapter / Mapper：复用 UniFFI Rust 元数据、ArkTS beta 生成器、napi-ohos adapter 构建",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "类型化 API、能力诊断",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "两个角色的库、加载/链接清单",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "实验能力矩阵、设备报告",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "关闭停止准入并请求停止工作；队列、引用、native 对象分别清理。finalizer 不负责任意异步关闭。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "读取已声明的 UniFFI API，检查实验后端受支持子集。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "固定 beta 生成器及独立 UniFFI 配套身份，生成 ArkTS 包装和 N-API Rust adapter。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "编译 adapter 与其所链接的 UniFFI 动态库，分别记录摘要。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "MadB 添加约束诊断、工程包装与 X07/P13 独立消费样例。"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "后端边界与实验限制",
+      "path": "architecture/06-backend-profiles.md"
+    },
+    {
+      "label": "技术栈与版本身份",
+      "path": "architecture/16-technology-stack-and-versions.md"
+    },
+    {
+      "label": "P13 与风险门禁",
+      "path": "delivery/03-decisions-and-risks.md"
+    },
+    {
+      "label": "生命周期与并发",
+      "path": "architecture/05-lifecycle-and-concurrency.md"
+    },
+    {
+      "label": "ohos-rs",
+      "url": "https://github.com/ohos-rs/ohos-rs"
+    },
+    {
+      "label": "UniFFI-ArkTS 实验生成器",
+      "url": "https://github.com/ohos-rs/uniffi-bindgen-arkts"
+    },
+    {
+      "label": "OpenHarmony Node-API 稳定性",
+      "url": "https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/napi/napi-faq-about-stability.md"
+    }
+  ],
+  "view_schema": "madb.route-detail-view/3"
+}

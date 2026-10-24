@@ -1,0 +1,1310 @@
+{
+  "schema": "madb.schema-vectors/1",
+  "example": true,
+  "vectors": [
+    {
+      "id": "SCHEMA-01",
+      "subject": "manifest",
+      "expected_schema": "valid",
+      "reason": "The design manifest has valid structure; this does not authorize installation.",
+      "document": {
+        "schema": "madb.extension/1",
+        "example": true,
+        "id": "example.dart-ffi",
+        "version": "0.1.0-design",
+        "compatibility": {
+          "protocol": [
+            "1.0"
+          ],
+          "ir": [
+            "1.0"
+          ]
+        },
+        "languages": [
+          {
+            "id": "dart",
+            "runtimes": [
+              "dart-native"
+            ]
+          }
+        ],
+        "components": [
+          {
+            "id": "generator",
+            "port": "generator",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "generator"
+              ]
+            }
+          },
+          {
+            "id": "toolchain",
+            "port": "toolchain",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "toolchain"
+              ]
+            }
+          },
+          {
+            "id": "verifier",
+            "port": "verifier",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "verifier"
+              ]
+            }
+          },
+          {
+            "id": "packager",
+            "port": "artifact-packager",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "packager"
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "madb.clang",
+            "kind": "extension"
+          },
+          {
+            "id": "dart-sdk",
+            "kind": "toolchain"
+          },
+          {
+            "id": "dart.ffigen",
+            "kind": "generator"
+          }
+        ],
+        "routes": [
+          {
+            "id": "example.dart.c-ffi",
+            "provider": {
+              "language": "c",
+              "runtime": "native"
+            },
+            "consumer": {
+              "language": "dart",
+              "runtime": "dart-native"
+            },
+            "directions": [
+              "consumer-to-provider"
+            ],
+            "targets": [
+              {
+                "os": "macos",
+                "arch": "arm64",
+                "abi": "aarch64-apple-darwin"
+              }
+            ],
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "restrictions": [
+              "Design example only; the target is a probe candidate, not a certified platform.",
+              "Only explicit C ABI contracts; arbitrary Rust and C++ interfaces are not accepted.",
+              "No async, stream, borrowed-across-call buffer, or host callback support in this sample."
+            ],
+            "bindings": {
+              "contract-reader": "madb.clang/reader",
+              "generator": "example.dart-ffi/generator",
+              "toolchain": "example.dart-ffi/toolchain",
+              "verifier": "example.dart-ffi/verifier",
+              "artifact-packager": "example.dart-ffi/packager"
+            }
+          }
+        ],
+        "assets": [
+          {
+            "kind": "template",
+            "path": "templates/c-api"
+          },
+          {
+            "kind": "sdk",
+            "path": "sdk/dart"
+          }
+        ],
+        "execution": {
+          "transport": "stdio-jsonl",
+          "network": "none",
+          "env": []
+        },
+        "extensions": {
+          "example.label": "Dart Native C ABI extension design specimen"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-02",
+      "subject": "manifest",
+      "expected_schema": "invalid",
+      "reason": "Certification cannot be asserted in an extension manifest.",
+      "document": {
+        "schema": "madb.extension/1",
+        "example": true,
+        "id": "example.dart-ffi",
+        "version": "0.1.0-design",
+        "compatibility": {
+          "protocol": [
+            "1.0"
+          ],
+          "ir": [
+            "1.0"
+          ]
+        },
+        "languages": [
+          {
+            "id": "dart",
+            "runtimes": [
+              "dart-native"
+            ]
+          }
+        ],
+        "components": [
+          {
+            "id": "generator",
+            "port": "generator",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "generator"
+              ]
+            }
+          },
+          {
+            "id": "toolchain",
+            "port": "toolchain",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "toolchain"
+              ]
+            }
+          },
+          {
+            "id": "verifier",
+            "port": "verifier",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "verifier"
+              ]
+            }
+          },
+          {
+            "id": "packager",
+            "port": "artifact-packager",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "packager"
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "madb.clang",
+            "kind": "extension"
+          },
+          {
+            "id": "dart-sdk",
+            "kind": "toolchain"
+          },
+          {
+            "id": "dart.ffigen",
+            "kind": "generator"
+          }
+        ],
+        "routes": [
+          {
+            "id": "example.dart.c-ffi",
+            "provider": {
+              "language": "c",
+              "runtime": "native"
+            },
+            "consumer": {
+              "language": "dart",
+              "runtime": "dart-native"
+            },
+            "directions": [
+              "consumer-to-provider"
+            ],
+            "targets": [
+              {
+                "os": "macos",
+                "arch": "arm64",
+                "abi": "aarch64-apple-darwin"
+              }
+            ],
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "restrictions": [
+              "Design example only; the target is a probe candidate, not a certified platform.",
+              "Only explicit C ABI contracts; arbitrary Rust and C++ interfaces are not accepted.",
+              "No async, stream, borrowed-across-call buffer, or host callback support in this sample."
+            ],
+            "bindings": {
+              "contract-reader": "madb.clang/reader",
+              "generator": "example.dart-ffi/generator",
+              "toolchain": "example.dart-ffi/toolchain",
+              "verifier": "example.dart-ffi/verifier",
+              "artifact-packager": "example.dart-ffi/packager"
+            }
+          }
+        ],
+        "assets": [
+          {
+            "kind": "template",
+            "path": "templates/c-api"
+          },
+          {
+            "kind": "sdk",
+            "path": "sdk/dart"
+          }
+        ],
+        "execution": {
+          "transport": "stdio-jsonl",
+          "network": "none",
+          "env": []
+        },
+        "extensions": {
+          "example.label": "Dart Native C ABI extension design specimen"
+        },
+        "certified": true
+      }
+    },
+    {
+      "id": "SCHEMA-03",
+      "subject": "manifest",
+      "expected_schema": "invalid",
+      "reason": "A component must name its port.",
+      "document": {
+        "schema": "madb.extension/1",
+        "example": true,
+        "id": "example.dart-ffi",
+        "version": "0.1.0-design",
+        "compatibility": {
+          "protocol": [
+            "1.0"
+          ],
+          "ir": [
+            "1.0"
+          ]
+        },
+        "languages": [
+          {
+            "id": "dart",
+            "runtimes": [
+              "dart-native"
+            ]
+          }
+        ],
+        "components": [
+          {
+            "id": "generator",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "generator"
+              ]
+            }
+          },
+          {
+            "id": "toolchain",
+            "port": "toolchain",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "toolchain"
+              ]
+            }
+          },
+          {
+            "id": "verifier",
+            "port": "verifier",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "verifier"
+              ]
+            }
+          },
+          {
+            "id": "packager",
+            "port": "artifact-packager",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "packager"
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "madb.clang",
+            "kind": "extension"
+          },
+          {
+            "id": "dart-sdk",
+            "kind": "toolchain"
+          },
+          {
+            "id": "dart.ffigen",
+            "kind": "generator"
+          }
+        ],
+        "routes": [
+          {
+            "id": "example.dart.c-ffi",
+            "provider": {
+              "language": "c",
+              "runtime": "native"
+            },
+            "consumer": {
+              "language": "dart",
+              "runtime": "dart-native"
+            },
+            "directions": [
+              "consumer-to-provider"
+            ],
+            "targets": [
+              {
+                "os": "macos",
+                "arch": "arm64",
+                "abi": "aarch64-apple-darwin"
+              }
+            ],
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "restrictions": [
+              "Design example only; the target is a probe candidate, not a certified platform.",
+              "Only explicit C ABI contracts; arbitrary Rust and C++ interfaces are not accepted.",
+              "No async, stream, borrowed-across-call buffer, or host callback support in this sample."
+            ],
+            "bindings": {
+              "contract-reader": "madb.clang/reader",
+              "generator": "example.dart-ffi/generator",
+              "toolchain": "example.dart-ffi/toolchain",
+              "verifier": "example.dart-ffi/verifier",
+              "artifact-packager": "example.dart-ffi/packager"
+            }
+          }
+        ],
+        "assets": [
+          {
+            "kind": "template",
+            "path": "templates/c-api"
+          },
+          {
+            "kind": "sdk",
+            "path": "sdk/dart"
+          }
+        ],
+        "execution": {
+          "transport": "stdio-jsonl",
+          "network": "none",
+          "env": []
+        },
+        "extensions": {
+          "example.label": "Dart Native C ABI extension design specimen"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-04",
+      "subject": "manifest",
+      "expected_schema": "invalid",
+      "reason": "Parent directory traversal is not a package path.",
+      "document": {
+        "schema": "madb.extension/1",
+        "example": true,
+        "id": "example.dart-ffi",
+        "version": "0.1.0-design",
+        "compatibility": {
+          "protocol": [
+            "1.0"
+          ],
+          "ir": [
+            "1.0"
+          ]
+        },
+        "languages": [
+          {
+            "id": "dart",
+            "runtimes": [
+              "dart-native"
+            ]
+          }
+        ],
+        "components": [
+          {
+            "id": "generator",
+            "port": "generator",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "../outside",
+              "args": [
+                "--component",
+                "generator"
+              ]
+            }
+          },
+          {
+            "id": "toolchain",
+            "port": "toolchain",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "toolchain"
+              ]
+            }
+          },
+          {
+            "id": "verifier",
+            "port": "verifier",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "verifier"
+              ]
+            }
+          },
+          {
+            "id": "packager",
+            "port": "artifact-packager",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "packager"
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "madb.clang",
+            "kind": "extension"
+          },
+          {
+            "id": "dart-sdk",
+            "kind": "toolchain"
+          },
+          {
+            "id": "dart.ffigen",
+            "kind": "generator"
+          }
+        ],
+        "routes": [
+          {
+            "id": "example.dart.c-ffi",
+            "provider": {
+              "language": "c",
+              "runtime": "native"
+            },
+            "consumer": {
+              "language": "dart",
+              "runtime": "dart-native"
+            },
+            "directions": [
+              "consumer-to-provider"
+            ],
+            "targets": [
+              {
+                "os": "macos",
+                "arch": "arm64",
+                "abi": "aarch64-apple-darwin"
+              }
+            ],
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "restrictions": [
+              "Design example only; the target is a probe candidate, not a certified platform.",
+              "Only explicit C ABI contracts; arbitrary Rust and C++ interfaces are not accepted.",
+              "No async, stream, borrowed-across-call buffer, or host callback support in this sample."
+            ],
+            "bindings": {
+              "contract-reader": "madb.clang/reader",
+              "generator": "example.dart-ffi/generator",
+              "toolchain": "example.dart-ffi/toolchain",
+              "verifier": "example.dart-ffi/verifier",
+              "artifact-packager": "example.dart-ffi/packager"
+            }
+          }
+        ],
+        "assets": [
+          {
+            "kind": "template",
+            "path": "templates/c-api"
+          },
+          {
+            "kind": "sdk",
+            "path": "sdk/dart"
+          }
+        ],
+        "execution": {
+          "transport": "stdio-jsonl",
+          "network": "none",
+          "env": []
+        },
+        "extensions": {
+          "example.label": "Dart Native C ABI extension design specimen"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-05",
+      "subject": "manifest",
+      "expected_schema": "invalid",
+      "reason": "Only explicit forward or callback direction is permitted.",
+      "document": {
+        "schema": "madb.extension/1",
+        "example": true,
+        "id": "example.dart-ffi",
+        "version": "0.1.0-design",
+        "compatibility": {
+          "protocol": [
+            "1.0"
+          ],
+          "ir": [
+            "1.0"
+          ]
+        },
+        "languages": [
+          {
+            "id": "dart",
+            "runtimes": [
+              "dart-native"
+            ]
+          }
+        ],
+        "components": [
+          {
+            "id": "generator",
+            "port": "generator",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "generator"
+              ]
+            }
+          },
+          {
+            "id": "toolchain",
+            "port": "toolchain",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "toolchain"
+              ]
+            }
+          },
+          {
+            "id": "verifier",
+            "port": "verifier",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "verifier"
+              ]
+            }
+          },
+          {
+            "id": "packager",
+            "port": "artifact-packager",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "packager"
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "madb.clang",
+            "kind": "extension"
+          },
+          {
+            "id": "dart-sdk",
+            "kind": "toolchain"
+          },
+          {
+            "id": "dart.ffigen",
+            "kind": "generator"
+          }
+        ],
+        "routes": [
+          {
+            "id": "example.dart.c-ffi",
+            "provider": {
+              "language": "c",
+              "runtime": "native"
+            },
+            "consumer": {
+              "language": "dart",
+              "runtime": "dart-native"
+            },
+            "directions": [
+              "consumer-to-provider",
+              "all-language-calls"
+            ],
+            "targets": [
+              {
+                "os": "macos",
+                "arch": "arm64",
+                "abi": "aarch64-apple-darwin"
+              }
+            ],
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "restrictions": [
+              "Design example only; the target is a probe candidate, not a certified platform.",
+              "Only explicit C ABI contracts; arbitrary Rust and C++ interfaces are not accepted.",
+              "No async, stream, borrowed-across-call buffer, or host callback support in this sample."
+            ],
+            "bindings": {
+              "contract-reader": "madb.clang/reader",
+              "generator": "example.dart-ffi/generator",
+              "toolchain": "example.dart-ffi/toolchain",
+              "verifier": "example.dart-ffi/verifier",
+              "artifact-packager": "example.dart-ffi/packager"
+            }
+          }
+        ],
+        "assets": [
+          {
+            "kind": "template",
+            "path": "templates/c-api"
+          },
+          {
+            "kind": "sdk",
+            "path": "sdk/dart"
+          }
+        ],
+        "execution": {
+          "transport": "stdio-jsonl",
+          "network": "none",
+          "env": []
+        },
+        "extensions": {
+          "example.label": "Dart Native C ABI extension design specimen"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-06",
+      "subject": "manifest",
+      "expected_schema": "invalid",
+      "reason": "A target tuple must include ABI.",
+      "document": {
+        "schema": "madb.extension/1",
+        "example": true,
+        "id": "example.dart-ffi",
+        "version": "0.1.0-design",
+        "compatibility": {
+          "protocol": [
+            "1.0"
+          ],
+          "ir": [
+            "1.0"
+          ]
+        },
+        "languages": [
+          {
+            "id": "dart",
+            "runtimes": [
+              "dart-native"
+            ]
+          }
+        ],
+        "components": [
+          {
+            "id": "generator",
+            "port": "generator",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "generator"
+              ]
+            }
+          },
+          {
+            "id": "toolchain",
+            "port": "toolchain",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "toolchain"
+              ]
+            }
+          },
+          {
+            "id": "verifier",
+            "port": "verifier",
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "verifier"
+              ]
+            }
+          },
+          {
+            "id": "packager",
+            "port": "artifact-packager",
+            "supported_features": [],
+            "entrypoint": {
+              "kind": "process",
+              "path": "bin/madb-dart-adapter",
+              "args": [
+                "--component",
+                "packager"
+              ]
+            }
+          }
+        ],
+        "dependencies": [
+          {
+            "id": "madb.clang",
+            "kind": "extension"
+          },
+          {
+            "id": "dart-sdk",
+            "kind": "toolchain"
+          },
+          {
+            "id": "dart.ffigen",
+            "kind": "generator"
+          }
+        ],
+        "routes": [
+          {
+            "id": "example.dart.c-ffi",
+            "provider": {
+              "language": "c",
+              "runtime": "native"
+            },
+            "consumer": {
+              "language": "dart",
+              "runtime": "dart-native"
+            },
+            "directions": [
+              "consumer-to-provider"
+            ],
+            "targets": [
+              {
+                "os": "macos",
+                "arch": "arm64"
+              }
+            ],
+            "supported_features": [
+              "core.call.sync@1",
+              "core.value.scalar@1",
+              "core.value.record@1",
+              "core.buffer.copy@1",
+              "core.resource.explicit-close@1"
+            ],
+            "restrictions": [
+              "Design example only; the target is a probe candidate, not a certified platform.",
+              "Only explicit C ABI contracts; arbitrary Rust and C++ interfaces are not accepted.",
+              "No async, stream, borrowed-across-call buffer, or host callback support in this sample."
+            ],
+            "bindings": {
+              "contract-reader": "madb.clang/reader",
+              "generator": "example.dart-ffi/generator",
+              "toolchain": "example.dart-ffi/toolchain",
+              "verifier": "example.dart-ffi/verifier",
+              "artifact-packager": "example.dart-ffi/packager"
+            }
+          }
+        ],
+        "assets": [
+          {
+            "kind": "template",
+            "path": "templates/c-api"
+          },
+          {
+            "kind": "sdk",
+            "path": "sdk/dart"
+          }
+        ],
+        "execution": {
+          "transport": "stdio-jsonl",
+          "network": "none",
+          "env": []
+        },
+        "extensions": {
+          "example.label": "Dart Native C ABI extension design specimen"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-07",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "A hello is a bootstrap frame.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "hello",
+        "extension_id": "example.dart-ffi",
+        "extension_version": "0.1.0-design",
+        "component_id": "generator",
+        "manifest_digest": "sha256:e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+        "protocol_versions": [
+          "1.0"
+        ],
+        "ir_versions": [
+          "1.0"
+        ],
+        "required_features": [
+          "core.call.sync@1",
+          "core.value.scalar@1",
+          "core.value.record@1",
+          "core.buffer.copy@1",
+          "core.resource.explicit-close@1"
+        ]
+      }
+    },
+    {
+      "id": "SCHEMA-08",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "A valid ack still needs semantic identity and capability checks.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "hello_ack",
+        "extension_id": "example.dart-ffi",
+        "extension_version": "0.1.0-design",
+        "component_id": "generator",
+        "manifest_digest": "sha256:e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "features": [
+          "core.call.sync@1",
+          "core.value.scalar@1",
+          "core.value.record@1",
+          "core.buffer.copy@1",
+          "core.resource.explicit-close@1"
+        ]
+      }
+    },
+    {
+      "id": "SCHEMA-09",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "A request uses file references and a finite deadline.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "invoke",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "component": "example.dart-ffi/generator",
+        "operation": "generate",
+        "input": {
+          "path": "inputs/request.json",
+          "schema": "madb.generate-request/1",
+          "sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "size": 256
+        },
+        "output_root": "outputs/generate-1",
+        "timeout_ms": 30000
+      }
+    },
+    {
+      "id": "SCHEMA-10",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "An ok response carries an output reference.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "result",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "status": "ok",
+        "output": {
+          "path": "outputs/generate-1/output-set.json",
+          "schema": "madb.output-set/1",
+          "sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "size": 128
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-11",
+      "subject": "frame",
+      "expected_schema": "invalid",
+      "reason": "An ok result must identify its output.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "result",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "status": "ok"
+      }
+    },
+    {
+      "id": "SCHEMA-12",
+      "subject": "frame",
+      "expected_schema": "invalid",
+      "reason": "A result cannot contain both success output and an error.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "result",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "status": "ok",
+        "output": {
+          "path": "outputs/generate-1/output-set.json",
+          "schema": "madb.output-set/1",
+          "sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "size": 128
+        },
+        "error": {
+          "code": "ToolFailed",
+          "message": "failed",
+          "stage": "generate"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-13",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "Cancel is a request, not a terminal result.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "cancel",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1"
+      }
+    },
+    {
+      "id": "SCHEMA-14",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "Cancelled carries no committable output.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "result",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "status": "cancelled"
+      }
+    },
+    {
+      "id": "SCHEMA-15",
+      "subject": "frame",
+      "expected_schema": "invalid",
+      "reason": "A cancelled request cannot submit an output.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "result",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "status": "cancelled",
+        "output": {
+          "path": "outputs/generate-1/output-set.json",
+          "schema": "madb.output-set/1",
+          "sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+          "size": 128
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-16",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "A handshake can fail explicitly.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "reject",
+        "error": {
+          "code": "ProtocolIncompatible",
+          "message": "No shared version",
+          "stage": "handshake"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-17",
+      "subject": "frame",
+      "expected_schema": "valid",
+      "reason": "A failed operation carries diagnostics.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "result",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "status": "error",
+        "error": {
+          "code": "ToolFailed",
+          "message": "Compiler exited",
+          "stage": "generate"
+        }
+      }
+    },
+    {
+      "id": "SCHEMA-18",
+      "subject": "frame",
+      "expected_schema": "invalid",
+      "reason": "An invocation cannot disable its deadline.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "invoke",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "component": "example.dart-ffi/generator",
+        "operation": "generate",
+        "input": {
+          "path": "inputs/request.json",
+          "schema": "madb.generate-request/1",
+          "sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "size": 256
+        },
+        "output_root": "outputs/generate-1",
+        "timeout_ms": 0
+      }
+    },
+    {
+      "id": "SCHEMA-19",
+      "subject": "frame",
+      "expected_schema": "invalid",
+      "reason": "Input files are relative to the assigned workspace.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "invoke",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "component": "example.dart-ffi/generator",
+        "operation": "generate",
+        "input": {
+          "path": "/tmp/request.json",
+          "schema": "madb.generate-request/1",
+          "sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "size": 256
+        },
+        "output_root": "outputs/generate-1",
+        "timeout_ms": 30000
+      }
+    },
+    {
+      "id": "SCHEMA-20",
+      "subject": "frame",
+      "expected_schema": "invalid",
+      "reason": "A helper cannot acquire publication authority through this protocol.",
+      "document": {
+        "schema": "madb.extension-wire/1",
+        "session_id": "example-session-1",
+        "kind": "invoke",
+        "protocol": "1.0",
+        "ir": "1.0",
+        "request_id": "generate-1",
+        "component": "example.dart-ffi/generator",
+        "operation": "publish",
+        "input": {
+          "path": "inputs/request.json",
+          "schema": "madb.generate-request/1",
+          "sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+          "size": 256
+        },
+        "output_root": "outputs/generate-1",
+        "timeout_ms": 30000
+      }
+    }
+  ]
+}

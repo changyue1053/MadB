@@ -1,0 +1,401 @@
+{
+  "schema": "madb.document-audit/1",
+  "input_baseline": "0.4",
+  "output_baseline": "0.5",
+  "review_date": "2026-10-24",
+  "input_files": 56,
+  "files": [
+    {
+      "path": "../README.md",
+      "before_sha256": "45359cf6fce8c64e4a78ba46152fa54f4a62cacaba16f450c44bdbb221a6587a",
+      "reviewed_sha256": "7775ec70c2345c496939b1cd7c552cc79d90ee879d4d7df1ddd99ad378f99f7e",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../adr/0001-product-and-authority.md",
+      "before_sha256": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+      "reviewed_sha256": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../adr/0002-core-and-adapters.md",
+      "before_sha256": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+      "reviewed_sha256": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../adr/0003-lab-and-release.md",
+      "before_sha256": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+      "reviewed_sha256": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../adr/0004-language-extension.md",
+      "before_sha256": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+      "reviewed_sha256": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../adr/0005-project-initialization.md",
+      "before_sha256": "5687868c67380eaf80fa3f07ad44e6e51f5ed4db0752d7f9fbd9e63fe6b8d926",
+      "reviewed_sha256": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../adr/0006-developer-ergonomics.md",
+      "before_sha256": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+      "reviewed_sha256": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/01-system-architecture.md",
+      "before_sha256": "3179c24385ab47cd40f46dfb39165d2351f4bac1fe408b2e206da8b0891c6819",
+      "reviewed_sha256": "3179c24385ab47cd40f46dfb39165d2351f4bac1fe408b2e206da8b0891c6819",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/02-modules-and-ports.md",
+      "before_sha256": "ecb1667cf3158d3a76c7fb9fa558ecd10a0e6ac0b99825d6b4a4a39a827b36a4",
+      "reviewed_sha256": "904694ecbdbfd6107d0f6ec8a11ca3c866bf4e5e231cebf351fc2e111e0283b6",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/03-contract-and-ir.md",
+      "before_sha256": "338648652a87918d798994add5a4ae87ba8b5a6f3235ae00d64258559b7eecae",
+      "reviewed_sha256": "338648652a87918d798994add5a4ae87ba8b5a6f3235ae00d64258559b7eecae",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/04-data-and-errors.md",
+      "before_sha256": "2cd4854b69f33dc154f626de3fc6fbfa5dd114901b830476d5c76a3068a8c039",
+      "reviewed_sha256": "2cd4854b69f33dc154f626de3fc6fbfa5dd114901b830476d5c76a3068a8c039",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/05-lifecycle-and-concurrency.md",
+      "before_sha256": "f9b2e6259a919dae113294d8f0c8a36db71c5adc249706697d68e25591a2c6ba",
+      "reviewed_sha256": "f9b2e6259a919dae113294d8f0c8a36db71c5adc249706697d68e25591a2c6ba",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/06-backend-profiles.md",
+      "before_sha256": "59facdfddc91d99c05fe80e5055c44d720b69caf712df63738d47c507901350b",
+      "reviewed_sha256": "9b6305cec829c527ff75d11949bf17fb4384b17967621c2237b3cd64f92d92f6",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/07-code-generation.md",
+      "before_sha256": "aee7dbed875edaaee6e38745fdcfd9be0a10b4cc5c389b8448823e3ea28d57bc",
+      "reviewed_sha256": "6af78dfe44ddd0f4e656f82f6d1ab65d0f8504e4fdfaa50c7391f4903dc9fb7f",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/08-runtime-and-idiomatic-api.md",
+      "before_sha256": "f8db56021a905a7cd55f637bc32128f6f7e59da805c644cd08152491f6cbe7e2",
+      "reviewed_sha256": "f8db56021a905a7cd55f637bc32128f6f7e59da805c644cd08152491f6cbe7e2",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/09-build-packaging-release.md",
+      "before_sha256": "8f537b6e3134f4f6d16b09c7805e88e645d9aed4cbf22a7735d706e885c74b16",
+      "reviewed_sha256": "8f537b6e3134f4f6d16b09c7805e88e645d9aed4cbf22a7735d706e885c74b16",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/10-diagnostics-and-performance.md",
+      "before_sha256": "ad510a83fd95e6a061feabaa1311f5e1ef53dbfb9016adc32a57c507fcc4b45f",
+      "reviewed_sha256": "ad510a83fd95e6a061feabaa1311f5e1ef53dbfb9016adc32a57c507fcc4b45f",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/11-language-extension.md",
+      "before_sha256": "17652a279e00498328a53dc998bbb74489a9ed62fa41e72c0ff2be38a6155bde",
+      "reviewed_sha256": "e0f6583b5685398ab84aeaaa17ec754aab310b1a1e5d147a37239248f460bc9b",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/12-extension-protocol.md",
+      "before_sha256": "faea5819bc73189515af483923f69837a534c8001218e9eb5ab77cdc54dbd244",
+      "reviewed_sha256": "a8bb84349940f31366b436935cc7dbc589cdc2d0388ab640447f2007ba487ae2",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/13-contract-evolution.md",
+      "before_sha256": "7daf67a187f7a4e9ef6dde746af724f6a0c6d8a5970cde058cd3cdb633ddcf10",
+      "reviewed_sha256": "7daf67a187f7a4e9ef6dde746af724f6a0c6d8a5970cde058cd3cdb633ddcf10",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/14-project-initialization.md",
+      "before_sha256": "7fe1f81314f8a2914c715e6cea59d0b1d162e2992b13452d450540f6515ff8dc",
+      "reviewed_sha256": "28268127020f02418c3c2552f51ccd931b09221f5660e3e575939b8f533f4e15",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../architecture/15-developer-ergonomics.md",
+      "before_sha256": "e0771d58d9a694f46967b8fe8d7f80e528fd010a42f4b2c9a91d981676f579c4",
+      "reviewed_sha256": "e0771d58d9a694f46967b8fe8d7f80e528fd010a42f4b2c9a91d981676f579c4",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../catalog/case-groups.json",
+      "before_sha256": "50ff728cf6512b645a7dae7dcc777c1eb58f6bdd42337e85f237c5a1918f8e46",
+      "reviewed_sha256": "0f3524053fc68d00450bf37eb7171125f79f46a4a0ceccae1a32a65a56103d41",
+      "disposition": "updated",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../catalog/problems.json",
+      "before_sha256": "07127b1cfa31ef9221a0439b542830a098b883a349802273cf9f56fe2e21578a",
+      "reviewed_sha256": "98a4cba2a1911fd79d8bb60cea696822401a6495831b9e40526ba4b0117fbfb4",
+      "disposition": "updated",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../catalog/routes.json",
+      "before_sha256": "a1bf05ec646018d14131f1fec42582ffa8bb837d6e5784ff597985fd36048139",
+      "reviewed_sha256": "6ae031b208ee28b89b462915d3f0d291f819b73d350f7b61b8cba8e4dd13097f",
+      "disposition": "updated",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../catalog/source-coverage.json",
+      "before_sha256": "af6964d824cf0c725f7548e3a50ab2402a3db994e8318e4241b9804b24a3b228",
+      "reviewed_sha256": "af6964d824cf0c725f7548e3a50ab2402a3db994e8318e4241b9804b24a3b228",
+      "disposition": "retained",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../delivery/01-implementation-plan.md",
+      "before_sha256": "b5163900dee5fee2cce1adee6651a953ecb732513a45780006eac48ff8b36c2f",
+      "reviewed_sha256": "7fa6d0153e6598ba1ca6b137c58d011e08d7090518a86b8b2ecefc336f042a6b",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../delivery/02-open-source-and-contributing.md",
+      "before_sha256": "ff5438153031b985b647fccd2f61503163de1091c6cf46a1bbe5c8d6ee1e4ffa",
+      "reviewed_sha256": "f659b11575ced91d8f781558f960cdd7aea7c8cb049282e512d20d2b80b4b943",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../delivery/03-decisions-and-risks.md",
+      "before_sha256": "4f668ac28d8b3149ed09d6b2a9639dcce3d9d0cdbbfffad7a591b30fd0278019",
+      "reviewed_sha256": "4f668ac28d8b3149ed09d6b2a9639dcce3d9d0cdbbfffad7a591b30fd0278019",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../engineering/01-architecture-principles.md",
+      "before_sha256": "d09f8daca66a24d75268ca7bad9acc78704b613341fe79fa6a43565312bdba2a",
+      "reviewed_sha256": "d09f8daca66a24d75268ca7bad9acc78704b613341fe79fa6a43565312bdba2a",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../engineering/02-clean-code.md",
+      "before_sha256": "1359d4e70f618b4bdaba426765a7a77e66525727c163a14e5af3fa4457df8498",
+      "reviewed_sha256": "1359d4e70f618b4bdaba426765a7a77e66525727c163a14e5af3fa4457df8498",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../engineering/03-design-patterns.md",
+      "before_sha256": "a6c327a63b4dba31787be8d59ddd9aed9819a36020ad3c6296c4b32634a8cbc9",
+      "reviewed_sha256": "a6c327a63b4dba31787be8d59ddd9aed9819a36020ad3c6296c4b32634a8cbc9",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../engineering/04-language-guidelines.md",
+      "before_sha256": "0393e68a74c710dbfaae13503487fb053f4122f94bb40895d059aa42ad6d0e21",
+      "reviewed_sha256": "0393e68a74c710dbfaae13503487fb053f4122f94bb40895d059aa42ad6d0e21",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../engineering/05-review-and-quality-gates.md",
+      "before_sha256": "0aed1da1880fb499c82fdfc65c9ba7e1d1412a75d5bdc57ea13cd632952166d3",
+      "reviewed_sha256": "0aed1da1880fb499c82fdfc65c9ba7e1d1412a75d5bdc57ea13cd632952166d3",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../examples/case.example.json",
+      "before_sha256": "2d30e8264ceeec4b417e78de2997a48f2d14e54ce5ca538f5ed5673322d49397",
+      "reviewed_sha256": "6d764af9d31609d96b75fc0760b1537e156829378d1c72b84aec7f57a551c8b0",
+      "disposition": "updated",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../examples/extensions/README.md",
+      "before_sha256": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "reviewed_sha256": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../examples/extensions/dart-ffi.extension.example.json",
+      "before_sha256": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "reviewed_sha256": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "disposition": "retained",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../examples/extensions/protocol-session.example.json",
+      "before_sha256": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+      "reviewed_sha256": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+      "disposition": "retained",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../examples/extensions/schema-vectors.json",
+      "before_sha256": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+      "reviewed_sha256": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+      "disposition": "retained",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../examples/madb.example.toml",
+      "before_sha256": "80feb325f323bc8b726f7ea86c8e2340a2df0a276e7823872410a2b2f482230c",
+      "reviewed_sha256": "9be69d8185748ded5a00779919de3f862589634e677e8174a6c96314b6a9095a",
+      "disposition": "updated",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../product/01-positioning-and-requirements.md",
+      "before_sha256": "b45286bb5864a32f51658158ed83c87b02abf4602c8b727c2723ac35170eb17f",
+      "reviewed_sha256": "b45286bb5864a32f51658158ed83c87b02abf4602c8b727c2723ac35170eb17f",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../product/02-capabilities-and-roadmap.md",
+      "before_sha256": "2f0e6094d0d8dbc9fda3495659c4d0143dc10e2674b8182fec69160da2cecdaa",
+      "reviewed_sha256": "96e2751c251a285f1eab6b8edf5e1ab375e0e0c8332da56b7e14b226e8fbdead",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../product/03-developer-experience.md",
+      "before_sha256": "7717bfcb69ff43bb6cad3305ebe236265d5f28721a9d3cf3d090078280f61701",
+      "reviewed_sha256": "7717bfcb69ff43bb6cad3305ebe236265d5f28721a9d3cf3d090078280f61701",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../product/04-project-initialization.md",
+      "before_sha256": "f9a60c156146156670f58b647a49f8357f4782a3b32ca4ad3ef43697d4c7bbca",
+      "reviewed_sha256": "12be4a3d58384766f1903bf571c974edcf2e9b0cb84eb477090354d8d87333df",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../references/README.md",
+      "before_sha256": "f5fc7de5b6625c400eceb1d04df05b9516dc05399b3948511aba72d767ab43a2",
+      "reviewed_sha256": "88ae60e17940e9d9482b80fa26674ad407824b1dc8c0158468b2dfb9576dd020",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../references/glossary.md",
+      "before_sha256": "307a155f4736fbc3d5682db7e8a2f336a64ba4141fe71984e765fd2c0779f07a",
+      "reviewed_sha256": "23f0a0dc8679c54bbf1950fd1c2bd67e7f6f7309edc4ae4531df4a4e6623f099",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../schemas/README.md",
+      "before_sha256": "58ea9dd49b9ea6893d679754e87dff541829f5a134d90c8b73c66ee7ebc4bab1",
+      "reviewed_sha256": "58ea9dd49b9ea6893d679754e87dff541829f5a134d90c8b73c66ee7ebc4bab1",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../schemas/extension-manifest.schema.json",
+      "before_sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "reviewed_sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "disposition": "retained",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../schemas/extension-wire.schema.json",
+      "before_sha256": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+      "reviewed_sha256": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+      "disposition": "retained",
+      "review": "structure-and-cross-reference"
+    },
+    {
+      "path": "../validation/01-testing-strategy.md",
+      "before_sha256": "051c5aae0f46ff10cddffa6c0a307b5be61a9c8a6aedb11b3d399f5c6e43d94a",
+      "reviewed_sha256": "27c76ea7b7f4fb5e444f62ea86495878999bdf8dc98c45188b79fbe30f0a62a4",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../validation/02-lab-architecture.md",
+      "before_sha256": "d3f5b42a2e5357561e33c3084fec7683ee067f05237cf1945f1318c3f93b2591",
+      "reviewed_sha256": "d3f5b42a2e5357561e33c3084fec7683ee067f05237cf1945f1318c3f93b2591",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../validation/03-case-specification.md",
+      "before_sha256": "2bbd8afde5962726730a0be4b31b72d02b57607fb3366a9ef889d21eeb2b8619",
+      "reviewed_sha256": "c2ab64f53612d39870a36932a332216929314b392895074808fb6b6b3c7b9408",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../validation/04-problem-catalog.md",
+      "before_sha256": "6bd3356d50e58a40cbd6a52f36e7e2d3deac13ffbc3858c78a814af0d0c36825",
+      "reviewed_sha256": "1d2e61ae6b3fb94006ffd5ee52bce544d5b922c913452d346d61e26aa0515175",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../validation/05-language-onboarding.md",
+      "before_sha256": "cd0cc4856ef71a112679c1a76ef2f0d35e8fb04025ed72bc051aac048f27cc60",
+      "reviewed_sha256": "cd0cc4856ef71a112679c1a76ef2f0d35e8fb04025ed72bc051aac048f27cc60",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../validation/06-project-initialization.md",
+      "before_sha256": "f480bd6525f3a69f342b505bf5210c51379a55fa5edbb0d197c49cd61c0f679e",
+      "reviewed_sha256": "c3bd87c7e6ffc815c045f4683cd39f89afc87e677f73295969ba6dc010888369",
+      "disposition": "updated",
+      "review": "content-and-cross-reference"
+    },
+    {
+      "path": "../validation/07-developer-ergonomics.md",
+      "before_sha256": "04591069713ab6789fc426c950310e25754fa7d7398c8ff99c85098f656599b1",
+      "reviewed_sha256": "04591069713ab6789fc426c950310e25754fa7d7398c8ff99c85098f656599b1",
+      "disposition": "retained",
+      "review": "content-and-cross-reference"
+    }
+  ]
+}

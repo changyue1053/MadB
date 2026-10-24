@@ -1,0 +1,2346 @@
+{
+  "slug": "kotlin-c-cpp-architecture",
+  "title": "Kotlin ↔ C / C++ 架构全景",
+  "eyebrow": "PLATFORM NATIVE INTEROP",
+  "summary": "按 Kotlin/JVM 与 Kotlin/Native 分开装配：JNI 管理 JVM 描述符、引用和线程附着；cinterop 管理目标 C ABI、作用域指针和 StableRef；C++ 的领域语义始终由显式适配承接。",
+  "route_ids": [
+    "KJVM-C-JNI",
+    "KJVM-CPP-JNI",
+    "KN-C-CINTEROP",
+    "KN-CPP-CABI"
+  ],
+  "extension_task_ids": [
+    "X04"
+  ],
+  "profiles": [
+    {
+      "id": "jvm-jni",
+      "name": "Kotlin/JVM · JNI C/C++",
+      "kind": "主线候选",
+      "summary": "Kotlin/JVM 使用明确 external 声明和 JNI 注册调用 C/C++；JVM 句柄、线程附着、ClassLoader 与原生资源分别管理，Android 构建和桌面 JVM 分发分别验收。",
+      "route_ids": [
+        "KJVM-C-JNI",
+        "KJVM-CPP-JNI"
+      ],
+      "task_ids": [
+        "C08",
+        "C09",
+        "C10",
+        "I04",
+        "I06",
+        "L03",
+        "L06"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "契约到 JNI",
+          "steps": [
+            "从受限契约生成 Kotlin external 和 JNI 注册/转换代码。",
+            "编译 Kotlin 类，比较真实 JVM 描述符与 RegisterNatives 表。",
+            "编译 C/C++ 适配器，手写部分负责未知语义与原生同步。",
+            "按 Android/JVM 目标包装 native 库、依赖和保留规则。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Kotlin 调用 native",
+          "steps": [
+            "Kotlin Facade 检查句柄与调用准入，按接口调度阻塞工作。",
+            "JNI 获得当前线程 JNIEnv，校验参数并管理 local references。",
+            "受控转换字符串/数组，C++ adapter 捕获异常并形成约定错误。",
+            "处理 pending exception 或正常结果后释放本次局部引用与借用。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "native 回调 JVM",
+          "steps": [
+            "注册时保存必要 GlobalRef 和已解析 callback 标识。",
+            "原生线程按协议附着 JVM，不能复用其他线程的 JNIEnv。",
+            "校验 token、引用和一次完成状态，调用声明的 JVM callback。",
+            "将结果投递 Kotlin dispatcher；删除引用与 detach 遵循实际 owner。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "协程取消与 native 关闭",
+          "steps": [
+            "取消协程先说明是停止等待、停止观察还是请求停止工作。",
+            "关闭新调用准入，向 native 发送支持的停止/注销操作。",
+            "排水在途 native 调用与回调，迟到结果按协议释放。",
+            "删除 GlobalRef、释放句柄；线程仅由执行附着的一方负责 detach。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "AAR/JAR 消费",
+          "steps": [
+            "KMP library 与 app 分离；预编译 .so 走 jniLibs，需要 CMake/ndk-build 才单独 externalNativeBuild 模块。",
+            "显式启用需要的单元/设备测试，不依赖插件默认值。",
+            "独立 Android Release/R8 和桌面 JVM 消费者真实运行。",
+            "记录目标 ABI、页对齐、装载依赖、描述符与测试报告。"
+          ]
+        }
+      ],
+      "generated": [
+        "Kotlin external 声明及真实 JVM 描述符比对数据。",
+        "JNI_OnLoad、RegisterNatives 表、参数/返回转换和 source diagnostic。",
+        "依据契约生成 GlobalRef holder、句柄准入、配对释放与回调接线。",
+        "Kotlin suspend/Flow 便利封装；取消效果按声明映射。",
+        "Android AAR/JVM JAR native 包装、R8 规则和真实消费 fixture。"
+      ],
+      "handwritten": [
+        "原生业务实现、锁协议、C++ 异常分类和复杂对象转换。",
+        "哪些缓冲借用/复制、句柄归属以及 cancel/unregister/drain 的真实效果。",
+        "ClassLoader 装载方案与 callback 生命周期需要明确配置。",
+        "线程池、同步回调和重入的业务约束。"
+      ],
+      "risks": [
+        {
+          "problem": "描述符、类名与 R8 变化",
+          "solution": "从真实 class 读取签名，注册与保留规则一起验证。",
+          "example": "Kotlin 方法的 JVM 签名与源码类型直觉不一致会导致 RegisterNatives 失败。",
+          "problem_ids": [
+            "TYPE-008",
+            "BUILD-003"
+          ],
+          "task_ids": [
+            "C08",
+            "C10"
+          ]
+        },
+        {
+          "problem": "JNI 引用与线程误用",
+          "solution": "JNIEnv 按线程获取，长寿命对象使用正确 GlobalRef，及时删除 local references。",
+          "example": "工作线程缓存 UI 线程 JNIEnv 会产生非法访问。",
+          "problem_ids": [
+            "THR-001",
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "字符串和数组语义错误",
+          "solution": "明确 JNI modified UTF-8 与业务 UTF-8 转换，数组借用有释放/复制协议。",
+          "example": "GetStringUTFChars 的结果不能无条件当作标准 UTF-8 发给 native 协议。",
+          "problem_ids": [
+            "TYPE-005",
+            "LIFE-002"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "C++ 异常与 pending exception",
+          "solution": "C++ 异常在 adapter 截断，JNI 异常状态按约定检查后返回。",
+          "example": "JNI 调用抛出异常后继续执行任意 JNI 操作会破坏错误路径。",
+          "problem_ids": [
+            "ERR-002",
+            "ERR-001"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "句柄关闭和回调竞态",
+          "solution": "使用受控身份/代际及准入计数，排水后释放原生对象和 GlobalRef。",
+          "example": "页面取消 Flow 后 native 仍回调，不能提前删除 listener 引用。",
+          "problem_ids": [
+            "LIFE-005",
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "Android 与桌面产物混淆",
+          "solution": "分别记录 ABI、依赖、目标和装载规则，Android 不以 androidNative 目标替代 JVM。",
+          "example": "桌面 .dylib 或 Android 错 ABI .so 不能因为 JNI 接口相同而互用。",
+          "problem_ids": [
+            "CAP-001",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C08",
+            "C10"
+          ]
+        },
+        {
+          "problem": "初始化工程与发布包不一致",
+          "solution": "jniLibs 与 externalNativeBuild 使用不同模板配方，检查最终 AAR 和传递消费。",
+          "example": "本地 app 能加载库不证明 AAR 中实际包含该库。",
+          "problem_ids": [
+            "BUILD-004",
+            "VERIFY-001"
+          ],
+          "task_ids": [
+            "C08",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "Android 使用独立 app 和新 KMP library；预编译库由受支持 jniLibs 输入接入。",
+        "需要 externalNativeBuild 时使用独立 com.android.library 模块，由 androidMain 消费并避免重复打包。",
+        "桌面 JVM 按 OS/CPU 交付 native 库及可信装载路径，装载策略与 Android 分开。",
+        "包含 Release/R8、ABI、最低 SDK、16 KB 页对齐和动态依赖的消费验证。"
+      ],
+      "gates": [
+        "Kotlin class 描述符、RegisterNatives、ClassLoader 与 Release R8 用例。",
+        "local/global reference、线程附着、异常状态和大批回调压力测试。",
+        "借用/复制、重复完成、取消/关闭/迟到结果与内存释放竞态。",
+        "独立 AAR/JAR 消费运行及 native 包装内容检查。",
+        "新环境 IDE 导入、显式测试和无开发仓库依赖的重建。"
+      ],
+      "choices": [
+        "Android 与 JVM 主线使用 JNI；JNI 专用语义不由别的 FFI 机制自动替代。",
+        "桌面 FFM/JNA 属于 X04 扩展，不能作为 Android 通用默认；与 UniFFI Kotlin 内部使用 JNA 区分。",
+        "SWIG 可作为既有大型 C++ 接口的可选生成器，仍需限定 typemap、异常和所有权；不默认承诺任意 C++ 全自动绑定。"
+      ],
+      "detail": {
+        "family": "jni",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "JVM descriptor 核对；JNI 注册 / 转换生成。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "统一操作 token、错误、取消接线和状态订阅；jlong 是受控句柄表示，不代表任意地址可安全解引用。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "原生业务实现、锁协议、C++ 异常分类和复杂对象转换。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Kotlin 导出契约",
+              "kind": "domain",
+              "summary": "受限接口描述声明参数、返回、错误、所有权和回调；实际 class 描述符决定 JNI 签名，不能把 javac -h 当 Kotlin external 实现生成器。",
+              "does": [
+                "contract + compiled JVM descriptors",
+                "负责方：SDK 作者"
+              ],
+              "constraints": [
+                "哪些缓冲借用/复制、句柄归属以及 cancel/unregister/drain 的真实效果。",
+                "ClassLoader 装载方案与 callback 生命周期需要明确配置。"
+              ],
+              "lines": [
+                "contract + compiled JVM descriptors"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "Kotlin/JVM 使用明确 external 声明和 JNI 注册调用 C/C++；JVM 句柄、线程附着、ClassLoader 与原生资源分别管理，Android 构建和桌面 JVM 分发分别验收。",
+              "does": [
+                "Android 与 JVM 主线使用 JNI；JNI 专用语义不由别的 FFI 机制自动替代。",
+                "桌面 FFM/JNA 属于 X04 扩展，不能作为 Android 通用默认；与 UniFFI Kotlin 内部使用 JNA 区分。",
+                "SWIG 可作为既有大型 C++ 接口的可选生成器，仍需限定 typemap、异常和所有权；不默认承诺任意 C++ 全自动绑定。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "AAR/JAR + native slices + R8 rules"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "JVM descriptor 核对",
+              "kind": "upstream",
+              "summary": "MadB 生成 Kotlin external、JNI_OnLoad/RegisterNatives 表及 C/C++ 参数转换；复杂 native 语义另经显式适配。",
+              "does": [
+                "class files + JNI/C++ adapter"
+              ],
+              "constraints": [
+                "Kotlin external 声明及真实 JVM 描述符比对数据。"
+              ],
+              "lines": [
+                "external 方法、真实 descriptor、类加载边界"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "JNI 注册 / 转换生成",
+              "kind": "upstream",
+              "summary": "MadB 生成 Kotlin external、JNI_OnLoad/RegisterNatives 表及 C/C++ 参数转换；复杂 native 语义另经显式适配。",
+              "does": [
+                "class files + JNI/C++ adapter"
+              ],
+              "constraints": [
+                "Kotlin external 声明及真实 JVM 描述符比对数据。"
+              ],
+              "lines": [
+                "注册表、转换、引用包装与 C++ facade"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "JNI_OnLoad、RegisterNatives 表、参数/返回转换和 source diagnostic。",
+                "依据契约生成 GlobalRef holder、句柄准入、配对释放与回调接线。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "Release 与独立消费",
+              "kind": "madb",
+              "summary": "验证描述符、ClassLoader、R8、ABI 和 16 KB 页要求；桌面 JVM 与 Android 分别运行真实 SDK 消费者。",
+              "does": [
+                "device/JVM reports + artifact digest",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "Kotlin class 描述符、RegisterNatives、ClassLoader 与 Release R8 用例。",
+                "local/global reference、线程附着、异常状态和大批回调压力测试。"
+              ],
+              "lines": [
+                "device/JVM reports + artifact digest"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "Android 预编译 .so 通过 jniLibs 装配；需要 externalNativeBuild 时使用独立 Android library，桌面 JAR 配套目标库。",
+              "does": [
+                "Android 使用独立 app 和新 KMP library；预编译库由受支持 jniLibs 输入接入。",
+                "需要 externalNativeBuild 时使用独立 com.android.library 模块，由 androidMain 消费并避免重复打包。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "AAR / JAR 与 native 库",
+              "kind": "madb",
+              "summary": "Android 预编译 .so 通过 jniLibs 装配；需要 externalNativeBuild 时使用独立 Android library，桌面 JAR 配套目标库。",
+              "does": [
+                "AAR/JAR + native slices + R8 rules",
+                "负责方：MadB build adapter"
+              ],
+              "constraints": [
+                "桌面 JVM 按 OS/CPU 交付 native 库及可信装载路径，装载策略与 Android 分开。",
+                "包含 Release/R8、ABI、最低 SDK、16 KB 页对齐和动态依赖的消费验证。"
+              ],
+              "lines": [
+                "AAR/JAR + native slices + R8 rules"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Kotlin/JVM 业务端",
+              "kind": "ui",
+              "summary": "普通 Kotlin API、suspend 或 Flow 调用，业务只处理 API 效果与资源 owner，JVM 不等于 Kotlin/Native。",
+              "does": [
+                "typed Kotlin SDK",
+                "负责方：业务开发者"
+              ],
+              "constraints": [
+                "Android 与 JVM 主线使用 JNI；JNI 专用语义不由别的 FFI 机制自动替代。",
+                "桌面 FFM/JNA 属于 X04 扩展，不能作为 Android 通用默认；与 UniFFI Kotlin 内部使用 JNA 区分。"
+              ],
+              "lines": [
+                "typed Kotlin SDK"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Kotlin 资源与协程封装",
+              "kind": "madb",
+              "summary": "统一操作 token、错误、取消接线和状态订阅；jlong 是受控句柄表示，不代表任意地址可安全解引用。",
+              "does": [
+                "suspend/Flow + handle wrapper",
+                "负责方：MadB generated facade"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "suspend/Flow + handle wrapper"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "JNI / JNIEnv / 注册表",
+              "kind": "upstream",
+              "summary": "使用当前线程的 JNIEnv；区分 local/global reference、pending exception 和原生资源。注册名称依赖真实 class。",
+              "does": [
+                "JNIEnv + GlobalRef + JNI entry"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "RegisterNatives、局部与全局引用"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "C / C++ 语义 shim",
+              "kind": "upstream",
+              "summary": "使用当前线程的 JNIEnv；区分 local/global reference、pending exception 和原生资源。注册名称依赖真实 class。",
+              "does": [
+                "JNIEnv + GlobalRef + JNI entry"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "异常截断、所有权与原生业务入口"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "C/C++ 实现",
+              "kind": "domain",
+              "summary": "C 实现提供状态与释放器；C++ adapter 将异常转为声明的错误，内部同步、算法与线程池由 native 作者负责。",
+              "does": [
+                "C API / C++ semantic adapter",
+                "负责方：native 作者"
+              ],
+              "constraints": [
+                "原生业务实现、锁协议、C++ 异常分类和复杂对象转换。",
+                "哪些缓冲借用/复制、句柄归属以及 cancel/unregister/drain 的真实效果。"
+              ],
+              "lines": [
+                "C API / C++ semantic adapter"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "句柄与引用 owner",
+              "kind": "madb",
+              "summary": "原生句柄、GlobalRef 和订阅各自登记 owner；引用可达只证明 JVM 对象保活，不证明原生任务已完成。",
+              "does": [
+                "handle registry + reference tracking",
+                "负责方：SDK runtime"
+              ],
+              "constraints": [
+                "排水在途 native 调用与回调，迟到结果按协议释放。",
+                "删除 GlobalRef、释放句柄；线程仅由执行附着的一方负责 detach。"
+              ],
+              "lines": [
+                "handle registry + reference tracking"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "附着与回调调度",
+              "kind": "madb",
+              "summary": "原生线程需要 AttachCurrentThread 后使用自己的 JNIEnv；投递 Kotlin dispatcher，并按本层附着责任执行 detach。",
+              "does": [
+                "thread attachment + dispatcher",
+                "负责方：JNI adapter + coroutine runtime"
+              ],
+              "constraints": [
+                "JNIEnv 是线程相关对象；共享 JavaVM 不代表可共享 JNIEnv。",
+                "只分离本次桥接自行附着的线程，避免破坏 JVM 管理线程。"
+              ],
+              "lines": [
+                "thread attachment + dispatcher"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "注册时保存必要 GlobalRef 和已解析 callback 标识。",
+              "does": [
+                "原生线程按协议附着 JVM，不能复用其他线程的 JNIEnv。",
+                "校验 token、引用和一次完成状态，调用声明的 JVM callback。"
+              ],
+              "constraints": [
+                "关闭准入，注销回调或请求工作停止；等在途回调与调用排水后，删除 GlobalRef 并释放 native owner。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Kotlin/JVM 业务端",
+            "JNI 注册与引用适配",
+            "C/C++ 实现",
+            "JavaVM / 宿主回调"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Kotlin Facade 检查句柄与调用准入，按接口调度阻塞工作。",
+                "处理 pending exception 或正常结果后释放本次局部引用与借用。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "注册时保存必要 GlobalRef 和已解析 callback 标识。",
+                "只分离本次桥接自行附着的线程，避免破坏 JVM 管理线程。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "关闭准入，注销回调或请求工作停止；等在途回调与调用排水后，删除 GlobalRef 并释放 native owner。",
+                "Kotlin suspend 是外观；原生取消与清理要有独立确认协议。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "值与字符串",
+            "path": [
+              "Kotlin 值 / String / ByteArray",
+              "JNI 参数与受控编码/数组访问",
+              "C / C++ 值与缓冲"
+            ],
+            "note": "不把 JNI Modified UTF-8 当成任意 UTF-8 协议；数组临界区不包住长任务或回调。"
+          },
+          {
+            "title": "对象引用与资源身份",
+            "path": [
+              "Kotlin 资源对象 / 回调实例",
+              "native handle + JNI GlobalRef",
+              "C/C++ 对象与 callback context"
+            ],
+            "note": "LocalRef 不跨调用保存；GlobalRef 显式释放，jlong 值须经过句柄有效性与准入检查。"
+          },
+          {
+            "title": "错误通道",
+            "path": [
+              "C status / C++ exception",
+              "JNI 适配检查 pending exception",
+              "Kotlin 异常 / 结果"
+            ],
+            "note": "原生异常在 shim 截断；JNI 调用失败后先处理 pending exception，不能继续任意调用。"
+          }
+        ],
+        "example": {
+          "title": "native 线程回调宿主",
+          "language": "语义伪代码",
+          "code": "onNativeEvent(nativeValue):\n    attachment = attachIfNeeded(javaVM)\n    env = attachment.currentEnv()\n    target = retainRegisteredCallback()\n    callHost(env, target, nativeValue)\n    handlePendingException(env)\n    releaseLocalReferences(env)\n    attachment.detachOnlyIfAttachedHere()",
+          "note": "跨线程保存 JavaVM 与受管引用，不缓存别的线程的 JNIEnv；类和方法注册在正确 ClassLoader 范围。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "UTF-8 被直接送入 Modified UTF-8 接口",
+          "trigger": "输入含 NUL 和补充平面字符，直接使用 NewStringUTF。",
+          "trace": "识别实际编码 → 显式转 UTF-16 或 Modified UTF-8 → 匹配长度接口 → 检查 pending exception。",
+          "expected": "文本无静默截断，错误路径配对释放；不把普通 UTF-8 当 JNI UTF。",
+          "oracle": "独立字符/字节预期、CheckJNI 适用目标、Release/R8 消费，包含非法输入。"
+        },
+        "owners": [
+          {
+            "title": "应用 / JVM 会话 owner",
+            "depth": 0,
+            "detail": "原生句柄、GlobalRef 和订阅各自登记 owner；引用可达只证明 JVM 对象保活，不证明原生任务已完成。"
+          },
+          {
+            "title": "native handle registry + GlobalRef",
+            "depth": 1,
+            "detail": "统一操作 token、错误、取消接线和状态订阅；jlong 是受控句柄表示，不代表任意地址可安全解引用。"
+          },
+          {
+            "title": "本次调用 / 回调 lease",
+            "depth": 2,
+            "detail": "关闭准入，注销回调或请求工作停止；等在途回调与调用排水后，删除 GlobalRef 并释放 native owner。"
+          },
+          {
+            "title": "C/C++ 资源与已附着线程上下文",
+            "depth": 2,
+            "detail": "C 实现提供状态与释放器；C++ adapter 将异常转为声明的错误，内部同步、算法与线程池由 native 作者负责。"
+          }
+        ],
+        "thread_rules": [
+          "JNIEnv 是线程相关对象；共享 JavaVM 不代表可共享 JNIEnv。",
+          "只分离本次桥接自行附着的线程，避免破坏 JVM 管理线程。",
+          "不持 native 锁同步调用 Kotlin；回调可能重入同一实例。",
+          "Kotlin suspend 是外观；原生取消与清理要有独立确认协议。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "contract + compiled JVM descriptors → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "external API + registration + JNI glue",
+            "pattern": "Adapter / Mapper：复用 JVM descriptor 核对、JNI 注册 / 转换生成",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "suspend/Flow + handle wrapper",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "AAR/JAR + native slices + R8 rules",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "device/JVM reports + artifact digest",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "关闭准入，注销回调或请求工作停止；等在途回调与调用排水后，删除 GlobalRef 并释放 native owner。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "从受限契约生成 Kotlin external 和 JNI 注册/转换代码。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "编译 Kotlin 类，比较真实 JVM 描述符与 RegisterNatives 表。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "编译 C/C++ 适配器，手写部分负责未知语义与原生同步。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "按 Android/JVM 目标包装 native 库、依赖和保留规则。"
+        }
+      ]
+    },
+    {
+      "id": "native-cinterop",
+      "name": "Kotlin/Native · C ABI / cinterop",
+      "kind": "主线候选",
+      "summary": "Kotlin/Native 从 C 头生成绑定；C++ 经显式 C adapter 收敛语义。官方 Kotlin 与 CPF 目标分别构建和验证，不把同一份 nativeMain 源码当作二进制可互换证据。",
+      "route_ids": [
+        "KN-C-CINTEROP",
+        "KN-CPP-CABI"
+      ],
+      "task_ids": [
+        "C08",
+        "C09",
+        "C10",
+        "I05",
+        "I06",
+        "L03",
+        "L06"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "C 声明与目标绑定",
+          "steps": [
+            "选择目标工具链、头文件、宏、sysroot 和配套 native 库。",
+            "C++ 路线先通过显式 C adapter；C 路线直接使用受限头。",
+            "cinterop 生成底层声明；MadB 再生成语义 Facade、生命周期接线与诊断。",
+            "官方和 CPF 分别编译目标 KLIB、原生库及发布 metadata。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Kotlin/Native 调 C ABI",
+          "steps": [
+            "Facade 校验资源准入、整数/长度及线程要求。",
+            "同步借用使用明确作用域；异步调用复制或持有拥有者。",
+            "C ABI 调用 C 函数或 C++ 的 C wrapper，异常不能跨边界。",
+            "读取状态/输出并使用声明的 allocator 配对释放。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "C 回调 Kotlin/Native",
+          "steps": [
+            "注册静态 C 兼容 callback 和 context，StableRef 持有需要的 Kotlin 对象。",
+            "原生回调只使用仍有效的 token，运行入口遵守锁定 runtime 的要求。",
+            "回调捕获语言异常、校验一次完成后投递约定 dispatcher。",
+            "反向限于 C 可见导出/回调，不代表 C 能任意调用 Kotlin 类。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "借用与 StableRef 清理",
+          "steps": [
+            "取消协程明确区分停止等待、停止观察和停止原生工作。",
+            "关闭新调用，注销 callback 并请求原生停止。",
+            "在途调用和 callback 排水结束后 dispose StableRef。",
+            "按各自 allocator 释放缓冲与 native owner，借用指针不执行释放。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "KLIB 与平台独立消费",
+          "steps": [
+            "发布官方/CPF 独立 Maven GAV 和根 metadata，避免版本/变体混选。",
+            "随包声明 native 头/库、链接参数与目标约束；KLIB 不自动包含所有 native 依赖。",
+            "在实际 Apple/OHOS 消费者编译、链接并运行回调和关闭流程。",
+            "各自配置独立记录证据，不从 iOS 通过推导 OHOS 可用。"
+          ]
+        }
+      ],
+      "generated": [
+        "对应工具链的 cinterop 配置、底层声明及目标编译接线。",
+        "受限 C 值、字符串、缓冲到 Kotlin 的转换和错误映射。",
+        "根据明确语义生成 C++ C adapter 接线骨架及 Kotlin 资源 Facade。",
+        "生成 static callback/context、StableRef holder 与关闭排水接线。",
+        "生成官方/CPF 发布坐标映射、原生依赖清单和独立消费 fixture。"
+      ],
+      "handwritten": [
+        "C++ 到 C 的领域语义、异常分类和复杂类型适配。",
+        "native 对象线程安全、真实停止/排水、资源释放器。",
+        "借用窗口、异步保活及共享状态同步策略。",
+        "StableRef 生命周期和反向导出面必须由接口契约明确。"
+      ],
+      "risks": [
+        {
+          "problem": "将 C++ 布局当作 C 导入",
+          "solution": "C++ 通过显式 C adapter，隐藏模板/对象布局，异常在 adapter 截断。",
+          "example": "std::vector 返回值不能直接放入 C 头供 cinterop 当安全值使用。",
+          "problem_ids": [
+            "TYPE-007"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "作用域指针逃逸",
+          "solution": "memScoped/usePinned 仅限声明的借用窗口；异步场景复制或持有 owner。",
+          "example": "把 memScoped 内创建的 buffer 保存给 native 异步任务会产生悬垂指针。",
+          "problem_ids": [
+            "LIFE-002"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "StableRef 提前销毁或泄漏",
+          "solution": "token 有唯一 owner，unregister + drain 后 dispose；拒绝重复释放。",
+          "example": "页面退出 dispose 后 native 迟到回调会解引用失效 context。",
+          "problem_ids": [
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "GC 与 native 同步混淆",
+          "solution": "显式 close 原生资源，共享对象按原生锁/执行器协议同步。",
+          "example": "Kotlin 对象仍存活不证明其 native 句柄尚未关闭或线程安全。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "异常/取消跨界语义",
+          "solution": "Kotlin 和 C++ 异常分别截断映射；停止等待不冒充停止工作。",
+          "example": "取消 suspend 操作后 native 产生的返回缓冲仍必须被认领或释放。",
+          "problem_ids": [
+            "ERR-002",
+            "ASYNC-001"
+          ],
+          "task_ids": [
+            "C08",
+            "C09"
+          ]
+        },
+        {
+          "problem": "头、KLIB 与目标库不匹配",
+          "solution": "固定 target、宏、sysroot、ABI 和真实链接库身份。",
+          "example": "用 Apple 生成的布局或 KLIB 推断 CPF/OHOS 二进制兼容。",
+          "problem_ids": [
+            "BUILD-001",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C08",
+            "C10"
+          ]
+        },
+        {
+          "problem": "双线发布与重复内核",
+          "solution": "官方/CPF 独立坐标；组合应用明确唯一内核实例和句柄来源。",
+          "example": "上层另一个 Rust/C++ 桥静态链接同一内核，可能创建第二套 owner/线程池。",
+          "problem_ids": [
+            "BUILD-002",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C08",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "官方 Kotlin 与 CPF 采用独立构建根、插件、Konan 缓存、GAV 和根 metadata。",
+        "按 Apple/OHOS 目标提供 KLIB/发布变体、头、native 库及链接条件，不能将 KLIB 当作完整应用包。",
+        "上层 Swift/ArkTS SDK 是组合路线，分别装配并验证唯一内核与符号。",
+        "新环境通过公开发布坐标消费，不依赖 MadDemo 或未发布兄弟仓库。"
+      ],
+      "gates": [
+        "C 头/宏/布局与真实 native 库匹配，所有公开 API 真实链接调用。",
+        "作用域指针逃逸、borrow/owned、配对 allocator 和 StableRef 回调竞态。",
+        "Kotlin/C++ 异常截断、同步重入、取消、迟到结果与显式关闭。",
+        "官方/CPF 各自编译、目标运行、Release 和独立 Maven 消费。",
+        "组合应用单一内核、符号及跨入口句柄不混用测试。"
+      ],
+      "choices": [
+        "Kotlin/Native 调 C 用 cinterop；调 C++ 通过显式 C adapter。",
+        "Android Kotlin/JVM 应使用 JNI 配置，不能用 androidNative 目标替代。",
+        "FFM/JNA 是 JVM 运行时扩展，不适用于本 Kotlin/Native 配置。"
+      ],
+      "detail": {
+        "family": "cabi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "头文件 / .def + cinterop；C++ 显式 C 适配。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "限定 memScoped/usePinned 等借用窗口；为原生 owner、结果释放与 suspend/Flow 提供明确协议。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "C++ 到 C 的领域语义、异常分类和复杂类型适配。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "C 头与 C++ 适配契约",
+              "kind": "domain",
+              "summary": "已有 C API 声明借用/所有权/错误；C++ 先设计 C 可见 wrapper，将模板、异常和对象生命周期留在显式适配层。",
+              "does": [
+                "headers + .def 输入 + ABI contract",
+                "负责方：SDK 作者"
+              ],
+              "constraints": [
+                "native 对象线程安全、真实停止/排水、资源释放器。",
+                "借用窗口、异步保活及共享状态同步策略。"
+              ],
+              "lines": [
+                "headers + .def 输入 + ABI contract"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "Kotlin/Native 从 C 头生成绑定；C++ 经显式 C adapter 收敛语义。官方 Kotlin 与 CPF 目标分别构建和验证，不把同一份 nativeMain 源码当作二进制可互换证据。",
+              "does": [
+                "Kotlin/Native 调 C 用 cinterop；调 C++ 通过显式 C adapter。",
+                "Android Kotlin/JVM 应使用 JNI 配置，不能用 androidNative 目标替代。",
+                "FFM/JNA 是 JVM 运行时扩展，不适用于本 Kotlin/Native 配置。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "独立 Maven 发布与 native artifacts"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "头文件 / .def + cinterop",
+              "kind": "upstream",
+              "summary": "对应 Kotlin/Native 工具链生成 C declarations；MadB 生成 Kotlin 资源/类型 Facade、C++ adapter 骨架及目标配置。",
+              "does": [
+                "target KLIB + C adapter"
+              ],
+              "constraints": [
+                "对应工具链的 cinterop 配置、底层声明及目标编译接线。"
+              ],
+              "lines": [
+                "C 可见 ABI、布局、错误码与 callback context"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "C++ 显式 C 适配",
+              "kind": "upstream",
+              "summary": "对应 Kotlin/Native 工具链生成 C declarations；MadB 生成 Kotlin 资源/类型 Facade、C++ adapter 骨架及目标配置。",
+              "does": [
+                "target KLIB + C adapter"
+              ],
+              "constraints": [
+                "对应工具链的 cinterop 配置、底层声明及目标编译接线。"
+              ],
+              "lines": [
+                "导入声明 + 受限资源 facade"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "受限 C 值、字符串、缓冲到 Kotlin 的转换和错误映射。",
+                "根据明确语义生成 C++ C adapter 接线骨架及 Kotlin 资源 Facade。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "双工具链真实消费",
+              "kind": "madb",
+              "summary": "官方与 CPF 单独编译、链接和设备执行，验证目标头/库一致、回调关闭及独立坐标消费。",
+              "does": [
+                "Apple/OHOS profile evidence",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "C 头/宏/布局与真实 native 库匹配，所有公开 API 真实链接调用。",
+                "作用域指针逃逸、borrow/owned、配对 allocator 和 StableRef 回调竞态。"
+              ],
+              "lines": [
+                "Apple/OHOS profile evidence"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "官方 Apple 与 CPF OHOS 分别构建根、缓存、坐标和根 metadata；应用产物再装配各自 native 依赖。",
+              "does": [
+                "官方 Kotlin 与 CPF 采用独立构建根、插件、Konan 缓存、GAV 和根 metadata。",
+                "按 Apple/OHOS 目标提供 KLIB/发布变体、头、native 库及链接条件，不能将 KLIB 当作完整应用包。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "官方与 CPF 独立发布",
+              "kind": "madb",
+              "summary": "官方 Apple 与 CPF OHOS 分别构建根、缓存、坐标和根 metadata；应用产物再装配各自 native 依赖。",
+              "does": [
+                "独立 Maven 发布与 native artifacts",
+                "负责方：MadB build/packaging"
+              ],
+              "constraints": [
+                "上层 Swift/ArkTS SDK 是组合路线，分别装配并验证唯一内核与符号。",
+                "新环境通过公开发布坐标消费，不依赖 MadDemo 或未发布兄弟仓库。"
+              ],
+              "lines": [
+                "独立 Maven 发布与 native artifacts"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Kotlin/Native 业务端",
+              "kind": "ui",
+              "summary": "通过普通 Kotlin API 使用原生能力；平台 UI 或上层桥接另有配置，不把它们自动归入本路线。",
+              "does": [
+                "typed Kotlin facade",
+                "负责方：业务开发者"
+              ],
+              "constraints": [
+                "Kotlin/Native 调 C 用 cinterop；调 C++ 通过显式 C adapter。",
+                "Android Kotlin/JVM 应使用 JNI 配置，不能用 androidNative 目标替代。"
+              ],
+              "lines": [
+                "typed Kotlin facade"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Kotlin 指针与作用域封装",
+              "kind": "madb",
+              "summary": "限定 memScoped/usePinned 等借用窗口；为原生 owner、结果释放与 suspend/Flow 提供明确协议。",
+              "does": [
+                "scoped borrow + closeable resource",
+                "负责方：MadB generated facade"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "scoped borrow + closeable resource"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "Kotlin/Native cinterop",
+              "kind": "upstream",
+              "summary": "Kotlin 调 C ABI；反向采用 C 兼容静态函数指针与 context/StableRef，捕获异常并按契约回传错误。",
+              "does": [
+                "C call + static callback/context"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "opaque handle、ptr/len、status"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "C ABI / C++ adapter",
+              "kind": "upstream",
+              "summary": "Kotlin 调 C ABI；反向采用 C 兼容静态函数指针与 context/StableRef，捕获异常并按契约回传错误。",
+              "does": [
+                "C call + static callback/context"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "所有权转移、异常截断与业务调用"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "C / C++ 核心实现",
+              "kind": "domain",
+              "summary": "C++ wrapper 捕获异常、转换受限值并隐藏对象布局；C 库提供真实释放器、同步与停止能力。",
+              "does": [
+                "C implementation / C++ behind C",
+                "负责方：native 作者"
+              ],
+              "constraints": [
+                "C++ 到 C 的领域语义、异常分类和复杂类型适配。",
+                "native 对象线程安全、真实停止/排水、资源释放器。"
+              ],
+              "lines": [
+                "C implementation / C++ behind C"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "Kotlin 与 native owner",
+              "kind": "madb",
+              "summary": "Kotlin GC 不等于 native 资源立即释放；StableRef 保活回调对象，但不证明调用线程安全。",
+              "does": [
+                "explicit owner + StableRef token",
+                "负责方：SDK runtime + 作者"
+              ],
+              "constraints": [
+                "在途调用和 callback 排水结束后 dispose StableRef。",
+                "按各自 allocator 释放缓冲与 native owner，借用指针不执行释放。"
+              ],
+              "lines": [
+                "explicit owner + StableRef token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "线程与协程交付",
+              "kind": "madb",
+              "summary": "原生线程按具体 Kotlin/Native runtime 的可用入口回调；同步保护共享状态，结果投递约定 dispatcher。",
+              "does": [
+                "callback admission + dispatcher",
+                "负责方：runtime adapter"
+              ],
+              "constraints": [
+                "裸指针、句柄和可变共享状态的线程安全由作者契约说明。",
+                "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。"
+              ],
+              "lines": [
+                "callback admission + dispatcher"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "注册静态 C 兼容 callback 和 context，StableRef 持有需要的 Kotlin 对象。",
+              "does": [
+                "原生回调只使用仍有效的 token，运行入口遵守锁定 runtime 的要求。",
+                "回调捕获语言异常、校验一次完成后投递约定 dispatcher。"
+              ],
+              "constraints": [
+                "注销回调并等待在途访问结束后 dispose StableRef；nativeHeap、原生分配结果各用自己的释放器。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Kotlin/Native 业务端",
+            "cinterop + Kotlin facade",
+            "C / C++ 核心实现",
+            "staticCFunction / StableRef"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Facade 校验资源准入、整数/长度及线程要求。",
+                "读取状态/输出并使用声明的 allocator 配对释放。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "注册静态 C 兼容 callback 和 context，StableRef 持有需要的 Kotlin 对象。",
+                "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "注销回调并等待在途访问结束后 dispose StableRef；nativeHeap、原生分配结果各用自己的释放器。",
+                "超时不是排水完成；必要时资源保持 Closing 并报告仍在工作。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "值与缓冲",
+            "path": [
+              "语言值 / 字节序列",
+              "ABI 值 / ptr + length",
+              "provider 的值或借用视图"
+            ],
+            "note": "长度、布局和编码显式声明；调用期间借用不能被原生端留到异步任务。"
+          },
+          {
+            "title": "指针与回调上下文",
+            "path": [
+              "Kotlin owner / StableRef",
+              "C 指针 + staticCFunction 桥",
+              "原生对象与 callback context"
+            ],
+            "note": "StableRef 在回调排水后 dispose；memScoped / pinned 借用只覆盖允许的窗口。"
+          },
+          {
+            "title": "错误与回调",
+            "path": [
+              "业务 Result / status",
+              "固定错误表示 / function + context",
+              "目标语言错误 / 宿主实现"
+            ],
+            "note": "异常不越过 C ABI；callback context 保活到最后一次允许的调用退出。"
+          }
+        ],
+        "example": {
+          "title": "停止确认之后再释放",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：先建立 context 持有，再允许同步首回调\nregistration = prepareCallbackOwner()\ntoken = subscribe(registration.context)\nrequest_stop(token)\nresult = await_stopped(token)\nif result == confirmed:\n    release_callback_context(registration)\n    destroy_with_provider_releaser(handle)\nelse:\n    cleanupOwner.retainUntilConfirmed(token, registration, handle)\n// 超时不释放；此调用只能在允许等待的位置执行",
+          "note": "仅适用于提供注销屏障或安全登记租约的后端；没有确认时保留收尾责任，不顺序执行 destroy。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "StableRef 在源端进入桥之前被释放",
+          "trigger": "原生线程已取走 context，Kotlin 线程调用 unregister 后立即 dispose。",
+          "trace": "源端登记租约或注销屏障 → 等待所有可进入回调退出 → dispose 一次。",
+          "expected": "桥入口才加计数不够；memScoped/pinned 指针不跨声明窗口逃逸。",
+          "oracle": "按 CRIT-03 暂停桥入口前线程，核对 StableRef 与 native 回调持有归还。"
+        },
+        "owners": [
+          {
+            "title": "应用 / native owner",
+            "depth": 0,
+            "detail": "Kotlin GC 不等于 native 资源立即释放；StableRef 保活回调对象，但不证明调用线程安全。"
+          },
+          {
+            "title": "资源包装与父子句柄",
+            "depth": 1,
+            "detail": "限定 memScoped/usePinned 等借用窗口；为原生 owner、结果释放与 suspend/Flow 提供明确协议。"
+          },
+          {
+            "title": "借用窗口 / callback lease",
+            "depth": 2,
+            "detail": "注销回调并等待在途访问结束后 dispose StableRef；nativeHeap、原生分配结果各用自己的释放器。"
+          },
+          {
+            "title": "allocator、对象与 callback context",
+            "depth": 2,
+            "detail": "C++ wrapper 捕获异常、转换受限值并隐藏对象布局；C 库提供真实释放器、同步与停止能力。"
+          }
+        ],
+        "thread_rules": [
+          "裸指针、句柄和可变共享状态的线程安全由作者契约说明。",
+          "借用只跨越约定调用窗口；异步持有必须复制或显式移交 owner。",
+          "外部回调离开持锁区；回调内关闭不等待自身完成。",
+          "超时不是排水完成；必要时资源保持 Closing 并报告仍在工作。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "headers + .def 输入 + ABI contract → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "Kotlin stubs + semantic wrappers",
+            "pattern": "Adapter / Mapper：复用 头文件 / .def + cinterop、C++ 显式 C 适配",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "scoped borrow + closeable resource",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "独立 Maven 发布与 native artifacts",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "Apple/OHOS profile evidence",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "注销回调并等待在途访问结束后 dispose StableRef；nativeHeap、原生分配结果各用自己的释放器。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "选择目标工具链、头文件、宏、sysroot 和配套 native 库。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "C++ 路线先通过显式 C adapter；C 路线直接使用受限头。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "cinterop 生成底层声明；MadB 再生成语义 Facade、生命周期接线与诊断。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "官方和 CPF 分别编译目标 KLIB、原生库及发布 metadata。"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "后端配置与 JVM/Native 分工",
+      "path": "architecture/06-backend-profiles.md"
+    },
+    {
+      "label": "技术栈、Android 模块与双发布线",
+      "path": "architecture/16-technology-stack-and-versions.md"
+    },
+    {
+      "label": "代码生成边界",
+      "path": "architecture/07-code-generation.md"
+    },
+    {
+      "label": "生命周期与并发协议",
+      "path": "architecture/05-lifecycle-and-concurrency.md"
+    },
+    {
+      "label": "Kotlin/Native C 互操作",
+      "url": "https://kotlinlang.org/docs/native-c-interop.html"
+    },
+    {
+      "label": "Android JNI 指南",
+      "url": "https://developer.android.com/training/articles/perf-jni"
+    },
+    {
+      "label": "Android KMP 插件",
+      "url": "https://developer.android.com/kotlin/multiplatform/plugin"
+    }
+  ],
+  "view_schema": "madb.route-detail-view/3"
+}

@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>MadB · Kotlin/Native ↔ Swift 架构全景</title>
+<style>
+/* SHARED_CSS */
+:root{--upstream:#4a6492;--upstream-soft:#eaf0fb;--domain:#7d6244;--domain-soft:#f6efe5;--swift:#87587b;--swift-soft:#f4eaf1;--node:#fff;--edge:#849993}
+:root[data-theme=dark]{--upstream:#abc2f5;--upstream-soft:#273951;--domain:#e2bd89;--domain-soft:#3c3329;--swift:#dfb2d5;--swift-soft:#3e3040;--node:#18292e;--edge:#7f9d95}
+html{scroll-behavior:smooth;scroll-padding-top:24px}main{max-width:1530px}.hero{grid-template-columns:1fr 260px}.hero h1{font-size:clamp(28px,3.2vw,45px)}.hero .preview{display:inline-block;margin-bottom:12px;padding:4px 10px;border:1px solid #4e796c;border-radius:6px;color:#cae3d7;font-size:12px}.hero-stamp{min-width:0;line-height:1.9}.hero-stamp strong{font-size:17px}.hero-stamp p{font-size:12px;margin-top:8px;line-height:1.8}.subnav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}.subnav a{background:var(--panel);border:1px solid var(--line);border-radius:30px;padding:8px 14px;font-size:12px;color:var(--muted)}.subnav a:hover{background:var(--soft);color:var(--accent);text-decoration:none}
+.profile-panel{padding:22px 25px}.profile-row{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap}.profile-choices{display:flex;gap:9px;flex-wrap:wrap}.profile-choice{padding:12px 17px;text-align:left;line-height:1.6;min-height:67px}.profile-choice b{display:block;font-size:14px}.profile-choice span{display:block;font-size:11px;color:var(--muted)}.profile-choice[aria-pressed=true]{background:var(--soft);border-color:var(--accent)}.profile-description{font-size:13px;color:var(--muted);margin:15px 0 0}.choice-label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.trinity{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:15px}.trinity article{padding:20px 23px;border-top:3px solid var(--accent)}.trinity article:nth-child(1){border-top-color:var(--upstream)}.trinity article:nth-child(2){border-top-color:var(--swift)}.trinity small{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px}.trinity h3{font-size:16px}.trinity p{font-size:13px;color:var(--muted);margin:0}.section{margin-top:38px}.section-head h2 b{display:inline-grid;place-items:center;width:29px;height:29px;background:var(--soft);color:var(--accent);font-size:12px;border-radius:8px;margin-right:9px;font-weight:600}.diagram-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 21px;border-bottom:1px solid var(--line)}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.legend span{display:flex;align-items:center;gap:6px}.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block}.dot.up{background:var(--upstream)}.dot.biz{background:var(--domain)}.dot.ui{background:var(--swift)}.diagram-scroll{overflow:auto;padding:12px 18px;background:var(--panel);overscroll-behavior-x:contain}.diagram-scroll svg{width:100%;min-width:1100px;display:block;color:var(--ink)}.map-band{fill:var(--panel2)}.map-subband{fill:var(--soft);opacity:.55}.map-label{fill:var(--muted);font:600 12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;letter-spacing:1px}.edge{stroke:var(--edge);stroke-width:1.4;fill:none}.edge.control{stroke-dasharray:5 5}.edge.async{stroke:var(--swift)}.edge.type{stroke:var(--upstream)}.edge-label{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}.edge-label-bg{fill:var(--panel)}.graph-node{cursor:pointer;outline:none}.graph-node rect.box{fill:var(--node);stroke:var(--line);stroke-width:1.3;rx:12}.graph-node .bar{fill:var(--accent)}.graph-node.upstream .bar{fill:var(--upstream)}.graph-node.domain .bar{fill:var(--domain)}.graph-node.swift .bar{fill:var(--swift)}.graph-node:hover rect.box,.graph-node:focus-visible rect.box,.graph-node.selected rect.box{stroke:var(--accent);stroke-width:2.3}.graph-node .node-title{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.graph-node .node-copy{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.graph-node .node-kicker{fill:var(--accent);font:10px ui-monospace,SFMono-Regular,monospace;letter-spacing:.6px}.graph-node.upstream .node-kicker{fill:var(--upstream)}.graph-node.swift .node-kicker{fill:var(--swift)}.graph-node.domain .node-kicker{fill:var(--domain)}.dimmed{opacity:.22}.disabled-node rect.box{stroke-dasharray:5 5}.disabled-node{opacity:.45}.graph-foot{font-size:12px;color:var(--muted);padding:0 21px 17px}.detail-panel{border-top:1px solid var(--line);background:var(--panel2);padding:22px 25px;display:grid;grid-template-columns:240px 1fr 1fr;gap:26px;min-height:170px}.detail-panel h3{margin:4px 0 8px}.detail-panel p{font-size:13px;margin:0;color:var(--muted)}.detail-panel ul{margin:7px 0 0;padding-left:18px;font-size:13px}.detail-panel .mini{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.detail-links{margin-top:12px;font-size:12px;display:flex;flex-wrap:wrap;gap:12px}.process{display:grid;grid-template-columns:repeat(5,1fr);gap:0;counter-reset:step}.process article{position:relative;padding:22px;border-right:1px solid var(--line)}.process article:last-child{border-right:0}.process article:before{counter-increment:step;content:"0" counter(step);font:12px ui-monospace,monospace;color:var(--accent);display:block;margin-bottom:12px}.process h3{font-size:15px}.process p{font-size:12px;color:var(--muted);margin:0}.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.padded{padding:23px 25px}.padded p{font-size:13px;color:var(--muted)}.code{margin:12px 0 0;white-space:pre;overflow:auto;background:var(--code);border-radius:10px;padding:18px;font:12px/1.9 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);tab-size:2}.code code{font:inherit;background:none;padding:0}.rule-list{padding:0;margin:14px 0 0;list-style:none}.rule-list li{border-top:1px solid var(--line);padding:12px 0;font-size:13px;color:var(--muted)}.rule-list b{color:var(--ink)}.rule-list li:last-child{padding-bottom:0}.source-ref{font-size:11px;margin-left:5px}.warning{background:var(--domain-soft);border-left-color:var(--domain)}.warning strong{color:var(--domain)}.runtime-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:21px;border-top:1px solid var(--line)}.runtime-notes h3{font-size:14px}.runtime-notes p{font-size:12px;color:var(--muted);margin:0}.seq-lane{stroke:var(--line);stroke-dasharray:4 6;stroke-width:1.5}.seq-head{fill:var(--panel2)}.seq-line{stroke:var(--accent);fill:none;stroke-width:1.8}.seq-text{font:13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}.seq-owner{font:600 14px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:var(--ink)}.seq-small{font:11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:var(--muted)}.seq-number{fill:var(--accent);font:12px ui-monospace,monospace}
+.model-options{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.model-card{padding:24px}.model-path{display:flex;flex-direction:column;gap:8px;margin:17px 0}.model-path div{padding:12px 13px;background:var(--panel2);border-radius:8px;font-size:13px}.model-path .arrow{text-align:center;color:var(--accent);line-height:1;padding:0;background:none;font-size:19px}.model-card p{font-size:12px;color:var(--muted);margin:10px 0 0}.model-card h3{font-size:16px}.ownership-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.owner-tree{display:grid;gap:8px}.owner-tree div{padding:12px 15px;background:var(--panel2);border-radius:8px;font-size:13px}.owner-tree .child{margin-left:28px;border-left:3px solid var(--line)}.owner-tree .grandchild{margin-left:56px;border-left:3px solid var(--line)}.owner-tree span{display:block;font-size:12px;color:var(--muted)}.states{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:18px 0}.states strong{border:1px solid var(--line);padding:10px 15px;border-radius:8px;background:var(--panel2);font-size:13px}.states i{font-style:normal;color:var(--muted)}.states strong.closing{border-color:var(--domain);color:var(--domain);background:var(--domain-soft)}.ownership-grid p{font-size:13px;color:var(--muted)}.table-scroll td{min-width:160px}.table-scroll th:first-child,.table-scroll td:first-child{min-width:190px}.table-scroll table{font-size:12px}.table-scroll th{font-size:11px}.patterns{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.patterns article{padding:18px 20px}.patterns h3{font-size:14px}.patterns p{font-size:12px;color:var(--muted);margin:0}.gate-status{white-space:nowrap;color:var(--warn)}.check-count{font-size:12px;color:var(--muted)}.references{display:grid;grid-template-columns:repeat(2,1fr);gap:13px 24px;margin:0;padding:0;list-style:none}.references li{border-bottom:1px solid var(--line);padding:10px 0}.references b{font-size:12px;color:var(--muted);margin-right:8px}.references a{font-size:13px}.references small{display:block;color:var(--muted);font-size:11px;margin:5px 0 0 33px}.fact-stamp{font-size:12px;color:var(--muted)}.bottom-note{font-size:12px;color:var(--muted);margin:20px 0 0}.print-profile{display:none}
+.hero-stamp p{overflow-wrap:anywhere}.toplinks{flex-wrap:wrap}.diagram-scroll:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+@media(max-width:900px){.topbar{height:auto;min-height:72px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}.hero{grid-template-columns:1fr}.profile-row{gap:15px}.trinity{grid-template-columns:1fr}.trinity article{padding:17px 20px}.detail-panel{grid-template-columns:1fr 1fr}.detail-panel>div:first-child{grid-column:1/-1}.process{grid-template-columns:1fr 1fr}.process article{border-bottom:1px solid var(--line)}.split,.ownership-grid{grid-template-columns:1fr}.model-options{grid-template-columns:1fr}.model-path{flex-direction:row;align-items:stretch}.model-path div{flex:1}.model-path .arrow{flex:0;align-self:center;transform:rotate(-90deg)}.patterns{grid-template-columns:1fr 1fr}.runtime-notes{grid-template-columns:1fr}.references{grid-template-columns:1fr}}
+@media(max-width:520px){.profile-panel{padding:18px}.profile-choices{width:100%;flex-direction:column}.profile-choice{width:100%}.hero-stamp{display:block}.subnav{gap:7px}.subnav a{padding:7px 12px}.detail-panel{grid-template-columns:1fr;padding:18px;gap:15px}.process{grid-template-columns:1fr}.process article{border-right:0}.model-path{flex-direction:column}.model-path .arrow{transform:none}.patterns{grid-template-columns:1fr}.diagram-head{padding:14px}.diagram-scroll{padding:10px}.legend{gap:9px}.section{margin-top:29px}.section-head h2{font-size:19px}.padded{padding:20px}.toplinks{flex-wrap:wrap}.table-scroll table{min-width:850px}.toolbar button{font-size:12px;padding:9px 11px}.profile-row label{width:100%}.profile-row select{width:100%}}
+@media print{.subnav,.profile-panel,.diagram-head .toolbar,.diagram-head button{display:none}.print-profile{display:block}.hero{grid-template-columns:1fr}.hero-stamp{display:none}.diagram-scroll{overflow:visible;padding:0}.diagram-scroll svg{min-width:0;width:100%}.detail-panel{display:none}.section{break-before:auto}.panel{break-inside:auto}.trinity{grid-template-columns:repeat(3,1fr)}.split,.ownership-grid{grid-template-columns:1fr}.model-options{grid-template-columns:repeat(3,1fr)}.patterns{grid-template-columns:repeat(2,1fr)}.table-scroll table{min-width:0}.table-scroll td,.table-scroll th:first-child,.table-scroll td:first-child{min-width:0}.references{grid-template-columns:1fr 1fr}.dimmed{opacity:.45}}
+</style>
+</head>
+<body id="top">
+<header class="topbar">
+ <a class="brand" href="architecture-overview.html"><em>M</em>MadB <small>APPLE ROUTE / DETAIL</small></a>
+ <div class="toplinks"><a href="route-atlas.html">全部路线</a><a href="architecture-overview.html">整体架构</a><a href="implementation-progress.html">实施计划</a><button id="theme" type="button" aria-label="切换深色主题">深色</button><button id="print" type="button">打印 / PDF</button></div>
+</header>
+<main>
+ <section class="hero">
+  <div><span class="preview">专题设计预览 · 尚未完成组合认证</span><div class="eyebrow">KN-SWIFT-OBJC · BUILD / RUNTIME / OWNERSHIP</div><h1>Kotlin/Native ↔ Swift<br>SKIE 主线 ＋ NC 可选扩展</h1><p>默认由 SKIE 提供类型与协程增强；选择 NativeCoroutines 扩展时，明确交接异步声明的生成责任。MadB 统一选择、契约、工程接线和验证，把复杂边界收敛为可理解的 SDK。</p></div>
+  <div class="hero-stamp"><strong>一个类型增强层<br>一个异步桥接责任方</strong><p id="catalog-stamp">设计基线、路线状态与计划阶段<br>统一读取共享 catalog。</p></div>
+ </section>
+ <nav class="subnav" aria-label="本页目录"><a href="#overview">01 全景</a><a href="#build">02 构建与交付</a><a href="#runtime">03 运行与反向调用</a><a href="#models">04 类型与错误</a><a href="#ownership">05 生命周期</a><a href="#modules">06 模块与原则</a><a href="#gates">07 验收矩阵</a><a href="#sources">08 依据</a></nav>
+ <section class="panel profile-panel" aria-label="配置预览">
+  <div class="profile-row"><div><span class="choice-label">选择查看的边界配置</span><div class="profile-choices"><button class="profile-choice" type="button" data-mode="skie" aria-pressed="true"><b>SKIE 默认主线</b><span>类型增强 / SKIE 异步</span></button><button class="profile-choice" type="button" data-mode="hybrid" aria-pressed="false"><b>SKIE ＋ NativeCoroutines 扩展</b><span>类型增强保留 / NC 接管约定声明</span></button></div></div>
+  <label><span class="choice-label">组合配置的 Swift 异步外观</span><select id="async-api"><option value="async">Swift Concurrency · Async</option><option value="combine">Combine · Publisher</option><option value="rx">RxSwift · Observable / Single</option></select></label></div>
+  <p class="profile-description" id="profile-description" aria-live="polite"></p>
+ </section>
+ <div class="trinity">
+  <article class="panel"><small>TYPE / API ENHANCEMENT</small><h3>SKIE：类型增强</h3><p>enum、sealed 层次的 Swift 外观；按受支持范围改善接口体验。sealed 外壳仍可持有 Kotlin 对象。<a class="source-ref" href="#ref-skie-types">[类型依据]</a></p></article>
+  <article class="panel"><small>ASYNC BRIDGE OWNER</small><h3 id="bridge-owner"></h3><p id="bridge-description"></p></article>
+  <article class="panel"><small>SDK ENGINEERING</small><h3>MadB：语义与工程</h3><p>检查配置冲突，生成受限适配，执行关闭与线程协议；交付版本锁、候选 SDK、消费示例和验证证据。</p></article>
+ </div>
+ <section class="section" id="overview">
+  <div class="section-head"><div><h2><b>01</b>架构全景</h2><p>上半部分发生在 SDK 构建期；下半部分发生在应用运行期。点击模块查看责任与约束。</p></div><span class="badge draft">交互图 · 构建工具不进入应用运行链</span></div>
+  <div class="panel">
+   <div class="diagram-head"><div class="toolbar" id="flow-filters"><button class="tab" data-flow="all" aria-pressed="true">全部</button><button class="tab" data-flow="build" aria-pressed="false">构建链</button><button class="tab" data-flow="types" aria-pressed="false">类型增强</button><button class="tab" data-flow="async" aria-pressed="false">异步桥接</button><button class="tab" data-flow="ownership" aria-pressed="false">资源与回调</button></div><div class="legend"><span><i class="dot biz"></i>业务作者</span><span><i class="dot"></i>MadB</span><span><i class="dot up"></i>上游工具</span><span><i class="dot ui"></i>Swift 应用</span></div></div>
+   <div class="diagram-scroll" tabindex="0" aria-label="横向滚动架构图"><svg id="overview-svg" viewBox="0 0 1240 1010" role="group" aria-label="Kotlin Native 与 Swift 构建期和运行期架构全景"></svg></div>
+   <p class="graph-foot">实线表示输入、产物或运行时调用；虚线表示配置、装配或支持关系。运行期包含 ObjC 同步基础通道与选定的异步桥；普通方法和模型读取不必经过 NC。构建组件协同图不规定编译器插件内部阶段顺序。</p>
+   <div class="detail-panel" id="node-detail" aria-live="polite"><div><span class="mini" id="detail-kind"></span><h3 id="detail-title"></h3><p id="detail-summary"></p><div class="detail-links" id="detail-links"></div></div><div><span class="mini">承担的责任</span><ul id="detail-does"></ul></div><div><span class="mini">边界与验收</span><ul id="detail-constraints"></ul></div></div>
+  </div>
+ </section>
+ <section class="section" id="build">
+  <div class="section-head"><div><h2><b>02</b>从声明到可安装 SDK</h2><p>编排层处理策略；后端负责语言机制；Lab 消费冻结后的候选包。</p></div></div>
+  <div class="panel process">
+   <article><h3>读声明与策略</h3><p>Kotlin API、既有工具注解、导出类型；补齐 owner、线程、取消效果和错误协议。只要求作者提供不可推导的信息。</p></article>
+   <article><h3>检查能力与冲突</h3><p>按源声明检查唯一生成责任方、stream identity 与共享策略；核对名称、类型和来源精度。不支持的组合返回源位置诊断。</p></article>
+   <article><h3>执行生成与编译</h3><p>生成必要 Facade 和惯用入口；由 Gradle 协调 Kotlin/Native、SKIE、可选 NC 和 Swift 编译。</p></article>
+   <article><h3>冻结候选制品</h3><p>区分源码同建与二进制分发，显式启用相应 SKIE 配置。产物、绑定、运行依赖、符号与版本锁组成同一候选。</p></article>
+   <article><h3>独立消费后发布</h3><p>MadB-Lab 用真实 Swift 工程安装候选、构建和运行。验收通过后发布同一份内容；不在验证后重打包。</p></article>
+  </div>
+  <div class="split">
+   <article class="panel padded"><span class="number">PROFILE RULE · 组合配置建议</span><h3>类型增强保留，协程桥接集中交给 NC</h3><p>默认主线由 SKIE 负责类型与协程。本组合配方以模块为单位关闭 SKIE 协程功能，再将所需声明交给 NC；生成归属仍逐声明登记。按接口混用需要单独配方与探针，不由本图承诺。</p><pre class="code"><code>// SKIE 官方配置片段；仅示意组合所需开关
+skie {
+    features {
+        coroutinesInterop.set(false)
+    }
+}
+
+// MadB 还需检查：
+// 1. 源声明 ID → 唯一异步桥 → 公开入口
+// 2. state / flow 外观配对到同一 stream identity
+// 3. owner、scope、共享策略与取消目标一致
+// 4. 原始 / 生成入口的名称、可见性和泛型
+// 5. 不允许原始入口绕过约定取消协议</code></pre><p><a href="https://skie.touchlab.co/configuration/coroutines" target="_blank" rel="noreferrer">SKIE 官方协程开关</a> · 此开关本身不构成组合兼容证明。</p></article>
+   <article class="panel padded"><span class="number">DEPENDENCY RULE · 按需进入消费端</span><h3>生成依赖与应用依赖分别管理</h3><ul class="rule-list"><li><b>SDK 作者构建：</b>Kotlin、Gradle、SKIE、可选 NC 插件、MadB 生成器、Xcode / Swift。</li><li><b>应用运行：</b>生成的 SDK、Kotlin runtime 和实际使用的桥接运行库；组合配置按需选择 NC Async / Combine / RxSwift 产品。</li><li><b>普通消费者：</b>通过预生成 SDK 使用方法、状态和资源接口；消费端便利宏另设可选依赖。</li><li><b>IDE：</b>模板接入 Gradle 与 Xcode 构建任务，源码改动能触发必要重建；CLI 与 IDE 共享同一构建计划。</li></ul></article>
+  </div>
+  <div class="split">
+   <article class="panel padded"><span class="number">DECLARATION / STREAM IDENTITY</span><h3>一份声明归属，一份流身份</h3><ul class="rule-list"><li><b>生成归属：</b>源声明 → SKIE 或 NC → 生成符号 → 公开入口，记录可追溯映射；禁止同一入口双重异步包装。</li><li><b>配对：</b>初始值、状态 getter、Flow 与可选 Publisher 外观绑定同一源流、owner、scope 和共享策略。不能仅按属性名称判断同源。</li><li><b>行为：</b>重复读取属性不能意外创建新流；多个外观不自动共享一次收集。冷流、热流、重复订阅与取消目标分别验证。</li><li><b>一致性：</b>同一流身份不等于“读当前值＋订阅”原子完成；首值、重放、序号和竞争规则仍由契约明确。</li></ul></article>
+   <article class="panel padded"><span class="number">DISTRIBUTION / REAL CONSUMER</span><h3>分发配置必须进入候选制品</h3><p>SKIE 默认面向本机构建使用。独立分发 Kotlin Framework 时，显式启用上游分发配置；扩展名是 XCFramework 不能代替配置审查。</p><pre class="code"><code>// 独立分发 Framework 的配置；不是组合认证证明
+skie {
+    build {
+        produceDistributableFramework()
+    }
+}</code></pre><p>从干净消费工程安装冻结候选，实际调用类型、异步和 cinterop 入口，覆盖 Release、目标架构、最低系统及声明支持的 Xcode 组合。消费者不得依赖作者机器的源码路径或缓存。<a href="https://skie.touchlab.co/configuration/swift-compiler" target="_blank" rel="noreferrer">SKIE 分发配置</a></p></article>
+  </div>
+  <div class="note warning"><strong>共同版本窗口是组合的前置条件。</strong> 当前首轮候选为 Kotlin 2.4.20、SKIE 0.10.15 与 NativeCoroutines 1.0.6。SKIE 0.10.15 发布说明已明确支持 Kotlin 2.4.20，不能沿用较旧介绍页的上限。完整插件、Swift 并发及 Xcode 组合仍需验证。<a href="../architecture/16-technology-stack-and-versions.md">技术栈与版本选型</a> · <a href="https://skie.touchlab.co/changelog/0.10.15" target="_blank" rel="noreferrer">SKIE 发布说明</a> · <a href="https://github.com/rickclephas/KMP-NativeCoroutines#compatibility" target="_blank" rel="noreferrer">NC 兼容说明</a></div>
+ </section>
+ <section class="section" id="runtime">
+  <div class="section-head"><div><h2><b>03</b>运行时：调用、观察、取消与反向接口</h2><p>选择场景查看责任传递。事件顺序用于解释协议，实际竞争由状态机和测试覆盖。</p></div></div>
+  <div class="panel">
+   <div class="diagram-head"><div class="toolbar" id="scenario-filters"><button class="tab" data-scenario="call" aria-pressed="true">单次调用</button><button class="tab" data-scenario="observe" aria-pressed="false">状态订阅</button><button class="tab" data-scenario="cancel" aria-pressed="false">取消与迟到结果</button><button class="tab" data-scenario="reverse" aria-pressed="false">Kotlin → Swift</button></div><span class="small" id="scenario-label"></span></div>
+   <div class="diagram-scroll" tabindex="0" aria-label="横向滚动时序图"><svg id="sequence-svg" viewBox="0 0 1160 490" role="img" aria-label="边界调用时序"></svg></div>
+   <div class="runtime-notes" id="runtime-notes" aria-live="polite"></div>
+  </div>
+  <div class="split">
+   <article class="panel padded"><h3>业务开发者看到的普通 API</h3><p>下例是 MadB 拟提供的消费外观，不是已经生成并编译通过的代码；具体名字由契约和后端导出结果确定。</p><pre class="code"><code>@MainActor
+func observePage() async {
+    do {
+        for try await state in client.observeState() {
+            guard !Task.isCancelled else { break }
+            self.state = state
+        }
+    } catch is CancellationError {
+        // 观察停止；共享引擎仍由业务 owner 管理
+    } catch {
+        self.error = error
+    }
+}
+// SwiftUI .task / UIKit 页面观察 owner 管理本次任务。
+// 需要排水确认时，再调用显式的停止确认 API。</code></pre></article>
+   <article class="panel padded"><h3>三种 NC 外观，共用同一导出能力</h3><ul class="rule-list"><li><b>Async：</b>单次调用使用 asyncFunction(for:)；流使用 asyncSequence(for:)。<a class="source-ref" href="#ref-nc">[NC]</a></li><li><b>Combine：</b>单次调用与流分别包装成 Publisher；每次订阅都可能启动一次调用或收集。订阅 owner 保存取消令牌。<a class="source-ref" href="#ref-nc">[NC]</a></li><li><b>RxSwift：</b>单次调用为 Single，流为 Observable；订阅与 dispose 由明确 owner 管理。<a class="source-ref" href="#ref-nc">[NC]</a></li><li><b>MadB 共同协议：</b>把等待取消、停止观察、停止工作、业务撤销分开；保持一次终态、迟到结果清理和错误分类。</li></ul><div class="note">同时提供多个 Swift 外观不等于共享执行。对有副作用的命令，重复订阅是否触发重复操作必须由契约明确。</div></article>
+  </div>
+  <div class="split">
+   <article class="panel padded"><h3>Swift → Kotlin：cinterop 类型要实际调用</h3><p>Kotlin API 若使用自定义 cinterop 类型，SKIE 需要知道提供该类型的 Framework。按声明配置 <code>ClassInterop.CInteropFrameworkName</code>，再编译并链接真实 Swift 调用；仅看到生成声明并不足够，未知 Framework 可能产生 unavailable 占位入口。</p><ul class="rule-list"><li><b>编译探针：</b>构造外部类型 → 调用 Kotlin 原始入口 → 调用 SKIE 增强入口；核对真实模块名、头文件、导入、链接和返回类型。</li><li><b>失败处理：</b>缺少映射或生成入口不可调用时，阻止该能力认证；不能把“原始入口可调用”当成“增强入口也通过”。</li></ul><p><a href="https://skie.touchlab.co/known-issues/cinterop" target="_blank" rel="noreferrer">SKIE cinterop 限制</a></p></article>
+   <article class="panel padded"><h3>Kotlin → Swift：宿主协议单独验证</h3><p>Swift 实现导出的 Kotlin 协议或提供 ObjC 可见接口，再验证 Kotlin 侧能注册、调用和注销。SKIE 生成的纯 Swift 增强外观不能直接假定可被 Kotlin 反向导入。</p><ul class="rule-list"><li><b>编译探针：</b>检查实际 ObjC 导出头与 cinterop 可见声明，编译 Kotlin 调用点；Swift 宿主实现单独进行严格并发检查。</li><li><b>运行探针：</b>按约定执行器回调，覆盖完成、取消、重入与关闭排水。纯 Swift 泛型或 AsyncSequence 仍走显式适配。</li></ul><p><a href="https://kotlinlang.org/docs/native-objc-interop.html#importing-swift-objective-c-libraries-to-kotlin" target="_blank" rel="noreferrer">反向可见范围</a></p></article>
+  </div>
+  <div class="note"><strong>若此 SDK 同时装配 C++：</strong>普通 Swift 公开界面可通过 C / ObjC++ 包装隐藏 C++ 配置；受控工具链源码同建可选择 direct interop。另按“方向 × 构建系统”验证：SwiftPM 的 C++ → Swift API 消费不能默认视作支持；开启 C++ interop 也可能要求依赖目标同步开启。本页 Kotlin ↔ Swift 路线不自动获得这些跨路线能力。<a href="https://www.swift.org/documentation/cxx-interop/project-build-setup/" target="_blank" rel="noreferrer">Swift 构建约束</a></div>
+ </section>
+ <section class="section" id="models">
+  <div class="section-head"><div><h2><b>04</b>类型模型按需要选择，错误协议单独设计</h2><p>以下是三种替代策略；只有确有边界需要时才增加转换。</p></div></div>
+  <div class="model-options">
+   <article class="panel model-card"><span class="badge ok">优先考虑</span><h3>直接使用导出类型</h3><div class="model-path"><div>Kotlin 公开类型</div><div class="arrow">↓</div><div>ObjC 导出与 Swift 导入</div><div class="arrow">↓</div><div>Swift 直接使用 / SKIE 增强</div></div><p>适合已能正确导出的 DTO 和接口。保留对象身份与 Kotlin 引用；是否可跨 actor 使用仍需验证。</p></article>
+   <article class="panel model-card"><span class="badge">显式选择</span><h3>生成薄 Facade</h3><div class="model-path"><div>Kotlin 对象 / 导出投影</div><div class="arrow">↓</div><div>生成受限的 Swift 外观</div><div class="arrow">↓</div><div>强类型 ID / 可空值 / 便利方法</div></div><p>复用底层对象，改善语言使用体验。只为已声明支持的类型生成转换，保留来源与失败语义。</p></article>
+   <article class="panel model-card"><span class="badge">独立数据所有权</span><h3>生成值快照</h3><div class="model-path"><div>在约定执行器读取选定字段</div><div class="arrow">↓</div><div>按规则复制、转换与校验</div><div class="arrow">↓</div><div>Swift struct 快照</div></div><p>适合隔离数据、缓存或跨 actor 传值。检查全部成员的值语义与 Sendable 条件；后续更新需要新快照。</p></article>
+  </div>
+  <div class="note"><strong>SKIE 的 sealed enum 包装不是独立数据快照。</strong>其关联值可继续引用 Kotlin 子类对象；NC 的泛型异步容器也不能保证每种 enum 替换自动生效。MadB 必须验证实际导出类型，必要时生成明确映射。<a href="https://skie.touchlab.co/features/sealed" target="_blank" rel="noreferrer">sealed 机制</a> · <a href="https://skie.touchlab.co/features/enums#limitations" target="_blank" rel="noreferrer">enum 限制</a></div>
+  <div class="panel table-scroll" style="margin-top:18px"><table><thead><tr><th>边界情况</th><th>主线与组合的机制差异</th><th>MadB 的明确处理</th></tr></thead><tbody>
+   <tr><td>普通方法 / suspend 失败</td><td>Objective-C 导出受异常映射规则约束；工具提供的异步外观不覆盖所有业务失败。</td><td>设计可导出的业务结果与错误；按需要配置 @Throws；取消保留独立分类，不吞成成功。<a href="https://kotlinlang.org/docs/native-objc-interop.html#errors-and-exceptions" target="_blank" rel="noreferrer">官方规则</a></td></tr>
+   <tr><td>SKIE Flow 的异常</td><td>官方列出自定义 Flow 异常不能直接传播到 Swift、可能导致崩溃的限制。</td><td>在 Kotlin 导出边界处理预期失败，转为受检状态 / 错误值；保留取消，不把所有 Throwable 伪装成业务失败。<a href="https://skie.touchlab.co/features/flows#limitations" target="_blank" rel="noreferrer">Flow 限制</a></td></tr>
+   <tr><td>NC 异步错误通道</td><td>Async、Combine、RxSwift 可呈现对应的失败通道。</td><td>分别验证取消与失败表现、NSError 信息和一次完成；不能直接沿用 SKIE 的所有流行为。<a href="#ref-nc">NC 依据</a></td></tr>
+   <tr><td>StateFlow 上游失败</td><td>共享上游异常发生在其 scope；不会自动以终态错误通知每位状态订阅者。</td><td>在共享之前设计错误状态 / 恢复策略，测试冻结状态和重订阅。更换 Swift 桥不能替代此协议。<a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/state-in.html" target="_blank" rel="noreferrer">stateIn 语义</a></td></tr>
+   <tr><td>反向调用与流</td><td>本路线通过 ObjC 可见协议 / 回调调用 Swift；SKIE 不支持把任意 AsyncSequence 自动转为 Flow。</td><td>为反向宿主能力定义类型、完成、取消和线程协议；复杂异步实现走显式适配。<a href="#ref-objc">互操作范围</a> · <a href="#ref-skie-flow">Flow 限制</a></td></tr>
+  </tbody></table></div>
+ </section>
+ <section class="section" id="ownership">
+  <div class="section-head"><div><h2><b>05</b>所有权、线程与关闭协议</h2><p>语法糖调用同一套必要运行时；关闭日志与追踪时，正确性保护仍然生效。</p></div></div>
+  <div class="ownership-grid">
+   <article class="panel padded"><h3>谁持有，谁关闭</h3><div class="owner-tree"><div><b>App / 业务 owner</b><span>持有共享 Kotlin engine，决定初始化与最终关闭。</span></div><div class="child"><b>Engine scope / 资源注册表</b><span>管理后台任务、共享数据源、原生资源依赖。</span></div><div class="child"><b>页面观察 owner</b><span>持有 Task、Cancellable 或 Disposable；只管理本页观察。</span></div><div class="grandchild"><b>本次观察 / 操作实例</b><span>上下文存活到停止协议完成；迟到结果有唯一回收方。</span></div></div><p>取消一个页面对共享 StateFlow 的收集，不自动关闭共享上游。上游行为由共享策略、其他消费者和 engine owner 共同决定。<a href="#ref-state">[共享语义]</a></p></article>
+   <article class="panel padded"><h3>关闭是状态转换，不是一个布尔值</h3><div class="states"><strong>Open</strong><i>→</i><strong class="closing">Closing</strong><i>→</i><strong>Closed</strong></div><ul class="rule-list"><li><b>Open → Closing：</b>原子关闭新操作准入，发起停止与退订，保留在途任务所需资源。</li><li><b>Closing：</b>等待可确认的任务收尾、回调排水、结果交接；按依赖顺序释放。</li><li><b>Closing → Closed：</b>满足契约完成条件后确认。超时返回“尚未完成”，不能假报已关闭。</li><li><b>失效：</b>不可恢复故障按契约进入 Invalid，阻止后续使用并安排仍可执行的清理。</li></ul><p>requestStop 与 awaitStopped 是职责示意；Task.cancel()、cancel()、dispose() 本身不承诺 MadB 所需的全部排水确认。</p></article>
+  </div>
+  <div class="patterns">
+   <article class="panel"><h3>MainActor / 执行器</h3><p>UI 状态在声明的隔离域更新；耗时工作由 Kotlin 或原生执行策略安排。await 不保证后台执行。</p></article>
+   <article class="panel"><h3>Sendable / 共享可变状态</h3><p>按实际类型与同步协议检查。禁止为了消除编译警告而无依据添加 @unchecked Sendable。</p></article>
+   <article class="panel"><h3>ARC ＋ GC</h3><p>显式断开注册与回调强引用环；析构时间和线程不能代替业务关闭确认。<a href="#ref-arc">[ARC / GC]</a></p></article>
+   <article class="panel"><h3>重入与竞争</h3><p>持锁区不调用外部代码；回调内关闭不能等待自身完成。操作准入、停止、结果交接统一测试。</p></article>
+  </div>
+ </section>
+ <section class="section" id="modules">
+  <div class="section-head"><div><h2><b>06</b>落到现有模块，保持职责单一</h2><p>下列目录表示设计职责，不代表已经创建对应产品代码。MadB 沿用现有核心与适配器边界。</p></div></div>
+  <div class="panel table-scroll"><table><thead><tr><th>模块 / 目录</th><th>输入 → 输出</th><th>实现与设计方式</th><th>责任边界</th></tr></thead><tbody>
+   <tr><td>helpers/kotlin-metadata<br>adapters/contracts</td><td>源码与后端元数据 → 带来源的契约快照</td><td>Reader；读取已有注解与导出信息</td><td>不推断未知 owner；不把语法检查当作线程安全证明</td></tr>
+   <tr><td>madb-model / rules / plan</td><td>契约＋能力＋版本锁 → 诊断与任务图</td><td>纯规则；用配置策略选择 SKIE 或 NC 异步后端</td><td>不调用编译器、文件系统或 UI；不复制领域业务逻辑</td></tr>
+   <tr><td>adapters/generators</td><td>有效 IR → 后端配置、受限映射、Swift 入口</td><td>Adapter 复用上游；Mapper / Facade 只在需要时生成</td><td>不重做 SKIE / NC 绑定机制；不强制所有模型复制</td></tr>
+   <tr><td>sdk/swift/{async,resources,state,ui}</td><td>边界协议 → 普通 async、观察与资源接口</td><td>状态机、组合、执行器适配；便利宏保持薄层</td><td>不拥有全局业务 engine；不承诺未实现的 native 取消</td></tr>
+   <tr><td>sdk/kotlin / 业务适配层</td><td>owner 与原生协议 → scope、注册、停止确认</td><td>显式生命周期；工具复用可机械生成部分</td><td>业务并发协议、原生停止机制及 unsafe 正确性由作者实现</td></tr>
+   <tr><td>adapters/toolchains / templates / ide</td><td>已检查的计划 → Gradle / Xcode 工程与产物</td><td>端口与适配器；统一初始化和构建用例</td><td>构建成功不等于路线认证；IDE 不另建生成引擎</td></tr>
+   <tr><td>artifacts / verification / MadB-Lab</td><td>冻结候选 → 真实消费证据 → 发布资格</td><td>Packager / Store 分权；独立消费与可追溯证据</td><td>验证器不修改候选；预览图与本地勾选不产生认证</td></tr>
+  </tbody></table></div>
+  <div class="patterns"><article class="panel"><h3>单一职责</h3><p>类型映射、异步、生命周期、UI 接入各自变化；一个模块只拥有明确责任。</p></article><article class="panel"><h3>依赖倒置</h3><p>核心依赖稳定契约；SKIE 与 NC 的版本差异留在后端适配层。</p></article><article class="panel"><h3>组合优于继承</h3><p>通过配置组合类型增强与一种异步桥；便利 API 委托给同一协议实现。</p></article><article class="panel"><h3>显式失败</h3><p>无法映射或不兼容时定位到源声明；不静默换成 JSON 或降低取消保证。</p></article></div>
+ </section>
+ <section class="section" id="gates">
+  <div class="section-head"><div><h2><b>07</b>验收矩阵与计划归属</h2><p>每条用例绑定具体 Kotlin / SKIE / NC / Xcode / Swift / OS / 架构和候选摘要。</p></div><span class="check-count" id="route-state">路线与认证状态读取 catalog</span></div>
+  <div class="panel table-scroll"><table id="gate-table"><thead><tr><th>验收分类</th><th>必须覆盖的样例与反例</th><th>对应计划</th><th>当前证据</th></tr></thead><tbody>
+   <tr><td>配置与工具链</td><td>版本交集、逐声明生成归属、禁用重叠协程桥、原始入口可见性、重复符号</td><td>C03 / C06 / X01</td><td class="gate-status">待验证</td></tr>
+   <tr><td>类型与模型</td><td>enum、sealed、隐藏子类、泛型载荷、nullable、ID、集合、缓冲与快照</td><td>C06 / L03 / L04 / X01</td><td class="gate-status">待验证</td></tr>
+   <tr><td>调用与错误</td><td>同步 / suspend、业务失败、取消、NSError、Flow 异常边界、共享上游失败</td><td>C06 / L04 / X01</td><td class="gate-status">待验证</td></tr>
+   <tr><td>订阅与异步</td><td>stream identity 配对、getter 稳定性、冷 / 热流、收集次数、首值竞争、重放与溢出</td><td>C06 / L03 / L04 / X01</td><td class="gate-status">待验证</td></tr>
+   <tr><td>取消与结果交接</td><td>同步完成、重复完成、完成前后取消、迟到资源结果、超时后仍在运行</td><td>C06 / C09 / X01</td><td class="gate-status">待验证</td></tr>
+   <tr><td>资源与内存</td><td>ARC / GC 引用环、重复关闭、父子资源、关闭与调用竞争、后台排水</td><td>C06 / C09 / L04</td><td class="gate-status">待验证</td></tr>
+   <tr><td>线程与反向宿主</td><td>MainActor、严格并发、真实 ObjC / cinterop 反向调用编译、回调重入与停止自等待</td><td>C06 / L04 / X01</td><td class="gate-status">待验证</td></tr>
+   <tr><td>UI 与惯用入口</td><td>SwiftUI / UIKit 进出页面、任务重复、组合态与草稿、宏组合、普通入口一致性</td><td>L04 / L07</td><td class="gate-status">待验证</td></tr>
+   <tr><td>工程 / ABI / 分发</td><td>SKIE 显式分发配置、独立消费者、cinterop 原始 / 增强入口、真机 / 模拟器、Release 与跨 Xcode</td><td>I04 / I06 / C10 / C11</td><td class="gate-status">待验证</td></tr>
+   <tr><td>诊断与性能</td><td>跨界次数、集合复制、内存峰值、队列上限、符号配对、关闭追踪后的行为一致</td><td>C09 / C10 / L07</td><td class="gate-status">待验证</td></tr>
+  </tbody></table></div>
+  <div class="note"><strong id="plan-state"></strong> 本页显示共享计划，不因图中存在某模块而认定已实现；逐项证据由 catalog 任务状态决定。SKIE 的 Combine 预览能力仍存在；它与 NC 的订阅启动和取消语义分别验证，不因都叫 Publisher / Future 就互换。<a href="https://skie.touchlab.co/features/combine" target="_blank" rel="noreferrer">SKIE Combine 说明</a></div>
+ </section>
+ <section class="section" id="sources">
+  <div class="section-head"><div><h2><b>08</b>设计依据与阅读入口</h2><p>外部链接是上游机制依据；MadB 的模块、关闭协议和验收要求来自本地设计。未使用 archify。</p></div><span class="fact-stamp" id="fact-stamp">核对日期来自 catalog</span></div>
+  <div class="panel padded"><ol class="references">
+   <li id="ref-skie-types"><b>01</b><a href="https://skie.touchlab.co/features/sealed" target="_blank" rel="noreferrer">SKIE · sealed 包装</a><small>关联值保留 Kotlin 对象；另见 <a href="https://skie.touchlab.co/features/enums" target="_blank" rel="noreferrer">enum 映射与限制</a>。</small></li>
+   <li id="ref-skie-async"><b>02</b><a href="https://skie.touchlab.co/features/suspend" target="_blank" rel="noreferrer">SKIE · suspend 适配</a><small>Swift 异步桥接与 <a href="https://skie.touchlab.co/configuration/coroutines" target="_blank" rel="noreferrer">协程功能开关</a>。</small></li>
+   <li id="ref-skie-flow"><b>03</b><a href="https://skie.touchlab.co/features/flows" target="_blank" rel="noreferrer">SKIE · Flow 支持与限制</a><small>AsyncSequence 外观、错误与反向转换限制。</small></li>
+   <li id="ref-nc"><b>04</b><a href="https://github.com/rickclephas/KMP-NativeCoroutines" target="_blank" rel="noreferrer">KMP-NativeCoroutines · 官方 README</a><small>导出生成、Swift 三种外观、scope、版本对应关系。</small></li>
+   <li id="ref-objc"><b>05</b><a href="https://kotlinlang.org/docs/native-objc-interop.html" target="_blank" rel="noreferrer">Kotlin · Swift / Objective-C 互操作</a><small>导出、反向可见性、类型与异常规则。</small></li>
+   <li id="ref-arc"><b>06</b><a href="https://kotlinlang.org/docs/native-arc-integration.html" target="_blank" rel="noreferrer">Kotlin · ARC / GC 集成</a><small>回收时机、析构线程、跨语言引用与临时对象。</small></li>
+   <li id="ref-state"><b>07</b><a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/state-in.html" target="_blank" rel="noreferrer">Coroutines · stateIn</a><small>scope、共享上游与错误；另见 <a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/catch.html" target="_blank" rel="noreferrer">catch 的取消透明性</a>。</small></li>
+   <li><b>08</b><a href="../architecture/06-backend-profiles.md">MadB · 后端接入方案</a><small>主线、组合扩展与反向范围。</small></li>
+   <li><b>09</b><a href="../architecture/05-lifecycle-and-concurrency.md">MadB · 生命周期与并发</a><small>单一所有权、准入、停止、排水与结果交接。</small></li>
+   <li><b>10</b><a href="../architecture/15-developer-ergonomics.md">MadB · 语言特性与开发体验</a><small>普通入口、便利入口与不可关闭的正确性保护。</small></li>
+   <li><b>11</b><a href="../architecture/02-modules-and-ports.md">MadB · 模块与端口</a><small>纯核心、适配器、运行时与交付分工。</small></li>
+   <li><b>12</b><a href="../delivery/01-implementation-plan.md">MadB · 实施计划</a><small>C06 / L03 / L04 / I04 主线；X01 组合扩展。</small></li>
+   <li><b>13</b><a href="https://skie.touchlab.co/configuration/swift-compiler" target="_blank" rel="noreferrer">SKIE · 分发与 Swift 编译配置</a><small>显式分发配置与独立消费者验证。</small></li>
+   <li><b>14</b><a href="https://skie.touchlab.co/known-issues/cinterop" target="_blank" rel="noreferrer">SKIE · 自定义 cinterop 类型限制</a><small>Framework 名称映射与增强入口实际可调用性。</small></li>
+  </ol></div>
+ </section>
+ <section class="section note"><strong>完成通知与结果接收是两个交接点。</strong>resume 之后、调用方实际恢复之前仍可能取消；排入 MainActor 的状态也要在执行时检查观察代次。<a href="../validation/08-critical-scenarios.md">CRIT-01 / CRIT-02</a>分别验证迟到投递与未交付资源，不能仅靠 Task.cancel() 或一次终态标记证明安全。</section>
+<footer class="footer"><span>MadB · Kotlin/Native ↔ Swift 专题预览 · 独立离线 HTML</span><div><a href="architecture-overview.html">返回整体架构</a><a href="implementation-progress.html">查看计划</a><a href="#top" id="back-top">回到顶部 ↑</a></div></footer>
+</main>
+<noscript>本页图形与配置切换需要 JavaScript。模块、类型、生命周期、验收及资料表仍可阅读。</noscript>
+<script type="application/json" id="catalog">/* DATA_JSON */</script>
+<script>
+(function () {
+ 'use strict';
+ const catalog = JSON.parse(document.getElementById('catalog').textContent);
+ const state = { mode: 'skie', api: 'async', flow: 'all', scenario: 'call', selected: 'plan' };
+ const $ = id => document.getElementById(id);
+ const NS = 'http://www.w3.org/2000/svg';
+ const src = {
+  local: '../architecture/06-backend-profiles.md',
+  modules: '../architecture/02-modules-and-ports.md',
+  lifecycle: '../architecture/05-lifecycle-and-concurrency.md',
+  ergonomics: '../architecture/15-developer-ergonomics.md',
+  nc: 'https://github.com/rickclephas/KMP-NativeCoroutines',
+  skie: 'https://skie.touchlab.co/configuration/coroutines'
+ };
+ const nodes = [
+  {id:'source',x:40,y:76,w:260,h:112,kind:'domain',kicker:'AUTHOR / KOTLIN',title:'领域与公开 API',lines:['方法 · DTO · suspend · Flow','业务逻辑与宿主协议'],
+   summary:'业务作者保有公开语义的决定权。',
+   does:['实现业务算法、同步策略和领域错误。','选择导出类型；明确资源归属、取消效果和宿主接口。'],
+   constraints:['MadB 不猜业务成功、重试或副作用撤销含义。','模型可直接导出；Facade 与快照按需求选择。'],links:[['契约设计','../architecture/03-contract-and-ir.md']]},
+  {id:'reader',x:340,y:76,w:260,h:112,kind:'madb',kicker:'CONTRACT READER',title:'声明读取与统一契约',lines:['既有注解 + 导出策略','来源位置 · 精度 · 语义缺口'],
+   summary:'把语言声明与补充策略组合成可检查的契约。',
+   does:['复用已有导出声明，记录源符号、类型与位置。','缺少的 owner、执行器、关闭和错误语义显式列为缺口。'],
+   constraints:['声明提取不证明任意代码线程安全。','不复制一套与既有工具重复的必填注解。'],links:[['ContractIR','../architecture/03-contract-and-ir.md']]},
+  {id:'plan',x:640,y:76,w:260,h:112,kind:'madb',kicker:'RULES / PLAN',title:'能力检查与组合计划',lines:['类型增强 / 异步责任方分开','版本交集 · 任务图 · 生成边界'],
+   summary:'MadB 的控制点：先检查组合，再调用具体后端。',
+   does:['源声明、生成符号与公开入口登记唯一异步桥责任方。','组合以模块关闭 SKIE 协程，逐声明交由 NC；保留类型增强。','配对 stream identity、owner、scope 与共享策略，再生成任务图。'],
+   constraints:['两个插件可安装，不等于类型、取消和产物组合可用。','所有名称、泛型和错误映射需真实 Swift 消费验证。'],links:[['后端组合',src.local],['模块与端口',src.modules]]},
+  {id:'versions',x:940,y:76,w:260,h:112,kind:'madb',kicker:'RESOLVED PROFILE / LOCK',title:'目标与工具版本锁',lines:['Kotlin · SKIE · 可选 NC','Xcode / Swift · OS / ABI'],
+   summary:'一个配置对应一组精确输入与目标。',
+   does:['记录编译器、插件、运行库、SDK、目标架构和配置摘要。','锁定 Kotlin 与 Swift 两侧依赖的对应关系。'],
+   constraints:['先验证共同支持窗口，不叠加各自最新版。','iOS 真机、模拟器、macOS 与跨 Xcode 独立确认。'],links:[['构建与分发','../architecture/09-build-packaging-release.md'],['上游兼容','https://skie.touchlab.co/intro#compatibility-with-kotlin']]},
+  {id:'skie',x:40,y:300,w:340,h:112,kind:'upstream',kicker:'UPSTREAM / SKIE',title:'SKIE 类型增强',lines:['enum / sealed 的 Swift 外观','组合配置：协程桥关闭'],
+   summary:'类型增强在两种配置中保留，协程功能随配置选择。',
+   does:['复用上游 enum / sealed 包装和受支持的 API 增强。','主线配置由 SKIE 同时提供 suspend 与 Flow 桥。'],
+   constraints:['sealed 包装可继续持有 Kotlin 对象。','异步容器中的 enum / sealed 实际类型需要验证。','组合配置关闭重叠协程功能，不改变业务所有权。'],links:[['SKIE 开关',src.skie],['sealed','https://skie.touchlab.co/features/sealed']]},
+  {id:'nc',x:450,y:300,w:340,h:112,kind:'upstream',kicker:'OPTIONAL / NATIVE COROUTINES',title:'NativeCoroutines 异步生成',lines:['标注声明 → NativeSuspend / NativeFlow','Swift 端按需选择 Async / Combine / Rx'],
+   summary:'组合配置中的异步桥接实现，按声明生成桥接面。',
+   does:['处理已归属 NC 的 suspend / Flow 声明，记录与源符号的映射。','Swift 模块接入选定外观；状态 getter 与流身份配对验证。'],
+   constraints:['scope 和停止效果必须符合 MadB 契约。','不会自动补齐值类、任意泛型、UI owner 或原生停止协议。','主线基线中不启用此模块。'],links:[['上游说明',src.nc],['组合任务','../delivery/01-implementation-plan.md']]},
+  {id:'generator',x:860,y:300,w:340,h:112,kind:'madb',kicker:'MADB GENERATORS',title:'受限适配与 SDK 接线',lines:['可选 Facade / 快照 · 错误映射','普通 API · 资源 / UI 接线'],
+   summary:'生成可以从契约机械推导的部分。',
+   does:['生成必要类型映射、普通入口、状态与关闭协议接线。','输出来源映射、受管文件清单与可再生代码。'],
+   constraints:['普通入口和便利宏使用同一套语义。','不覆盖手写扩展；不把复杂业务转换自动猜出来。'],links:[['代码生成','../architecture/07-code-generation.md'],['惯用 API',src.ergonomics]]},
+  {id:'lab',x:40,y:490,w:340,h:100,kind:'madb',kicker:'INDEPENDENT / MADB-LAB',title:'独立 Swift 消费验证',lines:['类型 · 生命周期 · 竞态 · Release','冻结候选通过后原样发布'],
+   summary:'从消费方验证真正交付的包。',
+   does:['干净工程安装冻结候选，真实调用原始 / 增强入口并验证运行行为。','覆盖 cinterop 可调用性、流身份与反向回调；核对版本和符号摘要。'],
+   constraints:['不改被测包；不把构建成功当成行为通过。','实现、验证和认证分别读取共享 catalog；图示不生成证据。'],links:[['验证策略','../validation/01-testing-strategy.md']]},
+  {id:'compiler',x:450,y:490,w:340,h:100,kind:'upstream',kicker:'GRADLE / KOTLIN-NATIVE / SWIFT',title:'编译、导出与 Swift 集成',lines:['ObjC 可见声明 + 生成 Swift 代码','SKIE / NC 按锁定工具链协同'],
+   summary:'现有 Kotlin/Native 的 ObjC 互操作仍是本路线基础。',
+   does:['将选定接口与生成桥编译为 Apple 产物。','接入插件、Swift 生成源与自定义 cinterop Framework 映射。'],
+   constraints:['生成声明必须经过调用编译；unavailable 占位入口不能算支持。','官方 Swift export 属于另一条扩展，不混入当前配置。'],links:[['ObjC 互操作','https://kotlinlang.org/docs/native-objc-interop.html']]},
+  {id:'artifact',x:860,y:490,w:340,h:100,kind:'madb',kicker:'SDK CANDIDATE',title:'Framework 与 Swift 包',lines:['二进制 · 生成绑定 · 运行依赖','锁 / 摘要 / 符号 / 许可'],
+   summary:'发布单元同时包含调用代码和对应二进制。',
+   does:['独立分发显式使用 SKIE produceDistributableFramework 配置。','按配置冻结 Framework / XCFramework、Swift 模块、依赖与符号摘要。'],
+   constraints:['源码同建与二进制发布分别验证；不能从 XCFramework 扩展名推断配置。','预生成消费者不需要完整作者侧工具链，但仍需兼容的 Swift / Xcode。'],links:[['制品设计','../architecture/09-build-packaging-release.md']]},
+  {id:'ui',x:40,y:735,w:250,h:112,kind:'swift',kicker:'APPLICATION / SWIFT',title:'SwiftUI / UIKit 页面',lines:['普通方法 · 状态读取 · 用户动作','页面持有观察 owner'],
+   summary:'业务开发者在惯用 API 上完成交互。',
+   does:['明确页面观察生命周期；在正确隔离域更新 UI。','可选 Observation / 属性封装层复用普通 API；UIKit 使用显式绑定。','按业务规则处理错误、草稿、输入法和受理状态。'],
+   constraints:['页面结束只关闭自己的观察；共享引擎由业务 owner 关闭。','状态 getter 读已同步数据，不暗中建立订阅或执行阻塞 FFI。'],links:[['UI 接入','../architecture/08-runtime-and-idiomatic-api.md']]},
+  {id:'sdk',x:345,y:735,w:250,h:112,kind:'madb',kicker:'RUNTIME / SWIFT SDK',title:'MadB 普通 API 与适配',lines:['错误 / 类型 / 观察 / 操作','按需资源保护与 UI 接入'],
+   summary:'运行期只装入该配置需要的能力。',
+   does:['提供受检的公共外观，衔接已有桥和必要语义原语。','处理资源准入、结果交接、观察停止和执行器投递。'],
+   constraints:['不重复实现上游已正确提供的机制。','不声称 Task.cancel 已完成全部 native 收尾。'],links:[['运行时设计','../architecture/08-runtime-and-idiomatic-api.md']]},
+  {id:'bridge',x:650,y:735,w:250,h:112,kind:'upstream',kicker:'ASYNC / ONE BRIDGE',title:'NC Async / 桥接运行库',lines:['Swift 端适配 + ObjC 导出面','类型功能沿用 SKIE 增强'],
+   summary:'一条具体运行路径中，异步桥由一个责任方承担。',
+   does:['把调用、完成、收集与取消请求连接到 Kotlin。','类型映射与异步桥各履其职。'],
+   constraints:['Swift 表面 API 不决定底层工作的停止能力。','反向宿主接口有单独协议，不经任意反向流转换。'],links:[['后端职责',src.local]]},
+  {id:'domain',x:955,y:735,w:245,h:112,kind:'domain',kicker:'RUNTIME / KOTLIN-NATIVE',title:'Kotlin engine 与协程',lines:['业务状态 · Job / scope · 依赖','共享资源由业务 owner 管理'],
+   summary:'业务状态与上游工作在 Kotlin 侧拥有明确归属。',
+   does:['执行业务，安排工作线程，管理共享状态与原生依赖。','提供实际可用的停止、关闭和恢复实现。'],
+   constraints:['协程取消通常是协作式；native 阻塞任务不自动终止。','副作用是否已发生由业务协议确认。'],links:[['生命周期',src.lifecycle]]},
+  {id:'resources',x:40,y:914,w:340,h:82,kind:'madb',kicker:'RESOURCE / OPERATION / SUBSCRIPTION',title:'准入、停止、排水与结果认领',lines:['页面观察与共享引擎分属不同 owner'],
+   summary:'必要资源协议始终生效。',
+   does:['操作和关闭使用一致准入机制。','保留在途输入与回调上下文；结果由接收或回收方唯一认领。'],
+   constraints:['关闭超时不能宣称 Closed。','deinit / GC / dispose 不自动证明资源协议已完成。'],links:[['所有权协议',src.lifecycle]]},
+  {id:'executor',x:450,y:914,w:340,h:82,kind:'madb',kicker:'EXECUTOR / ERROR / DIAGNOSTICS',title:'隔离、错误与可选诊断',lines:['正确性保护保留；日志与指标可关闭'],
+   summary:'通用语义通过平台适配执行，不抹掉线程差异。',
+   does:['按契约投递到 MainActor / 执行器。','保留错误分类和关联标识；诊断跨界与资源活动。'],
+   constraints:['串行执行不等于固定 OS 线程。','不无依据声明 Sendable；不持锁进入外部回调。'],links:[['诊断设计','../architecture/10-diagnostics-and-performance.md']]},
+  {id:'host',x:860,y:914,w:340,h:82,kind:'swift',kicker:'REVERSE / HOST PORT',title:'Kotlin → Swift 宿主能力',lines:['ObjC 可见协议 / 回调 + 显式线程协议'],
+   summary:'“双向”限于该配置声明和验证过的宿主能力。',
+   does:['以实际 ObjC 导出头与 cinterop 编译探针确认 Kotlin 可调用。','Swift 实现协议或回调；明确完成、取消、重入与寿命。'],
+   constraints:['SKIE 的 Swift 增强不等于 Kotlin 反向可见。','不自动导入纯 Swift 模块或将任意 AsyncSequence 转为 Flow。'],links:[['反向范围',src.local],['ObjC 可见性','https://kotlinlang.org/docs/native-objc-interop.html#importing-swift-objective-c-libraries-to-kotlin']]}
+ ];
+ const nodeById = new Map(nodes.map(n=>[n.id,n]));
+ const flowNodes = {
+  all:nodes.map(n=>n.id),
+  build:['source','reader','plan','versions','skie','nc','generator','compiler','artifact','lab'],
+  types:['source','reader','plan','skie','generator','compiler','artifact','sdk','bridge','domain'],
+  async:['source','reader','plan','versions','skie','nc','compiler','artifact','sdk','bridge','domain','ui','resources'],
+  ownership:['source','reader','plan','generator','sdk','domain','ui','resources','executor','host']
+ };
+ const edges = [
+  {a:'source',b:'reader',d:'M300 132 H340',label:'读取',lx:320,ly:116},
+  {a:'reader',b:'plan',d:'M600 132 H640',label:'检查',lx:620,ly:116},
+  {a:'versions',b:'plan',d:'M940 132 H900',label:'约束',lx:920,ly:116,kind:'control'},
+  {a:'plan',b:'skie',d:'M750 188 V235 H210 V300',kind:'control'},
+  {a:'plan',b:'nc',d:'M750 188 V235 H620 V300',kind:'control'},
+  {a:'plan',b:'generator',d:'M750 188 V235 H1030 V300',kind:'control'},
+  {a:'skie',b:'compiler',d:'M210 412 V454 H620 V490',kind:'type'},
+  {a:'nc',b:'compiler',d:'M620 412 V490',kind:'async'},
+  {a:'generator',b:'compiler',d:'M1030 412 V454 H620 V490'},
+  {a:'compiler',b:'artifact',d:'M790 540 H860',label:'封装',lx:825,ly:523},
+  {a:'artifact',b:'lab',d:'M1030 590 V625 H210 V590',label:'冻结同一候选 → 独立消费 → 同内容发布',lx:620,ly:619},
+  {a:'artifact',b:'sdk',d:'M1170 590 V677 H470 V735',kind:'control',label:'安装已选择配置的 SDK / 运行依赖',lx:780,ly:672},
+  {a:'sdk',b:'domain',d:'M500 735 V724 H1080 V735',kind:'type',label:'同步方法 / 类型读取 · ObjC 基础通道',lx:790,ly:717,flows:['all','types']},
+  {a:'ui',b:'sdk',d:'M290 790 H345',label:'调用',lx:317,ly:775},
+  {a:'sdk',b:'bridge',d:'M595 790 H650',label:'适配',lx:623,ly:775},
+  {a:'bridge',b:'domain',d:'M900 790 H955',label:'互操作',lx:928,ly:775,kind:'async'},
+  {a:'domain',b:'ui',d:'M1078 847 V878 H165 V847',label:'返回值 / 错误 / 状态 · 按契约与执行器投递',lx:620,ly:873},
+  {a:'resources',b:'sdk',d:'M210 914 V900 H470 V847',kind:'control'},
+  {a:'executor',b:'bridge',d:'M620 914 V900 H775 V847',kind:'control'},
+  {a:'domain',b:'host',d:'M1155 847 V914',kind:'control'}
+ ];
+ function svg(tag,attrs={},text) {
+  const el=document.createElementNS(NS,tag);
+  for(const [key,value] of Object.entries(attrs))el.setAttribute(key,String(value));
+  if(text!==undefined)el.textContent=text;
+  return el;
+ }
+ function svgText(parent,x,y,text,cls,extra={}) {
+  const el=svg('text',{x,y,class:cls,...extra},text);parent.append(el);return el;
+ }
+ function marker(parent,id,color) {
+  const defs=svg('defs'),m=svg('marker',{id,viewBox:'0 0 8 8',refX:7,refY:4,markerWidth:7,markerHeight:7,orient:'auto-start-reverse'});
+  m.append(svg('path',{d:'M1 1 L7 4 L1 7',fill:'none',stroke:color,'stroke-width':1.3}));defs.append(m);parent.append(defs);
+ }
+ function apiName(){return state.mode==='skie'?'SKIE':({async:'NC Async',combine:'NC Combine',rx:'NC RxSwift'})[state.api];}
+ function activeIds(){const ids=new Set(flowNodes[state.flow]);if(state.mode==='skie')ids.delete('nc');return ids;}
+ function viewNode(n) {
+  const v={...n,lines:[...n.lines]};
+  if(n.id==='skie'&&state.mode==='skie'){v.title='SKIE 类型与协程增强';v.lines=['enum / sealed + suspend / Flow','主线配置：协程桥启用'];}
+  if(n.id==='nc'&&state.mode==='skie'){v.title='NativeCoroutines · 未启用';v.lines=['本主线配置由 SKIE 负责异步桥','组合能力见 X01 扩展任务'];}
+  if(n.id==='bridge'){v.title=state.mode==='skie'?'SKIE async / Flow':apiName();v.lines=state.mode==='skie'?['Swift async / AsyncSequence','类型与异步按所选配置衔接']:['选定 NC Swift 模块 + Kotlin 桥','不经过第二套 SKIE 协程桥'];}
+  return v;
+ }
+ function renderOverview() {
+  const root=$('overview-svg');root.replaceChildren();marker(root,'map-arrow','var(--edge)');
+  root.append(svg('title',{},'Kotlin/Native 与 Swift 架构全景，'+apiName()));
+  root.append(svg('desc',{},'构建期从 Kotlin API 提取契约，MadB 检查并生成计划，复用 SKIE、可选 NativeCoroutines 和编译器产出 SDK；运行期 Swift 应用通过一个异步桥调用 Kotlin，资源与宿主回调按明确协议管理。'));
+  root.append(svg('rect',{x:16,y:12,width:1208,height:639,rx:15,class:'map-band'}));
+  root.append(svg('rect',{x:25,y:255,width:1190,height:173,rx:12,class:'map-subband'}));
+  root.append(svg('rect',{x:16,y:693,width:1208,height:315,rx:15,class:'map-band'}));
+  svgText(root,40,44,'A  构建期 · SDK 作者 / MadB / 上游工具','map-label');
+  svgText(root,48,280,'构建组件 · 同一个 Gradle / Kotlin-Native 构建计划内协同','map-label');
+  svgText(root,40,719,'B  运行期 · 应用 / SDK / 业务实现','map-label');
+  const enabled=activeIds();
+  for(const e of edges) {
+   const active=enabled.has(e.a)&&enabled.has(e.b)&&(!e.flows||e.flows.includes(state.flow));
+   const g=svg('g',{class:active?'':'dimmed'});
+   g.append(svg('path',{d:e.d,class:'edge '+(e.kind||''),'marker-end':'url(#map-arrow)'}));
+   if(e.label)svgText(g,e.lx,e.ly,e.label,'edge-label',{'text-anchor':'middle'});
+   root.append(g);
+  }
+  for(const raw of nodes) {
+   const n=viewNode(raw);let classes='graph-node '+n.kind;
+   if(!enabled.has(n.id))classes+=' dimmed';
+   if(n.id==='nc'&&state.mode==='skie')classes+=' disabled-node';
+   if(state.selected===n.id)classes+=' selected';
+   const g=svg('g',{class:classes,'data-node':n.id,role:'button',tabindex:0,'aria-label':n.title+'，查看责任详情','aria-pressed':String(state.selected===n.id)});
+   g.append(svg('title',{},n.summary),svg('rect',{x:n.x,y:n.y,width:n.w,height:n.h,class:'box'}),svg('rect',{x:n.x+14,y:n.y+16,width:3,height:n.h-32,rx:2,class:'bar'}));
+   svgText(g,n.x+28,n.y+24,n.kicker,'node-kicker');
+   svgText(g,n.x+28,n.y+47,n.title,'node-title');
+   n.lines.forEach((line,i)=>svgText(g,n.x+28,n.y+69+i*18,line,'node-copy'));
+   g.addEventListener('click',()=>selectNode(n.id));
+   g.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selectNode(n.id);}});
+   root.append(g);
+  }
+ }
+ function selectNode(id) {
+  state.selected=id;
+  document.querySelectorAll('[data-node]').forEach(el=>{const isSelected=el.dataset.node===id;el.classList.toggle('selected',isSelected);el.setAttribute('aria-pressed',String(isSelected));});
+  renderDetail();
+ }
+ function renderDetail() {
+  const n=viewNode(nodeById.get(state.selected));$('detail-kind').textContent=n.kicker;$('detail-title').textContent=n.title;$('detail-summary').textContent=n.summary;
+  for(const [id,values] of [['detail-does',n.does],['detail-constraints',n.constraints]]){$(id).replaceChildren(...values.map(value=>{const el=document.createElement('li');el.textContent=value;return el;}));}
+  $('detail-links').replaceChildren(...n.links.map(([text,url])=>{const a=document.createElement('a');a.textContent=text+' ↗';a.href=url;if(url.startsWith('https:')){a.target='_blank';a.rel='noreferrer';}return a;}));
+ }
+ const scenarios={
+  call:{label:'单次调用 · 一次启动 / 一次终态',events:[
+   [0,1,'使用普通方法启动本次操作'],[1,2,'由所选桥启动 Kotlin 协程'],[2,3,'执行业务 / 调用原生依赖'],
+   [3,2,'返回结果或错误'],[2,1,'认领并交付一次终态'],[1,0,'映射结果；UI 更新进入声明的隔离域']
+  ],notes:[['启动时机','Async 调用与 Combine / Rx 订阅分别确认启动时机；同一命令经多个外观启动可能产生多次操作。'],['错误','保留业务失败、取消和对象失效。成功返回应表达真实业务阶段，例如已受理与已持久化。'],['阻塞','Swift 方法带 async 不保证底层已离开主线程；线程与阻塞等级仍是契约的一部分。']]},
+  observe:{label:'状态订阅 · 一位观察者的生命周期',events:[
+   [0,1,'页面建立一次观察并持有令牌 / Task'],[1,2,'为本次观察建立 Flow 收集'],[2,3,'读取共享上游，或启动明确的独立上游'],
+   [3,2,'状态变化 / 事件产生'],[2,1,'按顺序、容量与溢出规则交付'],[1,0,'投递到 UI 隔离域；更新状态']
+  ],notes:[['流身份','将状态 getter、Flow 与可选外观配对到同一 stream identity；多种外观不自动共用一次收集。共享上游由业务 owner 决定。'],['状态与事件','状态可只保留最新值；事件的丢弃、重放与恢复需独立声明。Publisher 名称不证明端到端背压。'],['开始与结束','注册可能同步产生首个值；先准备接收上下文。退订、排水和释放顺序由统一观察协议约束。']]},
+  cancel:{label:'取消竞争 · 停止请求与完成确认分开',events:[
+   [0,1,'请求取消：Task / Cancellable / Disposable'],[1,2,'请求取消本次协程或 Flow 收集'],[2,3,'若底层支持，显式请求停止原生工作'],
+   [3,2,'在途完成 / 迟到结果仍有唯一接收或回收方'],[2,1,'任务收尾与回调排水达到约定条件'],[1,0,'通过显式确认接口报告停止结果']
+  ],notes:[['能力前提','图中第 3 步仅在后端声明实际停止能力时成立；无法停止的工作继续由其 owner 保活和收尾。'],['完成确认','第 6 步属于 MadB 设计协议，不是第三方 cancel / dispose 自动提供的全部保证。超时仍可处于 Closing。'],['结果所有权','取消可能与完成同时发生。迟到的资源结果必须释放一次；已发生的业务副作用不会因等待取消而自动撤销。']]},
+  reverse:{label:'反向范围 · ObjC 可见宿主接口',events:[
+   [2,1,'Kotlin 通过已导出的 HostPort 发起宿主请求'],[1,0,'按约定执行器投递到 Swift 宿主实现'],[0,1,'返回受理 / 结果 / 错误，按协议区分'],
+   [1,2,'以匹配 request ID 完成 Kotlin 侧等待'],[2,1,'注销或关闭时停止新回调准入'],[1,0,'在途回调排水后解除宿主引用']
+  ],notes:[['可见性','检查真实 ObjC 头与 cinterop 声明并编译 Kotlin 调用点；SKIE 的 Swift 增强不自动反向可见。'],['异步回调','具体异步请求需定义完成、取消、错误和重入协议；不依赖“覆盖 suspend 就自动保留取消桥”。'],['执行环境','Swift 宿主对象的 actor 隔离必须由适配器显式满足；禁止在持锁区同步回调并等待自己。']]}
+ };
+ function renderSequence() {
+  const s=scenarios[state.scenario],root=$('sequence-svg');root.replaceChildren();marker(root,'seq-arrow','var(--accent)');
+  root.append(svg('title',{},s.label),svg('desc',{},s.events.map(e=>e[2]).join('；')));
+  const xs=[140,430,720,1010];
+  const names=state.scenario==='reverse'?['Swift 宿主 / owner','MadB HostPort 适配','Kotlin 请求方','业务依赖（本图不参与）']:['Swift 页面 / owner','MadB + '+apiName(),'Kotlin Job / scope','共享上游 / 原生依赖'];
+  names.forEach((name,i)=>{root.append(svg('rect',{x:xs[i]-125,y:14,width:250,height:52,rx:9,class:'seq-head'}));svgText(root,xs[i],46,name,'seq-owner',{'text-anchor':'middle'});root.append(svg('path',{d:'M'+xs[i]+' 77 V470',class:'seq-lane'}));});
+  s.events.forEach(([from,to,text],i)=>{
+   const y=116+i*62,dir=to>from?1:-1;
+   root.append(svg('path',{d:'M'+(xs[from]+dir*7)+' '+y+' H'+(xs[to]-dir*7),class:'seq-line','marker-end':'url(#seq-arrow)'}));
+   svgText(root,(xs[from]+xs[to])/2,y-13,text,'seq-text',{'text-anchor':'middle'});
+   svgText(root,18,y+4,String(i+1).padStart(2,'0'),'seq-number');
+  });
+  $('scenario-label').textContent=s.label;
+  $('runtime-notes').replaceChildren(...s.notes.map(([title,body])=>{const div=document.createElement('div'),h=document.createElement('h3'),p=document.createElement('p');h.textContent=title;p.textContent=body;div.append(h,p);return div;}));
+ }
+ function renderProfile() {
+  document.querySelectorAll('[data-mode]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.mode===state.mode)));
+  const hybrid=state.mode==='hybrid';$('async-api').disabled=!hybrid;
+  $('bridge-owner').textContent=hybrid?'NativeCoroutines：异步桥接':'SKIE：异步桥接';
+  $('bridge-description').textContent=hybrid?'通过选定的 '+({async:'Async',combine:'Combine',rx:'RxSwift'})[state.api]+' 模块衔接 Kotlin 协程；MadB 补齐契约中要求的资源、停止与错误处理。':'复用 SKIE 的 suspend / Flow 适配；MadB 检查异常边界、共享观察与清理协议。';
+  const task=catalog.plan.tasks.find(t=>t.id===(hybrid?'X01':'C06'));
+  $('profile-description').textContent=(hybrid?'可选组合：关闭该模块 SKIE 协程桥；逐声明交给 NC，配对流身份与 owner / scope。':'默认主线：SKIE 承担类型与协程增强，不启用 NC 异步路径。')+' 计划归属：'+task.id+' / '+task.phase+'；状态与证据见下方验收区。';
+  renderOverview();renderDetail();renderSequence();
+ }
+ document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>{state.mode=el.dataset.mode;renderProfile();}));
+ $('async-api').addEventListener('change',event=>{state.api=event.target.value;renderProfile();});
+ document.querySelectorAll('[data-flow]').forEach(el=>el.addEventListener('click',()=>{state.flow=el.dataset.flow;document.querySelectorAll('[data-flow]').forEach(button=>button.setAttribute('aria-pressed',String(button===el)));renderOverview();}));
+ document.querySelectorAll('[data-scenario]').forEach(el=>el.addEventListener('click',()=>{state.scenario=el.dataset.scenario;document.querySelectorAll('[data-scenario]').forEach(button=>button.setAttribute('aria-pressed',String(button===el)));renderSequence();}));
+ function setTheme(dark){document.documentElement.dataset.theme=dark?'dark':'light';$('theme').textContent=dark?'浅色':'深色';$('theme').setAttribute('aria-label',dark?'切换浅色主题':'切换深色主题');}
+ $('theme').addEventListener('click',()=>setTheme(document.documentElement.dataset.theme!=='dark'));
+ setTheme(false);
+ $('print').addEventListener('click',()=>window.print());
+ $('back-top').addEventListener('click',event=>{event.preventDefault();window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});
+ const x01=catalog.plan.tasks.find(t=>t.id==='X01'),c06=catalog.plan.tasks.find(t=>t.id==='C06');
+ const names={not_started:'未开始',in_progress:'进行中',blocked:'阻塞',implemented:'已实现'};
+ const route=catalog.routes.routes.find(r=>r.id==='KN-SWIFT-OBJC');
+ const routeNames={planned:'规划中',implemented:'已实现'};
+ const verificationNames={missing:'缺少证据',running:'验证中',failed:'验证失败',passed:'验证通过',stale:'证据过期'};
+ const total=catalog.routes.routes.length,planned=catalog.routes.routes.filter(r=>r.implementation==='planned').length;
+ const certified=catalog.routes.routes.reduce((sum,r)=>sum+r.certified_profiles.length,0);
+ $('catalog-stamp').textContent='主线：'+c06.phase+' / SKIE · 扩展：'+x01.phase+' / X01 · 设计基线 '+catalog.plan.baseline+' · '+planned+'/'+total+' 条路线规划中 · 认证配置 '+certified+' · '+catalog.plan.as_of;
+ $('route-state').textContent='本路线：'+(routeNames[route.implementation]||route.implementation)+' · '+(verificationNames[route.verification]||route.verification)+' · 认证配置 '+route.certified_profiles.length;
+ $('fact-stamp').textContent='核对日期 '+catalog.plan.as_of;
+ $('plan-state').textContent='计划数据：C06 '+c06.phase+' / '+names[c06.status]+'；X01 '+x01.phase+' / '+names[x01.status]+'。';
+ const tasks=new Map(catalog.plan.tasks.map(task=>[task.id,task]));
+ document.querySelectorAll('#gate-table tbody tr').forEach(row=>{
+  const ids=row.cells[2].textContent.match(/[A-Z]\d{2}/g)||[];
+  const linked=ids.map(id=>tasks.get(id));
+  const passed=linked.length>0&&linked.every(task=>task&&task.status==='implemented'&&task.verification==='passed'&&task.evidence.length>0);
+  row.cells[3].textContent=passed?'关联任务已验收':'关联证据待满足';
+  row.cells[3].title=linked.map((task,index)=>task?task.id+'：'+names[task.status]+' / '+verificationNames[task.verification]:ids[index]+'：未登记').join('；');
+ });
+ renderProfile();
+})();
+</script>
+</body>
+</html>

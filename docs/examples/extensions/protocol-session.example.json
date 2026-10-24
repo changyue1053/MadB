@@ -1,0 +1,79 @@
+{
+  "schema": "madb.extension-transcript/1",
+  "example": true,
+  "frames": [
+    {
+      "schema": "madb.extension-wire/1",
+      "session_id": "example-session-1",
+      "kind": "hello",
+      "extension_id": "example.dart-ffi",
+      "extension_version": "0.1.0-design",
+      "component_id": "generator",
+      "manifest_digest": "sha256:e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "protocol_versions": [
+        "1.0"
+      ],
+      "ir_versions": [
+        "1.0"
+      ],
+      "required_features": [
+        "core.call.sync@1",
+        "core.value.scalar@1",
+        "core.value.record@1",
+        "core.buffer.copy@1",
+        "core.resource.explicit-close@1"
+      ]
+    },
+    {
+      "schema": "madb.extension-wire/1",
+      "session_id": "example-session-1",
+      "kind": "hello_ack",
+      "extension_id": "example.dart-ffi",
+      "extension_version": "0.1.0-design",
+      "component_id": "generator",
+      "manifest_digest": "sha256:e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "protocol": "1.0",
+      "ir": "1.0",
+      "features": [
+        "core.call.sync@1",
+        "core.value.scalar@1",
+        "core.value.record@1",
+        "core.buffer.copy@1",
+        "core.resource.explicit-close@1"
+      ]
+    },
+    {
+      "schema": "madb.extension-wire/1",
+      "session_id": "example-session-1",
+      "kind": "invoke",
+      "protocol": "1.0",
+      "ir": "1.0",
+      "request_id": "generate-1",
+      "component": "example.dart-ffi/generator",
+      "operation": "generate",
+      "input": {
+        "path": "inputs/request.json",
+        "schema": "madb.generate-request/1",
+        "sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "size": 256
+      },
+      "output_root": "outputs/generate-1",
+      "timeout_ms": 30000
+    },
+    {
+      "schema": "madb.extension-wire/1",
+      "session_id": "example-session-1",
+      "kind": "result",
+      "protocol": "1.0",
+      "ir": "1.0",
+      "request_id": "generate-1",
+      "status": "ok",
+      "output": {
+        "path": "outputs/generate-1/output-set.json",
+        "schema": "madb.output-set/1",
+        "sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "size": 128
+      }
+    }
+  ]
+}

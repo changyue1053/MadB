@@ -1,0 +1,3161 @@
+{
+  "schema": "madb.source-coverage/1",
+  "sources": [
+    {
+      "pair": "ArkTS_C_CPP",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "sha256": "d5abffffde842555b6c1494488f1de6b53f8f05362ef7896bd1aa2f869c11664",
+      "items": 30
+    },
+    {
+      "pair": "ArkTS_Rust",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "sha256": "4663cae42a1eb0745072e1e10a6dba3e7c6ef2f603519d089269d5b73d879410",
+      "items": 30
+    },
+    {
+      "pair": "Kotlin_ArkTS",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "sha256": "d0398d53c35c8a699b8835b044448b7e5e65f8b877fec1fb0cb0e09288d93001",
+      "items": 28
+    },
+    {
+      "pair": "Kotlin_C_CPP",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "sha256": "00b883449e2e1045c56ed5693500cef30583fddcc4f80f492267618e07af7dc5",
+      "items": 25
+    },
+    {
+      "pair": "Kotlin_Rust",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "sha256": "bbc324560c0aac662b0c3e6f60a57a6d567d645ae4ca4def8c639802ac25a576",
+      "items": 26
+    },
+    {
+      "pair": "Kotlin_Swift",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "sha256": "078fbbd0d4bb2ced7b75b0d0815c1dfe819547ef7f55c85c592e61efafad6229",
+      "items": 24
+    },
+    {
+      "pair": "Rust_C_CPP",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "sha256": "012d929e2f8ef010725a20d3d196a77094dd5827b64caecc03fd36027e1aa2c4",
+      "items": 23
+    },
+    {
+      "pair": "Swift_C_CPP",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "sha256": "881f4c23e933cb74609c486c012c911da702654015e886a48253ee58f3812892",
+      "items": 24
+    },
+    {
+      "pair": "Swift_Rust",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "sha256": "f9abc6d5f472fc9dfab811dc9015754b08112ba051e7c800bfe69fe8513dec5a",
+      "items": 26
+    }
+  ],
+  "mappings": [
+    {
+      "source_id": "ArkTS_C_CPP:1",
+      "source_title": "运行路线与后端能力",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:2",
+      "source_title": "接口权威源与编译上下文",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-002",
+        "TYPE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:3",
+      "source_title": "复杂 C++ 类型与公开模型",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "CAP-003",
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:4",
+      "source_title": "数值 空值与稳定 ID",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-002",
+        "TYPE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:5",
+      "source_title": "字符串 字节与 JSON",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-005",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:6",
+      "source_title": "输入校验 错误与异常",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 20,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:7",
+      "source_title": "阻塞性与异步执行",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "THR-002",
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:8",
+      "source_title": "反向回调与完成阶段",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "ASYNC-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:9",
+      "source_title": "取消 超时与后台收尾",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "ASYNC-001",
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:10",
+      "source_title": "注册 完成与迟到结果",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "ASYNC-002",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:11",
+      "source_title": "重入 锁顺序与死锁",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:12",
+      "source_title": "事件容量 顺序与恢复",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 31,
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:13",
+      "source_title": "所有权与分配器配对",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "LIFE-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:14",
+      "source_title": "借用指针 引用与异步保留",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "LIFE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:15",
+      "source_title": "缓冲布局 可变别名与零拷贝",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "LIFE-003",
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:16",
+      "source_title": "关闭责任与在途操作",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:17",
+      "source_title": "包装对象 引用环与 GC",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:18",
+      "source_title": "env 线程与多环境隔离",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 42,
+      "problem_ids": [
+        "THR-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:19",
+      "source_title": "环境退出与清理顺序",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 43,
+      "problem_ids": [
+        "LIFE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:20",
+      "source_title": "C++ 共享状态与析构位置",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 44,
+      "problem_ids": [
+        "THR-003",
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:21",
+      "source_title": "页面观察与共享资源",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 50,
+      "problem_ids": [
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:22",
+      "source_title": "跨界频率与内存预算",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 51,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:23",
+      "source_title": "SDK 编译器与标准库 ABI",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 57,
+      "problem_ids": [
+        "BUILD-001",
+        "TYPE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:24",
+      "source_title": "API ABI 与行为演进",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 58,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:25",
+      "source_title": "打包 名称与依赖装载",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 59,
+      "problem_ids": [
+        "BUILD-002",
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:26",
+      "source_title": "动态卸载与重复实例",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 60,
+      "problem_ids": [
+        "BUILD-002",
+        "LIFE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:27",
+      "source_title": "双向真实消费",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 66,
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:28",
+      "source_title": "内存 竞态与失败路径",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 67,
+      "problem_ids": [
+        "VERIFY-001",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:29",
+      "source_title": "跨语言故障定位",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 68,
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_C_CPP:30",
+      "source_title": "生成与验证结论可信度",
+      "path": "../references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "line": 69,
+      "problem_ids": [
+        "VERIFY-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:1",
+      "source_title": "接入路线与运行时能力",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:2",
+      "source_title": "模型权威源与公开 DTO",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-002",
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:3",
+      "source_title": "整数范围 单位与稳定 ID",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:4",
+      "source_title": "空值 缺失与带数据枚举",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-002",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:5",
+      "source_title": "字符串 字节与 JSON 选择",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-005",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:6",
+      "source_title": "运行时校验 错误与 panic",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 20,
+      "problem_ids": [
+        "TYPE-006",
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:7",
+      "source_title": "阻塞调用与异步运行时",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "THR-002",
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:8",
+      "source_title": "取消 超时与副作用",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:9",
+      "source_title": "一次完成与迟到结果",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "ASYNC-002",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:10",
+      "source_title": "反向回调与业务完成阶段",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "ASYNC-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:11",
+      "source_title": "同步回调 重入与死锁",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "THR-004",
+        "ASYNC-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:12",
+      "source_title": "有界事件 顺序与恢复",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 31,
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:13",
+      "source_title": "env 与执行线程归属",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "THR-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:14",
+      "source_title": "多环境 Worker 与对象隔离",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "THR-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:15",
+      "source_title": "局部句柄 长期引用与引用环",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:16",
+      "source_title": "唯一关闭责任与在途操作",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:17",
+      "source_title": "环境退出与异步清理",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "LIFE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:18",
+      "source_title": "缓冲寿命 转移与分配器配对",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 42,
+      "problem_ids": [
+        "LIFE-001",
+        "LIFE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:19",
+      "source_title": "Rust 共享状态与析构执行位置",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 43,
+      "problem_ids": [
+        "THR-003",
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:20",
+      "source_title": "页面生命周期与共享订阅",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 49,
+      "problem_ids": [
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:21",
+      "source_title": "跨界频率 复制与内存峰值",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 50,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:22",
+      "source_title": "工具链 后端与 feature 组合",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 56,
+      "problem_ids": [
+        "CAP-004",
+        "BUILD-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:23",
+      "source_title": "OHOS 目标与原生依赖",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 57,
+      "problem_ids": [
+        "BUILD-001",
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:24",
+      "source_title": "ArkTS API ABI 与行为兼容",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 58,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:25",
+      "source_title": "声明 库与包的一致性",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 59,
+      "problem_ids": [
+        "BUILD-004",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:26",
+      "source_title": "KMP 共存与内核实例归属",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 60,
+      "problem_ids": [
+        "BUILD-002",
+        "LIFE-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:27",
+      "source_title": "真实 ArkTS 双向消费",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 66,
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:28",
+      "source_title": "竞态 内存与错误路径",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 67,
+      "problem_ids": [
+        "VERIFY-001",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:29",
+      "source_title": "跨语言诊断与符号化",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 68,
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "ArkTS_Rust:30",
+      "source_title": "生成与验证结论可信度",
+      "path": "../references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "line": 69,
+      "problem_ids": [
+        "VERIFY-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:1",
+      "source_title": "调用路径与公开 API 范围",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:2",
+      "source_title": "enum、sealed、泛型与语言限制",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:3",
+      "source_title": "整数精度与数值收窄",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:4",
+      "source_title": "null、undefined、缺字段与默认值",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:5",
+      "source_title": "对象身份、业务 ID 与运行时句柄",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:6",
+      "source_title": "JSON 校验与两端解析差异",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 20,
+      "problem_ids": [
+        "TYPE-006",
+        "TYPE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:7",
+      "source_title": "Kotlin 异常、ArkTS Error 与 pending exception",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:8",
+      "source_title": "suspend、Promise 与回调协议",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "ASYNC-002",
+        "ASYNC-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:9",
+      "source_title": "取消、超时与释放引用",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "ASYNC-001",
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:10",
+      "source_title": "Flow、状态与事件交付",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:11",
+      "source_title": "动作已转交、业务已受理与业务已完成",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "ASYNC-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:12",
+      "source_title": "napi_env、Worker 与线程归属",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 36,
+      "problem_ids": [
+        "THR-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:13",
+      "source_title": "Main 调度、阻塞与跨语言死锁",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "THR-002",
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:14",
+      "source_title": "TSFN 队列、生产者与退出竞态",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "ASYNC-004",
+        "LIFE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:15",
+      "source_title": "napi_value、napi_ref、StableRef 与 GC",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:16",
+      "source_title": "ByteArray、ArrayBuffer 与零拷贝",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "TYPE-005",
+        "LIFE-002",
+        "LIFE-003",
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:17",
+      "source_title": "关闭协议与环境销毁",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "LIFE-005",
+        "LIFE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:18",
+      "source_title": "页面可见性、销毁与前后台",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 47,
+      "problem_ids": [
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:19",
+      "source_title": "输入回声、焦点与 Compose 混排",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 48,
+      "problem_ids": [
+        "UI-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:20",
+      "source_title": "ArkUI 响应式模型与列表身份",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 49,
+      "problem_ids": [
+        "UI-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:21",
+      "source_title": "高频跨界、序列化与 UI 线程预算",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 50,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:22",
+      "source_title": "Kotlin fork、KSP 与 ArkTS 工具链组合",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 56,
+      "problem_ids": [
+        "CAP-004",
+        "BUILD-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:23",
+      "source_title": "模块加载、注册与初始化顺序",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 57,
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:24",
+      "source_title": "声明、wire 与行为兼容",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 58,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:25",
+      "source_title": "HAR / HAP、native 依赖与制品一致性",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 59,
+      "problem_ids": [
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:26",
+      "source_title": "两端测试与真实 ArkTS 消费",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 65,
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:27",
+      "source_title": "跨语言日志、崩溃与符号化",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 66,
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_ArkTS:28",
+      "source_title": "生成器与检查证据可信度",
+      "path": "../references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "line": 67,
+      "problem_ids": [
+        "VERIFY-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:1",
+      "source_title": "C++ 类型与调用路线",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:2",
+      "source_title": "Kotlin 源码与 JVM 签名",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-002",
+        "TYPE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:3",
+      "source_title": "数值 空值与枚举",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-002",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:4",
+      "source_title": "字符串编码与二进制",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:5",
+      "source_title": "结构体布局与编译条件",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:6",
+      "source_title": "错误与异常边界",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 20,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:7",
+      "source_title": "创建与释放配对",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "LIFE-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:8",
+      "source_title": "临时指针与异步保留",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "LIFE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:9",
+      "source_title": "跨运行时引用与回调保活",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:10",
+      "source_title": "close 与在途调用竞争",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:11",
+      "source_title": "空缓冲 长度与输出参数",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "TYPE-005",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:12",
+      "source_title": "零拷贝 视图与可变别名",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 31,
+      "problem_ids": [
+        "LIFE-003",
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:13",
+      "source_title": "原生线程接入 JVM",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "THR-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:14",
+      "source_title": "线程亲和性与阻塞",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:15",
+      "source_title": "共享状态 重入与锁顺序",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "THR-003",
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:16",
+      "source_title": "取消与实际停止",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:17",
+      "source_title": "取消与结果交接竞争",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:18",
+      "source_title": "同步 重复与迟到回调",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 42,
+      "problem_ids": [
+        "ASYNC-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:19",
+      "source_title": "Flow 背压与观察生命周期",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 43,
+      "problem_ids": [
+        "ASYNC-004",
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:20",
+      "source_title": "Release 与 R8 反向访问",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 49,
+      "problem_ids": [
+        "BUILD-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:21",
+      "source_title": "库加载与 ClassLoader",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 50,
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:22",
+      "source_title": "绑定与二进制漂移",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 51,
+      "problem_ids": [
+        "COMP-001",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:23",
+      "source_title": "多架构与传递依赖",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 52,
+      "problem_ids": [
+        "BUILD-001",
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:24",
+      "source_title": "Android 16 KB 页兼容",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 53,
+      "problem_ids": [
+        "BUILD-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_C_CPP:25",
+      "source_title": "性能与故障诊断",
+      "path": "../references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "line": 54,
+      "problem_ids": [
+        "PERF-001",
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:1",
+      "source_title": "后端与导出能力",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:2",
+      "source_title": "模型权威源与数据语义",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-002",
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:3",
+      "source_title": "数值 可空值与稳定 ID",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-002",
+        "TYPE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:4",
+      "source_title": "ABI 表示与输入校验",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-007",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:5",
+      "source_title": "名称与生成 API 冲突",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:6",
+      "source_title": "业务失败与 panic",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 25,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:7",
+      "source_title": "Kotlin 反向回调失败",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "ERR-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:8",
+      "source_title": "执行位置与阻塞",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:9",
+      "source_title": "async 运行时与任务归属",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:10",
+      "source_title": "取消 超时与副作用",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:11",
+      "source_title": "重入 完成竞态与结果交接",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "THR-004",
+        "ASYNC-002",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:12",
+      "source_title": "订阅 背压与事件恢复",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 31,
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:13",
+      "source_title": "资源 owner 与句柄有效期",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "LIFE-001",
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:14",
+      "source_title": "缓冲区寿命与释放配对",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "LIFE-001",
+        "LIFE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:15",
+      "source_title": "GC 与 Rust 引用环",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:16",
+      "source_title": "关闭的取消与超时",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "LIFE-005",
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:17",
+      "source_title": "两侧同步与回调重入",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "THR-003",
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:18",
+      "source_title": "页面作用域与共享订阅",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 47,
+      "problem_ids": [
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:19",
+      "source_title": "跨界频率 复制与容量",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 48,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:20",
+      "source_title": "工具链与 fork 组合",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 54,
+      "problem_ids": [
+        "CAP-004",
+        "BUILD-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:21",
+      "source_title": "API ABI 与行为兼容",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 55,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:22",
+      "source_title": "装载 链接与制品配对",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 56,
+      "problem_ids": [
+        "BUILD-002",
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:23",
+      "source_title": "原生库与状态实例重复",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 57,
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:24",
+      "source_title": "双端消费与竞态验证",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 63,
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:25",
+      "source_title": "跨语言故障定位",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 64,
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Rust:26",
+      "source_title": "生成与检查可信度",
+      "path": "../references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "line": 65,
+      "problem_ids": [
+        "VERIFY-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:1",
+      "source_title": "导出范围与 API 形状",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:2",
+      "source_title": "类型映射与信息丢失",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-003",
+        "TYPE-001",
+        "TYPE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:3",
+      "source_title": "ID、相等性与业务含义",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:4",
+      "source_title": "引用对象、Facade 与独立快照",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:5",
+      "source_title": "边界输入校验",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:6",
+      "source_title": "空值、业务失败、取消与异常",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 25,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:7",
+      "source_title": "执行位置与任务作用域",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "THR-002",
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:8",
+      "source_title": "取消、超时与副作用",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:9",
+      "source_title": "回调重入与完成竞态",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "ASYNC-002",
+        "THR-004",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:10",
+      "source_title": "状态、事件与交付保证",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:11",
+      "source_title": "资源所有权与关闭协议",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 35,
+      "problem_ids": [
+        "LIFE-001",
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:12",
+      "source_title": "ARC＋GC 与释放时机",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 36,
+      "problem_ids": [
+        "LIFE-004",
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:13",
+      "source_title": "Swift 6 并发与跨边界原子性",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "THR-003",
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:14",
+      "source_title": "页面、账户与应用生命周期",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:15",
+      "source_title": "UI 输入与权威状态同步",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 44,
+      "problem_ids": [
+        "UI-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:16",
+      "source_title": "跨界频率、复制与内存峰值",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 45,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:17",
+      "source_title": "工具链与插件组合兼容",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 51,
+      "problem_ids": [
+        "CAP-004",
+        "BUILD-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:18",
+      "source_title": "多 Framework 与重复运行时/类型",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 52,
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:19",
+      "source_title": "API、ABI 与行为兼容",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 53,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:20",
+      "source_title": "构建顺序、缓存与制品配对",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 54,
+      "problem_ids": [
+        "GEN-001",
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:21",
+      "source_title": "SDK 打包与消费兼容",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 55,
+      "problem_ids": [
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:22",
+      "source_title": "真实消费端与竞态测试",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 61,
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:23",
+      "source_title": "跨语言故障定位",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 62,
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Kotlin_Swift:24",
+      "source_title": "生成器与检查结论的可信度",
+      "path": "../references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "line": 63,
+      "problem_ids": [
+        "VERIFY-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:1",
+      "source_title": "两端重复维护声明",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:2",
+      "source_title": "Rust 类型与 C ABI 不等价",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "TYPE-007",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:3",
+      "source_title": "布局与目标配置不一致",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-007",
+        "BUILD-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:4",
+      "source_title": "非法数值直接进入 Rust 类型",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:5",
+      "source_title": "字符串 切片与输出参数",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "TYPE-005",
+        "TYPE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:6",
+      "source_title": "分配器与释放器不匹配",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 25,
+      "problem_ids": [
+        "LIFE-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:7",
+      "source_title": "借用超过有效期",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "LIFE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:8",
+      "source_title": "C++ 修改破坏 Rust 别名规则",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "LIFE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:9",
+      "source_title": "C++ 对象的移动与析构语义",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "LIFE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:10",
+      "source_title": "父子资源释放顺序",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "LIFE-006"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:11",
+      "source_title": "关闭 句柄与在途调用竞争",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:12",
+      "source_title": "无依据地声明 Send/Sync",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 36,
+      "problem_ids": [
+        "THR-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:13",
+      "source_title": "回调上下文提前释放",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:14",
+      "source_title": "Future 丢弃与原生工作不一致",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "ASYNC-001",
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:15",
+      "source_title": "完成认领与结果投递竞争",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "LIFE-008",
+        "ASYNC-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:16",
+      "source_title": "回调重入 锁顺序与死锁",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:17",
+      "source_title": "阻塞 高频事件与背压",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "THR-002",
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:18",
+      "source_title": "panic 与 C++ exception 越界",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 47,
+      "problem_ids": [
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:19",
+      "source_title": "捕获失败后的状态损坏",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 48,
+      "problem_ids": [
+        "ERR-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:20",
+      "source_title": "编译和原生运行库不一致",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 49,
+      "problem_ids": [
+        "BUILD-001",
+        "BUILD-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:21",
+      "source_title": "API ABI 与行为漂移",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 50,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:22",
+      "source_title": "零拷贝与细粒度调用成本",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 51,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Rust_C_CPP:23",
+      "source_title": "测试只覆盖单侧或错误目标",
+      "path": "../references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "line": 52,
+      "problem_ids": [
+        "VERIFY-001",
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:1",
+      "source_title": "路线与类型支持范围",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:2",
+      "source_title": "值语义 引用语义与模型",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:3",
+      "source_title": "数值 空值与枚举",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-002",
+        "CAP-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:4",
+      "source_title": "字符串 字节与布局",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-005",
+        "TYPE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:5",
+      "source_title": "错误与异常",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:6",
+      "source_title": "创建 释放与分配器配对",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 25,
+      "problem_ids": [
+        "LIFE-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:7",
+      "source_title": "临时指针与异步保留",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "LIFE-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:8",
+      "source_title": "C++ 视图 借用与可变别名",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "LIFE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:9",
+      "source_title": "回调上下文寿命",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:10",
+      "source_title": "跨语言引用环",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:11",
+      "source_title": "关闭 析构与在途使用",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "LIFE-005",
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:12",
+      "source_title": "阻塞性与执行位置",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 36,
+      "problem_ids": [
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:13",
+      "source_title": "Swift 并发隔离与共享状态",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "THR-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:14",
+      "source_title": "原生线程亲和性",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:15",
+      "source_title": "回调转 async 与完成认领",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "ASYNC-002",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:16",
+      "source_title": "取消 超时与后台收尾",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "ASYNC-001",
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:17",
+      "source_title": "重入 锁顺序与死锁",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:18",
+      "source_title": "流 背压与页面作用域",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 42,
+      "problem_ids": [
+        "ASYNC-004",
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:19",
+      "source_title": "编译环境与模块配置",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 48,
+      "problem_ids": [
+        "BUILD-001",
+        "CAP-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:20",
+      "source_title": "API ABI 与行为演进",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 49,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:21",
+      "source_title": "多平台制品与首次消费",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 50,
+      "problem_ids": [
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:22",
+      "source_title": "依赖 符号与代码寿命",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 51,
+      "problem_ids": [
+        "BUILD-002",
+        "BUILD-003",
+        "LIFE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:23",
+      "source_title": "隐式复制与端到端性能",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 52,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_C_CPP:24",
+      "source_title": "真实验证与故障定位",
+      "path": "../references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "line": 53,
+      "problem_ids": [
+        "VERIFY-001",
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:1",
+      "source_title": "路线与后端能力",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 15,
+      "problem_ids": [
+        "CAP-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:2",
+      "source_title": "模型权威源与值语义",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 16,
+      "problem_ids": [
+        "CAP-002",
+        "TYPE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:3",
+      "source_title": "数值 可空值与稳定 ID",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 17,
+      "problem_ids": [
+        "TYPE-001",
+        "TYPE-002",
+        "TYPE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:4",
+      "source_title": "字符串 字节与 ABI 表示",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 18,
+      "problem_ids": [
+        "TYPE-005",
+        "TYPE-007"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:5",
+      "source_title": "业务错误 panic 与宿主失败",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 19,
+      "problem_ids": [
+        "ERR-001",
+        "ERR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:6",
+      "source_title": "阻塞性与执行位置",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 25,
+      "problem_ids": [
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:7",
+      "source_title": "Swift 6 隔离与 Sendable",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 26,
+      "problem_ids": [
+        "THR-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:8",
+      "source_title": "async 运行时与任务归属",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 27,
+      "problem_ids": [
+        "ASYNC-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:9",
+      "source_title": "双向取消 超时与副作用",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 28,
+      "problem_ids": [
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:10",
+      "source_title": "一次完成与结果交接",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 29,
+      "problem_ids": [
+        "ASYNC-002",
+        "LIFE-008"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:11",
+      "source_title": "同步回调与重入",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 30,
+      "problem_ids": [
+        "THR-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:12",
+      "source_title": "事件 背压 顺序与恢复",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 31,
+      "problem_ids": [
+        "ASYNC-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:13",
+      "source_title": "唯一关闭责任与共享引用",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 37,
+      "problem_ids": [
+        "LIFE-001",
+        "LIFE-005"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:14",
+      "source_title": "ARC 与 Rust 引用环",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 38,
+      "problem_ids": [
+        "LIFE-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:15",
+      "source_title": "缓冲寿命 别名与释放配对",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 39,
+      "problem_ids": [
+        "LIFE-001",
+        "LIFE-002",
+        "LIFE-003"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:16",
+      "source_title": "关闭 取消与在途操作",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 40,
+      "problem_ids": [
+        "LIFE-005",
+        "ASYNC-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:17",
+      "source_title": "回调保活与释放位置",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 41,
+      "problem_ids": [
+        "LIFE-004",
+        "THR-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:18",
+      "source_title": "页面观察与共享订阅",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 47,
+      "problem_ids": [
+        "UI-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:19",
+      "source_title": "跨界频率 复制与峰值内存",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 48,
+      "problem_ids": [
+        "PERF-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:20",
+      "source_title": "工具链与后端版本组合",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 54,
+      "problem_ids": [
+        "BUILD-001",
+        "CAP-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:21",
+      "source_title": "API ABI 与行为兼容",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 55,
+      "problem_ids": [
+        "COMP-001",
+        "COMP-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:22",
+      "source_title": "Apple 打包与跨工具链消费",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 56,
+      "problem_ids": [
+        "BUILD-004"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:23",
+      "source_title": "KMP 共存与重复内核",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 57,
+      "problem_ids": [
+        "BUILD-002"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:24",
+      "source_title": "双向消费与竞态验证",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 63,
+      "problem_ids": [
+        "VERIFY-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:25",
+      "source_title": "跨语言故障定位",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 64,
+      "problem_ids": [
+        "OBS-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "source_id": "Swift_Rust:26",
+      "source_title": "生成与验证结论可信度",
+      "path": "../references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md",
+      "line": 65,
+      "problem_ids": [
+        "VERIFY-002",
+        "GEN-001"
+      ],
+      "classification": "reference-analysis",
+      "evidence": "not-a-MadB-test"
+    }
+  ],
+  "audit_sources": [
+    {
+      "id": "REVIEW-20261024-01",
+      "title": "UniFFI foreign future 双完成修复",
+      "url": "https://github.com/mozilla/uniffi-rs/pull/2733",
+      "kind": "upstream-fix",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-02",
+      "title": "Gobley v0.3.7 foreign future Kotlin 模板",
+      "url": "https://github.com/gobley/gobley/blob/v0.3.7/crates/gobley-uniffi-bindgen/src/templates/ffi/Async.kt",
+      "kind": "versioned-upstream-source",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-03",
+      "title": "Android KMP 新插件与原生构建/测试差异",
+      "url": "https://developer.android.com/kotlin/multiplatform/plugin",
+      "kind": "official-documentation",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-04",
+      "title": "KMP root 与 target publication",
+      "url": "https://kotlinlang.org/docs/multiplatform/multiplatform-publish-lib-setup.html",
+      "kind": "official-documentation",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-05",
+      "title": "SKIE 可分发 Framework 配置",
+      "url": "https://skie.touchlab.co/configuration/swift-compiler",
+      "kind": "official-documentation",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-06",
+      "title": "SKIE custom cinterop 可见性限制",
+      "url": "https://skie.touchlab.co/known-issues/cinterop",
+      "kind": "official-documentation",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-07",
+      "title": "SKIE lambda 泛型参数限制",
+      "url": "https://skie.touchlab.co/known-issues/lambda-types-in-type-argument",
+      "kind": "official-documentation",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-08",
+      "title": "Swift C++ 构建系统与方向限制",
+      "url": "https://www.swift.org/documentation/cxx-interop/project-build-setup/",
+      "kind": "official-documentation",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-09",
+      "title": "UniFFI ArkTS beta 后端与设备 smoke",
+      "url": "https://github.com/ohos-rs/uniffi-bindgen-arkts",
+      "kind": "upstream-experimental-project",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-10",
+      "title": "Rust ohrs CLI 独立版本",
+      "url": "https://github.com/ohos-rs/ohos-rs/blob/ohos/cli/cargo-ohrs/Cargo.toml",
+      "kind": "upstream-source",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    },
+    {
+      "id": "REVIEW-20261024-11",
+      "title": "JNI 动态注册契约",
+      "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/jni/functions.html#registernatives",
+      "kind": "official-specification",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test",
+      "related_urls": [
+        "https://docs.oracle.com/en/java/javase/25/docs/specs/man/javac.html#option-h",
+        "https://kotlinlang.org/docs/java-interop.html#using-jni-with-kotlin"
+      ]
+    },
+    {
+      "id": "REVIEW-20261024-12",
+      "title": "本轮候选、平台来源与已知经验核对",
+      "path": "../architecture/16-technology-stack-and-versions.md",
+      "kind": "review-design-decision",
+      "checked_at": "2026-10-24",
+      "evidence": "research-not-a-MadB-test"
+    }
+  ],
+  "audit_mappings": [
+    {
+      "audit_id": "AUD-001",
+      "title": "旧 foreign future 模板双完成",
+      "classification": "upstream-known-defect",
+      "source_ids": [
+        "REVIEW-20261024-01",
+        "REVIEW-20261024-02"
+      ],
+      "problem_ids": [
+        "ASYNC-002",
+        "LIFE-008",
+        "ERR-001",
+        "CAP-004"
+      ],
+      "probe_ids": [
+        "P03"
+      ],
+      "task_ids": [
+        "C06"
+      ],
+      "route_ids": [
+        "KJVM-RUST-UNIFFI",
+        "KN-RUST-GOBLEY"
+      ],
+      "expected_invariant": "成功完成回调抛错后不得再次执行错误完成；取消和迟到结果只交接或回收一次",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-002",
+      "title": "AGP 9 模块与 native 包装配方",
+      "classification": "design-gap",
+      "source_ids": [
+        "REVIEW-20261024-03"
+      ],
+      "problem_ids": [
+        "BUILD-001",
+        "BUILD-004",
+        "VERIFY-001"
+      ],
+      "probe_ids": [
+        "P11"
+      ],
+      "task_ids": [
+        "I04",
+        "C06"
+      ],
+      "route_ids": [
+        "KJVM-RUST-UNIFFI",
+        "KJVM-C-JNI",
+        "KJVM-CPP-JNI"
+      ],
+      "expected_invariant": "新 KMP 插件、独立 app、jniLibs 或 native library 路径均实际消费；测试显式启用",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-003",
+      "title": "官方/CPF 独立 Maven 发布",
+      "classification": "design-gap",
+      "source_ids": [
+        "REVIEW-20261024-04",
+        "REVIEW-20261024-12"
+      ],
+      "problem_ids": [
+        "BUILD-004",
+        "COMP-001",
+        "DIST-001"
+      ],
+      "probe_ids": [
+        "P05",
+        "P08"
+      ],
+      "task_ids": [
+        "C10",
+        "I05"
+      ],
+      "route_ids": [
+        "KN-ARKTS-NAPI",
+        "KN-RUST-GOBLEY"
+      ],
+      "expected_invariant": "独立 GAV 和根 metadata，正确目标解析成功，错坐标被拒绝且不会覆盖另一条线",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-004",
+      "title": "SKIE 跨机器二进制交付",
+      "classification": "design-gap",
+      "source_ids": [
+        "REVIEW-20261024-05"
+      ],
+      "problem_ids": [
+        "BUILD-004",
+        "COMP-001"
+      ],
+      "probe_ids": [
+        "P04",
+        "P08"
+      ],
+      "task_ids": [
+        "C10",
+        "L04"
+      ],
+      "route_ids": [
+        "KN-SWIFT-OBJC"
+      ],
+      "expected_invariant": "可分发配置的模块、符号和跨机器消费通过；本机成功不足以证明可交付",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-005",
+      "title": "SKIE 生成但不可调用的 API",
+      "classification": "design-gap",
+      "source_ids": [
+        "REVIEW-20261024-06",
+        "REVIEW-20261024-07"
+      ],
+      "problem_ids": [
+        "CAP-003",
+        "TYPE-008",
+        "VERIFY-001"
+      ],
+      "probe_ids": [
+        "P04",
+        "P12"
+      ],
+      "task_ids": [
+        "C06",
+        "L04"
+      ],
+      "route_ids": [
+        "KN-SWIFT-OBJC"
+      ],
+      "expected_invariant": "承诺接口可被 Swift 真实调用；custom cinterop 来源缺失和 lambda 泛型参数准确阻断或显式适配",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-006",
+      "title": "Swift C++ 构建系统/方向/包装",
+      "classification": "design-gap",
+      "source_ids": [
+        "REVIEW-20261024-08"
+      ],
+      "problem_ids": [
+        "CAP-001",
+        "BUILD-001",
+        "BUILD-004",
+        "COMP-001"
+      ],
+      "probe_ids": [
+        "P07",
+        "P11"
+      ],
+      "task_ids": [
+        "C08",
+        "I06"
+      ],
+      "route_ids": [
+        "SWIFT-CPP-INTEROP"
+      ],
+      "expected_invariant": "direct-source 与公开 SDK facade 分开验收；SwiftPM 不把 C++ 调 Swift 声称为已支持",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-007",
+      "title": "UniFFI ArkTS 新实验候选",
+      "classification": "experimental-option",
+      "source_ids": [
+        "REVIEW-20261024-09"
+      ],
+      "problem_ids": [
+        "CAP-001",
+        "CAP-004",
+        "VERIFY-001",
+        "VERIFY-002"
+      ],
+      "probe_ids": [
+        "P13"
+      ],
+      "task_ids": [
+        "X07"
+      ],
+      "route_ids": [
+        "ARKTS-RUST-NAPI"
+      ],
+      "expected_invariant": "独立版本和目标实际运行，未设置设备的仅构建 smoke 不计设备通过",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-008",
+      "title": "JNI 生成来源与范围",
+      "classification": "design-gap",
+      "source_ids": [
+        "REVIEW-20261024-11"
+      ],
+      "problem_ids": [
+        "CAP-002",
+        "TYPE-007",
+        "BUILD-003",
+        "VERIFY-001"
+      ],
+      "probe_ids": [
+        "P11"
+      ],
+      "task_ids": [
+        "C08"
+      ],
+      "route_ids": [
+        "KJVM-C-JNI",
+        "KJVM-CPP-JNI"
+      ],
+      "expected_invariant": "生成描述符与实际 JVM class 一致；Java javac -h 与 Kotlin external 分开，注册与 R8 后回调可达",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-009",
+      "title": "CPF 与正式应用 SDK 配套",
+      "classification": "existing-design-validation",
+      "source_ids": [
+        "REVIEW-20261024-12"
+      ],
+      "problem_ids": [
+        "BUILD-001",
+        "BUILD-005",
+        "VERIFY-001"
+      ],
+      "probe_ids": [
+        "P05"
+      ],
+      "task_ids": [
+        "C07",
+        "I05"
+      ],
+      "route_ids": [
+        "KN-ARKTS-NAPI"
+      ],
+      "expected_invariant": "正式 SDK、Konan sysroot 与设备分别记录；Beta 参考结果不升级为 Release 认证",
+      "evidence": "not-a-MadB-test"
+    },
+    {
+      "audit_id": "AUD-010",
+      "title": "napi Rust crate 与 CLI 分别锁定",
+      "classification": "configuration-clarification",
+      "source_ids": [
+        "REVIEW-20261024-10",
+        "REVIEW-20261024-12"
+      ],
+      "problem_ids": [
+        "CAP-004",
+        "BUILD-001",
+        "DIST-001"
+      ],
+      "probe_ids": [
+        "P06"
+      ],
+      "task_ids": [
+        "C07"
+      ],
+      "route_ids": [
+        "ARKTS-RUST-NAPI"
+      ],
+      "expected_invariant": "分别锁 napi crate 家族与 ohrs CLI；错配被识别，不能从同一项目名推断版本相同",
+      "evidence": "not-a-MadB-test"
+    }
+  ],
+  "baseline": "0.9",
+  "revision_basis": "2026-10-24 对照 MadB 0.9 整理；236 个来源身份和公共问题映射保持不变，修订阅读版不是新增运行证据。",
+  "archive_snapshot": {
+    "path": "../references/legacy-boundaries/snapshots/2026-10-24-before-refresh.zip",
+    "sha256": "0d1f75fd3a7854ae24168e9306ca601d31488ffa9dd47ffe36c45d5a501163be",
+    "manifest": "manifest.json",
+    "coverage": "source-coverage.json"
+  }
+}

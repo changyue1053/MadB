@@ -1,0 +1,3442 @@
+{
+  "slug": "kotlin-rust-architecture",
+  "title": "Kotlin ↔ Rust 架构全景",
+  "eyebrow": "KOTLIN × RUST",
+  "summary": "区分 JVM/JNA、官方 Native/Gobley 与 CPF/OHOS 配置；共享 Rust 能力声明，分别验证生成器、运行语义与发布消费。",
+  "route_ids": [
+    "KJVM-RUST-UNIFFI",
+    "KN-RUST-GOBLEY"
+  ],
+  "extension_task_ids": [],
+  "profiles": [
+    {
+      "id": "jvm-uniffi",
+      "name": "Kotlin/JVM · UniFFI + JNA",
+      "kind": "主线候选",
+      "summary": "Rust 定义导出能力；UniFFI 生成 Kotlin/JVM 绑定，JNA 负责访问原生导出面。MadB 增加契约校验、协程/订阅语义、Android/JVM 装配和独立消费验收。",
+      "route_ids": [
+        "KJVM-RUST-UNIFFI"
+      ],
+      "task_ids": [
+        "C06",
+        "C09",
+        "C10",
+        "I04",
+        "L03"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "声明与生成",
+          "steps": [
+            "SDK 作者声明 Rust API 和所有权、线程、取消语义。",
+            "UniFFI 生成 Rust scaffolding 与 Kotlin/JVM 编解码和回调绑定。",
+            "MadB 验证配套身份，生成语义 Facade 与 Android/JVM 装配。",
+            "编译并实际调用公开 API；生成成功不等于运行通过。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Kotlin 调用 Rust",
+          "steps": [
+            "调用类型化 Kotlin API，校验参数范围与资源准入。",
+            "Facade 按声明选择普通调用或异步等待，不隐式阻塞 UI。",
+            "JNA 经 UniFFI ABI 传递受检的参数和句柄。",
+            "Rust 执行业务，返回值/错误按配套表示解码并配对释放。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 回调 Kotlin",
+          "steps": [
+            "反向能力限定为公开 callback interface，不是任意 Kotlin 类自动导出。",
+            "Rust 通过生成桥通知宿主，跨界时不持有可能重入的业务锁。",
+            "回调按协议投递至指定 dispatcher，再更新 UI 或订阅。",
+            "成功通知与错误通知的异常边界分离，禁止一次请求完成两次。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "取消与资源关闭",
+          "steps": [
+            "owner 停止观察或取消等待，二者与停止原生工作分别记录。",
+            "资源进入 closing 后拒绝新调用，发出契约允许的原生停止请求。",
+            "等待已进入的工作和回调按协议完成或排水。",
+            "迟到结果仍认领并释放，最后销毁回调桥与对象句柄。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "打包与独立消费",
+          "steps": [
+            "锁定 UniFFI 生成器、scaffolding、二进制、JNA 与模板补丁身份。",
+            "Android 通过受支持 jniLibs 装配预编译 .so；native build 需要时独立模块承担。",
+            "JVM 验证系统/架构对应原生库和 jnidispatch 装载。",
+            "新工程仅依赖发布候选，验证 Release/R8、实际调用和符号诊断。"
+          ]
+        }
+      ],
+      "generated": [
+        "UniFFI 根据受支持声明生成 Rust scaffolding、Kotlin 类型与编解码。",
+        "依据契约生成资源包装、错误映射和有明确语义的协程/订阅 Facade。",
+        "生成目标原生库装载、Gradle 依赖与 JAR/AAR 装配配置。",
+        "生成 callback interface 接线及诊断定位，不推断任意 Kotlin 对象布局。",
+        "生成候选身份和公开 API 消费样例；验收结果来自实际执行。"
+      ],
+      "handwritten": [
+        "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。",
+        "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。",
+        "跨语言回调的业务内容及应用/引擎 owner 的创建与关闭时机。",
+        "受限类型以外的显式适配；不以静默 JSON 降级掩盖不支持能力。"
+      ],
+      "risks": [
+        {
+          "problem": "类型与数值范围",
+          "solution": "只接受后端支持的类型形状；强类型 ID、可空值与范围转换由契约决定。",
+          "example": "未提供序号保持 null，不能转成 0；超范围输入给出参数错误。",
+          "problem_ids": [
+            "TYPE-001",
+            "TYPE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "错误与取消混淆",
+          "solution": "业务失败、取消、桥接故障分开；panic 行为按构建/后端验证，不能承诺捕获 abort。",
+          "example": "调用取消不包装成“网络失败”再自动重试。",
+          "problem_ids": [
+            "ERR-001",
+            "ASYNC-001"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "对象和缓冲释放",
+          "solution": "调用准入与关闭互斥；配套的对象、缓冲释放器不可混用。",
+          "example": "close 与 getResult 竞争时，迟到结果仍由唯一释放路径处理。",
+          "problem_ids": [
+            "LIFE-001",
+            "LIFE-008"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "线程与重入",
+          "solution": "跨界前释放业务锁；声明回调执行器并验证 UI 投递。",
+          "example": "原生回调同步重入 SDK 时不能造成同一锁死锁。",
+          "problem_ids": [
+            "THR-001",
+            "THR-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "异步双完成",
+          "solution": "修复生成模板并回归成功回调后异常；不能只升级 Rust runtime。",
+          "example": "handleSuccess 抛异常后不得再调用 handleError。",
+          "problem_ids": [
+            "ASYNC-002"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "原生依赖与混淆",
+          "solution": "验证 JNA、jnidispatch、目标 .so、ClassLoader 和 R8，不能仅测宿主 JVM。",
+          "example": "Debug 可用而 Android Release 装载失败应作为发布阻断。",
+          "problem_ids": [
+            "BUILD-002",
+            "BUILD-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "Android：新 KMP library 插件、独立 App，预编译 .so 随对应 ABI 打包；所需测试显式启用。",
+        "JVM：独立 JAR 消费，系统与架构对应的原生库以及装载策略进入制品说明。",
+        "生成 Kotlin 与 Rust 二进制绑定同一契约和工具身份，错误库必须被检测。",
+        "发布候选在全新消费者执行同步、异步、回调、取消和显式关闭。"
+      ],
+      "gates": [
+        "Android 真机和 JVM 消费者分别验证，不能互相代替。",
+        "旧模板双完成、重复完成、迟到回调和 close 竞态有正反用例。",
+        "Release/R8、原生依赖缺失、错 ABI/错库产生可定位诊断。",
+        "对象、订阅和缓冲计数在反复创建/关闭后收敛。",
+        "状态保留为待实施/待验证，只有候选摘要匹配的报告用于认证。"
+      ],
+      "choices": [
+        "适合 Rust 能力通过类型化 API 提供给 Android/JVM。",
+        "本路线使用 UniFFI Kotlin 的 JNA runtime；不能等同于 JNI 生成路线。",
+        "只有明确需求才评估另一个 JNI 专用配置；不凭机制名称断言性能高低。"
+      ],
+      "detail": {
+        "family": "uniffi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "UniFFI Rust scaffolding；UniFFI Kotlin 生成器。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "把已声明的错误、订阅与关闭协议封装成类型化 API；不吞取消，不替业务决定重试、重连或事务回滚。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust 导出声明与契约",
+              "kind": "domain",
+              "summary": "Rust 领域能力经 UniFFI 导出声明收敛；MadB 记录线程、取消、资源和事件协议。声明不是从任意函数体自动推断出的安全承诺。",
+              "does": [
+                "Rust 导出模块、语义契约",
+                "负责方：SDK 作者"
+              ],
+              "constraints": [
+                "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。",
+                "跨语言回调的业务内容及应用/引擎 owner 的创建与关闭时机。"
+              ],
+              "lines": [
+                "Rust 导出模块、语义契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "Rust 定义导出能力；UniFFI 生成 Kotlin/JVM 绑定，JNA 负责访问原生导出面。MadB 增加契约校验、协程/订阅语义、Android/JVM 装配和独立消费验收。",
+              "does": [
+                "适合 Rust 能力通过类型化 API 提供给 Android/JVM。",
+                "本路线使用 UniFFI Kotlin 的 JNA runtime；不能等同于 JNI 生成路线。",
+                "只有明确需求才评估另一个 JNI 专用配置；不凭机制名称断言性能高低。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "Maven 坐标、AAR/JAR、原生切片"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "UniFFI Rust scaffolding",
+              "kind": "upstream",
+              "summary": "UniFFI 生成 scaffolding 和 Kotlin 低层绑定；MadB 调用配套工具并生成受限 Facade、诊断和装配配置。生成器与运行库身份独立记录。",
+              "does": [
+                "生成 Kotlin 源码、JNA runtime"
+              ],
+              "constraints": [
+                "UniFFI 根据受支持声明生成 Rust scaffolding、Kotlin 类型与编解码。"
+              ],
+              "lines": [
+                "Rust 导出面、类型信息、调用与释放入口"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "UniFFI Kotlin 生成器",
+              "kind": "upstream",
+              "summary": "UniFFI 生成 scaffolding 和 Kotlin 低层绑定；MadB 调用配套工具并生成受限 Facade、诊断和装配配置。生成器与运行库身份独立记录。",
+              "does": [
+                "生成 Kotlin 源码、JNA runtime"
+              ],
+              "constraints": [
+                "UniFFI 根据受支持声明生成 Rust scaffolding、Kotlin 类型与编解码。"
+              ],
+              "lines": [
+                "Kotlin / Swift 类型、编解码与回调 vtable"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "依据契约生成资源包装、错误映射和有明确语义的协程/订阅 Facade。",
+                "生成目标原生库装载、Gradle 依赖与 JAR/AAR 装配配置。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "Android + JVM 独立消费",
+              "kind": "madb",
+              "summary": "用发布候选而非源码捷径验证装载、混淆、真实调用、异步竞态和释放；每个目标分别形成证据。",
+              "does": [
+                "消费工程、设备/JVM 报告",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "Android 真机和 JVM 消费者分别验证，不能互相代替。",
+                "旧模板双完成、重复完成、迟到回调和 close 竞态有正反用例。"
+              ],
+              "lines": [
+                "消费工程、设备/JVM 报告"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "JVM 包提供目标原生库装载配方；Android 包提供对应 ABI 的 .so 和必要 JNA 依赖，KMP library 与 App 分离。",
+              "does": [
+                "Android：新 KMP library 插件、独立 App，预编译 .so 随对应 ABI 打包；所需测试显式启用。",
+                "JVM：独立 JAR 消费，系统与架构对应的原生库以及装载策略进入制品说明。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "JAR / AAR 与原生库",
+              "kind": "madb",
+              "summary": "JVM 包提供目标原生库装载配方；Android 包提供对应 ABI 的 .so 和必要 JNA 依赖，KMP library 与 App 分离。",
+              "does": [
+                "Maven 坐标、AAR/JAR、原生切片",
+                "负责方：MadB 构建适配器"
+              ],
+              "constraints": [
+                "生成 Kotlin 与 Rust 二进制绑定同一契约和工具身份，错误库必须被检测。",
+                "发布候选在全新消费者执行同步、异步、回调、取消和显式关闭。"
+              ],
+              "lines": [
+                "Maven 坐标、AAR/JAR、原生切片"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Kotlin 业务与 UI",
+              "kind": "ui",
+              "summary": "业务调用普通 SDK 方法和 suspend 接口；状态订阅仅在明确契约和生成适配支持时呈现为 Flow，不能把任意 Rust stream 自动当作 Flow。",
+              "does": [
+                "业务调用、生命周期收集",
+                "负责方：SDK 消费者"
+              ],
+              "constraints": [
+                "适合 Rust 能力通过类型化 API 提供给 Android/JVM。",
+                "本路线使用 UniFFI Kotlin 的 JNA runtime；不能等同于 JNI 生成路线。"
+              ],
+              "lines": [
+                "业务调用、生命周期收集"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Kotlin 惯用 Facade",
+              "kind": "madb",
+              "summary": "把已声明的错误、订阅与关闭协议封装成类型化 API；不吞取消，不替业务决定重试、重连或事务回滚。",
+              "does": [
+                "suspend、资源对象、受限 Flow 适配",
+                "负责方：MadB 生成 + 普通运行库"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "suspend、资源对象、受限 Flow 适配"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "生成 Kotlin + JNA",
+              "kind": "upstream",
+              "summary": "参数按配套生成代码转换为 UniFFI FFI 表示；返回缓冲和对象句柄使用对应释放器。低层句柄不暴露给业务任意流转。",
+              "does": [
+                "导出符号、缓冲与对象句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "公开类型 ↔ UniFFI FFI 表示"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "UniFFI ABI / Rust scaffolding",
+              "kind": "upstream",
+              "summary": "参数按配套生成代码转换为 UniFFI FFI 表示；返回缓冲和对象句柄使用对应释放器。低层句柄不暴露给业务任意流转。",
+              "does": [
+                "导出符号、缓冲与对象句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "缓冲、对象句柄、future 与回调入口"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与异步执行",
+              "kind": "domain",
+              "summary": "Rust 执行业务和同步协议；选择并配置所需执行器，明确取消工作与副作用承诺。跨界错误经公开错误模型表达。",
+              "does": [
+                "业务实现、任务与资源状态",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。",
+                "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。"
+              ],
+              "lines": [
+                "业务实现、任务与资源状态"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "JVM 侧资源 owner",
+              "kind": "madb",
+              "summary": "显式管理长寿命对象与订阅；GC/清理器仅是释放兜底，不替代可等待的关闭协议。",
+              "does": [
+                "close/dispose、订阅 token",
+                "负责方：应用 owner / MadB"
+              ],
+              "constraints": [
+                "等待已进入的工作和回调按协议完成或排水。",
+                "迟到结果仍认领并释放，最后销毁回调桥与对象句柄。"
+              ],
+              "lines": [
+                "close/dispose、订阅 token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "协程与回调执行器",
+              "kind": "madb",
+              "summary": "回调可能来自原生线程；先进入允许的调度路径，再触及 UI。调度不授予 Rust 对象线程安全，也不允许持锁跨界回调。",
+              "does": [
+                "dispatcher、回调桥、队列策略",
+                "负责方：MadB 策略 / SDK 作者"
+              ],
+              "constraints": [
+                "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "lines": [
+                "dispatcher、回调桥、队列策略"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向能力限定为公开 callback interface，不是任意 Kotlin 类自动导出。",
+              "does": [
+                "Rust 通过生成桥通知宿主，跨界时不持有可能重入的业务锁。",
+                "回调按协议投递至指定 dispatcher，再更新 UI 或订阅。"
+              ],
+              "constraints": [
+                "取消协程只证明等待被取消；是否停止原生工作由契约决定。关闭禁止新调用并按协议排水，迟到结果配对释放。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Kotlin 业务与 UI",
+            "生成绑定 + MadB Facade",
+            "Rust 内核与异步执行",
+            "宿主回调 / 执行器"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "调用类型化 Kotlin API，校验参数范围与资源准入。",
+                "Rust 执行业务，返回值/错误按配套表示解码并配对释放。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向能力限定为公开 callback interface，不是任意 Kotlin 类自动导出。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "取消协程只证明等待被取消；是否停止原生工作由契约决定。关闭禁止新调用并按协议排水，迟到结果配对释放。",
+                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "记录与可空值",
+            "path": [
+              "Rust record { id, seq: Option<i64> }",
+              "UniFFI 配套记录编码",
+              "Kotlin 生成 record / nullable T"
+            ],
+            "note": "seq 缺失保留 nil/null；数值精度与范围按字段声明，不变成 0。"
+          },
+          {
+            "title": "对象身份",
+            "path": [
+              "Rust Arc 管理的对象",
+              "生成对象句柄 / 释放入口",
+              "目标语言资源包装"
+            ],
+            "note": "目标包装持有跨界引用；显式关闭业务资源与回收对象引用是两个动作。"
+          },
+          {
+            "title": "错误与异步",
+            "path": [
+              "Result<T, E> / Rust future",
+              "已声明错误 / future 协议",
+              "typed error + suspend / async"
+            ],
+            "note": "失败、取消与桥接故障分开；panic=abort 不能由包装层恢复。"
+          }
+        ],
+        "example": {
+          "title": "一次终态与一次结果交接",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：终态与资源接收分别认领\nonNativeResult(operation, ownedResult):\n    terminal = operation.claimTerminal()\n    if terminal == rejected:\n        handleDuplicateAccordingToTransferContract(ownedResult)\n        return\n    handoff = operation.prepareResultHandoff(ownedResult)\n    resumeOnce(handoff, onUndelivered = cleanupWithMatchingBackend)\n// resume 成功不等于调用者已取走资源；不得再发送错误终态\n// native 工作归还与结果交接独立记录",
+          "note": "重复通知是否携带新的资源转移必须由后端协议规定，不能见到重复就无条件再次释放同一对象。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "JNA 原生依赖在 Release 消费端缺失",
+          "trigger": "开发目录能运行，但发布 AAR/JAR 缺少目标库或 jnidispatch。",
+          "trace": "冻结包 → 清空作者路径依赖 → 新消费者按运行时安装 → 实际调用与反向回调。",
+          "expected": "Android 与桌面 JVM 分开选择库和包；缺失时装载诊断明确。",
+          "oracle": "解包核对库条目，Release/R8 真机与桌面 JVM 分别运行，注入缺库负例。"
+        },
+        "owners": [
+          {
+            "title": "App / 会话 owner",
+            "depth": 0,
+            "detail": "显式管理长寿命对象与订阅；GC/清理器仅是释放兜底，不替代可等待的关闭协议。"
+          },
+          {
+            "title": "生成对象包装与回调注册",
+            "depth": 1,
+            "detail": "把已声明的错误、订阅与关闭协议封装成类型化 API；不吞取消，不替业务决定重试、重连或事务回滚。"
+          },
+          {
+            "title": "单次调用 / 订阅实例",
+            "depth": 2,
+            "detail": "取消协程只证明等待被取消；是否停止原生工作由契约决定。关闭禁止新调用并按协议排水，迟到结果配对释放。"
+          },
+          {
+            "title": "Rust 对象、缓冲和在途工作",
+            "depth": 2,
+            "detail": "Rust 执行业务和同步协议；选择并配置所需执行器，明确取消工作与副作用承诺。跨界错误经公开错误模型表达。"
+          }
+        ],
+        "thread_rules": [
+          "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+          "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
+          "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
+          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "Rust 导出模块、语义契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "scaffolding、Kotlin 绑定、Facade",
+            "pattern": "Adapter / Mapper：复用 UniFFI Rust scaffolding、UniFFI Kotlin 生成器",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "suspend、资源对象、受限 Flow 适配",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "Maven 坐标、AAR/JAR、原生切片",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "消费工程、设备/JVM 报告",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "取消协程只证明等待被取消；是否停止原生工作由契约决定。关闭禁止新调用并按协议排水，迟到结果配对释放。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "SDK 作者声明 Rust API 和所有权、线程、取消语义。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "UniFFI 生成 Rust scaffolding 与 Kotlin/JVM 编解码和回调绑定。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "MadB 验证配套身份，生成语义 Facade 与 Android/JVM 装配。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "编译并实际调用公开 API；生成成功不等于运行通过。"
+        }
+      ]
+    },
+    {
+      "id": "native-gobley",
+      "name": "Kotlin/Native · Gobley 配套",
+      "kind": "主线候选",
+      "summary": "官方 Kotlin/Native 消费 Rust，由修复并验证后的 Gobley/UniFFI 配套生成 KMP 绑定。目标是完整对象、异步、回调和关闭能力；旧组合不能作为完整能力默认值。",
+      "route_ids": [
+        "KN-RUST-GOBLEY"
+      ],
+      "task_ids": [
+        "C03",
+        "C06",
+        "C09",
+        "C10",
+        "I04",
+        "L03"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "Native 绑定生成",
+          "steps": [
+            "从 Rust 导出模块取得接口和明确的语义契约。",
+            "使用包含单次完成修复的 Gobley/UniFFI 配套，锁模板与补丁摘要。",
+            "编译 generated Native 代码、cinterop 与对应 Rust 目标库。",
+            "MadB 生成 Facade 和装配，完整 API 消费成功后再评估能力支持。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Native 调用 Rust",
+          "steps": [
+            "Kotlin/Native 验证句柄存活、参数形状及线程约束。",
+            "Facade 执行契约规定的异步等待与错误处理。",
+            "cinterop 跨入 UniFFI 导出面，使用配套编解码和释放器。",
+            "Rust 完成业务；结果解码与所有权交接遵守唯一处理路径。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 回调 Native",
+          "steps": [
+            "反向范围仅限该候选支持的 callback interface。",
+            "生成桥保活回调上下文，不能将任意 Kotlin 对象地址交给 Rust 保存。",
+            "按声明调度至允许的执行器，再通知 Kotlin 消费者。",
+            "回调异常不能触发第二次完成，销毁后不得继续访问上下文。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "Native 关闭与排水",
+          "steps": [
+            "停止观察与停止工作分别执行，不推定协程取消已经停掉 Rust。",
+            "进入 closing，阻断新调用并请求契约允许的停止。",
+            "在途工作、回调与结果按协议排水；迟到对象仍需正确释放。",
+            "最后拆除回调桥和原生句柄，GC 只承担剩余托管对象回收。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "Apple Native 制品",
+          "steps": [
+            "按 iOS 真机、模拟器和选定 Apple 目标分别构建，不混切片。",
+            "链接身份包含 Rust 编译、UniFFI/Gobley、Kotlin/Native 和补丁。",
+            "独立消费 KMP 发布变体，验证最终应用的符号、装载与唯一内核实例。",
+            "官方 Kotlin 成功只覆盖该 profile，不能据此认证 CPF/OHOS。"
+          ]
+        }
+      ],
+      "generated": [
+        "Gobley CLI 生成受支持的 KMP/Native 绑定及回调接线。",
+        "UniFFI 生成与后端配套的 Rust scaffolding 和 ABI 接口。",
+        "MadB 从明确契约生成 Native Facade、资源与异步适配。",
+        "生成 cinterop/原生链接配置、目标切片和公开 API 消费样例。",
+        "模板补丁纳入确定性再生成和已知缺陷回归。"
+      ],
+      "handwritten": [
+        "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。",
+        "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。",
+        "跨语言回调的业务内容及应用/引擎 owner 的创建与关闭时机。",
+        "受限类型以外的显式适配；不以静默 JSON 降级掩盖不支持能力。"
+      ],
+      "risks": [
+        {
+          "problem": "后端能力不完整",
+          "solution": "对象、async、回调逐项探针；不从生成成功推导完整能力。",
+          "example": "参考 fork 不支持 Object 的事实必须成为缺口，不能隐去接口。",
+          "problem_ids": [
+            "CAP-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "生成模板双完成",
+          "solution": "模板修复和运行库分别锁；旧 Gobley 组合仅用于复现比较。",
+          "example": "成功回调异常后，不允许错误回调再次释放同一结果。",
+          "problem_ids": [
+            "ASYNC-002"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "GC 与 Rust 持有环",
+          "solution": "显式注册/注销和 owner 关闭，避免回调双方互相保活。",
+          "example": "Kotlin listener 持有 engine，Rust engine 又持有 listener。",
+          "problem_ids": [
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "线程安全被误推断",
+          "solution": "内存模型允许共享不等于业务对象可并发访问；同步与执行器显式约定。",
+          "example": "两个协程并发修改 Rust 会话不能只靠 GC 保证正确。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "取消与迟到对象",
+          "solution": "停止等待、工作停止和回调排水分开；迟到结果仍配对释放。",
+          "example": "协程先取消，Rust 后返回新对象，不能泄漏该对象。",
+          "problem_ids": [
+            "ASYNC-001",
+            "LIFE-008"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "目标与发布身份混用",
+          "solution": "官方 Kotlin Native、CPF、目标切片和编解码身份分别锁定。",
+          "example": "iOS 成功不能证明 OHOS target、KLIB 或发布变体可用。",
+          "problem_ids": [
+            "BUILD-001",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "Apple 目标按真实架构构建并验证最终链接，生成绑定与 Rust 二进制来自同一候选。",
+        "KMP 元数据、Native 变体和原生库均纳入独立 Maven 消费，不依赖工作区相对目录。",
+        "源码同构建与对外分发分别验证；额外 Swift 消费属于组合链验收。",
+        "升级 Gobley 或其模板时重新生成、编译并执行完整能力测试。"
+      ],
+      "gates": [
+        "P03 核对补丁身份并验证双完成、取消、对象和 callback interface。",
+        "设备与模拟器运行覆盖资源创建/关闭、重入和迟到结果。",
+        "独立发布变体消费者通过，而非仅工具仓库内示例通过。",
+        "不同后端或内核实例的句柄混用被阻断。",
+        "未解决的必要能力保留为缺口，不静默删 API 或改载荷。"
+      ],
+      "choices": [
+        "适合已有 Kotlin/Native 逻辑调用 Rust 内核。",
+        "采用固定修复候选，不将文档中的未发布版本号当成稳定发布物。",
+        "与 Kotlin/JVM、CPF/OHOS 分别认证，避免一套版本强行覆盖所有目标。"
+      ],
+      "detail": {
+        "family": "uniffi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "UniFFI 元数据 / scaffolding；Gobley Native 绑定。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "受限生成类型转换、错误、订阅和资源 API；范围由 Gobley 候选探针决定，不继承 JVM 验收。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust 导出与 Native 契约",
+              "kind": "domain",
+              "summary": "复用受支持 Rust 导出声明，并明确 Native 目标、对象、异步和 callback interface 能力。",
+              "does": [
+                "Rust API、能力/生命周期契约",
+                "负责方：SDK 作者"
+              ],
+              "constraints": [
+                "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。",
+                "跨语言回调的业务内容及应用/引擎 owner 的创建与关闭时机。"
+              ],
+              "lines": [
+                "Rust API、能力/生命周期契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "官方 Kotlin/Native 消费 Rust，由修复并验证后的 Gobley/UniFFI 配套生成 KMP 绑定。目标是完整对象、异步、回调和关闭能力；旧组合不能作为完整能力默认值。",
+              "does": [
+                "适合已有 Kotlin/Native 逻辑调用 Rust 内核。",
+                "采用固定修复候选，不将文档中的未发布版本号当成稳定发布物。",
+                "与 Kotlin/JVM、CPF/OHOS 分别认证，避免一套版本强行覆盖所有目标。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "KMP 变体、原生库、消费配方"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "UniFFI 元数据 / scaffolding",
+              "kind": "upstream",
+              "summary": "MadB 调用固定版本/commit 的 Gobley CLI，并锁生成模板补丁。UniFFI scaffolding 与该后端配套；不能只替换 runtime。",
+              "does": [
+                "nativeMain 生成代码、cinterop 产物"
+              ],
+              "constraints": [
+                "Gobley CLI 生成受支持的 KMP/Native 绑定及回调接线。"
+              ],
+              "lines": [
+                "Rust 导出面、类型信息、调用与释放入口"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "Gobley Native 绑定",
+              "kind": "upstream",
+              "summary": "MadB 调用固定版本/commit 的 Gobley CLI，并锁生成模板补丁。UniFFI scaffolding 与该后端配套；不能只替换 runtime。",
+              "does": [
+                "nativeMain 生成代码、cinterop 产物"
+              ],
+              "constraints": [
+                "Gobley CLI 生成受支持的 KMP/Native 绑定及回调接线。"
+              ],
+              "lines": [
+                "Kotlin / Swift 类型、编解码与回调 vtable"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "UniFFI 生成与后端配套的 Rust scaffolding 和 ABI 接口。",
+                "MadB 从明确契约生成 Native Facade、资源与异步适配。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "Apple Native 消费验证",
+              "kind": "madb",
+              "summary": "真机/模拟器分别验证链接、对象、async、取消与回调；补丁模板必须进入再生成回归。",
+              "does": [
+                "Native 消费工程、模板回归",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "P03 核对补丁身份并验证双完成、取消、对象和 callback interface。",
+                "设备与模拟器运行覆盖资源创建/关闭、重入和迟到结果。"
+              ],
+              "lines": [
+                "Native 消费工程、模板回归"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "按 Apple 目标构建 Rust 库和 Kotlin 变体，锁架构、链接参数和最终消费者；不将任意 KLIB 当稳定 ABI。",
+              "does": [
+                "Apple 目标按真实架构构建并验证最终链接，生成绑定与 Rust 二进制来自同一候选。",
+                "KMP 元数据、Native 变体和原生库均纳入独立 Maven 消费，不依赖工作区相对目录。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "KMP Native 发布变体",
+              "kind": "madb",
+              "summary": "按 Apple 目标构建 Rust 库和 Kotlin 变体，锁架构、链接参数和最终消费者；不将任意 KLIB 当稳定 ABI。",
+              "does": [
+                "KMP 变体、原生库、消费配方",
+                "负责方：MadB 构建适配器"
+              ],
+              "constraints": [
+                "源码同构建与对外分发分别验证；额外 Swift 消费属于组合链验收。",
+                "升级 Gobley 或其模板时重新生成、编译并执行完整能力测试。"
+              ],
+              "lines": [
+                "KMP 变体、原生库、消费配方"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "Kotlin/Native 业务",
+              "kind": "ui",
+              "summary": "Kotlin 业务消费自然方法与受检的异步/订阅入口，平台 UI 仅依赖约定的公开 SDK。",
+              "does": [
+                "Kotlin API、明确作用域",
+                "负责方：SDK 消费者"
+              ],
+              "constraints": [
+                "适合已有 Kotlin/Native 逻辑调用 Rust 内核。",
+                "采用固定修复候选，不将文档中的未发布版本号当成稳定发布物。"
+              ],
+              "lines": [
+                "Kotlin API、明确作用域"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Native 语义 Facade",
+              "kind": "madb",
+              "summary": "受限生成类型转换、错误、订阅和资源 API；范围由 Gobley 候选探针决定，不继承 JVM 验收。",
+              "does": [
+                "Native 资源与异步适配",
+                "负责方：MadB 生成 / 普通运行库"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "Native 资源与异步适配"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "Kotlin/Native 绑定 / cinterop",
+              "kind": "upstream",
+              "summary": "经 cinterop 调用配套 Rust 导出符号；跨语言句柄和缓冲生命周期需要一致，不能借整数表示互换。",
+              "does": [
+                "C 可见桥、RustBuffer、对象句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "公开类型 ↔ UniFFI FFI 表示"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "UniFFI ABI / Rust scaffolding",
+              "kind": "upstream",
+              "summary": "经 cinterop 调用配套 Rust 导出符号；跨语言句柄和缓冲生命周期需要一致，不能借整数表示互换。",
+              "does": [
+                "C 可见桥、RustBuffer、对象句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "缓冲、对象句柄、future 与回调入口"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与执行器",
+              "kind": "domain",
+              "summary": "核心实现独立于 Kotlin GC；线程、锁、任务停止和缓冲 ownership 由实现满足契约。",
+              "does": [
+                "业务对象、任务、释放器",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。",
+                "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。"
+              ],
+              "lines": [
+                "业务对象、任务、释放器"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "Kotlin owner 与 GC",
+              "kind": "madb",
+              "summary": "长寿命资源显式关闭；GC 回收不等于 native work 排水，回调持有链须设计拆除。",
+              "does": [
+                "显式关闭、回调注册 token",
+                "负责方：应用 owner / MadB"
+              ],
+              "constraints": [
+                "在途工作、回调与结果按协议排水；迟到对象仍需正确释放。",
+                "最后拆除回调桥和原生句柄，GC 只承担剩余托管对象回收。"
+              ],
+              "lines": [
+                "显式关闭、回调注册 token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "Native 回调与调度",
+              "kind": "madb",
+              "summary": "Native 内存管理允许的访问规则与逻辑线程安全分开；UI 投递和回调重入必须实测。",
+              "does": [
+                "调度策略、回调上下文",
+                "负责方：SDK 作者 / Kotlin 调度器"
+              ],
+              "constraints": [
+                "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "lines": [
+                "调度策略、回调上下文"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向范围仅限该候选支持的 callback interface。",
+              "does": [
+                "生成桥保活回调上下文，不能将任意 Kotlin 对象地址交给 Rust 保存。",
+                "按声明调度至允许的执行器，再通知 Kotlin 消费者。"
+              ],
+              "constraints": [
+                "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "Kotlin/Native 业务",
+            "生成绑定 + MadB Facade",
+            "Rust 内核与执行器",
+            "宿主回调 / 执行器"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Kotlin/Native 验证句柄存活、参数形状及线程约束。",
+                "Rust 完成业务；结果解码与所有权交接遵守唯一处理路径。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向范围仅限该候选支持的 callback interface。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。",
+                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "记录与可空值",
+            "path": [
+              "Rust record { id, seq: Option<i64> }",
+              "UniFFI 配套记录编码",
+              "Kotlin 生成 record / nullable T"
+            ],
+            "note": "seq 缺失保留 nil/null；数值精度与范围按字段声明，不变成 0。"
+          },
+          {
+            "title": "对象身份",
+            "path": [
+              "Rust Arc 管理的对象",
+              "生成对象句柄 / 释放入口",
+              "目标语言资源包装"
+            ],
+            "note": "目标包装持有跨界引用；显式关闭业务资源与回收对象引用是两个动作。"
+          },
+          {
+            "title": "错误与异步",
+            "path": [
+              "Result<T, E> / Rust future",
+              "已声明错误 / future 协议",
+              "typed error + suspend / async"
+            ],
+            "note": "失败、取消与桥接故障分开；panic=abort 不能由包装层恢复。"
+          }
+        ],
+        "example": {
+          "title": "一次终态与一次结果交接",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：终态与资源接收分别认领\nonNativeResult(operation, ownedResult):\n    terminal = operation.claimTerminal()\n    if terminal == rejected:\n        handleDuplicateAccordingToTransferContract(ownedResult)\n        return\n    handoff = operation.prepareResultHandoff(ownedResult)\n    resumeOnce(handoff, onUndelivered = cleanupWithMatchingBackend)\n// resume 成功不等于调用者已取走资源；不得再发送错误终态\n// native 工作归还与结果交接独立记录",
+          "note": "重复通知是否携带新的资源转移必须由后端协议规定，不能见到重复就无条件再次释放同一对象。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "foreign future 成功通知后再次失败完成",
+          "trigger": "旧模板把成功通知放在会发送失败终态的 catch 范围内。",
+          "trace": "业务计算/转换 → 一次终态认领 → 完成通知；通知异常进入诊断，不再完成。",
+          "expected": "生成模板与 runtime 配套；升级 runtime 不能代替修补生成模板。",
+          "oracle": "受控注入成功通知异常，检查完成一次、结果接管一次；取消交错另按 CRIT-02。"
+        },
+        "owners": [
+          {
+            "title": "App / 会话 owner",
+            "depth": 0,
+            "detail": "长寿命资源显式关闭；GC 回收不等于 native work 排水，回调持有链须设计拆除。"
+          },
+          {
+            "title": "生成对象包装与回调注册",
+            "depth": 1,
+            "detail": "受限生成类型转换、错误、订阅和资源 API；范围由 Gobley 候选探针决定，不继承 JVM 验收。"
+          },
+          {
+            "title": "单次调用 / 订阅实例",
+            "depth": 2,
+            "detail": "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。"
+          },
+          {
+            "title": "Rust 对象、缓冲和在途工作",
+            "depth": 2,
+            "detail": "核心实现独立于 Kotlin GC；线程、锁、任务停止和缓冲 ownership 由实现满足契约。"
+          }
+        ],
+        "thread_rules": [
+          "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+          "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
+          "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
+          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "Rust API、能力/生命周期契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "KMP 绑定、C 接口接线、补丁身份",
+            "pattern": "Adapter / Mapper：复用 UniFFI 元数据 / scaffolding、Gobley Native 绑定",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "Native 资源与异步适配",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "KMP 变体、原生库、消费配方",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "Native 消费工程、模板回归",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "从 Rust 导出模块取得接口和明确的语义契约。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "使用包含单次完成修复的 Gobley/UniFFI 配套，锁模板与补丁摘要。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "编译 generated Native 代码、cinterop 与对应 Rust 目标库。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "MadB 生成 Facade 和装配，完整 API 消费成功后再评估能力支持。"
+        }
+      ]
+    },
+    {
+      "id": "cpf-gobley",
+      "name": "CPF/OHOS · Gobley 独立门禁",
+      "kind": "主线候选",
+      "summary": "同属 KN-RUST-GOBLEY 路线，但 CPF/OHOS 需要独立工具链、目标构建与正式 SDK 运行证据。Gobley CLI 能生成 nativeMain 不代表上游插件支持 OHOS。",
+      "route_ids": [
+        "KN-RUST-GOBLEY"
+      ],
+      "task_ids": [
+        "C03",
+        "C06",
+        "C07",
+        "C09",
+        "C10",
+        "I05"
+      ],
+      "flows": [
+        {
+          "id": "build",
+          "label": "CPF 目标生成与构建",
+          "steps": [
+            "修复并锁定 Gobley 生成模板与对应 UniFFI 导出面。",
+            "MadB 显式配置 OHOS target、正式 SDK linker/sysroot 与 CPF 工具链。",
+            "CPF 编译生成代码并完成 cinterop、链接和公开 API 检查。",
+            "独立构建根、缓存、坐标及 metadata 输出，禁止混用官方 Native 产物。"
+          ]
+        },
+        {
+          "id": "call",
+          "label": "Native 调用 Rust",
+          "steps": [
+            "Kotlin/Native 验证句柄存活、参数形状及线程约束。",
+            "Facade 执行契约规定的异步等待与错误处理。",
+            "cinterop 跨入 UniFFI 导出面，使用配套编解码和释放器。",
+            "Rust 完成业务；结果解码与所有权交接遵守唯一处理路径。"
+          ]
+        },
+        {
+          "id": "callback",
+          "label": "Rust 回调 Native",
+          "steps": [
+            "反向范围仅限该候选支持的 callback interface。",
+            "生成桥保活回调上下文，不能将任意 Kotlin 对象地址交给 Rust 保存。",
+            "按声明调度至允许的执行器，再通知 Kotlin 消费者。",
+            "回调异常不能触发第二次完成，销毁后不得继续访问上下文。"
+          ]
+        },
+        {
+          "id": "close",
+          "label": "Native 关闭与排水",
+          "steps": [
+            "停止观察与停止工作分别执行，不推定协程取消已经停掉 Rust。",
+            "进入 closing，阻断新调用并请求契约允许的停止。",
+            "在途工作、回调与结果按协议排水；迟到对象仍需正确释放。",
+            "最后拆除回调桥和原生句柄，GC 只承担剩余托管对象回收。"
+          ]
+        },
+        {
+          "id": "delivery",
+          "label": "CPF 独立交付",
+          "steps": [
+            "CPF 变体发布到独立 GAV，根 metadata 与插件依赖保持隔离。",
+            "正式鸿蒙 SDK 编译真实消费应用，显式纳入 Rust .so 与依赖。",
+            "设备执行对象、异步、回调、取消、关闭和 Release 场景。",
+            "组合 akinterop 或直连 napi 两入口时，额外证明唯一内核和句柄隔离。"
+          ]
+        }
+      ],
+      "generated": [
+        "Gobley CLI 生成受支持的 KMP/Native 绑定及回调接线。",
+        "UniFFI 生成与后端配套的 Rust scaffolding 和 ABI 接口。",
+        "MadB 从明确契约生成 Native Facade、资源与异步适配。",
+        "生成 cinterop/原生链接配置、目标切片和公开 API 消费样例。",
+        "模板补丁纳入确定性再生成和已知缺陷回归。"
+      ],
+      "handwritten": [
+        "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。",
+        "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。",
+        "跨语言回调的业务内容及应用/引擎 owner 的创建与关闭时机。",
+        "受限类型以外的显式适配；不以静默 JSON 降级掩盖不支持能力。"
+      ],
+      "risks": [
+        {
+          "problem": "后端能力不完整",
+          "solution": "对象、async、回调逐项探针；不从生成成功推导完整能力。",
+          "example": "参考 fork 不支持 Object 的事实必须成为缺口，不能隐去接口。",
+          "problem_ids": [
+            "CAP-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "生成模板双完成",
+          "solution": "模板修复和运行库分别锁；旧 Gobley 组合仅用于复现比较。",
+          "example": "成功回调异常后，不允许错误回调再次释放同一结果。",
+          "problem_ids": [
+            "ASYNC-002"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "GC 与 Rust 持有环",
+          "solution": "显式注册/注销和 owner 关闭，避免回调双方互相保活。",
+          "example": "Kotlin listener 持有 engine，Rust engine 又持有 listener。",
+          "problem_ids": [
+            "LIFE-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "线程安全被误推断",
+          "solution": "内存模型允许共享不等于业务对象可并发访问；同步与执行器显式约定。",
+          "example": "两个协程并发修改 Rust 会话不能只靠 GC 保证正确。",
+          "problem_ids": [
+            "THR-003"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "取消与迟到对象",
+          "solution": "停止等待、工作停止和回调排水分开；迟到结果仍配对释放。",
+          "example": "协程先取消，Rust 后返回新对象，不能泄漏该对象。",
+          "problem_ids": [
+            "ASYNC-001",
+            "LIFE-008"
+          ],
+          "task_ids": [
+            "C06",
+            "C09"
+          ]
+        },
+        {
+          "problem": "目标与发布身份混用",
+          "solution": "官方 Kotlin Native、CPF、目标切片和编解码身份分别锁定。",
+          "example": "iOS 成功不能证明 OHOS target、KLIB 或发布变体可用。",
+          "problem_ids": [
+            "BUILD-001",
+            "BUILD-004"
+          ],
+          "task_ids": [
+            "C06",
+            "C10"
+          ]
+        }
+      ],
+      "delivery": [
+        "CPF 独立 Gradle 根、Wrapper、Konan 缓存、插件与 Maven 坐标。",
+        "Rust OHOS 目标配置匹配正式 SDK 的 linker/sysroot 和目标 ABI。",
+        "真实 HAR/HAP 消费按产品组合建立，不能把 KMP 生成代码等同最终 ArkTS SDK。",
+        "HarmonyOS 与 OpenHarmony 分别记录环境与运行结果。"
+      ],
+      "gates": [
+        "P03 验证模板修复与 CPF 全能力，P05 关联正式 SDK 和组合应用。",
+        "错误 target、错误 GAV/metadata 与遗漏依赖产生失败诊断。",
+        "真实设备运行，缺环境为 blocked/unsupported，不能算 passed。",
+        "两条入口复用内核时，实例、线程池、符号和关闭责任不重复。",
+        "不支持的 async/Object 不以删接口方式换取完整能力承诺。"
+      ],
+      "choices": [
+        "用于 CPF Kotlin 逻辑与 Rust 内核接入，保持 KN-RUST-GOBLEY 路线身份。",
+        "这是主线下独立待验证配置，不是增加一条已认证路线。",
+        "若直接 ArkTS 消费 Rust，另选 napi-ohos；不为架构统一强加 Kotlin 中转。"
+      ],
+      "detail": {
+        "family": "uniffi",
+        "category": "语言后端",
+        "roles": [
+          {
+            "kind": "upstream",
+            "title": "上游机制",
+            "body": "配套 UniFFI / Gobley CLI；CPF 专用构建适配。负责其明确支持的导入、生成或平台机制。"
+          },
+          {
+            "kind": "madb",
+            "title": "MadB 工程与协议",
+            "body": "受限生成类型转换、错误、订阅和资源 API；范围由 Gobley 候选探针决定，不继承 JVM 验收。"
+          },
+          {
+            "kind": "domain",
+            "title": "作者与业务 owner",
+            "body": "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。"
+          }
+        ],
+        "graph": {
+          "width": 1240,
+          "height": 1235,
+          "nodes": [
+            {
+              "id": "source",
+              "title": "Rust 导出与 Native 契约",
+              "kind": "domain",
+              "summary": "复用受支持 Rust 导出声明，并明确 Native 目标、对象、异步和 callback interface 能力。",
+              "does": [
+                "Rust API、能力/生命周期契约",
+                "负责方：SDK 作者"
+              ],
+              "constraints": [
+                "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。",
+                "跨语言回调的业务内容及应用/引擎 owner 的创建与关闭时机。"
+              ],
+              "lines": [
+                "Rust API、能力/生命周期契约"
+              ],
+              "kicker": "SOURCE",
+              "x": 40,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "reader",
+              "title": "声明与契约读取",
+              "kind": "madb",
+              "summary": "读取既有声明与元数据，记录来源和不能自动推导的语义。",
+              "does": [
+                "保留源符号、位置、精度与摘要。"
+              ],
+              "constraints": [
+                "未知所有权、线程与停止效果必须显式补充。"
+              ],
+              "lines": [
+                "来源 / 精度 / 语义缺口"
+              ],
+              "kicker": "READER",
+              "x": 340,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "plan",
+              "title": "能力检查与计划",
+              "kind": "madb",
+              "summary": "同属 KN-RUST-GOBLEY 路线，但 CPF/OHOS 需要独立工具链、目标构建与正式 SDK 运行证据。Gobley CLI 能生成 nativeMain 不代表上游插件支持 OHOS。",
+              "does": [
+                "用于 CPF Kotlin 逻辑与 Rust 内核接入，保持 KN-RUST-GOBLEY 路线身份。",
+                "这是主线下独立待验证配置，不是增加一条已认证路线。",
+                "若直接 ArkTS 消费 Rust，另选 napi-ohos；不为架构统一强加 Kotlin 中转。"
+              ],
+              "constraints": [
+                "支持范围与真实版本配置绑定。",
+                "扩展或网页说明不产生平台认证。"
+              ],
+              "lines": [
+                "配置 / 能力 / 源位置诊断"
+              ],
+              "kicker": "PLAN",
+              "x": 640,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "lock",
+              "title": "目标与工具身份",
+              "kind": "madb",
+              "summary": "精确记录本配置的工具、模板补丁、ABI、依赖和目标。",
+              "does": [
+                "CPF Maven 变体、OHOS so"
+              ],
+              "constraints": [
+                "生成器、运行库与二进制不能只锁其中之一。"
+              ],
+              "lines": [
+                "编译器 / 依赖 / ABI / 补丁"
+              ],
+              "kicker": "LOCK",
+              "x": 940,
+              "y": 76,
+              "w": 260,
+              "h": 112,
+              "phase": "build"
+            },
+            {
+              "id": "tool0",
+              "title": "配套 UniFFI / Gobley CLI",
+              "kind": "upstream",
+              "summary": "复用修复后的生成器；MadB 显式组织 OHOS Cargo target、SDK linker/sysroot 与 CPF 编译。上游旧 Gradle target 映射不能直接当作可用。",
+              "does": [
+                "OHOS Native 绑定与目标库"
+              ],
+              "constraints": [
+                "Gobley CLI 生成受支持的 KMP/Native 绑定及回调接线。"
+              ],
+              "lines": [
+                "Rust 导出面、类型信息、调用与释放入口"
+              ],
+              "kicker": "TOOL0",
+              "x": 40.0,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "tool1",
+              "title": "CPF 专用构建适配",
+              "kind": "upstream",
+              "summary": "复用修复后的生成器；MadB 显式组织 OHOS Cargo target、SDK linker/sysroot 与 CPF 编译。上游旧 Gradle target 映射不能直接当作可用。",
+              "does": [
+                "OHOS Native 绑定与目标库"
+              ],
+              "constraints": [
+                "Gobley CLI 生成受支持的 KMP/Native 绑定及回调接线。"
+              ],
+              "lines": [
+                "Kotlin / Swift 类型、编解码与回调 vtable"
+              ],
+              "kicker": "TOOL1",
+              "x": 433.3333333333333,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "madbgen",
+              "title": "受限适配与工程输出",
+              "kind": "madb",
+              "summary": "按已检查的契约生成惯用入口与平台装配。",
+              "does": [
+                "UniFFI 生成与后端配套的 Rust scaffolding 和 ABI 接口。",
+                "MadB 从明确契约生成 Native Facade、资源与异步适配。"
+              ],
+              "constraints": [
+                "生成代码不替代业务语义与 native 正确性。"
+              ],
+              "lines": [
+                "Facade / 工程配方 / 诊断"
+              ],
+              "kicker": "MADBGEN",
+              "x": 826.6666666666666,
+              "y": 300,
+              "w": 373.3333333333333,
+              "h": 120,
+              "phase": "build"
+            },
+            {
+              "id": "lab",
+              "title": "正式鸿蒙 SDK 与设备",
+              "kind": "madb",
+              "summary": "验证 CPF 编译、cinterop、链接及设备上的对象/async/回调；构建成功、参考工程成功都不能替代本配置运行证据。",
+              "does": [
+                "正式 SDK 环境、HAP 运行报告",
+                "负责方：MadB-Lab"
+              ],
+              "constraints": [
+                "P03 验证模板修复与 CPF 全能力，P05 关联正式 SDK 和组合应用。",
+                "错误 target、错误 GAV/metadata 与遗漏依赖产生失败诊断。"
+              ],
+              "lines": [
+                "正式 SDK 环境、HAP 运行报告"
+              ],
+              "kicker": "LAB",
+              "x": 40,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "compiler",
+              "title": "目标构建与链接",
+              "kind": "upstream",
+              "summary": "官方与 CPF 使用独立 Maven GAV 和根 metadata；HAR/HAP 组合只在选定桥接与目标 SDK 下验证。",
+              "does": [
+                "CPF 独立 Gradle 根、Wrapper、Konan 缓存、插件与 Maven 坐标。",
+                "Rust OHOS 目标配置匹配正式 SDK 的 linker/sysroot 和目标 ABI。"
+              ],
+              "constraints": [
+                "构建、真机运行与独立消费者是不同证据。"
+              ],
+              "lines": [
+                "源代码 / headers / libs → 候选"
+              ],
+              "kicker": "COMPILER",
+              "x": 455,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "package",
+              "title": "独立 CPF 发布身份",
+              "kind": "madb",
+              "summary": "官方与 CPF 使用独立 Maven GAV 和根 metadata；HAR/HAP 组合只在选定桥接与目标 SDK 下验证。",
+              "does": [
+                "CPF Maven 变体、OHOS so",
+                "负责方：MadB 构建/发布适配器"
+              ],
+              "constraints": [
+                "真实 HAR/HAP 消费按产品组合建立，不能把 KMP 生成代码等同最终 ArkTS SDK。",
+                "HarmonyOS 与 OpenHarmony 分别记录环境与运行结果。"
+              ],
+              "lines": [
+                "CPF Maven 变体、OHOS so"
+              ],
+              "kicker": "PACKAGE",
+              "x": 870,
+              "y": 495,
+              "w": 330,
+              "h": 110,
+              "phase": "build"
+            },
+            {
+              "id": "consumer",
+              "title": "CPF Kotlin 调用端",
+              "kind": "ui",
+              "summary": "CPF 共享逻辑直接调用 Rust；若 ArkTS 经 akinterop 进入 Kotlin，再到 Rust，则属于另一个组合应用验收。",
+              "does": [
+                "Kotlin API、可选组合应用",
+                "负责方：Kotlin/ArkTS 消费者"
+              ],
+              "constraints": [
+                "用于 CPF Kotlin 逻辑与 Rust 内核接入，保持 KN-RUST-GOBLEY 路线身份。",
+                "这是主线下独立待验证配置，不是增加一条已认证路线。"
+              ],
+              "lines": [
+                "Kotlin API、可选组合应用"
+              ],
+              "kicker": "CONSUMER",
+              "x": 40,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "facade",
+              "title": "Native 语义 Facade",
+              "kind": "madb",
+              "summary": "受限生成类型转换、错误、订阅和资源 API；范围由 Gobley 候选探针决定，不继承 JVM 验收。",
+              "does": [
+                "Native 资源与异步适配",
+                "负责方：MadB 生成 / 普通运行库"
+              ],
+              "constraints": [
+                "便利入口不得改变约定的线程、错误与取消效果。",
+                "不能把对象回收等同于业务关闭。"
+              ],
+              "lines": [
+                "Native 资源与异步适配"
+              ],
+              "kicker": "FACADE",
+              "x": 350,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel0",
+              "title": "CPF KLIB / cinterop",
+              "kind": "upstream",
+              "summary": "经 cinterop 调用配套 Rust 导出符号；跨语言句柄和缓冲生命周期需要一致，不能借整数表示互换。",
+              "does": [
+                "C 可见桥、RustBuffer、对象句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "公开类型 ↔ UniFFI FFI 表示"
+              ],
+              "kicker": "CHANNEL0",
+              "x": 660,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "channel1",
+              "title": "UniFFI ABI / OHOS Rust 库",
+              "kind": "upstream",
+              "summary": "经 cinterop 调用配套 Rust 导出符号；跨语言句柄和缓冲生命周期需要一致，不能借整数表示互换。",
+              "does": [
+                "C 可见桥、RustBuffer、对象句柄"
+              ],
+              "constraints": [
+                "只允许本配置明确支持的正反向声明。"
+              ],
+              "lines": [
+                "缓冲、对象句柄、future 与回调入口"
+              ],
+              "kicker": "CHANNEL1",
+              "x": 660,
+              "y": 905,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "provider",
+              "title": "Rust 内核与执行器",
+              "kind": "domain",
+              "summary": "核心实现独立于 Kotlin GC；线程、锁、任务停止和缓冲 ownership 由实现满足契约。",
+              "does": [
+                "业务对象、任务、释放器",
+                "负责方：Rust 作者"
+              ],
+              "constraints": [
+                "Rust 业务算法、共享状态同步、执行器选择和 unsafe 正确性。",
+                "取消是否停止工作、是否撤销副作用、状态与事件的回放策略。"
+              ],
+              "lines": [
+                "业务对象、任务、释放器"
+              ],
+              "kicker": "PROVIDER",
+              "x": 970,
+              "y": 750,
+              "w": 240,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "owner",
+              "title": "Kotlin owner 与 GC",
+              "kind": "madb",
+              "summary": "长寿命资源显式关闭；GC 回收不等于 native work 排水，回调持有链须设计拆除。",
+              "does": [
+                "显式关闭、回调注册 token",
+                "负责方：应用 owner / MadB"
+              ],
+              "constraints": [
+                "在途工作、回调与结果按协议排水；迟到对象仍需正确释放。",
+                "最后拆除回调桥和原生句柄，GC 只承担剩余托管对象回收。"
+              ],
+              "lines": [
+                "显式关闭、回调注册 token"
+              ],
+              "kicker": "OWNER",
+              "x": 40,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "scheduler",
+              "title": "Native 回调与调度",
+              "kind": "madb",
+              "summary": "Native 内存管理允许的访问规则与逻辑线程安全分开；UI 投递和回调重入必须实测。",
+              "does": [
+                "调度策略、回调上下文",
+                "负责方：SDK 作者 / Kotlin 调度器"
+              ],
+              "constraints": [
+                "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "lines": [
+                "调度策略、回调上下文"
+              ],
+              "kicker": "SCHEDULER",
+              "x": 455,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            },
+            {
+              "id": "host",
+              "title": "宿主与反向范围",
+              "kind": "ui",
+              "summary": "反向范围仅限该候选支持的 callback interface。",
+              "does": [
+                "生成桥保活回调上下文，不能将任意 Kotlin 对象地址交给 Rust 保存。",
+                "按声明调度至允许的执行器，再通知 Kotlin 消费者。"
+              ],
+              "constraints": [
+                "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。"
+              ],
+              "lines": [
+                "HostPort / callback / 协议回应"
+              ],
+              "kicker": "HOST",
+              "x": 870,
+              "y": 1080,
+              "w": 330,
+              "h": 112,
+              "phase": "runtime"
+            }
+          ],
+          "edges": [
+            {
+              "a": "source",
+              "b": "reader",
+              "label": "公开声明",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "reader",
+              "b": "plan",
+              "label": "契约",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "lock",
+              "label": "解析配置",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "tool0",
+              "label": "受检计划",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H226.66666666666666 V300",
+              "lx": 226.66666666666666,
+              "ly": 265
+            },
+            {
+              "a": "tool0",
+              "b": "compiler",
+              "label": "构建输入",
+              "group": "build",
+              "style": "solid",
+              "d": "M226.66666666666666 420 V461 H620 V495",
+              "lx": 226.66666666666666,
+              "ly": 450
+            },
+            {
+              "a": "plan",
+              "b": "tool1",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H620.0 V300",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "tool1",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M620.0 420 V461 H620 V495",
+              "lx": 620.0,
+              "ly": null
+            },
+            {
+              "a": "plan",
+              "b": "madbgen",
+              "label": "",
+              "group": "build",
+              "style": "control",
+              "d": "M770 188 V245 H1013.3333333333333 V300",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "madbgen",
+              "b": "compiler",
+              "label": "",
+              "group": "build",
+              "style": "solid",
+              "d": "M1013.3333333333333 420 V461 H620 V495",
+              "lx": 1013.3333333333333,
+              "ly": null
+            },
+            {
+              "a": "compiler",
+              "b": "package",
+              "label": "打包",
+              "group": "build",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "package",
+              "b": "lab",
+              "label": "冻结候选 → 独立消费",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1035 605 V647 H205 V605",
+              "lx": 620,
+              "ly": 640
+            },
+            {
+              "a": "package",
+              "b": "facade",
+              "label": "安装受检 SDK / 运行依赖",
+              "group": "delivery",
+              "style": "control",
+              "d": "M1170 605 V710 H470 V750",
+              "lx": 830,
+              "ly": 700
+            },
+            {
+              "a": "consumer",
+              "b": "facade",
+              "label": "普通调用",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "facade",
+              "b": "channel0",
+              "label": "协议适配",
+              "group": "runtime",
+              "style": "solid",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "channel0",
+              "b": "channel1",
+              "label": "下一层 ABI",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M780 862 V905",
+              "lx": 837,
+              "ly": 888
+            },
+            {
+              "a": "channel1",
+              "b": "provider",
+              "label": "受支持接口",
+              "group": "runtime",
+              "style": "solid",
+              "d": "M900 961 H1090 V862",
+              "lx": 1077,
+              "ly": 949
+            },
+            {
+              "a": "provider",
+              "b": "consumer",
+              "label": "值 / 错误 / 状态：按协议返回",
+              "group": "runtime",
+              "style": "return",
+              "d": "M1150 862 V1043 H160 V862",
+              "lx": 620,
+              "ly": 1034
+            },
+            {
+              "a": "provider",
+              "b": "host",
+              "label": "反向请求",
+              "group": "host",
+              "style": "control",
+              "d": "M1180 862 V1080",
+              "lx": 1140,
+              "ly": 1065
+            },
+            {
+              "a": "host",
+              "b": "scheduler",
+              "label": "指定执行器",
+              "group": "host",
+              "style": "control",
+              "d": null,
+              "lx": null,
+              "ly": null
+            },
+            {
+              "a": "scheduler",
+              "b": "facade",
+              "label": "调度 / 回投",
+              "group": "host",
+              "style": "control",
+              "d": "M620 1080 V1060 H470 V862",
+              "lx": 528,
+              "ly": 1054
+            },
+            {
+              "a": "owner",
+              "b": "facade",
+              "label": "准入 / 停止 / 资源保活",
+              "group": "lifecycle",
+              "style": "control",
+              "d": "M205 1080 V1060 H385 V862",
+              "lx": 290,
+              "ly": 1054
+            }
+          ],
+          "bands": [
+            {
+              "x": 16,
+              "y": 12,
+              "w": 1208,
+              "h": 660,
+              "label": "A  构建期 · 声明、能力计划与候选交付"
+            },
+            {
+              "x": 16,
+              "y": 687,
+              "w": 1208,
+              "h": 535,
+              "label": "B  运行期 · 实际调用与资源责任"
+            }
+          ],
+          "subbands": [
+            {
+              "x": 25,
+              "y": 262,
+              "w": 1190,
+              "h": 176,
+              "label": "机制适配与工具协作 · 不规定插件内部执行顺序"
+            }
+          ]
+        },
+        "sequences": {
+          "actors": [
+            "CPF Kotlin 调用端",
+            "生成绑定 + MadB Facade",
+            "Rust 内核与执行器",
+            "宿主回调 / 执行器"
+          ],
+          "scenarios": [
+            {
+              "id": "call",
+              "label": "调用与完成",
+              "notes": [
+                "Kotlin/Native 验证句柄存活、参数形状及线程约束。",
+                "Rust 完成业务；结果解码与所有权交接遵守唯一处理路径。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "校验参数与调用准入",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按本配置转换并进入实现",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 2,
+                  "text": "执行工作；保留在途资源",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "返回值 / 已声明错误 / 完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "交付一次；清理临时表示",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "reverse",
+              "label": "反向宿主 / 回调",
+              "notes": [
+                "反向范围仅限该候选支持的 callback interface。",
+                "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。"
+              ],
+              "events": [
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "通过声明的宿主协议发起请求",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "按规定线程 / 执行器投递",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 3,
+                  "text": "执行宿主逻辑；允许的重入另验",
+                  "kind": "self"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "返回结果或确认；区分受理与完成",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "按请求身份完成或报告错误",
+                  "kind": "return"
+                }
+              ]
+            },
+            {
+              "id": "close",
+              "label": "取消、关闭与排水",
+              "notes": [
+                "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。",
+                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+              ],
+              "events": [
+                {
+                  "from_lane": 0,
+                  "to_lane": 1,
+                  "text": "关闭准入 / 停止观察或等待",
+                  "kind": "sync"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 2,
+                  "text": "仅发出底层支持的停止请求",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "并发到达的结果仍交接或回收",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 3,
+                  "text": "停止新回调；等待已进入者退出",
+                  "kind": "async"
+                },
+                {
+                  "from_lane": 3,
+                  "to_lane": 1,
+                  "text": "确认回调排水；释放宿主引用",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 2,
+                  "to_lane": 1,
+                  "text": "工作实际退出后归还资源",
+                  "kind": "return"
+                },
+                {
+                  "from_lane": 1,
+                  "to_lane": 0,
+                  "text": "满足完成条件才报告 Closed",
+                  "kind": "return"
+                }
+              ]
+            }
+          ]
+        },
+        "models": [
+          {
+            "title": "记录与可空值",
+            "path": [
+              "Rust record { id, seq: Option<i64> }",
+              "UniFFI 配套记录编码",
+              "Kotlin 生成 record / nullable T"
+            ],
+            "note": "seq 缺失保留 nil/null；数值精度与范围按字段声明，不变成 0。"
+          },
+          {
+            "title": "对象身份",
+            "path": [
+              "Rust Arc 管理的对象",
+              "生成对象句柄 / 释放入口",
+              "目标语言资源包装"
+            ],
+            "note": "目标包装持有跨界引用；显式关闭业务资源与回收对象引用是两个动作。"
+          },
+          {
+            "title": "错误与异步",
+            "path": [
+              "Result<T, E> / Rust future",
+              "已声明错误 / future 协议",
+              "typed error + suspend / async"
+            ],
+            "note": "失败、取消与桥接故障分开；panic=abort 不能由包装层恢复。"
+          }
+        ],
+        "example": {
+          "title": "一次终态与一次结果交接",
+          "language": "协议伪代码",
+          "code": "// 协议伪代码：终态与资源接收分别认领\nonNativeResult(operation, ownedResult):\n    terminal = operation.claimTerminal()\n    if terminal == rejected:\n        handleDuplicateAccordingToTransferContract(ownedResult)\n        return\n    handoff = operation.prepareResultHandoff(ownedResult)\n    resumeOnce(handoff, onUndelivered = cleanupWithMatchingBackend)\n// resume 成功不等于调用者已取走资源；不得再发送错误终态\n// native 工作归还与结果交接独立记录",
+          "note": "重复通知是否携带新的资源转移必须由后端协议规定，不能见到重复就无条件再次释放同一对象。 本片段未作为可编译 SDK 示例执行。",
+          "kind": "protocol-pseudocode"
+        },
+        "case_study": {
+          "title": "生成 nativeMain 却无法构建 OHOS",
+          "trigger": "沿用上游不含 OHOS target 的 Gradle 映射。",
+          "trace": "固定修复版 Gobley CLI → MadB CPF 构建适配 → cinterop/链接 → 实际设备消费。",
+          "expected": "不能把生成源码成功记成 CPF 支持；失败保留具体工具阶段。",
+          "oracle": "官方与 CPF 分根运行，注入错 KLIB/库目标、验证 HAR/HAP 和发布坐标。"
+        },
+        "owners": [
+          {
+            "title": "App / 会话 owner",
+            "depth": 0,
+            "detail": "长寿命资源显式关闭；GC 回收不等于 native work 排水，回调持有链须设计拆除。"
+          },
+          {
+            "title": "生成对象包装与回调注册",
+            "depth": 1,
+            "detail": "受限生成类型转换、错误、订阅和资源 API；范围由 Gobley 候选探针决定，不继承 JVM 验收。"
+          },
+          {
+            "title": "单次调用 / 订阅实例",
+            "depth": 2,
+            "detail": "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。"
+          },
+          {
+            "title": "Rust 对象、缓冲和在途工作",
+            "depth": 2,
+            "detail": "核心实现独立于 Kotlin GC；线程、锁、任务停止和缓冲 ownership 由实现满足契约。"
+          }
+        ],
+        "thread_rules": [
+          "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
+          "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
+          "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
+          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+        ],
+        "modules": [
+          {
+            "module": "helpers / adapters/contracts",
+            "io": "Rust API、能力/生命周期契约 → 带来源的契约",
+            "pattern": "Reader：复用已有声明，不读取业务函数体猜语义",
+            "boundary": "不推断任意 native 实现的线程安全。"
+          },
+          {
+            "module": "madb-model / rules / plan",
+            "io": "契约 + 能力 + 工具身份 → 诊断 / TaskGraph",
+            "pattern": "纯规则 + Strategy：先选配置，再安排副作用",
+            "boundary": "不直接执行编译器或修改用户工程。"
+          },
+          {
+            "module": "adapters/generators",
+            "io": "生成代码、目标构建 DAG",
+            "pattern": "Adapter / Mapper：复用 配套 UniFFI / Gobley CLI、CPF 专用构建适配",
+            "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
+          },
+          {
+            "module": "sdk / 对应语言适配",
+            "io": "Native 资源与异步适配",
+            "pattern": "Facade + 显式状态机：便利入口委托给同一协议",
+            "boundary": "不拥有全局业务 owner，不替原生实现保证任意停止。"
+          },
+          {
+            "module": "adapters/toolchains / templates",
+            "io": "CPF Maven 变体、OHOS so",
+            "pattern": "端口隔离：目标编译、链接、封装与装载配方",
+            "boundary": "构建产物与消费者支持范围分别验证。"
+          },
+          {
+            "module": "artifacts / verification / MadB-Lab",
+            "io": "正式 SDK 环境、HAP 运行报告",
+            "pattern": "Packager / Store 分权；Verifier 只读候选",
+            "boundary": "组件不能提交正式输出或自行写入认证。"
+          }
+        ],
+        "states": [
+          {
+            "name": "Open",
+            "rule": "允许通过参数、线程与资源准入检查的操作。"
+          },
+          {
+            "name": "Closing",
+            "rule": "关闭准入、在途调用、回调排水和 late result 分开管理；实现 exactly-once 结果交接。"
+          },
+          {
+            "name": "Closed",
+            "rule": "只有工作、回调与依赖资源满足完成协议才确认；超时不能假报 Closed。"
+          },
+          {
+            "name": "Invalid",
+            "rule": "不可恢复故障禁止新使用；按能执行的协议清理，不把失效等同于安全释放。"
+          }
+        ]
+      },
+      "spec_refs": [
+        "architecture/06-backend-profiles.md",
+        "architecture/05-lifecycle-and-concurrency.md",
+        "validation/08-critical-scenarios.md"
+      ],
+      "build_steps": [
+        {
+          "title": "步骤 01",
+          "text": "修复并锁定 Gobley 生成模板与对应 UniFFI 导出面。"
+        },
+        {
+          "title": "步骤 02",
+          "text": "MadB 显式配置 OHOS target、正式 SDK linker/sysroot 与 CPF 工具链。"
+        },
+        {
+          "title": "步骤 03",
+          "text": "CPF 编译生成代码并完成 cinterop、链接和公开 API 检查。"
+        },
+        {
+          "title": "步骤 04",
+          "text": "独立构建根、缓存、坐标及 metadata 输出，禁止混用官方 Native 产物。"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "label": "后端配置与方向边界",
+      "path": "architecture/06-backend-profiles.md"
+    },
+    {
+      "label": "版本候选与组合内核",
+      "path": "architecture/16-technology-stack-and-versions.md"
+    },
+    {
+      "label": "生成代码与手写职责",
+      "path": "architecture/07-code-generation.md"
+    },
+    {
+      "label": "生命周期与并发",
+      "path": "architecture/05-lifecycle-and-concurrency.md"
+    },
+    {
+      "label": "UniFFI 官方指南",
+      "url": "https://mozilla.github.io/uniffi-rs/latest/"
+    },
+    {
+      "label": "Gobley 配套说明",
+      "url": "https://gobley.dev/docs/bindgen/"
+    },
+    {
+      "label": "单次完成模板修复",
+      "url": "https://github.com/mozilla/uniffi-rs/pull/2733"
+    }
+  ],
+  "view_schema": "madb.route-detail-view/3"
+}

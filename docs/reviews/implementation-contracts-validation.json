@@ -1,0 +1,66 @@
+{
+  "schema": "madb.documentation-validation/2",
+  "baseline": "0.9",
+  "status": "passed",
+  "scope": "static-documents-and-rendered-html",
+  "counts": {
+    "markdown": 62,
+    "json": 29,
+    "toml": 1,
+    "tables": 136,
+    "local_links": 1000,
+    "html": 13,
+    "scripts": 13
+  },
+  "extension_structure": {
+    "schemas": 2,
+    "frames": 4,
+    "vectors": 20
+  },
+  "catalog": {
+    "tasks": 41,
+    "routes": 16,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_mappings": 236
+  },
+  "browser": {
+    "status": "not_executed",
+    "scope": "layout, real interactions and console"
+  },
+  "product_tests_executed": false,
+  "errors": [],
+  "regression_tests": {
+    "status": "passed",
+    "tests": 14,
+    "baseline_tests": 10,
+    "added_tests": 4,
+    "scope": "documentation contracts and HTML projection"
+  },
+  "dom_harness": {
+    "status": "passed",
+    "method": "isolated DOM-shaped unit execution; not a browser",
+    "profiles": 29,
+    "graph_filters": 173,
+    "sequence_scenarios": 87,
+    "node_keyboard_selections": 3044,
+    "deep_links": "passed",
+    "extension_categories": "passed",
+    "theme": "passed",
+    "network": false
+  },
+  "preservation": {
+    "status": "passed",
+    "task_fields_changed_only": [
+      "acceptance",
+      "documents",
+      "notes"
+    ],
+    "tasks": 41,
+    "route_problem_source_definitions": "unchanged except documentation baseline",
+    "historical_reviews": "byte-identical",
+    "implementation_status": "not_started",
+    "product_certification_added": false
+  }
+}

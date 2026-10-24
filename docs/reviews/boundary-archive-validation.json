@@ -1,0 +1,78 @@
+{
+  "baseline": "0.9",
+  "scope": "boundary-research-relocation-and-editorial-alignment",
+  "static_validation": {
+    "schema": "madb.documentation-validation/2",
+    "baseline": "0.9",
+    "status": "passed",
+    "scope": "static-documents-and-rendered-html",
+    "counts": {
+      "markdown": 85,
+      "json": 32,
+      "toml": 1,
+      "tables": 215,
+      "local_links": 1432,
+      "html": 13,
+      "scripts": 13
+    },
+    "extension_structure": {
+      "schemas": 2,
+      "frames": 4,
+      "vectors": 20
+    },
+    "catalog": {
+      "tasks": 41,
+      "routes": 16,
+      "problems": 48,
+      "case_groups": 96,
+      "historical_sources": 9,
+      "historical_mappings": 236
+    },
+    "browser": {
+      "status": "not_executed",
+      "scope": "layout, real interactions and console"
+    },
+    "product_tests_executed": false,
+    "errors": []
+  },
+  "preservation": {
+    "status": "passed",
+    "source_pairs": 9,
+    "research_documents": 18,
+    "source_items": 236,
+    "source_identity_title_problem_mapping_unchanged": true,
+    "archive_original_documents_byte_identical": true,
+    "archive_original_coverage_byte_identical": true,
+    "plan_routes_problems_cases_versions_unchanged": true,
+    "prior_review_artifacts_unchanged": true
+  },
+  "editorial": {
+    "rows_with_targeted_updates": 36,
+    "original_reading_bytes": 398945,
+    "revised_reading_bytes": 198944,
+    "reduction_percent": 50.1,
+    "machine_local_paths_in_reading_copies": 0
+  },
+  "browser": {
+    "status": "not_executed"
+  },
+  "product_tests_executed": false,
+  "document_tool_regression": {
+    "status": "passed",
+    "tests": 21,
+    "new_tests": 5
+  },
+  "standalone_documents": {
+    "status": "passed",
+    "reference_root_used": false,
+    "outside_research_directories_present": false
+  },
+  "generated_html": {
+    "status": "passed",
+    "pages": 13,
+    "changed_pages": [
+      "architecture-overview.html"
+    ],
+    "layout_or_script_logic_changed": false
+  }
+}

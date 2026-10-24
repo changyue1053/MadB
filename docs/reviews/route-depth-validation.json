@@ -1,0 +1,32 @@
+{
+  "schema": "madb.route-detail-validation/2",
+  "date": "2026-10-24",
+  "design_baseline": "0.7",
+  "status": "passed",
+  "generated_html": 13,
+  "rewritten_topic_html": 8,
+  "descriptive_data_files": 8,
+  "detailed_profiles": 29,
+  "canonical_catalogs_unchanged": true,
+  "reference_page_unchanged": true,
+  "architecture_nodes": 511,
+  "architecture_edges": 596,
+  "node_overlap": "none",
+  "static_html_links_checked": 280,
+  "javascript_syntax_checked": 13,
+  "render_drift": "none",
+  "script_unit_checks": {
+    "method": "isolated DOM-shaped unit execution; not a browser",
+    "profiles": 29,
+    "graph_filters": 173,
+    "sequence_scenarios": 87,
+    "node_keyboard_selections": 3050,
+    "deep_links": "passed",
+    "extension_categories": "passed",
+    "theme": "passed",
+    "network": false
+  },
+  "browser_visual_interaction": "not_run; local file URL access was denied by browser policy; no alternate access attempted",
+  "product_runtime_tests": false,
+  "errors": []
+}

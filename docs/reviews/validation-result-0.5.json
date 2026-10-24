@@ -1,0 +1,83 @@
+{
+  "schema": "madb.documentation-validation/1",
+  "baseline": "0.5",
+  "verified_on": "2026-10-24",
+  "scope": "design-documents-and-html-only",
+  "status": "passed",
+  "original_files_reviewed": 56,
+  "original_files_updated": 23,
+  "document_checks": {
+    "markdown_files": 47,
+    "total_files": 68,
+    "internal_links_checked": 279,
+    "tables_checked": 77,
+    "problems": 48,
+    "source_items": 236,
+    "routes": 16,
+    "case_groups": 96,
+    "errors": []
+  },
+  "html_local_links_checked": 16,
+  "extension_checks": {
+    "scope": "Design schemas, example structures and cross-document consistency only",
+    "schemas_validated": 2,
+    "positive_vectors": 9,
+    "negative_vectors": 11,
+    "transcript_frames_checked": 4,
+    "extension_gate_groups": 12,
+    "runtime_or_product_tests_executed": false,
+    "errors": []
+  },
+  "plan_checks": {
+    "tasks": 38,
+    "mainline": 30,
+    "extension": 8,
+    "requirements": 14,
+    "routes": 16,
+    "dag": "acyclic",
+    "route_phase_mapping": "passed",
+    "unresolved_example_profile": "explicit-null",
+    "generated_html_drift": "none"
+  },
+  "browser": {
+    "engine": "Google Chrome",
+    "version": "155.0.8059.86",
+    "results": [
+      {
+        "name": "architecture-overview",
+        "desktop": "1440x1080",
+        "mobile": "390x844",
+        "interactions": "passed",
+        "overflow": "none"
+      },
+      {
+        "name": "implementation-progress",
+        "desktop": "1440x1080",
+        "mobile": "390x844",
+        "interactions": "passed",
+        "overflow": "none"
+      }
+    ],
+    "pageErrors": [],
+    "additional_checks": {
+      "exportImport": "passed",
+      "wrongBaseline": "rejected",
+      "baselineIsolation": "passed",
+      "mobile": [
+        {
+          "headings": 1,
+          "body": 390,
+          "viewport": 390
+        },
+        {
+          "headings": 1,
+          "body": 390,
+          "viewport": 390
+        }
+      ],
+      "pageErrors": []
+    }
+  },
+  "product_runtime_tests_executed": false,
+  "product_certified_routes": 0
+}

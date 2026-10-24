@@ -1,0 +1,36 @@
+# 设计样本；MadB CLI 尚未实现。真实 release 要补齐经过探针确认的 lock。
+format = "madb.project/1"
+project = "sample-sdk"
+
+[[boundaries]]
+id = "sample-to-swift"
+route = "SWIFT-RUST-UNIFFI"
+# 此处只选择路线；实例化时还须解析确定的 boundary profile 并写入锁。
+# 没有目标/版本/策略锁的计划不能执行 build --frozen。
+direction = "consumer-to-provider"
+source.kind = "rust-uniffi"
+source.path = "native/Cargo.toml"
+output = "generated/swift"
+
+[[policies]]
+# 声明元数据显式公开此 ID；没有该 ID 时解析应失败。
+symbol_id = "sample.session.checksum.v1"
+execution = "bounded-worker"
+# 具体执行器 owner、项数/字节预算由所选 profile 提供；未解析时拒绝构建。
+input_buffer = "copy"
+completion = "work-completed"
+cancellation = "work-request"
+cancellation_confirmation = "operation-terminal"
+
+[[policies]]
+symbol_id = "sample.session.observe-state.v1"
+completion = "registered"
+callback_executor = "consumer-ui"
+stream_kind = "state"
+capacity = 1
+overflow = "coalesce-latest"
+stop = "request-and-drain"
+
+[artifacts]
+package = "sample-sdk"
+manifest = "out/manifest.json"

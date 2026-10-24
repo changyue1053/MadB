@@ -1,0 +1,563 @@
+{
+  "schema": "madb.documentation-inventory/1",
+  "baseline": "0.7",
+  "reviewed_on": "2026-10-24",
+  "scope": "all files under MadB/docs",
+  "input_files": 74,
+  "output_files": 78,
+  "counts": {
+    "updated": 51,
+    "added": 4,
+    "retained": 23
+  },
+  "hash_algorithm": "sha256",
+  "self_hash_policy": "after_sha256 is null for this inventory to avoid a self-reference; all other hashes cover exact file bytes.",
+  "entries": [
+    {
+      "path": "README.md",
+      "disposition": "updated",
+      "before_sha256": "88e89dc50887383dc4202463da69a61b0c0b6a0e158c56c25d2bbdca81bcdbd5",
+      "after_sha256": "d409498328d97d952f243e8ef5d220c136c9f0e0b565f1f6ee10a6575c624459",
+      "review": "升级设计基线 0.7；重排选型、ADR、四张图与完整修改记录入口，明确尚未实施和认证。"
+    },
+    {
+      "path": "adr/0001-product-and-authority.md",
+      "disposition": "retained",
+      "before_sha256": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+      "after_sha256": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "adr/0002-core-and-adapters.md",
+      "disposition": "retained",
+      "before_sha256": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+      "after_sha256": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "adr/0003-lab-and-release.md",
+      "disposition": "retained",
+      "before_sha256": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+      "after_sha256": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "adr/0004-language-extension.md",
+      "disposition": "retained",
+      "before_sha256": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+      "after_sha256": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "adr/0005-project-initialization.md",
+      "disposition": "retained",
+      "before_sha256": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "after_sha256": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "adr/0006-developer-ergonomics.md",
+      "disposition": "retained",
+      "before_sha256": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+      "after_sha256": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "adr/0007-technology-stack-and-cpf.md",
+      "disposition": "updated",
+      "before_sha256": "ea306fb323264eb8eaee874d03694dd3acfdabc1cb424c57df4a6d1104ead429",
+      "after_sha256": "95a41ee73d8c2ac11301f9814d8e05712d77fcd5d6dd7f0ad66ab848723fd8b7",
+      "review": "统一 CPF 主线、分离版本线和模板修复条件；将平台发布取舍指向 ADR0008。"
+    },
+    {
+      "path": "adr/0008-route-selection-and-distribution.md",
+      "disposition": "added",
+      "before_sha256": null,
+      "after_sha256": "a18d21edc796a7a7c1619251c23089b777a8387935ec4fcdf9f0bb494618f588",
+      "review": "新增六项工程决策：能力维度选型、异步模板、Android 模块、双 GAV、Swift 分发、可选实验。"
+    },
+    {
+      "path": "architecture/01-system-architecture.md",
+      "disposition": "updated",
+      "before_sha256": "3179c24385ab47cd40f46dfb39165d2351f4bac1fe408b2e206da8b0891c6819",
+      "after_sha256": "c1ceff5addb5700735de8e220072a3ea044a65c7235ebc627536d3d3a21b1441",
+      "review": "补充运行时、方向、接口能力、交付形态、构建系统五个选型维度及平台适配职责。"
+    },
+    {
+      "path": "architecture/02-modules-and-ports.md",
+      "disposition": "retained",
+      "before_sha256": "904694ecbdbfd6107d0f6ec8a11ca3c866bf4e5e231cebf351fc2e111e0283b6",
+      "after_sha256": "904694ecbdbfd6107d0f6ec8a11ca3c866bf4e5e231cebf351fc2e111e0283b6",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "architecture/03-contract-and-ir.md",
+      "disposition": "updated",
+      "before_sha256": "338648652a87918d798994add5a4ae87ba8b5a6f3235ae00d64258559b7eecae",
+      "after_sha256": "cc0534ccf6044dde3bb9a1561d2c8c474b6df4ba9d671d4c3af9b7c1b94650f4",
+      "review": "扩展概念级 Capability 与 profile 约束；区分语言互通、后端能力与具体工程组合。"
+    },
+    {
+      "path": "architecture/04-data-and-errors.md",
+      "disposition": "retained",
+      "before_sha256": "2cd4854b69f33dc154f626de3fc6fbfa5dd114901b830476d5c76a3068a8c039",
+      "after_sha256": "2cd4854b69f33dc154f626de3fc6fbfa5dd114901b830476d5c76a3068a8c039",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "architecture/05-lifecycle-and-concurrency.md",
+      "disposition": "updated",
+      "before_sha256": "f9b2e6259a919dae113294d8f0c8a36db71c5adc249706697d68e25591a2c6ba",
+      "after_sha256": "3f4979dfe9a94ce05ceb6c7dff5d7351685962ad50ec98e24221cbf59d4a5de8",
+      "review": "分开计算、转换、完成通知；禁止成功回调异常触发第二次完成及重复回收。"
+    },
+    {
+      "path": "architecture/06-backend-profiles.md",
+      "disposition": "updated",
+      "before_sha256": "d858ce6194ae8b5f873ccee6aecaf9d27aec9a9b408b8e7df436b9cca926e381",
+      "after_sha256": "f507ce9508bafed57e642dee78c53503a038bfb4c3518a3cb97c4177ff74f200",
+      "review": "逐条复核 16 条路线；明确默认、可选、实验方案、适用条件及真实消费者验收。"
+    },
+    {
+      "path": "architecture/07-code-generation.md",
+      "disposition": "updated",
+      "before_sha256": "6af78dfe44ddd0f4e656f82f6d1ab65d0f8504e4fdfaa50c7391f4903dc9fb7f",
+      "after_sha256": "70de691f991c89c50e9c0fb506e31cc5dff47fcc0d13f3bef8fab5522161d4c5",
+      "review": "补全 JNI 注册及转换产物、C ABI/CXX 分工、可选 SWIG、UniFFI-ArkTS 配方及模板修复。"
+    },
+    {
+      "path": "architecture/08-runtime-and-idiomatic-api.md",
+      "disposition": "updated",
+      "before_sha256": "f8db56021a905a7cd55f637bc32128f6f7e59da805c644cd08152491f6cbe7e2",
+      "after_sha256": "5961c4b11c007436d600775275335ec8735e426a1068bcacecc362ddecfd3c80",
+      "review": "明确一次完成、结果交接和迟到结果清理，区分业务失败与完成通知失败。"
+    },
+    {
+      "path": "architecture/09-build-packaging-release.md",
+      "disposition": "updated",
+      "before_sha256": "8f537b6e3134f4f6d16b09c7805e88e645d9aed4cbf22a7735d706e885c74b16",
+      "after_sha256": "8aa9855a957089b217e6797d38e9496ad2b32f295462ecccf192826f52f64f63",
+      "review": "补充 Android 原生打包、官方/CPF 独立坐标、SKIE 可分发框架及 Swift/C++ 构建约束。"
+    },
+    {
+      "path": "architecture/10-diagnostics-and-performance.md",
+      "disposition": "retained",
+      "before_sha256": "ad510a83fd95e6a061feabaa1311f5e1ef53dbfb9016adc32a57c507fcc4b45f",
+      "after_sha256": "ad510a83fd95e6a061feabaa1311f5e1ef53dbfb9016adc32a57c507fcc4b45f",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "architecture/11-language-extension.md",
+      "disposition": "retained",
+      "before_sha256": "e0f6583b5685398ab84aeaaa17ec754aab310b1a1e5d147a37239248f460bc9b",
+      "after_sha256": "e0f6583b5685398ab84aeaaa17ec754aab310b1a1e5d147a37239248f460bc9b",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "architecture/12-extension-protocol.md",
+      "disposition": "retained",
+      "before_sha256": "a8bb84349940f31366b436935cc7dbc589cdc2d0388ab640447f2007ba487ae2",
+      "after_sha256": "a8bb84349940f31366b436935cc7dbc589cdc2d0388ab640447f2007ba487ae2",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "architecture/13-contract-evolution.md",
+      "disposition": "retained",
+      "before_sha256": "7daf67a187f7a4e9ef6dde746af724f6a0c6d8a5970cde058cd3cdb633ddcf10",
+      "after_sha256": "7daf67a187f7a4e9ef6dde746af724f6a0c6d8a5970cde058cd3cdb633ddcf10",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "architecture/14-project-initialization.md",
+      "disposition": "updated",
+      "before_sha256": "28268127020f02418c3c2552f51ccd931b09221f5660e3e575939b8f533f4e15",
+      "after_sha256": "c4cce9343133599e53c9da3c4145d6de3765fdfac4f1d667774ed8597a48200c",
+      "review": "补齐 AGP 新 KMP 模块、独立 app、native 接入、显式测试、IDE/宿主和跨平台交付配方。"
+    },
+    {
+      "path": "architecture/15-developer-ergonomics.md",
+      "disposition": "updated",
+      "before_sha256": "e0771d58d9a694f46967b8fe8d7f80e528fd010a42f4b2c9a91d981676f579c4",
+      "after_sha256": "08a45472164e56c642378b486318ab84a7db7463ec3a0aa13a9f0c6fa9b270b4",
+      "review": "补充 SKIE cinterop/lambda/组合诊断、实验后端入口；将 Concepts 限定为可选 C++20。"
+    },
+    {
+      "path": "architecture/16-technology-stack-and-versions.md",
+      "disposition": "updated",
+      "before_sha256": "4fea046488bfce0e57ca1699a0d8215a8c55c49491cd529616f2be1e04be216d",
+      "after_sha256": "2eee513600cfe26c5e4fc08b92d1ed44f67c7f9845713cd567f6b8fdf45e7fb6",
+      "review": "集中修订精确版本候选及证据；撤回旧 Gobley 完整默认组合，拆分 napi/ohrs，补齐平台和宿主条件。"
+    },
+    {
+      "path": "catalog/architecture-map.json",
+      "disposition": "updated",
+      "before_sha256": "e4301e340651948818c879a0c156029614bffe11dd0503c8d3e3545fcb8338b4",
+      "after_sha256": "890c1c495652654c65fc254ecd4e62c6754bf33698f1b38a7005714d6d572817",
+      "review": "同步基线、架构说明与路线工程约束，保留原模块身份。"
+    },
+    {
+      "path": "catalog/case-groups.json",
+      "disposition": "updated",
+      "before_sha256": "0f3524053fc68d00450bf37eb7171125f79f46a4a0ceccae1a32a65a56103d41",
+      "after_sha256": "32d5d23f2eb1b59726dc4711d2185846cab66197d2434e3cacabd3e0807e27f4",
+      "review": "保留 96 个基础用例组；追加平台特定场景及审查条目关联。"
+    },
+    {
+      "path": "catalog/implementation-plan.json",
+      "disposition": "updated",
+      "before_sha256": "b7b1d859475415dfc055c038fa4d2f53f091e062e666a02d19aab10cb89fd338",
+      "after_sha256": "fbefce66e44eb8e64d7c49928b08fb9cf3bc25002dc3d3c275aad9cdae2697dd",
+      "review": "补齐既有工作包验收；新增 X07 可选 UniFFI-ArkTS 实验，共 39 项，实施状态仍全部未开始。"
+    },
+    {
+      "path": "catalog/problems.json",
+      "disposition": "updated",
+      "before_sha256": "98a4cba2a1911fd79d8bb60cea696822401a6495831b9e40526ba4b0117fbfb4",
+      "after_sha256": "51e330ef908eed1a1d61a4b2212e726cc3d41932def2c8a4a8252e0768d7a61a",
+      "review": "保留 48 个问题；追加本轮具体案例及证据关联。"
+    },
+    {
+      "path": "catalog/routes.json",
+      "disposition": "updated",
+      "before_sha256": "6f9e7180b24db60184ba0fdc64a0096863f9a594d3aaf8355e06abe01f86f607",
+      "after_sha256": "dddac76aa02e8e0a4b16388c9d91e13059e5774e2966ba6e44e82778e0da24db",
+      "review": "保留 16 个路线 ID；补充主线、构建、分发与实验配置约束，认证仍为零。"
+    },
+    {
+      "path": "catalog/source-coverage.json",
+      "disposition": "updated",
+      "before_sha256": "af6964d824cf0c725f7548e3a50ab2402a3db994e8318e4241b9804b24a3b228",
+      "after_sha256": "ff4c9e70a0988cd9f908e2f575a698683801456be5e376c10d0b12047250f7c4",
+      "review": "完整保留 9 份历史资料和 236 条映射；独立新增 12 个审查来源、10 个审查条目。"
+    },
+    {
+      "path": "delivery/01-implementation-plan.md",
+      "disposition": "updated",
+      "before_sha256": "7fa6d0153e6598ba1ca6b137c58d011e08d7090518a86b8b2ecefc336f042a6b",
+      "after_sha256": "7e1493d4d12b2eb9299cb6570818cf8e452d7ca7fe8870ea20b2d9e0e64b213f",
+      "review": "同步 39 项计划及各阶段验收，明确 X07 独立于主线 S5 完成度。"
+    },
+    {
+      "path": "delivery/02-open-source-and-contributing.md",
+      "disposition": "updated",
+      "before_sha256": "f659b11575ced91d8f781558f960cdd7aea7c8cb049282e512d20d2b80b4b943",
+      "after_sha256": "59fc6c8a285f5f9b749a0607e34acdaafdbccb41db562fac6c86de21f3f70bc2",
+      "review": "补充上游补丁来源、可再生成要求及独立发布坐标的使用说明。"
+    },
+    {
+      "path": "delivery/03-decisions-and-risks.md",
+      "disposition": "updated",
+      "before_sha256": "53a195b790b3344b3bcfbd1403d1b602032df20d21aab400dc4997698c4b0fa1",
+      "after_sha256": "ed5ca4f47d3bdde28ac8f536583b54d713d6b63f5eaf61b5b39adbf037668907",
+      "review": "具体化模板、Android、发布坐标、Swift 等风险及阻断范围；新增可选 P13 探针。"
+    },
+    {
+      "path": "engineering/01-architecture-principles.md",
+      "disposition": "updated",
+      "before_sha256": "d09f8daca66a24d75268ca7bad9acc78704b613341fe79fa6a43565312bdba2a",
+      "after_sha256": "759570a92b9118335a3498eef1157b7a3fcd0f0fa9040aa84ca5019c87c20e70",
+      "review": "增加多维选型与生成器/模板/运行库分离原则，避免语言名称直接推导能力。"
+    },
+    {
+      "path": "engineering/02-clean-code.md",
+      "disposition": "updated",
+      "before_sha256": "1359d4e70f618b4bdaba426765a7a77e66525727c163a14e5af3fa4457df8498",
+      "after_sha256": "456ea403e5258e344ff2eaeb21cf24e96697160adaaaeee5e51c124372fa623c",
+      "review": "规范完成回调异常边界、生成模板补丁身份和再生成流程，禁止只手改生成物。"
+    },
+    {
+      "path": "engineering/03-design-patterns.md",
+      "disposition": "updated",
+      "before_sha256": "a6c327a63b4dba31787be8d59ddd9aed9819a36020ad3c6296c4b32634a8cbc9",
+      "after_sha256": "360157421cda891fd4aa8a9b3c20b57b833556fda9702115e29ab6d8d20ab112",
+      "review": "明确策略与适配器承载平台 profile；避免引入无边界的通用工厂。"
+    },
+    {
+      "path": "engineering/04-language-guidelines.md",
+      "disposition": "updated",
+      "before_sha256": "0393e68a74c710dbfaae13503487fb053f4122f94bb40895d059aa42ad6d0e21",
+      "after_sha256": "a7499a578187d2f721e9d6a797414a38a1989d63ba92c2af546a7f4c6a16e833",
+      "review": "补充官方/CPF 工具链隔离、JVM/Native 差异及 Swift 公开接口消费检查。"
+    },
+    {
+      "path": "engineering/05-review-and-quality-gates.md",
+      "disposition": "updated",
+      "before_sha256": "0aed1da1880fb499c82fdfc65c9ba7e1d1412a75d5bdc57ea13cd632952166d3",
+      "after_sha256": "796c2b417cb844504ddf2aaf9c2ebcfe8d7d1acc89721e040acb85cc819b5021",
+      "review": "加入模板版本、公开 API 可调用性、双根 metadata、正式分发及 build-only 非运行证据门禁。"
+    },
+    {
+      "path": "examples/case.example.json",
+      "disposition": "retained",
+      "before_sha256": "6d764af9d31609d96b75fc0760b1537e156829378d1c72b84aec7f57a551c8b0",
+      "after_sha256": "6d764af9d31609d96b75fc0760b1537e156829378d1c72b84aec7f57a551c8b0",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "examples/extensions/README.md",
+      "disposition": "retained",
+      "before_sha256": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "after_sha256": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "examples/extensions/dart-ffi.extension.example.json",
+      "disposition": "retained",
+      "before_sha256": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "after_sha256": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "examples/extensions/protocol-session.example.json",
+      "disposition": "retained",
+      "before_sha256": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+      "after_sha256": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "examples/extensions/schema-vectors.json",
+      "disposition": "retained",
+      "before_sha256": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+      "after_sha256": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "examples/madb.example.toml",
+      "disposition": "retained",
+      "before_sha256": "9be69d8185748ded5a00779919de3f862589634e677e8174a6c96314b6a9095a",
+      "after_sha256": "9be69d8185748ded5a00779919de3f862589634e677e8174a6c96314b6a9095a",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "product/01-positioning-and-requirements.md",
+      "disposition": "updated",
+      "before_sha256": "b45286bb5864a32f51658158ed83c87b02abf4602c8b727c2723ac35170eb17f",
+      "after_sha256": "db64ba16c23da8a8f87648d76dc42976d6c220769ec50872b244fd08a3c7e03a",
+      "review": "将能力承诺绑定到具体 profile，明确主线和实验后端边界。"
+    },
+    {
+      "path": "product/02-capabilities-and-roadmap.md",
+      "disposition": "updated",
+      "before_sha256": "e7553c6c0207290d16dd8d37e2a36714d0208be589ec38b07c2db90041f88bcd",
+      "after_sha256": "a94d0ed6131611c41c9785ef5864ef5ce2c0623f9816fdc779581140993fcc1a",
+      "review": "同步默认路线、可选增强、正式交付要求及独立实验范围。"
+    },
+    {
+      "path": "product/03-developer-experience.md",
+      "disposition": "updated",
+      "before_sha256": "7717bfcb69ff43bb6cad3305ebe236265d5f28721a9d3cf3d090078280f61701",
+      "after_sha256": "1fc4210707899eeb7265a4f3bed0a9e9b603f9a7b831f360e7f6bd87ab427fc3",
+      "review": "补充真实消费者、发布依赖与诊断体验，避免下载成功被当作可用。"
+    },
+    {
+      "path": "product/04-project-initialization.md",
+      "disposition": "updated",
+      "before_sha256": "12be4a3d58384766f1903bf571c974edcf2e9b0cb84eb477090354d8d87333df",
+      "after_sha256": "6a5c09a20ed9f948d5901c6fc57cb6f9d7b50cc86e77aad2d098f9ba30099ae3",
+      "review": "把平台选择规则转化为用户配置体验，补齐工程模块、坐标和 SDK 消费验收。"
+    },
+    {
+      "path": "references/README.md",
+      "disposition": "updated",
+      "before_sha256": "b4648de5b75fdd3174cbc3e7bd040b5815022fe0739e2ddc51254638c8c2cb6d",
+      "after_sha256": "14c10f1276c0518b5f6c34773db0bb7192755b61090b87254601ecec0aba68c5",
+      "review": "区分当前决策与历史记录；补充关键上游依据和本地案例入口。"
+    },
+    {
+      "path": "references/glossary.md",
+      "disposition": "updated",
+      "before_sha256": "23f0a0dc8679c54bbf1950fd1c2bd67e7f6f7309edc4ae4531df4a4e6623f099",
+      "after_sha256": "8e53c0b7d7f0f7a47bfffb214c8d9d1e61a6f59a59d6e969c8fe98077aaccec6",
+      "review": "新增 profile 五维、CPF、akinterop、GAV、根发布和模板补丁身份术语。"
+    },
+    {
+      "path": "reviews/2026-10-24-final-audit.md",
+      "disposition": "updated",
+      "before_sha256": "fa9e41d54b6a938fabae680184e2690677cc52b4ddac3f0dbf0ac20a5601ac9b",
+      "after_sha256": "7138a6a1a8c35f1a1ed02bd0a4547a94d0d9fa617fda00b8217d9c079241b398",
+      "review": "明确标注 0.5 历史记录，浏览器检查指向归档结果，避免与当前验证混用。"
+    },
+    {
+      "path": "reviews/2026-10-24-route-reconciliation.md",
+      "disposition": "added",
+      "before_sha256": null,
+      "after_sha256": "3fc1e7fcfdfb9bdb9c177e1c44122ab42b4d4e103b90ddd58eb92d9a46101312",
+      "review": "新增本轮结论、完整逐文件修改清单、保留项及实际校验边界。"
+    },
+    {
+      "path": "reviews/inventory-0.4.json",
+      "disposition": "retained",
+      "before_sha256": "0f361ed3f764fb6b6e91fd15e2e72d79641dda88182abc38a520c7ff93383b6d",
+      "after_sha256": "0f361ed3f764fb6b6e91fd15e2e72d79641dda88182abc38a520c7ff93383b6d",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "reviews/inventory-0.7.json",
+      "disposition": "added",
+      "before_sha256": null,
+      "after_sha256": null,
+      "review": "新增全目录逐文件处置及修改前后摘要；自身摘要排除以避免循环。"
+    },
+    {
+      "path": "reviews/validation-result-0.5.json",
+      "disposition": "added",
+      "before_sha256": null,
+      "after_sha256": "76a74576089797c89bff562ffc687e42c842ed6a977a79522a4b4a03c2aed2bd",
+      "review": "原样归档旧验证结果，保留历史证据。"
+    },
+    {
+      "path": "reviews/validation-result.json",
+      "disposition": "updated",
+      "before_sha256": "76a74576089797c89bff562ffc687e42c842ed6a977a79522a4b4a03c2aed2bd",
+      "after_sha256": "27577b0a94ffec9dde981fca6d04ba0fd38f7d46ae8140a84774b9db037227ea",
+      "review": "替换为本轮实际结构、schema、引用、生成漂移和静态 HTML 检查结果；明确浏览器复验受阻。"
+    },
+    {
+      "path": "schemas/README.md",
+      "disposition": "retained",
+      "before_sha256": "58ea9dd49b9ea6893d679754e87dff541829f5a134d90c8b73c66ee7ebc4bab1",
+      "after_sha256": "58ea9dd49b9ea6893d679754e87dff541829f5a134d90c8b73c66ee7ebc4bab1",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "schemas/extension-manifest.schema.json",
+      "disposition": "retained",
+      "before_sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "after_sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "schemas/extension-wire.schema.json",
+      "disposition": "retained",
+      "before_sha256": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+      "after_sha256": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "tools/render_visuals.py",
+      "disposition": "retained",
+      "before_sha256": "399591e3feb284da503a0d57d8047596b95a8e877569e1b19390b2893242ce73",
+      "after_sha256": "399591e3feb284da503a0d57d8047596b95a8e877569e1b19390b2893242ce73",
+      "review": "复核后保留；原规则、结构或历史证据继续适用。"
+    },
+    {
+      "path": "tools/templates/architecture-overview.html",
+      "disposition": "updated",
+      "before_sha256": "3c2522cb75cd654b53b03508b113cdbc137cc8f395d444d709d1ea158165be5e",
+      "after_sha256": "5c617e0150671e1e5a36ba1c72eafb370d455109176145fce1c5e177a8c39304",
+      "review": "更新全景模板及 catalog 驱动的决策卡和任务链接。"
+    },
+    {
+      "path": "tools/templates/implementation-progress.html",
+      "disposition": "updated",
+      "before_sha256": "40543154e7cc41b79af4844fe0288f3e2d1c34d0be132692348837fe39a049d7",
+      "after_sha256": "855f581c13ece851bb3b16c67f3ac63647a1aafc74deed405fd888ae5b4d8afa",
+      "review": "更新进度模板；同时显示 route/probe、独立扩展验收、搜索和重复 hash 导航。"
+    },
+    {
+      "path": "tools/templates/kotlin-arkts-architecture.html",
+      "disposition": "updated",
+      "before_sha256": "6a8da312b38b1014d7878d66bfe2ce9b4974dfe45228e53dedf8509781aa28ac",
+      "after_sha256": "9380de15eb19076c5d40f0b4dd08ddb20abeaba2b2cc7205ce406b7c91989d3a",
+      "review": "更新 ArkTS 专题模板，默认 akinterop，切换 KNOI 时同步节点详情。"
+    },
+    {
+      "path": "tools/templates/kotlin-swift-architecture.html",
+      "disposition": "updated",
+      "before_sha256": "8df8ad59d753ae02332beda04feffd01829b915fe9d82cede16ce1b7096f31a9",
+      "after_sha256": "4445703d72c3bad9f65aa51b398833604bc7b102dd3c0e3131dec4797dd98218",
+      "review": "更新 Swift 专题模板，状态和基线由 catalog 提供，明确增强与分发职责。"
+    },
+    {
+      "path": "tools/templates/shared.css",
+      "disposition": "updated",
+      "before_sha256": "7c0862ca416a9931ecaf758d53c7e3108b58b3d0261fb746123821cef499d19a",
+      "after_sha256": "1f19a817a5a1d50ba902e1c9d63845bdf8791240e608f597d67392e2fd3f669a",
+      "review": "调整四图导航、长文本换行及局部滚动规则，降低窄屏溢出风险。"
+    },
+    {
+      "path": "validation/01-testing-strategy.md",
+      "disposition": "updated",
+      "before_sha256": "27c76ea7b7f4fb5e444f62ea86495878999bdf8dc98c45188b79fbe30f0a62a4",
+      "after_sha256": "f42892a4dc47902dd4d9e41830d3d5a7ad5809278e60b1a7a7d7d73af57724bf",
+      "review": "加入生成模板、平台装配、正式分发与独立消费验证；区分构建与真机运行证据。"
+    },
+    {
+      "path": "validation/02-lab-architecture.md",
+      "disposition": "updated",
+      "before_sha256": "d3f5b42a2e5357561e33c3084fec7683ee067f05237cf1945f1318c3f93b2591",
+      "after_sha256": "48d3e9307d5e41ef7bade06e08524076b5223335215ac4295789bb83f18146be",
+      "review": "补充双发布线、独立消费者、平台场景和实验隔离组织。"
+    },
+    {
+      "path": "validation/03-case-specification.md",
+      "disposition": "updated",
+      "before_sha256": "c2ab64f53612d39870a36932a332216929314b392895074808fb6b6b3c7b9408",
+      "after_sha256": "3ba48a3c6020dd951dda4320ba25465b111dd6a43dfa10d32084e315e6712bda",
+      "review": "补齐模板/组件/补丁身份及平台场景证据，避免不可追溯的通过记录。"
+    },
+    {
+      "path": "validation/04-problem-catalog.md",
+      "disposition": "updated",
+      "before_sha256": "1d2e61ae6b3fb94006ffd5ee52bce544d5b922c913452d346d61e26aa0515175",
+      "after_sha256": "caf97eea9f8a66412394a8cb07872a6796e64e54c9aa6871c1987b5355926c1c",
+      "review": "将新增选型问题关联到现有公共问题及基础用例组，避免重复扩张分类。"
+    },
+    {
+      "path": "validation/05-language-onboarding.md",
+      "disposition": "updated",
+      "before_sha256": "cd0cc4856ef71a112679c1a76ef2f0d35e8fb04025ed72bc051aac048f27cc60",
+      "after_sha256": "c8e17caaa92adc5912dbca382d04297913098977c862cc2b32a63b5253440faf",
+      "review": "加入 UniFFI-ArkTS 的独立实验接入、线程/取消/真机和缺环境处理要求。"
+    },
+    {
+      "path": "validation/06-project-initialization.md",
+      "disposition": "updated",
+      "before_sha256": "c3bd87c7e6ffc815c045f4683cd39f89afc87e677f73295969ba6dc010888369",
+      "after_sha256": "6f428ef0c7a341b18285d59590dc86fcf88fa2e1c1749272e2a61966afd47773",
+      "review": "补充 Android 模块/native 打包/测试、双 GAV、Swift 分发及 IDE/宿主失败样例。"
+    },
+    {
+      "path": "validation/07-developer-ergonomics.md",
+      "disposition": "updated",
+      "before_sha256": "04591069713ab6789fc426c950310e25754fa7d7398c8ff99c85098f656599b1",
+      "after_sha256": "5a2e3e33b55f7152c07ddc42ed1a7e7d5c1bf6fa4ffc81e4cf94c3c002a61079",
+      "review": "增加 SKIE 可调用性、声明归属、单次完成及跨机器预生成 SDK 消费检查。"
+    },
+    {
+      "path": "visuals/README.md",
+      "disposition": "updated",
+      "before_sha256": "a2682d560d782ed2ec3a370958deb871761c0748943bc628f738fd91313fbbb0",
+      "after_sha256": "2d17f3c2ca0d270cba812647511e4bffbac7c60d040acbe0321e571a7ac92c36",
+      "review": "统一四张图的阅读、维护和生成方式，注明当前基线与尚待浏览器复验。"
+    },
+    {
+      "path": "visuals/architecture-overview.html",
+      "disposition": "updated",
+      "before_sha256": "c8d4fece3eab7a2cfa804298e14bcb0225708e72da252d89c58a703ab3d7020f",
+      "after_sha256": "1fe741bded3654cfa0f0a587c873a58780e69d22323e4eebd615efaa5837984d",
+      "review": "重新生成全景；增加六项选型决策及任务入口，同步实际目录数据和状态。"
+    },
+    {
+      "path": "visuals/implementation-progress.html",
+      "disposition": "updated",
+      "before_sha256": "1d9d3d0aa72875eae9b6a3040e91f4250fcdc61a041988682a794b8ec6cc4455",
+      "after_sha256": "cfcac4b1d699b8c11718cde0e75f0bd7f9226bf65f8674b0cf4ed203db544ee2",
+      "review": "重新生成 39 项计划；显示路线与探针、独立扩展验收，修复重复深链接及搜索字段。"
+    },
+    {
+      "path": "visuals/kotlin-arkts-architecture.html",
+      "disposition": "updated",
+      "before_sha256": "31a5c5bd7c7c8bb3c2af098de50b917c737b5ac0f0026f5080b45353d76dbe3e",
+      "after_sha256": "2e564e18c0310db2a6ce7711b4a0ae97e4e84212080563e0347947af752ff155",
+      "review": "重绘 CPF+akinterop 主线，保留独立 KNOI 扩展；同步切换详情、双发布线及验证门禁。"
+    },
+    {
+      "path": "visuals/kotlin-swift-architecture.html",
+      "disposition": "updated",
+      "before_sha256": "57191c09ba82adc214334a6f14cc8ceff85c9a64e7ebd41bb236f1d35d9e2330",
+      "after_sha256": "d7b1363309f6373e3d389b285a9a0464ddcd61d305d8ceeabcf2ca0ae7c69155",
+      "review": "重新生成 SKIE 默认与 NC 可选组合；补齐分发、可调用性、反向调用和 C++ 装配边界。"
+    }
+  ]
+}

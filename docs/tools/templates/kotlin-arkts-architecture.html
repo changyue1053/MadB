@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>MadB · Kotlin/Native ↔ ArkTS 架构全景</title>
+<style>
+/* SHARED_CSS */
+:root{--upstream:#4a6492;--upstream-soft:#eaf0fb;--domain:#7d6244;--domain-soft:#f6efe5;--swift:#87587b;--swift-soft:#f4eaf1;--node:#fff;--edge:#849993}
+:root[data-theme=dark]{--upstream:#abc2f5;--upstream-soft:#273951;--domain:#e2bd89;--domain-soft:#3c3329;--swift:#dfb2d5;--swift-soft:#3e3040;--node:#18292e;--edge:#7f9d95}
+html{scroll-behavior:smooth;scroll-padding-top:24px}main{max-width:1530px}.hero{grid-template-columns:1fr 260px}.hero h1{font-size:clamp(28px,3.2vw,45px)}.hero .preview{display:inline-block;margin-bottom:12px;padding:4px 10px;border:1px solid #4e796c;border-radius:6px;color:#cae3d7;font-size:12px}.hero-stamp{min-width:0;line-height:1.9}.hero-stamp strong{font-size:17px}.hero-stamp p{font-size:12px;margin-top:8px;line-height:1.8}.subnav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0}.subnav a{background:var(--panel);border:1px solid var(--line);border-radius:30px;padding:8px 14px;font-size:12px;color:var(--muted)}.subnav a:hover{background:var(--soft);color:var(--accent);text-decoration:none}
+.profile-panel{padding:22px 25px}.profile-row{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap}.profile-choices{display:flex;gap:9px;flex-wrap:wrap}.profile-choice{padding:12px 17px;text-align:left;line-height:1.6;min-height:67px}.profile-choice b{display:block;font-size:14px}.profile-choice span{display:block;font-size:11px;color:var(--muted)}.profile-choice[aria-pressed=true]{background:var(--soft);border-color:var(--accent)}.profile-description{font-size:13px;color:var(--muted);margin:15px 0 0}.choice-label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.trinity{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:15px}.trinity article{padding:20px 23px;border-top:3px solid var(--accent)}.trinity article:nth-child(1){border-top-color:var(--upstream)}.trinity article:nth-child(2){border-top-color:var(--swift)}.trinity small{display:block;font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px}.trinity h3{font-size:16px}.trinity p{font-size:13px;color:var(--muted);margin:0}.section{margin-top:38px}.section-head h2 b{display:inline-grid;place-items:center;width:29px;height:29px;background:var(--soft);color:var(--accent);font-size:12px;border-radius:8px;margin-right:9px;font-weight:600}.diagram-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 21px;border-bottom:1px solid var(--line)}.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.legend span{display:flex;align-items:center;gap:6px}.dot{width:9px;height:9px;border-radius:50%;background:var(--accent);display:inline-block}.dot.up{background:var(--upstream)}.dot.biz{background:var(--domain)}.dot.ui{background:var(--swift)}.diagram-scroll{overflow:auto;padding:12px 18px;background:var(--panel);overscroll-behavior-x:contain}.diagram-scroll svg{width:100%;min-width:1100px;display:block;color:var(--ink)}.map-band{fill:var(--panel2)}.map-subband{fill:var(--soft);opacity:.55}.map-label{fill:var(--muted);font:600 12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;letter-spacing:1px}.edge{stroke:var(--edge);stroke-width:1.4;fill:none}.edge.control{stroke-dasharray:5 5}.edge.async{stroke:var(--swift)}.edge.type{stroke:var(--upstream)}.edge-label{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}.edge-label-bg{fill:var(--panel)}.graph-node{cursor:pointer;outline:none}.graph-node rect.box{fill:var(--node);stroke:var(--line);stroke-width:1.3;rx:12}.graph-node .bar{fill:var(--accent)}.graph-node.upstream .bar{fill:var(--upstream)}.graph-node.domain .bar{fill:var(--domain)}.graph-node.arkts .bar{fill:var(--swift)}.graph-node:hover rect.box,.graph-node:focus-visible rect.box,.graph-node.selected rect.box{stroke:var(--accent);stroke-width:2.3}.graph-node .node-title{fill:var(--ink);font:600 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.graph-node .node-copy{fill:var(--muted);font:12px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}.graph-node .node-kicker{fill:var(--accent);font:10px ui-monospace,SFMono-Regular,monospace;letter-spacing:.6px}.graph-node.upstream .node-kicker{fill:var(--upstream)}.graph-node.arkts .node-kicker{fill:var(--swift)}.graph-node.domain .node-kicker{fill:var(--domain)}.dimmed{opacity:.22}.disabled-node rect.box{stroke-dasharray:5 5}.disabled-node{opacity:.45}.graph-foot{font-size:12px;color:var(--muted);padding:0 21px 17px}.detail-panel{border-top:1px solid var(--line);background:var(--panel2);padding:22px 25px;display:grid;grid-template-columns:240px 1fr 1fr;gap:26px;min-height:170px}.detail-panel h3{margin:4px 0 8px}.detail-panel p{font-size:13px;margin:0;color:var(--muted)}.detail-panel ul{margin:7px 0 0;padding-left:18px;font-size:13px}.detail-panel .mini{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.detail-links{margin-top:12px;font-size:12px;display:flex;flex-wrap:wrap;gap:12px}.process{display:grid;grid-template-columns:repeat(5,1fr);gap:0;counter-reset:step}.process article{position:relative;padding:22px;border-right:1px solid var(--line)}.process article:last-child{border-right:0}.process article:before{counter-increment:step;content:"0" counter(step);font:12px ui-monospace,monospace;color:var(--accent);display:block;margin-bottom:12px}.process h3{font-size:15px}.process p{font-size:12px;color:var(--muted);margin:0}.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}.padded{padding:23px 25px}.padded p{font-size:13px;color:var(--muted)}.code{margin:12px 0 0;white-space:pre;overflow:auto;background:var(--code);border-radius:10px;padding:18px;font:12px/1.9 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--ink);tab-size:2}.code code{font:inherit;background:none;padding:0}.rule-list{padding:0;margin:14px 0 0;list-style:none}.rule-list li{border-top:1px solid var(--line);padding:12px 0;font-size:13px;color:var(--muted)}.rule-list b{color:var(--ink)}.rule-list li:last-child{padding-bottom:0}.source-ref{font-size:11px;margin-left:5px}.warning{background:var(--domain-soft);border-left-color:var(--domain)}.warning strong{color:var(--domain)}.runtime-notes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:21px;border-top:1px solid var(--line)}.runtime-notes h3{font-size:14px}.runtime-notes p{font-size:12px;color:var(--muted);margin:0}.seq-lane{stroke:var(--line);stroke-dasharray:4 6;stroke-width:1.5}.seq-head{fill:var(--panel2)}.seq-line{stroke:var(--accent);fill:none;stroke-width:1.8}.seq-text{font:13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:5px;stroke-linejoin:round}.seq-owner{font:600 14px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:var(--ink)}.seq-small{font:11px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;fill:var(--muted)}.seq-number{fill:var(--accent);font:12px ui-monospace,monospace}
+.model-options{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.model-card{padding:24px}.model-path{display:flex;flex-direction:column;gap:8px;margin:17px 0}.model-path div{padding:12px 13px;background:var(--panel2);border-radius:8px;font-size:13px}.model-path .arrow{text-align:center;color:var(--accent);line-height:1;padding:0;background:none;font-size:19px}.model-card p{font-size:12px;color:var(--muted);margin:10px 0 0}.model-card h3{font-size:16px}.ownership-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.owner-tree{display:grid;gap:8px}.owner-tree div{padding:12px 15px;background:var(--panel2);border-radius:8px;font-size:13px}.owner-tree .child{margin-left:28px;border-left:3px solid var(--line)}.owner-tree .grandchild{margin-left:56px;border-left:3px solid var(--line)}.owner-tree span{display:block;font-size:12px;color:var(--muted)}.states{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:18px 0}.states strong{border:1px solid var(--line);padding:10px 15px;border-radius:8px;background:var(--panel2);font-size:13px}.states i{font-style:normal;color:var(--muted)}.states strong.closing{border-color:var(--domain);color:var(--domain);background:var(--domain-soft)}.ownership-grid p{font-size:13px;color:var(--muted)}.table-scroll td{min-width:160px}.table-scroll th:first-child,.table-scroll td:first-child{min-width:190px}.table-scroll table{font-size:12px}.table-scroll th{font-size:11px}.patterns{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.patterns article{padding:18px 20px}.patterns h3{font-size:14px}.patterns p{font-size:12px;color:var(--muted);margin:0}.gate-status{white-space:nowrap;color:var(--warn)}.check-count{font-size:12px;color:var(--muted)}.references{display:grid;grid-template-columns:repeat(2,1fr);gap:13px 24px;margin:0;padding:0;list-style:none}.references li{border-bottom:1px solid var(--line);padding:10px 0}.references b{font-size:12px;color:var(--muted);margin-right:8px}.references a{font-size:13px}.references small{display:block;color:var(--muted);font-size:11px;margin:5px 0 0 33px}.fact-stamp{font-size:12px;color:var(--muted)}.bottom-note{font-size:12px;color:var(--muted);margin:20px 0 0}.print-profile{display:none}
+@media(max-width:900px){.hero{grid-template-columns:1fr}.profile-row{gap:15px}.trinity{grid-template-columns:1fr}.trinity article{padding:17px 20px}.detail-panel{grid-template-columns:1fr 1fr}.detail-panel>div:first-child{grid-column:1/-1}.process{grid-template-columns:1fr 1fr}.process article{border-bottom:1px solid var(--line)}.split,.ownership-grid{grid-template-columns:1fr}.model-options{grid-template-columns:1fr}.model-path{flex-direction:row;align-items:stretch}.model-path div{flex:1}.model-path .arrow{flex:0;align-self:center;transform:rotate(-90deg)}.patterns{grid-template-columns:1fr 1fr}.runtime-notes{grid-template-columns:1fr}.references{grid-template-columns:1fr}}
+@media(max-width:520px){.profile-panel{padding:18px}.profile-choices{width:100%;flex-direction:column}.profile-choice{width:100%}.hero-stamp{display:block}.subnav{gap:7px}.subnav a{padding:7px 12px}.detail-panel{grid-template-columns:1fr;padding:18px;gap:15px}.process{grid-template-columns:1fr}.process article{border-right:0}.model-path{flex-direction:column}.model-path .arrow{transform:none}.patterns{grid-template-columns:1fr}.diagram-head{padding:14px}.diagram-scroll{padding:10px}.legend{gap:9px}.section{margin-top:29px}.section-head h2{font-size:19px}.padded{padding:20px}.toplinks{flex-wrap:wrap}.table-scroll table{min-width:850px}.toolbar button{font-size:12px;padding:9px 11px}.profile-row label{width:100%}.profile-row select{width:100%}}
+@media print{.subnav,.profile-panel,.diagram-head .toolbar,.diagram-head button{display:none}.print-profile{display:block}.hero{grid-template-columns:1fr}.hero-stamp{display:none}.diagram-scroll{overflow:visible;padding:0}.diagram-scroll svg{min-width:0;width:100%}.detail-panel{display:none}.section{break-before:auto}.panel{break-inside:auto}.trinity{grid-template-columns:repeat(3,1fr)}.split,.ownership-grid{grid-template-columns:1fr}.model-options{grid-template-columns:repeat(3,1fr)}.patterns{grid-template-columns:repeat(2,1fr)}.table-scroll table{min-width:0}.table-scroll td,.table-scroll th:first-child,.table-scroll td:first-child{min-width:0}.references{grid-template-columns:1fr 1fr}.dimmed{opacity:.45}}
+</style>
+</head>
+<body id="top">
+<header class="topbar"><a class="brand" href="architecture-overview.html"><em>M</em>MadB <small>ARKTS ROUTE / DETAIL</small></a><div class="toplinks"><a href="route-atlas.html">全部路线</a><a href="kotlin-swift-architecture.html">Swift 专题</a><a href="implementation-progress.html">实施计划</a><button id="theme" aria-label="切换深色主题">深色</button><button id="print">打印 / PDF</button></div></header>
+<main>
+ <aside class="note" role="note"><strong>主线已明确：CPF 工具链 + akinterop。</strong> CPF 提供鸿蒙 Kotlin 编译与配套生态，akinterop 提供调用桥，CMP 为可选 UI 层。KNOI 单独扩展，不叠加到主线调用链。版本、方向与可用能力仍须通过<a href="../architecture/16-technology-stack-and-versions.md">技术栈候选验证</a>；图中配置均为设计，认证以目录数据为准。</aside>
+ <section class="hero"><div><span class="preview">设计预览 · 主线与扩展分别验证</span><div class="eyebrow">KN-ARKTS-NAPI · BRIDGE / PAYLOAD / ENVIRONMENT</div><h1>Kotlin/Native ↔ ArkTS<br>线路与扩展增强</h1><p>CPF-KMP-CMP 工具链构建鸿蒙 Kotlin；akinterop 生成受支持的互调接线。MadB 补齐载荷、异步、资源、环境与发布协议，业务使用普通 ArkTS SDK。</p></div><div class="hero-stamp"><strong>调用桥、载荷与异步<br>三个独立设计维度</strong><p>主线：S3 · C07 / I05 / L05<br>KNOI：S6 · X08 / P14；ANI：X03<br>设计基线：<span data-plan-baseline>读取目录</span><br>资料核对：2026-10-24</p></div></section>
+ <nav class="subnav" aria-label="本页目录"><a href="#overview">01 全景</a><a href="#routes">02 线路与扩展</a><a href="#payload">03 数据路径</a><a href="#runtime">04 双向时序</a><a href="#environment">05 内存与环境</a><a href="#delivery">06 工程与模块</a><a href="#gates">07 案例与验收</a><a href="#sources">08 依据</a></nav>
+ <section class="panel profile-panel" aria-label="架构配置预览"><div class="profile-row"><div><span class="choice-label">调用后端 · 每个边界配置选择一个</span><div class="profile-choices"><button class="profile-choice" data-mode="akinterop" aria-pressed="true"><b>CPF + akinterop 主线</b><span>S3 · C07 / I05 / L05 真实消费验证</span></button><button class="profile-choice" data-mode="knoi" aria-pressed="false"><b>KNOI 独立扩展</b><span>不同后端配置 · 不继承主线认证</span></button></div></div><label><span class="choice-label">接口载荷策略预览</span><select id="payload-mode"><option value="typed">类型化参数 / 受限 DTO</option><option value="json">受检 JSON 消息</option><option value="binary">字节缓冲 / 二进制</option></select></label></div><p id="profile-description" class="profile-description" aria-live="polite"></p></section>
+ <div class="trinity"><article class="panel"><small>PLATFORM MECHANISM</small><h3>Node-API：互操作底座</h3><p>目标平台提供调用、值、引用和调度设施。能力由精确 SDK / API Level 确认；桌面 Node.js 测试不能替代 ArkTS 目标验证。</p></article><article class="panel"><small>BACKEND ADAPTER</small><h3 id="bridge-owner">akinterop：调用桥</h3><p id="bridge-description"></p></article><article class="panel"><small>SEMANTICS / DEVELOPER EXPERIENCE</small><h3>MadB：可组合的增强</h3><p>类型与载荷校验、Promise / 订阅、显式关闭、env 隔离、ArkUI 状态、初始化、诊断与真实消费验证。</p></article></div>
+ <section class="section" aria-labelledby="roots-title"><div class="section-head"><div><h2 id="roots-title">先分清工具链、调用桥和交付身份</h2><p>共享业务源码可以复用；编译器、依赖元数据、生成目录与发布身份分别管理。</p></div><a href="../architecture/16-technology-stack-and-versions.md">查看完整配套与探针 →</a></div><div class="split"><article class="panel padded"><h3>鸿蒙主线 · CPF 根</h3><div class="model-path"><div>共享源码 + OHOS 平台适配</div><div class="arrow">↓</div><div>CPF Kotlin / KSP1 / 配套依赖<br>akinterop 注解 + 处理器 + 插件 + runtime<br>CMP 可选</div><div class="arrow">↓</div><div>KN .so + ArkTS 声明 / SDK → HAR / HAP</div></div><p>DevEco、SDK、Hvigor、ohpm、ABI 与后端同锁；原生代码仍按目标工具链编译。</p></article><article class="panel padded"><h3>官方 Kotlin 根 · Apple / Android / JVM</h3><div class="model-path"><div>同源代码 + 官方目标适配</div><div class="arrow">↓</div><div>官方 Kotlin / KSP2 / 配套依赖<br>Apple SKIE 或 Android KMP 插件按目标加载</div><div class="arrow">↓</div><div>独立制品坐标 + 独立根元数据 → 真实消费者</div></div><p>不把官方 KLIB 交给旧 CPF，不让两条流水线覆盖同一坐标。组合应用另查重复 runtime、core 实例与原生库归属。</p></article></div><div class="note warning"><strong>经过 Rust 的链路增加一层候选门禁。</strong>ArkTS → akinterop → Kotlin/Native → Gobley → Rust 需要 Gobley 修复组合、实际目标 cinterop 与取消/释放探针；不能用 ArkTS → napi-ohos → Rust 的通过记录替代。两条路径共用核心时，还要验证单一实例与句柄归属。</div></section>
+ <section class="section" id="overview"><div class="section-head"><div><h2><b>01</b>构建期与运行期全景</h2><p>上方 CPF 配套约束编译和依赖，下方 akinterop / KNOI 是调用桥选择。切换后端不替代工具链验证，也不表示载荷组合已认证。</p></div><span class="badge draft">点击节点查看责任与限制</span></div><div class="panel">
+ <div class="diagram-head"><div class="toolbar" id="flow-filters"><button class="tab" data-flow="all" aria-pressed="true">全部</button><button class="tab" data-flow="build" aria-pressed="false">构建链</button><button class="tab" data-flow="data" aria-pressed="false">数据与协议</button><button class="tab" data-flow="async" aria-pressed="false">异步与观察</button><button class="tab" data-flow="env" aria-pressed="false">资源与 env</button></div><div class="legend"><span><i class="dot biz"></i>业务作者</span><span><i class="dot"></i>MadB</span><span><i class="dot up"></i>后端 / 平台</span><span><i class="dot ui"></i>ArkTS 应用</span></div></div>
+ <div class="diagram-scroll"><svg id="overview-svg" viewBox="0 0 1240 1010" role="group" aria-label="Kotlin Native 与 ArkTS 架构全景"></svg></div><p class="graph-foot">实线表示声明、制品或调用；虚线表示配置与支持关系。两个后端不会在同一调用链中层层串接。每个 env 都有自己的引用、调度与退出上下文。</p>
+ <div class="detail-panel" aria-live="polite"><div><span class="mini" id="detail-kind"></span><h3 id="detail-title"></h3><p id="detail-summary"></p><div class="detail-links" id="detail-links"></div></div><div><span class="mini">承担的责任</span><ul id="detail-does"></ul></div><div><span class="mini">边界与验收</span><ul id="detail-constraints"></ul></div></div></div></section>
+ <section class="section" id="routes"><div class="section-head"><div><h2><b>02</b>主线、替代后端与扩展增强</h2><p>“增强普通 API”与“换一条运行时路线”有不同的验证范围。</p></div></div>
+ <div class="panel table-scroll"><table><thead><tr><th>位置</th><th>组成与用途</th><th>需要独立确认</th><th>计划关系</th></tr></thead><tbody>
+ <tr><td>CPF 工具链 + akinterop 主线</td><td>CPF Kotlin / KSP / 配套依赖构建 OHOS；akinterop 注解、处理器、插件、runtime 生成互调。CMP 按需启用。</td><td>完整工具链组合、方向与类型位置、装载注册、线程与 env；生成声明须经过真实 ArkTS 编译。</td><td>P05 探针；C07 / I05 / L05 收口，状态见本页目录数据</td></tr>
+ <tr><td>KNOI 独立扩展</td><td>另一个调用桥适配器；复用其公开插件、KSP、运行库与注册机制，不与 akinterop 串接。</td><td>工具链配套、接口能力、依赖预载与总注册入口；单独 HAP 消费与证据。</td><td>扩展登记；P05 可提前比较，不因此增加主线认证</td></tr>
+ <tr><td>受检数据与状态增强</td><td>声明式导出、受限 DTO、JSON codec、缓冲包装、状态 class、Promise / 订阅门面。</td><td>按接口能力选择；字段和行为有单一权威源。UI 模型与线上载荷分离。</td><td>C07 / L05，S3</td></tr>
+ <tr><td>工程与工具增强</td><td>madb init、DevEco 原生工程、版本锁、生成漂移检查、性能钩子、真实 HAP 消费。</td><td>CLI / IDE 构建一致，修改源码后重建，Release 裁剪与混淆，证据与候选对应。</td><td>I05 / C09 / C10；后续 I07 为可选 IDE 向导</td></tr>
+ <tr><td>ANI 独立后端</td><td>采用不同的运行时接口与环境模型；保留进入 MadB 扩展协议的接入点。</td><td>ANI ABI、引用、线程与目标 SDK。接入 Kotlin/Native 还需额外的调用桥或 C ABI 适配探针。</td><td>X03，S6；目前没有登记 Kotlin/Native ↔ ANI 具体路线</td></tr>
+ </tbody></table></div>
+ <div class="split"><article class="panel padded"><h3>增强层的组合关系</h3><div class="owner-tree"><div><b>普通 ArkTS SDK</b><span>类型化方法、显式操作 / 订阅对象</span></div><div class="child"><b>可选便利层</b><span>ArkUI V1 / V2 状态接入、受支持装饰器、访问器</span></div><div class="child"><b>公共运行协议</b><span>一次完成、停止确认、引用与队列、错误映射</span></div><div class="grandchild"><b>选定调用后端＋载荷策略</b><span>主线 akinterop / 扩展 KNOI；按接口选择值 / JSON / 字节</span></div></div><p>便利入口复用普通 API。状态 getter 读取已同步数据，不能暗中执行阻塞调用或创建订阅。</p></article>
+ <article class="panel padded"><h3>ANI 候选接入路径 · 设计假设</h3><div class="model-path"><div>采用 ANI 的 ArkTS 目标运行时</div><div class="arrow">↓</div><div>独立 ANI 适配器 / 显式 C ABI 门面</div><div class="arrow">↓</div><div>经过目标工具链验证的 Kotlin/Native 导出</div></div><p>这条候选链尚需验证。可复用 MadB 契约、诊断格式与测试组织；Node-API 的 napi_env、TSFN、引用规则和通过记录不能直接搬过去。<a href="#ref-ani">[ANI 原生接口依据]</a></p></article></div>
+ </section>
+ <section class="section" id="payload"><div class="section-head"><div><h2><b>03</b>三种数据路径，独立于调用桥选择</h2><p>同一 SDK 可以按接口混合使用。下方策略切换展示职责变化，不执行真实传输。</p></div><span class="badge" id="payload-badge"></span></div>
+ <div class="model-options">
+ <article class="panel model-card"><span class="badge ok">受支持的类型形状</span><h3>类型化参数 / DTO</h3><div class="model-path"><div>Kotlin 类型与公开声明</div><div class="arrow">↓</div><div>后端转换 / 代理 / 引用</div><div class="arrow">↓</div><div>ArkTS 类型化 SDK</div></div><p>适合明确的小型参数、公开对象和宿主接口。仍需处理复制、代理身份和寿命；直接传对象不等于零拷贝。</p></article>
+ <article class="panel model-card"><span class="badge">显式协议选择</span><h3>受检 JSON 消息</h3><div class="model-path"><div>类型 / Schema 定义字段规则</div><div class="arrow">↓</div><div>编码 → 调用桥传 string → 解码</div><div class="arrow">↓</div><div>校验后的 ArkTS 数据</div></div><p>适合显式消息和兼容协议。生成校验，不以类型断言代替检查；JSON 不解决 env、线程、取消或释放。</p></article>
+ <article class="panel model-card"><span class="badge">大载荷 / 批量数据</span><h3>字节缓冲 / 二进制</h3><div class="model-path"><div>ByteArray / 明确的 native buffer</div><div class="arrow">↓</div><div>已验证的 buffer 转换与寿命</div><div class="arrow">↓</div><div>ArrayBuffer / TypedArray 外观</div></div><p>声明复制、借用或转移、长度和释放器；检查偏移与分离状态。后端不支持时报告缺口，不能默认零拷贝。</p></article>
+ </div>
+ <div class="note" id="payload-note" aria-live="polite"></div>
+ <div class="panel table-scroll" style="margin-top:18px"><table><thead><tr><th>必须保留的语义</th><th>设计与生成规则</th><th>典型验证</th></tr></thead><tbody>
+ <tr><td>整数 / ID</td><td>完整 64 位值选择受支持的 bigint 或受检字符串；number 只用于声明的安全范围。业务 ID 与运行时句柄分开。</td><td>转换前检查范围；禁止先丢精度再转字符串；旧 env 句柄与收窄值拒收。</td></tr>
+ <tr><td>空值 / 缺字段</td><td>null、undefined、缺字段、默认值分别定义。未知字段与未知变体按版本策略处理。</td><td>字段组合、非法标签、错误类型与超长载荷负例；转换失败不得变成合法空值。</td></tr>
+ <tr><td>enum / sealed / 泛型</td><td>按后端、方向和类型位置验证；必要时生成显式标签与字段投影，不使用 toString 作为协议。</td><td>每个带数据分支保真；目标 ArkTS 类型限制与真实编译单独检查。</td></tr>
+ <tr><td>Flow 与状态</td><td>流由订阅协议表达；每帧可携带 DTO、JSON 或字节。状态与事件分别定义回放、合并、顺序和溢出。</td><td>同步首帧、慢消费者、重新订阅；编码失败、拒收和投递失败分别执行声明策略。</td></tr>
+ <tr><td>错误与业务阶段</td><td>区分业务失败、协议错误、环境失效、取消与工具错误；保留“已入队 / 已受理 / 已完成”。</td><td>回调异常与 pending exception；重复终态、超时后成功、工作已产生副作用。</td></tr>
+ </tbody></table></div>
+ <div class="note warning"><strong>线上 DTO 与 ArkUI 观察实例分开。</strong>官方文档说明：装饰对象的 JSON 序列化可能包含观测用字段，反序列化得到的普通对象也不自动恢复观察能力。MadB 生成纯载荷转换，再更新已创建的状态实例；不把装饰器内部字段当作协议。<a href="https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/ui/state-management/arkts-new-observedV2-and-trace.md" target="_blank" rel="noreferrer">ArkUI 官方说明</a></div>
+ </section>
+ <section class="section" id="runtime"><div class="section-head"><div><h2><b>04</b>双向调用与退出时序</h2><p>同步方法保持明确的阻塞等级；以下异步场景展示线程投递与生命周期责任。</p></div></div><div class="panel">
+ <div class="diagram-head"><div class="toolbar"><button class="tab" data-scenario="call" aria-pressed="true">异步调用</button><button class="tab" data-scenario="observe" aria-pressed="false">Flow 订阅</button><button class="tab" data-scenario="cancel" aria-pressed="false">取消与迟到结果</button><button class="tab" data-scenario="reverse" aria-pressed="false">Kotlin → ArkTS</button><button class="tab" data-scenario="exit" aria-pressed="false">env 退出</button></div><span class="small" id="scenario-label"></span></div>
+ <div class="diagram-scroll"><svg id="sequence-svg" viewBox="0 0 1160 490" role="img" aria-label="Kotlin ArkTS 边界调用时序"></svg></div><div class="runtime-notes" id="runtime-notes" aria-live="polite"></div></div>
+ <div class="split"><article class="panel padded"><h3>开发者使用普通方法与观察对象</h3><p>以下是拟提供的 API 形态示意。方法名、类型和生命周期接入以最终生成契约为准。</p><pre class="code"><code>// 示意：普通 SDK，不暴露 napi_env 或原生指针。
+const observation = client.observeState(
+  (state: ScreenSnapshot) =&gt; {
+    viewState.apply(state);
+  }
+);
+
+const result = await client.send(command);
+// result 明确表达 accepted / completed 等业务阶段。
+
+// 页面观察 owner 发起停止：
+observation.requestStop();
+// 在可等待、由 owner 管理的收尾入口确认：
+await observation.awaitStopped();
+// 共享 engine 继续由应用 / 业务 owner 管理。</code></pre></article>
+ <article class="panel padded"><h3>低门槛增强不隐藏真实语义</h3><ul class="rule-list"><li><b>Promise：</b>只表达异步结果，不自动拥有取消或后台执行能力。需要取消的操作保留显式请求入口。</li><li><b>观察令牌：</b>关联订阅、generation、env 与 owner。是否保留后台观察由策略决定。</li><li><b>ArkUI：</b>V1 / V2 分别适配；页面可见、隐藏、销毁与 Ability 前后台分别映射。</li><li><b>装饰器：</b>用于声明或状态观测；构建期生成必需字段与适配方法，不依赖任意动态改写对象。@Trace 在这里指属性观测。</li><li><b>状态共享：</b>一个页面退订只结束自己的观察；共享 StateFlow 上游由 scope、共享策略与其他消费者决定。</li></ul></article></div></section>
+ <section class="section" id="environment"><div class="section-head"><div><h2><b>05</b>内存、线程与环境必须一起建模</h2><p>所有权明确到业务资源、操作、订阅、缓冲与回调引用。引用存在不代表能从任意线程使用。</p></div></div>
+ <div class="ownership-grid"><article class="panel padded"><h3>每个 env 一份上下文</h3><div class="owner-tree"><div><b>ArkTS 执行环境 / owner 线程</b><span>拥有该 env 的句柄作用域、回调与允许的 UI 调度入口。</span></div><div class="child"><b>EnvContext / 注册表</b><span>关联 env 身份、存活状态、订阅 generation、引用与回投队列。</span></div><div class="grandchild"><b>Kotlin 协程 / native 工作线程</b><span>携带受管 native 数据与操作身份；不直接携带临时 napi_value 操作 ArkTS。</span></div><div class="child"><b>受检回投</b><span>使用目标 SDK 与后端允许的 TSFN / 事件循环机制，返回所属 env 后再创建和调用 ArkTS 值。</span></div></div><p>如果某后端仅支持主 env，就明确限制为该配置；不能给一个全局 env 变量加锁后宣称多 Worker 安全。<a href="#ref-napi">[平台机制]</a></p></article>
+ <article class="panel padded"><h3>Open → Closing → Closed</h3><div class="states"><strong>Open</strong><i>→</i><strong class="closing">Closing</strong><i>→</i><strong>Closed</strong></div><ul class="rule-list"><li><b>关闭准入：</b>阻止新调用、注册与回投，取消本 owner 的观察和可取消任务。</li><li><b>排水收尾：</b>等待获准回调、在途数据和任务按协议收尾；迟到结果释放一次。</li><li><b>释放配对：</b>在允许的环境和线程上清理引用、句柄与调度对象，再解除依赖。</li><li><b>环境销毁：</b>进入失效状态后不再访问该 env；剩余 native 工作由独立 owner 保活与收尾。</li><li><b>超时：</b>保持真实的 Closing / Invalid 状态，不以超时作为提前释放仍在使用内存的许可。</li></ul></article></div>
+ <div class="patterns"><article class="panel"><h3>引用不是业务生命周期</h3><p>unref、删除引用、停止观察、取消工作、关闭引擎分别处理；避免把一次引用计数操作当作全部清理。</p></article><article class="panel"><h3>回调寿命覆盖在途调用</h3><p>注册可能同步回调。先建立上下文再启用来源；停止完成前保留所有获准调用需要的引用。</p></article><article class="panel"><h3>排水不能堵死回投线程</h3><p>不在 env 线程阻塞等待必须回到该线程的清理；回调内关闭不等待自己结束。</p></article><article class="panel"><h3>失败要封闭在边界</h3><p>检查平台状态与 pending exception；语言异常按契约转错误或进入失效状态，不能继续带病调用。</p></article></div>
+ </section>
+ <section class="section" id="delivery"><div class="section-head"><div><h2><b>06</b>工程落地：模块、构建与交付</h2><p>同一条路线的 Kotlin、ArkTS 和 native 制品必须配套。主线易用性随 S3 交付。</p></div></div>
+ <div class="panel process"><article><h3>锁定目标组合</h3><p>CPF Kotlin、KSP1 与 akinterop 配套组件；SDK / API Level、ABI、DevEco / hvigor / ohpm 与 ArkUI 能力。升级组合单独探针。</p></article><article><h3>提取与生成</h3><p>导出面、桥注册、类型声明、受检载荷、SDK、状态和生命周期接线；生成来源可定位。</p></article><article><h3>编译与封装</h3><p>CPF 独立 Gradle 根构建 KN .so；平台工具编译 ArkTS / native 并形成 HAR / 原生依赖包。官方线另用独立坐标及元数据发布。</p></article><article><h3>真实 HAP 消费</h3><p>独立工程安装候选，检查注册、装载、调用、UI、环境退出、设备与 Release。</p></article><article><h3>原样发布与升级</h3><p>类型声明、库、运行依赖和符号摘要成组冻结；通过后发布同一内容，升级重新核对兼容与证据。</p></article></div>
+ <div class="note warning"><strong>主线与扩展各自验证装载、注册和候选身份。</strong>CPF / akinterop 的 Gradle、KSP 与生成入口成套固定；KNOI 扩展另检查依赖 .so 预载与总 sharedLib 注册入口。模板显式配置库名和初始化；Lab 用真实 HAP 验证，示例版本不自动成为 MadB 版本锁。<a href="https://github.com/Tencent-TDS/KuiklyBase-components/blob/master/knoi/README-zh.md" target="_blank" rel="noreferrer">KNOI 接入说明</a></div>
+ <div class="panel table-scroll" style="margin-top:18px"><table><thead><tr><th>模块</th><th>责任与实现方式</th><th>生成 / 手写边界</th></tr></thead><tbody>
+ <tr><td>helpers / contracts</td><td>Reader 提取源码、KSP / 后端元数据，建立带来源与精度的契约。</td><td>复用既有声明；缺失的所有权、线程、取消和恢复策略由作者指定。</td></tr>
+ <tr><td>model / rules / plan</td><td>纯核心；检查能力、类型、生命周期前提与版本，生成任务图。</td><td>无 IO、无平台全局对象；不决定业务是否重试、何时清空草稿。</td></tr>
+ <tr><td>generators / 后端适配</td><td>Adapter / Strategy 默认接 CPF 配套 akinterop；KNOI 独立适配。按契约生成 DTO、codec、声明与注册接线。</td><td>字段有单一来源；不重复实现上游绑定；复杂领域投影保留明确手写点。</td></tr>
+ <tr><td>sdk/arkts + sdk/kotlin</td><td>Facade、操作与订阅状态机、BufferAdapter、ExecutorAdapter、必要资源保护。</td><td>普通 API 与便利语法共用实现。底层工作停止、业务同步与 native 安全仍需作者保证。</td></tr>
+ <tr><td>sdk/arkts/ui</td><td>小型 ArkUI V1 / V2 适配；生成本地状态类、绑定入口和生命周期模板。</td><td>观察实例更新与协议解码分开；不把装饰器或类型断言当作实例转换。</td></tr>
+ <tr><td>toolchains / templates / ide</td><td>madb init、Gradle 与 hvigor 接线、DevEco 导入、注册、装载和混淆规则。</td><td>复用既有构建计划；不覆写用户代码；不靠作者机器的绝对路径或私有缓存。</td></tr>
+ <tr><td>verification / artifacts / Lab</td><td>契约测试、真实消费、竞态、性能与制品身份；Packager 和 Store 分权。</td><td>测试 oracle 独立于生成器；生成成功、目标编译、设备通过分别记录。</td></tr>
+ </tbody></table></div>
+ <div class="patterns"><article class="panel"><h3>单一职责</h3><p>调用桥、编解码、订阅、UI 与发布按变化原因分开。</p></article><article class="panel"><h3>依赖倒置</h3><p>核心依赖稳定契约，后端差异留在适配器与目标配置。</p></article><article class="panel"><h3>组合与状态机</h3><p>能力按需组合；注册、关闭、取消和结果交接有明确状态。</p></article><article class="panel"><h3>显式能力失败</h3><p>不支持的类型或环境给出来源诊断；不静默改用 JSON 或减弱协议。</p></article></div>
+ </section>
+ <section class="section" id="gates"><div class="section-head"><div><h2><b>07</b>真实案例沉淀为验收项</h2><p>历史经验形成测试输入，不自动证明新后端或新版本已通过。</p></div><span class="badge draft">所有 MadB 产品配置仍待实现与验证</span></div>
+ <div class="panel table-scroll"><table><thead><tr><th>案例 / 风险</th><th>工具应提供的控制</th><th>必需验证</th></tr></thead><tbody>
+ <tr><td>toString 充当变体协议</td><td>生成显式标签、字段与版本规则。</td><td>带数据 sealed 分支、未知标签、字段不一致；对应历史 ADR-028。</td></tr>
+ <tr><td>Long 在不同路径映射不同</td><td>接口级数值契约；safe-int53、bigint 或字符串分开。</td><td>边界值、精度、负值、整数写法与拒收策略。</td></tr>
+ <tr><td>编码失败导致永久退订</td><td>编码、解码拒收、投递和 env 错误分别归类。</td><td>业务批准的“丢本帧 / 保留旧状态 / 停止观察”分别测试。</td></tr>
+ <tr><td>仅通过生成器测试</td><td>运行时和手写映射纳入同一验收链。</td><td>历史记录中未覆盖的行级降级、编码失败保留订阅、拒收保留旧帧，均建立专门用例。</td></tr>
+ <tr><td>注册 / 装载 / Release 失效</td><td>模板生成显式库名、初始化、导出与保留规则。</td><td>依赖预载、重复 sharedLib、重复注册、缺库、裁剪与混淆。</td></tr>
+ <tr><td>线程与环境退出</td><td>env 隔离、受检调度、关闭准入与排水。</td><td>跨线程 / 跨 env 负例、Worker 退出、队列满、关闭中回投、回调重入。</td></tr>
+ <tr><td>页面多次进入与输入覆盖</td><td>页面观察 owner、状态实例、版本 / 来源 / 编辑状态。</td><td>重复订阅、隐藏与后台、输入法组合态、稳定列表身份、受理后清空。</td></tr>
+ <tr><td>初始化及公开分发</td><td>锁版本、生成来源、候选清单、独立消费与符号配对。</td><td>干净环境、DevEco 导入、改源码重建、真实设备 / HAP / Release、性能基线。</td></tr>
+ </tbody></table></div>
+ <div class="note"><strong>历史依据：</strong><a href="../catalog/source-coverage.json">Kotlin/ArkTS 架构总结</a>与<a href="../validation/04-problem-catalog.md">工程问题清单</a>。MadDemo 的 akinterop 1.1.0 / KSP1 适配和 JSON 会话路径是特定案例；不能推广为所有版本永久限制，也不能把旧项目的手动生成流程当作 MadB 的默认交付方式。</div>
+ <div class="note"><strong id="plan-state"></strong> 主线按 CPF + akinterop 实施，KNOI 保留独立扩展。X03 是 ANI 后端扩展，不自动产生 Kotlin/Native ↔ ANI 支持。实验 UniFFI ArkTS 属于 Rust → ArkTS 另一条路线，不是本图的 Kotlin 调用桥。</div>
+ </section>
+ <section class="section" id="sources"><div class="section-head"><div><h2><b>08</b>机制依据与本地设计</h2><p>上游资料用于确认机制和限制；MadB API、模块、状态机和验证要求属于设计预览。未使用 archify。</p></div><span class="fact-stamp">核对 2026-10-24</span></div>
+ <div class="panel padded"><ol class="references">
+ <li id="ref-cpf"><b>00</b><a href="https://gitcode.com/CPF-KMP-CMP/docs" target="_blank" rel="noreferrer">CPF-KMP-CMP · 配套工具链</a><small>鸿蒙 Kotlin / CMP 发布线；MadB 精确组合与发布身份见技术栈设计。</small></li>
+ <li id="ref-knoi"><b>01</b><a href="https://github.com/Tencent-TDS/KuiklyBase-components/blob/master/knoi/README-zh.md" target="_blank" rel="noreferrer">KNOI · 公开接入说明</a><small>互调、KSP / 插件、装载和注册约束。</small></li>
+ <li id="ref-napi"><b>02</b><a href="https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/native-lib/napi.md" target="_blank" rel="noreferrer">OpenHarmony · Node-API</a><small>按目标 SDK 选择引用、调度与清理机制。</small></li>
+ <li><b>03</b><a href="https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/napi/napi-faq-about-stability.md" target="_blank" rel="noreferrer">OpenHarmony · 稳定性问题</a><small>线程、env、handle scope 与持久引用。</small></li>
+ <li><b>04</b><a href="https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/napi/use-napi-asynchronous-task.md" target="_blank" rel="noreferrer">OpenHarmony · 异步任务</a><small>异步执行、完成与取消的实际边界。</small></li>
+ <li><b>05</b><a href="https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/ui/state-management/arkts-new-observedV2-and-trace.md" target="_blank" rel="noreferrer">ArkUI · ObservedV2 / Trace</a><small>状态观测与序列化后的实例差异。</small></li>
+ <li><b>06</b><a href="https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/quick-start/typescript-to-arkts-migration-guide.md" target="_blank" rel="noreferrer">ArkTS · 语言约束</a><small>目标语言类型与动态行为限制，按 SDK 锁定。</small></li>
+ <li id="ref-ani"><b>07</b><a href="https://github.com/openharmony/arkcompiler_runtime_core/blob/master/static_core/plugins/ets/runtime/ani/ani.h" target="_blank" rel="noreferrer">OpenHarmony · ANI 接口定义</a><small>独立 VM、环境与引用接口；不构成 Kotlin 适配证明。</small></li>
+ <li><b>08</b><a href="https://developer.volcengine.com/articles/7599494073556140086" target="_blank" rel="noreferrer">ByteKMP 团队 · 互调工程实践</a><small>产业中的封装与生成路径；不作为 MadB 支持认证。</small></li>
+ <li><b>09</b><a href="../architecture/06-backend-profiles.md">MadB · 后端接入方案</a><small>主线与替代路线的选择和降级边界。</small></li>
+ <li><b>10</b><a href="../architecture/05-lifecycle-and-concurrency.md">MadB · 生命周期与并发</a><small>单一 owner、准入、停止、排水与结果交接。</small></li>
+ <li><b>11</b><a href="../architecture/15-developer-ergonomics.md">MadB · 语言特性与开发体验</a><small>普通 API、装饰器与 ArkUI 适配。</small></li>
+ <li><b>12</b><a href="../delivery/01-implementation-plan.md">MadB · 实施计划</a><small>C07 / I05 / L05、P05 / P06 / P12 与扩展 X03。</small></li>
+ </ol></div></section>
+ <section class="section note"><strong>排队项也有生命周期。</strong>原生回调返回不代表 UI/env 队列已排水；执行器内按订阅代次认领投递，env 清理后只走允许的原生清理路径。<a href="../validation/08-critical-scenarios.md">CRIT-01 / CRIT-03 的独立时序与预期</a>。KNOI 详情见<a href="extensions-architecture.html#knoi">X08 扩展配置</a>。</section>
+<footer class="footer"><span>MadB · Kotlin/Native ↔ ArkTS 专题预览 · 独立离线 HTML</span><div><a href="architecture-overview.html">整体架构</a><a href="kotlin-swift-architecture.html">Swift 专题</a><a href="#top" id="back-top">回到顶部 ↑</a></div></footer>
+</main>
+<noscript>图形与配置切换需要 JavaScript；线路、数据、生命周期、模块和验收内容仍可阅读。</noscript>
+<script type="application/json" id="catalog">/* DATA_JSON */</script>
+<script>
+(function () {
+ 'use strict';
+ const catalog = JSON.parse(document.getElementById('catalog').textContent);
+ const state = {mode:'akinterop',payload:'typed',flow:'all',scenario:'call',selected:'plan'};
+ const $ = id => document.getElementById(id);
+ const NS = 'http://www.w3.org/2000/svg';
+ const src = {
+  profile:'../architecture/06-backend-profiles.md',
+  stack:'../architecture/16-technology-stack-and-versions.md',
+  cpf:'https://gitcode.com/CPF-KMP-CMP/docs',
+  modules:'../architecture/02-modules-and-ports.md',
+  contract:'../architecture/03-contract-and-ir.md',
+  lifecycle:'../architecture/05-lifecycle-and-concurrency.md',
+  runtime:'../architecture/08-runtime-and-idiomatic-api.md',
+  build:'../architecture/09-build-packaging-release.md',
+  ergonomics:'../architecture/15-developer-ergonomics.md',
+  plan:'../delivery/01-implementation-plan.md',
+  knoi:'https://github.com/Tencent-TDS/KuiklyBase-components/blob/master/knoi/README-zh.md',
+  napi:'https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/reference/native-lib/napi.md'
+ };
+ const payloads = {
+  typed:{name:'类型化参数 / DTO',short:'类型化 DTO / 参数',lines:['声明内的值转换 / 对象代理','范围、空值、引用与身份受检'],
+   note:'类型化不等于无转换或无复制。每个接口检查后端支持的方向和类型位置；把带状态的 Kotlin 代理与脱离原对象的 DTO 快照区分开，必要投影由 MadB 生成。'},
+  json:{name:'受检 JSON 消息',short:'受检 JSON codec',lines:['字段编码 → string → 受检解码','版本、数值、标签与载荷上限'],
+   note:'JSON 是显式载荷策略，并非 Kotlin 与 ArkTS 互调的必需条件。类型 / Schema 只有一个权威来源；生成编码与解码校验，并声明非法字段、未知变体与版本不匹配的处理方式。'},
+  binary:{name:'字节缓冲 / 二进制',short:'受管字节缓冲',lines:['受管 buffer + 边界与寿命检查','复制 / 借用 / 转移须逐项支持'],
+   note:'二进制路径单独检查长度、偏移、整数溢出、借用范围、释放器与分离状态。只有后端和精确目标配置均支持时才暴露相关能力；零拷贝需要证据，不能由 ArrayBuffer 名称推定。'}
+ };
+ const nodes = [
+  {id:'source',x:40,y:76,w:260,h:112,kind:'domain',kicker:'AUTHOR / KOTLIN',title:'领域与公开 API',lines:['方法 · 类型 · Flow · 宿主接口','业务语义与资源 owner'],
+   summary:'业务作者定义公开能力，保留领域决策。',
+   does:['实现领域逻辑、资源关闭、线程同步和原生依赖。','声明所有权、取消效果、错误、状态与事件的协议。'],
+   constraints:['工具不能推断停止等待是否等于停止工作。','发送受理、重试、草稿清空和副作用撤销由业务定义。'],links:[['契约',src.contract]]},
+  {id:'reader',x:340,y:76,w:260,h:112,kind:'madb',kicker:'CONTRACT READER',title:'声明读取与统一契约',lines:['既有注解 / KSP / 后端元数据','来源位置 · 精度 · 语义缺口'],
+   summary:'读入导出声明，补充不能从类型机械推导的语义。',
+   does:['复用后端声明和生成元数据，保留符号及源码位置。','识别接口方向、类型位置、资源与异步策略。'],
+   constraints:['KSP 声明提取不证明线程安全或函数体正确。','缺失契约给出诊断，不用默认策略掩盖未知风险。'],links:[['ContractIR',src.contract]]},
+  {id:'plan',x:640,y:76,w:260,h:112,kind:'madb',kicker:'RULES / PLAN',title:'能力检查与组合计划',lines:['后端选择 × 接口载荷策略','版本交集 · 生成 / 手写边界'],
+   summary:'把调用桥、载荷、异步协议和 UI 便利层分别建模。',
+   does:['默认选择 CPF 配套 akinterop；KNOI 使用独立配置，避免重复接管同一调用。','对每个接口检查类型、env、执行器、取消与关闭前提。','形成生成、编译、封装与消费验证任务图。'],
+   constraints:['两个后端不是必须叠加的工具组合。','不支持的配置明确拒绝；切换预览不代表已验证。'],links:[['后端配置',src.profile],['模块与端口',src.modules]]},
+  {id:'versions',x:940,y:76,w:260,h:112,kind:'madb',kicker:'RESOLVED PROFILE / LOCK',title:'CPF 工具链与目标锁',lines:['CPF Kotlin / KSP · CMP 可选','akinterop 配套 · SDK / ABI'],
+   summary:'CPF 是鸿蒙编译及配套依赖体系；调用桥另由 akinterop 或独立 KNOI 配置提供。',
+   does:['锁定 CPF Kotlin / KSP 与 akinterop annotation、processor、plugin、runtime；CMP 按需。','隔离官方 / CPF Gradle 根、插件 classpath、生成缓存、发布坐标及根元数据。'],
+   constraints:['共同源码分别编译；不把官方新 KLIB 直接交给 CPF。','KNOI 扩展重新验证配套；SDK 发布候选与 MadDemo 参考环境分别记录。'],links:[['CPF 文档',src.cpf],['完整版本候选',src.stack]]},
+  {id:'akinterop',x:40,y:300,w:340,h:112,kind:'upstream',kicker:'DEFAULT BRIDGE / CPF TOOLCHAIN',title:'akinterop · 主线调用桥',lines:['注解 / KSP1 / 插件 / runtime','导出函数 · 代理 · 声明 · 注册'],
+   summary:'与 CPF 工具链成套使用，复用已支持的互调与生成机制。',
+   does:['读取公开导出与宿主接口，生成接线、声明和运行库集成。','将版本特定的生成入口、反向范围与类型支持留在适配器内。'],
+   constraints:['Flow、带数据 sealed、泛型与多 env 逐项探测，不能靠历史限制推断所有版本。','CPF / KSP / Gradle 必须配套；CMP 不是使用互调的必需依赖。','MadDemo 案例可复现，不等于 MadB 已认证。'],links:[['CPF 配套',src.cpf],['主线设计',src.profile],['版本选择',src.stack]]},
+  {id:'knoi',x:450,y:300,w:340,h:112,kind:'upstream',kicker:'EXTENSION / SEPARATE PROFILE',title:'KNOI · 独立扩展',lines:['公开插件 / KSP / runtime','装载注册 · 类型与方向另验'],
+   summary:'在同一个后端端口接入另一实现，不串接在 akinterop 后面。',
+   does:['在受支持范围内生成 Kotlin/Native 与 ArkTS 互调代码。','把库配置、依赖预载和总注册入口纳入独立工程模板。'],
+   constraints:['生成的 TS 声明必须经目标 ArkTS 工具链验证。','不继承 akinterop 主线的设备、类型、线程或多 env 证据。','来源、许可、可分发性与目标能力逐项核实。'],links:[['KNOI 接入说明',src.knoi],['扩展边界',src.profile]]},
+  {id:'generator',x:860,y:300,w:340,h:112,kind:'madb',kicker:'MADB GENERATORS',title:'受限适配与 SDK 接线',lines:['DTO / codec · 订阅与操作门面','状态实例 · 生命周期 · 来源映射'],
+   summary:'生成明确契约可以机械推导的适配与接线。',
+   does:['按选定载荷生成值转换、受检 codec 或 buffer 包装。','生成普通 API、错误映射、状态绑定和调度接线。'],
+   constraints:['复杂领域投影和原生停止保留明确手写点。','字段只有一个权威源；不覆盖用户扩展代码。'],links:[['生成边界','../architecture/07-code-generation.md'],['语言便利层',src.ergonomics]]},
+  {id:'lab',x:40,y:490,w:340,h:100,kind:'madb',kicker:'INDEPENDENT / MADB-LAB',title:'独立 ArkTS / HAP 消费',lines:['真实 SDK · 设备 · Release · 竞态','冻结候选通过后原样发布'],
+   summary:'在独立消费者中验证真正交付的 SDK。',
+   does:['从干净工程安装同一候选，编译并运行真实目标。','验证互调、状态、环境退出、资源、性能与符号身份。'],
+   constraints:['桌面 Node.js 通过不能代替 ArkTS / HAP。','本专题没有为任何产品配置生成认证证据。'],links:[['验证策略','../validation/01-testing-strategy.md']]},
+  {id:'compiler',x:450,y:490,w:340,h:100,kind:'upstream',kicker:'GRADLE / KOTLIN / HARMONY TOOLCHAIN',title:'CPF 编译与 ArkTS 集成',lines:['独立 Gradle 根 → KN .so / 声明','平台 native / hvigor → HAR / HAP'],
+   summary:'构建适配器连接 Kotlin/Native 和目标平台工具链。',
+   does:['编译选定后端和生成产物，明确共享库与注册入口。','由平台工程完成 native 集成、ArkTS 编译与应用封装。'],
+   constraints:['按所选后端验证加载注册；官方 / CPF 发布身份分开。','源码可生成不等于目标语言可编译或运行。'],links:[['工具链与发布',src.stack],['构建设计',src.build]]},
+  {id:'artifact',x:860,y:490,w:340,h:100,kind:'madb',kicker:'SDK CANDIDATE',title:'ArkTS SDK 与 native 制品',lines:['.so / 声明 / HAR 或约定原生包','锁 · 摘要 · 符号 · 许可'],
+   summary:'绑定、二进制、依赖和证据必须指向同一个候选。',
+   does:['按目标打包 SDK、共享库、运行依赖和类型声明。','记录契约、配置、内容摘要、符号和可追溯来源。'],
+   constraints:['不混装不同后端或版本的类型声明与二进制。','普通 SDK 消费者不必安装完整作者侧生成插件。'],links:[['制品设计',src.build]]},
+  {id:'ui',x:40,y:735,w:250,h:112,kind:'arkts',kicker:'APPLICATION / ARKTS',title:'ArkUI 页面 / ArkTS 宿主',lines:['普通方法 · 本地状态 · 用户动作','页面持有观察 owner'],
+   summary:'业务开发者使用普通 API，可选 ArkUI 便利层。',
+   does:['在允许的 UI 环境更新状态实例。','管理页面自己的观察，按业务规则处理输入、草稿与错误。'],
+   constraints:['页面销毁不关闭应用共享引擎。','状态 getter 不暗中阻塞或创建订阅。','ArkUI V1 / V2 与 Worker 能力分别验证。'],links:[['UI 与惯用 API',src.ergonomics]]},
+  {id:'sdk',x:345,y:735,w:250,h:112,kind:'madb',kicker:'RUNTIME / ARKTS SDK',title:'普通 API 与载荷适配',lines:['类型化 DTO / 参数','Promise · 观察 · 错误映射'],
+   summary:'稳定的开发者入口，组合已声明的数据与异步能力。',
+   does:['暴露方法、操作和观察对象，连接选定桥的可用机制。','执行准入、值校验、一次完成、停止与结果交接。'],
+   constraints:['Promise 不自动具有取消或后台执行能力。','便利装饰器复用普通 API；解析对象不自动变为观察实例。'],links:[['运行时',src.runtime]]},
+  {id:'bridge',x:650,y:735,w:250,h:112,kind:'upstream',kicker:'ONE BACKEND / NODE-API',title:'akinterop + Node-API',lines:['同步与异步均经所选后端','值 / 引用 / 调度按目标支持'],
+   summary:'主线 akinterop、扩展 KNOI 是调用桥；Node-API 是目标平台互操作底座。',
+   does:['连接具体调用、值与宿主回调。','依照后端能力使用目标 Node-API 引用与调度机制。'],
+   constraints:['JSON 不是调用桥，Flow 也不是载荷格式。','不得默认每个桌面 Node.js API 都能用于目标平台。','回调引用需留在所属 env 和允许的线程上下文。'],links:[['Node-API',src.napi],['后端责任',src.profile]]},
+  {id:'domain',x:955,y:735,w:245,h:112,kind:'domain',kicker:'RUNTIME / KOTLIN-NATIVE',title:'Kotlin engine 与协程',lines:['业务状态 · scope · 原生依赖','共享资源由业务 owner 管理'],
+   summary:'Kotlin 侧管理业务状态、后台工作与共享资源。',
+   does:['执行实际业务，明确调度策略与上游 scope。','实现原生操作的停止、关闭、同步和错误处理。'],
+   constraints:['协程取消不保证阻塞 native 任务停止。','单页退订不自动停止共享 StateFlow 的上游。'],links:[['生命周期',src.lifecycle]]},
+  {id:'resources',x:40,y:914,w:340,h:82,kind:'madb',kicker:'RESOURCE / OPERATION / OBSERVATION',title:'准入、停止、排水与结果认领',lines:['业务资源 / 操作 / 订阅各有 owner'],
+   summary:'资源安全依赖显式协议，不能仅靠 GC 或引用计数。',
+   does:['保证在途输入与回调寿命；结果由一方接收或回收。','关闭先停止准入，再按协议排水与释放。'],
+   constraints:['删除 napi_ref 不等于停止业务工作。','关闭超时不允许释放仍被 native 使用的资源。'],links:[['所有权协议',src.lifecycle]]},
+  {id:'executor',x:450,y:914,w:340,h:82,kind:'madb',kicker:'PER-ENV CONTEXT / EXECUTOR',title:'环境隔离、回投与诊断',lines:['EnvContext · generation · 有界队列'],
+   summary:'每个支持的 env 都有独立上下文、引用与退出状态。',
+   does:['通过目标允许的 TSFN / 事件循环机制回到所属 env。','统一 pending exception 检查、队列策略与可选诊断。'],
+   constraints:['给全局 env 加锁不能实现跨环境安全。','环境失效后不能再创建值或调用其函数。','关闭诊断不关闭正确性保护。'],links:[['线程与关闭',src.lifecycle],['Node-API',src.napi]]},
+  {id:'host',x:860,y:914,w:340,h:82,kind:'arkts',kicker:'REVERSE / HOST PORT',title:'Kotlin → ArkTS 宿主能力',lines:['受支持的接口代理 / 回调 + env 协议'],
+   summary:'双向范围限于选定后端与目标实际支持的宿主接口。',
+   does:['ArkTS 实现宿主能力，Kotlin 经受管引用调用。','定义受理、完成、失败、重入、取消与回调寿命。'],
+   constraints:['不自动导入任意 ArkTS 模块或动态对象。','Kotlin 工作线程不能直接操作 ArkTS 的临时值。'],links:[['反向范围',src.profile],['版本与方向探针',src.stack]]}
+ ];
+ const nodeById = new Map(nodes.map(n=>[n.id,n]));
+ const flowNodes = {
+  all:nodes.map(n=>n.id),
+  build:['source','reader','plan','versions','knoi','akinterop','generator','compiler','artifact','lab'],
+  data:['source','reader','plan','knoi','akinterop','generator','sdk','bridge','domain','ui'],
+  async:['source','plan','knoi','akinterop','generator','sdk','bridge','domain','ui','resources','executor','host'],
+  env:['plan','versions','sdk','bridge','domain','ui','resources','executor','host','lab']
+ };
+ const edges = [
+  {a:'source',b:'reader',d:'M300 132 H340',label:'读取',lx:320,ly:116},
+  {a:'reader',b:'plan',d:'M600 132 H640',label:'检查',lx:620,ly:116},
+  {a:'versions',b:'plan',d:'M940 132 H900',label:'约束',lx:920,ly:116,kind:'control'},
+  {a:'plan',b:'akinterop',d:'M750 188 V235 H210 V300',kind:'control'},
+  {a:'plan',b:'knoi',d:'M750 188 V235 H620 V300',kind:'control'},
+  {a:'plan',b:'generator',d:'M750 188 V235 H1030 V300',kind:'control'},
+  {a:'akinterop',b:'compiler',d:'M210 412 V454 H620 V490'},
+  {a:'knoi',b:'compiler',d:'M620 412 V490'},
+  {a:'generator',b:'compiler',d:'M1030 412 V454 H620 V490'},
+  {a:'compiler',b:'artifact',d:'M790 540 H860',label:'封装',lx:825,ly:523},
+  {a:'artifact',b:'lab',d:'M1030 590 V625 H210 V590',label:'冻结同一候选 → 独立 HAP 消费 → 同内容发布',lx:620,ly:619},
+  {a:'artifact',b:'sdk',d:'M1170 590 V677 H470 V735',kind:'control',label:'安装选定配置的 SDK / 运行依赖',lx:780,ly:672},
+  {a:'ui',b:'sdk',d:'M290 790 H345',label:'调用',lx:317,ly:775},
+  {a:'sdk',b:'bridge',d:'M595 790 H650',label:'适配',lx:623,ly:775},
+  {a:'bridge',b:'domain',d:'M900 790 H955',label:'互操作',lx:928,ly:775},
+  {a:'domain',b:'ui',d:'M1078 847 V878 H165 V847',label:'结果 / 错误 / 状态 · 经载荷校验与所属 env 回投',lx:620,ly:873},
+  {a:'resources',b:'sdk',d:'M210 914 V900 H470 V847',kind:'control'},
+  {a:'executor',b:'bridge',d:'M620 914 V900 H775 V847',kind:'control'},
+  {a:'domain',b:'host',d:'M1155 847 V914',kind:'control'}
+ ];
+ function svg(tag,attrs={},text){
+  const el=document.createElementNS(NS,tag);
+  for(const [key,value] of Object.entries(attrs))el.setAttribute(key,String(value));
+  if(text!==undefined)el.textContent=text;
+  return el;
+ }
+ function svgText(parent,x,y,text,cls,extra={}){
+  const el=svg('text',{x,y,class:cls,...extra},text);parent.append(el);return el;
+ }
+ function marker(parent,id,color){
+  const defs=svg('defs'),m=svg('marker',{id,viewBox:'0 0 8 8',refX:7,refY:4,markerWidth:7,markerHeight:7,orient:'auto-start-reverse'});
+  m.append(svg('path',{d:'M1 1 L7 4 L1 7',fill:'none',stroke:color,'stroke-width':1.3}));defs.append(m);parent.append(defs);
+ }
+ function backend(){return state.mode==='knoi'?'KNOI':'akinterop';}
+ function inactiveBackend(){return state.mode==='knoi'?'akinterop':'knoi';}
+ function activeIds(){const ids=new Set(flowNodes[state.flow]);ids.delete(inactiveBackend());return ids;}
+ function viewNode(n){
+  const v={...n,lines:[...n.lines]};
+  if(n.id===inactiveBackend()){v.title=(n.id==='knoi'?'KNOI':'akinterop')+' · 本配置未选';}
+  if(state.mode==='knoi'&&n.id==='versions'){v.title='扩展工具链与目标锁';v.lines=['KNOI 独立 Kotlin / KSP 配套','SDK / ABI / 依赖另行验证'];v.summary='扩展选择 KNOI 的独立配套，不继承 CPF + akinterop 主线锁或认证。';v.does=['锁定 KNOI 支持的 Kotlin / KSP、插件与 runtime；逐目标验证。','记录 SDK / ABI、装载注册、独立依赖与发布身份。'];v.constraints=['不能把主线 akinterop 的版本锁直接改名使用。','与主线共享业务源码也要分别编译并完成真实 HAP 消费。'];}
+  if(state.mode==='knoi'&&n.id==='compiler'){v.title='扩展编译与 ArkTS 集成';v.lines=['KNOI 独立构建与装载配置','目标 SDK / hvigor / HAP 验证'];}
+  if(n.id==='sdk'){v.lines=[payloads[state.payload].short,'Promise · 观察 · 错误映射'];v.summary=n.summary+' 当前预览：'+payloads[state.payload].name+'。';}
+  if(n.id==='generator'){v.lines=[payloads[state.payload].short+' · 受检转换','状态 / 资源 / 调度接线'];}
+  if(n.id==='bridge'){v.title=backend()+' + Node-API';v.summary=n.summary+' 当前选择 '+backend()+'。';}
+  return v;
+ }
+ function renderOverview(){
+  const root=$('overview-svg');root.replaceChildren();marker(root,'map-arrow','var(--edge)');
+  root.append(svg('title',{},'Kotlin/Native 与 ArkTS 架构全景，'+backend()+'，'+payloads[state.payload].name));
+  root.append(svg('desc',{},'构建期从 Kotlin 声明读取契约，选择一个调用后端，结合 MadB 生成构建 SDK 并独立验证；运行期 ArkTS 应用经选定桥调用 Kotlin，环境、引用、停止和反向宿主协议分别管理。'));
+  root.append(svg('rect',{x:16,y:12,width:1208,height:639,rx:15,class:'map-band'}));
+  root.append(svg('rect',{x:25,y:255,width:1190,height:173,rx:12,class:'map-subband'}));
+  root.append(svg('rect',{x:16,y:693,width:1208,height:315,rx:15,class:'map-band'}));
+  svgText(root,40,44,'A  构建期 · SDK 作者 / MadB / 目标工具链','map-label');
+  svgText(root,48,280,'调用桥 · 主线 / 独立扩展','map-label');
+  svgText(root,860,280,'MadB 受检增强','map-label');
+  svgText(root,40,719,'B  运行期 · ArkTS 应用 / SDK / Kotlin 业务实现','map-label');
+  const enabled=activeIds();
+  for(const e of edges){
+   const active=enabled.has(e.a)&&enabled.has(e.b);
+   const g=svg('g',{class:active?'':'dimmed'});
+   g.append(svg('path',{d:e.d,class:'edge '+(e.kind||''),'marker-end':'url(#map-arrow)'}));
+   if(e.label)svgText(g,e.lx,e.ly,e.label,'edge-label',{'text-anchor':'middle'});
+   root.append(g);
+  }
+  for(const raw of nodes){
+   const n=viewNode(raw);let classes='graph-node '+n.kind;
+   if(!enabled.has(n.id))classes+=' dimmed';
+   if(n.id===inactiveBackend())classes+=' disabled-node';
+   if(state.selected===n.id)classes+=' selected';
+   const g=svg('g',{class:classes,'data-node':n.id,role:'button',tabindex:0,'aria-label':n.title+'，查看责任详情','aria-pressed':String(state.selected===n.id)});
+   g.append(svg('title',{},n.summary),svg('rect',{x:n.x,y:n.y,width:n.w,height:n.h,class:'box'}),svg('rect',{x:n.x+14,y:n.y+16,width:3,height:n.h-32,rx:2,class:'bar'}));
+   svgText(g,n.x+28,n.y+24,n.kicker,'node-kicker');
+   svgText(g,n.x+28,n.y+47,n.title,'node-title');
+   n.lines.forEach((line,i)=>svgText(g,n.x+28,n.y+69+i*18,line,'node-copy'));
+   g.addEventListener('click',()=>selectNode(n.id));
+   g.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();selectNode(n.id);}});
+   root.append(g);
+  }
+ }
+ function selectNode(id){
+  state.selected=id;
+  document.querySelectorAll('[data-node]').forEach(el=>{const selected=el.dataset.node===id;el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected));});
+  renderDetail();
+ }
+ function renderDetail(){
+  const n=viewNode(nodeById.get(state.selected));
+  $('detail-kind').textContent=n.kicker;$('detail-title').textContent=n.title;$('detail-summary').textContent=n.summary;
+  for(const [id,values] of [['detail-does',n.does],['detail-constraints',n.constraints]]){
+   $(id).replaceChildren(...values.map(value=>{const el=document.createElement('li');el.textContent=value;return el;}));
+  }
+  $('detail-links').replaceChildren(...n.links.map(([text,url])=>{
+   const a=document.createElement('a');a.textContent=text+' ↗';a.href=url;
+   if(url.startsWith('https:')){a.target='_blank';a.rel='noreferrer';}return a;
+  }));
+ }
+ const scenarios={
+  call:{label:'异步调用 · 阻塞工作有明确调度',events:[
+   [0,1,'检查 env、参数与操作准入'],[1,2,'按契约调度本次 Kotlin 工作'],[2,3,'执行业务 / 调用原生依赖'],
+   [3,2,'返回 native 结果或错误'],[2,1,'保活数据并回投所属 env'],[1,0,'构造 ArkTS 值；交付一次终态']
+  ],notes:[
+   ['启动与调度','本图示意显式异步入口。Promise 外观不会自动把阻塞工作移到后台；同步方法须标明可阻塞程度，耗时任务由实现安排执行器。'],
+   ['两次有效性检查','回投前检查上下文和 generation，进入所属 env 后再次检查是否仍允许完成；事件循环或队列拒收时，按协议清理数据。'],
+   ['完成与错误','回到允许的环境后创建 ArkTS 值；确保只完成一次，并保留业务、协议、取消和环境失效的差异。']
+  ]},
+  observe:{label:'Flow 订阅 · 所有权先于首帧建立',events:[
+   [0,1,'创建 owner、令牌与回调上下文'],[1,2,'注册观察；允许同步首帧'],[2,3,'按 scope / 策略收集上游'],
+   [3,2,'产生状态或业务事件'],[2,1,'按队列策略回投当前代次'],[1,0,'校验并更新本地状态实例']
+  ],notes:[
+   ['注册与回调','先建立完整上下文再启用来源。注册可同步回调，不能等注册返回后才补齐 owner、引用或停止状态。'],
+   ['状态与事件','StateFlow 的最新值语义、事件的顺序与丢失策略分别定义。慢消费者采用有界队列及显式合并 / 丢弃 / 失败规则，不能无界积压。'],
+   ['共享与 UI','页面 owner 只停止自己的观察；共享上游由 Kotlin scope 与共享策略决定。受检 DTO 更新观察实例，不直接将 JSON.parse 结果伪装成状态类。']
+  ]},
+  cancel:{label:'取消与排水 · 请求停止不等于已停止',events:[
+   [0,1,'请求停止；关闭本观察准入'],[1,2,'取消收集 / 发出工作停止请求'],[2,3,'仅调用已提供的 native 停止'],
+   [3,2,'迟到结果由唯一一方认领'],[2,1,'排水在途数据与获准回调'],[1,0,'env 有效时确认停止完成']
+  ],notes:[
+   ['停止层次','退订、停止等待、取消协程、停止 native 工作与撤销副作用分别声明；没有提供底层停止能力时，不声称取消已终止工作。'],
+   ['保活与认领','迟到结果不能送给失效页面，也不能泄漏。停止完成前保留在途工作需要的 owner、输入、缓冲与引用。'],
+   ['等待方式','异步等待排水，不阻塞回投所需的 env 线程。超时保留真实状态，不能以超时为依据提前释放 native 资源。']
+  ]},
+  reverse:{label:'Kotlin → ArkTS · 显式宿主端口',events:[
+   [0,1,'注册宿主接口 / 回调及其 owner'],[2,1,'经受支持代理发起宿主请求'],[1,0,'检查 env 并投递到所属线程'],
+   [0,1,'返回受理 / 结果 / 失败'],[1,2,'映射回 Kotlin；完成至多一次'],[2,1,'结束请求或按协议停止并排水']
+  ],notes:[
+   ['调用范围','只使用选定后端公开支持并验证过的接口代理、函数或回调形状。双向互调不等于自动导入任意 ArkTS 模块。'],
+   ['宿主寿命','持久引用、请求 owner 和 env 寿命一起管理；工作线程只持有受管 native 数据与请求身份，不能直接使用临时 napi_value。'],
+   ['重入与同步','不持锁进入用户回调。跨线程同步等待可能死锁；需要所属 env 执行的宿主能力优先使用显式异步协议。']
+  ]},
+  exit:{label:'env 退出 · 禁止失效环境上的迟到回调',events:[
+   [0,1,'开始清理；标记 Closing'],[1,2,'关闭准入；停止本 env 的观察'],[2,3,'取消可停止工作；保留独立 owner'],
+   [3,2,'收尾或移交仍在进行的工作'],[2,1,'依平台清理协议释放引用 / 调度'],[1,1,'标记失效；之后仅 native 收尾']
+  ],notes:[
+   ['退出不是普通取消','清理必须使用目标 SDK 支持的 env 退出机制。OS / 运行时不一定允许无限异步排水，不能要求销毁中的环境继续接收业务回调。'],
+   ['分清两类清理','可用窗口内处理 env 关联引用与调度对象；尚未完成的 native 工作由独立 owner 保活，之后只回收 native 数据，不再调用该 env。'],
+   ['隔离与代次','关闭只作用于对应 env。其他环境不复用它的引用；旧代次的句柄、队列项和结果都不能误投到新环境。']
+  ]}
+ };
+ function renderSequence(){
+  const s=scenarios[state.scenario],root=$('sequence-svg');root.replaceChildren();marker(root,'seq-arrow','var(--accent)');
+  root.append(svg('title',{},s.label),svg('desc',{},s.events.map(e=>e[2]).join('；')));
+  const xs=[140,430,720,1010];
+  const names=state.scenario==='reverse'?['ArkTS 宿主 / owner','MadB / '+backend()+' / env','Kotlin 请求方','原生依赖（本图不参与）']:['ArkTS owner / 所属 env','MadB / '+backend()+' / env','Kotlin Job / scope','共享上游 / 原生依赖'];
+  names.forEach((name,i)=>{
+   root.append(svg('rect',{x:xs[i]-125,y:14,width:250,height:52,rx:9,class:'seq-head'}));
+   svgText(root,xs[i],46,name,'seq-owner',{'text-anchor':'middle'});
+   root.append(svg('path',{d:'M'+xs[i]+' 77 V470',class:'seq-lane'}));
+  });
+  s.events.forEach(([from,to,text],i)=>{
+   const y=116+i*62,dir=to>from?1:-1;
+   const path=from===to?'M'+xs[from]+' '+(y-7)+' h94 v22 h-94':'M'+(xs[from]+dir*7)+' '+y+' H'+(xs[to]-dir*7);
+   root.append(svg('path',{d:path,class:'seq-line','marker-end':'url(#seq-arrow)'}));
+   svgText(root,from===to?xs[from]+130:(xs[from]+xs[to])/2,y-17,text,'seq-text',{'text-anchor':'middle'});
+   svgText(root,18,y+4,String(i+1).padStart(2,'0'),'seq-number');
+  });
+  $('scenario-label').textContent=s.label;
+  $('runtime-notes').replaceChildren(...s.notes.map(([title,body])=>{
+   const div=document.createElement('div'),h=document.createElement('h3'),p=document.createElement('p');h.textContent=title;p.textContent=body;div.append(h,p);return div;
+  }));
+ }
+ function renderProfile(){
+  document.querySelectorAll('[data-mode]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.mode===state.mode)));
+  $('bridge-owner').textContent=backend()+'：调用桥';
+  $('bridge-description').textContent=state.mode==='akinterop'?'CPF 工具链配套的注解、KSP、插件与 runtime 生成互调，MadB 补齐载荷、异步与 env 生命周期。CMP 按需启用，不是调用桥的前提。':'KNOI 作为另一调用桥单独适配和认证，验证其工具链、类型、装载注册与线程能力；不与 akinterop 串联。';
+  $('profile-description').textContent=(state.mode==='akinterop'?'主线设计：CPF + akinterop；P05 先探针，C07 / I05 / L05 在 S3 验证交付。':'扩展设计：KNOI 由 X08 / P14 独立探针和验收；来源、配套和能力单独验证，不继承主线认证。')+' 当前载荷预览：'+payloads[state.payload].name+'。是否支持由接口、精确工具链及真实目标证据共同决定。';
+  $('payload-badge').textContent='当前预览：'+payloads[state.payload].name;
+  $('payload-note').textContent=payloads[state.payload].note;
+  renderOverview();renderDetail();renderSequence();
+ }
+ document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>{state.mode=el.dataset.mode;renderProfile();}));
+ $('payload-mode').addEventListener('change',event=>{state.payload=event.target.value;renderProfile();});
+ document.querySelectorAll('[data-flow]').forEach(el=>el.addEventListener('click',()=>{
+  state.flow=el.dataset.flow;
+  document.querySelectorAll('[data-flow]').forEach(button=>button.setAttribute('aria-pressed',String(button===el)));renderOverview();
+ }));
+ document.querySelectorAll('[data-scenario]').forEach(el=>el.addEventListener('click',()=>{
+  state.scenario=el.dataset.scenario;
+  document.querySelectorAll('[data-scenario]').forEach(button=>button.setAttribute('aria-pressed',String(button===el)));renderSequence();
+ }));
+ function setTheme(dark){document.documentElement.dataset.theme=dark?'dark':'light';$('theme').textContent=dark?'浅色':'深色';$('theme').setAttribute('aria-label',dark?'切换浅色主题':'切换深色主题');}
+ $('theme').addEventListener('click',()=>setTheme(document.documentElement.dataset.theme!=='dark'));
+ setTheme(false);
+ $('print').addEventListener('click',()=>window.print());
+ $('back-top').addEventListener('click',event=>{event.preventDefault();window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});});
+ const names={not_started:'未开始',in_progress:'进行中',blocked:'阻塞',implemented:'已实现'};
+ $('plan-state').textContent='计划数据：'+['C07','I05','L05','X08','X03'].map(id=>{
+  const t=catalog.plan.tasks.find(t=>t.id===id);return t?id+' '+t.phase+' / '+names[t.status]:id+' 未登记';
+ }).join('；')+'。';
+ document.querySelectorAll('[data-plan-baseline]').forEach(el=>el.textContent=catalog.plan.baseline);
+ renderProfile();
+})();
+
+</script>
+</body></html>
