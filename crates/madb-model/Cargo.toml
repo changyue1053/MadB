@@ -10,3 +10,7 @@ description = "Domain values and invariants. C02 defines the concrete model; no 
 
 [lints]
 workspace = true
+
+# C01 controlled negative probe; reverted after remote validation.
+[dependencies]
+madb-protocol = { path = "../madb-protocol" }
