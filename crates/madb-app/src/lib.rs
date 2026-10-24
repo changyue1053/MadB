@@ -3,6 +3,7 @@ pub mod inputs;
 pub mod ports;
 pub mod process;
 pub mod query;
+pub mod task;
 
 pub use madb_model::{Digest, Finding, Id, LogicalPath};
 pub use madb_plan::{Phase, Task, TaskGraph};

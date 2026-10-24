@@ -246,7 +246,9 @@
         "reviews/2026-10-24-c04-process-execution.md",
         "https://github.com/changyue1053/MadB/pull/5",
         "reviews/2026-10-24-c04-frozen-inputs.md",
-        "https://github.com/changyue1053/MadB/pull/6"
+        "https://github.com/changyue1053/MadB/pull/6",
+        "reviews/2026-10-24-c04-task-results.md",
+        "https://github.com/changyue1053/MadB/pull/7"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -275,7 +277,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C04 查询/静态图交付 PR #4，受控进程交付 PR #5，已声明输入副本交付 PR #6：受检不可变字节、私有 inputs/work 目录、真实消费与副本复核；保留 staging，不自动 GC。本地完整检查和独立复核通过，远端结果按各 PR head 检查核实。DAG 执行、三层提交、完整依赖闭包/缓存、generate --check 仍待实现；C04 保持进行中，不新增 SDK 认证。"
+      "notes": "C04 分步交付 PR #4 查询/静态图、PR #5 受控进程、PR #6 固定输入、PR #7 单任务执行与固定结果：受检 BuildEvidence、真实输出/日志字节及整个验证窗口的取消准入。本地完整检查与独立复核通过，远端结果按各 PR head 核实。DAG、三层提交、批次来源/索引/CAS、完整依赖闭包/缓存、generate --check 仍待实现；C04 保持进行中，无新增 SDK 认证。"
     },
     {
       "id": "C05",

@@ -110,6 +110,8 @@ C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程�
 
 `app/inputs` 通过 ReadWorkspace 捕获与声明大小/字节摘要一致的不可变 FrozenInputs，验证完整清单的路径与预算，不接触文件系统。`host/inputs` 独占创建私有 inputs/work 目录，受限物化并核对实际副本；PreparedRun 消费后成为 RetainedRun，继续持有目录与待回收进程。目录没有自动 Drop 删除；进程收尾不等于目录可安全回收。该层不新增 wire 摘要、不解析任意命令参数，也不替代完整依赖追踪。
 
+`contracts/task` 将完整上下文和 BuildTask 绑定到 app 的 TaskInvocation/BuildRecipe；wire DTO 留在适配器。`app/task` 校验声明输出和日志、捕获不可变结果，`app/process` 把结果校验纳入同一次取消准入。`host/task` 组合固定输入、受控进程和精确目录验证，返回带结果字节的 RetainedRun；无输出提交权限。测试驱动放在 CLI composition root 的 examples，不让 host 依赖 contracts。
+
 物理包的 Cargo manifest 或原生构建文件是实际成员与依赖的依据。C01 建立首期可编译的最小 workspace 和包职责说明；后续包随对应工作包加入，不批量创建成功返回的空适配器或无用途的占位包。内部类名与纯函数布局可调整，职责移动或依赖越界必须同步规范与检查。
 
 Agent 入口遵循[开发规范](../engineering/07-agent-development.md)，只链接现有计划、架构和真实检查。目录中列出 AGENTS.md 是 C01 的交付目标，不引入独立任务管理平台，也不表示文件或 CI 已部署。

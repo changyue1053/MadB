@@ -132,7 +132,9 @@ enum EntryKind {
     Directory,
 }
 
-fn validate_inventory(references: &[FileReference]) -> Result<(Vec<LogicalPath>, usize)> {
+pub(crate) fn validate_inventory(
+    references: &[FileReference],
+) -> Result<(Vec<LogicalPath>, usize)> {
     if references.is_empty() {
         return Err(structure("inputs", "input inventory must not be empty"));
     }
@@ -140,22 +142,41 @@ fn validate_inventory(references: &[FileReference]) -> Result<(Vec<LogicalPath>,
         return Err(budget("inputs", "input file count exceeds 4096"));
     }
     let mut total_bytes = 0;
-    let mut entries = BTreeMap::<String, (LogicalPath, EntryKind)>::new();
-    let mut directory_count = 0;
     for reference in references {
         let path = reference.path.as_str();
-        if !path.is_ascii() {
-            return Err(structure(path, "input paths must contain only ASCII"));
-        }
-        if path.split('/').count() > PATH_DEPTH_LIMIT {
-            return Err(budget(path, "input path exceeds 32 components"));
-        }
         if reference.size > FILE_BYTES_LIMIT {
             return Err(budget(path, "declared input exceeds 32 MiB"));
         }
         total_bytes += reference.size;
         if total_bytes > TOTAL_BYTES_LIMIT {
             return Err(budget(path, "declared inputs exceed 128 MiB"));
+        }
+    }
+    Ok((
+        validate_paths(references.iter().map(|reference| &reference.path))?,
+        total_bytes as usize,
+    ))
+}
+
+/// Shared structural preflight for input and result inventories. No IO and no
+/// invented byte identities are needed to validate an output path declaration.
+pub(crate) fn validate_paths<'a>(
+    paths: impl IntoIterator<Item = &'a LogicalPath>,
+) -> Result<Vec<LogicalPath>> {
+    let mut entries = BTreeMap::<String, (LogicalPath, EntryKind)>::new();
+    let mut directory_count = 0;
+    let mut file_count = 0;
+    for logical in paths {
+        file_count += 1;
+        if file_count > FILE_COUNT_LIMIT {
+            return Err(budget("paths", "file count exceeds 4096"));
+        }
+        let path = logical.as_str();
+        if !path.is_ascii() {
+            return Err(structure(path, "input paths must contain only ASCII"));
+        }
+        if path.split('/').count() > PATH_DEPTH_LIMIT {
+            return Err(budget(path, "input path exceeds 32 components"));
         }
         for end in path
             .match_indices('/')
@@ -196,12 +217,15 @@ fn validate_inventory(references: &[FileReference]) -> Result<(Vec<LogicalPath>,
             }
         }
     }
+    if file_count == 0 {
+        return Err(structure("paths", "file inventory must not be empty"));
+    }
     let mut directories: Vec<_> = entries
         .into_values()
         .filter_map(|(path, kind)| (kind == EntryKind::Directory).then_some(path))
         .collect();
     directories.sort();
-    Ok((directories, total_bytes as usize))
+    Ok(directories)
 }
 
 fn structure(subject: impl Into<String>, message: impl Into<String>) -> QueryError {

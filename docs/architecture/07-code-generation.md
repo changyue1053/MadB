@@ -75,6 +75,25 @@ Linux/macOS 的进程组不是安全沙箱；本地 leader 与管道收尾不证
 
 源文件变化后旧快照仍可独立执行，但后续提交必须复核当前输入/CAS，不能覆盖新结果。运行目录可能仍被关闭管道的逃逸后代使用；清理协议与安全回收另行实现，测试 harness 仅在停止其已知辅助进程后移除自有目录。真实用例见[固定输入回归](../../tests/integration/c04_inputs/README.md)。
 
+## 单任务配方与结果字节
+
+C04 的首个执行入口是内部 Rust 单任务 API。contracts 读取既有 BuildTask、project/request/IR/profile/lock 并形成受检配方；app 保留任务参数、环境、声明输入和输出；host 准备私有副本并运行。静态 TaskGraph 不包含完整执行配方，不从它反推工具或参数。当前只接受空 dependencies 和 work 工作目录，不忽略依赖，也不开放正式 build/generate CLI。
+
+| 边界 | 当前规则 |
+|---|---|
+| 任务身份 | task_digest 复用完整 BuildTask 的既有规范投影。input_digest 表示受检 IR 的来源链，匹配 IR.source_digest；task.inputs 是该任务实际使用的文件清单，独立逐项捕获，不要求两个清单摘要相同 |
+| 批次身份 | generation_id 关联请求声称消费的既有批次，不预先填入本任务未来输出批次；本次只做身份配对。批次真实性、来源和提交权限仍须后续事务验证 |
+| 工具安装 | 所选 profile.tools 的工具必须被 lock.tools 完整锁定；宿主注入安装后相对路径、大小和 image 摘要。component 的包/清单摘要不能充当 image；仅 components 命中不支持执行 |
+| 参数责任 | task.arguments 是本次完整 argv，保持顺序；profile.tools.arguments 参与配置身份，不由通用宿主自动拼接。必需目标 flags 由具体配方生成与对应 profile 消费验证负责，不能由“包含某个字符串”代替 ABI 验收 |
+| 配方协议 | stdin 为原始 BuildTask，stdout 为 BuildEvidence；沿用既有 schema，无 E02 帧或会话。普通编译器通过显式配方适配，不要求原生编译器理解 MadB JSON |
+| 结果准入 | 实际零退出、无诊断、直接子进程/管道收尾与无 pending owner 后才校验 payload；非 passed、错身份或退出码、错输出集合均拒收。helper 自报状态不替代宿主观察 |
+| 文件捕获 | outputs 与 logs 合并预检预算、路径及别名，再读取/复核真实大小和摘要；工作目录只能有这份清单及其父目录。捕获为不可变字节；以后磁盘变化不改变已接收值 |
+| 取消与保留 | 解析、文件捕获、精确目录检查及最终输入复核都在一次性 gate 关闭之前；取消胜出不暴露结果值。失败保留原始进程与目录，后续 poll 不升级准入状态 |
+
+配方声明的日志文件只证明对应字节存在；原始 stdout/stderr、退出与清理观察以 ProcessRun 为准，不从日志文字推导成功。结果验证失败转换为 EXEC018，保留原始诊断 cause；输入或运行目录变化仍沿用 EXEC017。准备失败不启动进程，已经分配的目录继续返回 retained_path。
+
+返回的受检任务结果是可继续验证的观察，不是 ready SDK、已提交批次或完整依赖证明。源树、生成批次来源、传递依赖、当前索引/CAS 和实际消费语义仍各自验收；保留目录和固定字节不能代替这些条件。
+
 ## 受管输出、构建任务与提交
 
 DEC-04、DEC-05 将生成源码、构建产物和发布候选视为三个提交层级。生成源码完整不等于已链接，编译成功不等于可发布；每层都有独立清单和状态。
