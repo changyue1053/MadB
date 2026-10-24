@@ -7,6 +7,8 @@ The host and repository checks use the following direct dependencies; the origin
 | anstyle | 1.0.14 | MIT OR Apache-2.0 |
 | rustix (Unix host reads/process supervision) | 1.0.8 | Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT |
 | subprocess (Unix execve launcher) | 1.2.1 | Apache-2.0 OR MIT |
+| signal-hook (Unix CLI cancellation) | 0.4.5 | MIT OR Apache-2.0 |
+| signal-hook-registry (signal registration) | 1.4.8 | MIT OR Apache-2.0 |
 | libproc (macOS group observation) | 0.14.11 | MIT |
 | errno (macOS query error state) | 0.3.14 | MIT OR Apache-2.0 |
 | clap | 4.6.7 | MIT OR Apache-2.0 |

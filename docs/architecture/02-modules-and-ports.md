@@ -104,7 +104,7 @@ MadB/
 
 C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：只做 schema 文档到领域值的显式转换、语义投影与校验编排，向内依赖 model、rules 和 protocol。它不读取编译器源码、不执行后端，不向核心反向暴露 DTO；实际来源读取与生成仍归 C05。这一编译边界让格式检查、领域规则和转换各有单一维护位置，架构门禁同时拒绝核心导入该包及该包导入 CLI。
 
-C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程端口；提供目录描述符相对、有界、拒绝链接的文件读取，以及 Linux/macOS 的受控子进程。`madb-contracts` 实现 app 的格式端口；CLI `bootstrap.rs` 目前装配只读查询。app 不导入适配器或 wire 类型，plan 只依赖 model。contracts 在共同受检上下文内绑定执行图；app 负责输入来源、串行依赖调度、图级取消和结果预算；host 只拥有私有图/节点目录与具体进程。图不会公开可独立绕过调度的节点配方，单任务入口仍拒绝依赖。尚未开放正式 build/generate；输出事务、完整输入追踪和缓存仍需按 C04 完成。
+C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程端口；提供目录描述符相对、有界、拒绝链接的文件读取，以及 Linux/macOS 的受控子进程。`madb-contracts` 实现 app 的格式端口；CLI `bootstrap.rs` 装配只读查询与显式执行用例。app 不导入适配器或 wire 类型，plan 只依赖 model。contracts 在共同受检上下文内绑定执行图；app 负责输入来源、串行依赖调度、图级取消和结果预算；host 只拥有私有图/节点目录与具体进程。图不会公开可独立绕过调度的节点配方，单任务入口仍拒绝依赖。正式执行入口通过 pipeline 管理 metadata、生成、构建与打包；它们不替代 C05 的语言配方实现。
 
 `app/process` 负责一次性执行准入、取消与结果接收的原子先后；`host/process` 负责启动、管道、信号和回收。`ProcessRunner` 返回观察与未回收资源的 owner，`PendingProcess` 允许继续非阻塞回收。app 不把进程零退出当成契约验证、E02 终态或输出提交；状态与预算见[受控进程规范](07-code-generation.md)。
 
@@ -113,6 +113,10 @@ C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程�
 `contracts/task` 将完整上下文和 BuildTask 绑定到 app 的 TaskInvocation/BuildRecipe；wire DTO 留在适配器。`app/task` 校验声明输出和日志、捕获不可变结果，`app/process` 把结果校验纳入同一次取消准入。`host/task` 组合固定输入、受控进程和精确目录验证，返回带结果字节的 RetainedRun；无输出提交权限。测试驱动放在 CLI composition root 的 examples，不让 host 依赖 contracts。
 
 `app/input_observation` 拥有 InputWatchSet、InputObservation 和 ObserveWorkspace 端口，声明缺失路径及目录直接成员；host 以描述符相对的元数据/枚举实现。`execute_graph_observed` 在同一图准入内捕获和复核，最后检查已固定的根源字节。原 execute_graph 的固定字节语义保持不变；观察没有新增持久化格式或编译器依赖发现职责。
+
+`app/pipeline` 持有操作级取消控制、父批次租约、阶段来源和复算比较；`app/transaction` 定义三层批次、索引和提交端口，host 实现短锁、持久化、CAS 与恢复。生成、构建和候选不共用一个成功布尔值，存储身份不代表 SDK 认证。
+
+`app/dependencies` 定义发现结果、预备清单和缓存身份；contracts 校验版本化格式，host 通过受限真实 Clang 发现取得可信快照并实现原生准备缓存。加载磁盘清单本身只允许输入复核，不能伪造新的完整性证明。`host/locations` 负责受管目录解析和自有临时位置；CLI 不自行写文件或实现缓存规则。
 
 物理包的 Cargo manifest 或原生构建文件是实际成员与依赖的依据。C01 建立首期可编译的最小 workspace 和包职责说明；后续包随对应工作包加入，不批量创建成功返回的空适配器或无用途的占位包。内部类名与纯函数布局可调整，职责移动或依赖越界必须同步规范与检查。
 

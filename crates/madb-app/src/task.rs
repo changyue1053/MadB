@@ -59,10 +59,15 @@ pub trait BuildRecipe {
 #[derive(Clone, Debug)]
 pub struct ValidatedTaskResult {
     files: FrozenInputs,
+    payload: std::sync::Arc<[u8]>,
     outputs: BTreeSet<LogicalPath>,
     logs: BTreeSet<LogicalPath>,
 }
 impl ValidatedTaskResult {
+    /// Exact validated stdout, retained for real build-evidence publication.
+    pub fn payload(&self) -> &[u8] {
+        &self.payload
+    }
     pub fn files(&self) -> &FrozenInputs {
         &self.files
     }
@@ -131,6 +136,7 @@ pub fn capture_task_result_limited<W: ReadWorkspace, R: BuildRecipe>(
     }
     let files = capture_inputs(workspace, references)?;
     Ok(ValidatedTaskResult {
+        payload: stdout.into(),
         files,
         outputs,
         logs,

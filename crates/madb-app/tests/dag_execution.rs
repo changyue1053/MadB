@@ -303,6 +303,9 @@ where
     }
 }
 fn assert_drained(run: &mut GraphRun<Node>) {
+    if run.status != GraphStatus::Validated {
+        assert!(run.inputs().is_none());
+    }
     assert!(
         run.nodes_mut()
             .iter_mut()
@@ -1320,4 +1323,21 @@ fn captured_membership_must_include_selected_source_with_exact_case_and_kind() {
         assert!(executor.calls.is_empty());
         assert!(run.results().is_none());
     }
+}
+
+#[test]
+fn accepted_external_snapshot_detects_change_after_graph_before_publication() {
+    let source = Workspace::source();
+    let run = execute_graph(
+        &graph(chain()),
+        &source,
+        &mut Executor::new(transform),
+        &GraphControl::default(),
+    )
+    .unwrap();
+    let inputs = run.inputs().unwrap();
+    assert_eq!(inputs.references().count(), 1);
+    inputs.verify(&source).unwrap();
+    source.put("src/seed", b"y");
+    assert_eq!(code(&inputs.verify(&source).unwrap_err()), "INPUT004");
 }

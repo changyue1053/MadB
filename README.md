@@ -1,10 +1,10 @@
 # MadB
 
-跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询、静态任务规划、受控进程、已声明输入副本、单任务结果验证、静态串行 DAG 和显式输入观察，尚无已认证的跨语言路线。
+跨语言 SDK 工程工具。当前提供契约检查、受控执行、输入追踪及三层输出事务；实际工作包状态以[实施目录](docs/catalog/implementation-plan.json)为准，尚无已认证的跨语言路线。
 
 ## 开发环境
 
-使用 Python 3.14.4、Node.js 26.8.2、Rust 1.99.1 和一个 C11 编译器（clang 或 cc，用于 ABI 声明检查）。Python/Node 版本分别记录在 .python-version/.node-version，Rust 由 rust-toolchain.toml 固定；不需要修改全局 Rust 默认版本。
+使用 Python 3.14.4、Node.js 26.8.2、Rust 1.99.1 和 Clang 工具链（用于 C11 声明检查、真实依赖发现及消费测试）。Python/Node 版本分别记录在 .python-version/.node-version，Rust 由 rust-toolchain.toml 固定；不需要修改全局 Rust 默认版本。
 
 在仓库根执行：
 
@@ -21,7 +21,7 @@ cargo run --locked -p madb-cli -- --help
 cargo run --locked -p madb-cli -- --version
 ```
 
-`init`、`generate`、`build`、`verify` 尚未交付，调用会失败；功能按现有工作包逐步加入。
+`init`、`verify` 尚未交付；当前 `generate/build/package` 必须提供显式锁定配方，不会为任意项目自动推导后端。
 
 ## 当前可运行的只读查询
 
@@ -35,41 +35,52 @@ cargo run --locked -p madb-cli -- plan --root /path/to/workspace --project madb.
 
 项目配置可用 TOML 或 JSON；request 为 `madb.read-request/1`，其引用固定 lock/profile 的路径、大小和字节摘要。`plan` 的任务文件使用既有 `madb.build-task/1`，可重复 `--task-file` 并用 `--task <id>` 选择依赖子图；它不运行任务。没有任务文件时返回准备要求，不能把空计划报为成功。
 
-成功只表示记录的契约校验及**已声明输入字节匹配**，输出 `TrackedInputsMatch`；尚不证明编译器依赖闭包完整、工具已安装或 SDK 可用。缺失/过期快照给出 `MetadataRequired`，没有隐式编译或缓存修复。完整 metadata 执行、`generate --check`、三层输出事务和缓存仍属于 C04 后续工作。复现与限制见[只读查询验证](tests/integration/c04/README.md)。
+成功只表示记录的契约校验及**已声明输入字节匹配**，输出 `TrackedInputsMatch`；尚不证明编译器依赖闭包完整、工具已安装或 SDK 可用。缺失/过期快照给出 `MetadataRequired`，没有隐式编译或缓存修复。显式 metadata 执行及生成/构建/打包见下方；查询命令不会自动执行这些步骤。复现与限制见[只读查询验证](tests/integration/c04/README.md)。
 
-## 受控进程验证
+## 显式执行与三层输出
 
-`.venv/bin/python -m unittest discover -s tests/integration/c04_process` 调用真实 app/host 端口，验证取消准入、参数/环境、背压、超时、组终止与清理缺口。详见[复现说明](tests/integration/c04_process/README.md)。零退出只允许进入后续结果验证，不代表候选已提交或 SDK 已认证。
+C04 提供受检执行基础设施。每个命令消费一份 `madb.execution/1` 文件，引用精确的配置、工具和请求；它不自动猜测后端或生成语言绑定。
 
-当前执行宿主支持 Linux/macOS；macOS 构建还需要 Xcode Command Line Tools 和可用的 libclang，供锁定的 libproc 构建脚本生成系统声明。调用方保持工具/工作目录稳定并独占子进程回收；进程超时不覆盖启动前后文件 IO 和 OS 启动本身。它不执行网络隔离或完整进程树沙箱。
+```sh
+madb build --root /path/to/workspace --task metadata --execution metadata.execution.json --frozen
+# 按需显式准备受限原生依赖；工具可用 --tool-root 指向固定安装根
+madb build --root /path/to/workspace --task dependencies --execution generate.execution.json --frozen
+madb generate --root /path/to/workspace --execution generate.execution.json --frozen
+madb generate --root /path/to/workspace --execution generate.execution.json --frozen --check
+madb build --root /path/to/workspace --execution build.execution.json --frozen
+madb package --root /path/to/workspace --execution package.execution.json --frozen
+```
 
-## 固定输入验证
+metadata 在缺少 IR 时执行真实读取配方，返回固定 IR 路径；生成执行 `GenerateRequest→OutputSet` 并提交源码批次；构建固定该批次，只消费受检依赖输出；打包只接受固定源码和构建批次中的真实证据。未知输出身份先计算、再显式绑定下一阶段，不能在执行中改写任务摘要。
 
-`.venv/bin/python -m unittest discover -s tests/integration/c04_inputs` 通过内部 app/host API 捕获已声明文件、创建独占 `inputs/work` 目录，让真实工具读取固定副本，并在执行前后检查副本。源文件在捕获后变化不会改变已捕获字节；修改副本或增加/移除路径会拒收结果。目录在成功、失败、取消和 Drop 后均保留，未自动发布或回收。复现见[固定输入回归](tests/integration/c04_inputs/README.md)。
+构建子图缺少 compile/link/run 任一阶段时，只报告任务已执行，不提交完整构建批次。`package` 产生不可变候选，不能据此宣布 SDK 已认证。
 
-这只覆盖声明清单，不证明完整依赖、原子文件系统快照或阻止同权限写入。是否允许旧快照结果提交仍由后续输入/CAS 协议判定。尚无用户可用的 build/generate 命令。
+输出以不可变物理批次存储。短提交锁内复核输入和索引代次；旧结果不能覆盖新 current，同身份复用仍校验实际文件。消费者持有固定批次和祖先租约；源码更新清空旧构建与候选的 current，旧消费者继续读取自己的旧批次。
 
-## 单任务配方验证
+`generate --check` 在系统临时目录真实复算，对比文件与登记身份；不写源码、锁、有效输出或依赖缓存。缺材料、漂移、损坏和工具失败均非零。运行目录按保留策略留下并报告路径：进程组收尾不能证明所有逃逸后代已停止，因此不会由 Drop 自动删除现场。
 
-`.venv/bin/python -m unittest discover -s tests/integration/c04_tasks` 绑定受检 project/request/IR/profile/lock 和无依赖 BuildTask，启动实际受控配方，并核对 stdout 的 BuildEvidence 与 work 中的输出/日志字节。结果解析、捕获和最终副本检查均在一次性取消门禁内；被取消或验证失败不会暴露结果值。成功值保留独立字节，磁盘后来变化不改变它。详见[单任务回归](tests/integration/c04_tasks/README.md)。
+## 依赖与缓存边界
 
-配方通过 stdin/stdout 使用既有格式；普通编译器由配方适配。仅支持所选 profile 中精确锁定的工具 image，不把组件包摘要当可执行文件。单任务入口只接受无依赖配方；多任务由下面的图入口调度，尚无提交能力，成功只表示受检观察；不证明关联生成批次已存在或可发布。
+显式缺失路径、目录成员和内容观察用于发现变化；它们本身不证明完整依赖。受限 freestanding Clang 配置进一步执行真实传递依赖发现，固定源和搜索范围，记录工具、参数、宏、环境及目录/缺失条件，再形成可缓存身份。无法证明完整性的配置返回准备要求或禁用缓存；普通脚本生成器不能借一份 Clang 清单继承缓存资格。
 
-## 静态串行 DAG
+已准备的输入清单必须与后续配方逐项一致，不静默扩充锁定请求。受限原生准备缓存逐项校验清单和文件；损坏、缺失和身份漂移保守重建。缓存不是输出提交许可，也不是测试或认证证据。
 
-`.venv/bin/python -m unittest discover -s tests/integration/c04_dag` 通过内部图入口绑定同一配置上下文的多份 BuildTask，执行 producer→consumer、分叉/汇合或命名子图。首节点前冻结外部源；下游只消费直接依赖已验证的 outputs，不读取上游活跃 work，也不以同名源文件兜底。节点失败或图取消后不再调度，返回节点观察与保留目录，图结果集不可用。
+## 验证与支持范围
 
-本子集要求输入大小/摘要预先已知，最多执行 64 节点；根源、节点输入副本与结果文件合计最多 256 MiB。未知产物需要先发现身份、重新绑定下一张图。独立回归及接口见[图执行验证](tests/integration/c04_dag/README.md)。成功图仍是受检观察，没有批次提交、缓存或完整依赖证明；正式 build/generate CLI 尚未开放。
+当前执行宿主为 Linux/macOS 本地文件系统。macOS 需要 Xcode Command Line Tools 和 libclang，供固定 libproc 依赖构建系统声明。工具、系统运行库与命名工作区根由调用方保持稳定；私有目录和进程组不构成同权限恶意进程、网络或完整进程树沙箱。
 
-## 输入观察与复核
+| 验证范围 | 入口 |
+|---|---|
+| 配方、取消、背压、超时和进程收尾 | [受控进程](tests/integration/c04_process/README.md) |
+| 固定输入、结果字节和 DAG | [输入](tests/integration/c04_inputs/README.md)、[单任务](tests/integration/c04_tasks/README.md)、[执行图](tests/integration/c04_dag/README.md) |
+| 缺失路径、成员集合和最终复核 | [输入观察](tests/integration/c04_observations/README.md) |
+| 三层事务、CLI、故障恢复和缓存 | [整包验证](tests/integration/c04_package/README.md) |
 
-`.venv/bin/python -m unittest discover -s tests/integration/c04_observations` 验证显式的 `execute_graph_observed` 入口：图开始时捕获调用方声明的缺失路径、目录直接成员；最终接受前复核这些条件和选中外部文件的内容。可选文件出现、成员新增/删除/改类型或源字节变化时，不公开图结果，保留已执行节点和现场。
-
-原 `execute_graph` 继续只按固定字节执行；使用者需要活跃源在检查点仍匹配时才选择新入口。目录 watch 不递归、不自动捕获成员文件内容；新增文件可检测，但尚不提供编译器完整依赖发现、原子快照、缓存或提交资格。详见[输入观察回归](tests/integration/c04_observations/README.md)。
+完整检查仍使用 `scripts/check.py`。本地进程终止/恢复不等于断电、网络文件系统、所有目标设备或 SDK 生命周期验收。
 
 ## 工程与依据
 
-六个核心 crate 保持既定依赖方向。C02 在 model/rules/protocol 实现身份、策略、格式和证据检查，外层 `adapters/contracts` 显式转换并检查跨文档一致性。C04 的 app/plan 已提供只读用例和任务 DAG，app 捕获不可变输入值，host 负责有界读取、私有副本与受控进程，CLI bootstrap 装配查询适配器。进程底层通过内部 app 端口调用，尚未开放 build/generate；静态串行图可验证已知输入的依赖传递；动态元数据接入、事务和缓存仍待完成。
+六个核心 crate 保持既定依赖方向。app 拥有用例、端口、输入/结果与提交控制；contracts 转换 wire 数据并绑定语义；host 拥有进程、目录、缓存及原子存储；CLI bootstrap 只装配这些边界。规范、实际接口及验收分别维护，不以目录或 schema 存在推导能力。
 
 格式入口见[契约格式 v1](docs/schemas/README.md)和[首链声明设计](docs/examples/first-route/README.md)。共同格式向量由 Rust/Python 验证，摘要向量由 Rust/Python/Node 验证；这些检查不运行原生 SDK。
 
@@ -82,6 +93,6 @@ MadB-Lab 是独立仓库，使用公开候选和独立预期；不能链接本�
 
 ## Quick start for contributors
 
-Install the exact versions above, create the Python virtual environment, install the hash-locked development dependencies, then run `scripts/check.py` with that environment's Python. The CLI supports help/version and explicit read-only snapshot queries (`inspect`, `check`, `plan`); see the query guide below. Read the task's linked specification before changing code.
+Install the exact versions above, create the Python virtual environment, install the hash-locked development dependencies, then run `scripts/check.py` with that environment's Python. The CLI supports explicit read-only queries and frozen metadata/generation/build/package recipes. Execution infrastructure does not certify a language SDK; see the guides above. Read the task's linked specification before changing code.
 
 See [LICENSE](LICENSE) and [third-party scope](THIRD_PARTY.md). This repository does not yet provide a production SDK.

@@ -182,6 +182,7 @@ pub struct GraphRun<N> {
     pub skipped: Vec<Id>,
     nodes: Vec<(Id, N)>,
     results: Option<BTreeMap<Id, ValidatedTaskResult>>,
+    inputs: Option<FrozenInputs>,
 }
 impl<N> GraphRun<N> {
     pub fn nodes(&self) -> &[(Id, N)] {
@@ -192,6 +193,11 @@ impl<N> GraphRun<N> {
     }
     pub fn results(&self) -> Option<&BTreeMap<Id, ValidatedTaskResult>> {
         self.results.as_ref()
+    }
+    /// External inputs retained for a separate commit-time revalidation. This
+    /// immutable snapshot is exposed only after whole-graph result acceptance.
+    pub fn inputs(&self) -> Option<&FrozenInputs> {
+        self.inputs.as_ref()
     }
 }
 
@@ -252,6 +258,7 @@ fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
         skipped: Vec::new(),
         nodes: Vec::new(),
         results: None,
+        inputs: None,
     };
     let results = if guard.cancelled() {
         BTreeMap::new()
@@ -282,6 +289,8 @@ fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     };
     if run.status == GraphStatus::Validated {
         run.results = Some(results);
+    } else {
+        run.inputs = None;
     }
     Ok(run)
 }
@@ -313,6 +322,7 @@ fn run_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     if let Some((workspace, observed)) = &observation {
         observed.verify(*workspace)?;
     }
+    run.inputs = frozen.clone();
     let mut results = BTreeMap::new();
     let mut result_limit = GRAPH_BYTES_LIMIT - graph.reserved_bytes;
     for recipe in &graph.recipes {

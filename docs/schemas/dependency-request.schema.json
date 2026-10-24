@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:dependency-request:1",
+  "title": "MadB dependency-request v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.dependency-request/1"
+    },
+    "compiler": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 1,
+      "maxItems": 128
+    },
+    "include_directories": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "absent": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 4096
+      },
+      "minItems": 0,
+      "maxItems": 256
+    },
+    "environment": {
+      "type": "object",
+      "maxProperties": 128,
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 4096
+      }
+    },
+    "target": {
+      "enum": [
+        "arm64-apple-macos11.0",
+        "x86_64-apple-macos10.15",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-unknown-linux-gnu"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "compiler",
+    "sources",
+    "include_directories",
+    "absent",
+    "arguments",
+    "environment",
+    "target"
+  ],
+  "additionalProperties": false
+}

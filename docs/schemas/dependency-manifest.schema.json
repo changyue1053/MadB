@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:dependency-manifest:1",
+  "title": "MadB dependency-manifest v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.dependency-manifest/1"
+    },
+    "provider": {
+      "const": "clang-freestanding/1"
+    },
+    "context": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "compiler": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 1,
+      "maxItems": 128
+    },
+    "include_directories": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "absent": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 4096
+      },
+      "minItems": 0,
+      "maxItems": 256
+    },
+    "environment": {
+      "type": "object",
+      "maxProperties": 128,
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 4096
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "directories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "$ref": "urn:madb:schema:common:1#/$defs/path"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "$ref": "urn:madb:schema:common:1#/$defs/path"
+                },
+                "kind": {
+                  "enum": [
+                    "file",
+                    "directory"
+                  ]
+                }
+              },
+              "required": [
+                "name",
+                "kind"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 8192
+          }
+        },
+        "required": [
+          "path",
+          "entries"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 256
+    },
+    "discovered": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      }
+    },
+    "target": {
+      "enum": [
+        "arm64-apple-macos11.0",
+        "x86_64-apple-macos10.15",
+        "aarch64-unknown-linux-gnu",
+        "x86_64-unknown-linux-gnu"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "provider",
+    "context",
+    "compiler",
+    "sources",
+    "include_directories",
+    "absent",
+    "arguments",
+    "environment",
+    "files",
+    "directories",
+    "discovered",
+    "target"
+  ],
+  "additionalProperties": false
+}

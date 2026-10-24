@@ -830,6 +830,108 @@
       ],
       "expected": "invalid",
       "code": "FMT004"
+    },
+    {
+      "id": "execution.valid",
+      "kind": "execution",
+      "file": "execution.json",
+      "expected": "valid"
+    },
+    {
+      "id": "execution.wrong-major",
+      "kind": "execution",
+      "file": "execution.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.execution/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "execution.metadata-contract",
+      "kind": "execution",
+      "file": "execution.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/context/contract",
+          "value": {
+            "path": "contract.json",
+            "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+            "size": 7,
+            "schema": "madb.contract-ir/1"
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "execution.build-with-recipe",
+      "kind": "execution",
+      "file": "execution.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/operation",
+          "value": "build"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "execution.unknown-field",
+      "kind": "execution",
+      "file": "execution.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "execution.cwd",
+      "kind": "execution",
+      "file": "execution.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/recipe/working_directory",
+          "value": "other"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "execution.missing-dependency-receipt",
+      "kind": "execution",
+      "file": "execution.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/dependencies",
+          "value": {
+            "request": {
+              "path": "deps.json",
+              "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+              "size": 7,
+              "schema": "madb.dependency-request/1"
+            }
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
     }
   ]
 }

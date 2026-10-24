@@ -30,9 +30,10 @@ pub enum DocumentKind {
     PackageRequest,
     Candidate,
     VerifyRequest,
+    Execution,
 }
 impl DocumentKind {
-    pub const ALL: [Self; 15] = [
+    pub const ALL: [Self; 16] = [
         Self::Project,
         Self::ContractIr,
         Self::Lock,
@@ -48,6 +49,7 @@ impl DocumentKind {
         Self::PackageRequest,
         Self::Candidate,
         Self::VerifyRequest,
+        Self::Execution,
     ];
     pub fn name(self) -> &'static str {
         match self {
@@ -66,6 +68,7 @@ impl DocumentKind {
             Self::PackageRequest => "package-request",
             Self::Candidate => "candidate",
             Self::VerifyRequest => "verify-request",
+            Self::Execution => "execution",
         }
     }
     fn source(self) -> &'static str {
@@ -85,6 +88,7 @@ impl DocumentKind {
             Self::PackageRequest => schema!("package-request"),
             Self::Candidate => schema!("candidate"),
             Self::VerifyRequest => schema!("verify-request"),
+            Self::Execution => schema!("execution"),
         }
     }
     pub fn schema_id(self) -> String {
@@ -137,6 +141,34 @@ impl SchemaRegistry {
         }
         Ok(Self { validators })
     }
+    /// Validate a trusted bundled auxiliary schema. Untrusted input supplies
+    /// only payload bytes; offline resolution permits only the bundled common schema.
+    pub fn validate_bundled(schema: &Value, bytes: &[u8]) -> Result<Value, FormatError> {
+        let value = strict_json(bytes)?;
+        let common: Value = serde_json::from_str(schema!("common")).map_err(schema_error)?;
+        let registry = Registry::new()
+            .add("urn:madb:schema:common:1", common)
+            .map_err(schema_error)?
+            .prepare()
+            .map_err(schema_error)?;
+        let validator = jsonschema::options()
+            .with_draft(Draft::Draft202012)
+            .with_registry(&registry)
+            .offline()
+            .with_pattern_options(PatternOptions::regex())
+            .should_validate_formats(true)
+            .build(schema)
+            .map_err(schema_error)?;
+        if let Some(error) = validator.iter_errors(&value).next() {
+            return Err(FormatError::new(
+                "FMT004",
+                error.instance_path().to_string(),
+                error.to_string(),
+            ));
+        }
+        Ok(value)
+    }
+
     pub fn decode(&self, kind: DocumentKind, bytes: &[u8]) -> Result<Document, FormatError> {
         self.validate(kind, strict_json(bytes)?)
     }

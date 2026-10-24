@@ -202,6 +202,14 @@ impl InputObservation {
         Ok(())
     }
 
+    /// Read-only captured directory states for dependency identity adapters.
+    /// This exposes observations, not proof of discovery completeness.
+    pub fn directory_members(&self) -> impl Iterator<Item = (&LogicalPath, &[DirectoryEntry])> {
+        self.directories
+            .iter()
+            .map(|(path, entries)| (path, entries.as_slice()))
+    }
+
     /// Recheck membership, kinds and absence. Reads are bounded and sequential;
     /// no guarantee is made about ABA changes or mutations after this returns.
     pub fn verify<W: ObserveWorkspace + ?Sized>(&self, workspace: &W) -> Result<()> {

@@ -1,9 +1,15 @@
 //! Host-owned bounded filesystem reads and approved process execution.
+pub mod artifact;
+pub mod cache;
+pub mod cancellation;
 pub mod dag;
+pub mod dependencies;
 pub mod inputs;
+pub mod locations;
 mod observation;
 pub mod process;
 pub mod task;
+pub mod transaction;
 use madb_app::{ErrorKind, LogicalPath, QueryError, Result, ports::ReadWorkspace};
 use std::path::Path;
 
