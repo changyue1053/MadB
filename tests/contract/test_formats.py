@@ -83,7 +83,7 @@ class ContractFormats(unittest.TestCase):
                 validator = Draft202012Validator(schemas[vector["kind"]], registry=registry)
                 self.assertEqual(validator.is_valid(value), vector["expected"] == "valid")
                 seen.add(vector["kind"])
-        self.assertEqual(len(seen), 15)
+        self.assertEqual(len(seen), 16)
 
     def test_jcs_bytes_and_hashes(self):
         vectors = read("canonical-vectors.json")

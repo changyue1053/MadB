@@ -1,4 +1,4 @@
-"""Run repository checks through the implemented C04 slices; failures never become skipped passes."""
+"""Run repository checks, including C04 transactions and execution; failures never become skipped passes."""
 from pathlib import Path
 import importlib.metadata
 import os
@@ -55,6 +55,7 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_tasks"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_dag"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_observations"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_package"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
         [sys.executable, "docs/tools/check_docs.py", "--node", node],
@@ -64,7 +65,7 @@ def main():
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=ROOT, check=True)
-    print("Repository checks passed through the implemented C04 slices (P02 uses its locked Apple host separately). SDK certification remains separate.")
+    print("Repository checks passed through C04 (P02 uses its locked Apple host separately). SDK certification remains separate.")
 
 
 if __name__ == "__main__":

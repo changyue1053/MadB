@@ -1,12 +1,15 @@
 //! Application use cases and inward-facing ports. No filesystem or wire DTOs.
 pub mod dag;
 mod dag_control;
+pub mod dependencies;
 pub mod input_observation;
 pub mod inputs;
+pub mod pipeline;
 pub mod ports;
 pub mod process;
 pub mod query;
 pub mod task;
+pub mod transaction;
 
 pub use madb_model::{Digest, Finding, Id, LogicalPath};
 pub use madb_plan::{Phase, Task, TaskGraph};

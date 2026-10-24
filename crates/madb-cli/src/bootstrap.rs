@@ -10,3 +10,6 @@ pub fn query(root: &Path, request: &QueryRequest) -> Result<QueryOutcome> {
     let format = madb_contracts::query::SnapshotAdapter::new()?;
     madb_app::query::query(&workspace, &format, request)
 }
+
+mod execution;
+pub use execution::{ExecutionOptions, execute};

@@ -174,7 +174,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C02 六项验收已通过：15 类 payload、受检领域转换、身份/策略/布局/摘要/锁/证据规则和首链 ABI 可执行设计；本地检查及 PR/分支 CI 全绿。实现位于独立 PR #2，合入状态由 GitHub 记录；C03 工具链/双向运行、C04 应用流程和 C05 原生 SDK 仍待各自验收。"
+      "notes": "C02 六项验收已通过：15 类 payload、受检领域转换、身份/策略/布局/摘要/锁/证据规则和首链 ABI 可执行设计；本地检查及 PR/分支 CI 全绿。实现位于独立 PR #2，合入状态由 GitHub 记录；后续工具链、应用流程和原生 SDK 分别按 C03/C04/C05 的当前记录验收。"
     },
     {
       "id": "C03",
@@ -222,7 +222,7 @@
         "P01",
         "P02"
       ],
-      "notes": "C03/P01/P02 已通过：macOS Arm64 与 Linux CI 的隔离 CLI/帮助进程；固定来源的生成器与真实 ABI 形状；Arm64 独立双向运行、x86_64 编译/链接及负例；四个实际 profile 和既有格式锁校验。交付于基于 C02 的 PR #3；尚无 SDK 认证，C04/C05 的执行器、事务、生命周期和独立 Lab 继续按计划验收。"
+      "notes": "C03/P01/P02 已通过：macOS Arm64 与 Linux CI 的隔离 CLI/帮助进程；固定来源的生成器与真实 ABI 形状；Arm64 独立双向运行、x86_64 编译/链接及负例；四个实际 profile 和既有格式锁校验。交付于基于 C02 的 PR #3；尚无 SDK 认证，执行器/事务和生命周期/独立 Lab 分别按 C04/C05 的当前记录验收。"
     },
     {
       "id": "C04",
@@ -238,7 +238,7 @@
         "C02",
         "C03"
       ],
-      "status": "in_progress",
+      "status": "implemented",
       "verification": "running",
       "evidence": [
         "reviews/2026-10-24-c04-readonly-queries.md",
@@ -252,7 +252,8 @@
         "reviews/2026-10-24-c04-dag-execution.md",
         "https://github.com/changyue1053/MadB/pull/8",
         "reviews/2026-10-24-c04-input-observations.md",
-        "https://github.com/changyue1053/MadB/pull/9"
+        "https://github.com/changyue1053/MadB/pull/9",
+        "reviews/2026-10-24-c04-complete-package.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -281,7 +282,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C04 已分步交付查询、受控进程、固定输入、单任务结果及 PR #8 静态串行 DAG；PR #9 增加显式输入观察入口，检查缺失路径、目录直接成员和选中源字节，并保持旧图入口行为。验证和远端 CI 按关联 PR head 核实。三层提交、批次来源/索引/CAS、完整依赖发现/缓存、generate --check 仍待实现；C04 保持进行中，无新增 SDK 认证。"
+      "notes": "C04 整包实现已交付：查询/受控执行、缺 IR 准备、生成/构建/候选三层事务、固定父批次/CAS/租约/恢复、受限真实 Clang 依赖发现与缓存、generate --check、CLI 信号取消与原始诊断。macOS 统一门禁通过；远程 Linux CI 待核对具体提交。缓存仅开放已证明完整输入的配置，C05 语言 SDK/Lab 认证继续独立验收。"
     },
     {
       "id": "C05",

@@ -1,0 +1,72 @@
+{
+  "schema": "madb.execution/1",
+  "operation": "metadata",
+  "context": {
+    "project": {
+      "path": "madb.json",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.project/1"
+    },
+    "read_request": {
+      "path": "read.json",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.read-request/1"
+    },
+    "lock": {
+      "path": "madb.lock",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.lock/1"
+    },
+    "profile": {
+      "path": "profiles/rust-c.json",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.profile/1"
+    },
+    "contract": null
+  },
+  "recipe": {
+    "id": "read-fixture",
+    "request": {
+      "path": "read.json",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.read-request/1"
+    },
+    "tool": {
+      "id": "fixture-clang",
+      "version": "fixture-1",
+      "sha256": "sha256:c3a9dacf1e6fe0033c64e83db13445a8828e993ccce8aaf0dcc66957ad053af6"
+    },
+    "installed_tool": {
+      "path": "bin/reader",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.tool-image/1"
+    },
+    "arguments": [],
+    "environment": [],
+    "working_directory": "work",
+    "response_path": "contract.json",
+    "inputs": [
+      {
+        "path": "native/fixture.rs",
+        "sha256": "sha256:7e27f1fcded98884ca95fd01459e9dfb2d6cb613fc7f52036bd89e8d32c4b5c0",
+        "size": 20,
+        "schema": "madb.source-input/1"
+      }
+    ]
+  },
+  "tasks": [],
+  "store": ".madb/store",
+  "run_parent": ".madb/runs",
+  "cache": null,
+  "watch": {
+    "absent": [],
+    "directories": []
+  },
+  "dependencies": null
+}

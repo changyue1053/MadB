@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:cache-entry:1",
+  "title": "MadB cache-entry v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.cache-entry/1"
+    },
+    "input_key": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "dependency_manifest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "input_key",
+    "dependency_manifest",
+    "files"
+  ],
+  "additionalProperties": false
+}

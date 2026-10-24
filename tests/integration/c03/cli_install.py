@@ -21,14 +21,15 @@ def main():
         # Run outside the source tree, with no Cargo path, tool plugins or cache.
         for args, expected_code, marker in [(["--version"], 0, "madb 0.1.0-dev.0"),
                                              (["--help"], 0, "Read-only snapshot queries"),
-                                             (["generate"], 2, "unrecognized subcommand")]:
+                                             (["verify"], 2, "unrecognized subcommand"),
+                                             (["generate"], 2, "--execution")]:
             result = subprocess.run([str(binary), *args], cwd=temporary,
                                     env={"PATH": os.defpath, "HOME": temporary}, capture_output=True, text=True, timeout=10)
             if result.returncode != expected_code or marker not in result.stdout + result.stderr:
                 raise RuntimeError(f"Isolated CLI assertion failed: {args}: {result}")
         print(json.dumps({"probe": "P01-cli", "status": "passed", "binary_sha256": digest(binary),
                           "rust": subprocess.check_output(["rustc", "-Vv"], text=True).strip(),
-                          "checks": ["isolated-version", "isolated-help", "unimplemented-command-rejected"]}, indent=2))
+                          "checks": ["isolated-version", "isolated-help", "unimplemented-command-rejected", "execution-requires-explicit-recipe"]}, indent=2))
 
 
 if __name__ == "__main__":

@@ -9,6 +9,9 @@ use std::path::Path;
 pub fn run() -> u8 {
     let matches = cli().get_matches();
     let (command, args) = matches.subcommand().expect("subcommand required");
+    if matches!(command, "generate" | "build" | "package") {
+        return execute(command, args);
+    }
     let result = request(args).and_then(|request| {
         super::bootstrap::query(
             Path::new(args.get_one::<String>("root").expect("default root")),
@@ -22,7 +25,7 @@ pub fn run() -> u8 {
             for f in findings {
                 text.push_str(&format!("{} at {}: {}\n", f.code, f.subject, f.message));
             }
-            text.push_str("Required task: metadata. Execution entry: madb build --task metadata --frozen (executor/reader pending C04/C05; not run).\n");
+            text.push_str("Required task: metadata. Execution entry: madb build --task metadata --execution <metadata.execution.json> --frozen (explicit locked reader recipe required; not run).\n");
             (2, text)
         }
         Ok(QueryOutcome::Checked {
@@ -88,7 +91,7 @@ pub fn run() -> u8 {
                         ));
                     }
                 } else {
-                    text.push_str("PLAN003: provide --task-file for static planning; automatic backend planning is pending C04/C05.\n");
+                    text.push_str("PLAN003: provide --task-file for static planning; automatic backend planning belongs to language integration (C05 and later).\n");
                     return write_result(&mut out, &text, 2);
                 }
             } else {
@@ -129,7 +132,7 @@ fn write_result(out: &mut impl Write, text: &str, code: u8) -> u8 {
 fn cli() -> Command {
     let mut command = Command::new("madb").version(env!("CARGO_PKG_VERSION"))
         .about("Cross-language SDK engineering tools")
-        .after_help("Read-only snapshot queries are available. No boundary route is implemented or certified.")
+        .after_help("Read-only snapshot queries and explicit frozen execution recipes are available. No boundary route is implemented or certified.")
         .subcommand_required(true).arg_required_else_help(true);
     for (name, help) in [
         (
@@ -184,8 +187,93 @@ fn cli() -> Command {
         }
         command = command.subcommand(sub);
     }
+    for (name, help) in [
+        (
+            "generate",
+            "Execute a locked generator and commit a source batch, or check for drift",
+        ),
+        (
+            "build",
+            "Execute a fixed build graph or an explicit metadata preparation recipe",
+        ),
+        (
+            "package",
+            "Prepare and commit a candidate from a fixed source/build pair",
+        ),
+    ] {
+        let mut sub = Command::new(name)
+            .about(help)
+            .arg(Arg::new("root").long("root").default_value("."))
+            .arg(Arg::new("tool-root").long("tool-root").help("Root of the locked installed tool images; defaults to --root"))
+            .arg(Arg::new("execution").long("execution").required(true)
+                .help("Existing madb.execution/1 document, relative to --root"))
+            .arg(Arg::new("frozen").long("frozen").action(ArgAction::SetTrue).required(true)
+                .help("Use the exact locked local tools and inputs; never resolve or upgrade dependencies"));
+        if name == "generate" {
+            sub = sub.arg(
+                Arg::new("check")
+                    .long("check")
+                    .action(ArgAction::SetTrue)
+                    .help(
+                        "Recompute in isolation and report drift without modifying managed outputs",
+                    ),
+            );
+        }
+        if name == "build" {
+            sub = sub.arg(Arg::new("task").long("task")).arg(
+                Arg::new("active-task")
+                    .long("active-task")
+                    .action(ArgAction::Append),
+            );
+        }
+        command = command.subcommand(sub);
+    }
     command
 }
+
+fn execute(command: &str, args: &ArgMatches) -> u8 {
+    let options = super::bootstrap::ExecutionOptions {
+        command: command.to_owned(),
+        root: args.get_one::<String>("root").expect("default root").into(),
+        execution: args
+            .get_one::<String>("execution")
+            .expect("required execution")
+            .to_owned(),
+        tool_root: args.get_one::<String>("tool-root").map(Into::into),
+        check: args
+            .try_get_one::<bool>("check")
+            .ok()
+            .flatten()
+            .copied()
+            .unwrap_or(false),
+        task: args.try_get_one::<String>("task").ok().flatten().cloned(),
+        active_tasks: args
+            .try_get_many::<String>("active-task")
+            .ok()
+            .flatten()
+            .into_iter()
+            .flatten()
+            .cloned()
+            .collect(),
+    };
+    match super::bootstrap::execute(&options) {
+        Ok(text) => write_result(&mut io::stdout().lock(), &text, 0),
+        Err(error) => {
+            let code = match error.kind {
+                ErrorKind::CheckFailed => 1,
+                ErrorKind::InvalidInput => 2,
+                ErrorKind::Host => 3,
+                ErrorKind::Conflict => 4,
+            };
+            if writeln!(io::stderr().lock(), "{error}").is_err() {
+                3
+            } else {
+                code
+            }
+        }
+    }
+}
+
 fn request(args: &ArgMatches) -> madb_app::Result<QueryRequest> {
     let path = |value: &str| {
         LogicalPath::new(value)

@@ -1,6 +1,6 @@
 # MadB 对外格式与 C02 契约实现
 
-本目录是对外文件字段、版本和结构约束的唯一权威，采用 JSON Schema Draft 2020-12。宿主与帮助程序共享 schema 和格式向量；纯领域模型不导入 wire 类型。C02 提供离线校验库和受检转换，CLI 的执行流程仍由 C04 实现。
+本目录是对外文件字段、版本和结构约束的唯一权威，采用 JSON Schema Draft 2020-12。宿主与帮助程序共享 schema 和格式向量；纯领域模型不导入 wire 类型。C02 提供离线校验库和受检转换，C04 通过执行配方装配这些真实端口。
 
 ## 格式清单
 
@@ -49,7 +49,7 @@ madb-model：Symbol / Type / Policy / Capability / CaseResult
 Findings 或受检结果 → C04 应用请求与端口
 ```
 
-不同时手写 15 套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 15 类 payload 格式正反例，领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
+不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 16 类文档格式正反例（15 类业务 payload 加 execution），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
 
 应用请求与 wire 文件不是一个类型：C02 固定端口 payload；C04 按用例构造纯应用请求，并通过适配器转换。C02 没有空执行器、成功占位后端或伪造的 `build/verify` 命令。
 
@@ -86,10 +86,16 @@ Finding 带稳定 code、subject、message 和来源位置；格式错误带路�
 | madb.profile/1 | 完整已解析 profile | 工具/宏/限制/功能按 ID；默认仅 values；排除 extensions 和默认来源 |
 | madb.project/1 | 工程与选择、策略、策略族、制品声明 | boundary/族按 ID；策略按规范 JSON 字节排序、族引用排序；排除 origin/extensions |
 | madb.source/1 | path、文件原始 sha256、size | 按逻辑路径；schema 标记不改变源字节身份 |
-| madb.task/1 | 完整 BuildTask | 去掉自身 task_digest；输入/环境/依赖/输出排序；参数顺序保留 |
+| madb.task/1 | BuildTask 或带 operation 的阶段投影 | 去掉自身 task_digest；输入/环境/依赖/输出排序；参数顺序保留 |
 | madb.generation/1 | task/input/profile 摘要与文件清单 | 文件按路径、sources 按 ID；清单不能包含自身 |
 | madb.candidate/1 | 完整候选、锁/契约/策略/生成身份及公开要求 | 去掉 candidate_digest；文件/依赖/证据按路径、符号/案例按 ID；禁止清单自引用 |
 | madb.case/1 | 独立案例完整定义 | 问题/来源/功能/环境按 ID；setup/steps/assertions/cleanup 保持顺序 |
+
+C04 增加 `execution` 配方，将真实请求引用、工具安装位置、显式参数/环境、输入、响应位置及受管目录绑定在一次操作中；metadata 不要求已有 IR。`dependency-request`、`dependency-manifest`、`cache-entry` 是单独校验的宿主辅助格式，不改变十五种业务 payload。
+
+生成任务使用 `madb.task/1` 域下的 `{operation: "generate", request, execution}` 投影：request 去掉自身 task_digest，inputs 按 path 排序；execution 取 id、tool、arguments、environment、working_directory、response_path、inputs，环境按 name、输入按 path 排序。请求文件位置和安装路径不入投影，实际文件摘要和工具 image 仍逐项验证。metadata/package 使用对应 operation 与完整 request/相同执行投影；build-set 使用排序后的真实 BuildTask 集合。原 BuildTask 投影和旧向量保持不变。
+
+依赖清单采用规范 JSON 字节身份；准备上下文、存储内容和物理批次各有内部版本域。物理目录身份可以变化，不能代替 wire generation_id 或 candidate_digest；内部格式不授予路线认证。
 
 源码字节变化必须使 source/input 身份变化，即使仅移动声明行不改变 shape。改变参数顺序改变 shape/structure；改变策略改变 policy；工具版本和参数改变 profile/task，不能复用旧候选证据。布局观察的 selector/input/producer 必须对应快照与 profile；形状摘要只投影 subject/result，生产来源仍在完整 IR 文件及冻结输入中验证。
 
@@ -104,3 +110,12 @@ C02 支持标量、精确常量、字符串、标量 buffer、可空值、值 re
 要求范围 required/optional/not-applicable、工作进度、六种执行状态、证据 missing/current/stale 分开。排除需要理由；required 案例必须匹配独立定义、身份、精确结果、最低证据层级、清理和附件。资源观察必须守恒并回到基线；不能靠 report 自报 passed、任意崩溃或编译日志给路线认证。
 
 [测试样本](../../tests/fixtures/contracts/README.md)使用明确标识的合成工具和占位文件引用。其测试通过只验证格式和规则；C03 提供真实工具锁，C04 提供应用流程，C05/C09 提供候选及独立 Lab 执行。
+
+## C04 执行辅助格式
+
+- [execution](execution.schema.json)：单阶段执行配置；真正的请求仍由各业务 schema 校验。
+- [dependency-request](dependency-request.schema.json)：明确 Clang image、target、源/搜索域、参数、环境与缺失条件。
+- [dependency-manifest](dependency-manifest.schema.json)：真实发现结果、完整保守输入上集与实际读取子集；保存该文档不能单独授予缓存资格。
+- [cache-entry](cache-entry.schema.json)：固定原生准备输出的字节清单；恢复后逐项校验，不代表提交或认证。
+
+所有辅助格式离线验证，未知字段和格式拒绝。实际支持子集、准备与重新绑定协议以[生成规范](../architecture/07-code-generation.md)为准。

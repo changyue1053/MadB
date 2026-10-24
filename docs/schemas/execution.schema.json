@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:execution:1",
+  "title": "MadB execution v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.execution/1"
+    },
+    "operation": {
+      "enum": [
+        "metadata",
+        "generate",
+        "build",
+        "package"
+      ]
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "read_request": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "lock": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "profile": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "contract": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "project",
+        "read_request",
+        "lock",
+        "profile",
+        "contract"
+      ],
+      "additionalProperties": false
+    },
+    "recipe": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "request": {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            "tool": {
+              "$ref": "urn:madb:schema:common:1#/$defs/component"
+            },
+            "installed_tool": {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            "arguments": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 4096
+              },
+              "minItems": 0,
+              "maxItems": 4096
+            },
+            "environment": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  },
+                  "value": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                },
+                "required": [
+                  "name",
+                  "value"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 4096
+            },
+            "working_directory": {
+              "const": "work"
+            },
+            "response_path": {
+              "$ref": "urn:madb:schema:common:1#/$defs/path"
+            },
+            "inputs": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+              },
+              "minItems": 1,
+              "maxItems": 4096
+            }
+          },
+          "required": [
+            "id",
+            "request",
+            "tool",
+            "installed_tool",
+            "arguments",
+            "environment",
+            "working_directory",
+            "response_path",
+            "inputs"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+          },
+          "installed_tool": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+          }
+        },
+        "required": [
+          "request",
+          "installed_tool"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "store": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    },
+    "run_parent": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    },
+    "cache": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "watch": {
+      "type": "object",
+      "properties": {
+        "absent": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/path"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "directories": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/path"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "absent",
+        "directories"
+      ],
+      "additionalProperties": false
+    },
+    "dependencies": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "request": {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            "receipt": {
+              "anyOf": [
+                {
+                  "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "request",
+            "receipt"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "operation",
+    "context",
+    "recipe",
+    "tasks",
+    "store",
+    "run_parent",
+    "cache",
+    "watch",
+    "dependencies"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "build"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "recipe": {
+            "type": "null"
+          },
+          "tasks": {
+            "minItems": 1
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "recipe": {
+            "type": "object"
+          },
+          "tasks": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "metadata"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "context": {
+            "properties": {
+              "contract": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "context": {
+            "properties": {
+              "contract": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

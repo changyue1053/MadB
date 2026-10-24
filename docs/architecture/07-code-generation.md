@@ -77,7 +77,7 @@ Linux/macOS 的进程组不是安全沙箱；本地 leader 与管道收尾不证
 
 ## 单任务配方与结果字节
 
-C04 的首个执行入口是内部 Rust 单任务 API。contracts 读取既有 BuildTask、project/request/IR/profile/lock 并形成受检配方；app 保留任务参数、环境、声明输入和输出；host 准备私有副本并运行。静态 TaskGraph 不包含完整执行配方，不从它反推工具或参数。单任务入口只接受空 dependencies 和 work 工作目录，不忽略依赖，也不开放正式 build/generate CLI。
+C04 的首个执行入口是内部 Rust 单任务 API。contracts 读取既有 BuildTask、project/request/IR/profile/lock 并形成受检配方；app 保留任务参数、环境、声明输入和输出；host 准备私有副本并运行。静态 TaskGraph 不包含完整执行配方，不从它反推工具或参数。单任务入口只接受空 dependencies 和 work 工作目录，不忽略依赖，其自身不承担正式 CLI 或事务；正式阶段编排见本页后文。
 
 | 边界 | 当前规则 |
 |---|---|
@@ -96,7 +96,7 @@ C04 的首个执行入口是内部 Rust 单任务 API。contracts 读取既有 B
 
 ## 静态串行图与依赖结果
 
-C04 内部图入口在同一受检 project/request/IR/profile/lock 上绑定所有 BuildTask，共享解析校验器；不为每个节点重复构建完整 schema registry。图绑定输入文档总量最多 16 MiB，单文档仍受 1 MiB 限制；静态全图最多 4096 节点，实际选中执行最多 64 节点。正式 build/generate CLI 与 E02 会话不在这个子范围内。
+C04 内部图入口在同一受检 project/request/IR/profile/lock 上绑定所有 BuildTask，共享解析校验器；不为每个节点重复构建完整 schema registry。图绑定输入文档总量最多 16 MiB，单文档仍受 1 MiB 限制；静态全图最多 4096 节点，实际选中执行最多 64 节点。此图原语与正式 CLI 阶段编排分开；E02 会话仍按独立工作包实施。
 
 | 责任 | 执行规则 |
 |---|---|
@@ -151,7 +151,7 @@ C/C++ 优先复用编译器依赖文件和 bindgen 读取回调；Cargo 使用�
 
 ## 显式输入观察与图末复核
 
-在尚无完整编译器依赖发现时，C04 提供调用者声明的输入观察。`InputWatchSet::new(absent, directories)` 与 `InputObservation::capture/verify` 不含文件系统实现；`ObserveWorkspace` 在 host 读取存在性和有界直接成员。它们没有新的 wire schema、任务摘要或可缓存标记。
+除后文受限编译器依赖发现外，C04 也提供独立的调用者声明输入观察。`InputWatchSet::new(absent, directories)` 与 `InputObservation::capture/verify` 不含文件系统实现；`ObserveWorkspace` 在 host 读取存在性和有界直接成员。它们没有新的 wire schema、任务摘要或可缓存标记。
 
 | 条件 | 语义与边界 |
 |---|---|
@@ -173,3 +173,44 @@ OBS001 表示观察结构错误，OBS002 表示观察预算，OBS003 表示条�
 ## 验证责任
 
 golden 测试验证输出形状，编译测试验证可编译，行为测试验证契约。消费编译探针必须引用承诺交付的公开符号，识别 SKIE 等后端生成的 `unavailable` 占位；运行测试再验证真实调用结果。预期行为不能从同一份生成逻辑生成。每个后端还要验证非法输入、重新生成、失败恢复和手写扩展保留。
+
+## C04 正式阶段编排与存储协议
+
+`madb.execution/1` 只组合现有端口，不把生成任务伪装为 BuildTask。metadata 直接运行 ReadRequest→ContractIR，不依赖待生成 IR；generate 运行 GenerateRequest→OutputSet；build 在真实 generation_id 已知后绑定 BuildTask 图；package 运行 PackageRequest→Candidate。所有命令要求显式 frozen 配方，自动推导各语言后端仍由后续路线实现。
+
+生成配方必须在返回成功 OutputSet 前完成该语言的语法/声明检查。C04 的锁定 C fixture 真实调用 Clang 对最终输出执行声明检查，并以错误声明负例验证拒收；宿主的 exit 0 和清单校验不构成任意语言的语法证明。C05 的具体 generator adapter 负责落实各语言检查。构建提交至少需要成功的 compile、link、run 阶段；未覆盖的命名子图只报告已执行，不提交完整构建批次。候选必须引用固定 source 中的真实 OutputSet 和固定 build 中完整的 BuildEvidence 集合，禁止从外部目录补入同格式自报证据。
+
+| 状态/身份 | 实施规则 |
+|---|---|
+| 内容身份 | 源码、构建、候选各自的元数据和文件构成不可变内容身份；wire generation_id、candidate_digest 继续按既有投影计算 |
+| 物理批次 | 每次物化获得独立 instance；坏文件重建不覆盖旧目录。索引/父引用指向 instance，同内容复用前仍验证实际字节 |
+| 层级切换 | 新 Source 清空 current Build/Candidate；新 Build 清空 current Candidate。子批次必须匹配父 instance、source lineage、profile 与 generation |
+| 输出域归属 | `.owner.json` 以 `madb.storage-owner/1` 认领。首次只接受空目录；无有效标记的非空目录零写拒绝。初始化短锁防首次并发竞争 |
+| 提交 | staging 在锁外写入并同步；受管域短锁内检查父链、expected revision、输入和取消，原子替换 current。大文件生成及外部进程不持提交锁 |
+| 租约和恢复 | 固定批次同时持有祖先链读取租约。writer lease 在初次分配锁内建立，恢复不会删除活跃 staging。显式 recover 只按已提交索引恢复，遇未知名称/类型先拒绝而不猜测删除 |
+| 发布后错误 | `STORE008` 表示索引已替换，之后持久化或回执不确定；先检查 current 再决定是否重试，不能解释为“从未提交” |
+
+`PipelineControl` 的结果准入延续到提交或只读检查结束，子图结束不会关闭它。错误/panic 的 scope guard 关闭未完成操作；SIGINT/SIGTERM 通过宿主监听线程调用取消，异步信号处理器不执行锁和清理逻辑。[signal-hook 接口](https://docs.rs/signal-hook/0.4.5/signal_hook/iterator/type.Signals.html)
+
+取消先关闭提交准入，再请求活动子进程停止；提交已胜出则后续取消返回已完成。取消结果拒收与进程清理是否完整分开记录，失败保留原始执行诊断和目录。CLI 退出时仍未完成的回收只能尽力处理，不宣称所有逃逸后代已停止；不额外引入后台守护进程。
+
+只读 check 使用已有 store，不创建 owner/lock/cache；缺批次或损坏明确失败。其临时运行目录遵循现有保留策略并报告位置，不自动删除仍可能被逃逸进程使用的目录。普通执行的 store/run/cache 不得重叠，不能覆盖源或配置；显式观察条件、源搜索域同样在首次创建目录前校验，防止缓存和运行目录成为自身输入。
+
+本实现验证 Linux/macOS 本地文件系统上的进程崩溃恢复。原子替换与 fsync 顺序不是网络文件系统或所有断电行为的认证，恢复也不会根据“最新目录”猜测有效结果。
+
+## C04 受限原生依赖准备
+
+`build --task dependencies --execution <file> --frozen` 使用显式 `dependency-request`，验证选中 profile 和 lock 中的真实 Clang image，返回独立 `dependency-manifest` 及预处理结果。后续配方必须显式纳入清单内精确文件引用并重新计算自己的任务身份；工具不修改原请求。已保存 receipt 只提供输入复核材料，不能反序列化成新的可缓存证明。
+
+| 维度 | 当前可证明的配置 |
+|---|---|
+| 工具与目标 | 原安装位置的 ELF/Mach-O Clang；显式 target 为 arm64-apple-macos11.0、x86_64-apple-macos10.15、aarch64-unknown-linux-gnu 或 x86_64-unknown-linux-gnu，与 profile ABI 族匹配 |
+| 搜索范围 | 源文件须有显式父目录；源父目录和 include 目录递归冻结全部有界文件，另记录实际 `-M` 读取子集。全域是保守输入上集，避免仅剪裁 depfile 文件改变 `__has_include` 语义 |
+| 配置 | 固定 `--no-default-config -nostdinc -Werror=date-time --target`；只接受受限 `-D/-U/-std/-x` 参数，环境仅 LANG、LC_ALL、SOURCE_DATE_EPOCH |
+| 拒绝项 | 动态/计算式 include、外部绝对/上跳搜索、token paste、pragma、modules、embed、trigraph/digraph 及不支持的编码/路径；续行归一化后仍执行限制检查 |
+| 真实观察 | 对有序翻译单元执行两组真实 `-M`，规则、成员和对应 source 必须一致；复核固定输入与目录条件。原生准备执行 `-E -P`，时间宏展开失败不写入缓存 |
+| 缓存 | key 覆盖格式/provider、目标、配置上下文、工具、参数、环境、完整搜索域字节、实际 discovered 集合、目录成员及 absent。每次查找先取得新的受支持发现结果，逐项校验存储文件，损坏视为 miss 且保留坏数据 |
+
+预处理缓存只服务这个固定原生准备配方；任意 helper、脚本解释器、Cargo/Gradle 或系统 SDK 的未知依赖不会因此获得完整性。系统运行库和安装工具链仍是需保持稳定的受信宿主条件，不把 image 摘要说成通用执行环境沙箱。未知配置拒绝该缓存路径，其通用显式配方仍可按自身合同无缓存执行。
+
+准备上下文使用版本化长度编码包含 dependency request、lock、profile 原始字节，排除 receipt，避免自引用。receipt 的文件/工具/目录条件在消费与提交前再次校验；实际编译器被替换而锁未更新同样拒绝。普通 `generate --check` 只读取已准备 receipt，缺项给出准备任务，不启动发现或写缓存，但仍真实复算生成配方。

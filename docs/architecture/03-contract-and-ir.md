@@ -122,4 +122,4 @@ BuildTask 的 `input_digest` 保留契约来源链身份，执行绑定时与受
 
 ## C02 的格式实现入口
 
-[格式与投影 v1](../schemas/README.md)固定 SourceKey 的长度编码、15 类业务文档、离线解析预算、精确数值、语义投影、来源诊断和拒绝边界；[首链 ABI](../examples/first-route/README.md)固定状态值及关闭的声明形状。领域模型保持独立，wire 到 domain 的转换位于 `adapters/contracts`，真实 IO 和用例装配由 C04/C05 接入。schema、纯规则或声明编译通过均不代表路线已认证。
+[格式与投影 v1](../schemas/README.md)固定 SourceKey 的长度编码、15 类业务 payload 与执行配方格式、离线解析预算、精确数值、语义投影、来源诊断和拒绝边界；[首链 ABI](../examples/first-route/README.md)固定状态值及关闭的声明形状。领域模型保持独立，wire 到 domain 的转换位于 `adapters/contracts`，真实 IO 和用例装配由 C04/C05 接入。schema、纯规则或声明编译通过均不代表路线已认证。

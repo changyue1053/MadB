@@ -27,12 +27,26 @@ fn version_matches_the_built_package() {
 
 #[test]
 fn unavailable_operations_fail_instead_of_reporting_success() {
-    for operation in ["init", "generate", "build", "verify"] {
+    for operation in ["init", "verify"] {
         let output = Command::new(env!("CARGO_BIN_EXE_madb"))
             .arg(operation)
             .output()
             .expect("run the built CLI");
         assert_eq!(output.status.code(), Some(2), "{operation}");
         assert!(String::from_utf8_lossy(&output.stderr).contains(operation));
+    }
+}
+
+#[test]
+fn execution_commands_require_explicit_locked_recipes() {
+    for operation in ["generate", "build", "package"] {
+        let output = Command::new(env!("CARGO_BIN_EXE_madb"))
+            .arg(operation)
+            .output()
+            .expect("run CLI");
+        assert_eq!(output.status.code(), Some(2));
+        let text = String::from_utf8_lossy(&output.stderr);
+        assert!(text.contains("--execution"), "{text}");
+        assert!(text.contains("--frozen"), "{text}");
     }
 }
