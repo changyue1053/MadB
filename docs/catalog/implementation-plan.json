@@ -251,7 +251,8 @@
         "https://github.com/changyue1053/MadB/pull/7",
         "reviews/2026-10-24-c04-dag-execution.md",
         "https://github.com/changyue1053/MadB/pull/8",
-        "reviews/2026-10-24-c04-input-observations.md"
+        "reviews/2026-10-24-c04-input-observations.md",
+        "https://github.com/changyue1053/MadB/pull/9"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -280,7 +281,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C04 已分步交付查询、受控进程、固定输入、单任务结果及 PR #8 静态串行 DAG；本轮增加显式输入观察入口，检查缺失路径、目录直接成员和选中源字节，并保持旧图入口行为。验证和远端 CI 按关联 PR head 核实。三层提交、批次来源/索引/CAS、完整依赖发现/缓存、generate --check 仍待实现；C04 保持进行中，无新增 SDK 认证。"
+      "notes": "C04 已分步交付查询、受控进程、固定输入、单任务结果及 PR #8 静态串行 DAG；PR #9 增加显式输入观察入口，检查缺失路径、目录直接成员和选中源字节，并保持旧图入口行为。验证和远端 CI 按关联 PR head 核实。三层提交、批次来源/索引/CAS、完整依赖发现/缓存、generate --check 仍待实现；C04 保持进行中，无新增 SDK 认证。"
     },
     {
       "id": "C05",

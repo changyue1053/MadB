@@ -18,6 +18,8 @@
 
 验收：正常观察执行；原入口行为保持；新增/删除/改类型目录成员、可选文件出现、已声明内容变化拒收，声明范围外内容改变不误判；命名子图范围、无IO结构拒绝、预算、别名、链接/特殊文件、目录错误不伪装缺失；预取消/捕获期间/最终复核期间取消及owner无结果泄漏；本地完整门禁、独立审查和最终head Linux CI。
 
+交付：[PR #9](https://github.com/changyue1053/MadB/pull/9)，基于 PR #8；代码提交 `7a2bc9d2e62c6d108937636af7e07656e03b9761`。最终 head 与 CI 以 PR 记录为准，本次未合并。
+
 ## 实际交付与审查
 
 - app 新增受检 InputWatchSet / InputObservation / ObserveWorkspace，预算和路径要求不依赖文件系统；图新增 execute_graph_observed，旧入口继续按固定字节执行。
