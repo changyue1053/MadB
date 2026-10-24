@@ -1,0 +1,136 @@
+{
+  "schema": "madb.native-runtime-protocol/1",
+  "component": "madb-first-route-engine",
+  "version": "0.1.0",
+  "provider": "rust",
+  "direction": "c-to-rust",
+  "abi": {
+    "semantics": "madb.first-route/1",
+    "bootstrap_version": 1,
+    "status_representation": "i32",
+    "handle_representation": "u64-registry-token"
+  },
+  "capabilities": {
+    "synchronous_calls": true,
+    "explicit_close": true,
+    "callbacks": true,
+    "async_operations": false,
+    "consumer_queue": false,
+    "timer": false,
+    "replay": false,
+    "environment_api": false,
+    "fixed_thread": false
+  },
+  "capacities": {
+    "registered_handles_per_sdk_image": 4096,
+    "registered_subscriptions_per_engine": 64,
+    "active_source_leases_per_subscription": 1,
+    "checksum_input_bytes": 65536,
+    "bootstrap_output_bytes": 64,
+    "consumer_queue_items": 0,
+    "consumer_queue_retained_bytes": 0,
+    "full_registration_status": "ResourceExhausted",
+    "closed_tokens_retain_capacity_until_release": true
+  },
+  "owner": {
+    "registry": "one loaded SDK image owns its token namespace; it is not a business-engine singleton",
+    "engine_payload": "engine registration owns one native payload until close drain releases it",
+    "subscription_token": "the successful observe caller releases the token; parent close never consumes it",
+    "callback_context": "caller-owned borrowed context; the runtime never frees caller memory",
+    "close_progress": "requesting thread or the last operation/source-lease owner completes eligible native cleanup; no background worker"
+  },
+  "thread": {
+    "business_calls": "caller",
+    "initial_callback": "observe caller, synchronously before observe returns",
+    "subsequent_callback": "serialized source caller; test-support emit drives the same source lease implementation",
+    "callback_concurrency": "at most one source lease per subscription; different subscriptions may run concurrently",
+    "foreign_call_under_registry_lock": false,
+    "native_cleanup": "request-close caller or last permit/lease-returning thread; no OS-thread affinity",
+    "callback_self_wait": "WouldDeadlock",
+    "concurrent_source_attempt": "Busy",
+    "recursive_source_attempt": "WouldDeadlock while Open and this callback holds the source lease; Closing/Closed take precedence after stop"
+  },
+  "source_lease": {
+    "responsible_component": "madb-first-route-engine@0.1.0",
+    "implementation": "sdk/rust/engine/src/runtime.rs:SourceLease",
+    "acquisition": "token lookup, subscription type/state checks, and lease increment share the registry mutex before copying callback/context",
+    "duration": "from source acquisition, including pre-entry delay, through callback return",
+    "already_admitted_after_stop": "may complete; successful close wait is delayed until lease return",
+    "initial_snapshot": {
+      "sequence": 1,
+      "state": 0
+    },
+    "sequence": "strictly increasing per registration without wrapping; exhaustion returns ResourceExhausted"
+  },
+  "stop": {
+    "request_close": "atomically stops new operation/source admission; repeated requests are idempotent and do not wait for callbacks",
+    "engine_cascade": "closes all child subscriptions while preserving caller ownership of their tokens",
+    "registration_failure": "unpublished subscription is closed and removed before return; out_subscription is zero and context is no longer referenced"
+  },
+  "drain": {
+    "await_closed": "success requires native operation permits, source leases, consumer callbacks, and the resource cleanup promised by this handle to finish",
+    "engine_dependencies": "its admitted operations and every child subscription drain",
+    "timeout_ms_zero": "poll only; Timeout while Closing and Busy while Open",
+    "timeout_effect": "ends this wait only; never forces free or reopens admission",
+    "in_callback": "waiting for the current subscription or its parent returns WouldDeadlock"
+  },
+  "release": {
+    "native_payload": "actual Box payload drop occurs before engine Closed is published",
+    "subscription_source": "stored callback/context fields are removed before subscription Closed is published",
+    "release_handle": "only Closed tokens are removed; Open/Closing return Busy; repeated removal returns InvalidHandle",
+    "token_reuse": "never reused within the SDK image; monotonically allocated from 1, with ResourceExhausted after u64 exhaustion",
+    "poison_or_integrity_loss": "InternalFailure and retained quarantine; no false Closed or forced cleanup"
+  },
+  "queue": {
+    "kind": "none",
+    "executor_owner": null,
+    "overflow_policy": "not applicable; no consumer queue is admitted"
+  },
+  "memory_preconditions": [
+    "Accepted nonempty checksum input denotes readable memory without concurrent mutation for the entire call; null input is allowed only for zero length.",
+    "Output objects are nonnull, aligned, writable, mutually disjoint, and disjoint from input; each mechanically valid output is zeroed before other validation.",
+    "Bootstrap output is a valid writable 64-byte region only when nonnull and capacity equals 64; another capacity is rejected without writing.",
+    "Caller retains callback/context from registration until successful subscription or parent-engine close wait; callback access must be valid on the declared source callers.",
+    "Foreign exceptions and panics must not unwind through C callbacks. Rust internal unwind panics map to InternalFailure; abort/OOM has no recovery promise.",
+    "Arbitrary dangling pointers, allocation validity, and caller violations cannot be validated by this ABI."
+  ],
+  "mechanisms": [
+    {
+      "stage": "argument-and-output-conversion",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/lib.rs",
+      "responsibility": "bounded synchronous borrow, independent output clearing, stable status/error layout"
+    },
+    {
+      "stage": "operation-admission-and-input-liveness",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/runtime.rs:Operation",
+      "responsibility": "registry-atomic admission and RAII permit return; input memory remains the call-frame owner responsibility"
+    },
+    {
+      "stage": "callback-registration-and-stop",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/runtime.rs:Registration/SourceLease",
+      "responsibility": "single registration owner, source-side context lease, rollback, callback reentrancy, and close drain"
+    },
+    {
+      "stage": "synchronous-result-handoff",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/lib.rs",
+      "responsibility": "one status plus initialized output; create/observe transfer only successful handle tokens; no asynchronous completion bridge"
+    },
+    {
+      "stage": "final-native-cleanup-and-token-removal",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/runtime.rs",
+      "responsibility": "native/context cleanup before Closed, followed by explicit caller token release"
+    }
+  ],
+  "test_support": {
+    "feature": "test-support",
+    "production_default": false,
+    "protocol_implementation": "same Operation, Registration, SourceLease and registry state machine as the default build",
+    "controls": "admitted-operation/source-acquisition barriers, counters, monotonic exhaustion, registration failure, internal panic, and isolated diagnostic sink failure",
+    "identity": "separate resolved profile from default Release; no certification inferred from this document"
+  }
+}

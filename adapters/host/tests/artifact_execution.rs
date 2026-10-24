@@ -81,15 +81,22 @@ impl ArtifactRecipe for Recipe {
     }
 }
 fn setup(dir: &Directory, tail: &str) -> Recipe {
+    setup_with_request(dir, tail, b"real request bytes")
+}
+fn setup_with_request(dir: &Directory, tail: &str, request: &[u8]) -> Recipe {
     // Resolve the fixture's installed executable once: /bin/sh is a symlink
     // on some hosts. The production reader still refuses symbolic-link images.
     let shell_path = fs::canonicalize("/bin/sh").unwrap();
     let shell = fs::read(&shell_path).unwrap();
     let shell_name = shell_path.file_name().unwrap().to_str().unwrap();
+    // A successful helper must consume the complete request before responding.
+    // cmp reads stdin through EOF and verifies the exact frozen request bytes;
+    // exiting without reading races the host writer and correctly yields StdinClosed.
     let script = format!(
-        "printf header > api.h\nprintf manifest > manifest.json\n{tail}\nprintf manifest\n"
+        "/usr/bin/cmp - ../inputs/request.bin || exit 1\nprintf header > api.h\nprintf manifest > manifest.json\n{tail}\nprintf manifest\n"
     );
     fs::write(dir.0.join("recipe.sh"), &script).unwrap();
+    fs::write(dir.0.join("request.bin"), request).unwrap();
     Recipe {
         tool_root: shell_path.parent().unwrap().to_owned(),
         invocation: ArtifactInvocation {
@@ -99,9 +106,12 @@ fn setup(dir: &Directory, tail: &str) -> Recipe {
                 working_directory: path("work"),
                 arguments: vec!["../inputs/recipe.sh".to_owned()],
                 environment: BTreeMap::new(),
-                stdin: b"real request bytes".to_vec(),
+                stdin: request.to_vec(),
             },
-            inputs: vec![reference("recipe.sh", script.as_bytes())],
+            inputs: vec![
+                reference("recipe.sh", script.as_bytes()),
+                reference("request.bin", request),
+            ],
             response_path: path("manifest.json"),
         },
     }
@@ -133,6 +143,20 @@ fn real_artifact_execution_captures_manifest_and_retains_drained_owner() {
             .as_ref()
             .map(|p| &p.report)
     );
+    assert_eq!(
+        run.node()
+            .unwrap()
+            .execution()
+            .unwrap()
+            .as_ref()
+            .unwrap()
+            .process
+            .as_ref()
+            .unwrap()
+            .report
+            .stdin_written,
+        recipe.invocation.process.stdin.len()
+    );
     assert_eq!(run.result().unwrap().manifest().1, b"manifest");
     let retained = run.node().unwrap().path().unwrap().to_owned();
     assert!(retained.join("work/api.h").is_file());
@@ -149,6 +173,38 @@ fn real_artifact_execution_captures_manifest_and_retains_drained_owner() {
             .1,
         b"header"
     );
+}
+#[test]
+fn successful_artifact_helper_consumes_request_beyond_pipe_capacity() {
+    let dir = Directory::new();
+    // Exceeds the ordinary pipe capacity on the supported Linux/macOS hosts, so
+    // success requires the helper to read while the host is still writing.
+    let request = vec![b'r'; 256 * 1024];
+    let recipe = setup_with_request(&dir, "", &request);
+    let source = LocalWorkspace::open(&dir.0).unwrap();
+    let mut executor = LocalArtifactExecutor::new(
+        &dir.0,
+        &path("run"),
+        &recipe.tool_root,
+        ProcessPolicy::default(),
+    )
+    .unwrap();
+    let mut run = run_artifact(&recipe, &source, &mut executor, &GraphControl::default()).unwrap();
+    let report = &run
+        .node()
+        .unwrap()
+        .execution()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .process
+        .as_ref()
+        .unwrap()
+        .report;
+    assert_eq!(run.status, GraphStatus::Validated, "{report:?}");
+    assert_eq!(report.stdin_written, request.len());
+    assert_eq!(run.result().unwrap().manifest().1, b"manifest");
+    assert!(run.node_mut().unwrap().poll_cleanup().unwrap());
 }
 #[test]
 fn manifest_mismatch_and_undeclared_files_reject_but_keep_actual_run() {

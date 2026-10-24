@@ -123,3 +123,15 @@ C04 在六个历史子范围上完成整包编排。历史实现与当时的验�
 C04 的缓存资格限于已有完整输入证明的原生配置；未知脚本与未支持参数保持不可缓存。进程终止恢复不代表断电或网络文件系统认证，保留目录不能冒充完整后代清理证明。
 
 C05 接入实际编译器来源 reader、语言生成器、资源/线程/取消协议及独立 MadB-Lab 消费验收；复用 C04 端口，不以 fixture、候选生成或部分构建替代 SDK 认证。
+
+## C05 首链实施范围与证据边界
+
+首链通过 `scripts/install_native_tools.py` 安装锁定工具，由 `scripts/build_first_route.py` 串起真实声明读取、生成、构建与候选提交。实际适配器和独立 SDK 落点见[模块规范](../architecture/02-modules-and-ports.md)；实现仅接收首链已知 roles 与编译器验证的声明，不推导任意 Rust/C 语义。工具端 `madb-native-finalize` 复用现有策略解析、来源与摘要规则，不成为公开 SDK 的运行依赖；只读查询继续不触发准备或生成。
+
+交付三个独立候选：C→Rust 的未插桩 Release、单独 test-support profile，以及 Rust→C 的 C 库和公开 Rust 包装。C04 的静态 DAG 需要先显式 prepare 实际输出身份，再在冻结输入下重新编译、链接、运行并核对；准备结果和候选生成都不单独证明验收。默认生产入口要求干净检出；开发用 `--allow-dirty` 产物标为 provisional，不能用于正式 Lab 验收。
+
+首链内部 adapter 配置由 read/lock 固定，profile 的 `backend_config` 保持 `null`；公开工具链记录去除宿主路径。Linux native observed profile 与 Apple 冻结工具链按各自真实目标取证，互不推导认证。独立 Lab 只接收公开候选，在无工具源码及开发缓存的新工程中运行两个直接消费者；整包完成仍要求目录中的全部 acceptance 和绑定最终候选的实际报告，此处不更新工作包状态。
+
+## C05 整包验收
+
+[C05 记录](../reviews/2026-10-24-c05-rust-c-first-route.md)保存真实双向 SDK、三份公开候选、macOS Arm64/Linux x86_64 独立消费者与身份拒绝证据。五项 acceptance 已通过；MadB #11 与 MadB-Lab #2 的合入状态由 GitHub 记录。C09/C10 已开始 S1 首链部分，全部配置/渠道的整体验收仍缺证据，不能据此标为完成。下一核心工作包按目录进入 C06；不在 C05 中扩展其他语言。

@@ -17,7 +17,7 @@
 ```sh
 rustup target add --toolchain 1.99.1 aarch64-apple-darwin x86_64-apple-darwin
 rustup component add --toolchain 1.99.1 llvm-tools-preview
-.venv/bin/python tests/integration/c03/install_tools.py --root target/c03-tools
+.venv/bin/python scripts/install_native_tools.py --root target/c03-tools
 .venv/bin/python -m unittest discover -s tests/integration/c03 -v
 .venv/bin/python tests/integration/c03/cli_install.py
 .venv/bin/python tests/integration/c03/native.py \
@@ -26,6 +26,8 @@ rustup component add --toolchain 1.99.1 llvm-tools-preview
   --cbindgen target/c03-tools/bin/cbindgen
 cargo run --locked -p madb-contracts --example check_probe_lock -- reports/c03-run
 ```
+
+安装配方位于 `adapters/toolchains/rust_c/toolchain.json`；本目录同名文件保留原探针锁定快照。旧 `tests/integration/c03/install_tools.py` 入口转发到同一生产安装器，已有 receipt 格式不变。
 
 安装目录与运行输出必须是新目录，避免覆盖已有记录。第二次运行可复用工具，选择新的输出目录。安装器先验证上游归档和内含 Cargo.lock 摘要，再 `cargo install --locked`；receipt 绑定源码、构建 Rust 版本及实际二进制摘要。仅工具的版本文本一致不足以冒充这份安装。
 

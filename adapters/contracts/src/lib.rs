@@ -3,6 +3,7 @@
 mod convert;
 pub mod dependencies;
 pub mod execution;
+pub mod native;
 mod projections;
 mod resolution;
 mod wire;

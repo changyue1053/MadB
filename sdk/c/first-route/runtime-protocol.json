@@ -1,0 +1,110 @@
+{
+  "schema": "madb.native-runtime-protocol/1",
+  "component": "madb-first-route-c-provider",
+  "version": "0.1.0",
+  "provider": "c",
+  "direction": "rust-to-c",
+  "wrapper": {
+    "component": "madb-c-client",
+    "version": "0.1.0",
+    "language": "rust",
+    "rust_package_dependencies": []
+  },
+  "abi": {
+    "semantics": "madb.first-route/1",
+    "bootstrap_version": 1,
+    "status_representation": "i32",
+    "handles": "none"
+  },
+  "capabilities": {
+    "synchronous_calls": true,
+    "explicit_close": false,
+    "callbacks": false,
+    "async_operations": false,
+    "consumer_queue": false,
+    "timer": false,
+    "replay": false,
+    "environment_api": false,
+    "fixed_thread": false
+  },
+  "capacities": {
+    "checksum_input_bytes": 65536,
+    "bootstrap_output_bytes": 64,
+    "registered_handles": 0,
+    "registered_subscriptions": 0,
+    "consumer_queue_items": 0,
+    "consumer_queue_retained_bytes": 0
+  },
+  "owner": {
+    "input_bytes": "caller-owned synchronous borrow; provider retains no pointer after return",
+    "outputs": "caller-owned writable scalar/status storage; no transfer resource is created",
+    "wrapper": "Client is a verified stateless access value, not a native resource owner",
+    "native_library": "linked consumer owns library availability for every call"
+  },
+  "thread": {
+    "business_calls": "caller",
+    "concurrency": "concurrent calls with disjoint outputs and correctly borrowed inputs are supported",
+    "native_cleanup": "none; provider creates no per-call or retained native resource",
+    "fixed_thread": false
+  },
+  "source_lease": {
+    "kind": "none",
+    "reason": "no callback registration or retained context exists"
+  },
+  "stop": {
+    "kind": "none",
+    "reason": "no asynchronous operation or producer exists"
+  },
+  "drain": {
+    "kind": "synchronous-return",
+    "postcondition": "provider has finished reading input and writing outputs; no work, pointer, callback or cleanup responsibility remains"
+  },
+  "release": {
+    "kind": "none",
+    "reason": "no native allocation, handle, transferred buffer, subscription or background owner is created"
+  },
+  "queue": {
+    "kind": "none",
+    "executor_owner": null,
+    "overflow_policy": "not applicable; no queue is admitted"
+  },
+  "memory_preconditions": [
+    "Accepted nonempty checksum input denotes readable memory without concurrent mutation through return; null is allowed only for zero length.",
+    "Outputs are nonnull, aligned, writable, mutually disjoint and disjoint from input; each mechanically valid output is cleared before other argument validation.",
+    "Bootstrap accepts exactly 64 writable bytes; valid output is cleared before checking version and wrong capacity is rejected without writing.",
+    "The Rust wrapper supplies borrows and stack outputs that satisfy these obligations; it rejects input above 65536 before calling C.",
+    "Raw C callers remain responsible for allocation validity and aliasing; arbitrary dangling pointers cannot be validated."
+  ],
+  "mechanisms": [
+    {
+      "stage": "declaration-and-layout",
+      "component": "madb-first-route-c-provider@0.1.0",
+      "implementation": "sdk/c/first-route/madb_c.h",
+      "responsibility": "author-owned C11 ABI consumed by locked bindgen; provider compile checks scalar/error layout"
+    },
+    {
+      "stage": "argument-validation-and-synchronous-work",
+      "component": "madb-first-route-c-provider@0.1.0",
+      "implementation": "sdk/c/first-route/madb_c.c",
+      "responsibility": "bounded input borrow, unsigned checksum, safe output initialization and status return; no retained state"
+    },
+    {
+      "stage": "bootstrap-before-business-admission",
+      "component": "madb-c-client@0.1.0",
+      "implementation": "sdk/rust/c-client/src/lib.rs:Client::connect",
+      "responsibility": "fixed bootstrap first; interface mismatch before profile mismatch; no checksum Client until identities match"
+    },
+    {
+      "stage": "safe-borrow-and-result-conversion",
+      "component": "madb-c-client@0.1.0",
+      "implementation": "sdk/rust/c-client/src/lib.rs:Client::checksum",
+      "responsibility": "bounded Rust slice, call-frame liveness and disjoint outputs; native status/domain/code become Result without a second resource state machine"
+    }
+  ],
+  "identity": {
+    "bootstrap_payload": "raw interface digest[32] followed by resolved profile digest[32]",
+    "unknown_version": "Unsupported after clearing a valid output",
+    "invalid_output_or_capacity": "InvalidArgument before version interpretation",
+    "generated_sources": "bindgen raw declarations and matching generated identity arrays are mandatory; no handwritten fallback or default identity"
+  }
+}

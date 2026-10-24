@@ -53,3 +53,17 @@ C ABI 是“状态返回 + 输出参数”；IR 的 `result: engine/u64/unit` �
 [真实探针](../../../tests/integration/c03/README.md)已将本目录的完整 ABI 声明经 cbindgen/bindgen 生成并在两个 Apple 目标编译；运行部分使用独立 stateless provider，未实现这里的 engine 生命周期。
 
 `expected.h` 的状态码改用普通整数宏：锁定版本 bindgen 未导出 `INT32_C(...)` 表达式，且普通非负宏默认映射为 u32，因此参数固定 `--default-macro-constant-type signed`。全部 12 个状态码继续被编译断言为原 i32 数值；没有改变 ABI、状态机或错误语义。不能把消费者强制转型当成生成正确。
+
+## C05 bootstrap 与公开候选约定
+
+固定入口为 `int32_t madb_fixture_bootstrap(uint32_t requested_version, uint8_t *out_identity, uint64_t capacity)`；独立 C 提供方使用相同签名的 `madb_c_fixture_bootstrap`。版本 1 要求非空且有效的 64 字节输出区、capacity 精确为 64。有效输出先清零；错误指针/容量返回 InvalidArgument，再检查版本，未知版本返回 Unsupported。成功写入 32 字节 interface 摘要和 32 字节 profile 摘要，均按摘要十六进制解码的原始顺序，无分配、无业务调用。任意无效内存地址仍属调用者违约。
+
+interface 摘要来自实际公开 ABI 与 `madb.first-route/1` 语义版本；profile 摘要使用既有投影。它们不是 candidate_digest 或业务 ContractIR 摘要的别名。生成的公开包装与库使用同一预期值；消费者先验证候选文件，再执行 bootstrap，分别报告 ArtifactMismatch、AbiMismatch 或 ProfileMismatch。缺 bootstrap、错目标在链接/装载阶段拒绝，不能试调未知业务签名。
+
+每个候选携带入清单的 `identity.json`：`{schema:"madb.native-identity/1", bootstrap_version:1, interface_digest:"sha256:…", profile_digest:"sha256:…"}`，以及 `provenance.json`：`{schema:"madb.native-provenance/1", producer_revision:"<40hex>", input_digest:"sha256:…", tool_digest:"sha256:…"}`。后者记录真实源集合身份与 producer 可执行文件摘要，不授予认证资格。
+
+候选根分别为 `c-to-rust`、`rust-to-c` 和单独的 `c-to-rust-test`。每根包含自己的 candidate.json、profile/lock、证据、许可和文件清单。C 消费 Rust 使用 include/madb_rust.h 与 lib/libmadb_engine；Rust 消费 C 使用 include/madb_c.h、lib/libmadb_c.a 及 rust/madb-c-client 公开包。生成 raw.rs 和 identity.rs 随包交付，消费方无需安装 bindgen。
+
+观察 v1 的公开初始状态为 sequence=1/state=0；当前没有领域事件生产器、消费者队列、计时器或回放。test-support 的 source emit 驱动同一生产租约机制，屏障设在操作准入后与源取得 callback/context 后。默认 Release 不导出测试入口；测试候选分别提供资源/许可/回调计数和受控故障。异步停止排水要求保持不变，不能把“无消费者队列”解释为回调可提前释放。
+
+C05 开发期候选可以显式使用 `--allow-dirty`，此时 `provenance.json` 的可选 `provisional: true` 必须传播到 Lab 报告；正式验收拒绝该候选。默认构建要求生产仓库干净，`producer_revision` 绑定实际提交；`input_digest` 仍绑定本次源字节，不能用 revision 或 provisional 替代。
