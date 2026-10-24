@@ -1,4 +1,5 @@
 //! Host-owned bounded filesystem reads and approved process execution.
+pub mod dag;
 pub mod inputs;
 pub mod process;
 pub mod task;

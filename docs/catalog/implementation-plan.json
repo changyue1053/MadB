@@ -248,7 +248,8 @@
         "reviews/2026-10-24-c04-frozen-inputs.md",
         "https://github.com/changyue1053/MadB/pull/6",
         "reviews/2026-10-24-c04-task-results.md",
-        "https://github.com/changyue1053/MadB/pull/7"
+        "https://github.com/changyue1053/MadB/pull/7",
+        "reviews/2026-10-24-c04-dag-execution.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -277,7 +278,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C04 分步交付 PR #4 查询/静态图、PR #5 受控进程、PR #6 固定输入、PR #7 单任务执行与固定结果：受检 BuildEvidence、真实输出/日志字节及整个验证窗口的取消准入。本地完整检查与独立复核通过，远端结果按各 PR head 核实。DAG、三层提交、批次来源/索引/CAS、完整依赖闭包/缓存、generate --check 仍待实现；C04 保持进行中，无新增 SDK 认证。"
+      "notes": "C04 分步交付查询/静态图、受控进程、固定输入、单任务结果验证；本轮增加静态串行 DAG、同上下文绑定、直接依赖 outputs 传递、图级取消与文件预算。实际验证记录与远端 CI 按关联 PR head 核实。三层提交、批次来源/索引/CAS、完整依赖发现/缓存、generate --check 仍待实现；C04 保持进行中，无新增 SDK 认证。"
     },
     {
       "id": "C05",

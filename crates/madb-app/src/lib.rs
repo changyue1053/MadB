@@ -1,4 +1,6 @@
 //! Application use cases and inward-facing ports. No filesystem or wire DTOs.
+pub mod dag;
+mod dag_control;
 pub mod inputs;
 pub mod ports;
 pub mod process;

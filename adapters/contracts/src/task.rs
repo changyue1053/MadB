@@ -1,4 +1,4 @@
-//! Bind a declared one-shot recipe to checked configuration and result payloads.
+//! Bind declared recipes to one checked configuration and result payloads.
 //! This adapter has no filesystem or process access and does not certify a batch.
 use crate::{
     Document, DocumentKind,
@@ -6,19 +6,25 @@ use crate::{
     query::{PreparedQuery, SnapshotAdapter, format_error, reference},
 };
 use madb_app::{
-    Digest, ErrorKind, Id, LogicalPath, QueryError, Result,
+    Digest, ErrorKind, Id, LogicalPath, Phase, QueryError, Result,
+    dag::{ExecutionGraph, GraphRecipe},
     ports::{ConfigurationBytes, FileReference, SnapshotFormat},
     process::{MAX_STDIN_BYTES, MAX_TOOL_BYTES, ProcessRequest},
     task::{BuildRecipe, TaskFileReferences, TaskInvocation},
 };
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, sync::Arc};
+
+const MAX_GRAPH_TASKS: usize = 4096;
+const MAX_GRAPH_TASK_BYTES: usize = 16 * 1024 * 1024;
 
 /// A fully checked configuration/task binding. Only the host-supplied installed
 /// image location becomes executable; task component identifiers are not paths.
 pub struct BoundBuildTask {
-    adapter: SnapshotAdapter,
+    adapter: Arc<SnapshotAdapter>,
     task: Document,
     invocation: TaskInvocation,
+    dependencies: Vec<Id>,
+    phase: Phase,
 }
 impl BoundBuildTask {
     /// Check configuration byte references, contract semantics, task identity
@@ -33,14 +39,77 @@ impl BoundBuildTask {
         task: &[u8],
         installed_tool: FileReference,
     ) -> Result<Self> {
-        if task.len() > MAX_STDIN_BYTES {
+        check_task_size(task)?;
+        let context = CheckedContext::new(configuration, snapshot)?;
+        let bound = context.bind(task, installed_tool)?;
+        if !bound.dependencies.is_empty() {
             return Err(invalid(
                 "TASK001",
-                "task",
-                "task payload exceeds stdin budget",
+                "dependencies",
+                "single-task recipes require no dependencies",
             ));
         }
-        let adapter = SnapshotAdapter::new()?;
+        Ok(bound)
+    }
+}
+
+/// One task document and its host-resolved, locked executable image.
+/// The bytes and image are checked together before any recipe can execute.
+pub struct TaskBinding<'a> {
+    pub task: &'a [u8],
+    pub installed_tool: FileReference,
+}
+
+/// Bind the complete graph against one configuration, then select a target.
+///
+/// Even unselected nodes must pass binding and full graph validation. Their
+/// source files are not read here. Known input hashes are preserved; this does
+/// not discover output identities, certify a generation or execute any task.
+pub fn bind_graph(
+    configuration: ConfigurationBytes<'_>,
+    snapshot: &[u8],
+    tasks: Vec<TaskBinding<'_>>,
+    target: Option<&Id>,
+    active: &[Id],
+) -> Result<ExecutionGraph<BoundBuildTask>> {
+    if tasks.is_empty() || tasks.len() > MAX_GRAPH_TASKS {
+        return Err(invalid(
+            "TASK001",
+            "graph",
+            "graph binding size out of range",
+        ));
+    }
+    let mut bytes = 0usize;
+    for binding in &tasks {
+        check_task_size(binding.task)?;
+        // The count and per-task limit above also bound this addition.
+        bytes += binding.task.len();
+        if bytes > MAX_GRAPH_TASK_BYTES {
+            return Err(invalid(
+                "TASK001",
+                "graph",
+                "task documents exceed graph binding byte budget",
+            ));
+        }
+    }
+    let context = CheckedContext::new(configuration, snapshot)?;
+    let recipes = tasks
+        .into_iter()
+        .map(|binding| context.bind(binding.task, binding.installed_tool))
+        .collect::<Result<Vec<_>>>()?;
+    ExecutionGraph::new(recipes, target, active)
+}
+
+/// Configuration and schema compilation are shared across the whole binding;
+/// each retained recipe needs only the registry, its own document and invocation.
+struct CheckedContext {
+    adapter: Arc<SnapshotAdapter>,
+    prepared: PreparedQuery,
+    source_digest: Digest,
+}
+impl CheckedContext {
+    fn new(configuration: ConfigurationBytes<'_>, snapshot: &[u8]) -> Result<Self> {
+        let adapter = Arc::new(SnapshotAdapter::new()?);
         let references = adapter.request_files(configuration.request)?;
         for (reference, bytes) in [
             (&references.lock, configuration.lock),
@@ -56,6 +125,16 @@ impl BoundBuildTask {
         }
         let (prepared, _) = adapter.prepare(configuration)?;
         let contract = adapter.check(&prepared, snapshot)?;
+        Ok(Self {
+            adapter,
+            prepared,
+            source_digest: contract.source_digest,
+        })
+    }
+
+    fn bind(&self, task: &[u8], installed_tool: FileReference) -> Result<BoundBuildTask> {
+        let adapter = &self.adapter;
+        let prepared = &self.prepared;
         let document = adapter.decode(DocumentKind::BuildTask, task)?;
         let value = document.value();
         if value["task_digest"].as_str()
@@ -78,26 +157,21 @@ impl BoundBuildTask {
                 "task targets a different resolved profile",
             ));
         }
-        if value["input_digest"].as_str() != Some(contract.source_digest.as_str()) {
+        if value["input_digest"].as_str() != Some(self.source_digest.as_str()) {
             return Err(invalid(
                 "TASK001",
                 "input_digest",
                 "task source lineage differs from the checked contract",
             ));
         }
-        if !value["dependencies"]
-            .as_array()
-            .expect("validated")
-            .is_empty()
-            || value["working_directory"] != "work"
-        {
+        if value["working_directory"] != "work" {
             return Err(invalid(
                 "TASK001",
-                "task",
-                "single-task recipes require no dependencies and work/",
+                "working_directory",
+                "task recipes require work/",
             ));
         }
-        bind_tool(&prepared, &document, &installed_tool)?;
+        bind_tool(prepared, &document, &installed_tool)?;
         let invocation = TaskInvocation {
             id: Id::new(value["id"].as_str().expect("validated"))
                 .map_err(|e| invalid("TASK001", "id", e.to_string()))?,
@@ -128,10 +202,29 @@ impl BoundBuildTask {
                 .collect::<Result<_>>()?,
         };
         invocation.validate()?;
-        Ok(Self {
-            adapter,
+        let dependencies = value["dependencies"]
+            .as_array()
+            .expect("validated")
+            .iter()
+            .map(|id| {
+                Id::new(id.as_str().expect("validated"))
+                    .map_err(|e| invalid("TASK001", "dependencies", e.to_string()))
+            })
+            .collect::<Result<_>>()?;
+        let phase = match value["phase"].as_str().expect("validated") {
+            "metadata" => Phase::Metadata,
+            "generate" => Phase::Generate,
+            "compile" => Phase::Compile,
+            "link" => Phase::Link,
+            "run" => Phase::Run,
+            _ => unreachable!("schema validated phase"),
+        };
+        Ok(BoundBuildTask {
+            adapter: Arc::clone(adapter),
             task: document,
             invocation,
+            dependencies,
+            phase,
         })
     }
 }
@@ -139,6 +232,9 @@ impl BoundBuildTask {
 impl BuildRecipe for BoundBuildTask {
     fn invocation(&self) -> &TaskInvocation {
         &self.invocation
+    }
+    fn dependencies(&self) -> &[Id] {
+        &self.dependencies
     }
     /// A helper's passed status only permits host byte verification. Actual
     /// exit, cleanup, cancellation and output reads remain application duties.
@@ -168,6 +264,23 @@ impl BuildRecipe for BoundBuildTask {
                 .collect::<Result<_>>()?,
         })
     }
+}
+
+impl GraphRecipe for BoundBuildTask {
+    fn phase(&self) -> Phase {
+        self.phase
+    }
+}
+
+fn check_task_size(task: &[u8]) -> Result<()> {
+    if task.len() > MAX_STDIN_BYTES {
+        return Err(invalid(
+            "TASK001",
+            "task",
+            "task payload exceeds stdin budget",
+        ));
+    }
+    Ok(())
 }
 
 fn bind_tool(prepared: &PreparedQuery, task: &Document, installed: &FileReference) -> Result<()> {

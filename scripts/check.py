@@ -53,6 +53,7 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_process"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_inputs"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_tasks"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_dag"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
         [sys.executable, "docs/tools/check_docs.py", "--node", node],

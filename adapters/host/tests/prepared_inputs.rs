@@ -326,3 +326,108 @@ fn cancellation_before_execution_precedes_runner_initialization() {
     assert!(retained.path().join("work").is_dir());
     assert!(!tool_root.exists());
 }
+
+#[test]
+fn graph_directory_is_exclusive_and_drop_retains_it() {
+    use madb_host::dag::LocalGraphExecutor;
+    let parent = TestDirectory::new();
+    let graph = LocalGraphExecutor::new(
+        parent.path(),
+        &logical("graph"),
+        parent.path(),
+        ProcessPolicy::default(),
+    )
+    .unwrap();
+    let expected = parent.path().join("graph");
+    assert_eq!(graph.path(), expected);
+    assert_eq!(
+        fs::metadata(&expected).unwrap().permissions().mode() & 0o777,
+        0o700
+    );
+    fs::write(expected.join("keep"), b"retained").unwrap();
+    let error = match LocalGraphExecutor::new(
+        parent.path(),
+        &logical("graph"),
+        parent.path(),
+        ProcessPolicy::default(),
+    ) {
+        Err(error) => error,
+        Ok(_) => panic!("existing graph directory was claimed"),
+    };
+    assert!(error.retained_path.is_none());
+    assert_eq!(fs::read(expected.join("keep")).unwrap(), b"retained");
+    drop(graph);
+    assert!(expected.exists());
+}
+
+#[test]
+fn graph_directory_rejects_nested_names_before_allocation() {
+    use madb_host::dag::LocalGraphExecutor;
+    let parent = TestDirectory::new();
+    let error = match LocalGraphExecutor::new(
+        parent.path(),
+        &logical("nested/graph"),
+        parent.path(),
+        ProcessPolicy::default(),
+    ) {
+        Err(error) => error,
+        Ok(_) => panic!("nested graph name accepted"),
+    };
+    assert_preparation_error(&error);
+    assert!(error.retained_path.is_none());
+    assert_eq!(fs::read_dir(parent.path()).unwrap().count(), 0);
+}
+
+#[test]
+fn standalone_task_rejects_dependencies_before_source_reads_or_allocation() {
+    use madb_app::{
+        Id,
+        task::{BuildRecipe, TaskFileReferences, TaskInvocation},
+    };
+    use madb_host::task::PreparedTask;
+    struct Recipe {
+        invocation: TaskInvocation,
+        dependencies: Vec<Id>,
+    }
+    impl BuildRecipe for Recipe {
+        fn invocation(&self) -> &TaskInvocation {
+            &self.invocation
+        }
+        fn dependencies(&self) -> &[Id] {
+            &self.dependencies
+        }
+        fn validate_result(&self, _: &[u8]) -> Result<TaskFileReferences> {
+            panic!("must not execute")
+        }
+    }
+    struct NoRead;
+    impl ReadWorkspace for NoRead {
+        fn read(&self, _: &LogicalPath, _: usize) -> Result<Option<Vec<u8>>> {
+            panic!("must reject dependencies before any source reads")
+        }
+    }
+    let parent = TestDirectory::new();
+    let input = snapshot("input").references().next().unwrap().clone();
+    let recipe = Recipe {
+        invocation: TaskInvocation {
+            id: Id::new("consumer").unwrap(),
+            process: ProcessRequest {
+                tool: input.clone(),
+                working_directory: logical("work"),
+                arguments: vec![],
+                environment: BTreeMap::new(),
+                stdin: vec![],
+            },
+            inputs: vec![input],
+            outputs: vec![logical("output")],
+        },
+        dependencies: vec![Id::new("producer").unwrap()],
+    };
+    let error = match PreparedTask::create(parent.path(), &logical("task"), &NoRead, &recipe) {
+        Err(error) => error,
+        Ok(_) => panic!("standalone task admitted dependency-bearing recipe"),
+    };
+    assert_eq!(error.error.findings[0].code, "TASK001");
+    assert!(error.retained_path.is_none());
+    assert_eq!(fs::read_dir(parent.path()).unwrap().count(), 0);
+}

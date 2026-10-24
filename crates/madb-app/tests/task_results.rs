@@ -274,3 +274,26 @@ fn mismatch_missing_and_capture_race_fail_without_a_partial_result() {
         "INPUT004"
     );
 }
+
+#[test]
+fn remaining_graph_budget_rejects_result_before_any_file_read() {
+    let workspace = Workspace::normal();
+    let error = madb_app::task::capture_task_result_limited(
+        &workspace,
+        &recipe(),
+        b"independent payload",
+        13,
+    )
+    .unwrap_err();
+    assert_eq!(code(error), "TASK003");
+    assert_eq!(workspace.reads.get(), 0);
+    let result = madb_app::task::capture_task_result_limited(
+        &workspace,
+        &recipe(),
+        b"independent payload",
+        14,
+    )
+    .unwrap();
+    assert_eq!(result.files().total_bytes(), 14);
+    assert_eq!(workspace.reads.get(), 4);
+}
