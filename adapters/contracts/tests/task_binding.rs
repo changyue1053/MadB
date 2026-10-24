@@ -2,12 +2,17 @@ mod common;
 
 use common::{registry, value};
 use madb_app::{
-    Digest, LogicalPath, QueryError,
+    Digest, Id, LogicalPath, Phase, QueryError,
+    dag::ExecutionGraph,
     ports::{ConfigurationBytes, FileReference},
     process::{MAX_STDIN_BYTES, MAX_TOOL_BYTES},
     task::BuildRecipe,
 };
-use madb_contracts::{DocumentKind, project_digest, task::BoundBuildTask, task_digest};
+use madb_contracts::{
+    DocumentKind, project_digest,
+    task::{BoundBuildTask, TaskBinding, bind_graph},
+    task_digest,
+};
 use serde_json::{Value, json};
 
 struct Fixture {
@@ -129,6 +134,32 @@ impl Encoded {
         )
     }
 
+    fn graph(
+        &self,
+        tasks: &[Vec<u8>],
+        target: Option<&Id>,
+        active: &[Id],
+    ) -> madb_app::Result<ExecutionGraph<BoundBuildTask>> {
+        bind_graph(
+            ConfigurationBytes {
+                project: &self.project,
+                request: &self.request,
+                profile: &self.profile,
+                lock: &self.lock,
+            },
+            &self.snapshot,
+            tasks
+                .iter()
+                .map(|task| TaskBinding {
+                    task,
+                    installed_tool: self.installed.clone(),
+                })
+                .collect(),
+            target,
+            active,
+        )
+    }
+
     fn evidence(&self) -> Value {
         let task: Value = serde_json::from_slice(&self.task).unwrap();
         let mut result = value(DocumentKind::BuildEvidence);
@@ -148,7 +179,7 @@ impl Encoded {
     }
 }
 
-fn rejected(result: madb_app::Result<BoundBuildTask>) -> QueryError {
+fn rejected<T>(result: madb_app::Result<T>) -> QueryError {
     match result {
         Ok(_) => panic!("invalid task binding succeeded"),
         Err(error) => error,
@@ -381,4 +412,133 @@ fn malformed_or_wrong_schema_result_is_rejected() {
         bound.validate_result(&encoded.task).err().unwrap(),
         "FMT003",
     );
+}
+
+fn sealed_task(mut task: Value) -> Vec<u8> {
+    let document = registry()
+        .validate(DocumentKind::BuildTask, task.clone())
+        .unwrap();
+    task["task_digest"] = json!(task_digest(&document).unwrap());
+    encode(&task)
+}
+
+fn graph_tasks(encoded: &Encoded) -> Vec<Vec<u8>> {
+    let producer: Value = serde_json::from_slice(&encoded.task).unwrap();
+    let mut consumer = producer.clone();
+    consumer["id"] = json!("link-fixture");
+    consumer["phase"] = json!("link");
+    consumer["dependencies"] = json!([producer["id"]]);
+    consumer["inputs"] = value(DocumentKind::BuildEvidence)["outputs"].clone();
+    consumer["outputs"] = json!(["linked.o"]);
+    vec![sealed_task(consumer), encoded.task.clone()]
+}
+
+#[test]
+fn graph_binding_preserves_dependencies_phase_and_deterministic_order() {
+    let encoded = Fixture::new().encoded();
+    let tasks = graph_tasks(&encoded);
+    let graph = encoded.graph(&tasks, None, &[]).unwrap();
+    let metadata = graph.tasks();
+    assert_eq!(metadata.len(), 2);
+    assert_eq!(metadata[0].id.as_str(), "compile-fixture");
+    assert_eq!(metadata[0].phase, Phase::Compile);
+    assert!(metadata[0].dependencies.is_empty());
+    assert_eq!(metadata[1].id.as_str(), "link-fixture");
+    assert_eq!(metadata[1].phase, Phase::Link);
+    assert_eq!(metadata[1].dependencies, [metadata[0].id.clone()]);
+    assert_eq!(metadata[1].outputs[0].as_str(), "linked.o");
+
+    let target = Id::new("compile-fixture").unwrap();
+    let selected = encoded.graph(&tasks, Some(&target), &[]).unwrap();
+    assert_eq!(selected.tasks().len(), 1);
+    assert_eq!(selected.tasks()[0].id, target);
+    assert!(encoded.graph(&tasks, None, &[target]).is_err());
+
+    // A graph-capable document cannot bypass scheduling via the old entry.
+    let mut single = Fixture::new().encoded();
+    single.task = tasks[0].clone();
+    has_code(rejected(single.bind()), "TASK001");
+}
+
+#[test]
+fn every_graph_node_uses_the_same_checked_context_even_when_unselected() {
+    let encoded = Fixture::new().encoded();
+    let target = Id::new("compile-fixture").unwrap();
+    for (field, changed, code) in [
+        ("selector.target", json!("different"), "PLAN002"),
+        (
+            "input_digest",
+            json!(Digest::of_bytes(b"other lineage").as_str()),
+            "TASK001",
+        ),
+        ("working_directory", json!("elsewhere"), "TASK001"),
+    ] {
+        let mut tasks = graph_tasks(&encoded);
+        let mut task: Value = serde_json::from_slice(&tasks[0]).unwrap();
+        if field == "selector.target" {
+            task["selector"]["target"] = changed;
+        } else {
+            task[field] = changed;
+        }
+        tasks[0] = sealed_task(task);
+        has_code(rejected(encoded.graph(&tasks, Some(&target), &[])), code);
+    }
+}
+
+#[test]
+fn graph_binding_checks_each_task_digest_and_executable_image() {
+    let encoded = Fixture::new().encoded();
+    let mut tasks = graph_tasks(&encoded);
+    let mut changed: Value = serde_json::from_slice(&tasks[0]).unwrap();
+    changed["arguments"][0] = json!("different");
+    tasks[0] = encode(&changed);
+    has_code(rejected(encoded.graph(&tasks, None, &[])), "PLAN002");
+
+    let mut tasks = graph_tasks(&encoded);
+    let mut changed: Value = serde_json::from_slice(&tasks[0]).unwrap();
+    changed["tool"]["sha256"] = json!(Digest::of_bytes(b"other tool").as_str());
+    tasks[0] = sealed_task(changed);
+    has_code(rejected(encoded.graph(&tasks, None, &[])), "LOCK004");
+}
+
+#[test]
+fn graph_binding_cannot_skip_invalid_configuration() {
+    let mut encoded = Fixture::new().encoded();
+    let tasks = graph_tasks(&encoded);
+    encoded.lock.push(b'\n');
+    has_code(rejected(encoded.graph(&tasks, None, &[])), "FILE004");
+}
+
+#[test]
+fn graph_structural_validation_precedes_named_target_selection() {
+    let encoded = Fixture::new().encoded();
+    let target = Id::new("compile-fixture").unwrap();
+    for dependency in ["missing", "link-fixture"] {
+        let mut tasks = graph_tasks(&encoded);
+        let mut consumer: Value = serde_json::from_slice(&tasks[0]).unwrap();
+        consumer["dependencies"] = json!([dependency]);
+        tasks[0] = sealed_task(consumer);
+        assert!(encoded.graph(&tasks, Some(&target), &[]).is_err());
+    }
+    // A same-named file must not become external source when its producer was
+    // omitted from the direct dependencies or a target selection.
+    let mut tasks = graph_tasks(&encoded);
+    let mut consumer: Value = serde_json::from_slice(&tasks[0]).unwrap();
+    consumer["dependencies"] = json!([]);
+    tasks[0] = sealed_task(consumer);
+    assert!(encoded.graph(&tasks, Some(&target), &[]).is_err());
+}
+
+#[test]
+fn graph_document_limits_are_checked_before_parsing_the_context() {
+    let mut encoded = Fixture::new().encoded();
+    encoded.request = b"invalid context".to_vec();
+    for tasks in [
+        vec![],
+        vec![vec![]; 4097],
+        vec![vec![b' '; MAX_STDIN_BYTES + 1]],
+        vec![vec![b' '; MAX_STDIN_BYTES]; 17],
+    ] {
+        has_code(rejected(encoded.graph(&tasks, None, &[])), "TASK001");
+    }
 }

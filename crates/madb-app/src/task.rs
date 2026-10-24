@@ -47,6 +47,10 @@ pub struct TaskFileReferences {
 /// result validation; implementations should own an immutable bound invocation.
 pub trait BuildRecipe {
     fn invocation(&self) -> &TaskInvocation;
+    /// Direct task identities. Single-task recipes have no dependencies.
+    fn dependencies(&self) -> &[Id] {
+        &[]
+    }
     fn validate_result(&self, stdout: &[u8]) -> Result<TaskFileReferences>;
 }
 
@@ -82,6 +86,17 @@ pub fn capture_task_result<W: ReadWorkspace, R: BuildRecipe>(
     recipe: &R,
     stdout: &[u8],
 ) -> Result<ValidatedTaskResult> {
+    capture_task_result_limited(workspace, recipe, stdout, usize::MAX)
+}
+
+/// Apply the caller's remaining graph budget before any result file is read.
+/// The ordinary per-task inventory limits still apply independently.
+pub fn capture_task_result_limited<W: ReadWorkspace, R: BuildRecipe>(
+    workspace: &W,
+    recipe: &R,
+    stdout: &[u8],
+    limit: usize,
+) -> Result<ValidatedTaskResult> {
     recipe.invocation().validate()?;
     let references = recipe.validate_result(stdout)?;
     let outputs: BTreeSet<_> = references.outputs.iter().map(|f| f.path.clone()).collect();
@@ -101,14 +116,20 @@ pub fn capture_task_result<W: ReadWorkspace, R: BuildRecipe>(
             "logs must be nonempty, unique and separate from outputs",
         ));
     }
-    let files = capture_inputs(
-        workspace,
-        references
-            .outputs
-            .into_iter()
-            .chain(references.logs)
-            .collect(),
-    )?;
+    let references: Vec<_> = references
+        .outputs
+        .into_iter()
+        .chain(references.logs)
+        .collect();
+    let (_, total_bytes) = validate_inventory(&references)?;
+    if total_bytes > limit {
+        return Err(task_error(
+            "TASK003",
+            "result",
+            "result exceeds remaining graph byte budget",
+        ));
+    }
+    let files = capture_inputs(workspace, references)?;
     Ok(ValidatedTaskResult {
         files,
         outputs,

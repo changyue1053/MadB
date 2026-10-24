@@ -8,7 +8,7 @@ use madb_app::{
     inputs::{FrozenInputs, capture_inputs},
     ports::ReadWorkspace,
     process::{ExecutionControl, ProcessError, ProcessPolicy},
-    task::{BuildRecipe, ValidatedTaskResult, capture_task_result},
+    task::{BuildRecipe, ValidatedTaskResult, capture_task_result_limited},
 };
 use std::path::Path;
 
@@ -30,9 +30,50 @@ impl<'a, R: BuildRecipe> PreparedTask<'a, R> {
             error,
             retained_path: None,
         };
+        if !recipe.dependencies().is_empty() {
+            return Err(before_allocation(QueryError::new(
+                madb_app::ErrorKind::InvalidInput,
+                "TASK001",
+                "dependencies",
+                "tasks with dependencies require graph execution",
+            )));
+        }
         recipe.invocation().validate().map_err(before_allocation)?;
         let snapshot = capture_inputs(source, recipe.invocation().inputs.clone())
             .map_err(before_allocation)?;
+        Self::from_frozen(parent, name, snapshot, recipe)
+    }
+    /// Only the graph executor may supply already captured dependency inputs.
+    /// This is deliberately not a second public bypass of dependency admission.
+    pub(crate) fn from_frozen(
+        parent: &Path,
+        name: &LogicalPath,
+        snapshot: FrozenInputs,
+        recipe: &'a R,
+    ) -> Result<Self, PreparationError> {
+        recipe
+            .invocation()
+            .validate()
+            .map_err(|error| PreparationError {
+                error,
+                retained_path: None,
+            })?;
+        let expected = &recipe.invocation().inputs;
+        if snapshot.references().count() != expected.len()
+            || !snapshot
+                .references()
+                .all(|reference| expected.contains(reference))
+        {
+            return Err(PreparationError {
+                error: QueryError::new(
+                    madb_app::ErrorKind::InvalidInput,
+                    "TASK001",
+                    "inputs",
+                    "frozen input inventory must match the bound invocation",
+                ),
+                retained_path: None,
+            });
+        }
         Ok(Self {
             prepared: PreparedRun::create(parent, name, snapshot)?,
             recipe,
@@ -50,14 +91,28 @@ impl<'a, R: BuildRecipe> PreparedTask<'a, R> {
         policy: ProcessPolicy,
         control: &ExecutionControl,
     ) -> RetainedRun<ValidatedTaskResult> {
+        self.execute_limited(tool_root, policy, control, 128 * 1024 * 1024)
+    }
+    pub(crate) fn execute_limited(
+        self,
+        tool_root: &Path,
+        policy: ProcessPolicy,
+        control: &ExecutionControl,
+        result_limit: usize,
+    ) -> RetainedRun<ValidatedTaskResult> {
         self.prepared.execute_validated(
             tool_root,
             policy,
             &self.recipe.invocation().process,
             control,
             |workspace, run, _| {
-                let result = capture_task_result(workspace, self.recipe, &run.report.stdout.bytes)
-                    .map_err(result_error)?;
+                let result = capture_task_result_limited(
+                    workspace,
+                    self.recipe,
+                    &run.report.stdout.bytes,
+                    result_limit,
+                )
+                .map_err(result_error)?;
                 verify_outputs(workspace, result.files()).map_err(result_error)?;
                 Ok(result)
             },

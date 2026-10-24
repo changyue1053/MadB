@@ -44,24 +44,34 @@ impl TaskGraph {
                 }
             }
         }
-        let mut outputs = BTreeSet::new();
+        // Track every prefix, not only complete files: Out/a and out/b
+        // alias the same directory on common consumer filesystems.
+        let mut outputs = BTreeMap::<String, (String, bool)>::new();
         for task in by_id.values() {
-            for path in &task.outputs {
-                // Initial portable task subset: ASCII managed paths. Host-side
-                // filesystem alias checks remain mandatory before execution.
-                if !path.as_str().is_ascii() {
+            for logical in &task.outputs {
+                let path = logical.as_str();
+                if !path.is_ascii() {
                     return Err(ValueError("portable task outputs require ASCII paths"));
                 }
-                let path = path.as_str().to_ascii_lowercase();
-                if !outputs.insert(path) {
-                    return Err(ValueError("duplicate or case-aliased task output"));
-                }
-            }
-        }
-        for path in &outputs {
-            for (index, _) in path.match_indices('/') {
-                if outputs.contains(&path[..index]) {
-                    return Err(ValueError("task output file/directory collision"));
+                for end in path.match_indices('/').map(|(i, _)| i).chain([path.len()]) {
+                    let prefix = &path[..end];
+                    let is_file = end == path.len();
+                    match outputs.entry(prefix.to_ascii_lowercase()) {
+                        std::collections::btree_map::Entry::Occupied(previous) => {
+                            let (spelling, was_file) = previous.get();
+                            if spelling != prefix {
+                                return Err(ValueError("case-aliased task output prefix"));
+                            }
+                            if *was_file || is_file {
+                                return Err(ValueError(
+                                    "duplicate task output or file/directory collision",
+                                ));
+                            }
+                        }
+                        std::collections::btree_map::Entry::Vacant(entry) => {
+                            entry.insert((prefix.to_owned(), is_file));
+                        }
+                    }
                 }
             }
         }
@@ -192,6 +202,9 @@ mod tests {
     fn output_ownership_rejects_aliases_and_ancestor_paths() {
         for (left, right) in [
             ("out/File.h", "out/file.h"),
+            ("Out/a", "out/b"),
+            ("out/A/x", "out/a/y"),
+            ("out/api/header.h", "out/api"),
             ("out/api", "out/api/header.h"),
             ("same", "same"),
         ] {

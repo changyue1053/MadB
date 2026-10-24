@@ -49,12 +49,6 @@ impl PreparedRun {
         name: &LogicalPath,
         snapshot: FrozenInputs,
     ) -> Result<Self, PreparationError> {
-        if !name.as_str().is_ascii() || name.as_str().contains('/') {
-            return Err(PreparationError {
-                error: preparation_error("name", "run name must be one ASCII path component"),
-                retained_path: None,
-            });
-        }
         Self::allocate(parent, name, snapshot)
     }
 
@@ -64,23 +58,11 @@ impl PreparedRun {
         name: &LogicalPath,
         snapshot: FrozenInputs,
     ) -> Result<Self, PreparationError> {
-        let before_allocation = |error| PreparationError {
-            error,
-            retained_path: None,
-        };
-        let parent = std::fs::canonicalize(parent)
-            .map_err(|e| before_allocation(preparation_error("parent", e)))?;
-        let parent_directory = crate::LocalWorkspace::open(&parent).map_err(before_allocation)?;
-        rustix::fs::mkdirat(&parent_directory.root, name.as_str(), tree::PRIVATE_DIR)
-            .map_err(|e| before_allocation(preparation_error("name", e)))?;
-        let path = parent.join(name.as_str());
-        let after_allocation = |error| PreparationError {
+        let (path, root) = allocate_directory(parent, name)?;
+        tree::materialize(&root, &snapshot).map_err(|error| PreparationError {
             error,
             retained_path: Some(path.clone()),
-        };
-        let root = tree::open_directory(&parent_directory.root, name.as_str())
-            .map_err(after_allocation)?;
-        tree::materialize(&root, &snapshot).map_err(after_allocation)?;
+        })?;
         let prepared = Self {
             path,
             root,
@@ -107,16 +89,7 @@ impl PreparedRun {
 
     #[cfg(unix)]
     fn verify(&self) -> madb_app::Result<()> {
-        use std::os::unix::fs::MetadataExt;
-        let named =
-            std::fs::symlink_metadata(&self.path).map_err(|e| tree::integrity_error("run", e))?;
-        let owned = self
-            .root
-            .metadata()
-            .map_err(|e| tree::integrity_error("run", e))?;
-        if !named.is_dir() || named.dev() != owned.dev() || named.ino() != owned.ino() {
-            return Err(tree::integrity_error("run", "run directory was replaced"));
-        }
+        verify_directory(&self.path, &self.root)?;
         tree::verify(&self.root, &self.snapshot)
     }
 
@@ -271,6 +244,9 @@ impl<T> RetainedRun<T> {
     pub fn value(&self) -> Option<&T> {
         self.value.as_ref()
     }
+    pub(crate) fn take_value(&mut self) -> Option<T> {
+        self.value.take()
+    }
     /// True means no pending owned leader, not that the tree is safe to delete.
     /// Late cleanup never upgrades result admission.
     pub fn poll_cleanup(&mut self) -> ProcessResult<bool> {
@@ -293,4 +269,49 @@ fn input_error(error: QueryError) -> ProcessError {
         "private input copy failed verification",
     )
     .caused_by(error)
+}
+
+/// Exclusive allocation shared by graph roots and per-task retained trees.
+/// Existing entries never become owned; partial allocations remain visible.
+#[cfg(unix)]
+pub(crate) fn allocate_directory(
+    parent: &Path,
+    name: &LogicalPath,
+) -> Result<(PathBuf, std::fs::File), PreparationError> {
+    let before_allocation = |error| PreparationError {
+        error,
+        retained_path: None,
+    };
+    if !name.as_str().is_ascii() || name.as_str().contains('/') {
+        return Err(before_allocation(preparation_error(
+            "name",
+            "run name must be one ASCII path component",
+        )));
+    }
+    let parent = std::fs::canonicalize(parent)
+        .map_err(|e| before_allocation(preparation_error("parent", e)))?;
+    let parent_directory = LocalWorkspace::open(&parent).map_err(before_allocation)?;
+    rustix::fs::mkdirat(&parent_directory.root, name.as_str(), tree::PRIVATE_DIR)
+        .map_err(|e| before_allocation(preparation_error("name", e)))?;
+    let path = parent.join(name.as_str());
+    let root = tree::open_directory(&parent_directory.root, name.as_str()).map_err(|error| {
+        PreparationError {
+            error,
+            retained_path: Some(path.clone()),
+        }
+    })?;
+    Ok((path, root))
+}
+
+#[cfg(unix)]
+pub(crate) fn verify_directory(path: &Path, root: &std::fs::File) -> madb_app::Result<()> {
+    use std::os::unix::fs::MetadataExt;
+    let named = std::fs::symlink_metadata(path).map_err(|e| tree::integrity_error("run", e))?;
+    let owned = root
+        .metadata()
+        .map_err(|e| tree::integrity_error("run", e))?;
+    if !named.is_dir() || named.dev() != owned.dev() || named.ino() != owned.ino() {
+        return Err(tree::integrity_error("run", "run directory was replaced"));
+    }
+    Ok(())
 }
