@@ -1,4 +1,5 @@
-//! Host-owned, bounded filesystem reads. No compiler or storage mutations.
+//! Host-owned bounded filesystem reads and approved process execution.
+pub mod process;
 use madb_app::{ErrorKind, LogicalPath, QueryError, Result, ports::ReadWorkspace};
 use std::path::Path;
 

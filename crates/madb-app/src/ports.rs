@@ -39,3 +39,19 @@ pub trait SnapshotFormat {
     fn check(&self, prepared: &Self::Prepared, snapshot: &[u8]) -> Result<Contract>;
     fn task_graph(&self, prepared: &Self::Prepared, tasks: &[Vec<u8>]) -> Result<TaskGraph>;
 }
+
+/// The implementation owns process creation, bounded pipes and OS cleanup.
+/// It must never return a successful process observation for incomplete cleanup.
+pub trait ProcessRunner {
+    fn run(
+        &self,
+        request: &crate::process::ProcessRequest,
+        cancellation: &crate::process::CancellationProbe<'_>,
+    ) -> crate::process::ProcessResult<crate::process::ProcessRun>;
+}
+
+/// Retained ownership after a cleanup deadline. Callers must keep this handle
+/// until it reports reaped; dropping it is not a cleanup acknowledgement.
+pub trait PendingProcess: Send {
+    fn poll_reaped(&mut self) -> crate::process::ProcessResult<bool>;
+}

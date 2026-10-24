@@ -1,5 +1,6 @@
-//! Read-only use cases and inward-facing ports. No filesystem or wire DTOs.
+//! Application use cases and inward-facing ports. No filesystem or wire DTOs.
 pub mod ports;
+pub mod process;
 pub mod query;
 
 pub use madb_model::{Digest, Finding, Id, LogicalPath};
