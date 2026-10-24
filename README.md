@@ -1,6 +1,6 @@
 # MadB
 
-跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询、静态任务规划、受控进程、已声明输入副本、单任务结果验证和静态串行 DAG，尚无已认证的跨语言路线。
+跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询、静态任务规划、受控进程、已声明输入副本、单任务结果验证、静态串行 DAG 和显式输入观察，尚无已认证的跨语言路线。
 
 ## 开发环境
 
@@ -60,6 +60,12 @@ cargo run --locked -p madb-cli -- plan --root /path/to/workspace --project madb.
 `.venv/bin/python -m unittest discover -s tests/integration/c04_dag` 通过内部图入口绑定同一配置上下文的多份 BuildTask，执行 producer→consumer、分叉/汇合或命名子图。首节点前冻结外部源；下游只消费直接依赖已验证的 outputs，不读取上游活跃 work，也不以同名源文件兜底。节点失败或图取消后不再调度，返回节点观察与保留目录，图结果集不可用。
 
 本子集要求输入大小/摘要预先已知，最多执行 64 节点；根源、节点输入副本与结果文件合计最多 256 MiB。未知产物需要先发现身份、重新绑定下一张图。独立回归及接口见[图执行验证](tests/integration/c04_dag/README.md)。成功图仍是受检观察，没有批次提交、缓存或完整依赖证明；正式 build/generate CLI 尚未开放。
+
+## 输入观察与复核
+
+`.venv/bin/python -m unittest discover -s tests/integration/c04_observations` 验证显式的 `execute_graph_observed` 入口：图开始时捕获调用方声明的缺失路径、目录直接成员；最终接受前复核这些条件和选中外部文件的内容。可选文件出现、成员新增/删除/改类型或源字节变化时，不公开图结果，保留已执行节点和现场。
+
+原 `execute_graph` 继续只按固定字节执行；使用者需要活跃源在检查点仍匹配时才选择新入口。目录 watch 不递归、不自动捕获成员文件内容；新增文件可检测，但尚不提供编译器完整依赖发现、原子快照、缓存或提交资格。详见[输入观察回归](tests/integration/c04_observations/README.md)。
 
 ## 工程与依据
 
