@@ -297,10 +297,15 @@
       "depends_on": [
         "C04"
       ],
-      "status": "in_progress",
-      "verification": "running",
+      "status": "implemented",
+      "verification": "passed",
       "evidence": [
-        "reviews/2026-10-24-c05-rust-c-first-route.md"
+        "reviews/2026-10-24-c05-rust-c-first-route.md",
+        "https://github.com/changyue1053/MadB/pull/11",
+        "https://github.com/changyue1053/MadB-Lab/pull/2",
+        "https://github.com/changyue1053/MadB/actions/runs/40095332085",
+        "https://github.com/changyue1053/MadB/actions/runs/40095332069",
+        "https://github.com/changyue1053/MadB-Lab/actions/runs/40095102787"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -329,7 +334,7 @@
         "RUST-C-ABI"
       ],
       "probes": [],
-      "notes": "基于已验收 C04 开始整包实施：真实双向声明读取/生成、engine 生命周期与 bootstrap、独立候选和 MadB-Lab 消费；部分实现不计整体验收。"
+      "notes": "C05 五项验收通过：真实 compiler/cbindgen/bindgen 来源、C04 冻结端口全流程、登记令牌与关闭排水、三份公开候选及独立 Lab 双向消费。macOS Arm64 与 Linux x86_64 各 19 项场景通过，Lab 54 项测试；同提交双目录重建 51 个交付文件字节一致。交付 MadB #11 / MadB-Lab #2，合入状态见 GitHub；仅认证实际首链配置，不计其他路线及 C09/C10 全矩阵完成。"
     },
     {
       "id": "C06",
@@ -507,9 +512,11 @@
         "C07",
         "C08"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-24-c05-rust-c-first-route.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -540,7 +547,7 @@
       "probes": [
         "P09"
       ],
-      "notes": "S1 开始交付首链所需部分，S5 完成全部配置；depends_on 表示整个工作包的最终验收前置。首链证据归相应 C05 案例，不把 C09/C10 整体标为完成。"
+      "notes": "C05 已交付并验证 S1 首链所需部分：独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定 C05 已绑定的首链结果。depends_on 表示整体验收前置。"
     },
     {
       "id": "C10",
@@ -556,9 +563,11 @@
         "C07",
         "C08"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-24-c05-rust-c-first-route.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -584,7 +593,7 @@
       "probes": [
         "P08"
       ],
-      "notes": "S1 开始交付首链所需部分，S5 完成全部配置；depends_on 表示整个工作包的最终验收前置。首链证据归相应 C05 案例，不把 C09/C10 整体标为完成。"
+      "notes": "C05 已交付并验证 S1 首链所需部分：三份公开候选、固定来源与身份、干净消费及同目标重建。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定 C05 已绑定的首链结果。depends_on 表示整体验收前置。"
     },
     {
       "id": "C11",

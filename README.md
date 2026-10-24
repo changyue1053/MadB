@@ -1,6 +1,6 @@
 # MadB
 
-跨语言 SDK 工程工具。当前提供契约检查、受控执行、输入追踪及三层输出事务；实际工作包状态以[实施目录](docs/catalog/implementation-plan.json)为准，尚无已认证的跨语言路线。
+跨语言 SDK 工程工具。当前提供契约检查、受控执行、输入追踪及三层输出事务；Rust ↔ C 首链已在 macOS Arm64、Linux x86_64 的实际配置通过独立 Lab 验收。支持范围与证据见[实施目录](docs/catalog/implementation-plan.json)和[C05 记录](docs/reviews/2026-10-24-c05-rust-c-first-route.md)，不推导其他路线或配置的认证。
 
 ## 开发环境
 

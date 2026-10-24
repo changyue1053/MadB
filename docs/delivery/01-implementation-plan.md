@@ -131,3 +131,7 @@ C05 接入实际编译器来源 reader、语言生成器、资源/线程/取消�
 交付三个独立候选：C→Rust 的未插桩 Release、单独 test-support profile，以及 Rust→C 的 C 库和公开 Rust 包装。C04 的静态 DAG 需要先显式 prepare 实际输出身份，再在冻结输入下重新编译、链接、运行并核对；准备结果和候选生成都不单独证明验收。默认生产入口要求干净检出；开发用 `--allow-dirty` 产物标为 provisional，不能用于正式 Lab 验收。
 
 首链内部 adapter 配置由 read/lock 固定，profile 的 `backend_config` 保持 `null`；公开工具链记录去除宿主路径。Linux native observed profile 与 Apple 冻结工具链按各自真实目标取证，互不推导认证。独立 Lab 只接收公开候选，在无工具源码及开发缓存的新工程中运行两个直接消费者；整包完成仍要求目录中的全部 acceptance 和绑定最终候选的实际报告，此处不更新工作包状态。
+
+## C05 整包验收
+
+[C05 记录](../reviews/2026-10-24-c05-rust-c-first-route.md)保存真实双向 SDK、三份公开候选、macOS Arm64/Linux x86_64 独立消费者与身份拒绝证据。五项 acceptance 已通过；MadB #11 与 MadB-Lab #2 的合入状态由 GitHub 记录。C09/C10 已开始 S1 首链部分，全部配置/渠道的整体验收仍缺证据，不能据此标为完成。下一核心工作包按目录进入 C06；不在 C05 中扩展其他语言。
