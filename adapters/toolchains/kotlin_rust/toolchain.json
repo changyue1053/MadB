@@ -1,0 +1,77 @@
+{
+  "schema": "madb.managed-toolchain/1",
+  "host": "aarch64-apple-darwin",
+  "purpose": "C06 minimal macOS Arm64 profiles; source identities, not route certification",
+  "xcode": {
+    "version": "27.0",
+    "build": "27A266a",
+    "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)",
+    "sdk_version": "27.0",
+    "sdk_build": "26A425"
+  },
+  "archives": {
+    "gradle": {
+      "version": "9.7.1",
+      "source": "https://services.gradle.org/distributions/gradle-9.7.1-bin.zip",
+      "sha256": "acd53f1edaf02f1a8ff99879f8a34b302661a057d9b063ae9e35b552f804d20a",
+      "format": "zip",
+      "archive_root": "gradle-9.7.1",
+      "path": "gradle",
+      "size": 151433392
+    },
+    "jdk": {
+      "version": "Temurin-21.0.10+7",
+      "source": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.10%2B7/OpenJDK21U-jdk_aarch64_mac_hotspot_21.0.10_7.tar.gz",
+      "sha256": "01ca390455216ca27bdddf8cfad51aaedb4f90e1e23aad9bfd9e90caaa2c5f1b",
+      "size": 199896082,
+      "format": "tar.gz",
+      "archive_root": "jdk-21.0.10+7",
+      "path": "jdk"
+    },
+    "kotlin-jvm": {
+      "version": "2.4.20",
+      "source": "https://github.com/JetBrains/kotlin/releases/download/v2.4.20/kotlin-compiler-2.4.20.zip",
+      "sha256": "59e9ca74c7904ef2c122b12114937673ccce68de820a663f0ed66ccf8799e0b7",
+      "size": 89729132,
+      "format": "zip",
+      "archive_root": "kotlinc",
+      "path": "kotlin-jvm"
+    },
+    "kotlin-native": {
+      "version": "2.4.20",
+      "source": "https://github.com/JetBrains/kotlin/releases/download/v2.4.20/kotlin-native-prebuilt-macos-aarch64-2.4.20.tar.gz",
+      "sha256": "b70d4fd2855fdb054fc9604beaa7de83c18d786454ae948de72a226e81f07dc8",
+      "size": 290167116,
+      "format": "tar.gz",
+      "archive_root": "kotlin-native-prebuilt-macos-aarch64-2.4.20",
+      "path": "kotlin-native"
+    },
+    "llvm": {
+      "version": "21-aarch64-macos-essentials-97",
+      "source": "https://download.jetbrains.com/kotlin/native/resources/llvm/21-aarch64-macos/llvm-21-aarch64-macos-essentials-97.tar.gz",
+      "sha256": "62fd78f090353aa7b2c6601ad6f95bd7a0b0558b18f86978043cc878321b408a",
+      "format": "tar.gz",
+      "archive_root": "llvm-21-aarch64-macos-essentials-97",
+      "path": "konan/dependencies/llvm-21-aarch64-macos-essentials-97",
+      "size": 151150049
+    },
+    "libffi": {
+      "version": "libffi-3.3-1-macos-arm64",
+      "source": "https://download.jetbrains.com/kotlin/native/libffi-3.3-1-macos-arm64.tar.gz",
+      "sha256": "8ca0102ad5b626e8b1699f311ab098354a90154ea3e44951f28ebdd256862ba9",
+      "size": 17037,
+      "format": "tar.gz",
+      "archive_root": "libffi-3.3-1-macos-arm64",
+      "path": "konan/dependencies/libffi-3.3-1-macos-arm64"
+    },
+    "lldb": {
+      "version": "lldb-4-macos",
+      "source": "https://download.jetbrains.com/kotlin/native/lldb-4-macos.tar.gz",
+      "sha256": "069193359103d4e4a4653f236e7a963e266a4a366905e858d4a68e701f43866e",
+      "size": 64230999,
+      "format": "tar.gz",
+      "archive_root": "lldb-4-macos",
+      "path": "konan/dependencies/lldb-4-macos"
+    }
+  }
+}

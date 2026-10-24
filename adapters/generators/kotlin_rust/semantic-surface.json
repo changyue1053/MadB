@@ -1,0 +1,1515 @@
+{
+  "schema": "madb.c06-semantic-surface/1",
+  "purpose": "Reviewed SampleEngine semantic allowlist. Reader still derives actual types. Unknown or changed declarations fail closed; this file is never refreshed by the build.",
+  "profiles": {
+    "uniffi": {
+      "surface": {
+        "types": [
+          {
+            "id": "BoundaryError",
+            "definition": {
+              "kind": "variant",
+              "tag_type": "i32",
+              "cases": [
+                {
+                  "name": "InvalidArgument",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "0"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "Closing",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "1"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "Closed",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "2"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "Cancelled",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "3"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "ResourceExhausted",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "4"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "ProfileMismatch",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "5"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "CallbackFailure",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "6"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "WouldDeadlock",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "7"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "AlreadyConsumed",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "8"
+                  },
+                  "payload": null
+                }
+              ],
+              "unknown": "reject"
+            }
+          },
+          {
+            "id": "Engine",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "$profile"
+            }
+          },
+          {
+            "id": "Host",
+            "definition": {
+              "kind": "callback",
+              "parameters": [
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "Value",
+              "calling_convention": "c",
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "id": "Operation",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "$profile"
+            }
+          },
+          {
+            "id": "Phase",
+            "definition": {
+              "kind": "variant",
+              "tag_type": "i32",
+              "cases": [
+                {
+                  "name": "Ready",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "0"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "Working",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "1"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "Done",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "2"
+                  },
+                  "payload": null
+                }
+              ],
+              "unknown": "reject"
+            }
+          },
+          {
+            "id": "Sink",
+            "definition": {
+              "kind": "callback",
+              "parameters": [
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "unit",
+              "calling_convention": "c",
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "id": "Statistics",
+            "definition": {
+              "kind": "record",
+              "layout": "logical",
+              "fields": [
+                {
+                  "name": "queued_items",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "retained_bytes",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "callbacks_in_flight",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "active_operations",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "active_subscriptions",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "payloads_admitted",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "payloads_released",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "operations_created",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "operations_released",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "subscriptions_created",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "subscriptions_released",
+                  "type_id": "u64"
+                },
+                {
+                  "name": "worker_exits",
+                  "type_id": "u64"
+                }
+              ]
+            }
+          },
+          {
+            "id": "Subscription",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "$profile"
+            }
+          },
+          {
+            "id": "Value",
+            "definition": {
+              "kind": "record",
+              "layout": "logical",
+              "fields": [
+                {
+                  "name": "id",
+                  "type_id": "string"
+                },
+                {
+                  "name": "sequence",
+                  "type_id": "optional.i64"
+                },
+                {
+                  "name": "text",
+                  "type_id": "string"
+                },
+                {
+                  "name": "bytes",
+                  "type_id": "bytes"
+                },
+                {
+                  "name": "phase",
+                  "type_id": "Phase"
+                }
+              ]
+            }
+          },
+          {
+            "id": "bool",
+            "definition": {
+              "kind": "boolean"
+            }
+          },
+          {
+            "id": "bytes",
+            "definition": {
+              "kind": "buffer",
+              "element": "u8",
+              "length_unit": "bytes",
+              "encoding": "none",
+              "mutable": false,
+              "max_bytes": 1024
+            }
+          },
+          {
+            "id": "i32",
+            "definition": {
+              "kind": "integer",
+              "width": 32,
+              "signed": true
+            }
+          },
+          {
+            "id": "i64",
+            "definition": {
+              "kind": "integer",
+              "width": 64,
+              "signed": true
+            }
+          },
+          {
+            "id": "optional.i64",
+            "definition": {
+              "kind": "nullable",
+              "inner": "i64"
+            }
+          },
+          {
+            "id": "string",
+            "definition": {
+              "kind": "string",
+              "encoding": "utf-8",
+              "max_bytes": 1024
+            }
+          },
+          {
+            "id": "u64",
+            "definition": {
+              "kind": "integer",
+              "width": 64,
+              "signed": false
+            }
+          },
+          {
+            "id": "u8",
+            "definition": {
+              "kind": "integer",
+              "width": 8,
+              "signed": false
+            }
+          },
+          {
+            "id": "unit",
+            "definition": {
+              "kind": "unit"
+            }
+          }
+        ],
+        "symbols": [
+          {
+            "qualified_name": "madb_boundary.Engine.await_closed",
+            "kind": "method",
+            "shape": {
+              "kind": "async",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.new",
+            "kind": "constructor",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "expected_profile",
+                  "type_id": "string"
+                }
+              ],
+              "result": "Engine",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.observe_events",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "sink",
+                  "type_id": "Sink"
+                }
+              ],
+              "result": "Subscription",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.observe_state",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "sink",
+                  "type_id": "Sink"
+                }
+              ],
+              "result": "Subscription",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.publish_state",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.request_close",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "unit",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.roundtrip",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "Value",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.start_operation",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                },
+                {
+                  "name": "host",
+                  "type_id": "Host"
+                }
+              ],
+              "result": "Operation",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.statistics",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "Statistics",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Engine.try_publish_event",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Operation.is_cancel_requested",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Operation"
+                }
+              ],
+              "result": "bool",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Operation.request_cancel",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Operation"
+                }
+              ],
+              "result": "unit",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Operation.result",
+            "kind": "method",
+            "shape": {
+              "kind": "async",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Operation"
+                }
+              ],
+              "result": "Value",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Subscription.await_stopped",
+            "kind": "method",
+            "shape": {
+              "kind": "async",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Subscription"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "BoundaryError"
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.Subscription.request_stop",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Subscription"
+                }
+              ],
+              "result": "unit",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_boundary.profile_identity",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "c",
+              "parameters": [],
+              "result": "string",
+              "constants": []
+            }
+          }
+        ]
+      },
+      "calls": {
+        "madb_boundary.Engine.await_closed": {
+          "threading": "caller",
+          "blocking": "non-blocking",
+          "delivery": "result-delivered",
+          "cancellation": "wait",
+          "cancellation_confirmation": "wait-ended"
+        },
+        "madb_boundary.Engine.new": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.observe_events": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "registered",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.observe_state": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "registered",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.publish_state": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.request_close": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.roundtrip": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.start_operation": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.statistics": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Engine.try_publish_event": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Operation.is_cancel_requested": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Operation.request_cancel": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.Operation.result": {
+          "threading": "caller",
+          "blocking": "non-blocking",
+          "delivery": "result-delivered",
+          "cancellation": "wait",
+          "cancellation_confirmation": "wait-ended"
+        },
+        "madb_boundary.Subscription.await_stopped": {
+          "threading": "caller",
+          "blocking": "non-blocking",
+          "delivery": "result-delivered",
+          "cancellation": "wait",
+          "cancellation_confirmation": "wait-ended"
+        },
+        "madb_boundary.Subscription.request_stop": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_boundary.profile_identity": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        }
+      }
+    },
+    "skie": {
+      "surface": {
+        "types": [
+          {
+            "id": "BoundaryEvent",
+            "definition": {
+              "kind": "variant",
+              "tag_type": "i32",
+              "cases": [
+                {
+                  "name": "Data",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "0"
+                  },
+                  "payload": "BoundaryEvent.Data.payload"
+                },
+                {
+                  "name": "Failure",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "1"
+                  },
+                  "payload": "BoundaryEvent.Failure.payload"
+                }
+              ],
+              "unknown": "reject"
+            }
+          },
+          {
+            "id": "BoundaryEvent.Data.payload",
+            "definition": {
+              "kind": "record",
+              "layout": "logical",
+              "fields": [
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ]
+            }
+          },
+          {
+            "id": "BoundaryEvent.Failure.payload",
+            "definition": {
+              "kind": "record",
+              "layout": "logical",
+              "fields": [
+                {
+                  "name": "code",
+                  "type_id": "string"
+                }
+              ]
+            }
+          },
+          {
+            "id": "Engine",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "$profile"
+            }
+          },
+          {
+            "id": "Flow.BoundaryEvent",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "madb.c06.swift-kotlin.Subscription"
+            }
+          },
+          {
+            "id": "Host",
+            "definition": {
+              "kind": "callback",
+              "parameters": [
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "Value",
+              "calling_convention": "system"
+            }
+          },
+          {
+            "id": "Operation",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "$profile"
+            }
+          },
+          {
+            "id": "Phase",
+            "definition": {
+              "kind": "variant",
+              "tag_type": "i32",
+              "cases": [
+                {
+                  "name": "closed",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "0"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "closing",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "1"
+                  },
+                  "payload": null
+                },
+                {
+                  "name": "open",
+                  "tag": {
+                    "kind": "integer",
+                    "type": "i32",
+                    "decimal": "2"
+                  },
+                  "payload": null
+                }
+              ],
+              "unknown": "reject"
+            }
+          },
+          {
+            "id": "Stats",
+            "definition": {
+              "kind": "record",
+              "layout": "logical",
+              "fields": [
+                {
+                  "name": "activeOperations",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "activeSubscriptions",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "queuedItems",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "retainedBytes",
+                  "type_id": "i64"
+                },
+                {
+                  "name": "completedOperations",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "cancelledOperations",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "discardedValues",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "closed",
+                  "type_id": "bool"
+                },
+                {
+                  "name": "activeWaiters",
+                  "type_id": "i32"
+                },
+                {
+                  "name": "inflightItems",
+                  "type_id": "i32"
+                }
+              ]
+            }
+          },
+          {
+            "id": "Subscription",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "$profile"
+            }
+          },
+          {
+            "id": "Swift.Error",
+            "definition": {
+              "kind": "resource",
+              "representation": "backend-handle",
+              "owner": "swift.error"
+            }
+          },
+          {
+            "id": "Value",
+            "definition": {
+              "kind": "record",
+              "layout": "logical",
+              "fields": [
+                {
+                  "name": "id",
+                  "type_id": "string"
+                },
+                {
+                  "name": "sequence",
+                  "type_id": "optional.i64"
+                },
+                {
+                  "name": "text",
+                  "type_id": "string"
+                },
+                {
+                  "name": "bytes",
+                  "type_id": "bytes"
+                },
+                {
+                  "name": "phase",
+                  "type_id": "Phase"
+                }
+              ]
+            }
+          },
+          {
+            "id": "bool",
+            "definition": {
+              "kind": "boolean"
+            }
+          },
+          {
+            "id": "bytes",
+            "definition": {
+              "kind": "buffer",
+              "element": "u8",
+              "length_unit": "bytes",
+              "encoding": "none",
+              "mutable": false,
+              "max_bytes": 1024
+            }
+          },
+          {
+            "id": "i32",
+            "definition": {
+              "kind": "integer",
+              "width": 32,
+              "signed": true
+            }
+          },
+          {
+            "id": "i64",
+            "definition": {
+              "kind": "integer",
+              "width": 64,
+              "signed": true
+            }
+          },
+          {
+            "id": "optional.i64",
+            "definition": {
+              "kind": "nullable",
+              "inner": "i64"
+            }
+          },
+          {
+            "id": "string",
+            "definition": {
+              "kind": "string",
+              "encoding": "utf-8",
+              "max_bytes": 1024
+            }
+          },
+          {
+            "id": "u8",
+            "definition": {
+              "kind": "integer",
+              "width": 8,
+              "signed": false
+            }
+          },
+          {
+            "id": "unit",
+            "definition": {
+              "kind": "unit"
+            }
+          }
+        ],
+        "symbols": [
+          {
+            "qualified_name": "madb_skie.Engine.awaitClosed",
+            "kind": "method",
+            "shape": {
+              "kind": "async",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.phase",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "Phase",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.publish",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.requestClose",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "unit",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.roundtrip",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                }
+              ],
+              "result": "Value",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.startOperation",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                },
+                {
+                  "name": "value",
+                  "type_id": "Value"
+                },
+                {
+                  "name": "host",
+                  "type_id": "Host"
+                }
+              ],
+              "result": "Operation",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.stats",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "Stats",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.subscribeEvents",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "Subscription",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Engine.subscribeState",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Engine"
+                }
+              ],
+              "result": "Subscription",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Operation.requestCancel",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Operation"
+                }
+              ],
+              "result": "unit",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Operation.run",
+            "kind": "method",
+            "shape": {
+              "kind": "async",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Operation"
+                }
+              ],
+              "result": "Value",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Subscription.awaitStopped",
+            "kind": "method",
+            "shape": {
+              "kind": "async",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Subscription"
+                }
+              ],
+              "result": "unit",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Subscription.events",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Subscription"
+                }
+              ],
+              "result": "Flow.BoundaryEvent",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.Subscription.requestStop",
+            "kind": "method",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type_id": "Subscription"
+                }
+              ],
+              "result": "unit",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.bootstrapVersion",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [],
+              "result": "i32",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.failureEvent",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "code",
+                  "type_id": "string"
+                }
+              ],
+              "result": "BoundaryEvent",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.interfaceIdentity",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [],
+              "result": "string",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.nativeAbiVersion",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [],
+              "result": "i32",
+              "constants": []
+            }
+          },
+          {
+            "qualified_name": "madb_skie.openEngine",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [
+                {
+                  "name": "expectedProfile",
+                  "type_id": "string"
+                }
+              ],
+              "result": "Engine",
+              "constants": [],
+              "throws": "Swift.Error"
+            }
+          },
+          {
+            "qualified_name": "madb_skie.profileIdentity",
+            "kind": "function",
+            "shape": {
+              "kind": "sync",
+              "calling_convention": "system",
+              "parameters": [],
+              "result": "string",
+              "constants": []
+            }
+          }
+        ]
+      },
+      "calls": {
+        "madb_skie.Engine.awaitClosed": {
+          "threading": "caller",
+          "blocking": "non-blocking",
+          "delivery": "result-delivered",
+          "cancellation": "wait",
+          "cancellation_confirmation": "wait-ended"
+        },
+        "madb_skie.Engine.phase": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.publish": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.requestClose": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.roundtrip": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.startOperation": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.stats": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.subscribeEvents": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "registered",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Engine.subscribeState": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "registered",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Operation.requestCancel": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Operation.run": {
+          "threading": "caller",
+          "blocking": "non-blocking",
+          "delivery": "result-delivered",
+          "cancellation": "wait",
+          "cancellation_confirmation": "wait-ended"
+        },
+        "madb_skie.Subscription.awaitStopped": {
+          "threading": "caller",
+          "blocking": "non-blocking",
+          "delivery": "result-delivered",
+          "cancellation": "wait",
+          "cancellation_confirmation": "wait-ended"
+        },
+        "madb_skie.Subscription.events": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.Subscription.requestStop": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "accepted",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.bootstrapVersion": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.failureEvent": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.interfaceIdentity": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.nativeAbiVersion": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.openEngine": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        },
+        "madb_skie.profileIdentity": {
+          "threading": "caller",
+          "blocking": "bounded",
+          "delivery": "work-completed",
+          "cancellation": "none",
+          "cancellation_confirmation": "not-supported"
+        }
+      }
+    }
+  }
+}

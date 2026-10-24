@@ -144,17 +144,30 @@ fn type_definition(w: Wire<'_>) -> Result<ContractType> {
             preserve_unknown: d.field("unknown")?.string()? == "preserve",
         },
         "resource" => TypeDefinition::Resource {
-            registry_u64: d.field("representation")?.string()? == "registry-u64",
+            representation: d.field("representation")?.choice(|s| match s {
+                "registry-u64" => Some(ResourceRepresentation::RegistryU64),
+                "opaque-pointer" => Some(ResourceRepresentation::OpaquePointer),
+                "backend-handle" => Some(ResourceRepresentation::BackendHandle),
+                _ => None,
+            })?,
             owner: d.field("owner")?.id()?,
         },
         "callback" => TypeDefinition::Callback {
             parameters: collect(d.field("parameters")?, parameter)?,
             result: d.field("result")?.id()?,
+            throws: optional_id(&d, "throws")?,
             calling_convention: convention(d.field("calling_convention")?)?,
         },
         _ => return Err(d.error("unknown type definition")),
     };
     Ok(ContractType { id, definition })
+}
+fn optional_id(w: &Wire<'_>, name: &str) -> Result<Option<Id>> {
+    if w.value.get(name).is_some() {
+        Ok(Some(w.field(name)?.id()?))
+    } else {
+        Ok(None)
+    }
 }
 fn symbol(w: Wire<'_>) -> Result<Symbol> {
     let key = w.field("source_key")?;
@@ -193,6 +206,7 @@ fn symbol(w: Wire<'_>) -> Result<Symbol> {
         link_name: shape.field("link_name")?.id()?,
         parameters: collect(shape.field("parameters")?, parameter)?,
         result: shape.field("result")?.id()?,
+        throws: optional_id(&shape, "throws")?,
         constants: collect(shape.field("constants")?, constant)?,
         shape_digest: w.field("shape_digest")?.digest()?,
     })

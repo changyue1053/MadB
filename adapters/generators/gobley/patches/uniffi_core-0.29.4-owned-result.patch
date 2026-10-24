@@ -1,0 +1,73 @@
+--- a/src/ffi/foreignfuture.rs
++++ b/src/ffi/foreignfuture.rs
+@@ -18,6 +18,7 @@
+ //!     If this is called before the task completes, then the task will be cancelled.
+ 
+ use crate::{oneshot, LiftReturn, RustCallStatus};
++use std::{marker::PhantomData, panic::{catch_unwind, AssertUnwindSafe}};
+ 
+ /// Handle for a foreign future
+ pub type ForeignFutureHandle = u64;
+@@ -30,6 +31,36 @@
+ /// See `LiftReturn` trait for how this is implemented.
+ pub type ForeignFutureCallback<FfiType> =
+     extern "C" fn(oneshot_handle: u64, ForeignFutureResult<FfiType>);
++
++// A dropped receiver must still consume transferred FFI allocations. The ordinary
++// path keeps lifting on the awaiting Rust task; only abandoned results lift during
++// cleanup. MadB's profile permits thread-independent generated lifts only.
++struct OwnedForeignFutureResult<T: LiftReturn<UT>, UT> {
++    value: Option<ForeignFutureResult<T::ReturnType>>,
++    marker: PhantomData<fn() -> (T, UT)>,
++}
++
++impl<T: LiftReturn<UT>, UT> OwnedForeignFutureResult<T, UT> {
++    fn new(value: ForeignFutureResult<T::ReturnType>) -> Self {
++        Self { value: Some(value), marker: PhantomData }
++    }
++
++    fn take(mut self) -> ForeignFutureResult<T::ReturnType> {
++        self.value.take().expect("foreign result consumed once")
++    }
++}
++
++impl<T: LiftReturn<UT>, UT> Drop for OwnedForeignFutureResult<T, UT> {
++    fn drop(&mut self) {
++        if let Some(value) = self.value.take() {
++            // Generated lifts consume success/error allocations. A callback error
++            // may panic after consuming its message; never unwind from C cleanup.
++            let _ = catch_unwind(AssertUnwindSafe(|| {
++                drop(T::lift_foreign_return(value.return_value, value.call_status));
++            }));
++        }
++    }
++}
+ 
+ /// C struct that represents the result of a foreign future
+ #[repr(C)]
+@@ -62,12 +93,12 @@
+     F: FnOnce(ForeignFutureCallback<T::ReturnType>, u64) -> ForeignFuture,
+     T: LiftReturn<UT>,
+ {
+-    let (sender, receiver) = oneshot::channel::<ForeignFutureResult<T::ReturnType>>();
++    let (sender, receiver) = oneshot::channel::<OwnedForeignFutureResult<T, UT>>();
+     // Keep the ForeignFuture around, even though we don't ever use it.
+     // The important thing is that the ForeignFuture will be dropped when this Future is.
+     let _foreign_future =
+         call_scaffolding_function(foreign_future_complete::<T, UT>, sender.into_raw() as u64);
+-    let result = receiver.await;
++    let result = receiver.await.take();
+     T::lift_foreign_return(result.return_value, result.call_status)
+ }
+ 
+@@ -75,8 +106,8 @@
+     oneshot_handle: u64,
+     result: ForeignFutureResult<T::ReturnType>,
+ ) {
+-    let channel = unsafe { oneshot::Sender::from_raw(oneshot_handle as *mut ()) };
+-    channel.send(result);
++    let channel = unsafe { oneshot::Sender::<OwnedForeignFutureResult<T, UT>>::from_raw(oneshot_handle as *mut ()) };
++    channel.send(OwnedForeignFutureResult::new(result));
+ }
+ 
+ #[cfg(test)]

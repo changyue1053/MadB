@@ -1,0 +1,291 @@
+--- a/crates/gobley-uniffi-bindgen/src/gen_kotlin_multiplatform/mod.rs
++++ b/crates/gobley-uniffi-bindgen/src/gen_kotlin_multiplatform/mod.rs
+@@ -820,16 +820,19 @@
+ 
+     fn ffi_type_label_header(&self, ffi_type: &FfiType, ci: &ComponentInterface) -> String {
+         match ffi_type {
+-            // Note that unsigned integers in Kotlin are currently experimental, but java.nio.ByteBuffer does not
+-            // support them yet. Thus, we use the signed variants to represent both signed and unsigned
+-            // types from the component API.
+-            FfiType::Int8 | FfiType::UInt8 => "int8_t".to_string(),
+-            FfiType::Int16 | FfiType::UInt16 => "int16_t".to_string(),
+-            FfiType::Int32 | FfiType::UInt32 => "int32_t".to_string(),
+-            FfiType::Int64 | FfiType::UInt64 => "int64_t".to_string(),
++            // C declarations must match Rust signedness. Shared Kotlin signed
++            // bit carriers are converted explicitly in the Native wrappers.
++            FfiType::Int8 => "int8_t".to_string(),
++            FfiType::UInt8 => "uint8_t".to_string(),
++            FfiType::Int16 => "int16_t".to_string(),
++            FfiType::UInt16 => "uint16_t".to_string(),
++            FfiType::Int32 => "int32_t".to_string(),
++            FfiType::UInt32 => "uint32_t".to_string(),
++            FfiType::Int64 => "int64_t".to_string(),
++            FfiType::UInt64 => "uint64_t".to_string(),
+             FfiType::Float32 => "float".to_string(),
+             FfiType::Float64 => "double".to_string(),
+-            FfiType::Handle => "int64_t".to_string(),
++            FfiType::Handle => "uint64_t".to_string(),
+             FfiType::RustArcPtr(_) => "void *".to_string(),
+             FfiType::RustBuffer(maybe_external) => match maybe_external {
+                 Some(external_meta) if external_meta.module_path != ci.crate_name() => {
+@@ -1156,6 +1159,38 @@
+         Ok(true)
+     }
+ 
++    // Native C declarations preserve unsigned ABI types. The shared Kotlin
++    // runtime uses signed bit carriers; convert explicitly at the Native edge.
++    pub fn native_ffi_lower(t: &FfiType) -> Result<String, askama::Error> {
++        Ok(match t {
++            FfiType::UInt8 => ".toUByte()", FfiType::UInt16 => ".toUShort()",
++            FfiType::UInt32 => ".toUInt()", FfiType::UInt64 | FfiType::Handle => ".toULong()",
++            FfiType::Reference(inner) | FfiType::MutReference(inner)
++                if matches!(inner.as_ref(), FfiType::UInt8 | FfiType::UInt16 | FfiType::UInt32 | FfiType::UInt64 | FfiType::Handle) => ".reinterpret()",
++            _ => "",
++        }.to_owned())
++    }
++    pub fn native_ffi_lift(t: &FfiType) -> Result<String, askama::Error> {
++        Ok(match t {
++            FfiType::UInt8 => ".toByte()", FfiType::UInt16 => ".toShort()",
++            FfiType::UInt32 => ".toInt()", FfiType::UInt64 | FfiType::Handle => ".toLong()",
++            FfiType::Reference(inner) | FfiType::MutReference(inner)
++                if matches!(inner.as_ref(), FfiType::UInt8 | FfiType::UInt16 | FfiType::UInt32 | FfiType::UInt64 | FfiType::Handle) => ".reinterpret()",
++            _ => "",
++        }.to_owned())
++    }
++    pub fn native_ffi_type_name(t: &FfiType, ci: &ComponentInterface) -> Result<String, askama::Error> {
++        Ok(match t {
++            FfiType::UInt8 => "UByte".to_owned(), FfiType::UInt16 => "UShort".to_owned(),
++            FfiType::UInt32 => "UInt".to_owned(), FfiType::UInt64 | FfiType::Handle => "ULong".to_owned(),
++            FfiType::Reference(inner) | FfiType::MutReference(inner)
++                if matches!(inner.as_ref(), FfiType::UInt8 | FfiType::UInt16 | FfiType::UInt32 | FfiType::UInt64 | FfiType::Handle) => {
++                    format!("CPointer<kotlinx.cinterop.{}Var>", native_ffi_type_name(inner, ci)?)
++                },
++            _ => KotlinCodeOracle.ffi_type_label_by_value(t, ci),
++        })
++    }
++
+     pub fn ffi_type_name_by_value(
+         type_: &FfiType,
+         ci: &ComponentInterface,
+--- a/crates/gobley-uniffi-bindgen/src/templates/headers/RustBufferTemplate.h
++++ b/crates/gobley-uniffi-bindgen/src/templates/headers/RustBufferTemplate.h
+@@ -1,8 +1,8 @@
+ 
+ typedef struct RustBuffer
+ {
+-    int64_t capacity;
+-    int64_t len;
++    uint64_t capacity;
++    uint64_t len;
+     uint8_t *_Nullable data;
+ } RustBuffer;
+ 
+--- a/crates/gobley-uniffi-bindgen/src/templates/macros.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/macros.kt
+@@ -195,7 +195,7 @@
+         {{ arg.name()|var_name }},
+         {%- endif -%}
+         {%- else %}
+-        {{ arg.name()|var_name }}{{- arg.type_().borrow()|ffi_cast_to_local_rust_buffer_if_needed(ci) -}},
++        {{ arg.name()|var_name }}{{- arg.type_().borrow()|native_ffi_lower -}}{{- arg.type_().borrow()|ffi_cast_to_local_rust_buffer_if_needed(ci) -}},
+         {%- endif -%}
+     {%- endfor -%}
+     {%- if func.has_rust_call_status_arg() %}
+--- a/crates/gobley-uniffi-bindgen/src/templates/native/NamespaceLibraryTemplate.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/native/NamespaceLibraryTemplate.kt
+@@ -7,7 +7,7 @@
+ {% for field in ffi_struct.fields() %}
+ internal var {{ ffi_struct.name()|ffi_struct_name }}.{{ field.name()|var_name }}: {{ field.type_().borrow()|ffi_type_name_for_ffi_struct(ci) }}
+     {%- let type_name = field.type_().borrow()|ffi_type_name_for_ffi_struct(ci) %}
+-    get() = pointed.{{ field.name()|var_name }}{% if type_name.contains("ByValue") %}.readValue(){% endif %}
++    get() = pointed.{{ field.name()|var_name }}{{ field.type_().borrow()|native_ffi_lift }}{% if type_name.contains("ByValue") %}.readValue(){% endif %}
+     set(value) {
+         {%- match field.type_() %}
+         {%- when FfiType::RustBuffer(_) %}
+@@ -15,7 +15,7 @@
+         {%- when FfiType::RustCallStatus %}
+         value.write(pointed.{{ field.name()|var_name }}.rawPtr)
+         {%- when _ %}
+-        pointed.{{ field.name()|var_name }} = value
++        pointed.{{ field.name()|var_name }} = value{{ field.type_().borrow()|native_ffi_lower }}
+         {%- endmatch %}
+     }
+ {% endfor %}
+@@ -45,7 +45,7 @@
+         {%- when FfiType::RustCallStatus %}
+         {{ field.name()|var_name }}.write(this.{{ field.name()|var_name }}.rawPtr)
+         {%- when _ %}
+-        this.{{ field.name()|var_name }} = {{ field.name()|var_name }}
++        this.{{ field.name()|var_name }} = {{ field.name()|var_name }}{{ field.type_().borrow()|native_ffi_lower }}
+         {%- endmatch -%}
+         {%- endfor %}
+     }
+@@ -54,7 +54,7 @@
+ {% for field in ffi_struct.fields() %}
+ internal val {{ ffi_struct.name()|ffi_struct_name }}UniffiByValue.{{ field.name()|var_name }}: {{ field.type_().borrow()|ffi_type_name_for_ffi_struct(ci) }}
+     {%- let type_name = field.type_().borrow()|ffi_type_name_for_ffi_struct(ci) %}
+-    get() = useContents { {{ field.name()|var_name }}{% if type_name.contains("ByValue") %}.readValue(){% endif %} }
++    get() = useContents { {{ field.name()|var_name }}{{ field.type_().borrow()|native_ffi_lift }}{% if type_name.contains("ByValue") %}.readValue(){% endif %} }
+ {% endfor %}
+ 
+ {%- when FfiDefinition::Function(_) %}
+@@ -64,6 +64,18 @@
+ 
+ internal object UniffiLib {
+     init {
++        // Validate the loaded image before registering callbacks or allocating
++        // any business data. Expected values come from this ComponentInterface.
++        if ({{ ci.namespace() }}.cinterop.{{ ci.ffi_uniffi_contract_version().name() }}() != {{ ci.uniffi_contract_version() }}.toUInt()) {
++            throw RuntimeException("UniFFI contract version mismatch: rebuild the SDK and native library together")
++        }
++        {%- if !config.omit_checksums %}
++        {%- for (name, expected_checksum) in ci.iter_checksums() %}
++        if (({{ ci.namespace() }}.cinterop.{{ name }}().toInt() and 0xffff) != {{ expected_checksum }}) {
++            throw RuntimeException("UniFFI API checksum mismatch: {{ name }}; rebuild the SDK and native library together")
++        }
++        {%- endfor %}
++        {%- endif %}
+         {%- for init_fn in self.initialization_fns(ci) %}
+             {{ init_fn }}
+         {%- endfor %}
+@@ -88,7 +100,7 @@
+         {%- call kt::arg_list_ffi_call_native(func) %}
+     )
+     {%- if let Some(return_type) = func.return_type() -%}
+-    {{- return_type|ffi_cast_to_external_rust_buffer_if_needed(ci) -}}
++    {{- return_type|native_ffi_lift -}}{{- return_type|ffi_cast_to_external_rust_buffer_if_needed(ci) -}}
+     {%- endif %}
+     {% endfor %}
+ }
+--- a/crates/gobley-uniffi-bindgen/src/templates/native/RustBufferTemplate.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/native/RustBufferTemplate.kt
+@@ -3,16 +3,16 @@
+ {{ visibility() }}typealias RustBuffer = CPointer<{{ ci.namespace() }}.cinterop.RustBuffer>
+ 
+ {{ visibility() }}var RustBuffer.capacity: Long
+-    get() = pointed.capacity
+-    set(value) { pointed.capacity = value }
++    get() = pointed.capacity.toLong()
++    set(value) { pointed.capacity = value.toULong() }
+ {{ visibility() }}var RustBuffer.len: Long
+-    get() = pointed.len
+-    set(value) { pointed.len = value }
++    get() = pointed.len.toLong()
++    set(value) { pointed.len = value.toULong() }
+ {{ visibility() }}var RustBuffer.data: Pointer?
+     get() = pointed.data
+     set(value) { pointed.data = value?.reinterpret() }
+ {{ visibility() }}fun RustBuffer.asByteBuffer(): ByteBuffer? {
+-    {% call kt::check_rust_buffer_length("pointed.len") %}
++    require(pointed.len <= Int.MAX_VALUE.toULong()) { "RustBuffer exceeds supported byte length" }
+     return ByteBuffer(
+         pointed.data?.reinterpret<kotlinx.cinterop.ByteVar>() ?: return null,
+         pointed.len.toInt(),
+@@ -26,19 +26,19 @@
+     data: Pointer?,
+ ): RustBufferByValue {
+     return cValue<{{ ci.namespace() }}.cinterop.RustBuffer> {
+-        this.capacity = capacity
+-        this.len = len
++        this.capacity = capacity.toULong()
++        this.len = len.toULong()
+         this.data = data?.reinterpret()
+     }
+ }
+ {{ visibility() }}val RustBufferByValue.capacity: Long
+-    get() = useContents { capacity }
++    get() = useContents { capacity.toLong() }
+ {{ visibility() }}val RustBufferByValue.len: Long
+-    get() = useContents { len }
++    get() = useContents { len.toLong() }
+ {{ visibility() }}val RustBufferByValue.data: Pointer?
+     get() = useContents { data }
+ {{ visibility() }}fun RustBufferByValue.asByteBuffer(): ByteBuffer? {
+-    {% call kt::check_rust_buffer_length("len") %}
++    require(useContents { len } <= Int.MAX_VALUE.toULong()) { "RustBuffer exceeds supported byte length" }
+     return ByteBuffer(
+         data?.reinterpret<kotlinx.cinterop.ByteVar>() ?: return null,
+         len.toInt(),
+--- a/crates/gobley-uniffi-bindgen/src/templates/native/Async.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/native/Async.kt
+@@ -1,13 +1,13 @@
+ {% include "ffi/Async.kt" %}
+ 
+-internal val uniffiRustFutureContinuationCallbackCallback = staticCFunction { handle: Long, pollResult: Byte ->
+-    uniffiContinuationHandleMap.remove(handle).resume(pollResult)
++internal val uniffiRustFutureContinuationCallbackCallback = staticCFunction { handle: ULong, pollResult: Byte ->
++    uniffiContinuationHandleMap.remove(handle.toLong()).resume(pollResult)
+ }
+ 
+ {%- if ci.has_async_callback_interface_definition() %}
+ 
+-internal val uniffiForeignFutureFreeImpl = staticCFunction { handle: Long ->
+-    val job = uniffiForeignFutureHandleMap.remove(handle)
++internal val uniffiForeignFutureFreeImpl = staticCFunction { handle: ULong ->
++    val job = uniffiForeignFutureHandleMap.remove(handle.toLong())
+     if (!job.isCompleted) {
+         job.cancel()
+     }
+--- a/crates/gobley-uniffi-bindgen/src/templates/native/CallbackInterfaceImpl.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/native/CallbackInterfaceImpl.kt
+@@ -60,14 +60,14 @@
+                 {%- when FfiType::RustCallStatus %}
+                 {{ return_type|lower_fn }}(returnValue).write(this.returnValue.rawPtr)
+                 {%- when _ %}
+-                this.returnValue = {{ return_type|lower_fn }}(returnValue)
++                this.returnValue = {{ return_type|lower_fn }}(returnValue){{ return_type|as_ffi_type|ref|native_ffi_lower }}
+                 {%- endmatch %}
+                 {%- endif %}
+                 UniffiRustCallStatusHelper.allocValue().write(this.callStatus.rawPtr)
+             }
+         }
+         val uniffiHandleSuccess = { uniffiResult: CValue<{{ ci.namespace() }}.cinterop.{{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}> ->
+-            uniffiFutureCallback.invoke(uniffiCallbackData, uniffiResult)
++            uniffiFutureCallback.invoke(uniffiCallbackData.toULong(), uniffiResult)
+         }
+         val uniffiHandleError = { callStatus: UniffiRustCallStatusByValue ->
+             val uniffiResult = cValue<{{ ci.namespace() }}.cinterop.{{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}> {
+@@ -78,12 +78,12 @@
+                 {%- when FfiType::RustCallStatus %}
+                 {{ return_type.into()|ffi_default_value }}.write(this.returnValue.rawPtr)
+                 {%- when _ %}
+-                this.returnValue = {{ return_type.into()|ffi_default_value }}
++                this.returnValue = {{ return_type.into()|ffi_default_value }}{{ return_type|as_ffi_type|ref|native_ffi_lower }}
+                 {%- endmatch %}
+                 {%- endif %}
+                 callStatus.write(this.callStatus.rawPtr)
+             }
+-            uniffiFutureCallback.invoke(uniffiCallbackData, uniffiResult)
++            uniffiFutureCallback.invoke(uniffiCallbackData.toULong(), uniffiResult)
+         }
+ 
+         uniffiOutReturn.uniffiSetValue(
+@@ -116,7 +116,7 @@
+         {% endif -%}
+         this.{{ meth.name()|var_name }} = staticCFunction {
+             {%- for arg in ffi_callback.arguments() %}
+-            {{ arg.name().borrow()|var_name }}: {{ arg.type_().borrow()|ffi_type_name_by_value(ci) }},
++            {{ arg.name().borrow()|var_name }}: {{ arg.type_().borrow()|native_ffi_type_name(ci) }},
+             {%- endfor -%}
+             {%- if ffi_callback.has_rust_call_status_arg() %}
+             uniffiCallStatus: UniffiRustCallStatus,
+@@ -124,7 +124,7 @@
+             ->
+             {{ trait_impl }}.{{ meth.name()|var_name() }}(
+                 {%- for arg in ffi_callback.arguments() %}
+-                {{ arg.name().borrow()|var_name }},
++                {{ arg.name().borrow()|var_name }}{{ arg.type_().borrow()|native_ffi_lift }},
+                 {%- endfor -%}
+                 {%- if ffi_callback.has_rust_call_status_arg() %}
+                 uniffiCallStatus,
+@@ -135,8 +135,8 @@
+         {{ "" }} as {{ ci.namespace() }}.cinterop.{{ ffi_callback.name()|ffi_callback_name }}
+         {%- endif -%}
+         {%- endfor %}
+-        this.uniffiFree = staticCFunction { handle: Long ->
+-            {{ trait_impl }}.uniffiFree(handle)
++        this.uniffiFree = staticCFunction { handle: ULong ->
++            {{ trait_impl }}.uniffiFree(handle.toLong())
+         }
+     }.ptr
+ 

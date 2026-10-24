@@ -96,7 +96,7 @@ pub fn run() -> u8 {
                 }
             } else {
                 text.push_str(
-                    "Contract checks passed. No boundary route is implemented or certified.\n",
+                    "Contract checks passed. This command does not execute or certify SDK consumers.\n",
                 );
             }
             (0, text)
@@ -132,7 +132,7 @@ fn write_result(out: &mut impl Write, text: &str, code: u8) -> u8 {
 fn cli() -> Command {
     let mut command = Command::new("madb").version(env!("CARGO_PKG_VERSION"))
         .about("Cross-language SDK engineering tools")
-        .after_help("Read-only snapshot queries and explicit frozen execution recipes are available. No boundary route is implemented or certified.")
+        .after_help("Read-only snapshot queries and explicit frozen execution recipes are available. Route certification requires independent consumer evidence.")
         .subcommand_required(true).arg_required_else_help(true);
     for (name, help) in [
         (
@@ -207,6 +207,14 @@ fn cli() -> Command {
             .arg(Arg::new("tool-root").long("tool-root").help("Root of the locked installed tool images; defaults to --root"))
             .arg(Arg::new("execution").long("execution").required(true)
                 .help("Existing madb.execution/1 document, relative to --root"))
+            .arg(Arg::new("process-timeout-seconds").long("process-timeout-seconds")
+                .value_name("SECONDS").value_parser(clap::value_parser!(u64).range(1..=3600))
+                .default_value("30")
+                .help("Authorized execution budget per child process (1..3600); does not change SDK cancellation or cleanup semantics"))
+            .arg(Arg::new("process-termination-grace-ms").long("process-termination-grace-ms")
+                .value_name("MILLISECONDS").value_parser(clap::value_parser!(u64).range(0..=30000))
+                .default_value("250")
+                .help("Authorized SIGTERM-to-SIGKILL grace per child process (0..30000); does not change SDK cancellation semantics"))
             .arg(Arg::new("frozen").long("frozen").action(ArgAction::SetTrue).required(true)
                 .help("Use the exact locked local tools and inputs; never resolve or upgrade dependencies"));
         if name == "generate" {
@@ -231,8 +239,8 @@ fn cli() -> Command {
     command
 }
 
-fn execute(command: &str, args: &ArgMatches) -> u8 {
-    let options = super::bootstrap::ExecutionOptions {
+fn execution_options(command: &str, args: &ArgMatches) -> super::bootstrap::ExecutionOptions {
+    super::bootstrap::ExecutionOptions {
         command: command.to_owned(),
         root: args.get_one::<String>("root").expect("default root").into(),
         execution: args
@@ -240,6 +248,16 @@ fn execute(command: &str, args: &ArgMatches) -> u8 {
             .expect("required execution")
             .to_owned(),
         tool_root: args.get_one::<String>("tool-root").map(Into::into),
+        process_timeout: std::time::Duration::from_secs(
+            *args
+                .get_one::<u64>("process-timeout-seconds")
+                .expect("default execution budget"),
+        ),
+        process_termination_grace: std::time::Duration::from_millis(
+            *args
+                .get_one::<u64>("process-termination-grace-ms")
+                .expect("default termination grace"),
+        ),
         check: args
             .try_get_one::<bool>("check")
             .ok()
@@ -255,7 +273,11 @@ fn execute(command: &str, args: &ArgMatches) -> u8 {
             .flatten()
             .cloned()
             .collect(),
-    };
+    }
+}
+
+fn execute(command: &str, args: &ArgMatches) -> u8 {
+    let options = execution_options(command, args);
     match super::bootstrap::execute(&options) {
         Ok(text) => write_result(&mut io::stdout().lock(), &text, 0),
         Err(error) => {
@@ -311,4 +333,75 @@ fn request(args: &ArgMatches) -> madb_app::Result<QueryRequest> {
             .map(id)
             .collect::<madb_app::Result<_>>()?,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::Duration;
+
+    #[test]
+    fn execution_budget_defaults_and_explicit_limits_reach_options() {
+        for command in ["generate", "build", "package"] {
+            for seconds in [None, Some(1), Some(3600)] {
+                let mut args = vec![
+                    "madb".to_owned(),
+                    command.to_owned(),
+                    "--execution".to_owned(),
+                    "execution.json".to_owned(),
+                    "--frozen".to_owned(),
+                ];
+                if let Some(seconds) = seconds {
+                    args.extend(["--process-timeout-seconds".to_owned(), seconds.to_string()]);
+                }
+                let parsed = cli().try_get_matches_from(args).unwrap();
+                let (_, values) = parsed.subcommand().unwrap();
+                assert_eq!(
+                    execution_options(command, values).process_timeout,
+                    Duration::from_secs(seconds.unwrap_or(30))
+                );
+            }
+        }
+        assert_eq!(
+            madb_app::process::ProcessPolicy::default().timeout,
+            Duration::from_secs(30)
+        );
+    }
+}
+
+#[cfg(test)]
+mod termination_grace_tests {
+    use super::*;
+    use std::time::Duration;
+
+    #[test]
+    fn termination_grace_defaults_and_explicit_limits_reach_options() {
+        for command in ["generate", "build", "package"] {
+            for milliseconds in [None, Some(0), Some(6000), Some(30000)] {
+                let mut args = vec![
+                    "madb".to_owned(),
+                    command.to_owned(),
+                    "--execution".to_owned(),
+                    "execution.json".to_owned(),
+                    "--frozen".to_owned(),
+                ];
+                if let Some(milliseconds) = milliseconds {
+                    args.extend([
+                        "--process-termination-grace-ms".to_owned(),
+                        milliseconds.to_string(),
+                    ]);
+                }
+                let parsed = cli().try_get_matches_from(args).unwrap();
+                let (_, values) = parsed.subcommand().unwrap();
+                assert_eq!(
+                    execution_options(command, values).process_termination_grace,
+                    Duration::from_millis(milliseconds.unwrap_or(250))
+                );
+            }
+        }
+        assert_eq!(
+            madb_app::process::ProcessPolicy::default().termination_grace,
+            Duration::from_millis(250)
+        );
+    }
 }

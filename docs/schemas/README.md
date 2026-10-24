@@ -119,3 +119,5 @@ C02 支持标量、精确常量、字符串、标量 buffer、可空值、值 re
 - [cache-entry](cache-entry.schema.json)：固定原生准备输出的字节清单；恢复后逐项校验，不代表提交或认证。
 
 所有辅助格式离线验证，未知字段和格式拒绝。实际支持子集、准备与重新绑定协议以[生成规范](../architecture/07-code-generation.md)为准。
+
+C06 使用可选 `shape.throws` / callback `throws` 与 resource `backend-handle`，分别受 `core.errors@1`、`core.backend-resources@1` 能力门禁保护。错误类型参与相关符号的可达类型摘要，旧文档省略字段时保持原摘要。定义和版本拒绝规则见[契约规范](../architecture/03-contract-and-ir.md#c06-的错误通道与后端句柄)。

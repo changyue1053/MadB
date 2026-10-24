@@ -1,0 +1,5 @@
+package_name = "madb.boundary"
+cdylib_name = "madb_boundary_gobley"
+kotlin_multiplatform = true
+kotlin_targets = ["native"]
+generate_immutable_records = true

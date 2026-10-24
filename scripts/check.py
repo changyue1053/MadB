@@ -1,4 +1,4 @@
-"""Run repository checks, including C04 execution and C05 SDK invariants; failures never become skipped passes."""
+"""Run repository checks, including frozen execution and C05/C06 SDK invariants; failures never become skipped passes."""
 from pathlib import Path
 import importlib.metadata
 import os
@@ -57,6 +57,9 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_observations"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_package"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c05_pipeline"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c06_tools"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c06_project"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c06_reader"],
         [sys.executable, "scripts/check_native_sdk.py"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
@@ -67,7 +70,7 @@ def main():
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=ROOT, check=True)
-    print("Repository checks passed, including C05 SDK invariants. Native candidate and independent Lab certification remain separate.")
+    print("Repository checks passed, including C05/C06 SDK invariants. Native candidate and independent Lab certification remain separate.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,121 @@
+--- a/src/ffi/rustfuture/mod.rs
++++ b/src/ffi/rustfuture/mod.rs
+@@ -49,14 +49,27 @@
+ pub trait UniffiCompatibleFuture<T>: Future<Output = T> + Send {}
+ 
+ #[doc(hidden)]
+-pub trait FutureLowerReturn<UT>: LowerReturn<UT> {}
++pub trait FutureLowerReturn<UT>: LowerReturn<UT> {
++    fn defer_lower_return(value: Self) -> DeferredLowerReturn<Self::ReturnType>;
++}
++
++#[doc(hidden)]
++#[cfg(not(all(target_arch = "wasm32", feature = "wasm-unstable-single-threaded")))]
++pub type DeferredLowerReturn<T> = Box<dyn FnOnce() -> Result<T, crate::RustCallError> + Send>;
++#[doc(hidden)]
++#[cfg(all(target_arch = "wasm32", feature = "wasm-unstable-single-threaded"))]
++pub type DeferredLowerReturn<T> = Box<dyn FnOnce() -> Result<T, crate::RustCallError>>;
+ 
+ /// The `Send` bound is required because the Foreign code may call the
+ /// `rust_future_*` methods from different threads.
+ #[cfg(not(all(target_arch = "wasm32", feature = "wasm-unstable-single-threaded")))]
+ impl<T, F> UniffiCompatibleFuture<T> for F where F: Future<Output = T> + Send {}
+ #[cfg(not(all(target_arch = "wasm32", feature = "wasm-unstable-single-threaded")))]
+-impl<UT, LR> FutureLowerReturn<UT> for LR where LR: LowerReturn<UT> + Send {}
++impl<UT, LR> FutureLowerReturn<UT> for LR where LR: LowerReturn<UT> + Send + 'static {
++    fn defer_lower_return(value: Self) -> DeferredLowerReturn<Self::ReturnType> {
++        Box::new(move || Self::lower_return(value))
++    }
++}
+ 
+ /// `Future`'s on WASM32 are typically not `Send` because it's a single threaded environment.
+ ///
+@@ -103,7 +116,11 @@
+ #[cfg(all(target_arch = "wasm32", feature = "wasm-unstable-single-threaded"))]
+ impl<T, F> UniffiCompatibleFuture<T> for F where F: Future<Output = T> {}
+ #[cfg(all(target_arch = "wasm32", feature = "wasm-unstable-single-threaded"))]
+-impl<UT, LR> FutureLowerReturn<UT> for LR where LR: LowerReturn<UT> {}
++impl<UT, LR> FutureLowerReturn<UT> for LR where LR: LowerReturn<UT> + 'static {
++    fn defer_lower_return(value: Self) -> DeferredLowerReturn<Self::ReturnType> {
++        Box::new(move || Self::lower_return(value))
++    }
++}
+ 
+ // === Public FFI API ===
+ 
+--- a/src/ffi/rustfuture/future.rs
++++ b/src/ffi/rustfuture/future.rs
+@@ -76,7 +76,7 @@
+ //! [`RawWaker`]: https://doc.rust-lang.org/std/task/struct.RawWaker.html
+ 
+ use super::{
+-    FutureLowerReturn, RustFutureCallback, RustFutureContinuationBoundCallback, RustFuturePoll,
++    DeferredLowerReturn, FutureLowerReturn, RustFutureCallback, RustFutureContinuationBoundCallback, RustFuturePoll,
+     Scheduler, UniffiCompatibleFuture,
+ };
+ use crate::{try_rust_call, FfiDefault, LiftArgsError, RustCallResult, RustCallStatus};
+@@ -89,7 +89,7 @@
+ 
+ /// Wraps the actual future we're polling
+ ///
+-/// * Lowers the future result into an FFI type
++/// * Retains the owned Rust result until complete() lowers it into an FFI type
+ /// * Splits `Future::poll` into 2 parts.  WrappedFuture::poll(), which returns true if the future
+ ///   is ready and `WrappedFuture::complete` which extracts the result.  This matches how our FFI
+ ///   functions work.
+@@ -99,10 +99,10 @@
+     // This could be a single enum, but makes future pinning harder.
+     // For example if you call `std::mem::take()` while a future was stored in the enum, it would break the pinning guarantee.
+     //
+-    // The output is `Result<FfiType, RustCallStatus>`.
+-    // Both the `Ok` and `Err` side are easy to pass back across the FFI.
+-    future: Option<Pin<Box<dyn UniffiCompatibleFuture<RustCallResult<FfiType>>>>>,
+-    result: Option<Result<FfiType, RustCallStatus>>,
++    // The output owns deferred lowering or a poll-time panic status.
++    // Abandonment drops native values; only complete() transfers FFI allocations.
++    future: Option<Pin<Box<dyn UniffiCompatibleFuture<RustCallResult<DeferredLowerReturn<FfiType>>>>>>,
++    result: Option<Result<DeferredLowerReturn<FfiType>, RustCallStatus>>,
+ }
+ 
+ impl<FfiType> WrappedFuture<FfiType> {
+@@ -122,8 +122,8 @@
+                     // `Err` case below and we will never poll the future again.
+                     panic::AssertUnwindSafe(|| match future.as_mut().poll(cx) {
+                         Poll::Pending => Ok(Poll::Pending),
+-                        Poll::Ready(Ok(v)) => T::lower_return(v).map(Poll::Ready),
+-                        Poll::Ready(Err(e)) => T::handle_failed_lift(e).map(Poll::Ready),
++                        Poll::Ready(Ok(v)) => Ok(Poll::Ready(T::defer_lower_return(v))),
++                        Poll::Ready(Err(e)) => Ok(Poll::Ready(Box::new(move || T::handle_failed_lift(e)) as DeferredLowerReturn<FfiType>)),
+                     }),
+                 );
+                 match call_result {
+@@ -165,7 +165,10 @@
+     {
+         let mut return_value = FfiType::ffi_default();
+         match self.result.take() {
+-            Some(Ok(v)) => return_value = v,
++            Some(Ok(lower)) => match try_rust_call(panic::AssertUnwindSafe(lower)) {
++                Ok(v) => return_value = v,
++                Err(status) => *out_status = status,
++            },
+             Some(Err(call_status)) => *out_status = call_status,
+             None => *out_status = RustCallStatus::cancelled(),
+         }
+@@ -175,8 +178,15 @@
+ 
+     fn free(&mut self) {
+         self.future = None;
+-        self.result = None;
+-    }
++        if let Some(Err(mut status)) = self.result.take() {
++            // Poll-time panic errors already own an encoded buffer. Deferred
++            // successful/error results otherwise remain ordinary Rust values.
++            unsafe { std::mem::ManuallyDrop::take(&mut status.error_buf) }.destroy();
++        }
++    }
++}
++impl<FfiType> Drop for WrappedFuture<FfiType> {
++    fn drop(&mut self) { self.free(); }
+ }
+ 
+ /// Future that the foreign code is awaiting

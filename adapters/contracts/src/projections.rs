@@ -64,6 +64,9 @@ fn references(definition: &Value) -> Result<Vec<String>> {
         "callback" => {
             let mut ids = fields("parameters")?;
             ids.push(d.field("result")?.string()?.into());
+            if d.value.get("throws").is_some() {
+                ids.push(d.field("throws")?.string()?.into());
+            }
             ids
         }
         "variant" => {
@@ -101,6 +104,9 @@ pub fn shape_digest(ir: &Document, public_id: &str) -> Result<String> {
         .map(|p| Ok(p.field("type_id")?.string()?.into()))
         .collect::<Result<_>>()?;
     pending.push(shape.field("result")?.string()?.into());
+    if shape.value.get("throws").is_some() {
+        pending.push(shape.field("throws")?.string()?.into());
+    }
     let mut visited = BTreeSet::new();
     let mut types = Vec::new();
     while let Some(id) = pending.pop() {

@@ -1,0 +1,22 @@
+--- a/src/bindings/swift/templates/wrapper.swift
++++ b/src/bindings/swift/templates/wrapper.swift
+@@ -64,6 +64,19 @@
+     return InitializationResult.ok
+ }()
+ 
++// MadB's checked entry reuses the upstream initialization result before resource creation.
++public enum MadbAbiMismatch: Error, Sendable {
++    case contractVersion
++    case apiChecksum
++}
++public func madbCheckAbi() throws {
++    switch initializationResult {
++    case .ok: return
++    case .contractVersionMismatch: throw MadbAbiMismatch.contractVersion
++    case .apiChecksumMismatch: throw MadbAbiMismatch.apiChecksum
++    }
++}
++
+ // Make the ensure init function public so that other modules which have external type references to
+ // our types can call it.
+ public func {{ ensure_init_fn_name }}() {

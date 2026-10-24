@@ -1,0 +1,101 @@
+{
+  "schema": "madb.maven-files/1",
+  "files": [
+    {
+      "path": "annotations-23.0.0.jar",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.jar",
+      "sha256": "7b0f19724082cbfcbc66e5abea2b9bc92cf08a1ea11e191933ed43801eb3cd05",
+      "size": 29371
+    },
+    {
+      "path": "annotations-23.0.0.pom",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom",
+      "sha256": "c9490f655132328df2cfbcfdf743f53fc3916d6c1d10437175a6ca6e3a67771c",
+      "size": 1354
+    },
+    {
+      "path": "atomicfu-macosarm64-0.32.1-cinterop-interop.klib",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-macosarm64/0.32.1/atomicfu-macosarm64-0.32.1-cinterop-interop.klib",
+      "sha256": "165c584c77f7c716cdc5a083093ef235c9bacfeabad6ed32ca9f7b928acbe292",
+      "size": 3545
+    },
+    {
+      "path": "atomicfu-macosarm64-0.32.1.klib",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-macosarm64/0.32.1/atomicfu-macosarm64-0.32.1.klib",
+      "sha256": "368865987bfa5da765e40b15b4df60fd12f257688ed65a96ca71ebf2cf1a5261",
+      "size": 83073
+    },
+    {
+      "path": "atomicfu-macosarm64-0.32.1.module",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/atomicfu-macosarm64/0.32.1/atomicfu-macosarm64-0.32.1.module",
+      "sha256": "650c1dc58d4c9dca48b8bf3d575545e073193d73287ebbee820bec6a7a962728",
+      "size": 4162
+    },
+    {
+      "path": "jna-5.19.1.jar",
+      "source": "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna/5.19.1/jna-5.19.1.jar",
+      "sha256": "4fb141dd8ef6b0585ffceea4bc49602fbc6312fa977e2c488794ea3e6aafecae",
+      "size": 1950853
+    },
+    {
+      "path": "jna-5.19.1.pom",
+      "source": "https://repo.maven.apache.org/maven2/net/java/dev/jna/jna/5.19.1/jna-5.19.1.pom",
+      "sha256": "911b754a03b66af0fed2bbdfdc3a86807360dd036ad3b481ef5162c685e456bf",
+      "size": 2030
+    },
+    {
+      "path": "kotlin-stdlib-2.4.20.jar",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.4.20/kotlin-stdlib-2.4.20.jar",
+      "sha256": "2226de463d309d4a5500a481320b3dea515a6981dcae1def531fbc158884e25f",
+      "size": 1853314
+    },
+    {
+      "path": "kotlin-stdlib-2.4.20.module",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.4.20/kotlin-stdlib-2.4.20.module",
+      "sha256": "afb28052ac6c3d605c0f661816ea653e073eb039682fed35bfa6cdc704c0911c",
+      "size": 12431
+    },
+    {
+      "path": "kotlin-stdlib-2.4.20.pom",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/2.4.20/kotlin-stdlib-2.4.20.pom",
+      "sha256": "bd69b382dba8e2b7ae3846375eb2f1389017eb908987277051ae4e3acec8c938",
+      "size": 2301
+    },
+    {
+      "path": "kotlinx-coroutines-core-jvm-1.11.0.jar",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.11.0/kotlinx-coroutines-core-jvm-1.11.0.jar",
+      "sha256": "d1d75aa01dffbb4d1c520e67e4c4e7f5f6174718e7cb4632412503f2f0e604fa",
+      "size": 1577052
+    },
+    {
+      "path": "kotlinx-coroutines-core-jvm-1.11.0.module",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.11.0/kotlinx-coroutines-core-jvm-1.11.0.module",
+      "sha256": "5b255653ad6b1f21e0c46108605f129e3aa56ed9414849cc9f5b436441517528",
+      "size": 4454
+    },
+    {
+      "path": "kotlinx-coroutines-core-jvm-1.11.0.pom",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.11.0/kotlinx-coroutines-core-jvm-1.11.0.pom",
+      "sha256": "dd54b97aa3fab91fc24f5df2916c22be9429a339d2f45b7ff092332f6c19dc39",
+      "size": 2168
+    },
+    {
+      "path": "kotlinx-coroutines-core-macosarm64-1.11.0.klib",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-macosarm64/1.11.0/kotlinx-coroutines-core-macosarm64-1.11.0.klib",
+      "sha256": "782a837c8593af70135378fb90b999cf0cb9880dc746619f64d6c5c224d014d0",
+      "size": 1054676
+    },
+    {
+      "path": "kotlinx-coroutines-core-macosarm64-1.11.0.module",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-macosarm64/1.11.0/kotlinx-coroutines-core-macosarm64-1.11.0.module",
+      "sha256": "025c308b9de3726832991c320b92c96351abf137a0b24b01e7f1bf2df7a99c6e",
+      "size": 4424
+    },
+    {
+      "path": "kotlinx-coroutines-core-macosarm64-1.11.0.pom",
+      "source": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-macosarm64/1.11.0/kotlinx-coroutines-core-macosarm64-1.11.0.pom",
+      "sha256": "a5918ff5a08b230471751f435c8bdb5be5418263686b2e890c658f34a69c8818",
+      "size": 1898
+    }
+  ]
+}

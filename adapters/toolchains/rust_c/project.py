@@ -19,7 +19,7 @@ ZERO = "sha256:" + "0" * 64
 def _copy_sources(repo, workspace, provider):
     names = []
     directories = ("sdk/rust/engine", "sdk/c/first-route", "sdk/rust/c-client", "adapters/generators/rust_c",
-                   "adapters/toolchains/rust_c", "adapters/artifacts/rust_c")
+                   "adapters/toolchains/rust_c", "adapters/toolchains/common", "adapters/artifacts/rust_c")
     for relative in directories:
         for source in sorted((repo / relative).rglob("*")):
             if source.is_file() and "target" not in source.relative_to(repo).parts and source.suffix in (".py", ".c", ".h", ".rs", ".toml", ".md"):

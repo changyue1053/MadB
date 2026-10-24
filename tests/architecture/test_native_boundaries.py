@@ -35,7 +35,7 @@ class NativeSdkBoundaries(unittest.TestCase):
             output.write(f'\n[{section}]\n{alias} = {{ package = "{name}", path = "../../../crates/{name}"{optional} }}\n')
         return CHECK.inspect_boundaries(self.root)
 
-    def test_dependency_free_templates_are_standalone(self):
+    def test_reviewed_sdk_templates_are_standalone(self):
         self.assertEqual(CHECK.inspect_boundaries(self.root), [])
 
     def test_engine_rejects_aliased_host_dependency(self):
@@ -65,6 +65,20 @@ class NativeSdkBoundaries(unittest.TestCase):
         (self.root / "sdk/rust/c-client/Cargo.toml").unlink()
         errors = CHECK.inspect_boundaries(self.root)
         self.assertTrue(any("NATIVE001" in error for error in errors), errors)
+
+    def test_c06_rejects_private_host_in_dev_dependencies(self):
+        errors = self.inject_dependency("uniffi", "dev-dependencies", "madb-host", "innocent")
+        self.assertTrue(any("NATIVE003" in error and "madb-host as innocent" in error for error in errors), errors)
+
+    def test_c06_external_dependency_version_cannot_float(self):
+        manifest = self.root / "sdk/rust/uniffi/Cargo.toml"
+        manifest.write_text(manifest.read_text().replace('version = "=0.32.2"', 'version = "0.32.2"'))
+        errors = CHECK.inspect_boundaries(self.root)
+        self.assertTrue(any("NATIVE003" in error and "uniffi" in error for error in errors), errors)
+
+    def test_shared_sdk_runtime_cannot_import_host(self):
+        errors = self.inject_dependency("boundary-core", "dependencies", "madb-host")
+        self.assertTrue(any("NATIVE003" in error and "madb-boundary-core" in error for error in errors), errors)
 
 
 if __name__ == "__main__":

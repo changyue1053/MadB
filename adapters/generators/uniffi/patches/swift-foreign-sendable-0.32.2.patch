@@ -1,0 +1,80 @@
+--- a/src/bindings/swift/templates/Async.swift
++++ b/src/bindings/swift/templates/Async.swift
+@@ -112,10 +112,10 @@
+ }
+ 
+ {%- if ci.has_async_callback_interface_definition() %}
+-private func uniffiTraitInterfaceCallAsync<T>(
+-    makeCall: @escaping () async throws -> T,
+-    handleSuccess: @escaping (T) -> (),
+-    handleError: @escaping (Int8, RustBuffer) -> (),
++private func uniffiTraitInterfaceCallAsync<T: Sendable>(
++    makeCall: @escaping @Sendable () async throws -> T,
++    handleSuccess: @escaping @Sendable (T) -> (),
++    handleError: @escaping @Sendable (Int8, RustBuffer) -> (),
+     droppedCallback: UnsafeMutablePointer<UniffiForeignFutureDroppedCallbackStruct>
+ ) {
+     let task = Task {
+@@ -143,11 +143,11 @@
+     )
+ }
+ 
+-private func uniffiTraitInterfaceCallAsyncWithError<T, E>(
+-    makeCall: @escaping () async throws -> T,
+-    handleSuccess: @escaping (T) -> (),
+-    handleError: @escaping (Int8, RustBuffer) -> (),
+-    lowerError: @escaping (E) -> RustBuffer,
++private func uniffiTraitInterfaceCallAsyncWithError<T: Sendable, E>(
++    makeCall: @escaping @Sendable () async throws -> T,
++    handleSuccess: @escaping @Sendable (T) -> (),
++    handleError: @escaping @Sendable (Int8, RustBuffer) -> (),
++    lowerError: @escaping @Sendable (E) -> RustBuffer,
+     droppedCallback: UnsafeMutablePointer<UniffiForeignFutureDroppedCallbackStruct>
+ ) {
+     let task = Task {
+--- a/src/bindings/swift/templates/CallbackInterfaceImpl.swift
++++ b/src/bindings/swift/templates/CallbackInterfaceImpl.swift
+@@ -31,14 +31,23 @@
+             uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
+             {%- endif %}
+         ) in
+-            let makeCall = {
++            {%- if meth.is_async() %}
++            // Transfer only lifted, Sendable values into the foreign Task. Each
++            // original FFI argument is consumed on entry, including failure paths.
++            {%- for arg in meth.arguments() %}
++            let uniffiLiftedArg{{ loop.index }}: Result<{{ arg|type_name }}, Swift.Error> = Result {
++                try {{ arg|lift_fn }}({{ arg.name()|var_name }})
++            }
++            {%- endfor %}
++            {%- endif %}
++            let makeCall = { {% if meth.is_async() %}@Sendable{% endif %}
+                 () {% if meth.is_async() %}async {% endif %}throws -> {% match meth.return_type() %}{% when Some(t) %}{{ t|type_name }}{% when None %}(){% endmatch %} in
+                 guard let uniffiObj = try? {{ ffi_converter_name }}.handleMap.get(handle: uniffiHandle) else {
+                     throw UniffiInternalError.unexpectedStaleHandle
+                 }
+                 return {% if meth.throws() %}try {% endif %}{% if meth.is_async() %}await {% endif %}uniffiObj.{{ meth.name()|fn_name }}(
+                     {%- for arg in meth.arguments() %}
+-                    {% if !config.omit_argument_labels() %} {{ arg.name()|arg_name }}: {% endif %}try {{ arg|lift_fn }}({{ arg.name()|var_name }}){% if !loop.last %},{% endif %}
++                    {% if !config.omit_argument_labels() %} {{ arg.name()|arg_name }}: {% endif %}{% if meth.is_async() %}try uniffiLiftedArg{{ loop.index }}.get(){% else %}try {{ arg|lift_fn }}({{ arg.name()|var_name }}){% endif %}{% if !loop.last %},{% endif %}
+                     {%- endfor %}
+                 )
+             }
+@@ -68,7 +77,7 @@
+             {%- endmatch %}
+             {%- else %}
+ 
+-            let uniffiHandleSuccess = { (returnValue: {{ meth.return_type()|return_type_name }}) in
++            let uniffiHandleSuccess = { @Sendable (returnValue: {{ meth.return_type()|return_type_name }}) in
+                 uniffiFutureCallback(
+                     uniffiCallbackData,
+                     {{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}(
+@@ -79,7 +88,7 @@
+                     )
+                 )
+             }
+-            let uniffiHandleError = { (statusCode, errorBuf) in
++            let uniffiHandleError = { @Sendable (statusCode, errorBuf) in
+                 uniffiFutureCallback(
+                     uniffiCallbackData,
+                     {{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}(

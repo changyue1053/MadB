@@ -25,6 +25,7 @@ use madb_host::{
 use std::{
     collections::{BTreeMap, BTreeSet},
     path::PathBuf,
+    time::Duration,
 };
 
 mod dependencies;
@@ -34,12 +35,32 @@ pub struct ExecutionOptions {
     pub root: PathBuf,
     pub execution: String,
     pub tool_root: Option<PathBuf>,
+    pub process_timeout: Duration,
+    pub process_termination_grace: Duration,
     pub check: bool,
     pub task: Option<String>,
     pub active_tasks: Vec<String>,
 }
 
 pub fn execute(options: &ExecutionOptions) -> Result<String> {
+    if options.command == "build"
+        && options.task.as_deref() == Some("dependencies")
+        && options.process_timeout != ProcessPolicy::default().timeout
+    {
+        return Err(invalid(
+            "process-timeout-seconds",
+            "build --task dependencies uses its dedicated discovery interface, which does not accept a non-default process budget",
+        ));
+    }
+    if options.command == "build"
+        && options.task.as_deref() == Some("dependencies")
+        && options.process_termination_grace != ProcessPolicy::default().termination_grace
+    {
+        return Err(invalid(
+            "process-termination-grace-ms",
+            "build --task dependencies uses its dedicated discovery interface, which does not accept a non-default process termination grace",
+        ));
+    }
     let workspace = LocalWorkspace::open(&options.root)?;
     let execution_path = logical(&options.execution)?;
     let bytes = workspace
@@ -234,8 +255,10 @@ fn watch(spec: &ExecutionSpec, workspace: &LocalWorkspace) -> Result<InputObserv
         &InputWatchSet::new(spec.watch.absent.clone(), spec.watch.directories.clone())?,
     )
 }
-fn policy(environment: impl Iterator<Item = String>) -> ProcessPolicy {
+fn policy(options: &ExecutionOptions, environment: impl Iterator<Item = String>) -> ProcessPolicy {
     ProcessPolicy {
+        timeout: options.process_timeout,
+        termination_grace: options.process_termination_grace,
         allowed_environment: environment.collect(),
         ..ProcessPolicy::default()
     }
@@ -274,7 +297,10 @@ fn metadata(
         &run_parent(options, spec)?,
         &locations::unique_run_name(),
         tool_root(options),
-        policy(recipe.invocation().process.environment.keys().cloned()),
+        policy(
+            options,
+            recipe.invocation().process.environment.keys().cloned(),
+        ),
     )
     .map_err(|error| error.error)?;
     let run = run_artifact(&recipe, workspace, &mut executor, control.graph())?;
@@ -344,7 +370,10 @@ fn artifact(
         &run_parent(options, spec)?,
         &locations::unique_run_name(),
         tool_root(options),
-        policy(recipe.invocation().process.environment.keys().cloned()),
+        policy(
+            options,
+            recipe.invocation().process.environment.keys().cloned(),
+        ),
     )
     .map_err(|error| error.error)?;
     let run = run_artifact(&recipe, &source, &mut executor, control.graph())?;
@@ -457,7 +486,7 @@ fn build(
         &run_parent(options, spec)?,
         &locations::unique_run_name(),
         tool_root(options),
-        policy(environment.into_iter()),
+        policy(options, environment.into_iter()),
     )
     .map_err(|error| error.error)?;
     let run = execute_graph(&graph, &source, &mut executor, control.graph())?;
@@ -609,3 +638,86 @@ fn retained_error(mut error: QueryError, path: &str) -> QueryError {
 fn tool_root(options: &ExecutionOptions) -> &std::path::Path {
     options.tool_root.as_deref().unwrap_or(&options.root)
 }
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+    use madb_app::process::{
+        ExecutionControl, ProcessRequest, StopReason, Termination, execute_process,
+    };
+    use madb_host::process::LocalProcessRunner;
+    use std::time::Instant;
+
+    struct TemporaryDirectory(PathBuf);
+    impl Drop for TemporaryDirectory {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+
+    #[test]
+    fn explicit_budget_controls_the_real_child_deadline() {
+        let directory =
+            TemporaryDirectory(std::env::temp_dir().join(locations::unique_run_name().as_str()));
+        std::fs::create_dir_all(directory.0.join("work")).unwrap();
+        let tool = std::fs::canonicalize("/bin/sleep").unwrap();
+        let image = std::fs::read(&tool).unwrap();
+        let request = ProcessRequest {
+            tool: FileReference {
+                path: logical(tool.file_name().unwrap().to_str().unwrap()).unwrap(),
+                digest: Digest::of_bytes(&image),
+                size: image.len() as u64,
+            },
+            working_directory: logical("work").unwrap(),
+            arguments: vec!["2".into()],
+            environment: BTreeMap::new(),
+            stdin: Vec::new(),
+        };
+        for seconds in [1, 3] {
+            let options = ExecutionOptions {
+                command: "build".into(),
+                root: directory.0.clone(),
+                execution: "unused.json".into(),
+                tool_root: None,
+                process_timeout: Duration::from_secs(seconds),
+                process_termination_grace: Duration::from_millis(250),
+                check: false,
+                task: Some("metadata".into()),
+                active_tasks: Vec::new(),
+            };
+            let runner = LocalProcessRunner::new(
+                tool.parent().unwrap(),
+                &directory.0,
+                policy(&options, std::iter::empty()),
+            )
+            .unwrap();
+            let start = Instant::now();
+            let execution =
+                execute_process(&runner, &request, &ExecutionControl::default()).unwrap();
+            let run = execution.process.expect("real child was started");
+            if seconds == 1 {
+                assert!(matches!(
+                    run.report.termination,
+                    Termination::Stopped {
+                        reason: StopReason::Deadline,
+                        ..
+                    }
+                ));
+                assert!(
+                    start.elapsed() < Duration::from_secs(8),
+                    "deadline was not enforced promptly"
+                );
+            } else {
+                assert!(
+                    matches!(run.report.termination, Termination::Exited(exit) if exit.code == Some(0))
+                );
+            }
+            assert!(run.report.cleanup.locally_complete());
+            assert!(run.pending_cleanup.is_none());
+        }
+    }
+}
+
+#[cfg(all(test, unix))]
+#[path = "execution_grace_tests.rs"]
+mod grace_tests;

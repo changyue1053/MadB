@@ -1,2 +1,9 @@
 * text=auto eol=lf
 *.zip binary
+
+# Unified-diff context lines require a space even when the context line is blank.
+# Preserve reviewed patch bytes; applied/generated source has its own format gates.
+adapters/generators/gobley/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
+adapters/generators/uniffi/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
+# Frozen author bytes must match Git objects, including the upstream Windows wrapper.
+sdk/kotlin/skie/gradlew.bat -text !eol whitespace=cr-at-eol

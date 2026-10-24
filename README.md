@@ -93,6 +93,21 @@ python3 scripts/check.py --first-route \
 
 Lab 只使用公开头、库、包装和身份记录，在新工程与空开发缓存中编译两个直接消费者；不需要 MadB 源码或生成器。缺工具、目标不符、provisional 候选和必需用例失败均不能算通过。
 
+## Kotlin / Swift / Rust 四路线候选
+
+C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-kotlin` 四配置的公开安装与构建入口。**整包验收仍在进行**，状态以[任务目录](docs/catalog/implementation-plan.json)和[C06 记录](docs/reviews/2026-10-24-c06-kotlin-swift-rust.md)为准。
+
+按照[完整复现指南](docs/examples/managed-routes/README.md)，从固定作者检出依次安装受管编译器/绑定后端、准备离线依赖、构建四个候选，再在独立 MadB-Lab 执行 `scripts/check.py --c06`。指南包含实际命令、候选文件布局、受检 `openEngine` / Swift 门面以及取消和显式关闭责任。
+
+| 环节 | 公开入口 |
+|---|---|
+| 编译器与锁定 Maven 依赖 | `scripts/install_managed_tools.py` |
+| UniFFI / Gobley 源码、补丁与工具 | `scripts/install_managed_backends.py` |
+| Rust 离线依赖闭包 | `scripts/prepare_managed_dependencies.py` |
+| 冻结读取、生成、构建与候选打包 | `scripts/build_managed_routes.py` |
+
+当前范围为锁定工具链的 macOS Arm64 Release；deployment target 14.0 不代表已在 macOS 14 实跑，桌面 JVM 也不代表 Android。消费方从独立、已验证的候选 `identity.json` 取得 `expectedProfile`，不能用已加载库自报的 profile 代替预期身份。
+
 ## 依赖与缓存边界
 
 显式缺失路径、目录成员和内容观察用于发现变化；它们本身不证明完整依赖。受限 freestanding Clang 配置进一步执行真实传递依赖发现，固定源和搜索范围，记录工具、参数、宏、环境及目录/缺失条件，再形成可缓存身份。无法证明完整性的配置返回准备要求或禁用缓存；普通脚本生成器不能借一份 Clang 清单继承缓存资格。

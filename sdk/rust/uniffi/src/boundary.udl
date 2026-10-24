@@ -1,0 +1,70 @@
+namespace madb_boundary {
+    string profile_identity();
+};
+
+enum Phase { "Ready", "Working", "Done" };
+dictionary Value {
+    string id;
+    i64? sequence;
+    string text;
+    sequence<u8> bytes;
+    Phase phase;
+};
+[Error]
+enum BoundaryError {
+    "InvalidArgument", "Closing", "Closed", "Cancelled", "ResourceExhausted",
+    "ProfileMismatch", "CallbackFailure", "WouldDeadlock", "AlreadyConsumed"
+};
+dictionary Statistics {
+    u64 queued_items;
+    u64 retained_bytes;
+    u64 callbacks_in_flight;
+    u64 active_operations;
+    u64 active_subscriptions;
+    u64 payloads_admitted;
+    u64 payloads_released;
+    u64 operations_created;
+    u64 operations_released;
+    u64 subscriptions_created;
+    u64 subscriptions_released;
+    u64 worker_exits;
+};
+callback interface Host {
+    [Throws=BoundaryError]
+    Value transform(Value value);
+};
+callback interface Sink {
+    [Throws=BoundaryError]
+    void on_value(Value value);
+};
+interface Engine {
+    [Throws=BoundaryError]
+    constructor(string expected_profile);
+    [Throws=BoundaryError]
+    Value roundtrip(Value value);
+    [Throws=BoundaryError]
+    Operation start_operation(Value value, Host host);
+    [Throws=BoundaryError]
+    Subscription observe_state(Sink sink);
+    [Throws=BoundaryError]
+    Subscription observe_events(Sink sink);
+    [Throws=BoundaryError]
+    void publish_state(Value value);
+    [Throws=BoundaryError]
+    void try_publish_event(Value value);
+    Statistics statistics();
+    void request_close();
+    [Async, Throws=BoundaryError]
+    void await_closed();
+};
+interface Operation {
+    void request_cancel();
+    boolean is_cancel_requested();
+    [Async, Throws=BoundaryError]
+    Value result();
+};
+interface Subscription {
+    void request_stop();
+    [Async, Throws=BoundaryError]
+    void await_stopped();
+};

@@ -1,0 +1,188 @@
+--- a/crates/gobley-uniffi-bindgen/src/templates/ffi/Async.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/ffi/Async.kt
+@@ -14,8 +14,10 @@
+     liftFunc: (F) -> T,
+     errorHandler: UniffiRustCallStatusErrorHandler<E>
+ ): T {
+-    return withContext(Dispatchers.IO) {
+-        try {
++    // The future is created before this suspend function is called. Its owner
++    // must cover cancellation before the IO dispatcher starts the body.
++    try {
++        return withContext(Dispatchers.IO) {
+             do {
+                 val pollResult = suspendCancellableCoroutine<Byte> { continuation ->
+                     val handle = uniffiContinuationHandleMap.insert(continuation)
+@@ -33,36 +35,53 @@
+             return@withContext liftFunc(
+                 uniffiRustCallWithError(errorHandler) { status -> completeFunc(rustFuture, status) }
+             )
+-        } finally {
+-            freeFunc(rustFuture)
+         }
++    } finally {
++        freeFunc(rustFuture)
+     }
+ }
+ 
+ {%- if ci.has_async_callback_interface_definition() %}
++// MadB: a Rust-owned future owns one lazy coroutine; registration precedes start.
++// Conversion runs before completion handoff. A notification failure never retries
++// a terminal callback and never releases values already handed to the receiver.
++internal val uniffiForeignFutureNotificationFailures = kotlinx.atomicfu.atomic(0L)
++
++internal inline fun uniffiNotifyForeignFuture(crossinline notify: () -> Unit) {
++    try {
++        notify()
++    } catch (failure: kotlin.Exception) {
++        uniffiForeignFutureNotificationFailures.incrementAndGet()
++    }
++}
++
+ internal inline fun<T> uniffiTraitInterfaceCallAsync(
+     crossinline makeCall: suspend () -> T,
+     crossinline handleSuccess: (T) -> Unit,
+     crossinline handleError: (UniffiRustCallStatusByValue) -> Unit,
+ ): UniffiForeignFutureUniffiByValue {
+-    // Using `GlobalScope` is labeled as a "delicate API" and generally discouraged in Kotlin programs, since it breaks structured concurrency.
+-    // However, our parent task is a Rust future, so we're going to need to break structure concurrency in any case.
+-    //
+-    // Uniffi does its best to support structured concurrency across the FFI.
+-    // If the Rust future is dropped, `uniffiForeignFutureFreeImpl` is called, which will cancel the Kotlin coroutine if it's still running.
+-    @OptIn(DelicateCoroutinesApi::class)
+-    val job = GlobalScope.launch {
++    val owner = kotlinx.coroutines.SupervisorJob()
++    val job = kotlinx.coroutines.CoroutineScope(Dispatchers.Default + owner).launch(
++        start = kotlinx.coroutines.CoroutineStart.LAZY
++    ) {
+         try {
+-            handleSuccess(makeCall())
+-        } catch(e: kotlin.Exception) {
+-            val status = UniffiRustCallStatusByValue(
+-                UNIFFI_CALL_UNEXPECTED_ERROR,
+-                {{ Type::String.borrow()|lower_fn }}(e.toString()),
+-            )
+-            handleError(status)
++            val result = try {
++                makeCall()
++            } catch (failure: kotlin.Exception) {
++                val status = UniffiRustCallStatusByValue(
++                    UNIFFI_CALL_UNEXPECTED_ERROR,
++                    {{ Type::String.borrow()|lower_fn }}(failure.toString()),
++                )
++                uniffiNotifyForeignFuture { handleError(status) }
++                return@launch
++            }
++            uniffiNotifyForeignFuture { handleSuccess(result) }
++        } finally {
++            owner.complete()
+         }
+     }
+     val handle = uniffiForeignFutureHandleMap.insert(job)
++    job.start()
+     return UniffiForeignFutureUniffiByValue(handle, uniffiForeignFutureFreeImpl)
+ }
+ 
+@@ -72,31 +91,34 @@
+     crossinline handleError: (UniffiRustCallStatusByValue) -> Unit,
+     crossinline lowerError: (E) -> RustBufferByValue,
+ ): UniffiForeignFutureUniffiByValue {
+-    // See uniffiTraitInterfaceCallAsync for details on `DelicateCoroutinesApi`
+-    @OptIn(DelicateCoroutinesApi::class)
+-    val job = GlobalScope.launch {
++    val owner = kotlinx.coroutines.SupervisorJob()
++    val job = kotlinx.coroutines.CoroutineScope(Dispatchers.Default + owner).launch(
++        start = kotlinx.coroutines.CoroutineStart.LAZY
++    ) {
+         try {
+-            handleSuccess(makeCall())
+-        } catch(e: kotlin.Exception) {
+-            if (e is E) {
+-                val status = UniffiRustCallStatusByValue(
+-                    UNIFFI_CALL_ERROR,
+-                    lowerError(e),
+-                )
+-                handleError(status)
+-            } else {
+-                val status = UniffiRustCallStatusByValue(
+-                    UNIFFI_CALL_UNEXPECTED_ERROR,
+-                    {{ Type::String.borrow()|lower_fn }}(e.toString()),
+-                )
+-                handleError(status)
++            val result = try {
++                makeCall()
++            } catch (failure: kotlin.Exception) {
++                val status = if (failure is E) {
++                    UniffiRustCallStatusByValue(UNIFFI_CALL_ERROR, lowerError(failure))
++                } else {
++                    UniffiRustCallStatusByValue(
++                        UNIFFI_CALL_UNEXPECTED_ERROR,
++                        {{ Type::String.borrow()|lower_fn }}(failure.toString()),
++                    )
++                }
++                uniffiNotifyForeignFuture { handleError(status) }
++                return@launch
+             }
++            uniffiNotifyForeignFuture { handleSuccess(result) }
++        } finally {
++            owner.complete()
+         }
+     }
+     val handle = uniffiForeignFutureHandleMap.insert(job)
++    job.start()
+     return UniffiForeignFutureUniffiByValue(handle, uniffiForeignFutureFreeImpl)
+ }
+ 
+ internal val uniffiForeignFutureHandleMap = UniffiHandleMap<Job>()
+-
+ {%- endif %}
+--- a/crates/gobley-uniffi-bindgen/src/templates/native/CallbackInterfaceImpl.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/native/CallbackInterfaceImpl.kt
+@@ -50,8 +50,9 @@
+         {%- endmatch %}
+ 
+         {%- else %}
+-        val uniffiHandleSuccess = { {% if meth.return_type().is_some() %}returnValue{% else %}_{% endif %}: {% match meth.return_type() %}{%- when Some(return_type) %}{{ return_type|type_name(ci) }}{%- when None %}Unit{% endmatch %} ->
+-            val uniffiResult = cValue<{{ ci.namespace() }}.cinterop.{{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}> {
++        val uniffiMakeCall: suspend () -> CValue<{{ ci.namespace() }}.cinterop.{{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}> = {
++            val returnValue = makeCall()
++            cValue<{{ ci.namespace() }}.cinterop.{{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}> {
+                 {%- if let Some(return_type) = meth.return_type() %}
+                 {%- match return_type.into() %}
+                 {%- when FfiType::RustBuffer(_) %}
+@@ -64,6 +65,8 @@
+                 {%- endif %}
+                 UniffiRustCallStatusHelper.allocValue().write(this.callStatus.rawPtr)
+             }
++        }
++        val uniffiHandleSuccess = { uniffiResult: CValue<{{ ci.namespace() }}.cinterop.{{ meth.foreign_future_ffi_result_struct().name()|ffi_struct_name }}> ->
+             uniffiFutureCallback.invoke(uniffiCallbackData, uniffiResult)
+         }
+         val uniffiHandleError = { callStatus: UniffiRustCallStatusByValue ->
+@@ -87,13 +90,13 @@
+             {%- match meth.throws_type() %}
+             {%- when None %}
+             uniffiTraitInterfaceCallAsync(
+-                makeCall,
++                uniffiMakeCall,
+                 uniffiHandleSuccess,
+                 uniffiHandleError
+             )
+             {%- when Some(error_type) %}
+             uniffiTraitInterfaceCallAsyncWithError(
+-                makeCall,
++                uniffiMakeCall,
+                 uniffiHandleSuccess,
+                 uniffiHandleError,
+             ) { e: {{error_type|type_name(ci) }} -> {{ error_type|lower_fn }}(e) }
+--- a/crates/gobley-uniffi-bindgen/src/templates/native/HandleMap.kt
++++ b/crates/gobley-uniffi-bindgen/src/templates/native/HandleMap.kt
+@@ -7,7 +7,7 @@
+     private val counter: kotlinx.atomicfu.AtomicLong = kotlinx.atomicfu.atomic(1L)
+ 
+     internal val size: Int
+-        get() = map.size
++        get() = syncAccess { map.size }
+ 
+     // Insert a new object into the handle map and get a handle for it
+     internal fun insert(obj: T): Long {

@@ -348,9 +348,11 @@
       "depends_on": [
         "C05"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-24-c06-kotlin-swift-rust.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [

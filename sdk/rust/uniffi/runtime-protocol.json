@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0.0",
+  "protocol_id": "madb-c06-bounded-v1",
+  "production_boundary": "src/boundary.udl",
+  "semantic_sources": [
+    "../boundary-core/src/model.rs",
+    "../boundary-core/src/engine.rs",
+    "../boundary-core/src/future.rs"
+  ],
+  "payload_bytes": "UTF8(id).length + UTF8(text).length + bytes.length",
+  "budgets": {
+    "max_payload_bytes": 1024,
+    "max_retained_payload_bytes": 4096,
+    "max_pending_events": 8,
+    "state_pending_capacity_per_subscription": 1,
+    "max_subscription_handles": 8,
+    "max_operation_handles": 8,
+    "max_registered_waiters": 32,
+    "owned_worker_threads_per_engine": 1,
+    "max_subscription_and_cleanup_slots": 8
+  },
+  "budget_scope": "SDK-admitted queued, executing and unconsumed-result variable payloads; fixed record storage is bounded by item/handle counts. Caller memory and transient backend encoding buffers are separate.",
+  "state_overflow": "coalesce-latest and release replaced payload; aggregate byte overflow rejects before admission",
+  "event_overflow": "ResourceExhausted before ownership transfer; no silent drops",
+  "operation_result": "single consumer; AlreadyConsumed on a second successful retrieval attempt",
+  "cancellation": {
+    "wait": "drop only this wait registration; operation remains engine-owned",
+    "work": "requestCancel skips queued invocation or discards an executing callback's late result; it does not interrupt foreign synchronous code or roll back effects",
+    "observation": "requestStop gates new callback entry; awaitStopped waits queued tickets, executing callback and foreign reference cleanup",
+    "ready_result_patch": "native-ready-result-0.32.2"
+  },
+  "ownership": {
+    "objects": "UniFFI backend references; no duplicate public handle registry",
+    "queued_callback": "source lease exists before enqueue and persists through cleanup",
+    "consumer_reference_release": "on the owned worker outside the protocol mutex, bounded cleanup ticket retains its subscription slot until final destructor return; included in stopped/closed condition",
+    "waiter_waker": "clone, wake and final drop outside protocol mutex",
+    "wrapper_drop": "Engine requests close; Operation requests cancel; Subscription requests stop; no blocking join"
+  },
+  "execution": {
+    "sync_methods": "caller thread for validation and admission",
+    "production_host_and_sink": "the engine-owned worker, never under protocol mutex",
+    "self_drain": "WouldDeadlock only when this engine worker directly polls its own wait; this is not cross-executor wait-cycle detection",
+    "closure": "stop admission, cancel operations, stop subscriptions, drain queued/inflight work and cleanup, then exit worker",
+    "synchronous_callback_rule": "Host/Sink may requestClose/requestStop and must return before an independent owner awaits closed/stopped/result; blocking waits on work that depends on the current callback are forbidden, including runBlocking or semaphore waits across an executor; the same restriction applies to foreign destructors"
+  },
+  "initialization": {
+    "abi": "version-matched UniFFI contract/version and per-symbol checksums",
+    "swift_entry": "openEngine(expectedProfile) -> madbCheckAbi() -> Engine constructor",
+    "profile": "MADB_PROFILE_DIGEST compiled identity compared before engine allocation",
+    "native_install_name": "@rpath/libmadb_boundary_uniffi.dylib",
+    "jvm_entry": "openEngine(expectedProfile) -> uniffiEnsureInitialized() -> Engine constructor; raw UniFFI 0.32.2 constructor bypasses the upstream checksum initializer"
+  },
+  "test_support": {
+    "production_exported": false,
+    "async_foreign_owner": "invoking consumer task plus explicit backend trampoline/cleanup acknowledgment",
+    "engine_close_covers_async_foreign_fixture": false,
+    "late_result_runtime_patch": "owned-foreign-result-0.32.2",
+    "swift_wait_patch": "swift-cancellation-0.32.2",
+    "swift_checked_abi_patch": "swift-checked-initialization-0.32.2",
+    "supported_lifts": "generated thread-independent record/error/object lifting and lowering; no arbitrary custom converters",
+    "swift_async_foreign_patch": "swift-foreign-sendable-0.32.2",
+    "swift_async_foreign_minimum_compiler": "Swift 6"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "source_url": "https://static.crates.io/crates/uniffi_core/uniffi_core-0.32.2.crate",
+  "source_sha256": "f7530ae8efeaaa488622865966763fe0294832779fff80508c36d69c6a874a6a",
+  "patch_sha256": "170ff03c669e5d8393c0ebf6846219d43668c125a02a31a0ab6f2aeec70cb3d0",
+  "patched_source_sha256": "a27f92836f222de43c691e71f1ded628ee88cec50f82a99e960f760199fef1b4",
+  "scope": "generated thread-independent lifts only; no custom converter callback execution or changed ABI"
+}
