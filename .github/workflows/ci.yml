@@ -27,6 +27,7 @@ jobs:
       - name: Install the project Rust toolchain
         run: rustup show active-toolchain
       - name: Install hash-locked documentation dependencies
-        run: python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
+        run: |
+          python -m pip install --require-hashes --only-binary=:all: -r requirements-dev.lock
       - name: Run repository checks
         run: python scripts/check.py
