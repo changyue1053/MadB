@@ -111,6 +111,18 @@ def inspect_boundaries(root: Path) -> list[str]:
     return sorted(set(errors))
 
 
+
+def check_template_format(package_root: Path) -> None:
+    """Format authored bytes without resolving modules generated only in candidates."""
+    edition = tomllib.loads((package_root / "Cargo.toml").read_text())["package"]["edition"]
+    for source in sorted((package_root / "src").rglob("*.rs")):
+        original = source.read_bytes()
+        command = ["rustfmt", "--edition", edition, "--emit", "stdout"]
+        result = subprocess.run(command, input=original, stdout=subprocess.PIPE, check=True)
+        if result.stdout != original:
+            raise RuntimeError("Rust SDK template is not formatted: " + str(source))
+
+
 def check(root: Path, boundaries_only: bool = False) -> None:
     errors = inspect_boundaries(root)
     if errors:
@@ -123,8 +135,11 @@ def check(root: Path, boundaries_only: bool = False) -> None:
     environment["MADB_PROFILE_DIGEST"] = UNIT_PROFILE_DIGEST
     print("C05 SDK unit builds use explicit synthetic identities; they do not certify a generated candidate.", flush=True)
     manifest = root / "sdk/rust/engine/Cargo.toml"
+    # c-client's identity/raw modules are created by C05 generation. Formatting
+    # stdin checks its authored template without inventing placeholder modules.
+    check_template_format(root / "sdk/rust/c-client")
     commands = [["cargo", "fmt", "--manifest-path", str(root / directory / "Cargo.toml"), "--", "--check"]
-                for directory in SDK_PACKAGES]
+                for directory in SDK_PACKAGES if directory != "sdk/rust/c-client"]
     for features in ([], ["--features", "test-support"]):
         commands.extend([
             ["cargo", "clippy", "--manifest-path", str(manifest), "--all-targets", *features,
