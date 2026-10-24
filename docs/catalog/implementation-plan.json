@@ -241,7 +241,8 @@
       "status": "in_progress",
       "verification": "running",
       "evidence": [
-        "reviews/2026-10-24-c04-readonly-queries.md"
+        "reviews/2026-10-24-c04-readonly-queries.md",
+        "https://github.com/changyue1053/MadB/pull/4"
       ],
       "planned_start": null,
       "planned_finish": null,

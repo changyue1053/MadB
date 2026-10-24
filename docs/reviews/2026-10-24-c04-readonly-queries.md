@@ -20,6 +20,6 @@ CLI 接入 contracts 后，旧“adapter 导入 CLI”负例形成真实 Cargo �
 
 复现命令与场景见[验证入口](../../tests/integration/c04/README.md)。本地 `.venv/bin/python scripts/check.py` 全部通过：47 个 Rust 测试、13 组真实 CLI 查询、9 个架构正反例，加上既有 5 个格式/ABI、6 个 C03 进程和 21 个文档测试，共 101 个测试函数；另有共同格式/摘要向量、隔离 Release 安装、13 个生成 HTML 的一致性与 DOM 替身检查。P02 原生探针未因本次纯宿主改动重跑，不新增原生证据。
 
-独立审查最终复核未发现剩余阻塞问题，并用 CLI 单独验证三项修复。`git diff --check` 通过。远程 CI 以交付 PR 的当前 head checks 为准，本地结果不替代远程结果。
+独立审查最终复核未发现剩余阻塞问题，并用 CLI 单独验证三项修复。`git diff --check` 通过。交付见 [PR #4](https://github.com/changyue1053/MadB/pull/4)，远程 CI 以该 PR 的当前 head checks 为准，本地结果不替代远程结果。
 
 没有修改 MadB-Lab、原生运行时或旧验收记录。Unix 读取实现不证明 Windows 可用；二次读取是冲突探测，不是操作系统原子快照；文本查询结果不是新增公共 JSON 协议。HTML 仅从 catalog 重新生成，不声称新增浏览器视觉验收。

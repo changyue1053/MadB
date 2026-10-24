@@ -30,7 +30,7 @@ class Queries(unittest.TestCase):
     def tree(self):
         return {str(p.relative_to(self.root)): (p.lstat().st_mode, p.lstat().st_mtime_ns,
                 os.readlink(p) if p.is_symlink() else raw(p.read_bytes()) if p.is_file() else None)
-                for p in self.root.rglob('*')}
+                for p in [self.root, *self.root.rglob('*')]}
 
     def run_query(self, operation='check', extra=(), expected=0, marker=None, snapshot='contract.json'):
         before = self.tree()
