@@ -2,7 +2,7 @@
 
 设计基线 0.9 · 更新于 2026-10-24。MadB 为 Kotlin、Swift、ArkTS、Rust、C/C++ 提供跨端 SDK 的契约检查、代码生成、工程接入及制品验证；MadB-Lab 独立验证公开候选和开发者使用流程。
 
-C01 工程基线已验收：两仓库已公开，本地与独立 CI、main 合入保护及失败阻断验证通过；两份 C01 PR 已合入 main；C02 契约与格式实现已通过本地及远端 CI，交付于独立 PR #2，合入状态见 GitHub。C03 首链工具与真实双向探针已通过本地验收及远端 CI，交付于基于 C02 的 PR #3，记录见 [C03 记录](reviews/2026-10-24-c03-native-probes.md)。当前没有正式发布包或已认证组合。范围保留九组语言边界、十六条主线、四十一工作包；旧 mad、MadDemo 和 mad-boundary 仅提供研究案例，不设迁移任务。计划、实现和认证分别管理。
+C01 工程基线已验收：两仓库已公开，本地与独立 CI、main 合入保护及失败阻断验证通过；两份 C01 PR 已合入 main；C02 契约与格式实现已通过本地及远端 CI，交付于独立 PR #2，合入状态见 GitHub。C03 首链工具与真实双向探针已通过本地验收及远端 CI，交付于基于 C02 的 PR #3，记录见 [C03 记录](reviews/2026-10-24-c03-native-probes.md)。C04 已分步交付只读查询与受控进程底层，整体仍在进行中，见 [C04 记录](reviews/2026-10-24-c04-process-execution.md)。当前没有正式发布包或已认证组合。范围保留九组语言边界、十六条主线、四十一工作包；旧 mad、MadDemo 和 mad-boundary 仅提供研究案例，不设迁移任务。计划、实现和认证分别管理。
 
 ## 阅读入口
 
@@ -16,7 +16,7 @@ C01 工程基线已验收：两仓库已公开，本地与独立 CI、main 合�
 | 确认开工前要交付什么 | [设计准入与首链资产](delivery/04-design-readiness-and-first-route.md) · [十二项实施决定](adr/0009-implementation-contracts-and-gates.md) |
 | 查询后端与版本 | [后端配置](architecture/06-backend-profiles.md) · [技术栈、候选及冻结范围](architecture/16-technology-stack-and-versions.md) |
 | 使用 SDK 或创建工程 | [开发者体验](product/03-developer-experience.md) · [一键初始化](product/04-project-initialization.md) |
-| 查看本次变化 | [C03 首链探针](reviews/2026-10-24-c03-native-probes.md) · [C02 契约与格式验收](reviews/2026-10-24-c02-contract-formats.md) · [C01 公开与合入保护验收](reviews/2026-10-24-c01-public-repositories.md) · [历史归档](reviews/README.md) |
+| 查看本次变化 | [C04 受控进程](reviews/2026-10-24-c04-process-execution.md) · [C03 首链探针](reviews/2026-10-24-c03-native-probes.md) · [C02 契约与格式验收](reviews/2026-10-24-c02-contract-formats.md) · [C01 公开与合入保护验收](reviews/2026-10-24-c01-public-repositories.md) · [历史归档](reviews/README.md) |
 
 鸿蒙 Kotlin 主线为 CPF-KMP-CMP + akinterop，CMP 只在共享 UI 配置启用；KNOI 独立扩展。Swift 主线采用 Objective-C export + SKIE，NativeCoroutines 组合按 X01 验收。候选版本、上游修复与具体支持范围以技术栈规范和实际 profile 证据为准。
 

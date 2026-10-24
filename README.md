@@ -1,6 +1,6 @@
 # MadB
 
-跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询和静态任务规划，尚无已认证的跨语言路线。
+跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询、静态任务规划和受控进程底层，尚无已认证的跨语言路线。
 
 ## 开发环境
 
@@ -37,9 +37,15 @@ cargo run --locked -p madb-cli -- plan --root /path/to/workspace --project madb.
 
 成功只表示记录的契约校验及**已声明输入字节匹配**，输出 `TrackedInputsMatch`；尚不证明编译器依赖闭包完整、工具已安装或 SDK 可用。缺失/过期快照给出 `MetadataRequired`，没有隐式编译或缓存修复。完整 metadata 执行、`generate --check`、三层输出事务和缓存仍属于 C04 后续工作。复现与限制见[只读查询验证](tests/integration/c04/README.md)。
 
+## 受控进程验证
+
+`.venv/bin/python -m unittest discover -s tests/integration/c04_process` 调用真实 app/host 端口，验证取消准入、参数/环境、背压、超时、组终止与清理缺口。详见[复现说明](tests/integration/c04_process/README.md)。零退出只允许进入后续结果验证，不代表候选已提交或 SDK 已认证。
+
+当前执行宿主支持 Linux/macOS；macOS 构建还需要 Xcode Command Line Tools 和可用的 libclang，供锁定的 libproc 构建脚本生成系统声明。调用方保持工具/工作目录稳定并独占子进程回收；进程超时不覆盖启动前后文件 IO 和 OS 启动本身。它不执行网络隔离或完整进程树沙箱。
+
 ## 工程与依据
 
-六个核心 crate 保持既定依赖方向。C02 在 model/rules/protocol 实现身份、策略、格式和证据检查，外层 `adapters/contracts` 显式转换并检查跨文档一致性。C04 的 app/plan 已提供只读用例和任务 DAG，host 负责有界读取，CLI bootstrap 装配适配器；进程执行、事务和缓存仍待完成。
+六个核心 crate 保持既定依赖方向。C02 在 model/rules/protocol 实现身份、策略、格式和证据检查，外层 `adapters/contracts` 显式转换并检查跨文档一致性。C04 的 app/plan 已提供只读用例和任务 DAG，host 负责有界读取与受控进程，CLI bootstrap 装配查询适配器。进程底层通过内部 app 端口调用，尚未开放 build/generate；任务流水线、事务和缓存仍待完成。
 
 格式入口见[契约格式 v1](docs/schemas/README.md)和[首链声明设计](docs/examples/first-route/README.md)。共同格式向量由 Rust/Python 验证，摘要向量由 Rust/Python/Node 验证；这些检查不运行原生 SDK。
 

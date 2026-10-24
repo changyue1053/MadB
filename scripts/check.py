@@ -1,4 +1,4 @@
-"""Run repository checks through the C04 read-only slice; failures never become skipped passes."""
+"""Run repository checks through the C04 query/process slices; failures never become skipped passes."""
 from pathlib import Path
 import importlib.metadata
 import os
@@ -50,6 +50,7 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c03"],
         [sys.executable, "tests/integration/c03/cli_install.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c04_process"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
         [sys.executable, "docs/tools/check_docs.py", "--node", node],
@@ -59,7 +60,7 @@ def main():
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=ROOT, check=True)
-    print("Repository checks passed through the C04 read-only slice (P02 uses its locked Apple host separately). SDK certification remains separate.")
+    print("Repository checks passed through the C04 query/process slices (P02 uses its locked Apple host separately). SDK certification remains separate.")
 
 
 if __name__ == "__main__":

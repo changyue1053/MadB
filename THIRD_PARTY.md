@@ -5,7 +5,10 @@ The host and repository checks use the following direct dependencies; the origin
 | Component | Version | Declared license |
 |---|---|---|
 | anstyle | 1.0.14 | MIT OR Apache-2.0 |
-| rustix (Unix host reads) | 1.0.8 | Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT |
+| rustix (Unix host reads/process supervision) | 1.0.8 | Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT |
+| subprocess (Unix execve launcher) | 1.2.1 | Apache-2.0 OR MIT |
+| libproc (macOS group observation) | 0.14.11 | MIT |
+| errno (macOS query error state) | 0.3.14 | MIT OR Apache-2.0 |
 | clap | 4.6.7 | MIT OR Apache-2.0 |
 | clap_builder | 4.6.7 | MIT OR Apache-2.0 |
 | clap_lex | 1.1.1 | MIT OR Apache-2.0 |
@@ -34,3 +37,5 @@ C02 resolved 99 registry packages, including target-specific dependencies; their
 C03 invokes bindgen-cli 0.73.2 (BSD-3-Clause) and cbindgen 0.29.4 (MPL-2.0) as external development tools. Their source archive and dependency-lock hashes are in `tests/integration/c03/toolchain.json`; the verified installer fetches them from crates.io. Tool binaries, Apple SDKs and Rust standard-library archives are not committed or redistributed. Generated test declarations derive from project-authored inputs; a future compiled SDK/tool distribution still requires the C10 license/notice review.
 
 C04 uses the safe `rustix` filesystem APIs without relaxing the workspace unsafe-code prohibition. The 14 added resolved packages, including target-specific dependencies, are listed in [the C04 dependency inventory](docs/reviews/c04-dependency-licenses.json). No dependency source or binary is vendored by this change; release notice collection remains C10.
+
+The C04 process slice adds a pinned safe execve launcher and macOS group inspection. Its 16 additional resolved packages, including libproc's bindgen 0.72.1 build dependency and target-only packages, are recorded in [the process dependency inventory](docs/reviews/c04-process-dependency-licenses.json). This bindgen version generates host system declarations; it does not change the C03 route generator pin. Linux does not build the macOS-only libproc dependency. No dependency sources/binaries are vendored; C10 remains responsible for redistributed notices.

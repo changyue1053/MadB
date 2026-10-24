@@ -104,7 +104,9 @@ MadB/
 
 C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：只做 schema 文档到领域值的显式转换、语义投影与校验编排，向内依赖 model、rules 和 protocol。它不读取编译器源码、不执行后端，不向核心反向暴露 DTO；实际来源读取与生成仍归 C05。这一编译边界让格式检查、领域规则和转换各有单一维护位置，架构门禁同时拒绝核心导入该包及该包导入 CLI。
 
-C04 的只读查询子范围增加 `adapters/host` 下的 `madb-host`，只依赖 app 的读取端口，当前实现 Unix 目录描述符相对、有界、拒绝链接的文件读取。`madb-contracts` 增加对 app 端口的实现；CLI 的 `bootstrap.rs` 显式装配 contracts 和 host。app 不导入适配器或 wire 类型，plan 只依赖 model。该子范围不包含进程执行、输出提交或缓存，其他宿主能力继续按 C04 落地，不能由包名推导已实现。
+C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程端口；提供目录描述符相对、有界、拒绝链接的文件读取，以及 Linux/macOS 的受控子进程。`madb-contracts` 实现 app 的格式端口；CLI `bootstrap.rs` 目前装配只读查询。app 不导入适配器或 wire 类型，plan 只依赖 model。进程底层尚未接成 build/generate 流水线；输出事务、完整输入追踪和缓存仍需按 C04 完成。
+
+`app/process` 负责一次性执行准入、取消与结果接收的原子先后；`host/process` 负责启动、管道、信号和回收。`ProcessRunner` 返回观察与未回收资源的 owner，`PendingProcess` 允许继续非阻塞回收。app 不把进程零退出当成契约验证、E02 终态或输出提交；状态与预算见[受控进程规范](07-code-generation.md)。
 
 物理包的 Cargo manifest 或原生构建文件是实际成员与依赖的依据。C01 建立首期可编译的最小 workspace 和包职责说明；后续包随对应工作包加入，不批量创建成功返回的空适配器或无用途的占位包。内部类名与纯函数布局可调整，职责移动或依赖越界必须同步规范与检查。
 
