@@ -1,4 +1,5 @@
 //! Host-owned bounded filesystem reads and approved process execution.
+pub mod inputs;
 pub mod process;
 use madb_app::{ErrorKind, LogicalPath, QueryError, Result, ports::ReadWorkspace};
 use std::path::Path;
