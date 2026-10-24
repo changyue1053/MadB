@@ -17,6 +17,8 @@ C01 uses the following locked development dependencies. Cargo packages are resol
 
 The pinned GitHub Actions are maintained in .github/workflows/ci.yml; their upstream licenses apply. No upstream generator implementation, embedded template fragment or generated SDK has been copied into C01 product code.
 
-Historical research and cited excerpts in docs/references retain their source attribution. The original ZIP snapshot is an internal traceability artifact, not a rights clearance or an independently licensed third-party source bundle. Repository visibility is private during preparation. Before changing visibility or publishing artifacts, the project owner must review redistribution rights for archived material and any new embedded fragments; unreviewed content must remain excluded from public distribution.
+The project owner authorized public visibility on 2026-10-24. The C01 publication scope covers the project baseline and authored design/research material. Historical research and cited excerpts in docs/references retain their source attribution and any applicable third-party rights. The original ZIP contains 20 Markdown/JSON records for traceability; it is not a separately licensed upstream source distribution. No third-party native library or generator implementation is embedded in it. Publication checks are recorded in [the C01 review](docs/reviews/2026-10-24-c01-public-repositories.md).
+
+Future imported code, template fragments and release assets require their own source and license review before redistribution. Public visibility and the project LICENSE do not grant rights to third-party material.
 
 Package coordinates are not reserved by publish=false. The initial distribution channel is the owned GitHub repositories; future crate/Maven/Swift/HAR coordinates must be verified when those channels are enabled.
