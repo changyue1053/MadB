@@ -40,6 +40,9 @@
 ├── Cargo.toml                         # 工具宿主 workspace 与成员
 ├── Cargo.lock                         # 宿主依赖；不代替各目标的工具锁
 ├── rust-toolchain.toml
+├── .python-version / .node-version  # 仓库检查环境
+├── requirements-dev.lock             # 文档校验依赖及摘要
+├── scripts/check.py                  # C01 本地与 CI 共用检查入口
 ├── README.md
 ├── AGENTS.md                         # 任务、规范和检查的简短入口；C01 落地
 ├── LICENSE
@@ -117,6 +120,8 @@
 <details class="panel skeleton-panel" open><summary>MadB-Lab · 独立消费与验收</summary><p>通过公开候选运行真实消费者，预期独立维护；工具源码和本机缓存不成为验收依赖。<a href="../validation/02-lab-architecture.md">Lab 职责与隔离规范 →</a></p><pre tabindex="0" aria-label="MadB Lab 目标目录，可滚动"><code>MadB-Lab/
 ├── README.md
 ├── AGENTS.md                         # 独立验证规范和检查入口；C01 落地
+├── .python-version                 # 首期仓库检查使用 Python 标准库
+├── scripts/check.py                  # 独立仓库检查入口
 ├── tool.lock                         # 固定工具、候选、后端和目标身份
 ├── cases/
 │   ├── types/                        # 类型、空值、数值与快照

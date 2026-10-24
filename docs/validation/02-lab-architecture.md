@@ -13,6 +13,8 @@ C01 使用独立 madb_lab Git 根建立可运行的仓库检查。首期不伪�
 MadB-Lab/
 ├── README.md
 ├── AGENTS.md                         # 独立验证规范和检查入口；C01 落地
+├── .python-version                 # 首期仓库检查使用 Python 标准库
+├── scripts/check.py                  # 独立仓库检查入口
 ├── tool.lock                         # 固定工具、候选、后端和目标身份
 ├── cases/
 │   ├── types/                        # 类型、空值、数值与快照

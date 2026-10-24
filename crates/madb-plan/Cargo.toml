@@ -1,0 +1,12 @@
+[package]
+name = "madb-plan"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+description = "Pure task and project planning. C04 supplies behavior; no task execution."
+
+[lints]
+workspace = true

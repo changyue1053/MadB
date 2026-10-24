@@ -1,0 +1,12 @@
+[package]
+name = "madb-protocol"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+repository.workspace = true
+description = "Schema-governed wire formats. C02 defines codecs; no domain-rule execution."
+
+[lints]
+workspace = true
