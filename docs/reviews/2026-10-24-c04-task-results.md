@@ -34,6 +34,6 @@
 | 文档与视图 | 94 Markdown、52 JSON、13 HTML 静态检查通过；由 catalog 生成视图，没有执行浏览器布局验证 |
 | 真实正反例 | 独立配方实际读固定输入并产生输出/日志；错身份、坏 payload、缺失/额外/坏摘要/链接/FIFO/预算、验证内取消、输入改动/work 替换、捕获后磁盘改写均通过 |
 
-本地环境为项目锁定 Rust/Python/Node、macOS Arm64。Python 独立生成控制测试输入和预期；保留合成 profile 的目标身份，不声称执行了该目标的原生 SDK。失败、非零退出或未运行不能作为成功证据。Linux 远端最终 head 检查在 PR 发布后独立核实。
+本地环境为项目锁定 Rust/Python/Node、macOS Arm64。Python 独立生成控制测试输入和预期；保留合成 profile 的目标身份，不声称执行了该目标的原生 SDK。失败、非零退出或未运行不能作为成功证据。交付于 [PR #7](https://github.com/changyue1053/MadB/pull/7)，基于 PR #6；实现提交 1d96319。Linux 结果以该 PR 最终 head 的 PR/分支两次 CI 为准，本地结果不能替代远端证据。
 
 MadB-Lab 未修改，未新增 SDK 或设备认证。C04 仍为 in_progress/running；后续先接 DAG、依赖满足及结果传递，再完成三层事务、批次来源/索引/CAS、完整依赖闭包/缓存和 generate --check。
