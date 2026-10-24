@@ -8,18 +8,18 @@ extern "C" {
 
 typedef int32_t MadbStatus;
 typedef uint64_t MadbHandle; /* 0 invalid; SDK-instance registry token, never a pointer. */
-#define MADB_OK INT32_C(0)
-#define MADB_INVALID_ARGUMENT INT32_C(1)
-#define MADB_INVALID_HANDLE INT32_C(2)
-#define MADB_CLOSING INT32_C(3)
-#define MADB_CLOSED INT32_C(4)
-#define MADB_BUSY INT32_C(5)
-#define MADB_TIMEOUT INT32_C(6)
-#define MADB_WOULD_DEADLOCK INT32_C(7)
-#define MADB_INTERNAL_FAILURE INT32_C(8)
-#define MADB_RESOURCE_EXHAUSTED INT32_C(9)
-#define MADB_DOMAIN_ERROR INT32_C(10)
-#define MADB_UNSUPPORTED INT32_C(11)
+#define MADB_OK 0
+#define MADB_INVALID_ARGUMENT 1
+#define MADB_INVALID_HANDLE 2
+#define MADB_CLOSING 3
+#define MADB_CLOSED 4
+#define MADB_BUSY 5
+#define MADB_TIMEOUT 6
+#define MADB_WOULD_DEADLOCK 7
+#define MADB_INTERNAL_FAILURE 8
+#define MADB_RESOURCE_EXHAUSTED 9
+#define MADB_DOMAIN_ERROR 10
+#define MADB_UNSUPPORTED 11
 
 typedef struct MadbError { uint32_t domain; int32_t code; } MadbError;
 /* Domain/code are zero for success and lifecycle failures; nonzero domain only for DOMAIN_ERROR. */

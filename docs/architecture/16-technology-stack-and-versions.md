@@ -292,3 +292,9 @@ S5 仍要求十六条主线各有最低完整配置和全部适用必需项。�
 | DevEco 安装包 Info.plist、工具 package.json、SDK oh-uni-package.json | 参考工具版本与 SDK Beta1 标记 | 区分历史环境和正式发布候选 |
 
 这些路径仅定位参考事实，不是新项目的构建依赖。公开发布时用 MadB-Lab 可独立复现的案例与报告承接证据。
+
+## C03 首链实测锁
+
+2026-10-24 的 P02 使用 Xcode 27.0 (27A266a)、macOS SDK 27.0 (26A425)、Apple Clang/libclang 21.0.0 (clang-2100.3.34.2)、Rust 1.99.1 及其 llvm-tools、bindgen 0.73.2、cbindgen 0.29.4；deployment target 为 14.0。此组合只冻结 Rust/C stateless 探针，不替换其他 Apple/Swift 路线的 Xcode 26.4.1 候选，也不构成最低系统支持或 SDK 认证。
+
+[可复现配方](../../tests/integration/c03/README.md)固定生成器源归档、Cargo.lock 和安装 receipt；运行记录覆盖工具、SDK 标识、所用头文件与标准库摘要、精确命令和产物。Rust archive 使用匹配的 llvm-tools，因为 Apple nm 无法解析其中的较新 LLVM bitcode；不忽略检查失败。两目标、两方向的真实 project/profile/lock 采用既有 v1 schema；[证据](../reviews/c03-native-evidence.json)保留观察范围。生产环境的完整依赖发现和 frozen 执行由 C04/C10 接续。

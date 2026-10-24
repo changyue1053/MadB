@@ -1,0 +1,3177 @@
+{
+  "task": "C03",
+  "specification": "0.9",
+  "baseline": "99506b48a51859dd7c5fae270425bbcc17e6baec",
+  "result": {
+    "probe": "P02",
+    "status": "passed",
+    "targets": {
+      "aarch64-apple-darwin": {
+        "layout_and_compile": "passed",
+        "link": "passed",
+        "wrong_signatures": "rejected",
+        "wrong_packing": "rejected",
+        "c_to_rust_run": "passed",
+        "rust_to_c_run": "passed"
+      },
+      "x86_64-apple-darwin": {
+        "layout_and_compile": "passed",
+        "link": "passed",
+        "wrong_signatures": "rejected",
+        "wrong_packing": "rejected",
+        "c_to_rust_run": "not_run",
+        "rust_to_c_run": "not_run"
+      }
+    },
+    "lock": {
+      "path": "madb.lock.json",
+      "sha256": "sha256:d2a3030856a83d2c752bce26bb446f24533a51350feacf934e8b05a9573ff305",
+      "size": 16155
+    },
+    "observations": {
+      "path": "toolchain-lock.json",
+      "sha256": "sha256:dedcf33674597941413e1d5308ddaea6b21689291151ddb09cef9bc4f5aabaad",
+      "size": 35098
+    },
+    "sdk_certification": false
+  },
+  "observations": {
+    "recipe": {
+      "purpose": "C03/P02 probe recipe; not a released SDK support profile",
+      "rust": "1.99.1",
+      "host": "aarch64-apple-darwin",
+      "targets": [
+        "aarch64-apple-darwin",
+        "x86_64-apple-darwin"
+      ],
+      "deployment_target": "14.0",
+      "xcode": "Xcode 27.0\nBuild version 27A266a",
+      "sdk_version": "27.0",
+      "sdk_build": "26A425",
+      "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "generators": {
+        "bindgen": {
+          "package": "bindgen-cli",
+          "version": "0.73.2",
+          "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+          "archive_sha256": "5622e043625b6d1f32c84f53699690a44d1419e657879de26eb252699f5ebb7c",
+          "cargo_lock_sha256": "141ca4c05573420c75645965cd5b09da472923a2dcae1c90a4d9cbe196b38d20"
+        },
+        "cbindgen": {
+          "package": "cbindgen",
+          "version": "0.29.4",
+          "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+          "archive_sha256": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20",
+          "cargo_lock_sha256": "ae418e51a671338591852c91797d6c4be7577093967d9c0ef94f812b4aed5109"
+        }
+      },
+      "rust_components": [
+        "rustc",
+        "cargo",
+        "rust-std",
+        "llvm-tools"
+      ]
+    },
+    "recipe_sha256": "sha256:0f6cc6f99ba7a91f089642da35b10443fe2e425b9e8238fd04158161e0865381",
+    "generator_receipt": {
+      "rust": "1.99.1",
+      "generators": {
+        "bindgen": {
+          "package": "bindgen-cli",
+          "version": "0.73.2",
+          "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+          "archive_sha256": "5622e043625b6d1f32c84f53699690a44d1419e657879de26eb252699f5ebb7c",
+          "cargo_lock_sha256": "141ca4c05573420c75645965cd5b09da472923a2dcae1c90a4d9cbe196b38d20",
+          "binary_sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d"
+        },
+        "cbindgen": {
+          "package": "cbindgen",
+          "version": "0.29.4",
+          "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+          "archive_sha256": "2ecb53484c9c167ba674026b656d8a27d7657a58e6066aa902bfb1a4aa00ae20",
+          "cargo_lock_sha256": "ae418e51a671338591852c91797d6c4be7577093967d9c0ef94f812b4aed5109",
+          "binary_sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880"
+        }
+      }
+    },
+    "tools": [
+      {
+        "id": "clang",
+        "path": "$XCODE_TOOLCHAIN/bin/clang",
+        "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9"
+      },
+      {
+        "id": "libtool",
+        "path": "$XCODE_TOOLCHAIN/bin/libtool",
+        "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24"
+      },
+      {
+        "id": "nm",
+        "path": "$XCODE_TOOLCHAIN/bin/llvm-nm",
+        "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8"
+      },
+      {
+        "id": "rustc",
+        "path": "$RUST_TOOLCHAIN/bin/rustc",
+        "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1"
+      },
+      {
+        "id": "bindgen",
+        "path": "$BINDGEN",
+        "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d"
+      },
+      {
+        "id": "cbindgen",
+        "path": "$CBINDGEN",
+        "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880"
+      },
+      {
+        "id": "libclang",
+        "path": "$XCODE_TOOLCHAIN/lib/libclang.dylib",
+        "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a"
+      },
+      {
+        "id": "rust-nm",
+        "path": "$RUST_TOOLCHAIN/lib/rustlib/aarch64-apple-darwin/bin/llvm-nm",
+        "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8"
+      }
+    ],
+    "sdk_inputs": [
+      {
+        "path": "SDKSettings.json",
+        "sha256": "sha256:7b93ad7e534cc4b31c6a4e39d19b5e0288acf2168c2649479a796d1cb51939fb"
+      },
+      {
+        "path": "usr/lib/libSystem.tbd",
+        "sha256": "sha256:01089e97e7372fdda64ef480f2c99d483daf0c7fc99298a137425ee3230588ab"
+      }
+    ],
+    "rust_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+    "host_os": "26.6.2",
+    "rust_std_inputs": [
+      {
+        "target": "aarch64-apple-darwin",
+        "files": [
+          {
+            "name": "libLLVM.dylib",
+            "sha256": "sha256:2a8a4612d921ac0bd6be3b7b601f9a71d93b8cdf0a23f36d4c2df15cb616c981"
+          },
+          {
+            "name": "libaddr2line-08f0edee42a4c49b.rlib",
+            "sha256": "sha256:70159ea977faea883cbdd95b33b666af002a1466199d06e6137c88bdfa4d3451"
+          },
+          {
+            "name": "libaddr2line-08f0edee42a4c49b.rmeta",
+            "sha256": "sha256:c9a0c3627f9398ce260e951d19805cbcff04c1ba5f226c8443a67615b38f98c7"
+          },
+          {
+            "name": "libadler2-54c19590125dd9e2.rlib",
+            "sha256": "sha256:462a2882b404c57562b8691376240cc39aee5c5ba13c148f473ded1ecc362dd0"
+          },
+          {
+            "name": "libadler2-54c19590125dd9e2.rmeta",
+            "sha256": "sha256:97a892c17c28da67e38f3570a42c7049a862d75bcb6267e194718dc75adfa928"
+          },
+          {
+            "name": "liballoc-2ce5006d2257bd69.rlib",
+            "sha256": "sha256:36ff6b263aced406c2e8026cf5ee40d48182683d5e9e5ad6deeb41f3b351612e"
+          },
+          {
+            "name": "liballoc-2ce5006d2257bd69.rmeta",
+            "sha256": "sha256:dbae6dbab8d27299e3b26d21b7bed538f39968c592738e0c192c971f89ab1a76"
+          },
+          {
+            "name": "libcfg_if-bbfe70cbecdf7ce8.rlib",
+            "sha256": "sha256:ba0afa0e0f23bf4180ed73a4cf5f1b2f7a561daf8ed95d3305cc3f0e2c00d7ed"
+          },
+          {
+            "name": "libcfg_if-bbfe70cbecdf7ce8.rmeta",
+            "sha256": "sha256:7a2e4299eeffae7fb589aca6382c942811fe0ba14010ef3f5af2cc012ae75d0c"
+          },
+          {
+            "name": "libcompiler_builtins-a927747ff7623fdf.rlib",
+            "sha256": "sha256:4aa5f1bdef4d0981e68c795ab1ad84c39675e08e3035603b3b7dc57349c0e369"
+          },
+          {
+            "name": "libcompiler_builtins-a927747ff7623fdf.rmeta",
+            "sha256": "sha256:850b7b8a9e59260b95a6350367d3030a917cb3bbe31a2efd38ba2187016ca5fe"
+          },
+          {
+            "name": "libcore-3e4eb39a5fe4e537.rlib",
+            "sha256": "sha256:0205c70e6755f55478c511adb5231ff6b10cbd46f4198f0991354d0b20c702a4"
+          },
+          {
+            "name": "libcore-3e4eb39a5fe4e537.rmeta",
+            "sha256": "sha256:01cda310e4092da62e7c59dc957349ae1e6950501a92f33878a3dfd44c81b39e"
+          },
+          {
+            "name": "libgetopts-7b4cf10fb0e02c69.rlib",
+            "sha256": "sha256:888961c58c5c5ab0b5e55d2c1ecb8fb06e51aee189cf294d689f03a248ef9b1c"
+          },
+          {
+            "name": "libgetopts-7b4cf10fb0e02c69.rmeta",
+            "sha256": "sha256:00c98432c2e931e492d3779db46b929f426a48009cf396357da02596e09e8ea4"
+          },
+          {
+            "name": "libgimli-1079be98f2838d30.rlib",
+            "sha256": "sha256:5078018f58b14382a0cd7dd30e9d84200f4e2a9797e4be9e29720a991a5c6767"
+          },
+          {
+            "name": "libgimli-1079be98f2838d30.rmeta",
+            "sha256": "sha256:512ca13744dd0b9174f787d2f807104ce22b192d2861fbc5e9cec75d66f7aaaa"
+          },
+          {
+            "name": "libhashbrown-639f7d199d9c8267.rlib",
+            "sha256": "sha256:409a9b577ab05ad32b00d664be5f585dd5b85e8e93df46d644c1ddf1f347dbab"
+          },
+          {
+            "name": "libhashbrown-639f7d199d9c8267.rmeta",
+            "sha256": "sha256:9a7a01c56f27e0cd7938181c97089dc1eee0583eb32b293cf751137cdb570694"
+          },
+          {
+            "name": "liblibc-579e11f86ada60ba.rlib",
+            "sha256": "sha256:f03eabb49a5489b770a94f592d496061705c35ccf56e32832005eaaa678ef341"
+          },
+          {
+            "name": "liblibc-579e11f86ada60ba.rmeta",
+            "sha256": "sha256:df75769784ea29a26b614d5ad5da67130e33e4826fda87f69bae562f1454a128"
+          },
+          {
+            "name": "libmemchr-b0b55649f474dca6.rlib",
+            "sha256": "sha256:64656b608f486d27f497ca633377cbcb976d4014255b1bc8e03761c15d4747a0"
+          },
+          {
+            "name": "libmemchr-b0b55649f474dca6.rmeta",
+            "sha256": "sha256:0366056362fdffaa02c04dd5da51767be654ff2d392d92faab2b40663270e8e3"
+          },
+          {
+            "name": "libminiz_oxide-9ee848d4774d78c4.rlib",
+            "sha256": "sha256:34bf5ec1d5b20ecb2b468b70378e6ba5766dd2ff90fce180390ec9b60370e772"
+          },
+          {
+            "name": "libminiz_oxide-9ee848d4774d78c4.rmeta",
+            "sha256": "sha256:ff0507af8e33ec5d95d92ba0f9d52aef008d28a11255a188dddc5cebfb978aa3"
+          },
+          {
+            "name": "libobject-4b3070f37e07e40b.rlib",
+            "sha256": "sha256:198bd493c11cbbf10c976e89d0625f4549aa76b7c9fc2011837a70943a7c3a08"
+          },
+          {
+            "name": "libobject-4b3070f37e07e40b.rmeta",
+            "sha256": "sha256:f91501b6131723594e52ba80cb0095bf17b732ae732cc0d2cb4866e0bbccaf5b"
+          },
+          {
+            "name": "libpanic_abort-4484cc89514c4237.rlib",
+            "sha256": "sha256:3a8da2365ca39a4624dd69e2cec1c792869313846c27f260c3aaa5eff1d222d7"
+          },
+          {
+            "name": "libpanic_abort-4484cc89514c4237.rmeta",
+            "sha256": "sha256:fa0eed17b663182704607d01144be315b89ea05c697319e2dcf58c06b77ec0a4"
+          },
+          {
+            "name": "libpanic_unwind-0d2a8d932c521e40.rlib",
+            "sha256": "sha256:e8e119bd64f2e52adcc3702d3abe07021b00262ff1567c8f5d8b58c72ada6153"
+          },
+          {
+            "name": "libpanic_unwind-0d2a8d932c521e40.rmeta",
+            "sha256": "sha256:921815949a484c56d729b886dd5f86a15b01f98fa6cee23bc041f10046fac9bd"
+          },
+          {
+            "name": "libproc_macro-977a81cadb47f16e.rlib",
+            "sha256": "sha256:687d968721f7fd0d075eab0c8730d1f5b3dccc76d1de1d1be7e9421825c0d7fa"
+          },
+          {
+            "name": "libproc_macro-977a81cadb47f16e.rmeta",
+            "sha256": "sha256:8651fc613a7d6070ae1f9705c51799727c661249125a5d7db6c449c5daf73921"
+          },
+          {
+            "name": "libprofiler_builtins-171326553d613158.rlib",
+            "sha256": "sha256:e1b16226b935c8c138d0018704f25c7ba8053c65c7bcd82aebc6e84f4c15f521"
+          },
+          {
+            "name": "libprofiler_builtins-171326553d613158.rmeta",
+            "sha256": "sha256:6f4ad987e6e38d99562f263c29699e20c19eb51479809a64e38e6f57a857c954"
+          },
+          {
+            "name": "librustc-stable_rt.asan.dylib",
+            "sha256": "sha256:08e463f55752b17f85b2ee08e70d54b43fe358554fc8f0f96c467dab3b7d6538"
+          },
+          {
+            "name": "librustc-stable_rt.lsan.dylib",
+            "sha256": "sha256:af88c6b07081dd43db5748c611fbb41e8e4d1a845fa47dbd77fe0c840d4bf46e"
+          },
+          {
+            "name": "librustc-stable_rt.rtsan.dylib",
+            "sha256": "sha256:26804211fa9fcb2fe683b5ee89fecba6368466a88dccbd7867079dc22d85fb14"
+          },
+          {
+            "name": "librustc-stable_rt.tsan.dylib",
+            "sha256": "sha256:33e6217a6eedba6714fe9695248549e37e07ed6db45b9937517c2531a2161df2"
+          },
+          {
+            "name": "librustc_demangle-8e926a16fd9d545f.rlib",
+            "sha256": "sha256:7dedfe9cf33ca08693142981ac5c37e001f673d25b6614f930026a1df088ff68"
+          },
+          {
+            "name": "librustc_demangle-8e926a16fd9d545f.rmeta",
+            "sha256": "sha256:16f08fe5d2f1f38c51871ea778f9258bbd65379bf544b2657d3222d0c499694d"
+          },
+          {
+            "name": "librustc_literal_escaper-ff6df5519f382782.rlib",
+            "sha256": "sha256:29850ac336eaa6fde1d6fecbb3e7b39a23c2b645d7e2886da999ce46eec6e954"
+          },
+          {
+            "name": "librustc_literal_escaper-ff6df5519f382782.rmeta",
+            "sha256": "sha256:9f33ced2f5d5f2419b0e6da630a2d39a249352ed598fbfe259283679793d12d1"
+          },
+          {
+            "name": "librustc_std_workspace_alloc-9832aa6c943fd4b0.rlib",
+            "sha256": "sha256:a13eb6840cf8b987c6241610277453064aa35404e6b851dda08f39ce27792132"
+          },
+          {
+            "name": "librustc_std_workspace_alloc-9832aa6c943fd4b0.rmeta",
+            "sha256": "sha256:0d747615a21f60356d10b005fe8be3433d2a188e254a3b9a0e4c7a74e84f4e96"
+          },
+          {
+            "name": "librustc_std_workspace_core-192a9e0e4496d7f1.rlib",
+            "sha256": "sha256:cd5aea0ce99f7e73f078b48faf37fca1049f3a1170ea9be6d58381507470ad04"
+          },
+          {
+            "name": "librustc_std_workspace_core-192a9e0e4496d7f1.rmeta",
+            "sha256": "sha256:6ceaa2430cc87c64933cbf8cab8abcbc824df3dbb39ee451153dca905110b566"
+          },
+          {
+            "name": "librustc_std_workspace_std-e2d0d2db8f40be79.rlib",
+            "sha256": "sha256:3e36fad2cdfa6a06685b928984cfa37814b8924843aa77b13df274b9f17bb4e2"
+          },
+          {
+            "name": "librustc_std_workspace_std-e2d0d2db8f40be79.rmeta",
+            "sha256": "sha256:1c34ab27ebf8b54ed35ec6a487f68ad6ae782ea15739551dc3d8971e65851b14"
+          },
+          {
+            "name": "libstd-c8df3f17af30326b.dylib",
+            "sha256": "sha256:35a8aa1172c2d0d6900730aef1bb12774b1bc32d6783b10304358721d2871348"
+          },
+          {
+            "name": "libstd-c8df3f17af30326b.rlib",
+            "sha256": "sha256:7421245549290b5b40d81ebdd6dc294a2003b946bebb1ed16d614336226d1dca"
+          },
+          {
+            "name": "libstd-c8df3f17af30326b.rmeta",
+            "sha256": "sha256:20567b63988fd381811378358ecb21fb76a65874ed6ead77ee4fc04ced63d40e"
+          },
+          {
+            "name": "libstd_detect-d1fe2d3a6ae07ab4.rlib",
+            "sha256": "sha256:323d7f28f3024edb4400f841469536999b596cbdca5fce9a7c23178862a28f6b"
+          },
+          {
+            "name": "libstd_detect-d1fe2d3a6ae07ab4.rmeta",
+            "sha256": "sha256:17257b6cd9242f2b384f278e4e78888eeb1eefe666c500bc06a3026d41cae5df"
+          },
+          {
+            "name": "libsysroot-ee74c77bdeae9951.rlib",
+            "sha256": "sha256:92e3fec785402573e19868a869d978479fa9250b40fc11746c9c2715db2b3088"
+          },
+          {
+            "name": "libsysroot-ee74c77bdeae9951.rmeta",
+            "sha256": "sha256:ce5c3dcc082376ceecd41683671df2b0b227381ed762fbeff65304fe61fbb9e5"
+          },
+          {
+            "name": "libtest-90fc19920763074e.rlib",
+            "sha256": "sha256:4477addfb0ff302833679598aae1895e09e131a9bb215f202d7634c45014b66b"
+          },
+          {
+            "name": "libtest-90fc19920763074e.rmeta",
+            "sha256": "sha256:74f222fc605f798c54ff5ebfb262abd3f29a317e2232a23af6ca41ea587418d1"
+          },
+          {
+            "name": "libunwind-3351a02e98833bd4.rlib",
+            "sha256": "sha256:a8e1f2f50b9cb163c004bf47e7a4c9bb926913b9ae5ec391297145f2d12ec7ea"
+          },
+          {
+            "name": "libunwind-3351a02e98833bd4.rmeta",
+            "sha256": "sha256:c0c3335cba56d6cb7aa5aa659bd14539032a9deae08a190d5124be9bd9ece7b9"
+          }
+        ]
+      },
+      {
+        "target": "x86_64-apple-darwin",
+        "files": [
+          {
+            "name": "libaddr2line-565488173dbd78cd.rlib",
+            "sha256": "sha256:8127bbfcef23770b9471033554ad86fb50ada83b0bdeeae035c69856b692d1cc"
+          },
+          {
+            "name": "libaddr2line-565488173dbd78cd.rmeta",
+            "sha256": "sha256:ad7f046ee615c87628f70abc9d854b0846cf857fea54cad6a9495622c9c0b2ed"
+          },
+          {
+            "name": "libadler2-30d9d7e7598b8e43.rlib",
+            "sha256": "sha256:8ba0b59cce925ba01c2e1f36b4ab80a7d28a54b1ac407089b62f54a847044bae"
+          },
+          {
+            "name": "libadler2-30d9d7e7598b8e43.rmeta",
+            "sha256": "sha256:67f27120536f5982fba091edc91a3bb458cc52faa81fafeb9d2918de8f54e8de"
+          },
+          {
+            "name": "liballoc-9c2eba0682605ca3.rlib",
+            "sha256": "sha256:9c80fc385f828bb9e3de343ee207891f867a182bd4b808a3ce5809e32a6aaace"
+          },
+          {
+            "name": "liballoc-9c2eba0682605ca3.rmeta",
+            "sha256": "sha256:f14d4e4008c507b1b9e2586dc944353370bc20d0b988e70ead5450de24232141"
+          },
+          {
+            "name": "libcfg_if-edb94c258b1f9183.rlib",
+            "sha256": "sha256:bab7b674784bb007451e58662334ecf8641164f8aff2e7d2d3dbd9692ee00ac3"
+          },
+          {
+            "name": "libcfg_if-edb94c258b1f9183.rmeta",
+            "sha256": "sha256:ba2a771bc7ae54eb43ee0d618cc6eb8060c24650e57b1b8da00679c4f503f8b2"
+          },
+          {
+            "name": "libcompiler_builtins-0db2a16cd4d957c3.rlib",
+            "sha256": "sha256:8378a6bc44d091688f6bb5c2e355069d9d1aee2f8c2b650f5500d149ed936b04"
+          },
+          {
+            "name": "libcompiler_builtins-0db2a16cd4d957c3.rmeta",
+            "sha256": "sha256:4c9ea8ec482505ecca01b2915ea60f70792a2df85fe136cfa7e0b6407ddd60fd"
+          },
+          {
+            "name": "libcore-969953a6bced6275.rlib",
+            "sha256": "sha256:cfc76084b5791e01b1a30ddd80e4cb96b622fadd533234beab5c5060db9b75a3"
+          },
+          {
+            "name": "libcore-969953a6bced6275.rmeta",
+            "sha256": "sha256:8077f53f541300e7e9d380d057fa2d06b8c6e8d3be720469469ca85dcf45a67d"
+          },
+          {
+            "name": "libgetopts-b5c1d0c80b0e2b8e.rlib",
+            "sha256": "sha256:f15edbf9ed6028d3a355fa17a6ae6e8a6883ab36de7fcda8df25da05d3cc299f"
+          },
+          {
+            "name": "libgetopts-b5c1d0c80b0e2b8e.rmeta",
+            "sha256": "sha256:8d2ee894bf56244e5a73d7815b3857a2bd6721d1df32ae2ac783f1e409c29a7a"
+          },
+          {
+            "name": "libgimli-3c811bb1fe206759.rlib",
+            "sha256": "sha256:47c7f8bc22586516b668f34249339a340857fe0a2e88a81dd0197a04ab833c29"
+          },
+          {
+            "name": "libgimli-3c811bb1fe206759.rmeta",
+            "sha256": "sha256:73835f646ce5a0b40b25af475b29b98a2c2ecb417b24696a257c5a06735fc408"
+          },
+          {
+            "name": "libhashbrown-d6576e696e5164c3.rlib",
+            "sha256": "sha256:0c95c0d98aac8d3aa17430ca286c2efb68ff8e1de4591e079b673d4d172a7800"
+          },
+          {
+            "name": "libhashbrown-d6576e696e5164c3.rmeta",
+            "sha256": "sha256:409f43957ebe703bb2e40e5c49e0b1127548372ed4e817b769f44fdf082c390f"
+          },
+          {
+            "name": "liblibc-1cf2274459847756.rlib",
+            "sha256": "sha256:d03719a3ccbf06f8a417d4f917c95a2d4d4dcce29bf07c2e29fceb60389686fd"
+          },
+          {
+            "name": "liblibc-1cf2274459847756.rmeta",
+            "sha256": "sha256:51a43934ffe552ffeaeab0d4f9aa00e038c4b122c5b2988368c1a3ff328335a9"
+          },
+          {
+            "name": "libmemchr-6aae80e07e5e50ad.rlib",
+            "sha256": "sha256:bfe09e4051cfbfa7cb88644b3c04be0505819024c9638c9d3593204eb456166a"
+          },
+          {
+            "name": "libmemchr-6aae80e07e5e50ad.rmeta",
+            "sha256": "sha256:7fb12f055e1ed844b751fb9e20f9d50b873a2b6597de94a7dc07e0d886a1250d"
+          },
+          {
+            "name": "libminiz_oxide-7b9105d2c2f1f43d.rlib",
+            "sha256": "sha256:2ffa6cb59fc4baeaac694d051624ac530c0a86f634ebd36792aada65d9c0c9a0"
+          },
+          {
+            "name": "libminiz_oxide-7b9105d2c2f1f43d.rmeta",
+            "sha256": "sha256:3c6ca979ded70a8b7e6ce10791b1fe2e31436cd7d69b8ed058ca41839523a003"
+          },
+          {
+            "name": "libobject-9546a4f99ccd903d.rlib",
+            "sha256": "sha256:25809e84c5ead430e140e8ca172d7ce34e2cc4a4784c1cec83454f5b9c8fe389"
+          },
+          {
+            "name": "libobject-9546a4f99ccd903d.rmeta",
+            "sha256": "sha256:834ea15c62c52e5ef899a8add8ba6cbfb69531c3eb1dbc241fe09c8a98d8603c"
+          },
+          {
+            "name": "libpanic_abort-df1ccb4c017cd0af.rlib",
+            "sha256": "sha256:ae563949162613b52adcb20dc19b35503fa71cc796acbadd6b5b66db5f010823"
+          },
+          {
+            "name": "libpanic_abort-df1ccb4c017cd0af.rmeta",
+            "sha256": "sha256:23d3fb2b24b4f749e4608a7fb0864d65fe09e19d353ae540f878335a58c0a87c"
+          },
+          {
+            "name": "libpanic_unwind-4309799098a5ca18.rlib",
+            "sha256": "sha256:42f374caef928bf695b215e2034e2576892be57d1c0a1bf4ce65e186632fcc1a"
+          },
+          {
+            "name": "libpanic_unwind-4309799098a5ca18.rmeta",
+            "sha256": "sha256:247687055429bd8e8967b12e4d602eda131689c451826076709b06eea1260d17"
+          },
+          {
+            "name": "libproc_macro-78c1eacb75b129c5.rlib",
+            "sha256": "sha256:40e4d888b57ea9c623b586e0ee6ca0259ef23b8cd6135cad876eecc138d92e6e"
+          },
+          {
+            "name": "libproc_macro-78c1eacb75b129c5.rmeta",
+            "sha256": "sha256:219bf03513d872acb8328b21d55133d4cde6183f36b67d8d659f45dd6daaebfe"
+          },
+          {
+            "name": "libprofiler_builtins-8ec00d10bfbb78b2.rlib",
+            "sha256": "sha256:a87a003c15d836617486db4decc1e54cd462111b5e9431a3d86f8be968af5d71"
+          },
+          {
+            "name": "libprofiler_builtins-8ec00d10bfbb78b2.rmeta",
+            "sha256": "sha256:855f5c88090fa5c46fcc0dd538ebf2afbab81f0fadd51559fce7677cfd3eaf3d"
+          },
+          {
+            "name": "librustc-stable_rt.asan.dylib",
+            "sha256": "sha256:ebcfc63e0647974f13d708c338e4f905f1e5bc40956cc794050a1ed3da0c26ce"
+          },
+          {
+            "name": "librustc-stable_rt.lsan.dylib",
+            "sha256": "sha256:fd79cfb90522fa5ea70a50ffce92e7575fb5df0f03c2239888eeaf848fbe894e"
+          },
+          {
+            "name": "librustc-stable_rt.rtsan.dylib",
+            "sha256": "sha256:cbccd8dfeede74b523e9514759f06458966b2a5c6c4b86517e157e18a9095fec"
+          },
+          {
+            "name": "librustc-stable_rt.tsan.dylib",
+            "sha256": "sha256:032f503e1c7a0ab62d328796a64a9c7fdede6b09e68b50a327a215fe1b8b9f36"
+          },
+          {
+            "name": "librustc_demangle-8c131eedab594d4d.rlib",
+            "sha256": "sha256:857bdf3ec210fb1508fb539f4f14b525d2e3d949f12d9ca01b71ecefe9bea009"
+          },
+          {
+            "name": "librustc_demangle-8c131eedab594d4d.rmeta",
+            "sha256": "sha256:3cf0f9ed3844c9190e7521988290d5109a2c1bae71789e015263b86c34db2d85"
+          },
+          {
+            "name": "librustc_literal_escaper-0ee7348612e85674.rlib",
+            "sha256": "sha256:cb1e9d6c662dc9714c29f861974983976ce0e2e5b3c5c9b4547955d54d2d0b0e"
+          },
+          {
+            "name": "librustc_literal_escaper-0ee7348612e85674.rmeta",
+            "sha256": "sha256:6788b735ca9698ee95b715368a717f6a95730586288bfe3f345a875ac7ad01d8"
+          },
+          {
+            "name": "librustc_std_workspace_alloc-04556789e690d582.rlib",
+            "sha256": "sha256:539f91e91f5230cf9e469358b1e77d5a2dd0d444658ae789b27c10d27b1c4e1d"
+          },
+          {
+            "name": "librustc_std_workspace_alloc-04556789e690d582.rmeta",
+            "sha256": "sha256:e7e41381a20eb502c45d09656b6427b52d4bb9912a542942241fd50499bd9279"
+          },
+          {
+            "name": "librustc_std_workspace_core-ccff4edb0faca630.rlib",
+            "sha256": "sha256:22c6186b67fa75d903a86dce2fbabf379f9182729ae3cdcbb6a7017d2d917948"
+          },
+          {
+            "name": "librustc_std_workspace_core-ccff4edb0faca630.rmeta",
+            "sha256": "sha256:d764d5fdf3d8de0f4836832759a021679e11385a3858543cd6a2cb0bb9bdfb22"
+          },
+          {
+            "name": "librustc_std_workspace_std-2de9d631d0def8e4.rlib",
+            "sha256": "sha256:6a76ab55ff20e28fd3fa403033f1c50826871e5e52420e38a235dfb385925930"
+          },
+          {
+            "name": "librustc_std_workspace_std-2de9d631d0def8e4.rmeta",
+            "sha256": "sha256:61f353c43bcfbf54a4d12904b301f28cf67f0ef6de08ca70e0b5fadb54c123e4"
+          },
+          {
+            "name": "libstd-bd40bdc07610af03.dylib",
+            "sha256": "sha256:de86c6f66fc2ada8f0f952e2d6613a1d168d964927b3dfeafd3380320d5bf1e9"
+          },
+          {
+            "name": "libstd-bd40bdc07610af03.rlib",
+            "sha256": "sha256:f87c91f63ea4b6ec94c5c21d664aed7ae6bbc2bb003e0b664e9ec1bd8dbcc905"
+          },
+          {
+            "name": "libstd-bd40bdc07610af03.rmeta",
+            "sha256": "sha256:045e6592e70adaf32fec4730a8caf364a8a8b686fd5d89e19c5ec8b4216583df"
+          },
+          {
+            "name": "libstd_detect-a0e42b3225ea9be6.rlib",
+            "sha256": "sha256:5d30e2625a23d09a9d7e816f4d570552b9bb45a0440dd7fe91d52524ce2af43a"
+          },
+          {
+            "name": "libstd_detect-a0e42b3225ea9be6.rmeta",
+            "sha256": "sha256:ca884b90b7b6b1d35e67debf5f23c36440294260693a86af8a40251c701b0ee9"
+          },
+          {
+            "name": "libsysroot-257fc136c4561c9a.rlib",
+            "sha256": "sha256:0d0099f5ff27e065cc6fc9eb375aef29ff3b9c1c4090925227a9c2ed7d141979"
+          },
+          {
+            "name": "libsysroot-257fc136c4561c9a.rmeta",
+            "sha256": "sha256:0057da3af7096a4e362748348b8bd80f64c2a537b1d0619d39273d1d1cb37b51"
+          },
+          {
+            "name": "libtest-45b26f8ac527b8df.rlib",
+            "sha256": "sha256:b274a03b800a1e2e97ea27e27fb7b5041a8f2934574f61bba706d4d65468343a"
+          },
+          {
+            "name": "libtest-45b26f8ac527b8df.rmeta",
+            "sha256": "sha256:b9d5bb6b925d1dcbb3dab860d72681d28e0e8ea04cf0731322c265f7b541f7cf"
+          },
+          {
+            "name": "libunwind-ce366224d9bdc5b0.rlib",
+            "sha256": "sha256:80b260f27a97d499d2916ef7c5030048483c2157af8399334b0cfa364e24102a"
+          },
+          {
+            "name": "libunwind-ce366224d9bdc5b0.rmeta",
+            "sha256": "sha256:0087c452e1bfa55b750bd57fe24ef21c43ea9987b2e2274482d052e1111713cc"
+          }
+        ]
+      }
+    ],
+    "inputs": [
+      {
+        "path": "tests/fixtures/native-probe/c_consumer.c",
+        "sha256": "sha256:3ecd54aafc0cd5c6601c252522380d8bd5d79e10616652cdcc6cd3ad94422ad1",
+        "size": 2064
+      },
+      {
+        "path": "tests/fixtures/native-probe/c_provider.c",
+        "sha256": "sha256:685041cc44224ac343604ef90db0dea90b24405f86fd7dc6dbedcaa11cdd9c65",
+        "size": 910
+      },
+      {
+        "path": "tests/fixtures/native-probe/c_provider.h",
+        "sha256": "sha256:d035f637e3bbac403014e0ffc1bc4cce3870324c5518483a4def9b0b5026d8a5",
+        "size": 732
+      },
+      {
+        "path": "tests/fixtures/native-probe/cbindgen.toml",
+        "sha256": "sha256:7951995d6205ebcbc355822147d32857f9376ce410295d7184368f40b90d106a",
+        "size": 200
+      },
+      {
+        "path": "tests/fixtures/native-probe/rust_consumer.rs",
+        "sha256": "sha256:2d6d9b91383be61cd3f026f9205f0cc07ec3d79ee21307224579f35098ad058e",
+        "size": 2887
+      },
+      {
+        "path": "tests/fixtures/native-probe/rust_provider.rs",
+        "sha256": "sha256:6f9fd491da3c03f68463e3ec19ff10e949b9fc0de9fc5736e050c71980af7cfc",
+        "size": 2464
+      },
+      {
+        "path": "tests/fixtures/native-probe/shape_consumer.rs",
+        "sha256": "sha256:bc7d418dffcbd832e55d29025e646db7d300a873fbc6fe9e632bc11d63c307ca",
+        "size": 1377
+      },
+      {
+        "path": "tests/fixtures/native-probe/wrong_signature.c",
+        "sha256": "sha256:d80550aa27a049e711fd482c5376d380d60fd0fab2a4424056c571bb378ff956",
+        "size": 206
+      },
+      {
+        "path": "tests/fixtures/native-probe/wrong_signature.rs",
+        "sha256": "sha256:a7a01ade9780d27016f82a626d858679cb83e6cabbf2677908b80a9307a3c881",
+        "size": 308
+      },
+      {
+        "path": "tests/integration/c03/cli_install.py",
+        "sha256": "sha256:0f3eb11a7b0b76e2858364b1518a77cb815f0f34be7b2e93b355b5aebe02c44b",
+        "size": 1866
+      },
+      {
+        "path": "tests/integration/c03/common.py",
+        "sha256": "sha256:91d686ef54685611faa4882dd294d073fb27e2124beb606158bed9da8f944a6b",
+        "size": 2093
+      },
+      {
+        "path": "tests/integration/c03/freeze.py",
+        "sha256": "sha256:e9c832f14a9ab7f5fb8ad29995831237a7aeee9a3506dd9f005938d304ac86fe",
+        "size": 7116
+      },
+      {
+        "path": "tests/integration/c03/helper.py",
+        "sha256": "sha256:877be4a40d9ae03c851e8d50b2989e49a0f2974fe69e11f76ebfa18044b66b44",
+        "size": 2152
+      },
+      {
+        "path": "tests/integration/c03/install_tools.py",
+        "sha256": "sha256:f33c79b84b492bd8519ae60f1dd2f49f84d9c141c7635b09cf12bb264c184740",
+        "size": 2103
+      },
+      {
+        "path": "tests/integration/c03/native.py",
+        "sha256": "sha256:12be731719eeaacfe6734b069b40e147c034d5997fb6d3cced8393233daf86ad",
+        "size": 12603
+      },
+      {
+        "path": "tests/integration/c03/test_handshake.py",
+        "sha256": "sha256:ecab30bda4e7cf4229dfc3d687fdd493b041ad1c022e596ee380a28fc27148f9",
+        "size": 4199
+      },
+      {
+        "path": "tests/integration/c03/toolchain.json",
+        "sha256": "sha256:0f6cc6f99ba7a91f089642da35b10443fe2e425b9e8238fd04158161e0865381",
+        "size": 1209
+      },
+      {
+        "path": "docs/examples/first-route/consumer.c",
+        "sha256": "sha256:a50b273d4799960b3241d3658a3f3371489feed7f147b05ce2b208e67afa71e3",
+        "size": 1601
+      },
+      {
+        "path": "docs/examples/first-route/expected.h",
+        "sha256": "sha256:23f478a9525825e566f79f2506cc13af81849b97f7ddeddb27d260d62de88dc2",
+        "size": 2266
+      },
+      {
+        "path": "docs/examples/first-route/expected.rs",
+        "sha256": "sha256:c33a1bbde56c2164d8cbb9f9ae320cf03306de878820a70cb88c767e78c82580",
+        "size": 2019
+      }
+    ],
+    "outputs": [
+      {
+        "path": "aarch64-apple-darwin/c_consumer",
+        "sha256": "sha256:a033d87b8115b597cc4c3f023c78baf4c46af0b3043dbb10f07127c3f2e7ef6f",
+        "size": 34264
+      },
+      {
+        "path": "aarch64-apple-darwin/c_consumer.c",
+        "sha256": "sha256:3ecd54aafc0cd5c6601c252522380d8bd5d79e10616652cdcc6cd3ad94422ad1",
+        "size": 2064
+      },
+      {
+        "path": "aarch64-apple-darwin/c_provider.o",
+        "sha256": "sha256:e2bd7a2a369253c98088079d1f54fd99ce3007979580542805d6f4bdf29235b9",
+        "size": 1064
+      },
+      {
+        "path": "aarch64-apple-darwin/c_provider.rs",
+        "sha256": "sha256:243fabf8f986de79e5da99b6df561e95593ce593a535b2d1d83990191e14d85f",
+        "size": 1879
+      },
+      {
+        "path": "aarch64-apple-darwin/expected.rmeta",
+        "sha256": "sha256:f1661d1d726ff00dd0431891a50d7ecfbafb15ee3d0b70f1b132064081affbe1",
+        "size": 15658
+      },
+      {
+        "path": "aarch64-apple-darwin/expected.rs",
+        "sha256": "sha256:be10bb4d5fc5508f0e2150bb56bdadf8dae025903210e20f1624bb74d42a6207",
+        "size": 2533
+      },
+      {
+        "path": "aarch64-apple-darwin/header-inputs.json",
+        "sha256": "sha256:33946a4ccfe326256d8b73c0d19ed22f8b57c9a03fed037469cc497f80123361",
+        "size": 14398
+      },
+      {
+        "path": "aarch64-apple-darwin/libmadb_probe_c.a",
+        "sha256": "sha256:a1c79528e88b4e8a3f6b7567405009bb0cab4b2e3e10e0f9f04eabcf2258015a",
+        "size": 1304
+      },
+      {
+        "path": "aarch64-apple-darwin/libmadb_probe_rust.a",
+        "sha256": "sha256:89abea8114fbc2e2905563f00375aaec85473bac5762da0bd1c394a4e9438210",
+        "size": 18692976
+      },
+      {
+        "path": "aarch64-apple-darwin/rust_consumer",
+        "sha256": "sha256:af52336ef87bc7a32099bbe2b7ff4831065ecdb9b4ae93258fde2cf1295a44e6",
+        "size": 470688
+      },
+      {
+        "path": "aarch64-apple-darwin/rust_consumer.rs",
+        "sha256": "sha256:2d6d9b91383be61cd3f026f9205f0cc07ec3d79ee21307224579f35098ad058e",
+        "size": 2887
+      },
+      {
+        "path": "aarch64-apple-darwin/rust_provider.h",
+        "sha256": "sha256:cb5eb8e2ec01d242323d637f9075abf2d484cac8e2e1b9a0d85cb01711161f6e",
+        "size": 1352
+      },
+      {
+        "path": "aarch64-apple-darwin/shape.o",
+        "sha256": "sha256:14030c3cc11f463417204667219bfbb08f733aac91d79bfc08a1e76c6361bdf5",
+        "size": 1200
+      },
+      {
+        "path": "aarch64-apple-darwin/shape_consumer.c",
+        "sha256": "sha256:a50b273d4799960b3241d3658a3f3371489feed7f147b05ce2b208e67afa71e3",
+        "size": 1601
+      },
+      {
+        "path": "aarch64-apple-darwin/shape_consumer.rs",
+        "sha256": "sha256:bc7d418dffcbd832e55d29025e646db7d300a873fbc6fe9e632bc11d63c307ca",
+        "size": 1377
+      },
+      {
+        "path": "aarch64-apple-darwin/wrong_signature.c",
+        "sha256": "sha256:d80550aa27a049e711fd482c5376d380d60fd0fab2a4424056c571bb378ff956",
+        "size": 206
+      },
+      {
+        "path": "aarch64-apple-darwin/wrong_signature.rs",
+        "sha256": "sha256:a7a01ade9780d27016f82a626d858679cb83e6cabbf2677908b80a9307a3c881",
+        "size": 308
+      },
+      {
+        "path": "generated/expected.h",
+        "sha256": "sha256:272c709ceecc1eec1125b81baaf8200bd7843dc17d13b4972e9392829a18eb9a",
+        "size": 2098
+      },
+      {
+        "path": "generated/rust_provider.h",
+        "sha256": "sha256:cb5eb8e2ec01d242323d637f9075abf2d484cac8e2e1b9a0d85cb01711161f6e",
+        "size": 1352
+      },
+      {
+        "path": "x86_64-apple-darwin/c_consumer",
+        "sha256": "sha256:a3b41d8f7140720aef4b0bfdb95da33421cc9c8d396f661fea70708dc34aba25",
+        "size": 9256
+      },
+      {
+        "path": "x86_64-apple-darwin/c_consumer.c",
+        "sha256": "sha256:3ecd54aafc0cd5c6601c252522380d8bd5d79e10616652cdcc6cd3ad94422ad1",
+        "size": 2064
+      },
+      {
+        "path": "x86_64-apple-darwin/c_provider.o",
+        "sha256": "sha256:823c9c2900608370f2077798ba2d434620b46a3cfe20de80e5e845adbbccec68",
+        "size": 1056
+      },
+      {
+        "path": "x86_64-apple-darwin/c_provider.rs",
+        "sha256": "sha256:243fabf8f986de79e5da99b6df561e95593ce593a535b2d1d83990191e14d85f",
+        "size": 1879
+      },
+      {
+        "path": "x86_64-apple-darwin/expected.rmeta",
+        "sha256": "sha256:4c2e9f39413ba21e5125249241b443b38448c235cdc6f3f5437f3183188ccf3e",
+        "size": 15662
+      },
+      {
+        "path": "x86_64-apple-darwin/expected.rs",
+        "sha256": "sha256:be10bb4d5fc5508f0e2150bb56bdadf8dae025903210e20f1624bb74d42a6207",
+        "size": 2533
+      },
+      {
+        "path": "x86_64-apple-darwin/header-inputs.json",
+        "sha256": "sha256:9bb270b5f1e9b69c2d3d06d48903dea0adfefc6aa88e70ac3db4cd86e6e32642",
+        "size": 14406
+      },
+      {
+        "path": "x86_64-apple-darwin/libmadb_probe_c.a",
+        "sha256": "sha256:cca0eb7fdd76aadc3f2f98a597b52f5d9d4cb4afd0bc54b07f5009ab0b538ca3",
+        "size": 1296
+      },
+      {
+        "path": "x86_64-apple-darwin/libmadb_probe_rust.a",
+        "sha256": "sha256:82a18d81e778a26f93eb122ed22daa0e07e71224f408637c657662f443492df0",
+        "size": 18793536
+      },
+      {
+        "path": "x86_64-apple-darwin/rust_consumer",
+        "sha256": "sha256:41cb43d5b46328a451ef1a2ca1b2b25ec2e4373863ccddf19658b07c5d139f61",
+        "size": 447968
+      },
+      {
+        "path": "x86_64-apple-darwin/rust_consumer.rs",
+        "sha256": "sha256:2d6d9b91383be61cd3f026f9205f0cc07ec3d79ee21307224579f35098ad058e",
+        "size": 2887
+      },
+      {
+        "path": "x86_64-apple-darwin/rust_provider.h",
+        "sha256": "sha256:cb5eb8e2ec01d242323d637f9075abf2d484cac8e2e1b9a0d85cb01711161f6e",
+        "size": 1352
+      },
+      {
+        "path": "x86_64-apple-darwin/shape.o",
+        "sha256": "sha256:188ef0f3ad8c6245fc7b1b37628ef868e6f6eec03524b189dc46beae3baeaf09",
+        "size": 1336
+      },
+      {
+        "path": "x86_64-apple-darwin/shape_consumer.c",
+        "sha256": "sha256:a50b273d4799960b3241d3658a3f3371489feed7f147b05ce2b208e67afa71e3",
+        "size": 1601
+      },
+      {
+        "path": "x86_64-apple-darwin/shape_consumer.rs",
+        "sha256": "sha256:bc7d418dffcbd832e55d29025e646db7d300a873fbc6fe9e632bc11d63c307ca",
+        "size": 1377
+      },
+      {
+        "path": "x86_64-apple-darwin/wrong_signature.c",
+        "sha256": "sha256:d80550aa27a049e711fd482c5376d380d60fd0fab2a4424056c571bb378ff956",
+        "size": 206
+      },
+      {
+        "path": "x86_64-apple-darwin/wrong_signature.rs",
+        "sha256": "sha256:a7a01ade9780d27016f82a626d858679cb83e6cabbf2677908b80a9307a3c881",
+        "size": 308
+      }
+    ],
+    "command_log": {
+      "path": "commands.json",
+      "sha256": "sha256:d1aeb988ce007ed315e204ad675ac417c68f9c7aef36d1b40cba9c8e102ac09e",
+      "size": 479963
+    }
+  },
+  "commands": [
+    {
+      "argv": [
+        "$CBINDGEN",
+        "--config",
+        "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+        "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+        "--output",
+        "$OUTPUT/generated/rust_provider.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$CBINDGEN",
+        "--config",
+        "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+        "$REPO/docs/examples/first-route/expected.rs",
+        "--output",
+        "$OUTPUT/generated/expected.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:a9541a3d6569e5e20e3b0e93aed006bae577c575562f95bf9053d6bb59ba5b08"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "--print-resource-dir"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:5f02bfcf81bcabd9cad2563fb63e56f498dc512d68dbca253d65f7ef4abd6c72",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$BINDGEN",
+        "$REPO/tests/fixtures/native-probe/c_provider.h",
+        "--output",
+        "$OUTPUT/aarch64-apple-darwin/c_provider.rs",
+        "--rust-target",
+        "1.85",
+        "--rust-edition",
+        "2024",
+        "--no-include-path-detection",
+        "--allowlist-type",
+        "Madb.*",
+        "--allowlist-function",
+        "madb_.*",
+        "--allowlist-var",
+        "MADB_.*",
+        "--no-doc-comments",
+        "--default-macro-constant-type",
+        "signed",
+        "--formatter",
+        "prettyplease",
+        "--",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$BINDGEN",
+        "$REPO/docs/examples/first-route/expected.h",
+        "--output",
+        "$OUTPUT/aarch64-apple-darwin/expected.rs",
+        "--rust-target",
+        "1.85",
+        "--rust-edition",
+        "2024",
+        "--no-include-path-detection",
+        "--allowlist-type",
+        "Madb.*",
+        "--allowlist-function",
+        "madb_.*",
+        "--allowlist-var",
+        "MADB_.*",
+        "--no-doc-comments",
+        "--default-macro-constant-type",
+        "signed",
+        "--formatter",
+        "prettyplease",
+        "--",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "aarch64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "--crate-type=lib",
+        "--emit=metadata",
+        "$OUTPUT/aarch64-apple-darwin/shape_consumer.rs",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/expected.rmeta"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "$OUTPUT/generated",
+        "-c",
+        "$OUTPUT/aarch64-apple-darwin/shape_consumer.c",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/shape.o"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "aarch64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "--crate-type=staticlib",
+        "--crate-name=madb_probe_rust",
+        "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/libmadb_probe_rust.a"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-c",
+        "$REPO/tests/fixtures/native-probe/c_provider.c",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/c_provider.o"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/libtool",
+        "-static",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a",
+        "$OUTPUT/aarch64-apple-darwin/c_provider.o"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O2",
+        "$OUTPUT/aarch64-apple-darwin/c_consumer.c",
+        "$OUTPUT/aarch64-apple-darwin/libmadb_probe_rust.a",
+        "-framework",
+        "Security",
+        "-liconv",
+        "-lresolv",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/c_consumer"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "aarch64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "$OUTPUT/aarch64-apple-darwin/rust_consumer.rs",
+        "-Lnative=$OUTPUT/aarch64-apple-darwin",
+        "-lstatic=madb_probe_c",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/rust_consumer"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fsyntax-only",
+        "$OUTPUT/aarch64-apple-darwin/wrong_signature.c"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 1,
+      "expected_error": "incompatible function pointer",
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e03ee60a7062ee9be640e1148a6bad93d4f9a653cd4479a168beb3961272476b",
+      "stderr_excerpt": "$OUTPUT/aarch64-apple-darwin/wrong_signature.c:3:14: error: incompatible function pointer types initializing 'MadbStatus (*)(const uint8_t *, uint32_t, uint64_t *, MadbError *)' (aka 'int (*)(const unsigned char *, unsigned int, unsigned long long *, MadbError *)') with an expression of type 'MadbStatus (const uint8_t *, uint64_t, uint64_t *, MadbError *)' (aka 'int (const unsigned char *, unsigned long long, unsigned long long *, MadbError *)') [-Wincompatible-function-pointer-types]\n    3 | MadbStatus (*wrong_signature)(const uint8_t *, uint32_t, uint64_t *, MadbError *) =\n      |              ^\n    4 |     madb_probe_rust_checksum;\n      |     ~~~~~~~~~~~~~~~~~~~~~~~~\n1 error generated.\n"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "aarch64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "--crate-type=lib",
+        "--emit=metadata",
+        "$OUTPUT/aarch64-apple-darwin/wrong_signature.rs",
+        "-o",
+        "$OUTPUT/aarch64-apple-darwin/wrong.rmeta"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 1,
+      "expected_error": "E0308",
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:50010020946f416acd0c8577b5e3ac680093d34d7a8d03c9f8f97afb225e6a5f",
+      "stderr_excerpt": "error[E0308]: mismatched types\n  --> $OUTPUT/aarch64-apple-darwin/wrong_signature.rs:10:5\n   |\n 9 | const _: unsafe extern \"C\" fn(*const u8, u32, *mut u64, *mut MadbError) -> MadbStatus =\n   |          ---------------------------------------------------------------------------- expected because of the type of the constant\n10 |     madb_c_fixture_checksum;\n   |     ^^^^^^^^^^^^^^^^^^^^^^^ expected fn pointer, found fn item\n   |\n   = note: expected fn pointer `unsafe extern \"C\" fn(_, u32, _, _) -> _`\n                 found fn item `unsafe extern \"C\" fn(_, u64, _, _) -> _ {madb_c_fixture_checksum}`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fpack-struct=1",
+        "-fsyntax-only",
+        "$OUTPUT/aarch64-apple-darwin/c_consumer.c"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 1,
+      "expected_error": "static assertion failed",
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:2111c28b6b2df4790831cc435a354e5c1cbc53f8b3ecbeb945d513c4cae1c4e0",
+      "stderr_excerpt": "$OUTPUT/aarch64-apple-darwin/c_consumer.c:9:16: error: static assertion failed due to requirement '_Alignof(MadbError) == 4': error alignment\n    9 | _Static_assert(_Alignof(MadbError) == 4, \"error alignment\");\n      |                ^~~~~~~~~~~~~~~~~~~~~~~~\n$OUTPUT/aarch64-apple-darwin/c_consumer.c:9:36: note: expression evaluates to '1 == 4'\n    9 | _Static_assert(_Alignof(MadbError) == 4, \"error alignment\");\n      |                ~~~~~~~~~~~~~~~~~~~~^~~~\n$OUTPUT/aarch64-apple-darwin/c_consumer.c:11:16: error: static assertion failed due to requirement 'sizeof(MadbProbeLayout) == 32': probe size\n   11 | _Static_assert(sizeof(MadbProbeLayout) == 32, \"probe size\");\n      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n$OUTPUT/aarch64-apple-darwin/c_consumer.c:11:40: note: expression evaluates to '25 == 32'\n   11 | _Static_assert(sizeof(MadbProbeLayout) == 32, \"probe size\");\n      |                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~\n$OUTPUT/aarch64-apple-darwin/c_consumer.c:12:16: error: static assertion failed due to requirement '_Alignof(MadbProbeLayout) == 8': probe alignment\n   12 | _Static_assert(_Alignof(MadbProbeLayout) == 8, \"probe alignment\");\n      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n$OUTPUT/aarch64-apple-darwin/c_consumer.c:12:42: note: expression evaluates to '1 == 8'\n   12 | _Static_assert(_Alignof(MadbProbeLayout) == 8, \"probe alignment\");\n      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~\n$OUTPUT/aarch64-apple-darwin/c_consumer.c:13:16: error: static assertion failed due to requirement '__builtin_offsetof(MadbProbeLayout, count) == 8': count offset\n  "
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/lib/rustlib/aarch64-apple-darwin/bin/llvm-nm",
+        "-gUj",
+        "$OUTPUT/aarch64-apple-darwin/libmadb_probe_rust.a"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:d95766a43dfc27a1541e67fdf4b943c11a0aee9b5f51cc6e001dc5a44387a4ba",
+      "stderr_sha256": "sha256:ecae95fbaf7e5fb4ac641da1490e47c66a8bfbb75736429e145ec0f3aa3d1ca1"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/llvm-nm",
+        "-gUj",
+        "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:c76c8a77b3cf7b8e11c3029eaec26a471ea4cb3be9dcba27bcd7946c129bf524",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$OUTPUT/aarch64-apple-darwin/c_consumer"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:9734bb7d62b248d7eadaa55eaa041d9d67e191e2134e700dd3bbbafb169add6e",
+      "stdout_excerpt": "C_TO_RUST_OK cases=10\n",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$OUTPUT/aarch64-apple-darwin/rust_consumer"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:f3d8cbf959af23f892b141b35197b243dd3f92c8903dec10f3e0727fde2af610",
+      "stdout_excerpt": "RUST_TO_C_OK cases=10\n",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-M",
+        "-x",
+        "c",
+        "$REPO/tests/fixtures/native-probe/c_provider.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:9c49b43ca1417d00ecce462c088efd9fd327387b51cb39a7dd7af1171c6335fa",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-M",
+        "-x",
+        "c",
+        "$OUTPUT/generated/rust_provider.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e9b1bf97729ca7d85aeea1b13ae07de8749feb080425dc4b7fad6d7261cd053c",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-M",
+        "-x",
+        "c",
+        "$REPO/docs/examples/first-route/expected.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:c81c395751efd335f1c1e0350186aed5cfbf5773842721b08633ca86e707964a",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "--print-resource-dir"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:5f02bfcf81bcabd9cad2563fb63e56f498dc512d68dbca253d65f7ef4abd6c72",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$BINDGEN",
+        "$REPO/tests/fixtures/native-probe/c_provider.h",
+        "--output",
+        "$OUTPUT/x86_64-apple-darwin/c_provider.rs",
+        "--rust-target",
+        "1.85",
+        "--rust-edition",
+        "2024",
+        "--no-include-path-detection",
+        "--allowlist-type",
+        "Madb.*",
+        "--allowlist-function",
+        "madb_.*",
+        "--allowlist-var",
+        "MADB_.*",
+        "--no-doc-comments",
+        "--default-macro-constant-type",
+        "signed",
+        "--formatter",
+        "prettyplease",
+        "--",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$BINDGEN",
+        "$REPO/docs/examples/first-route/expected.h",
+        "--output",
+        "$OUTPUT/x86_64-apple-darwin/expected.rs",
+        "--rust-target",
+        "1.85",
+        "--rust-edition",
+        "2024",
+        "--no-include-path-detection",
+        "--allowlist-type",
+        "Madb.*",
+        "--allowlist-function",
+        "madb_.*",
+        "--allowlist-var",
+        "MADB_.*",
+        "--no-doc-comments",
+        "--default-macro-constant-type",
+        "signed",
+        "--formatter",
+        "prettyplease",
+        "--",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "x86_64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "--crate-type=lib",
+        "--emit=metadata",
+        "$OUTPUT/x86_64-apple-darwin/shape_consumer.rs",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/expected.rmeta"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I",
+        "$OUTPUT/generated",
+        "-c",
+        "$OUTPUT/x86_64-apple-darwin/shape_consumer.c",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/shape.o"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "x86_64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "--crate-type=staticlib",
+        "--crate-name=madb_probe_rust",
+        "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/libmadb_probe_rust.a"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-c",
+        "$REPO/tests/fixtures/native-probe/c_provider.c",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/c_provider.o"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/libtool",
+        "-static",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a",
+        "$OUTPUT/x86_64-apple-darwin/c_provider.o"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-O2",
+        "$OUTPUT/x86_64-apple-darwin/c_consumer.c",
+        "$OUTPUT/x86_64-apple-darwin/libmadb_probe_rust.a",
+        "-framework",
+        "Security",
+        "-liconv",
+        "-lresolv",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/c_consumer"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "x86_64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "$OUTPUT/x86_64-apple-darwin/rust_consumer.rs",
+        "-Lnative=$OUTPUT/x86_64-apple-darwin",
+        "-lstatic=madb_probe_c",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/rust_consumer"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fsyntax-only",
+        "$OUTPUT/x86_64-apple-darwin/wrong_signature.c"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 1,
+      "expected_error": "incompatible function pointer",
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:e534e5ff5f0135d2eee24de953f1969a7c2c4c03b7c8de8d0e3cee5d32104888",
+      "stderr_excerpt": "$OUTPUT/x86_64-apple-darwin/wrong_signature.c:3:14: error: incompatible function pointer types initializing 'MadbStatus (*)(const uint8_t *, uint32_t, uint64_t *, MadbError *)' (aka 'int (*)(const unsigned char *, unsigned int, unsigned long long *, MadbError *)') with an expression of type 'MadbStatus (const uint8_t *, uint64_t, uint64_t *, MadbError *)' (aka 'int (const unsigned char *, unsigned long long, unsigned long long *, MadbError *)') [-Wincompatible-function-pointer-types]\n    3 | MadbStatus (*wrong_signature)(const uint8_t *, uint32_t, uint64_t *, MadbError *) =\n      |              ^\n    4 |     madb_probe_rust_checksum;\n      |     ~~~~~~~~~~~~~~~~~~~~~~~~\n1 error generated.\n"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "--target",
+        "x86_64-apple-darwin",
+        "--edition=2024",
+        "-Dwarnings",
+        "-Cpanic=abort",
+        "-Copt-level=2",
+        "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+        "-Clink-arg=-isysroot",
+        "-Clink-arg=$SDK",
+        "--crate-type=lib",
+        "--emit=metadata",
+        "$OUTPUT/x86_64-apple-darwin/wrong_signature.rs",
+        "-o",
+        "$OUTPUT/x86_64-apple-darwin/wrong.rmeta"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 1,
+      "expected_error": "E0308",
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:57b13cffdeae19a69a740750baa4fe533ce71c5b8670133dcd146e1c3f54c1f4",
+      "stderr_excerpt": "error[E0308]: mismatched types\n  --> $OUTPUT/x86_64-apple-darwin/wrong_signature.rs:10:5\n   |\n 9 | const _: unsafe extern \"C\" fn(*const u8, u32, *mut u64, *mut MadbError) -> MadbStatus =\n   |          ---------------------------------------------------------------------------- expected because of the type of the constant\n10 |     madb_c_fixture_checksum;\n   |     ^^^^^^^^^^^^^^^^^^^^^^^ expected fn pointer, found fn item\n   |\n   = note: expected fn pointer `unsafe extern \"C\" fn(_, u32, _, _) -> _`\n                 found fn item `unsafe extern \"C\" fn(_, u64, _, _) -> _ {madb_c_fixture_checksum}`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-fpack-struct=1",
+        "-fsyntax-only",
+        "$OUTPUT/x86_64-apple-darwin/c_consumer.c"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 1,
+      "expected_error": "static assertion failed",
+      "stdout_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "sha256:201cde3f55d6b8e1d64dc1844188ca53389a3dbf0f6f4b4cb17f144da7ba1fef",
+      "stderr_excerpt": "$OUTPUT/x86_64-apple-darwin/c_consumer.c:9:16: error: static assertion failed due to requirement '_Alignof(MadbError) == 4': error alignment\n    9 | _Static_assert(_Alignof(MadbError) == 4, \"error alignment\");\n      |                ^~~~~~~~~~~~~~~~~~~~~~~~\n$OUTPUT/x86_64-apple-darwin/c_consumer.c:9:36: note: expression evaluates to '1 == 4'\n    9 | _Static_assert(_Alignof(MadbError) == 4, \"error alignment\");\n      |                ~~~~~~~~~~~~~~~~~~~~^~~~\n$OUTPUT/x86_64-apple-darwin/c_consumer.c:11:16: error: static assertion failed due to requirement 'sizeof(MadbProbeLayout) == 32': probe size\n   11 | _Static_assert(sizeof(MadbProbeLayout) == 32, \"probe size\");\n      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n$OUTPUT/x86_64-apple-darwin/c_consumer.c:11:40: note: expression evaluates to '25 == 32'\n   11 | _Static_assert(sizeof(MadbProbeLayout) == 32, \"probe size\");\n      |                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~\n$OUTPUT/x86_64-apple-darwin/c_consumer.c:12:16: error: static assertion failed due to requirement '_Alignof(MadbProbeLayout) == 8': probe alignment\n   12 | _Static_assert(_Alignof(MadbProbeLayout) == 8, \"probe alignment\");\n      |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n$OUTPUT/x86_64-apple-darwin/c_consumer.c:12:42: note: expression evaluates to '1 == 8'\n   12 | _Static_assert(_Alignof(MadbProbeLayout) == 8, \"probe alignment\");\n      |                ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~\n$OUTPUT/x86_64-apple-darwin/c_consumer.c:13:16: error: static assertion failed due to requirement '__builtin_offsetof(MadbProbeLayout, count) == 8': count offset\n   13 | _"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/lib/rustlib/aarch64-apple-darwin/bin/llvm-nm",
+        "-gUj",
+        "$OUTPUT/x86_64-apple-darwin/libmadb_probe_rust.a"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:34c3e280617bc6c1281ae05a9f17d942967ac0f38b6389dc47f7434e98d3cb2c",
+      "stderr_sha256": "sha256:7249fd1b8fa82cb409b787444884e5b549ce2126ec2a606ab01245f834961c01"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/llvm-nm",
+        "-gUj",
+        "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:c76c8a77b3cf7b8e11c3029eaec26a471ea4cb3be9dcba27bcd7946c129bf524",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-M",
+        "-x",
+        "c",
+        "$REPO/tests/fixtures/native-probe/c_provider.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:c632c1f635c6059381e50fc52a16163975c8e1698f3df09587924956c181c91a",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-M",
+        "-x",
+        "c",
+        "$OUTPUT/generated/rust_provider.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:7385feff84a2cfd94ab3285ec381c959312cc9b1c4d098a29ad685908e6952ba",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$XCODE_TOOLCHAIN/bin/clang",
+        "-target",
+        "x86_64-apple-macosx14.0",
+        "-isysroot",
+        "$SDK",
+        "-resource-dir",
+        "$XCODE_TOOLCHAIN/lib/clang/21",
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-M",
+        "-x",
+        "c",
+        "$REPO/docs/examples/first-route/expected.h"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:ad4d5dc318ff8f3b6870c4ed9c0f741eeed538c6761f7e5148e224fe9ac8def7",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "$RUST_TOOLCHAIN/bin/rustc",
+        "-Vv"
+      ],
+      "cwd": "$OUTPUT",
+      "exit_code": 0,
+      "expected_error": null,
+      "stdout_sha256": "sha256:e003fd3d385fcd0de16bc6b049124efb20207831dd810fd4ab39ff079bbb12a5",
+      "stderr_sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "project": {
+    "schema": "madb.project/1",
+    "project": "c03-native-probe",
+    "sdk_namespace": "madb.c03",
+    "boundaries": [
+      {
+        "id": "c03-c-to-rust-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "direction": "consumer-to-provider",
+        "source": {
+          "kind": "rust-c-declaration",
+          "path": "tests/fixtures/native-probe/rust_provider.rs"
+        },
+        "profile": {
+          "path": "profiles/c03-c-to-rust-aarch64-apple-darwin.json",
+          "sha256": "sha256:dedeff5afc7b369d56a355a088a184ffc1c07cc9d3b0fc201ddef92336fb78a3",
+          "size": 5889,
+          "schema": "madb.profile/1"
+        },
+        "target": "aarch64-apple-darwin",
+        "output": "generated/c03-c-to-rust-aarch64-apple-darwin"
+      },
+      {
+        "id": "c03-c-to-rust-x86_64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "direction": "consumer-to-provider",
+        "source": {
+          "kind": "rust-c-declaration",
+          "path": "tests/fixtures/native-probe/rust_provider.rs"
+        },
+        "profile": {
+          "path": "profiles/c03-c-to-rust-x86_64-apple-darwin.json",
+          "sha256": "sha256:44056df7e84170c3ee1917047354a27bb4612bd52f90ad85665cef5fbcbb0ffe",
+          "size": 5864,
+          "schema": "madb.profile/1"
+        },
+        "target": "x86_64-apple-darwin",
+        "output": "generated/c03-c-to-rust-x86_64-apple-darwin"
+      },
+      {
+        "id": "c03-rust-to-c-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "direction": "consumer-to-provider",
+        "source": {
+          "kind": "c-header",
+          "path": "tests/fixtures/native-probe/c_provider.h"
+        },
+        "profile": {
+          "path": "profiles/c03-rust-to-c-aarch64-apple-darwin.json",
+          "sha256": "sha256:bfdc6763ab12574e7fee9d7fb7d6d220c9abcbf49b62d54dd67c582953a5ff34",
+          "size": 5889,
+          "schema": "madb.profile/1"
+        },
+        "target": "aarch64-apple-darwin",
+        "output": "generated/c03-rust-to-c-aarch64-apple-darwin"
+      },
+      {
+        "id": "c03-rust-to-c-x86_64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "direction": "consumer-to-provider",
+        "source": {
+          "kind": "c-header",
+          "path": "tests/fixtures/native-probe/c_provider.h"
+        },
+        "profile": {
+          "path": "profiles/c03-rust-to-c-x86_64-apple-darwin.json",
+          "sha256": "sha256:a5c06a7cac9ccc9800c24e781170bae3a155fc8f3dc0e6bb47511abe182b35b0",
+          "size": 5864,
+          "schema": "madb.profile/1"
+        },
+        "target": "x86_64-apple-darwin",
+        "output": "generated/c03-rust-to-c-x86_64-apple-darwin"
+      }
+    ],
+    "policies": [],
+    "policy_families": [],
+    "artifacts": {
+      "package": "c03-probe-only",
+      "manifest": "future-c05-candidate.json"
+    }
+  },
+  "lock": {
+    "schema": "madb.lock/1",
+    "project_digest": "sha256:76b4f374821afd9bf0a48c5ac362cfd779381dc5a61a8adf98fa785f5f34270f",
+    "profiles": [
+      {
+        "id": "c03-c-to-rust-aarch64-apple-darwin",
+        "semantic_digest": "sha256:04b6027261659800cd13c856527863372094e82619a59fff3659fcc9845cd056",
+        "file": {
+          "path": "profiles/c03-c-to-rust-aarch64-apple-darwin.json",
+          "sha256": "sha256:dedeff5afc7b369d56a355a088a184ffc1c07cc9d3b0fc201ddef92336fb78a3",
+          "size": 5889,
+          "schema": "madb.profile/1"
+        }
+      },
+      {
+        "id": "c03-rust-to-c-aarch64-apple-darwin",
+        "semantic_digest": "sha256:e658f9cd4b7a640d6bf567fab5656b1de0cbb61666a73ecddaf201f5b49823ca",
+        "file": {
+          "path": "profiles/c03-rust-to-c-aarch64-apple-darwin.json",
+          "sha256": "sha256:bfdc6763ab12574e7fee9d7fb7d6d220c9abcbf49b62d54dd67c582953a5ff34",
+          "size": 5889,
+          "schema": "madb.profile/1"
+        }
+      },
+      {
+        "id": "c03-c-to-rust-x86_64-apple-darwin",
+        "semantic_digest": "sha256:bd0cb99305698e9b04fb84f487112296cf3ccb64dc8516c8edb8e9d3e0670591",
+        "file": {
+          "path": "profiles/c03-c-to-rust-x86_64-apple-darwin.json",
+          "sha256": "sha256:44056df7e84170c3ee1917047354a27bb4612bd52f90ad85665cef5fbcbb0ffe",
+          "size": 5864,
+          "schema": "madb.profile/1"
+        }
+      },
+      {
+        "id": "c03-rust-to-c-x86_64-apple-darwin",
+        "semantic_digest": "sha256:2599224f09148c87541e701536f65d99c6656f00668d16d27eeca4c17ee9f909",
+        "file": {
+          "path": "profiles/c03-rust-to-c-x86_64-apple-darwin.json",
+          "sha256": "sha256:a5c06a7cac9ccc9800c24e781170bae3a155fc8f3dc0e6bb47511abe182b35b0",
+          "size": 5864,
+          "schema": "madb.profile/1"
+        }
+      }
+    ],
+    "tools": [
+      {
+        "id": "clang-aarch64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": [
+          "--print-resource-dir"
+        ]
+      },
+      {
+        "id": "libtool-aarch64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": [
+          "-static",
+          "-o",
+          "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a",
+          "$OUTPUT/aarch64-apple-darwin/c_provider.o"
+        ]
+      },
+      {
+        "id": "nm-aarch64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": [
+          "-gUj",
+          "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a"
+        ]
+      },
+      {
+        "id": "rustc-aarch64-apple-darwin",
+        "version": "1.99.1",
+        "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+        "arguments": [
+          "--target",
+          "aarch64-apple-darwin",
+          "--edition=2024",
+          "-Dwarnings",
+          "-Cpanic=abort",
+          "-Copt-level=2",
+          "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+          "-Clink-arg=-isysroot",
+          "-Clink-arg=$SDK",
+          "--crate-type=lib",
+          "--emit=metadata",
+          "$OUTPUT/aarch64-apple-darwin/shape_consumer.rs",
+          "-o",
+          "$OUTPUT/aarch64-apple-darwin/expected.rmeta"
+        ]
+      },
+      {
+        "id": "bindgen-aarch64-apple-darwin",
+        "version": "0.73.2",
+        "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+        "arguments": [
+          "$REPO/tests/fixtures/native-probe/c_provider.h",
+          "--output",
+          "$OUTPUT/aarch64-apple-darwin/c_provider.rs",
+          "--rust-target",
+          "1.85",
+          "--rust-edition",
+          "2024",
+          "--no-include-path-detection",
+          "--allowlist-type",
+          "Madb.*",
+          "--allowlist-function",
+          "madb_.*",
+          "--allowlist-var",
+          "MADB_.*",
+          "--no-doc-comments",
+          "--default-macro-constant-type",
+          "signed",
+          "--formatter",
+          "prettyplease",
+          "--",
+          "-target",
+          "arm64-apple-macosx14.0",
+          "-isysroot",
+          "$SDK",
+          "-resource-dir",
+          "$XCODE_TOOLCHAIN/lib/clang/21",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ]
+      },
+      {
+        "id": "cbindgen-aarch64-apple-darwin",
+        "version": "0.29.4",
+        "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+        "arguments": [
+          "--config",
+          "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+          "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+          "--output",
+          "$OUTPUT/generated/rust_provider.h"
+        ]
+      },
+      {
+        "id": "libclang-aarch64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": []
+      },
+      {
+        "id": "rust-nm-aarch64-apple-darwin",
+        "version": "1.99.1",
+        "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+        "arguments": [
+          "-gUj",
+          "$OUTPUT/aarch64-apple-darwin/libmadb_probe_rust.a"
+        ]
+      },
+      {
+        "id": "clang-x86_64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": [
+          "--print-resource-dir"
+        ]
+      },
+      {
+        "id": "libtool-x86_64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": [
+          "-static",
+          "-o",
+          "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a",
+          "$OUTPUT/x86_64-apple-darwin/c_provider.o"
+        ]
+      },
+      {
+        "id": "nm-x86_64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": [
+          "-gUj",
+          "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a"
+        ]
+      },
+      {
+        "id": "rustc-x86_64-apple-darwin",
+        "version": "1.99.1",
+        "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+        "arguments": [
+          "--target",
+          "x86_64-apple-darwin",
+          "--edition=2024",
+          "-Dwarnings",
+          "-Cpanic=abort",
+          "-Copt-level=2",
+          "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+          "-Clink-arg=-isysroot",
+          "-Clink-arg=$SDK",
+          "--crate-type=lib",
+          "--emit=metadata",
+          "$OUTPUT/x86_64-apple-darwin/shape_consumer.rs",
+          "-o",
+          "$OUTPUT/x86_64-apple-darwin/expected.rmeta"
+        ]
+      },
+      {
+        "id": "bindgen-x86_64-apple-darwin",
+        "version": "0.73.2",
+        "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+        "arguments": [
+          "$REPO/tests/fixtures/native-probe/c_provider.h",
+          "--output",
+          "$OUTPUT/x86_64-apple-darwin/c_provider.rs",
+          "--rust-target",
+          "1.85",
+          "--rust-edition",
+          "2024",
+          "--no-include-path-detection",
+          "--allowlist-type",
+          "Madb.*",
+          "--allowlist-function",
+          "madb_.*",
+          "--allowlist-var",
+          "MADB_.*",
+          "--no-doc-comments",
+          "--default-macro-constant-type",
+          "signed",
+          "--formatter",
+          "prettyplease",
+          "--",
+          "-target",
+          "x86_64-apple-macosx14.0",
+          "-isysroot",
+          "$SDK",
+          "-resource-dir",
+          "$XCODE_TOOLCHAIN/lib/clang/21",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror"
+        ]
+      },
+      {
+        "id": "cbindgen-x86_64-apple-darwin",
+        "version": "0.29.4",
+        "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+        "arguments": [
+          "--config",
+          "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+          "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+          "--output",
+          "$OUTPUT/generated/rust_provider.h"
+        ]
+      },
+      {
+        "id": "libclang-x86_64-apple-darwin",
+        "version": "Xcode 27.0; Build version 27A266a",
+        "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://developer.apple.com/download/all/",
+        "arguments": []
+      },
+      {
+        "id": "rust-nm-x86_64-apple-darwin",
+        "version": "1.99.1",
+        "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8",
+        "host": "aarch64-apple-darwin",
+        "target": "x86_64-apple-darwin",
+        "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+        "arguments": [
+          "-gUj",
+          "$OUTPUT/x86_64-apple-darwin/libmadb_probe_rust.a"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "madb.c03/probe",
+        "version": "0.1.0-probe",
+        "sha256": "sha256:dedcf33674597941413e1d5308ddaea6b21689291151ddb09cef9bc4f5aabaad"
+      }
+    ],
+    "inputs": [
+      {
+        "path": "commands.json",
+        "sha256": "sha256:d1aeb988ce007ed315e204ad675ac417c68f9c7aef36d1b40cba9c8e102ac09e",
+        "size": 479963
+      },
+      {
+        "path": "docs/examples/first-route/consumer.c",
+        "sha256": "sha256:a50b273d4799960b3241d3658a3f3371489feed7f147b05ce2b208e67afa71e3",
+        "size": 1601
+      },
+      {
+        "path": "docs/examples/first-route/expected.h",
+        "sha256": "sha256:23f478a9525825e566f79f2506cc13af81849b97f7ddeddb27d260d62de88dc2",
+        "size": 2266
+      },
+      {
+        "path": "docs/examples/first-route/expected.rs",
+        "sha256": "sha256:c33a1bbde56c2164d8cbb9f9ae320cf03306de878820a70cb88c767e78c82580",
+        "size": 2019
+      },
+      {
+        "path": "observed-sdk.json",
+        "sha256": "sha256:4b2008f921b9964261f2da8f883a83a4491a74b66ea3d0f18cd297f180eb5753",
+        "size": 32326
+      },
+      {
+        "path": "tests/fixtures/native-probe/c_consumer.c",
+        "sha256": "sha256:3ecd54aafc0cd5c6601c252522380d8bd5d79e10616652cdcc6cd3ad94422ad1",
+        "size": 2064
+      },
+      {
+        "path": "tests/fixtures/native-probe/c_provider.c",
+        "sha256": "sha256:685041cc44224ac343604ef90db0dea90b24405f86fd7dc6dbedcaa11cdd9c65",
+        "size": 910
+      },
+      {
+        "path": "tests/fixtures/native-probe/c_provider.h",
+        "sha256": "sha256:d035f637e3bbac403014e0ffc1bc4cce3870324c5518483a4def9b0b5026d8a5",
+        "size": 732
+      },
+      {
+        "path": "tests/fixtures/native-probe/cbindgen.toml",
+        "sha256": "sha256:7951995d6205ebcbc355822147d32857f9376ce410295d7184368f40b90d106a",
+        "size": 200
+      },
+      {
+        "path": "tests/fixtures/native-probe/rust_consumer.rs",
+        "sha256": "sha256:2d6d9b91383be61cd3f026f9205f0cc07ec3d79ee21307224579f35098ad058e",
+        "size": 2887
+      },
+      {
+        "path": "tests/fixtures/native-probe/rust_provider.rs",
+        "sha256": "sha256:6f9fd491da3c03f68463e3ec19ff10e949b9fc0de9fc5736e050c71980af7cfc",
+        "size": 2464
+      },
+      {
+        "path": "tests/fixtures/native-probe/shape_consumer.rs",
+        "sha256": "sha256:bc7d418dffcbd832e55d29025e646db7d300a873fbc6fe9e632bc11d63c307ca",
+        "size": 1377
+      },
+      {
+        "path": "tests/fixtures/native-probe/wrong_signature.c",
+        "sha256": "sha256:d80550aa27a049e711fd482c5376d380d60fd0fab2a4424056c571bb378ff956",
+        "size": 206
+      },
+      {
+        "path": "tests/fixtures/native-probe/wrong_signature.rs",
+        "sha256": "sha256:a7a01ade9780d27016f82a626d858679cb83e6cabbf2677908b80a9307a3c881",
+        "size": 308
+      },
+      {
+        "path": "tests/integration/c03/cli_install.py",
+        "sha256": "sha256:0f3eb11a7b0b76e2858364b1518a77cb815f0f34be7b2e93b355b5aebe02c44b",
+        "size": 1866
+      },
+      {
+        "path": "tests/integration/c03/common.py",
+        "sha256": "sha256:91d686ef54685611faa4882dd294d073fb27e2124beb606158bed9da8f944a6b",
+        "size": 2093
+      },
+      {
+        "path": "tests/integration/c03/freeze.py",
+        "sha256": "sha256:e9c832f14a9ab7f5fb8ad29995831237a7aeee9a3506dd9f005938d304ac86fe",
+        "size": 7116
+      },
+      {
+        "path": "tests/integration/c03/helper.py",
+        "sha256": "sha256:877be4a40d9ae03c851e8d50b2989e49a0f2974fe69e11f76ebfa18044b66b44",
+        "size": 2152
+      },
+      {
+        "path": "tests/integration/c03/install_tools.py",
+        "sha256": "sha256:f33c79b84b492bd8519ae60f1dd2f49f84d9c141c7635b09cf12bb264c184740",
+        "size": 2103
+      },
+      {
+        "path": "tests/integration/c03/native.py",
+        "sha256": "sha256:12be731719eeaacfe6734b069b40e147c034d5997fb6d3cced8393233daf86ad",
+        "size": 12603
+      },
+      {
+        "path": "tests/integration/c03/test_handshake.py",
+        "sha256": "sha256:ecab30bda4e7cf4229dfc3d687fdd493b041ad1c022e596ee380a28fc27148f9",
+        "size": 4199
+      },
+      {
+        "path": "tests/integration/c03/toolchain.json",
+        "sha256": "sha256:0f6cc6f99ba7a91f089642da35b10443fe2e425b9e8238fd04158161e0865381",
+        "size": 1209
+      },
+      {
+        "path": "toolchain-lock.json",
+        "sha256": "sha256:dedcf33674597941413e1d5308ddaea6b21689291151ddb09cef9bc4f5aabaad",
+        "size": 35098
+      }
+    ],
+    "schemas": [
+      {
+        "path": "docs/schemas/common.schema.json",
+        "sha256": "sha256:df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314",
+        "size": 13073
+      },
+      {
+        "path": "docs/schemas/project.schema.json",
+        "sha256": "sha256:104256153131effea12260ddcb70c3b98258c946149de0d45049bd792123c498",
+        "size": 5647
+      },
+      {
+        "path": "docs/schemas/profile.schema.json",
+        "sha256": "sha256:b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+        "size": 5526
+      },
+      {
+        "path": "docs/schemas/lock.schema.json",
+        "sha256": "sha256:f056caec970dd1e6f5a400255df52e6194282a010dc5e8775586322372bcca3c",
+        "size": 2898
+      }
+    ],
+    "extensions": {
+      "madb.probe": "C03 observations; no source-reader IR or release candidate yet"
+    }
+  },
+  "profiles": [
+    {
+      "schema": "madb.profile/1",
+      "id": "c03-c-to-rust-aarch64-apple-darwin",
+      "route": "RUST-C-ABI",
+      "provider": {
+        "language": "rust",
+        "runtime": "native"
+      },
+      "consumer": {
+        "language": "c",
+        "runtime": "native"
+      },
+      "direction": "consumer-to-provider",
+      "target": "aarch64-apple-darwin",
+      "abi": "c11",
+      "artifact_kind": "static-library",
+      "build_system": "rustc-clang-probe",
+      "deployment_target": "14.0",
+      "tools": [
+        {
+          "id": "clang-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "--print-resource-dir"
+          ]
+        },
+        {
+          "id": "libtool-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-static",
+            "-o",
+            "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a",
+            "$OUTPUT/aarch64-apple-darwin/c_provider.o"
+          ]
+        },
+        {
+          "id": "nm-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a"
+          ]
+        },
+        {
+          "id": "rustc-aarch64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "--target",
+            "aarch64-apple-darwin",
+            "--edition=2024",
+            "-Dwarnings",
+            "-Cpanic=abort",
+            "-Copt-level=2",
+            "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+            "-Clink-arg=-isysroot",
+            "-Clink-arg=$SDK",
+            "--crate-type=lib",
+            "--emit=metadata",
+            "$OUTPUT/aarch64-apple-darwin/shape_consumer.rs",
+            "-o",
+            "$OUTPUT/aarch64-apple-darwin/expected.rmeta"
+          ]
+        },
+        {
+          "id": "bindgen-aarch64-apple-darwin",
+          "version": "0.73.2",
+          "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+          "arguments": [
+            "$REPO/tests/fixtures/native-probe/c_provider.h",
+            "--output",
+            "$OUTPUT/aarch64-apple-darwin/c_provider.rs",
+            "--rust-target",
+            "1.85",
+            "--rust-edition",
+            "2024",
+            "--no-include-path-detection",
+            "--allowlist-type",
+            "Madb.*",
+            "--allowlist-function",
+            "madb_.*",
+            "--allowlist-var",
+            "MADB_.*",
+            "--no-doc-comments",
+            "--default-macro-constant-type",
+            "signed",
+            "--formatter",
+            "prettyplease",
+            "--",
+            "-target",
+            "arm64-apple-macosx14.0",
+            "-isysroot",
+            "$SDK",
+            "-resource-dir",
+            "$XCODE_TOOLCHAIN/lib/clang/21",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror"
+          ]
+        },
+        {
+          "id": "cbindgen-aarch64-apple-darwin",
+          "version": "0.29.4",
+          "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+          "arguments": [
+            "--config",
+            "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+            "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+            "--output",
+            "$OUTPUT/generated/rust_provider.h"
+          ]
+        },
+        {
+          "id": "libclang-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": []
+        },
+        {
+          "id": "rust-nm-aarch64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/aarch64-apple-darwin/libmadb_probe_rust.a"
+          ]
+        }
+      ],
+      "sdk": {
+        "path": "observed-sdk.json",
+        "sha256": "sha256:4b2008f921b9964261f2da8f883a83a4491a74b66ea3d0f18cd297f180eb5753",
+        "size": 32326,
+        "schema": "madb.c03-sdk/1"
+      },
+      "macros": [],
+      "required_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "supported_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "restrictions": [],
+      "defaults": {
+        "values": {
+          "ownership": "copy"
+        },
+        "origin": {
+          "authority": "profile-default",
+          "location": {
+            "path": "tests/integration/c03/toolchain.json",
+            "line": 1,
+            "column": 1
+          },
+          "id": "c03.copy"
+        }
+      },
+      "backend_config": null,
+      "extensions": {
+        "madb.probe": "C03/P02 stateless only; no SDK certification"
+      }
+    },
+    {
+      "schema": "madb.profile/1",
+      "id": "c03-c-to-rust-x86_64-apple-darwin",
+      "route": "RUST-C-ABI",
+      "provider": {
+        "language": "rust",
+        "runtime": "native"
+      },
+      "consumer": {
+        "language": "c",
+        "runtime": "native"
+      },
+      "direction": "consumer-to-provider",
+      "target": "x86_64-apple-darwin",
+      "abi": "c11",
+      "artifact_kind": "static-library",
+      "build_system": "rustc-clang-probe",
+      "deployment_target": "14.0",
+      "tools": [
+        {
+          "id": "clang-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "--print-resource-dir"
+          ]
+        },
+        {
+          "id": "libtool-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-static",
+            "-o",
+            "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a",
+            "$OUTPUT/x86_64-apple-darwin/c_provider.o"
+          ]
+        },
+        {
+          "id": "nm-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a"
+          ]
+        },
+        {
+          "id": "rustc-x86_64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "--target",
+            "x86_64-apple-darwin",
+            "--edition=2024",
+            "-Dwarnings",
+            "-Cpanic=abort",
+            "-Copt-level=2",
+            "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+            "-Clink-arg=-isysroot",
+            "-Clink-arg=$SDK",
+            "--crate-type=lib",
+            "--emit=metadata",
+            "$OUTPUT/x86_64-apple-darwin/shape_consumer.rs",
+            "-o",
+            "$OUTPUT/x86_64-apple-darwin/expected.rmeta"
+          ]
+        },
+        {
+          "id": "bindgen-x86_64-apple-darwin",
+          "version": "0.73.2",
+          "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+          "arguments": [
+            "$REPO/tests/fixtures/native-probe/c_provider.h",
+            "--output",
+            "$OUTPUT/x86_64-apple-darwin/c_provider.rs",
+            "--rust-target",
+            "1.85",
+            "--rust-edition",
+            "2024",
+            "--no-include-path-detection",
+            "--allowlist-type",
+            "Madb.*",
+            "--allowlist-function",
+            "madb_.*",
+            "--allowlist-var",
+            "MADB_.*",
+            "--no-doc-comments",
+            "--default-macro-constant-type",
+            "signed",
+            "--formatter",
+            "prettyplease",
+            "--",
+            "-target",
+            "x86_64-apple-macosx14.0",
+            "-isysroot",
+            "$SDK",
+            "-resource-dir",
+            "$XCODE_TOOLCHAIN/lib/clang/21",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror"
+          ]
+        },
+        {
+          "id": "cbindgen-x86_64-apple-darwin",
+          "version": "0.29.4",
+          "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+          "arguments": [
+            "--config",
+            "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+            "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+            "--output",
+            "$OUTPUT/generated/rust_provider.h"
+          ]
+        },
+        {
+          "id": "libclang-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": []
+        },
+        {
+          "id": "rust-nm-x86_64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/x86_64-apple-darwin/libmadb_probe_rust.a"
+          ]
+        }
+      ],
+      "sdk": {
+        "path": "observed-sdk.json",
+        "sha256": "sha256:4b2008f921b9964261f2da8f883a83a4491a74b66ea3d0f18cd297f180eb5753",
+        "size": 32326,
+        "schema": "madb.c03-sdk/1"
+      },
+      "macros": [],
+      "required_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "supported_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "restrictions": [],
+      "defaults": {
+        "values": {
+          "ownership": "copy"
+        },
+        "origin": {
+          "authority": "profile-default",
+          "location": {
+            "path": "tests/integration/c03/toolchain.json",
+            "line": 1,
+            "column": 1
+          },
+          "id": "c03.copy"
+        }
+      },
+      "backend_config": null,
+      "extensions": {
+        "madb.probe": "C03/P02 stateless only; no SDK certification"
+      }
+    },
+    {
+      "schema": "madb.profile/1",
+      "id": "c03-rust-to-c-aarch64-apple-darwin",
+      "route": "RUST-C-ABI",
+      "provider": {
+        "language": "c",
+        "runtime": "native"
+      },
+      "consumer": {
+        "language": "rust",
+        "runtime": "native"
+      },
+      "direction": "consumer-to-provider",
+      "target": "aarch64-apple-darwin",
+      "abi": "c11",
+      "artifact_kind": "static-library",
+      "build_system": "rustc-clang-probe",
+      "deployment_target": "14.0",
+      "tools": [
+        {
+          "id": "clang-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "--print-resource-dir"
+          ]
+        },
+        {
+          "id": "libtool-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-static",
+            "-o",
+            "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a",
+            "$OUTPUT/aarch64-apple-darwin/c_provider.o"
+          ]
+        },
+        {
+          "id": "nm-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/aarch64-apple-darwin/libmadb_probe_c.a"
+          ]
+        },
+        {
+          "id": "rustc-aarch64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "--target",
+            "aarch64-apple-darwin",
+            "--edition=2024",
+            "-Dwarnings",
+            "-Cpanic=abort",
+            "-Copt-level=2",
+            "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+            "-Clink-arg=-isysroot",
+            "-Clink-arg=$SDK",
+            "--crate-type=lib",
+            "--emit=metadata",
+            "$OUTPUT/aarch64-apple-darwin/shape_consumer.rs",
+            "-o",
+            "$OUTPUT/aarch64-apple-darwin/expected.rmeta"
+          ]
+        },
+        {
+          "id": "bindgen-aarch64-apple-darwin",
+          "version": "0.73.2",
+          "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+          "arguments": [
+            "$REPO/tests/fixtures/native-probe/c_provider.h",
+            "--output",
+            "$OUTPUT/aarch64-apple-darwin/c_provider.rs",
+            "--rust-target",
+            "1.85",
+            "--rust-edition",
+            "2024",
+            "--no-include-path-detection",
+            "--allowlist-type",
+            "Madb.*",
+            "--allowlist-function",
+            "madb_.*",
+            "--allowlist-var",
+            "MADB_.*",
+            "--no-doc-comments",
+            "--default-macro-constant-type",
+            "signed",
+            "--formatter",
+            "prettyplease",
+            "--",
+            "-target",
+            "arm64-apple-macosx14.0",
+            "-isysroot",
+            "$SDK",
+            "-resource-dir",
+            "$XCODE_TOOLCHAIN/lib/clang/21",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror"
+          ]
+        },
+        {
+          "id": "cbindgen-aarch64-apple-darwin",
+          "version": "0.29.4",
+          "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+          "arguments": [
+            "--config",
+            "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+            "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+            "--output",
+            "$OUTPUT/generated/rust_provider.h"
+          ]
+        },
+        {
+          "id": "libclang-aarch64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": []
+        },
+        {
+          "id": "rust-nm-aarch64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/aarch64-apple-darwin/libmadb_probe_rust.a"
+          ]
+        }
+      ],
+      "sdk": {
+        "path": "observed-sdk.json",
+        "sha256": "sha256:4b2008f921b9964261f2da8f883a83a4491a74b66ea3d0f18cd297f180eb5753",
+        "size": 32326,
+        "schema": "madb.c03-sdk/1"
+      },
+      "macros": [],
+      "required_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "supported_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "restrictions": [],
+      "defaults": {
+        "values": {
+          "ownership": "copy"
+        },
+        "origin": {
+          "authority": "profile-default",
+          "location": {
+            "path": "tests/integration/c03/toolchain.json",
+            "line": 1,
+            "column": 1
+          },
+          "id": "c03.copy"
+        }
+      },
+      "backend_config": null,
+      "extensions": {
+        "madb.probe": "C03/P02 stateless only; no SDK certification"
+      }
+    },
+    {
+      "schema": "madb.profile/1",
+      "id": "c03-rust-to-c-x86_64-apple-darwin",
+      "route": "RUST-C-ABI",
+      "provider": {
+        "language": "c",
+        "runtime": "native"
+      },
+      "consumer": {
+        "language": "rust",
+        "runtime": "native"
+      },
+      "direction": "consumer-to-provider",
+      "target": "x86_64-apple-darwin",
+      "abi": "c11",
+      "artifact_kind": "static-library",
+      "build_system": "rustc-clang-probe",
+      "deployment_target": "14.0",
+      "tools": [
+        {
+          "id": "clang-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "--print-resource-dir"
+          ]
+        },
+        {
+          "id": "libtool-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:2840879786eb8868f03c3d378eef6c71d8416e15d8b14aebbf0c0cb80ad81c24",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-static",
+            "-o",
+            "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a",
+            "$OUTPUT/x86_64-apple-darwin/c_provider.o"
+          ]
+        },
+        {
+          "id": "nm-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/x86_64-apple-darwin/libmadb_probe_c.a"
+          ]
+        },
+        {
+          "id": "rustc-x86_64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "--target",
+            "x86_64-apple-darwin",
+            "--edition=2024",
+            "-Dwarnings",
+            "-Cpanic=abort",
+            "-Copt-level=2",
+            "-Clinker=$XCODE_TOOLCHAIN/bin/clang",
+            "-Clink-arg=-isysroot",
+            "-Clink-arg=$SDK",
+            "--crate-type=lib",
+            "--emit=metadata",
+            "$OUTPUT/x86_64-apple-darwin/shape_consumer.rs",
+            "-o",
+            "$OUTPUT/x86_64-apple-darwin/expected.rmeta"
+          ]
+        },
+        {
+          "id": "bindgen-x86_64-apple-darwin",
+          "version": "0.73.2",
+          "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.crates.io/crates/bindgen-cli/bindgen-cli-0.73.2.crate",
+          "arguments": [
+            "$REPO/tests/fixtures/native-probe/c_provider.h",
+            "--output",
+            "$OUTPUT/x86_64-apple-darwin/c_provider.rs",
+            "--rust-target",
+            "1.85",
+            "--rust-edition",
+            "2024",
+            "--no-include-path-detection",
+            "--allowlist-type",
+            "Madb.*",
+            "--allowlist-function",
+            "madb_.*",
+            "--allowlist-var",
+            "MADB_.*",
+            "--no-doc-comments",
+            "--default-macro-constant-type",
+            "signed",
+            "--formatter",
+            "prettyplease",
+            "--",
+            "-target",
+            "x86_64-apple-macosx14.0",
+            "-isysroot",
+            "$SDK",
+            "-resource-dir",
+            "$XCODE_TOOLCHAIN/lib/clang/21",
+            "-std=c11",
+            "-Wall",
+            "-Wextra",
+            "-Werror"
+          ]
+        },
+        {
+          "id": "cbindgen-x86_64-apple-darwin",
+          "version": "0.29.4",
+          "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.crates.io/crates/cbindgen/cbindgen-0.29.4.crate",
+          "arguments": [
+            "--config",
+            "$REPO/tests/fixtures/native-probe/cbindgen.toml",
+            "$REPO/tests/fixtures/native-probe/rust_provider.rs",
+            "--output",
+            "$OUTPUT/generated/rust_provider.h"
+          ]
+        },
+        {
+          "id": "libclang-x86_64-apple-darwin",
+          "version": "Xcode 27.0; Build version 27A266a",
+          "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://developer.apple.com/download/all/",
+          "arguments": []
+        },
+        {
+          "id": "rust-nm-x86_64-apple-darwin",
+          "version": "1.99.1",
+          "sha256": "sha256:65902eef48a374f0fddad3ac6229ce6333a800c7695a5f24de1fcc5bf3fa26c8",
+          "host": "aarch64-apple-darwin",
+          "target": "x86_64-apple-darwin",
+          "source": "https://static.rust-lang.org/dist/channel-rust-1.99.1.toml",
+          "arguments": [
+            "-gUj",
+            "$OUTPUT/x86_64-apple-darwin/libmadb_probe_rust.a"
+          ]
+        }
+      ],
+      "sdk": {
+        "path": "observed-sdk.json",
+        "sha256": "sha256:4b2008f921b9964261f2da8f883a83a4491a74b66ea3d0f18cd297f180eb5753",
+        "size": 32326,
+        "schema": "madb.c03-sdk/1"
+      },
+      "macros": [],
+      "required_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "supported_features": [
+        "core.exact-numbers@1",
+        "core.values@1"
+      ],
+      "restrictions": [],
+      "defaults": {
+        "values": {
+          "ownership": "copy"
+        },
+        "origin": {
+          "authority": "profile-default",
+          "location": {
+            "path": "tests/integration/c03/toolchain.json",
+            "line": 1,
+            "column": 1
+          },
+          "id": "c03.copy"
+        }
+      },
+      "backend_config": null,
+      "extensions": {
+        "madb.probe": "C03/P02 stateless only; no SDK certification"
+      }
+    }
+  ],
+  "lock_corruption_negatives": [
+    {
+      "object": "copied-source-header",
+      "status": "rejected",
+      "code": "FILE004"
+    },
+    {
+      "object": "compiled-c-static-library",
+      "status": "rejected",
+      "code": "FILE004"
+    }
+  ],
+  "scope": "C03 stateless probe; not an SDK certification or complete frozen executor"
+}
