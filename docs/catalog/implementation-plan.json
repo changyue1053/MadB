@@ -92,9 +92,13 @@
       "owner_role": "项目 / 核心维护者",
       "owner": "changyue1053",
       "depends_on": [],
-      "status": "in_progress",
+      "status": "blocked",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-24-c01-baseline.md",
+        "https://github.com/changyue1053/MadB/pull/1",
+        "https://github.com/changyue1053/MadB-Lab/pull/1"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -120,7 +124,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "2026-10-24 开始 C01。先落实仓库/文档归属、工具与检查环境，再建立最小 workspace、独立 Lab 和真实 CI。完整 IR/payload/ABI 归 C02，首链 P01/P02 归 C03；平台风险不阻塞本地建仓。远程仓库、合入限制和公开前权利核对未实际完成时，不将 C01 标记为已验收。"
+      "notes": "C01 本地工程与独立 GitHub CI 已通过：六 crate、CLI 帮助/版本、锁定检查环境、两份 Agent 入口和 Lab 隔离检查均已落地。两仓库按用户决定保持私有。GitHub 对 main 分支保护配置返回 HTTP 403（当前私有仓库需 Pro 能力），无法验收必需检查失败阻断合入；草稿 PR 不合并，C01 保持 blocked / missing。公开前的历史资料权利复核另保留，不将本地或 CI 通过冒充完整验收。"
     },
     {
       "id": "C02",
