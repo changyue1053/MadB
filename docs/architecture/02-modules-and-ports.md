@@ -102,7 +102,7 @@ MadB/
 
 帮助程序和 SDK 使用所在语言的原生构建与发布单元；不强制纳入宿主 Cargo workspace。Kotlin 官方线与 CPF 使用独立构建根、插件 classpath、缓存和发布坐标，共享兼容的源码。具体工具版本与目标组合由[技术栈规范](16-technology-stack-and-versions.md)及 profile 锁确定。
 
-C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：只做 schema 文档到领域值的显式转换、语义投影与校验编排，向内依赖 model、rules 和 protocol。它不读取编译器源码、不执行后端，不向核心反向暴露 DTO；实际来源读取与生成仍归 C05。这一编译边界让格式检查、领域规则和转换各有单一维护位置，架构门禁同时拒绝核心导入该包及该包导入 CLI。
+C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：只做 schema 文档到领域值的显式转换、语义投影与校验编排，向内依赖 model、rules 和 protocol。它不读取编译器源码、不执行后端，不向核心反向暴露 DTO；C05 的实际来源读取与生成位于外部语言适配器。这一编译边界让格式检查、领域规则和转换各有单一维护位置，架构门禁同时拒绝核心导入该包及该包导入 CLI。
 
 C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程端口；提供目录描述符相对、有界、拒绝链接的文件读取，以及 Linux/macOS 的受控子进程。`madb-contracts` 实现 app 的格式端口；CLI `bootstrap.rs` 装配只读查询与显式执行用例。app 不导入适配器或 wire 类型，plan 只依赖 model。contracts 在共同受检上下文内绑定执行图；app 负责输入来源、串行依赖调度、图级取消和结果预算；host 只拥有私有图/节点目录与具体进程。图不会公开可独立绕过调度的节点配方，单任务入口仍拒绝依赖。正式执行入口通过 pipeline 管理 metadata、生成、构建与打包；它们不替代 C05 的语言配方实现。
 
@@ -216,11 +216,19 @@ ContractSnapshot 保留输入摘要、符号、位置和精度；OutputSet 保�
 | 资产 | 实施位置与职责 | 工作包 |
 |---|---|---|
 | 契约、身份与格式 | model、rules、docs/schemas、protocol；明确 Rust/C 声明的权威关系 | C02、E01/E02 |
-| 工具锁与目标探针 | toolchains 与独立探针资产；固定编译器、头、库和目标布局 | C03 |
+| 工具锁与目标探针 | `adapters/toolchains/rust_c` 的锁配方、安装、实际工具观察与构建接线；C03 保留独立探针 | C03、C05 |
 | 流程与输出事务 | cli/bootstrap、app、plan、host；固定批次、输入追踪与失败恢复 | C01、C04 |
-| 双向接线 | contracts/generators/toolchains 的实际适配器；bindgen 导入 C，cbindgen 从 Rust C 可见声明生成头；导出实现另有明确责任方 | C05 |
-| 公开包和真实消费 | artifacts 准备候选，host 提交；Lab fixtures 与 C/Rust consumers 验证两个直接方向 | C05、C09、C10 |
+| 声明读取与生成 | `adapters/generators/rust_c`；cbindgen 从 Rust 实现生成 C 可见头，Clang 读取头的声明/布局，bindgen 为 Rust 消费者生成 C 库 raw 声明 | C05 |
+| 元数据完成 | `adapters/contracts/src/native.rs` 与 `crates/madb-cli/src/bin/madb-native-finalize.rs`；严格接收 seed/project/profile，复用 rules 解析策略和来源、重算身份/摘要并校验 | C05 |
+| 原生 SDK | `sdk/rust/engine`、`sdk/c/first-route`、`sdk/rust/c-client`；独立原生构建单元，持有资源协议或公开安全包装，不依赖工具私有 crate | C05 |
+| 公开包和真实消费 | `adapters/artifacts/rust_c/pack.py` 准备公开清单，host 提交；Lab 仅消费三个候选的公开头、库、包装与身份，独立验证两个直接方向 | C05、C09、C10 |
 | 新工程与 IDE 接入 | projects/modules 模板、初始化用例及对应 IDE 配方 | I01–I03 |
+
+首链 Python 适配器按明确的 ABI v1 roles 解释编译器声明，不是通用 Rust/C AST 映射器；未知导出、类型、布局或调用约定必须拒绝。`madb-native-finalize` 只在工具端运行，seed 不能自带已解析策略或伪造来源，策略解析与摘要规则仍由既有 Rust 层维护；它不进入候选 SDK。`inspect/check/plan` 仍只读，实际编译器调用由显式读取或构建配方触发。
+
+公开入口是 `scripts/install_native_tools.py` 和 `scripts/build_first_route.py`。后者通过 `adapters/toolchains/rust_c/pipeline.py` 接入 C04：先 prepare 实际编译/链接/运行输出身份以形成静态 DAG，再由受控执行重新构建并核验；prepare 不充当语义预期或验收证据。候选分别为 `c-to-rust` Release、`c-to-rust-test` 测试 profile 和 `rust-to-c`，测试导出不能进入 Release。具体操作见[首链工具链说明](../../adapters/toolchains/rust_c/README.md)。
+
+首链 profile 的 `backend_config` 保持 `null`，内部 `backend.json` 由 ReadRequest 输入与 lock 固定，不放宽通用 backend-config 校验。公开 `toolchain.json` 记录工具镜像与 SDK 内容身份、逻辑名称和编译器语义，不发布宿主绝对路径；执行定位与完整参数留在内部锁定配置。Linux 记录实际 native host 的 observed profile，Apple 校验冻结 Xcode/SDK 配方，各自目标的运行证据分别用于验收。
 
 源码中的最小安全边界、回调、关闭与等待遵循现有 DEC/CRIT。普通 API 先贯通，便利封装复用同一协议。首链通过不替代其他路线与目标的验收，C09/C10 从 S1 提供首链所需部分并在 S5 完成全矩阵。
 

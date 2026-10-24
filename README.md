@@ -59,6 +59,40 @@ metadata 在缺少 IR 时执行真实读取配方，返回固定 IR 路径；生
 
 `generate --check` 在系统临时目录真实复算，对比文件与登记身份；不写源码、锁、有效输出或依赖缓存。缺材料、漂移、损坏和工具失败均非零。运行目录按保留策略留下并报告路径：进程组收尾不能证明所有逃逸后代已停止，因此不会由 Drop 自动删除现场。
 
+## Rust ↔ C 首链候选
+
+C05 的真实读取器、生成器和 SDK 已接入上述执行端口，整包验收仍以任务目录与绑定候选的报告为准。先安装固定生成器，再从干净的生产者检出构建三个公开候选；工具安装根与输出目录都必须是新目录：
+
+```sh
+.venv/bin/python scripts/install_native_tools.py --root /absolute/path/to/native-tools
+.venv/bin/python scripts/build_first_route.py \
+  --output /absolute/path/to/candidates \
+  --bindgen /absolute/path/to/native-tools/bin/bindgen \
+  --cbindgen /absolute/path/to/native-tools/bin/cbindgen
+```
+
+默认拒绝有未提交修改的生产者仓库。仅开发验证可加 `--allow-dirty`；脏树产物标记为 `provisional`，不能用于正式 Lab 验收。安装器验证上游归档、内含 Cargo.lock 和实际工具二进制，既有 C03 receipt 可继续使用。
+
+| 候选目录 | 公开消费与范围 |
+|---|---|
+| `c-to-rust` | C 消费 Rust engine 动态库；未插桩 Release、资源关闭及同步观察回调 |
+| `c-to-rust-test` | 单独 profile 的测试候选；提供 barrier、故障注入和资源计数接口 |
+| `rust-to-c` | Rust 消费独立 C 静态库；公开 `madb-c-client` 安全包装与真实 bindgen 声明 |
+
+读取器以真实 cbindgen 产物或 C 作者头为输入，由 Clang 提取声明与布局，再按首链已知 roles 降低到契约；范围以[读取器说明](adapters/generators/rust_c/README.md)为准，不接受任意 Rust/C 接口。元数据辅助程序 `madb-native-finalize` 复用工具端核心规则；候选 SDK 不依赖它、MadB CLI 或工具私有 crate。
+
+构建配方先显式 prepare 实际输出身份，再由 C04 静态 DAG 重新编译、链接、运行并核对字节；prepare 不是验收证据。Apple 使用冻结 Xcode/SDK 配方，Linux 为实际宿主记录独立 observed profile；二者的运行与认证分别取证。更多输入、输出与平台边界见[首链工具链](adapters/toolchains/rust_c/README.md)。
+
+把完整候选目录交给独立 [MadB-Lab](https://github.com/changyue1053/MadB-Lab)，在 Lab 检出中执行：
+
+```sh
+python3 scripts/check.py --first-route \
+  --candidates /absolute/path/to/candidates \
+  --output /absolute/path/to/lab-reports
+```
+
+Lab 只使用公开头、库、包装和身份记录，在新工程与空开发缓存中编译两个直接消费者；不需要 MadB 源码或生成器。缺工具、目标不符、provisional 候选和必需用例失败均不能算通过。
+
 ## 依赖与缓存边界
 
 显式缺失路径、目录成员和内容观察用于发现变化；它们本身不证明完整依赖。受限 freestanding Clang 配置进一步执行真实传递依赖发现，固定源和搜索范围，记录工具、参数、宏、环境及目录/缺失条件，再形成可缓存身份。无法证明完整性的配置返回准备要求或禁用缓存；普通脚本生成器不能借一份 Clang 清单继承缓存资格。
@@ -89,7 +123,7 @@ metadata 在缺少 IR 时执行真实读取配方，返回固定 IR 路径；生
 - [Agent 入口](AGENTS.md)与[贡献方法](CONTRIBUTING.md)
 - [当前设计文档](docs/README.md)
 
-MadB-Lab 是独立仓库，使用公开候选和独立预期；不能链接本仓库私有 crate。C03 已提供固定工具、实际生成及同步 FFI 双向运行探针，见[复现入口](tests/integration/c03/README.md)和[验收记录](docs/reviews/2026-10-24-c03-native-probes.md)。资源/并发、设备和公开 SDK 验收仍由后续任务提供。
+MadB-Lab 是独立仓库，使用公开候选和独立预期；不能链接本仓库私有 crate。C03 已提供固定工具、实际生成及同步 FFI 双向运行探针，见[复现入口](tests/integration/c03/README.md)和[验收记录](docs/reviews/2026-10-24-c03-native-probes.md)。C05 的资源/并发与公开 SDK 消费使用上述独立候选；设备和其他路线继续按对应任务验收。
 
 ## Quick start for contributors
 

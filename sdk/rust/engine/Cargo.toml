@@ -1,0 +1,19 @@
+[package]
+name = "madb-first-route-engine"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "staticlib", "rlib"]
+
+[features]
+default = []
+test-support = []
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"

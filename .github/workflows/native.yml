@@ -1,0 +1,39 @@
+name: C05 native candidates
+on:
+  push:
+    branches: [main, "codex/**"]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: c05-native-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  native:
+    name: MadB C05 native candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version-file: .python-version
+      - name: Install native prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends clang libclang-dev
+          rustup show active-toolchain
+      - name: Install source-locked generators
+        run: python scripts/install_native_tools.py --root "$RUNNER_TEMP/native-tools"
+      - name: Build all public candidates through frozen ports
+        run: |
+          python scripts/build_first_route.py --output "$RUNNER_TEMP/candidates" --bindgen "$RUNNER_TEMP/native-tools/bin/bindgen" --cbindgen "$RUNNER_TEMP/native-tools/bin/cbindgen"
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: c05-native-candidates
+          path: ${{ runner.temp }}/candidates
+          if-no-files-found: error
+          retention-days: 14

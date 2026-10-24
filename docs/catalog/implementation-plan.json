@@ -293,13 +293,15 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "原生 / 验证维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C04"
       ],
-      "status": "not_started",
-      "verification": "missing",
-      "evidence": [],
+      "status": "in_progress",
+      "verification": "running",
+      "evidence": [
+        "reviews/2026-10-24-c05-rust-c-first-route.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -327,7 +329,7 @@
         "RUST-C-ABI"
       ],
       "probes": [],
-      "notes": ""
+      "notes": "基于已验收 C04 开始整包实施：真实双向声明读取/生成、engine 生命周期与 bootstrap、独立候选和 MadB-Lab 消费；部分实现不计整体验收。"
     },
     {
       "id": "C06",
