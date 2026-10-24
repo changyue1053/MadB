@@ -3173,5 +3173,10 @@
       "code": "FILE004"
     }
   ],
-  "scope": "C03 stateless probe; not an SDK certification or complete frozen executor"
+  "scope": "C03 stateless probe; not an SDK certification or complete frozen executor",
+  "implementation_commit": "be4b473d92b05b99164148066d63d5dac34e35cd",
+  "ci_runs": [
+    "https://github.com/changyue1053/MadB/actions/runs/40076988625",
+    "https://github.com/changyue1053/MadB/actions/runs/40076950175"
+  ]
 }

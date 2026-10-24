@@ -8,7 +8,7 @@
 |---|---|---|
 | P01 本机 CLI | macOS Arm64 隔离安装与 help/version/未实现命令拒绝通过 | release 安装到独立目录；运行时离开仓库、移除 Cargo 路径 |
 | P01 帮助进程 | 6 个测试、16 个场景通过 | 真实子进程；版本/IR、功能、身份、异常 stdout、退出 23、超时；不是完整扩展执行器 |
-| P01 Linux | 等待本 PR CI | 相同 `scripts/check.py` 入口执行；不以本机成功替代 |
+| P01 Linux | GitHub Ubuntu 24.04 实际通过 | 分支与 PR CI 均执行相同 `scripts/check.py`，含隔离 CLI 安装和帮助进程 |
 | P02 Arm64 | 两个独立消费者真实运行通过，各 10 个场景 | C→Rust 使用 cbindgen 头和 Rust staticlib；Rust→C 使用 bindgen 声明和独立 C staticlib |
 | P02 x86_64 | 布局、目标编译、链接及负例通过 | 未运行，不能宣称 Intel 或 Rosetta 运行认证 |
 | 生成形状 | 两目标的完整 C02 声明及 stateless 接口编译通过 | 检查 12 个状态码的有符号类型/数值、函数指针、callback 类型、结构体布局 |
@@ -51,8 +51,14 @@
 
 ## 实际检查与保留范围
 
-执行命令：`scripts/check.py`、P02 `native.py`、Rust `check_probe_lock`、复制头文件篡改负例、`git diff --check`。本地完整通用检查已通过：37 个 Rust 测试，5 个格式/ABI、6 个进程、7 个架构和 21 个文档测试，共 76 个测试函数；另有 3 个隔离 CLI 场景、20 个双向原生场景、两目标编译负例及 7 组跨实现摘要向量。最终 CI 结果随后补充。
+执行命令：`scripts/check.py`、P02 `native.py`、Rust `check_probe_lock`、复制头文件篡改负例、`git diff --check`。本地完整通用检查已通过：37 个 Rust 测试，5 个格式/ABI、6 个进程、7 个架构和 21 个文档测试，共 76 个测试函数；另有 3 个隔离 CLI 场景、20 个双向原生场景、两目标编译负例及 7 组跨实现摘要向量。实现提交的分支与 PR CI 均通过，详情见下节。
 
 没有更改 MadB-Lab；没有公开 SDK、完成 C04、认证任何路线或证明最低系统支持。两目标都是 LP64，本样例布局相同；错误 packing 仍会被捕获。宏/头文件生成与 stateless 运行不证明生命周期、线程同步、关闭/排水或任意外部指针安全。未重新执行浏览器视觉验收，HTML 生成/DOM 单元检查不冒充浏览器结果。
 
 C03 完成不代表 S0 整体退出：E01/E02/E04、I01 等已列 S0 准入继续按既有计划交付。C04 可以在 C01/C02/C03 的已验证基线上开发；C05 仍需实际源读取、事务、受管 SDK 与独立 Lab。
+
+## 远端结果与提交身份
+
+实现提交 `be4b473d92b05b99164148066d63d5dac34e35cd` 的 [PR CI](https://github.com/changyue1053/MadB/actions/runs/40076988625) 与 [分支 CI](https://github.com/changyue1053/MadB/actions/runs/40076950175) 均为 completed/success；Ubuntu 24.04 上实际执行了 P01 和完整通用门禁。Apple P02 仍是上文锁定宿主的实际记录，不冒充 Linux CI 执行。
+
+本节与 catalog/HTML 是通过后回写；最终 head 的结果以 [PR #3](https://github.com/changyue1053/MadB/pull/3) checks 为准。PR 基于未合入的 C02 #2，均未在本次授权范围内合并。C03 通过不等于 main 已含该实现，也不等于其他 S0 工作已完成。
