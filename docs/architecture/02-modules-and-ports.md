@@ -102,6 +102,8 @@ MadB/
 
 帮助程序和 SDK 使用所在语言的原生构建与发布单元；不强制纳入宿主 Cargo workspace。Kotlin 官方线与 CPF 使用独立构建根、插件 classpath、缓存和发布坐标，共享兼容的源码。具体工具版本与目标组合由[技术栈规范](16-technology-stack-and-versions.md)及 profile 锁确定。
 
+C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：只做 schema 文档到领域值的显式转换、语义投影与校验编排，向内依赖 model、rules 和 protocol。它不读取编译器源码、不执行后端，不向核心反向暴露 DTO；实际来源读取与生成仍归 C05。这一编译边界让格式检查、领域规则和转换各有单一维护位置，架构门禁同时拒绝核心导入该包及该包导入 CLI。
+
 物理包的 Cargo manifest 或原生构建文件是实际成员与依赖的依据。C01 建立首期可编译的最小 workspace 和包职责说明；后续包随对应工作包加入，不批量创建成功返回的空适配器或无用途的占位包。内部类名与纯函数布局可调整，职责移动或依赖越界必须同步规范与检查。
 
 Agent 入口遵循[开发规范](../engineering/07-agent-development.md)，只链接现有计划、架构和真实检查。目录中列出 AGENTS.md 是 C01 的交付目标，不引入独立任务管理平台，也不表示文件或 CI 已部署。
@@ -138,7 +140,7 @@ Agent 入口遵循[开发规范](../engineering/07-agent-development.md)，只�
 | rules、plan | model | 具体后端、宿主服务；plan 不执行 rules，只消费受检结果 |
 | protocol | 序列化与格式校验库 | app、适配器和领域规则；不把 wire DTO 当领域模型 |
 | app | model、rules、plan；自身定义的 ports | 具体适配器、具体编译器；不直接读取 wire DTO 绕过转换 |
-| adapters | app 的端口/公开请求、model、plan 的必要公开值、protocol 及对应工具依赖 | 其他适配器的私有实现；越过宿主修改正式输出 |
+| adapters | app 的端口/公开请求、model、rules/plan 的必要公开值、protocol 及对应工具依赖 | 其他适配器的私有实现；越过宿主修改正式输出 |
 | cli/bootstrap | app 与明确启用的适配器 | 把全局服务容器传进纯规则或 SDK |
 | helpers | 对应生态工具与公开协议 | 宿主私有 app 对象、私有 Rust ABI |
 | sdk | 对应语言运行库、绑定与必要公开原语 | CLI、app 或工具宿主运行时 |

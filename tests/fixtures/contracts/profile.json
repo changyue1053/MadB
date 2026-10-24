@@ -1,0 +1,71 @@
+{
+  "schema": "madb.profile/1",
+  "id": "rust-c-fixture",
+  "route": "RUST-C-ABI",
+  "provider": {
+    "language": "rust",
+    "runtime": "native"
+  },
+  "consumer": {
+    "language": "c",
+    "runtime": "native"
+  },
+  "direction": "consumer-to-provider",
+  "target": "aarch64-apple-darwin",
+  "abi": "c11",
+  "artifact_kind": "static-library",
+  "build_system": "cargo-cmake",
+  "deployment_target": "14.0",
+  "tools": [
+    {
+      "id": "fixture-clang",
+      "version": "fixture-1",
+      "sha256": "sha256:c3a9dacf1e6fe0033c64e83db13445a8828e993ccce8aaf0dcc66957ad053af6",
+      "host": "aarch64-apple-darwin",
+      "target": "aarch64-apple-darwin",
+      "source": "fixture://toolchain",
+      "arguments": [
+        "-std=c11"
+      ]
+    }
+  ],
+  "sdk": {
+    "path": "sdk/fixture.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.fixture-sdk/1"
+  },
+  "macros": [],
+  "required_features": [
+    "core.values@1",
+    "core.resources@1",
+    "core.explicit-close@1",
+    "core.exact-numbers@1"
+  ],
+  "supported_features": [
+    "core.values@1",
+    "core.resources@1",
+    "core.callbacks@1",
+    "core.async@1",
+    "core.streams@1",
+    "core.explicit-close@1",
+    "core.exact-numbers@1",
+    "core.variants@1"
+  ],
+  "restrictions": [],
+  "defaults": {
+    "values": {
+      "ownership": "copy"
+    },
+    "origin": {
+      "authority": "profile-default",
+      "location": {
+        "path": "profile.json",
+        "line": 1,
+        "column": 1
+      },
+      "id": "profile.copy"
+    }
+  },
+  "backend_config": null
+}

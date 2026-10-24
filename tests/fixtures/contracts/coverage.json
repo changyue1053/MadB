@@ -1,0 +1,21 @@
+{
+  "schema": "madb.coverage/1",
+  "selector": {
+    "route": "RUST-C-ABI",
+    "profile_id": "rust-c-fixture",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "target": "aarch64-apple-darwin",
+    "direction": "consumer-to-provider"
+  },
+  "problem_catalog_digest": "sha256:c0542a5886d8d0e8a5a469c0fb8a76a782c28dce3065649d4b1e9a3af210e0cf",
+  "requirements": [
+    {
+      "problem_id": "DATA-001",
+      "applicability": "required",
+      "reason": "fixture numeric boundary",
+      "case_ids": [
+        "DATA-001/positive/rust-c"
+      ]
+    }
+  ]
+}

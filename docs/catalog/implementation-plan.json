@@ -126,7 +126,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C01 双工程基线、本地与独立 CI 已通过。项目所有者授权两仓库公开，main 必需 CI、管理员约束及禁强推/删除已生效；两份非草稿 PR 在预期架构/隔离负例下 BLOCKED，撤销负例后 CI 通过并恢复 CLEAN。负例已撤销，PR 保持未合并。验收仅覆盖工程与协作基线，不代表跨语言 SDK、设备或路线认证。"
+      "notes": "C01 双工程基线、本地与独立 CI 已通过。项目所有者授权两仓库公开，main 必需 CI、管理员约束及禁强推/删除已生效；两份非草稿 PR 在预期架构/隔离负例下 BLOCKED，撤销负例后 CI 通过并恢复 CLEAN。负例已撤销，两份 C01 PR 已获明确授权并合入 main（MadB #1、MadB-Lab #1）。验收仅覆盖工程与协作基线，不代表跨语言 SDK、设备或路线认证。"
     },
     {
       "id": "C02",
@@ -136,11 +136,13 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "架构 / 核心 / 验证维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [],
-      "status": "not_started",
-      "verification": "missing",
-      "evidence": [],
+      "status": "in_progress",
+      "verification": "running",
+      "evidence": [
+        "reviews/2026-10-24-c02-contract-formats.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -167,7 +169,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "DEC-01/02/03 的 C02 实现和本地门禁已通过：15 类 payload、语义规则/摘要、冻结与证据校验、首链 ABI 声明；远端 CI 待执行。C03 工具链探针、C04 应用流程和 C05 原生运行仍按计划独立验收。"
     },
     {
       "id": "C03",

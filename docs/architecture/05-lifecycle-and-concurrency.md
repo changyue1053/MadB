@@ -112,6 +112,6 @@ DEC-03 的首链自有 Rust/C fixture 使用 `uint64_t` 登记令牌，0 为无�
 | 回调内 requestClose | 允许非阻塞请求；同回调内 awaitClosed 返回 WouldDeadlock，不等待自己 |
 | Closed 后普通调用 | 有效登记返回 Closed；Closing 时返回 Closing；均不进入原生工作 |
 
-首链状态至少区分 InvalidArgument、InvalidHandle、Closing、Closed、Busy、Timeout、WouldDeadlock、InternalFailure；C02 的 ABI 资产固定数值和输出参数初始化规则。领域错误使用自己的稳定 domain/code，不挤入生命周期状态。原始 `free/delete/destroy(pointer)` 仍是消费一次的接口；登记令牌的拒绝能力不能推广到已释放裸指针。
+首链状态至少区分 InvalidArgument、InvalidHandle、Closing、Closed、Busy、Timeout、WouldDeadlock、InternalFailure；C02 的[ABI 资产](../examples/first-route/README.md)固定数值、输出参数初始化及观察注册/停止规则；实际并发实现由 C05/C09 验证。领域错误使用自己的稳定 domain/code，不挤入生命周期状态。原始 `free/delete/destroy(pointer)` 仍是消费一次的接口；登记令牌的拒绝能力不能推广到已释放裸指针。
 
 语言封装的 Drop/deinit/非挂起清理只能发起关闭或把剩余责任交给已登记的收尾 owner；需要可靠关闭确认的调用方使用显式等待接口。收尾 owner 在运行环境销毁前完成环境专属清理；无法证明这一点的配置拒绝准入，而不是声称终结器总能兜底。没有安全恢复路径的失败保留 Invalid/隔离状态，不凭超时强行释放。具体交错见 CRIT-08、CRIT-11。

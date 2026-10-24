@@ -1,0 +1,39 @@
+{
+  "schema": "madb.verify-request/1",
+  "identity": {
+    "input_digest": "sha256:291606f6a442f90d77cede916ee8c144c1072aee82a121a7ceb7e550ea357016",
+    "tool_digest": "sha256:c0542a5886d8d0e8a5a469c0fb8a76a782c28dce3065649d4b1e9a3af210e0cf",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "candidate_digest": "sha256:15abceb4f71f4a0d39aa808b3f4521ed46b0720442e37cabd8a1b4b8959375db",
+    "lab_revision": "0000000000000000000000000000000000000000",
+    "case_catalog_digest": "sha256:c0542a5886d8d0e8a5a469c0fb8a76a782c28dce3065649d4b1e9a3af210e0cf"
+  },
+  "selector": {
+    "route": "RUST-C-ABI",
+    "profile_id": "rust-c-fixture",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "target": "aarch64-apple-darwin",
+    "direction": "consumer-to-provider"
+  },
+  "candidate": {
+    "path": "candidate.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.candidate/1"
+  },
+  "cases": [
+    {
+      "path": "cases/value.json",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7,
+      "schema": "madb.case/1"
+    }
+  ],
+  "coverage": {
+    "path": "coverage.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.coverage/1"
+  },
+  "output_root": "staging/verify"
+}

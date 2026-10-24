@@ -1,0 +1,317 @@
+{
+  "schema": "madb.project/1",
+  "project": "fixture-sdk",
+  "sdk_namespace": "fixture",
+  "boundaries": [
+    {
+      "id": "rust-to-c",
+      "route": "RUST-C-ABI",
+      "direction": "consumer-to-provider",
+      "source": {
+        "kind": "rust-c-declaration",
+        "path": "native/fixture.rs"
+      },
+      "profile": {
+        "path": "profiles/rust-c.json",
+        "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+        "size": 7,
+        "schema": "madb.profile/1"
+      },
+      "target": "aarch64-apple-darwin",
+      "output": "generated/c"
+    }
+  ],
+  "policies": [
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.create.v1"
+      },
+      "slot": {
+        "kind": "call"
+      },
+      "families": [],
+      "values": {
+        "threading": "caller",
+        "blocking": "bounded",
+        "delivery": "work-completed",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 100,
+          "column": 1
+        },
+        "id": "policy.create.call"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.create.v1"
+      },
+      "slot": {
+        "kind": "return"
+      },
+      "families": [],
+      "values": {
+        "ownership": "transfer",
+        "releaser": "fixture.release_handle.v1",
+        "close": "request-await-release",
+        "release_thread": "caller"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 101,
+          "column": 1
+        },
+        "id": "policy.create.return"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.checksum.v1"
+      },
+      "slot": {
+        "kind": "call"
+      },
+      "families": [],
+      "values": {
+        "threading": "caller",
+        "blocking": "bounded",
+        "delivery": "work-completed",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 110,
+          "column": 1
+        },
+        "id": "policy.checksum.call"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.checksum.v1"
+      },
+      "slot": {
+        "kind": "parameter",
+        "name": "handle"
+      },
+      "families": [],
+      "values": {
+        "ownership": "borrow",
+        "borrow_scope": "call",
+        "keep_alive": "call-frame",
+        "close": "request-await-release",
+        "release_thread": "caller"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 112,
+          "column": 1
+        },
+        "id": "policy.checksum.parameter.handle"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.checksum.v1"
+      },
+      "slot": {
+        "kind": "parameter",
+        "name": "data"
+      },
+      "families": [],
+      "values": {
+        "ownership": "copy"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 113,
+          "column": 1
+        },
+        "id": "policy.checksum.parameter.data"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.request_close.v1"
+      },
+      "slot": {
+        "kind": "call"
+      },
+      "families": [],
+      "values": {
+        "threading": "caller",
+        "blocking": "bounded",
+        "delivery": "work-completed",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 120,
+          "column": 1
+        },
+        "id": "policy.request_close.call"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.request_close.v1"
+      },
+      "slot": {
+        "kind": "parameter",
+        "name": "handle"
+      },
+      "families": [],
+      "values": {
+        "ownership": "borrow",
+        "borrow_scope": "call",
+        "keep_alive": "call-frame",
+        "close": "request-await-release",
+        "release_thread": "caller"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 122,
+          "column": 1
+        },
+        "id": "policy.request_close.parameter.handle"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.await_closed.v1"
+      },
+      "slot": {
+        "kind": "call"
+      },
+      "families": [],
+      "values": {
+        "threading": "caller",
+        "blocking": "bounded",
+        "delivery": "work-completed",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 130,
+          "column": 1
+        },
+        "id": "policy.await_closed.call"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.await_closed.v1"
+      },
+      "slot": {
+        "kind": "parameter",
+        "name": "handle"
+      },
+      "families": [],
+      "values": {
+        "ownership": "borrow",
+        "borrow_scope": "call",
+        "keep_alive": "call-frame",
+        "close": "request-await-release",
+        "release_thread": "caller"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 132,
+          "column": 1
+        },
+        "id": "policy.await_closed.parameter.handle"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.release_handle.v1"
+      },
+      "slot": {
+        "kind": "call"
+      },
+      "families": [],
+      "values": {
+        "threading": "caller",
+        "blocking": "bounded",
+        "delivery": "work-completed",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 140,
+          "column": 1
+        },
+        "id": "policy.release_handle.call"
+      }
+    },
+    {
+      "selector": {
+        "kind": "public_id",
+        "id": "fixture.release_handle.v1"
+      },
+      "slot": {
+        "kind": "parameter",
+        "name": "handle"
+      },
+      "families": [],
+      "values": {
+        "ownership": "borrow",
+        "borrow_scope": "call",
+        "keep_alive": "call-frame",
+        "close": "request-await-release",
+        "release_thread": "caller"
+      },
+      "origin": {
+        "authority": "project-policy",
+        "location": {
+          "path": "madb.toml",
+          "line": 142,
+          "column": 1
+        },
+        "id": "policy.release_handle.parameter.handle"
+      }
+    }
+  ],
+  "policy_families": [],
+  "artifacts": {
+    "package": "fixture-sdk",
+    "manifest": "out/candidate.json"
+  }
+}

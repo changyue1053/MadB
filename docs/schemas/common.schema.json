@@ -1,0 +1,588 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:common:1",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/@+-]*$",
+      "maxLength": 512
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^[^/\\\\:\\u0000-\\u001f]+(?:/[^/\\\\:\\u0000-\\u001f]+)*$",
+      "allOf": [
+        {
+          "not": {
+            "pattern": "(^|/)[.]{1,2}(/|$)"
+          }
+        }
+      ]
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "safe_uint": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "path",
+        "line",
+        "column"
+      ],
+      "additionalProperties": false
+    },
+    "origin": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "enum": [
+            "source-annotation",
+            "project-policy",
+            "policy-family",
+            "profile-default"
+          ]
+        },
+        "location": {
+          "$ref": "urn:madb:schema:common:1#/$defs/location"
+        },
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        }
+      },
+      "required": [
+        "authority",
+        "location",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "source_key": {
+      "type": "object",
+      "properties": {
+        "reader": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "package": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "module": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "kind": {
+          "enum": [
+            "function",
+            "method",
+            "constructor",
+            "release",
+            "callback"
+          ]
+        },
+        "qualified_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "overload": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "reader",
+        "package",
+        "module",
+        "kind",
+        "qualified_name",
+        "overload"
+      ],
+      "additionalProperties": false
+    },
+    "source_id": {
+      "type": "string",
+      "pattern": "^source:v1:[a-f0-9]{64}$"
+    },
+    "slot": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "call"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "return"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "parameter"
+            },
+            "name": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "name"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "policy_values": {
+      "type": "object",
+      "properties": {
+        "ownership": {
+          "enum": [
+            "copy",
+            "borrow",
+            "transfer",
+            "shared"
+          ]
+        },
+        "releaser": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "borrow_scope": {
+          "enum": [
+            "call",
+            "operation",
+            "subscription"
+          ]
+        },
+        "keep_alive": {
+          "enum": [
+            "call-frame",
+            "operation-owner",
+            "source-lease"
+          ]
+        },
+        "threading": {
+          "enum": [
+            "caller",
+            "serial-executor",
+            "dedicated-thread",
+            "ui-executor",
+            "runtime-environment"
+          ]
+        },
+        "blocking": {
+          "enum": [
+            "non-blocking",
+            "bounded",
+            "unbounded"
+          ]
+        },
+        "delivery": {
+          "enum": [
+            "registered",
+            "accepted",
+            "work-completed",
+            "result-delivered"
+          ]
+        },
+        "cancellation": {
+          "enum": [
+            "none",
+            "wait",
+            "observe",
+            "work"
+          ]
+        },
+        "cancellation_confirmation": {
+          "enum": [
+            "not-supported",
+            "wait-ended",
+            "stopped",
+            "operation-terminal"
+          ]
+        },
+        "close": {
+          "enum": [
+            "none",
+            "request-await-release"
+          ]
+        },
+        "synchronous_callback": {
+          "type": "boolean"
+        },
+        "reentrant": {
+          "type": "boolean"
+        },
+        "context_owner": {
+          "enum": [
+            "caller",
+            "source-lease",
+            "subscription-owner"
+          ]
+        },
+        "stop": {
+          "enum": [
+            "none",
+            "request-and-drain",
+            "delivery-gate-with-source-lease"
+          ]
+        },
+        "stream_kind": {
+          "enum": [
+            "none",
+            "state",
+            "event"
+          ]
+        },
+        "capacity_items": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "capacity_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "overflow": {
+          "enum": [
+            "reject",
+            "coalesce-latest"
+          ]
+        },
+        "ordering": {
+          "enum": [
+            "source",
+            "executor"
+          ]
+        },
+        "replay": {
+          "enum": [
+            "none",
+            "latest"
+          ]
+        },
+        "recovery": {
+          "enum": [
+            "none",
+            "resubscribe",
+            "domain-protocol"
+          ]
+        },
+        "release_thread": {
+          "enum": [
+            "caller",
+            "dedicated-thread",
+            "runtime-environment",
+            "owner-executor"
+          ]
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "file": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "file_ref": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        },
+        "schema": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size",
+        "schema"
+      ],
+      "additionalProperties": false
+    },
+    "selector": {
+      "type": "object",
+      "properties": {
+        "route": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "profile_id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "profile_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "target": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "direction": {
+          "enum": [
+            "consumer-to-provider",
+            "host-callback",
+            "reverse-export"
+          ]
+        }
+      },
+      "required": [
+        "route",
+        "profile_id",
+        "profile_digest",
+        "target",
+        "direction"
+      ],
+      "additionalProperties": false
+    },
+    "component": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_identity": {
+      "type": "object",
+      "properties": {
+        "input_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "tool_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "profile_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "candidate_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "lab_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "case_catalog_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        }
+      },
+      "required": [
+        "input_digest",
+        "tool_digest",
+        "profile_digest",
+        "candidate_digest",
+        "lab_revision",
+        "case_catalog_digest"
+      ],
+      "additionalProperties": false
+    },
+    "constant": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "integer"
+            },
+            "type": {
+              "enum": [
+                "i8",
+                "u8",
+                "i16",
+                "u16",
+                "i32",
+                "u32",
+                "i64",
+                "u64",
+                "i128",
+                "u128"
+              ]
+            },
+            "decimal": {
+              "type": "string",
+              "pattern": "^(0|-?[1-9][0-9]*)$",
+              "maxLength": 40
+            }
+          },
+          "required": [
+            "kind",
+            "type",
+            "decimal"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "float"
+            },
+            "type": {
+              "const": "f32"
+            },
+            "bits": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}$"
+            }
+          },
+          "required": [
+            "kind",
+            "type",
+            "bits"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "float"
+            },
+            "type": {
+              "const": "f64"
+            },
+            "bits": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{16}$"
+            }
+          },
+          "required": [
+            "kind",
+            "type",
+            "bits"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "string"
+            },
+            "value": {
+              "type": "string",
+              "maxLength": 65536
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "boolean"
+            },
+            "value": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9.-]*[.][a-z0-9.-]+$"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 4096
+      },
+      "maxProperties": 64
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9.-]*@[1-9][0-9]*$"
+      },
+      "minItems": 0,
+      "maxItems": 4096,
+      "uniqueItems": true
+    }
+  }
+}

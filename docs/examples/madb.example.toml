@@ -1,36 +1,26 @@
-# 设计样本；MadB CLI 尚未实现。真实 release 要补齐经过探针确认的 lock。
-format = "madb.project/1"
+# C02 format example, not a runnable SDK project. Hashes below are placeholders.
+# Real execution needs C03-verified tools and actual profile/file digests.
+schema = "madb.project/1"
 project = "sample-sdk"
+sdk_namespace = "sample"
+policy_families = []
 
 [[boundaries]]
-id = "sample-to-swift"
-route = "SWIFT-RUST-UNIFFI"
-# 此处只选择路线；实例化时还须解析确定的 boundary profile 并写入锁。
-# 没有目标/版本/策略锁的计划不能执行 build --frozen。
+id = "sample-rust-c"
+route = "RUST-C-ABI"
 direction = "consumer-to-provider"
-source.kind = "rust-uniffi"
-source.path = "native/Cargo.toml"
-output = "generated/swift"
+target = "aarch64-apple-darwin"
+source = { kind = "rust-c-declaration", path = "native/lib.rs" }
+profile = { path = "profiles/rust-c.json", schema = "madb.profile/1", sha256 = "sha256:0000000000000000000000000000000000000000000000000000000000000000", size = 0 }
+output = "generated/c"
 
 [[policies]]
-# 声明元数据显式公开此 ID；没有该 ID 时解析应失败。
-symbol_id = "sample.session.checksum.v1"
-execution = "bounded-worker"
-# 具体执行器 owner、项数/字节预算由所选 profile 提供；未解析时拒绝构建。
-input_buffer = "copy"
-completion = "work-completed"
-cancellation = "work-request"
-cancellation_confirmation = "operation-terminal"
-
-[[policies]]
-symbol_id = "sample.session.observe-state.v1"
-completion = "registered"
-callback_executor = "consumer-ui"
-stream_kind = "state"
-capacity = 1
-overflow = "coalesce-latest"
-stop = "request-and-drain"
+selector = { kind = "public_id", id = "sample.checksum.v1" }
+slot = { kind = "call" }
+families = []
+values = { threading = "caller", blocking = "bounded", delivery = "work-completed", cancellation = "none", cancellation_confirmation = "not-supported" }
+origin = { authority = "project-policy", id = "checksum-call", location = { path = "madb.toml", line = 16, column = 1 } }
 
 [artifacts]
 package = "sample-sdk"
-manifest = "out/manifest.json"
+manifest = "out/candidate.json"

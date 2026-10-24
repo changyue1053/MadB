@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:build-task:1",
+  "title": "MadB build-task v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.build-task/1"
+    },
+    "id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "selector": {
+      "$ref": "urn:madb:schema:common:1#/$defs/selector"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/id"
+      },
+      "minItems": 0,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "input_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "task_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "generation_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "tool": {
+      "$ref": "urn:madb:schema:common:1#/$defs/component"
+    },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 4096
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "environment": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "working_directory": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    },
+    "phase": {
+      "enum": [
+        "metadata",
+        "generate",
+        "compile",
+        "link",
+        "run"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/path"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "selector",
+    "dependencies",
+    "input_digest",
+    "task_digest",
+    "generation_id",
+    "tool",
+    "arguments",
+    "environment",
+    "working_directory",
+    "phase",
+    "inputs",
+    "outputs"
+  ],
+  "additionalProperties": false
+}

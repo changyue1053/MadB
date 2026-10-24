@@ -1,4 +1,4 @@
-"""C01 dependency boundaries, using Cargo's resolved identities and all features."""
+"""Workspace dependency boundaries, using Cargo's resolved identities and all features."""
 from __future__ import annotations
 
 import argparse
@@ -16,6 +16,7 @@ ALLOWED = {
     "madb-protocol": set(),
     "madb-app": {"madb-model", "madb-rules", "madb-plan"},
     "madb-cli": {"madb-app"},
+    "madb-contracts": {"madb-model", "madb-rules", "madb-protocol"},
 }
 
 
@@ -29,9 +30,10 @@ def inspect(root: Path) -> list[str]:
     members = {identity: packages[identity] for identity in metadata["workspace_members"]}
     nodes = {node["id"]: node for node in metadata["resolve"]["nodes"]}
     member_names = {package["name"] for package in members.values()}
+    member_directories = {Path(p["manifest_path"]).resolve().parent: p["name"] for p in members.values()}
     errors = []
     if member_names != ALLOWED.keys():
-        errors.append(f"ARCH001: C01 workspace members differ: {sorted(member_names)}")
+        errors.append(f"ARCH001: workspace members differ from the documented boundaries: {sorted(member_names)}")
 
     for package in packages.values():
         if package["source"] is None and not Path(package["manifest_path"]).resolve().is_relative_to(root):
@@ -61,6 +63,11 @@ def inspect(root: Path) -> list[str]:
         # An out-of-tree path dependency can hide a private adapter behind a
         # different package name. Registry sources remain governed by Cargo.lock.
         for dependency in package["dependencies"]:
+            # Cargo may omit a dependency edge to a binary-only package; the
+            # declaration itself must not bypass the architecture boundary.
+            declared = member_directories.get(Path(dependency["path"]).resolve()) if dependency.get("path") else None
+            if declared and declared not in ALLOWED[name]:
+                errors.append(f"ARCH003: {name} -> {declared} is forbidden (manifest declaration)")
             if dependency.get("path") and not Path(dependency["path"]).resolve().is_relative_to(root):
                 errors.append(f"ARCH004: {name} has an external path dependency: {dependency['name']}")
 

@@ -1,0 +1,75 @@
+{
+  "domain": "madb.contract/1",
+  "vectors": [
+    {
+      "id": "key-order",
+      "input": {
+        "z": 1,
+        "a": {
+          "b": true,
+          "a": null
+        }
+      },
+      "canonical": "{\"a\":{\"a\":null,\"b\":true},\"z\":1}",
+      "sha256": "sha256:096d0f84195a4f705a8a128c68309efae84d6d41d5695fe05573be305e005339"
+    },
+    {
+      "id": "utf16-order",
+      "input": {
+        "דּ": "end",
+        "😀": "middle",
+        "a": "first"
+      },
+      "canonical": "{\"a\":\"first\",\"😀\":\"middle\",\"דּ\":\"end\"}",
+      "sha256": "sha256:f8ab65631c7b79f3ead217a50836f550d5d63b3238bc33e989ebbd94f9f1a0cc"
+    },
+    {
+      "id": "exact-u64",
+      "input": {
+        "kind": "integer",
+        "type": "u64",
+        "decimal": "18446744073709551615"
+      },
+      "canonical": "{\"decimal\":\"18446744073709551615\",\"kind\":\"integer\",\"type\":\"u64\"}",
+      "sha256": "sha256:7961c6f4494f1de27416186c10a01637c3bfd65e6d3c442ae492a9931e82ddaa"
+    },
+    {
+      "id": "negative-zero-bits",
+      "input": {
+        "kind": "float",
+        "type": "f64",
+        "bits": "8000000000000000"
+      },
+      "canonical": "{\"bits\":\"8000000000000000\",\"kind\":\"float\",\"type\":\"f64\"}",
+      "sha256": "sha256:bbb1bff7c23035f18d5207dcc11ad79b8a4846ce4505cfc8440da5eaf857f8a3"
+    },
+    {
+      "id": "unicode-not-folded",
+      "input": [
+        "é",
+        "é"
+      ],
+      "canonical": "[\"é\",\"é\"]",
+      "sha256": "sha256:c26d853da13dc4776a4d0965f730179fff9995da4231ca4a2bc2eb8a248d8e0f"
+    },
+    {
+      "id": "ordered-array",
+      "input": [
+        2,
+        1,
+        0
+      ],
+      "canonical": "[2,1,0]",
+      "sha256": "sha256:3418e260a2173bf696ee90d83c161906e24e4469f6f01c2d4eaba6eca97fb5cf"
+    },
+    {
+      "id": "integer-limits",
+      "input": [
+        -9007199254740991,
+        9007199254740991
+      ],
+      "canonical": "[-9007199254740991,9007199254740991]",
+      "sha256": "sha256:63ad90bea67559bdc524d2d8b1d950bb12e9a8d62367f967fa919a167bd149d0"
+    }
+  ]
+}

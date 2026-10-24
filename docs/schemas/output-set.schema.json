@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:output-set:1",
+  "title": "MadB output-set v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.output-set/1"
+    },
+    "generation_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "input_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "task_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "profile_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "manifest_path": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "$ref": "urn:madb:schema:common:1#/$defs/path"
+          },
+          "sha256": {
+            "$ref": "urn:madb:schema:common:1#/$defs/digest"
+          },
+          "size": {
+            "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "minItems": 1,
+            "maxItems": 4096,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "size",
+          "sources"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "generation_id",
+    "input_digest",
+    "task_digest",
+    "profile_digest",
+    "manifest_path",
+    "files"
+  ],
+  "additionalProperties": false
+}

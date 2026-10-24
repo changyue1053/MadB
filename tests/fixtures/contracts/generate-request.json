@@ -1,0 +1,47 @@
+{
+  "schema": "madb.generate-request/1",
+  "boundary_id": "rust-to-c",
+  "selector": {
+    "route": "RUST-C-ABI",
+    "profile_id": "rust-c-fixture",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "target": "aarch64-apple-darwin",
+    "direction": "consumer-to-provider"
+  },
+  "inputs": [
+    {
+      "path": "native/fixture.rs",
+      "sha256": "sha256:7e27f1fcded98884ca95fd01459e9dfb2d6cb613fc7f52036bd89e8d32c4b5c0",
+      "size": 20,
+      "schema": "madb.source-input/1"
+    }
+  ],
+  "component": {
+    "id": "org.madb.fixture/reader",
+    "version": "0.1.0",
+    "sha256": "sha256:7e01769b0eefaadeb3be8324a0bbe0b7591478582aae53b9a6f238eec674db89"
+  },
+  "lock": {
+    "path": "madb.lock",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.lock/1"
+  },
+  "profile": {
+    "path": "profiles/rust-c.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.profile/1"
+  },
+  "output_root": "staging/generate",
+  "contract": {
+    "path": "contract.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.contract-ir/1"
+  },
+  "input_digest": "sha256:291606f6a442f90d77cede916ee8c144c1072aee82a121a7ceb7e550ea357016",
+  "task_digest": "sha256:573e71738ac0a9e6c913ba978e2f4a4b564e298b1aebcea387962a851fff8874",
+  "contract_digest": "sha256:467501ee75d0be2236f4f9986fb08ce4a8fb1b2c15e454ea62dd8914fe513f71",
+  "policy_digest": "sha256:0718f74ee75a9182bf6a08c170b97313654d5c078971d17093b164a436ab9932"
+}

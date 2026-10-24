@@ -1,0 +1,77 @@
+{
+  "schema": "madb.case/1",
+  "id": "DATA-001/positive/rust-c",
+  "kind": "instance",
+  "problem_ids": [
+    "DATA-001"
+  ],
+  "source_ids": [],
+  "selector": {
+    "route": "RUST-C-ABI",
+    "profile_id": "rust-c-fixture",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "target": "aarch64-apple-darwin",
+    "direction": "consumer-to-provider"
+  },
+  "requires": {
+    "features": [
+      "core.values@1"
+    ],
+    "environment": [
+      {
+        "id": "fixture-clang",
+        "version": "fixture-1"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "fixtures/value.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.fixture/1"
+  },
+  "setup": [],
+  "steps": [
+    {
+      "id": "call",
+      "action": "call",
+      "entrypoint": "fixture.checksum",
+      "arguments": [
+        {
+          "kind": "integer",
+          "type": "u64",
+          "decimal": "0"
+        }
+      ]
+    }
+  ],
+  "assertions": [
+    {
+      "observation": "checksum",
+      "operator": "equals",
+      "expected": [
+        {
+          "kind": "integer",
+          "type": "u64",
+          "decimal": "0"
+        }
+      ]
+    }
+  ],
+  "expected_result": {
+    "kind": "success"
+  },
+  "cleanup": [
+    {
+      "id": "close",
+      "action": "cleanup",
+      "entrypoint": "fixture.close",
+      "arguments": []
+    }
+  ],
+  "timeout_policy": {
+    "timeout_ms": 5000,
+    "on_timeout": "error",
+    "recovery": "isolate"
+  }
+}
