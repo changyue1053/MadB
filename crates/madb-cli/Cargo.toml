@@ -6,7 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
-description = "Command-line entry point. C01 exposes help and version only."
+description = "Read-only command entry points and application composition root."
 
 [lints]
 workspace = true
@@ -17,3 +17,6 @@ path = "src/main.rs"
 
 [dependencies]
 clap.workspace = true
+madb-app.workspace = true
+madb-contracts.workspace = true
+madb-host.workspace = true

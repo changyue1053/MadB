@@ -9,6 +9,7 @@ repository.workspace = true
 description = "Explicit schema-to-domain conversion and contract validation"
 
 [dependencies]
+madb-app.workspace = true
 madb-model.workspace = true
 madb-rules.workspace = true
 madb-protocol.workspace = true

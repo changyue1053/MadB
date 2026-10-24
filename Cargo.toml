@@ -7,6 +7,7 @@ members = [
     "crates/madb-plan",
     "crates/madb-protocol",
     "adapters/contracts",
+    "adapters/host",
 ]
 resolver = "3"
 
@@ -26,6 +27,10 @@ serde_json = { version = "=1.0.154" }
 jsonschema = { version = "=0.60.1", default-features = false }
 sha2 = { version = "=0.11.1" }
 toml = { version = "=1.1.6", default-features = false, features = ["std", "serde", "parse"] }
+madb-app = { path = "crates/madb-app" }
+madb-plan = { path = "crates/madb-plan" }
+madb-contracts = { path = "adapters/contracts" }
+madb-host = { path = "adapters/host" }
 madb-model = { path = "crates/madb-model" }
 madb-rules = { path = "crates/madb-rules" }
 madb-protocol = { path = "crates/madb-protocol" }

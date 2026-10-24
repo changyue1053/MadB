@@ -232,15 +232,17 @@
       "track": "core",
       "scope": "mainline",
       "owner_role": "核心维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C01",
         "C02",
         "C03"
       ],
-      "status": "not_started",
-      "verification": "missing",
-      "evidence": [],
+      "status": "in_progress",
+      "verification": "running",
+      "evidence": [
+        "reviews/2026-10-24-c04-readonly-queries.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -268,7 +270,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "本次子范围：只读 inspect/check/plan、应用读取/格式端口、静态任务 DAG、Unix 宿主有界读取与 CLI 装配；依据 0.9 设计及 C03 e58dd34。生成/构建/候选事务、取消/CAS/恢复、完整依赖追踪和缓存仍未实现；不计 C04 整体验收。实际编译器 reader 和生成器归 C05。"
     },
     {
       "id": "C05",

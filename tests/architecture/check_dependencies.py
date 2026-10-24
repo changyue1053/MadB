@@ -15,12 +15,32 @@ ALLOWED = {
     "madb-plan": {"madb-model"},
     "madb-protocol": set(),
     "madb-app": {"madb-model", "madb-rules", "madb-plan"},
-    "madb-cli": {"madb-app"},
-    "madb-contracts": {"madb-model", "madb-rules", "madb-protocol"},
+    "madb-cli": {"madb-app", "madb-contracts", "madb-host"},
+    "madb-contracts": {"madb-app", "madb-model", "madb-rules", "madb-protocol"},
+    "madb-host": {"madb-app"},
 }
 
 
 def inspect(root: Path) -> list[str]:
+    # Resolve manifest declarations first. Forbidden edges may create a Cargo
+    # cycle; detect them without asking the resolver to accept that graph.
+    declarations = subprocess.run(
+        ["cargo", "metadata", "--no-deps", "--all-features", "--format-version", "1"],
+        cwd=root, capture_output=True, text=True, check=True,
+    )
+    declared = json.loads(declarations.stdout)
+    members = {p["id"]: p for p in declared["packages"] if p["id"] in declared["workspace_members"]}
+    paths = {Path(p["manifest_path"]).resolve().parent: p["name"] for p in members.values()}
+    errors = []
+    for package in members.values():
+        allowed = ALLOWED.get(package["name"], set())
+        for dependency in package["dependencies"]:
+            target = paths.get(Path(dependency["path"]).resolve()) if dependency.get("path") else None
+            if target and target not in allowed:
+                errors.append(f"ARCH003: {package['name']} -> {target} is forbidden (manifest declaration)")
+    if errors:
+        return sorted(set(errors))
+
     result = subprocess.run(
         ["cargo", "metadata", "--locked", "--all-features", "--format-version", "1"],
         cwd=root, capture_output=True, text=True, check=True,

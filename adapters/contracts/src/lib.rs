@@ -6,6 +6,7 @@ mod resolution;
 mod wire;
 pub use resolution::check_frozen_inputs;
 pub mod artifacts;
+pub mod query;
 
 pub use convert::{
     PolicyInputs, capability, contract, evidence_identity, project_policies, report_results,

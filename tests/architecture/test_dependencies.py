@@ -22,7 +22,7 @@ class DependencyBoundaries(unittest.TestCase):
         shutil.copytree(ROOT / "adapters", self.root / "adapters")
 
     def check_dependency(self, owner, section, declaration, expected):
-        directory = self.root / "adapters/contracts" if owner == "madb-contracts" else self.root / "crates" / owner
+        directory = self.root / ("adapters/" + owner.removeprefix("madb-")) if owner in {"madb-contracts", "madb-host"} else self.root / "crates" / owner
         manifest = directory / "Cargo.toml"
         content = manifest.read_text()
         heading = f"[{section}]"
@@ -33,7 +33,7 @@ class DependencyBoundaries(unittest.TestCase):
         manifest.write_text(content)
         subprocess.run(
             ["cargo", "generate-lockfile", "--offline"], cwd=self.root,
-            check=True, capture_output=True, text=True,
+            check=expected is None, capture_output=True, text=True,
         )
         result = subprocess.run(
             [sys.executable, str(CHECK), "--root", str(self.root)],
@@ -45,7 +45,7 @@ class DependencyBoundaries(unittest.TestCase):
             self.assertNotIn("ARCH000", result.stderr)
 
     def test_declared_domain_dependency_is_allowed(self):
-        self.check_dependency("madb-plan", "dependencies",
+        self.check_dependency("madb-plan", "build-dependencies",
                               'madb-model = { path = "../madb-model" }', None)
 
     def test_core_cannot_import_wire_types(self):
@@ -77,6 +77,16 @@ class DependencyBoundaries(unittest.TestCase):
         self.check_dependency("madb-contracts", "dependencies",
                               'madb-cli = { path = "../../crates/madb-cli" }',
                               "ARCH003: madb-contracts -> madb-cli")
+
+    def test_app_cannot_import_host_even_when_it_creates_a_cycle(self):
+        self.check_dependency("madb-app", "dependencies",
+                              'madb-host = { path = "../../adapters/host" }',
+                              "ARCH003: madb-app -> madb-host")
+
+    def test_host_cannot_import_contract_wire_adapter(self):
+        self.check_dependency("madb-host", "dependencies",
+                              'madb-contracts = { path = "../contracts" }',
+                              "ARCH003: madb-host -> madb-contracts")
 
 
 if __name__ == "__main__":
