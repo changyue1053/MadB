@@ -328,15 +328,40 @@ pub struct ProcessExecution {
     pub process: Option<ProcessRun>,
 }
 
+/// A captured value is exposed only if execution and validation finish before
+/// cancellation. The process observation remains owned even on rejection.
+#[must_use]
+pub struct ValidatedExecution<T> {
+    pub execution: ProcessExecution,
+    pub value: Option<T>,
+}
+
 pub fn execute_process(
     runner: &impl ProcessRunner,
     request: &ProcessRequest,
     control: &ExecutionControl,
 ) -> ProcessResult<ProcessExecution> {
+    execute_process_validated(runner, request, control, |_, _| Ok(()))
+        .map(|validated| validated.execution)
+}
+
+/// Run validation inside the same one-shot admission window as the process.
+/// A validation error becomes a diagnostic without dropping the process owner.
+/// The callback runs only for an eligible process while cancellation has not
+/// already been observed; cancellation during validation discards its value.
+pub fn execute_process_validated<T>(
+    runner: &impl ProcessRunner,
+    request: &ProcessRequest,
+    control: &ExecutionControl,
+    validate: impl FnOnce(&ProcessRun, &CancellationProbe<'_>) -> ProcessResult<T>,
+) -> ProcessResult<ValidatedExecution<T>> {
     if !control.begin()? {
-        return Ok(ProcessExecution {
-            admission: ResultAdmission::RejectedByCancellation,
-            process: None,
+        return Ok(ValidatedExecution {
+            execution: ProcessExecution {
+                admission: ResultAdmission::RejectedByCancellation,
+                process: None,
+            },
+            value: None,
         });
     }
     struct Finish<'a>(Option<&'a ExecutionControl>);
@@ -348,18 +373,29 @@ pub fn execute_process(
         }
     }
     let mut finish = Finish(Some(control));
-    let result = runner.run(request, &CancellationProbe(&control.state));
+    let probe = CancellationProbe(&control.state);
+    let mut process = runner.run(request, &probe)?;
+    let mut value = None;
+    if process.eligible() && !probe.requested() {
+        match validate(&process, &probe) {
+            Ok(validated) => value = Some(validated),
+            Err(error) => process.report.diagnostic = Some(error),
+        }
+    }
     let cancellation_won = finish.0.take().expect("active execution guard").finish();
-    let process = result?;
     let admission = if cancellation_won {
+        value = None;
         ResultAdmission::RejectedByCancellation
     } else if process.eligible() {
         ResultAdmission::EligibleForValidation
     } else {
         ResultAdmission::Unavailable
     };
-    Ok(ProcessExecution {
-        admission,
-        process: Some(process),
+    Ok(ValidatedExecution {
+        execution: ProcessExecution {
+            admission,
+            process: Some(process),
+        },
+        value,
     })
 }

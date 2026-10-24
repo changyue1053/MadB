@@ -10,10 +10,10 @@ pub struct SnapshotAdapter {
     registry: SchemaRegistry,
 }
 pub struct PreparedQuery {
-    request: Document,
+    pub(crate) request: Document,
     project: Document,
-    lock: Document,
-    profile: Document,
+    pub(crate) lock: Document,
+    pub(crate) profile: Document,
 }
 
 impl SnapshotAdapter {
@@ -22,7 +22,7 @@ impl SnapshotAdapter {
             registry: SchemaRegistry::new().map_err(format_error)?,
         })
     }
-    fn decode(&self, kind: DocumentKind, bytes: &[u8]) -> Result<Document> {
+    pub(crate) fn decode(&self, kind: DocumentKind, bytes: &[u8]) -> Result<Document> {
         self.registry.decode(kind, bytes).map_err(format_error)
     }
 }
@@ -258,7 +258,7 @@ impl SnapshotFormat for SnapshotAdapter {
     }
 }
 
-fn reference(value: &madb_protocol::Value) -> Result<FileReference> {
+pub(crate) fn reference(value: &madb_protocol::Value) -> Result<FileReference> {
     let wire = Wire::at(value, "reference");
     Ok(FileReference {
         path: LogicalPath::new(
@@ -283,7 +283,7 @@ fn reference(value: &madb_protocol::Value) -> Result<FileReference> {
 fn invalid(code: &'static str, path: &str, message: impl Into<String>) -> QueryError {
     QueryError::new(ErrorKind::InvalidInput, code, path, message)
 }
-fn format_error(error: FormatError) -> QueryError {
+pub(crate) fn format_error(error: FormatError) -> QueryError {
     QueryError::new(
         ErrorKind::InvalidInput,
         error.code,

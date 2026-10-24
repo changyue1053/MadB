@@ -76,17 +76,21 @@ pub(super) fn materialize(root: &File, snapshot: &FrozenInputs) -> Result<()> {
 
 pub(super) fn verify(root: &File, snapshot: &FrozenInputs) -> Result<()> {
     let inputs = open_directory(root, "inputs")?;
+    verify_contents(&LocalWorkspace { root: inputs }, snapshot)
+}
+
+pub(crate) fn verify_contents(workspace: &LocalWorkspace, snapshot: &FrozenInputs) -> Result<()> {
     let files: BTreeSet<_> = snapshot.references().map(|r| r.path.as_str()).collect();
     let directories: BTreeSet<_> = snapshot.directories().map(|p| p.as_str()).collect();
     let mut seen = BTreeSet::new();
-    inspect(&inputs, "", &files, &directories, &mut seen)?;
+    inspect(&workspace.root, "", &files, &directories, &mut seen)?;
     if seen.len() != files.len() + directories.len() {
         return Err(integrity_error(
-            "inputs",
+            "files",
             "declared path missing from private input tree",
         ));
     }
-    snapshot.verify(&LocalWorkspace { root: inputs })
+    snapshot.verify(workspace)
 }
 
 fn inspect(

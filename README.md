@@ -1,6 +1,6 @@
 # MadB
 
-跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询、静态任务规划、受控进程和已声明输入副本，尚无已认证的跨语言路线。
+跨语言 SDK 工程工具。当前已建立工程基线、C02 契约/格式库和 C03 首链探针；C04 已接入只读契约查询、静态任务规划、受控进程、已声明输入副本和单任务结果验证，尚无已认证的跨语言路线。
 
 ## 开发环境
 
@@ -48,6 +48,12 @@ cargo run --locked -p madb-cli -- plan --root /path/to/workspace --project madb.
 `.venv/bin/python -m unittest discover -s tests/integration/c04_inputs` 通过内部 app/host API 捕获已声明文件、创建独占 `inputs/work` 目录，让真实工具读取固定副本，并在执行前后检查副本。源文件在捕获后变化不会改变已捕获字节；修改副本或增加/移除路径会拒收结果。目录在成功、失败、取消和 Drop 后均保留，未自动发布或回收。复现见[固定输入回归](tests/integration/c04_inputs/README.md)。
 
 这只覆盖声明清单，不证明完整依赖、原子文件系统快照或阻止同权限写入。是否允许旧快照结果提交仍由后续输入/CAS 协议判定。尚无用户可用的 build/generate 命令。
+
+## 单任务配方验证
+
+`.venv/bin/python -m unittest discover -s tests/integration/c04_tasks` 绑定受检 project/request/IR/profile/lock 和无依赖 BuildTask，启动实际受控配方，并核对 stdout 的 BuildEvidence 与 work 中的输出/日志字节。结果解析、捕获和最终副本检查均在一次性取消门禁内；被取消或验证失败不会暴露结果值。成功值保留独立字节，磁盘后来变化不改变它。详见[单任务回归](tests/integration/c04_tasks/README.md)。
+
+配方通过 stdin/stdout 使用既有格式；普通编译器由配方适配。仅支持所选 profile 中精确锁定的工具 image，不把组件包摘要当可执行文件。内部入口尚无 DAG 调度和提交能力，成功只表示受检观察；不证明关联生成批次已存在或可发布。
 
 ## 工程与依据
 

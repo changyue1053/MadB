@@ -20,3 +20,6 @@ clap.workspace = true
 madb-app.workspace = true
 madb-contracts.workspace = true
 madb-host.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

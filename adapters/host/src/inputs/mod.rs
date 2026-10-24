@@ -1,16 +1,16 @@
 //! Private copies of declared inputs. Retention is deliberate: process-group
 //! observations alone cannot prove that escaped descendants stopped writing.
 #[cfg(unix)]
-mod tree;
+pub(crate) mod tree;
 
-use crate::process::LocalProcessRunner;
+use crate::{LocalWorkspace, process::LocalProcessRunner};
 use madb_app::{
     ErrorKind, LogicalPath, QueryError,
     inputs::FrozenInputs,
     ports::ProcessRunner,
     process::{
         CancellationProbe, ExecutionControl, ProcessError, ProcessExecution, ProcessPolicy,
-        ProcessRequest, ProcessResult, ProcessRun, execute_process,
+        ProcessRequest, ProcessResult, ProcessRun, execute_process_validated,
     },
 };
 use std::path::{Path, PathBuf};
@@ -139,7 +139,21 @@ impl PreparedRun {
         request: &ProcessRequest,
         control: &ExecutionControl,
     ) -> RetainedRun {
-        let execution = execute_process(
+        self.execute_validated(tool_root, policy, request, control, |_, _, _| Ok(()))
+    }
+
+    /// Runs a validator before cancellation/result admission closes. Only a
+    /// clean zero exit reaches the callback. Failure retains the process and
+    /// directory, while cancellation discards any computed value.
+    pub fn execute_validated<T>(
+        self,
+        tool_root: &Path,
+        policy: ProcessPolicy,
+        request: &ProcessRequest,
+        control: &ExecutionControl,
+        validate: impl FnOnce(&LocalWorkspace, &ProcessRun, &CancellationProbe<'_>) -> ProcessResult<T>,
+    ) -> RetainedRun<T> {
+        let result = execute_process_validated(
             &CheckedRunner {
                 prepared: &self,
                 tool_root,
@@ -147,11 +161,62 @@ impl PreparedRun {
             },
             request,
             control,
+            |run, cancellation| {
+                let workspace = self.work_workspace().map_err(input_error)?;
+                let value = validate(&workspace, run, cancellation)?;
+                self.verify().map_err(input_error)?;
+                self.verify_work(&workspace).map_err(input_error)?;
+                Ok(value)
+            },
         );
+        let (execution, value) = match result {
+            Ok(result) => (Ok(result.execution), result.value),
+            Err(error) => (Err(error), None),
+        };
         RetainedRun {
             prepared: self,
             execution,
+            value,
         }
+    }
+
+    #[cfg(unix)]
+    fn work_workspace(&self) -> madb_app::Result<LocalWorkspace> {
+        Ok(LocalWorkspace {
+            root: tree::open_directory(&self.root, "work")?,
+        })
+    }
+    #[cfg(unix)]
+    fn verify_work(&self, workspace: &LocalWorkspace) -> madb_app::Result<()> {
+        use std::os::unix::fs::MetadataExt;
+        let expected = workspace
+            .root
+            .metadata()
+            .map_err(|e| tree::integrity_error("work", e))?;
+        let current = tree::open_directory(&self.root, "work")?
+            .metadata()
+            .map_err(|e| tree::integrity_error("work", e))?;
+        if current.dev() != expected.dev() || current.ino() != expected.ino() {
+            return Err(tree::integrity_error(
+                "work",
+                "work directory changed during validation",
+            ));
+        }
+        Ok(())
+    }
+    #[cfg(not(unix))]
+    fn work_workspace(&self) -> madb_app::Result<LocalWorkspace> {
+        Err(preparation_error(
+            "platform",
+            "private input trees require a Unix host",
+        ))
+    }
+    #[cfg(not(unix))]
+    fn verify_work(&self, _: &LocalWorkspace) -> madb_app::Result<()> {
+        Err(preparation_error(
+            "platform",
+            "private input trees require a Unix host",
+        ))
     }
 }
 
@@ -190,16 +255,21 @@ impl ProcessRunner for CheckedRunner<'_> {
 /// A retained tree plus its execution outcome, including any pending child.
 /// Neither a successful poll nor Drop authorizes filesystem removal.
 #[must_use]
-pub struct RetainedRun {
+pub struct RetainedRun<T = ()> {
     prepared: PreparedRun,
     execution: ProcessResult<ProcessExecution>,
+    value: Option<T>,
 }
-impl RetainedRun {
+impl<T> RetainedRun<T> {
     pub fn path(&self) -> &Path {
         self.prepared.path()
     }
     pub fn execution(&self) -> &ProcessResult<ProcessExecution> {
         &self.execution
+    }
+    /// Captured result exists only if validation and final admission succeeded.
+    pub fn value(&self) -> Option<&T> {
+        self.value.as_ref()
     }
     /// True means no pending owned leader, not that the tree is safe to delete.
     /// Late cleanup never upgrades result admission.

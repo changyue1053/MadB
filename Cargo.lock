@@ -464,6 +464,7 @@ dependencies = [
  "madb-app",
  "madb-contracts",
  "madb-host",
+ "serde_json",
 ]
 
 [[package]]

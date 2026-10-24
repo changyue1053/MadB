@@ -118,6 +118,8 @@ DEC-02 采用 JSON Schema Draft 2020-12 作为对外文件结构权威。宿主�
 
 `generation_id` 由任务身份与按路径排序的输出文件清单生成内容摘要，不使用时间或随机值；清单不把自身作为被哈希输出，外层候选再记录清单文件的字节摘要。会话 ID、日志和运行时间单独放在执行记录，避免循环哈希和非确定性生成。
 
+BuildTask 的 `input_digest` 保留契约来源链身份，执行绑定时与受检 IR.source_digest 核对；该任务的 `inputs` 可以是另一份具体消费清单，由 task_digest 覆盖并按实际文件字节验证，不能把两者强行视为同一摘要。BuildTask/BuildEvidence 的 generation_id 关联任务请求声称消费的既有生成批次；它不是预知本次输出的摘要。单次配对检查不证明批次真实性或提交资格，批次来源和产物提交仍遵守[生成事务](07-code-generation.md)。
+
 ## C02 的格式实现入口
 
 [格式与投影 v1](../schemas/README.md)固定 SourceKey 的长度编码、15 类业务文档、离线解析预算、精确数值、语义投影、来源诊断和拒绝边界；[首链 ABI](../examples/first-route/README.md)固定状态值及关闭的声明形状。领域模型保持独立，wire 到 domain 的转换位于 `adapters/contracts`，真实 IO 和用例装配由 C04/C05 接入。schema、纯规则或声明编译通过均不代表路线已认证。
