@@ -2,7 +2,7 @@
 
 日期：2026-10-24。设计依据：基线 0.9、DEC-01/02/03、C02 六项 acceptance。两份 C01 PR 已按用户授权合入：MadB `4057552d930a2741e298efc0551469faa9a44647`，MadB-Lab `6721ce40ef226cf2466faf0d00681b7bc074600b`。
 
-本次实现 C02 库与首链可执行设计，不开发 C03 的实际工具链探针、C04 的 CLI/任务执行器或 C05 的 FFI 运行时。MadB-Lab 的独立基线没有修改。当前本地门禁通过，远端 CI 结果由本记录后续的提交说明及任务目录关联；在远端检查通过前不标记整项验收完成。
+本次实现 C02 库与首链可执行设计，不开发 C03 的实际工具链探针、C04 的 CLI/任务执行器或 C05 的 FFI 运行时。MadB-Lab 的独立基线没有修改。本地门禁及远端 PR/分支 CI 均通过，C02 六项验收已完成；实现交付于 [PR #2](https://github.com/changyue1053/MadB/pull/2)，不将其与 main 合入或路线认证混为一项状态。
 
 ## 实施与验收对应
 
@@ -48,3 +48,12 @@
 测试中的 profile/文件引用是合成样本，不是可消费 SDK；本机声明编译不是实际绑定生成、链接或双向运行。Python 参考实现核对共同结构向量，RFC 3339 format 校验保留在 Rust 主解码器。没有重新执行浏览器视觉验收，DOM-shaped 单元检查不冒充浏览器。
 
 C03 应继续 P01/P02：真实 Rust/Clang/libclang/bindgen/cbindgen/SDK 锁、macOS Arm64 与 x86_64 布局/编译、至少一个目标的独立 C→Rust 与 Rust→C 运行。C04 接入纯应用请求、任务图、文件隔离、真实端口与缓存；C05/C09 再验证生成结果、所有权、并发关闭、候选包及独立 Lab。C10 发布编译产物前补齐实际分发依赖的许可证文本；本次依赖元数据清单不代替 NOTICE 包。
+
+## 远端 CI 与提交身份
+
+实现提交 `40a8cbb19c262845424106e647a6302dccb2e252` 已在 GitHub Ubuntu 24.04 上通过相同 `scripts/check.py`：
+
+- [PR 检查 40075357758](https://github.com/changyue1053/MadB/actions/runs/40075357758)：completed / success。
+- [分支检查 40075335316](https://github.com/changyue1053/MadB/actions/runs/40075335316)：completed / success。
+
+CI 沿用既有必需状态名 `MadB C01 baseline`，检查入口已包含 C02，保持 main 合入门禁连续有效。本节与进度状态是通过上述代码检查后的文档回写；最终 PR head 的检查结果以 GitHub 为准，不把本记录的提交身份伪装成自身哈希。

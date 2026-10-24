@@ -138,10 +138,13 @@
       "owner_role": "架构 / 核心 / 验证维护者",
       "owner": "changyue1053",
       "depends_on": [],
-      "status": "in_progress",
-      "verification": "running",
+      "status": "implemented",
+      "verification": "passed",
       "evidence": [
-        "reviews/2026-10-24-c02-contract-formats.md"
+        "reviews/2026-10-24-c02-contract-formats.md",
+        "https://github.com/changyue1053/MadB/pull/2",
+        "https://github.com/changyue1053/MadB/actions/runs/40075357758",
+        "https://github.com/changyue1053/MadB/actions/runs/40075335316"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -160,7 +163,9 @@
         "validation/08-critical-scenarios.md",
         "delivery/04-design-readiness-and-first-route.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "architecture/02-modules-and-ports.md"
+        "architecture/02-modules-and-ports.md",
+        "schemas/README.md",
+        "examples/first-route/README.md"
       ],
       "requirements": [
         "REQ-02",
@@ -169,7 +174,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "DEC-01/02/03 的 C02 实现和本地门禁已通过：15 类 payload、语义规则/摘要、冻结与证据校验、首链 ABI 声明；远端 CI 待执行。C03 工具链探针、C04 应用流程和 C05 原生运行仍按计划独立验收。"
+      "notes": "C02 六项验收已通过：15 类 payload、受检领域转换、身份/策略/布局/摘要/锁/证据规则和首链 ABI 可执行设计；本地检查及 PR/分支 CI 全绿。实现位于独立 PR #2，合入状态由 GitHub 记录；C03 工具链/双向运行、C04 应用流程和 C05 原生 SDK 仍待各自验收。"
     },
     {
       "id": "C03",
@@ -198,7 +203,9 @@
         "delivery/03-decisions-and-risks.md",
         "architecture/06-backend-profiles.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/16-technology-stack-and-versions.md"
+        "architecture/16-technology-stack-and-versions.md",
+        "schemas/README.md",
+        "examples/first-route/README.md"
       ],
       "requirements": [
         "REQ-03",
