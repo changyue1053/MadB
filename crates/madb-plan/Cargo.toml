@@ -10,3 +10,6 @@ description = "Pure task and project planning. C04 supplies behavior; no task ex
 
 [lints]
 workspace = true
+
+[dependencies]
+madb-model.workspace = true

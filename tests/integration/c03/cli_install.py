@@ -20,8 +20,8 @@ def main():
         binary = install / "bin/madb"
         # Run outside the source tree, with no Cargo path, tool plugins or cache.
         for args, expected_code, marker in [(["--version"], 0, "madb 0.1.0-dev.0"),
-                                             (["--help"], 0, "only help and version"),
-                                             (["generate"], 2, "unexpected argument")]:
+                                             (["--help"], 0, "Read-only snapshot queries"),
+                                             (["generate"], 2, "unrecognized subcommand")]:
             result = subprocess.run([str(binary), *args], cwd=temporary,
                                     env={"PATH": os.defpath, "HOME": temporary}, capture_output=True, text=True, timeout=10)
             if result.returncode != expected_code or marker not in result.stdout + result.stderr:

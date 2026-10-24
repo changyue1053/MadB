@@ -5,6 +5,7 @@ The host and repository checks use the following direct dependencies; the origin
 | Component | Version | Declared license |
 |---|---|---|
 | anstyle | 1.0.14 | MIT OR Apache-2.0 |
+| rustix (Unix host reads) | 1.0.8 | Apache-2.0 OR Apache-2.0 WITH LLVM-exception OR MIT |
 | clap | 4.6.7 | MIT OR Apache-2.0 |
 | clap_builder | 4.6.7 | MIT OR Apache-2.0 |
 | clap_lex | 1.1.1 | MIT OR Apache-2.0 |
@@ -31,3 +32,5 @@ Package coordinates are not reserved by publish=false. The initial distribution 
 C02 resolved 99 registry packages, including target-specific dependencies; their versions, registry checksums and declared license expressions are recorded in [the dependency inventory](docs/reviews/c02-dependency-licenses.json). All reported a license. The `r-efi` alternative permits MIT; Unicode data dependencies additionally require Unicode-3.0 notices. This source-only change does not publish a compiled distribution. C10 must collect applicable license texts/notices for the dependencies actually redistributed in a release; a metadata inventory alone is not that bundle.
 
 C03 invokes bindgen-cli 0.73.2 (BSD-3-Clause) and cbindgen 0.29.4 (MPL-2.0) as external development tools. Their source archive and dependency-lock hashes are in `tests/integration/c03/toolchain.json`; the verified installer fetches them from crates.io. Tool binaries, Apple SDKs and Rust standard-library archives are not committed or redistributed. Generated test declarations derive from project-authored inputs; a future compiled SDK/tool distribution still requires the C10 license/notice review.
+
+C04 uses the safe `rustix` filesystem APIs without relaxing the workspace unsafe-code prohibition. The 14 added resolved packages, including target-specific dependencies, are listed in [the C04 dependency inventory](docs/reviews/c04-dependency-licenses.json). No dependency source or binary is vendored by this change; release notice collection remains C10.

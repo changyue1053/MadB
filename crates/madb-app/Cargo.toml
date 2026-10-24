@@ -10,3 +10,7 @@ description = "Application use cases and their ports. Implemented in C04; no bac
 
 [lints]
 workspace = true
+
+[dependencies]
+madb-model.workspace = true
+madb-plan.workspace = true
