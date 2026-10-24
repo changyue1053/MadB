@@ -73,7 +73,10 @@ def _link_at(config, inputs, work, commands):
         "-F", work / "framework", "-framework", "MadBSkie", "-Xfrontend", "-disable-incremental-llvm-codegen",
         "-file-prefix-map", str(inputs) + "=/madb/inputs", "-file-prefix-map", str(work) + "=/madb/build",
         work / "swift/MadBSkieConcurrency.swift", input_path(inputs, "sdk/swift/skie/Smoke.swift"),
-        "-Xlinker", "-reproducible", "-o", native / "smoke"]
+        # The pinned Apple linker can choose duplicate objc_msgSend GOT entries
+        # nondeterministically with chained fixups. Keep UUID/DWARF; use the
+        # supported legacy fixup encoding for this private producer smoke only.
+        "-Xlinker", "-reproducible", "-Xlinker", "-no_fixup_chains", "-o", native / "smoke"]
     commands.run("swiftc", arguments)
     return [*names, "native/smoke"]
 

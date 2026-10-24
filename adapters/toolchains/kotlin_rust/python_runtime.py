@@ -23,9 +23,19 @@ def inventory(root):
             continue
         mode = path.lstat().st_mode
         if stat.S_ISLNK(mode):
-            if not path.resolve(strict=True).is_relative_to(root):
+            # Python.org frameworks include internal links to absent header
+            # targets. ALLOW_MISSING still rejects loops and access errors; ordinary
+            # non-strict resolution would silently preserve those unresolved parts.
+            resolved = Path(os.path.realpath(path, strict=os.path.ALLOW_MISSING))
+            if not resolved.is_relative_to(root):
                 raise ValueError("Python runtime symlink escapes its root: " + str(relative))
-            result.append(dict(path=relative.as_posix(), symlink=os.readlink(path)))
+            entry = dict(path=relative.as_posix(), symlink=os.readlink(path))
+            try:
+                resolved.stat()
+            except FileNotFoundError:
+                # Even an empty directory appearing later must change the inventory.
+                entry["target_missing"] = True
+            result.append(entry)
         elif stat.S_ISREG(mode):
             result.append(dict(path=relative.as_posix(), sha256=digest(path), size=path.stat().st_size,
                                executable=bool(mode & 0o111)))

@@ -96,9 +96,10 @@ fn termination_grace_fixture() {
     wait_until(|| directory.join("child-ready").exists());
     fs::write(directory.join("owner-ready"), b"ready").unwrap();
     wait_until(|| cancelled.load(Ordering::Acquire));
+    // A negative PGID is an operand, not another kill option.
     assert!(
         Command::new("/bin/kill")
-            .args(["-TERM", &format!("-{}", child.0.id())])
+            .args(["-TERM", "--", &format!("-{}", child.0.id())])
             .status()
             .unwrap()
             .success()
