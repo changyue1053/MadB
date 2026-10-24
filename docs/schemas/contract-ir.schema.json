@@ -1,0 +1,665 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:contract-ir:1",
+  "title": "MadB contract-ir v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.contract-ir/1"
+    },
+    "sdk_namespace": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "boundary_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "selector": {
+      "$ref": "urn:madb:schema:common:1#/$defs/selector"
+    },
+    "source_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "structure_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "policy_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "required_features": {
+      "$ref": "urn:madb:schema:common:1#/$defs/features"
+    },
+    "types": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "definition": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "unit"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "boolean"
+                  }
+                },
+                "required": [
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "integer"
+                  },
+                  "width": {
+                    "enum": [
+                      8,
+                      16,
+                      32,
+                      64,
+                      128
+                    ]
+                  },
+                  "signed": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "width",
+                  "signed"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "float"
+                  },
+                  "width": {
+                    "enum": [
+                      32,
+                      64
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "width"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "string"
+                  },
+                  "encoding": {
+                    "enum": [
+                      "utf-8",
+                      "utf-16"
+                    ]
+                  },
+                  "max_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "kind",
+                  "encoding",
+                  "max_bytes"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "buffer"
+                  },
+                  "element": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  },
+                  "length_unit": {
+                    "enum": [
+                      "bytes",
+                      "elements"
+                    ]
+                  },
+                  "encoding": {
+                    "enum": [
+                      "none",
+                      "utf-8",
+                      "utf-16"
+                    ]
+                  },
+                  "mutable": {
+                    "type": "boolean"
+                  },
+                  "max_bytes": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "kind",
+                  "element",
+                  "length_unit",
+                  "encoding",
+                  "mutable",
+                  "max_bytes"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "nullable"
+                  },
+                  "inner": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "inner"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "record"
+                  },
+                  "fields": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "$ref": "urn:madb:schema:common:1#/$defs/id"
+                        },
+                        "type_id": {
+                          "$ref": "urn:madb:schema:common:1#/$defs/id"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "type_id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 4096
+                  },
+                  "layout": {
+                    "enum": [
+                      "c",
+                      "logical"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "fields",
+                  "layout"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "variant"
+                  },
+                  "tag_type": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  },
+                  "cases": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "$ref": "urn:madb:schema:common:1#/$defs/id"
+                        },
+                        "tag": {
+                          "$ref": "urn:madb:schema:common:1#/$defs/constant"
+                        },
+                        "payload": {
+                          "oneOf": [
+                            {
+                              "$ref": "urn:madb:schema:common:1#/$defs/id"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "tag",
+                        "payload"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 1,
+                    "maxItems": 4096
+                  },
+                  "unknown": {
+                    "enum": [
+                      "reject",
+                      "preserve"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "tag_type",
+                  "cases",
+                  "unknown"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "resource"
+                  },
+                  "representation": {
+                    "enum": [
+                      "registry-u64",
+                      "opaque-pointer"
+                    ]
+                  },
+                  "owner": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "representation",
+                  "owner"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "const": "callback"
+                  },
+                  "parameters": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "$ref": "urn:madb:schema:common:1#/$defs/id"
+                        },
+                        "type_id": {
+                          "$ref": "urn:madb:schema:common:1#/$defs/id"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "type_id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "minItems": 0,
+                    "maxItems": 4096
+                  },
+                  "result": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  },
+                  "calling_convention": {
+                    "enum": [
+                      "c",
+                      "system"
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "parameters",
+                  "result",
+                  "calling_convention"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "definition"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_key": {
+            "$ref": "urn:madb:schema:common:1#/$defs/source_key"
+          },
+          "source_id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/source_id"
+          },
+          "public_id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "public_id_origin": {
+            "enum": [
+              "explicit",
+              "derived"
+            ]
+          },
+          "location": {
+            "$ref": "urn:madb:schema:common:1#/$defs/location"
+          },
+          "precision": {
+            "enum": [
+              "compiler-derived",
+              "artifact-derived",
+              "schema-derived",
+              "heuristic"
+            ]
+          },
+          "shape": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "sync",
+                  "async",
+                  "stream"
+                ]
+              },
+              "calling_convention": {
+                "enum": [
+                  "c",
+                  "system"
+                ]
+              },
+              "link_name": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "parameters": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "$ref": "urn:madb:schema:common:1#/$defs/id"
+                    },
+                    "type_id": {
+                      "$ref": "urn:madb:schema:common:1#/$defs/id"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "type_id"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0,
+                "maxItems": 4096
+              },
+              "result": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "constants": {
+                "type": "array",
+                "items": {
+                  "$ref": "urn:madb:schema:common:1#/$defs/constant"
+                },
+                "minItems": 0,
+                "maxItems": 4096
+              }
+            },
+            "required": [
+              "kind",
+              "calling_convention",
+              "link_name",
+              "parameters",
+              "result",
+              "constants"
+            ],
+            "additionalProperties": false
+          },
+          "shape_digest": {
+            "$ref": "urn:madb:schema:common:1#/$defs/digest"
+          }
+        },
+        "required": [
+          "source_key",
+          "source_id",
+          "public_id",
+          "public_id_origin",
+          "location",
+          "precision",
+          "shape",
+          "shape_digest"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "policies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "symbol_id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "slot": {
+            "$ref": "urn:madb:schema:common:1#/$defs/slot"
+          },
+          "values": {
+            "$ref": "urn:madb:schema:common:1#/$defs/policy_values"
+          },
+          "provenance": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "property": {
+                  "enum": [
+                    "ownership",
+                    "releaser",
+                    "borrow_scope",
+                    "keep_alive",
+                    "threading",
+                    "blocking",
+                    "delivery",
+                    "cancellation",
+                    "cancellation_confirmation",
+                    "close",
+                    "synchronous_callback",
+                    "reentrant",
+                    "context_owner",
+                    "stop",
+                    "stream_kind",
+                    "capacity_items",
+                    "capacity_bytes",
+                    "overflow",
+                    "ordering",
+                    "replay",
+                    "recovery",
+                    "release_thread"
+                  ]
+                },
+                "origin": {
+                  "$ref": "urn:madb:schema:common:1#/$defs/origin"
+                },
+                "replaced_default": {
+                  "oneOf": [
+                    {
+                      "$ref": "urn:madb:schema:common:1#/$defs/origin"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "property",
+                "origin",
+                "replaced_default"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "symbol_id",
+          "slot",
+          "values",
+          "provenance"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "extensions": {
+      "$ref": "urn:madb:schema:common:1#/$defs/metadata"
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "kind": {
+            "const": "layout"
+          },
+          "precision": {
+            "const": "compiler-derived"
+          },
+          "input_digest": {
+            "$ref": "urn:madb:schema:common:1#/$defs/digest"
+          },
+          "selector": {
+            "$ref": "urn:madb:schema:common:1#/$defs/selector"
+          },
+          "producer": {
+            "$ref": "urn:madb:schema:common:1#/$defs/component"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "size": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "alignment": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740991
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "$ref": "urn:madb:schema:common:1#/$defs/id"
+                    },
+                    "offset": {
+                      "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+                    },
+                    "size": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "offset",
+                    "size"
+                  ],
+                  "additionalProperties": false
+                },
+                "maxItems": 4096
+              }
+            },
+            "required": [
+              "size",
+              "alignment",
+              "fields"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "subject",
+          "kind",
+          "precision",
+          "input_digest",
+          "selector",
+          "producer",
+          "result"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "sdk_namespace",
+    "boundary_id",
+    "selector",
+    "source_digest",
+    "structure_digest",
+    "policy_digest",
+    "required_features",
+    "types",
+    "symbols",
+    "policies",
+    "observations"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:lock:1",
+  "title": "MadB lock v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.lock/1"
+    },
+    "project_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "semantic_digest": {
+            "$ref": "urn:madb:schema:common:1#/$defs/digest"
+          },
+          "file": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+          }
+        },
+        "required": [
+          "id",
+          "semantic_digest",
+          "file"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "sha256": {
+            "$ref": "urn:madb:schema:common:1#/$defs/digest"
+          },
+          "host": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "target": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 4096
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "sha256",
+          "host",
+          "target",
+          "source",
+          "arguments"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/component"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "schemas": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "extensions": {
+      "$ref": "urn:madb:schema:common:1#/$defs/metadata"
+    }
+  },
+  "required": [
+    "schema",
+    "project_digest",
+    "profiles",
+    "tools",
+    "components",
+    "inputs",
+    "schemas"
+  ],
+  "additionalProperties": false
+}

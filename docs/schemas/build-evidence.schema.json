@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:build-evidence:1",
+  "title": "MadB build-evidence v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.build-evidence/1"
+    },
+    "task_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "task_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "input_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "profile_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "generation_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "tool": {
+      "$ref": "urn:madb:schema:common:1#/$defs/component"
+    },
+    "phase": {
+      "enum": [
+        "metadata",
+        "generate",
+        "compile",
+        "link",
+        "run"
+      ]
+    },
+    "target": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "status": {
+      "enum": [
+        "passed",
+        "failed",
+        "error"
+      ]
+    },
+    "exit_code": {
+      "type": "integer",
+      "minimum": -2147483648,
+      "maximum": 2147483647
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "logs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "task_id",
+    "task_digest",
+    "input_digest",
+    "profile_digest",
+    "generation_id",
+    "tool",
+    "phase",
+    "target",
+    "status",
+    "exit_code",
+    "outputs",
+    "logs"
+  ],
+  "additionalProperties": false
+}

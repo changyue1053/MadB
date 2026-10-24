@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:package-request:1",
+  "title": "MadB package-request v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.package-request/1"
+    },
+    "selector": {
+      "$ref": "urn:madb:schema:common:1#/$defs/selector"
+    },
+    "output_set": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "build_evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "lock": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "contract_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "policy_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "generation_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "public_symbols": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/id"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "required_cases": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/id"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "output_root": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    }
+  },
+  "required": [
+    "schema",
+    "selector",
+    "output_set",
+    "build_evidence",
+    "lock",
+    "contract_digest",
+    "policy_digest",
+    "generation_id",
+    "dependencies",
+    "public_symbols",
+    "required_cases",
+    "output_root"
+  ],
+  "additionalProperties": false
+}

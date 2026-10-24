@@ -8,5 +8,8 @@ publish.workspace = true
 repository.workspace = true
 description = "Domain values and invariants. C02 defines the concrete model; no IO or wire DTOs."
 
+[dependencies]
+sha2.workspace = true
+
 [lints]
 workspace = true

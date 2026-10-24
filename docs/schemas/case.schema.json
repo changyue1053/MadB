@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:case:1",
+  "title": "MadB case v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.case/1"
+    },
+    "id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "kind": {
+      "enum": [
+        "template",
+        "instance"
+      ]
+    },
+    "problem_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]+-[0-9]{3}$"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "source_ids": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/id"
+      },
+      "minItems": 0,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "selector": {
+      "oneOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/selector"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "requires": {
+      "type": "object",
+      "properties": {
+        "features": {
+          "$ref": "urn:madb:schema:common:1#/$defs/features"
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "features",
+        "environment"
+      ],
+      "additionalProperties": false
+    },
+    "fixture": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "setup": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "action": {
+            "enum": [
+              "call",
+              "barrier",
+              "cancel",
+              "environment",
+              "cleanup"
+            ]
+          },
+          "entrypoint": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:madb:schema:common:1#/$defs/constant"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "entrypoint",
+          "arguments"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "action": {
+            "enum": [
+              "call",
+              "barrier",
+              "cancel",
+              "environment",
+              "cleanup"
+            ]
+          },
+          "entrypoint": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:madb:schema:common:1#/$defs/constant"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "entrypoint",
+          "arguments"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "operator": {
+            "enum": [
+              "equals",
+              "before",
+              "unchanged",
+              "exactly-once"
+            ]
+          },
+          "expected": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:madb:schema:common:1#/$defs/constant"
+            },
+            "minItems": 1,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "observation",
+          "operator",
+          "expected"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "expected_result": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "success"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "rejection"
+            },
+            "code": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "stage": {
+              "enum": [
+                "parse",
+                "format",
+                "identity",
+                "policy",
+                "capability",
+                "generate",
+                "compile",
+                "link",
+                "load",
+                "run",
+                "cleanup"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "code",
+            "stage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "isolated-abort"
+            },
+            "stage": {
+              "const": "run"
+            },
+            "exit_code": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 255
+            },
+            "reason": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "stage",
+            "exit_code",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "cleanup": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "action": {
+            "enum": [
+              "call",
+              "barrier",
+              "cancel",
+              "environment",
+              "cleanup"
+            ]
+          },
+          "entrypoint": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:madb:schema:common:1#/$defs/constant"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "entrypoint",
+          "arguments"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "timeout_policy": {
+      "type": "object",
+      "properties": {
+        "timeout_ms": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 43200000
+        },
+        "on_timeout": {
+          "const": "error"
+        },
+        "recovery": {
+          "enum": [
+            "isolate",
+            "cooperative-stop"
+          ]
+        }
+      },
+      "required": [
+        "timeout_ms",
+        "on_timeout",
+        "recovery"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "kind",
+    "problem_ids",
+    "source_ids",
+    "selector",
+    "requires",
+    "fixture",
+    "setup",
+    "steps",
+    "assertions",
+    "expected_result",
+    "cleanup",
+    "timeout_policy"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "instance"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "selector": {
+            "$ref": "urn:madb:schema:common:1#/$defs/selector"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "selector": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

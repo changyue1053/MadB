@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:verify-request:1",
+  "title": "MadB verify-request v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.verify-request/1"
+    },
+    "identity": {
+      "$ref": "urn:madb:schema:common:1#/$defs/evidence_identity"
+    },
+    "selector": {
+      "$ref": "urn:madb:schema:common:1#/$defs/selector"
+    },
+    "candidate": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "cases": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "coverage": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "output_root": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    }
+  },
+  "required": [
+    "schema",
+    "identity",
+    "selector",
+    "candidate",
+    "cases",
+    "coverage",
+    "output_root"
+  ],
+  "additionalProperties": false
+}

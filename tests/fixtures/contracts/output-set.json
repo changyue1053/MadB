@@ -1,0 +1,22 @@
+{
+  "schema": "madb.output-set/1",
+  "generation_id": "sha256:1b70ad72ef6218f68ce034a05b2347233856f3ae391b61e40e85073b79e4a772",
+  "input_digest": "sha256:291606f6a442f90d77cede916ee8c144c1072aee82a121a7ceb7e550ea357016",
+  "task_digest": "sha256:573e71738ac0a9e6c913ba978e2f4a4b564e298b1aebcea387962a851fff8874",
+  "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+  "manifest_path": "outputs.json",
+  "files": [
+    {
+      "path": "include/fixture.h",
+      "sha256": "sha256:4bb22b0ee90063902f311729b64e89429a488ece5eb14a0423a6768177f535aa",
+      "size": 21,
+      "sources": [
+        "fixture.create.v1",
+        "fixture.checksum.v1",
+        "fixture.request_close.v1",
+        "fixture.await_closed.v1",
+        "fixture.release_handle.v1"
+      ]
+    }
+  ]
+}

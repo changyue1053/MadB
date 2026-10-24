@@ -1,0 +1,71 @@
+{
+  "schema": "madb.report/1",
+  "run_id": "fixture-run",
+  "identity": {
+    "input_digest": "sha256:291606f6a442f90d77cede916ee8c144c1072aee82a121a7ceb7e550ea357016",
+    "tool_digest": "sha256:c0542a5886d8d0e8a5a469c0fb8a76a782c28dce3065649d4b1e9a3af210e0cf",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "candidate_digest": "sha256:15abceb4f71f4a0d39aa808b3f4521ed46b0720442e37cabd8a1b4b8959375db",
+    "lab_revision": "0000000000000000000000000000000000000000",
+    "case_catalog_digest": "sha256:c0542a5886d8d0e8a5a469c0fb8a76a782c28dce3065649d4b1e9a3af210e0cf"
+  },
+  "selector": {
+    "route": "RUST-C-ABI",
+    "profile_id": "rust-c-fixture",
+    "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+    "target": "aarch64-apple-darwin",
+    "direction": "consumer-to-provider"
+  },
+  "started_at": "2026-10-24T00:00:00Z",
+  "environment": [
+    {
+      "id": "fixture-clang",
+      "version": "fixture-1",
+      "sha256": "sha256:c3a9dacf1e6fe0033c64e83db13445a8828e993ccce8aaf0dcc66957ad053af6",
+      "host": "aarch64-apple-darwin",
+      "target": "aarch64-apple-darwin",
+      "source": "fixture://toolchain",
+      "arguments": [
+        "-std=c11"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "case_id": "DATA-001/positive/rust-c",
+      "case_digest": "sha256:68c0893104ac27f6020a22f70bb66eab958a8680ff254e92dea736ba48b73370",
+      "status": "passed",
+      "expected": {
+        "kind": "success"
+      },
+      "actual": {
+        "kind": "success",
+        "code": null,
+        "stage": null,
+        "exit_code": 0,
+        "reason": "fixture outcome"
+      },
+      "evidence_level": "host-run",
+      "duration_ms": 1,
+      "resource_observations": [
+        {
+          "name": "engine",
+          "before": 0,
+          "after": 0,
+          "created": 1,
+          "released": 1
+        }
+      ],
+      "diagnostics": [],
+      "cleanup": "complete",
+      "attachments": [
+        {
+          "path": "logs/test.txt",
+          "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+          "size": 7
+        }
+      ],
+      "blocked_by": []
+    }
+  ]
+}

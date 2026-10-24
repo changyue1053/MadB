@@ -1,0 +1,44 @@
+{
+  "vectors": [
+    {
+      "id": "duplicate-root",
+      "text": "{\"x\":1,\"x\":2}",
+      "code": "FMT005"
+    },
+    {
+      "id": "duplicate-nested",
+      "text": "{\"a\":[{\"x\":1,\"x\":1}]}",
+      "code": "FMT005"
+    },
+    {
+      "id": "integer-rounding",
+      "text": "9007199254740993",
+      "code": "FMT006"
+    },
+    {
+      "id": "fraction-rounding",
+      "text": "1.0000000000000001",
+      "code": "FMT006"
+    },
+    {
+      "id": "fraction",
+      "text": "0.25",
+      "code": "FMT006"
+    },
+    {
+      "id": "exponent-spelling",
+      "text": "1e0",
+      "code": "FMT006"
+    },
+    {
+      "id": "lone-surrogate",
+      "text": "\"\\ud800\"",
+      "code": "FMT001"
+    },
+    {
+      "id": "trailing-value",
+      "text": "{} {}",
+      "code": "FMT001"
+    }
+  ]
+}

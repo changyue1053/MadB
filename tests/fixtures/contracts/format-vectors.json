@@ -1,0 +1,835 @@
+{
+  "vectors": [
+    {
+      "id": "project.valid",
+      "kind": "project",
+      "file": "project.json",
+      "expected": "valid"
+    },
+    {
+      "id": "project.unknown-field",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "project.wrong-major",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.project/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "project.missing-field",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/project"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile.valid",
+      "kind": "profile",
+      "file": "profile.json",
+      "expected": "valid"
+    },
+    {
+      "id": "profile.unknown-field",
+      "kind": "profile",
+      "file": "profile.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile.wrong-major",
+      "kind": "profile",
+      "file": "profile.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.profile/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "profile.missing-field",
+      "kind": "profile",
+      "file": "profile.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "lock.valid",
+      "kind": "lock",
+      "file": "lock.json",
+      "expected": "valid"
+    },
+    {
+      "id": "lock.unknown-field",
+      "kind": "lock",
+      "file": "lock.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "lock.wrong-major",
+      "kind": "lock",
+      "file": "lock.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.lock/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "lock.missing-field",
+      "kind": "lock",
+      "file": "lock.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/project_digest"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "contract-ir.valid",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "expected": "valid"
+    },
+    {
+      "id": "contract-ir.unknown-field",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "contract-ir.wrong-major",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.contract-ir/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "contract-ir.missing-field",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/sdk_namespace"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "case.valid",
+      "kind": "case",
+      "file": "case.json",
+      "expected": "valid"
+    },
+    {
+      "id": "case.unknown-field",
+      "kind": "case",
+      "file": "case.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "case.wrong-major",
+      "kind": "case",
+      "file": "case.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.case/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "case.missing-field",
+      "kind": "case",
+      "file": "case.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "coverage.valid",
+      "kind": "coverage",
+      "file": "coverage.json",
+      "expected": "valid"
+    },
+    {
+      "id": "coverage.unknown-field",
+      "kind": "coverage",
+      "file": "coverage.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "coverage.wrong-major",
+      "kind": "coverage",
+      "file": "coverage.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.coverage/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "coverage.missing-field",
+      "kind": "coverage",
+      "file": "coverage.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/selector"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "report.valid",
+      "kind": "report",
+      "file": "report.json",
+      "expected": "valid"
+    },
+    {
+      "id": "report.unknown-field",
+      "kind": "report",
+      "file": "report.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "report.wrong-major",
+      "kind": "report",
+      "file": "report.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.report/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "report.missing-field",
+      "kind": "report",
+      "file": "report.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/run_id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "read-request.valid",
+      "kind": "read-request",
+      "file": "read-request.json",
+      "expected": "valid"
+    },
+    {
+      "id": "read-request.unknown-field",
+      "kind": "read-request",
+      "file": "read-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "read-request.wrong-major",
+      "kind": "read-request",
+      "file": "read-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.read-request/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "read-request.missing-field",
+      "kind": "read-request",
+      "file": "read-request.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/boundary_id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "generate-request.valid",
+      "kind": "generate-request",
+      "file": "generate-request.json",
+      "expected": "valid"
+    },
+    {
+      "id": "generate-request.unknown-field",
+      "kind": "generate-request",
+      "file": "generate-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "generate-request.wrong-major",
+      "kind": "generate-request",
+      "file": "generate-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.generate-request/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "generate-request.missing-field",
+      "kind": "generate-request",
+      "file": "generate-request.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/boundary_id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "output-set.valid",
+      "kind": "output-set",
+      "file": "output-set.json",
+      "expected": "valid"
+    },
+    {
+      "id": "output-set.unknown-field",
+      "kind": "output-set",
+      "file": "output-set.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "output-set.wrong-major",
+      "kind": "output-set",
+      "file": "output-set.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.output-set/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "output-set.missing-field",
+      "kind": "output-set",
+      "file": "output-set.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/generation_id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "build-task.valid",
+      "kind": "build-task",
+      "file": "build-task.json",
+      "expected": "valid"
+    },
+    {
+      "id": "build-task.unknown-field",
+      "kind": "build-task",
+      "file": "build-task.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "build-task.wrong-major",
+      "kind": "build-task",
+      "file": "build-task.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.build-task/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "build-task.missing-field",
+      "kind": "build-task",
+      "file": "build-task.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "build-evidence.valid",
+      "kind": "build-evidence",
+      "file": "build-evidence.json",
+      "expected": "valid"
+    },
+    {
+      "id": "build-evidence.unknown-field",
+      "kind": "build-evidence",
+      "file": "build-evidence.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "build-evidence.wrong-major",
+      "kind": "build-evidence",
+      "file": "build-evidence.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.build-evidence/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "build-evidence.missing-field",
+      "kind": "build-evidence",
+      "file": "build-evidence.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/task_id"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "package-request.valid",
+      "kind": "package-request",
+      "file": "package-request.json",
+      "expected": "valid"
+    },
+    {
+      "id": "package-request.unknown-field",
+      "kind": "package-request",
+      "file": "package-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "package-request.wrong-major",
+      "kind": "package-request",
+      "file": "package-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.package-request/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "package-request.missing-field",
+      "kind": "package-request",
+      "file": "package-request.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/selector"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "candidate.valid",
+      "kind": "candidate",
+      "file": "candidate.json",
+      "expected": "valid"
+    },
+    {
+      "id": "candidate.unknown-field",
+      "kind": "candidate",
+      "file": "candidate.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "candidate.wrong-major",
+      "kind": "candidate",
+      "file": "candidate.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.candidate/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "candidate.missing-field",
+      "kind": "candidate",
+      "file": "candidate.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/candidate_digest"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "verify-request.valid",
+      "kind": "verify-request",
+      "file": "verify-request.json",
+      "expected": "valid"
+    },
+    {
+      "id": "verify-request.unknown-field",
+      "kind": "verify-request",
+      "file": "verify-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "verify-request.wrong-major",
+      "kind": "verify-request",
+      "file": "verify-request.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.verify-request/999"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "verify-request.missing-field",
+      "kind": "verify-request",
+      "file": "verify-request.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/identity"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "path.traversal",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/boundaries/0/output",
+          "value": "../outside"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "path.absolute",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/boundaries/0/output",
+          "value": "/tmp/out"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "path.windows",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/boundaries/0/output",
+          "value": "C:\\out"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "path.dot",
+      "kind": "project",
+      "file": "project.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/boundaries/0/output",
+          "value": "generated/./out"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "case.unresolved-instance",
+      "kind": "case",
+      "file": "case.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/selector",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "report.unknown-status",
+      "kind": "report",
+      "file": "report.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/results/0/status",
+          "value": "stale"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "buffer.missing-unit",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/types/4/definition/length_unit",
+          "value": "characters"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "typed-integer.leading-zero",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/symbols/1/shape/constants/0/decimal",
+          "value": "01"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "typed-float.invalid-bits",
+      "kind": "contract-ir",
+      "file": "contract-ir.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/symbols/1/shape/constants/1/bits",
+          "value": "nan"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    }
+  ]
+}

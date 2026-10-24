@@ -1,4 +1,4 @@
-"""Run the C01 repository baseline; failures never become skipped passes."""
+"""Run repository checks through C02; failures never become skipped passes."""
 from pathlib import Path
 import importlib.metadata
 import os
@@ -45,6 +45,8 @@ def main():
         ["cargo", "check", "--workspace", "--locked"],
         ["cargo", "clippy", "--workspace", "--all-targets", "--all-features", "--locked", "--", "-D", "warnings"],
         ["cargo", "test", "--workspace", "--all-features", "--locked"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/contract"],
+        [node, "tests/contract/canonical_vectors.cjs"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
         [sys.executable, "docs/tools/check_docs.py", "--node", node],
@@ -54,12 +56,12 @@ def main():
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=ROOT, check=True)
-    print("C01 local baseline passed. Remote merge controls and SDK certification are separate.")
+    print("Repository checks passed through C02. SDK certification remains separate.")
 
 
 if __name__ == "__main__":
     try:
         main()
     except (RuntimeError, OSError, importlib.metadata.PackageNotFoundError, subprocess.CalledProcessError) as error:
-        print(f"C01 checks failed: {error}", file=sys.stderr)
+        print(f"Repository checks failed: {error}", file=sys.stderr)
         raise SystemExit(1)

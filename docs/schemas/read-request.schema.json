@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:read-request:1",
+  "title": "MadB read-request v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.read-request/1"
+    },
+    "boundary_id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "selector": {
+      "$ref": "urn:madb:schema:common:1#/$defs/selector"
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "component": {
+      "$ref": "urn:madb:schema:common:1#/$defs/component"
+    },
+    "lock": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "profile": {
+      "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+    },
+    "output_root": {
+      "$ref": "urn:madb:schema:common:1#/$defs/path"
+    }
+  },
+  "required": [
+    "schema",
+    "boundary_id",
+    "selector",
+    "inputs",
+    "component",
+    "lock",
+    "profile",
+    "output_root"
+  ],
+  "additionalProperties": false
+}

@@ -19,11 +19,18 @@ class DependencyBoundaries(unittest.TestCase):
         for name in ["Cargo.toml", "Cargo.lock", "rust-toolchain.toml"]:
             shutil.copy2(ROOT / name, self.root / name)
         shutil.copytree(ROOT / "crates", self.root / "crates")
+        shutil.copytree(ROOT / "adapters", self.root / "adapters")
 
     def check_dependency(self, owner, section, declaration, expected):
-        manifest = self.root / "crates" / owner / "Cargo.toml"
-        with manifest.open("a") as target:
-            target.write(f"\n[{section}]\n{declaration}\n")
+        directory = self.root / "adapters/contracts" if owner == "madb-contracts" else self.root / "crates" / owner
+        manifest = directory / "Cargo.toml"
+        content = manifest.read_text()
+        heading = f"[{section}]"
+        if heading in content:
+            content = content.replace(heading, heading + "\n" + declaration, 1)
+        else:
+            content += f"\n{heading}\n{declaration}\n"
+        manifest.write_text(content)
         subprocess.run(
             ["cargo", "generate-lockfile", "--offline"], cwd=self.root,
             check=True, capture_output=True, text=True,
@@ -38,7 +45,7 @@ class DependencyBoundaries(unittest.TestCase):
             self.assertNotIn("ARCH000", result.stderr)
 
     def test_declared_domain_dependency_is_allowed(self):
-        self.check_dependency("madb-rules", "dependencies",
+        self.check_dependency("madb-plan", "dependencies",
                               'madb-model = { path = "../madb-model" }', None)
 
     def test_core_cannot_import_wire_types(self):
@@ -60,6 +67,16 @@ class DependencyBoundaries(unittest.TestCase):
         self.check_dependency("madb-plan", "dev-dependencies",
                               'madb-app = { path = "../madb-app" }',
                               "ARCH003: madb-plan -> madb-app")
+
+    def test_core_cannot_import_contract_adapter(self):
+        self.check_dependency("madb-plan", "dev-dependencies",
+                              'madb-contracts = { path = "../../adapters/contracts" }',
+                              "ARCH003: madb-plan -> madb-contracts")
+
+    def test_adapter_cannot_import_composition_root(self):
+        self.check_dependency("madb-contracts", "dependencies",
+                              'madb-cli = { path = "../../crates/madb-cli" }',
+                              "ARCH003: madb-contracts -> madb-cli")
 
 
 if __name__ == "__main__":

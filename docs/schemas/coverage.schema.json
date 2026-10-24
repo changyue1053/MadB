@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:coverage:1",
+  "title": "MadB coverage v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.coverage/1"
+    },
+    "selector": {
+      "$ref": "urn:madb:schema:common:1#/$defs/selector"
+    },
+    "problem_catalog_digest": {
+      "$ref": "urn:madb:schema:common:1#/$defs/digest"
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "problem_id": {
+            "type": "string",
+            "pattern": "^[A-Z]+-[0-9]{3}$"
+          },
+          "applicability": {
+            "enum": [
+              "required",
+              "optional",
+              "not-applicable"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "case_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "minItems": 0,
+            "maxItems": 4096,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "problem_id",
+          "applicability",
+          "reason",
+          "case_ids"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "selector",
+    "problem_catalog_digest",
+    "requirements"
+  ],
+  "additionalProperties": false
+}

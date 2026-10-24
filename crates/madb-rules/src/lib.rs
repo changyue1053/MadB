@@ -1,3 +1,11 @@
-//! Pure rules over domain values. C04 supplies behavior; no compiler or filesystem access.
-//!
-//! This C01 crate establishes a build boundary; it exports no provisional API.
+//! Pure contract checks. No schema decoding, compiler invocation or certification IO.
+mod contract;
+mod evidence;
+mod identity;
+mod observations;
+mod policies;
+
+pub use contract::{validate_constant, validate_contract};
+pub use evidence::{evidence_freshness, instantiate_requirements, validate_required_results};
+pub use identity::validate_identities;
+pub use policies::resolve_policies;

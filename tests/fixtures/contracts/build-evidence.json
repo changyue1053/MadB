@@ -1,0 +1,31 @@
+{
+  "schema": "madb.build-evidence/1",
+  "task_id": "compile-fixture",
+  "task_digest": "sha256:0c942a68d5e491fc5b171276a0fb04780fe8e1b2d7519edf5f3cfb8997d5f0b3",
+  "input_digest": "sha256:291606f6a442f90d77cede916ee8c144c1072aee82a121a7ceb7e550ea357016",
+  "profile_digest": "sha256:70dde7881610c582d49ef26a53cf3e82929622adcf112eb1ab79cc70dd65cfb8",
+  "generation_id": "sha256:1b70ad72ef6218f68ce034a05b2347233856f3ae391b61e40e85073b79e4a772",
+  "tool": {
+    "id": "org.madb.fixture/reader",
+    "version": "0.1.0",
+    "sha256": "sha256:7e01769b0eefaadeb3be8324a0bbe0b7591478582aae53b9a6f238eec674db89"
+  },
+  "phase": "compile",
+  "target": "aarch64-apple-darwin",
+  "status": "passed",
+  "exit_code": 0,
+  "outputs": [
+    {
+      "path": "fixture.o",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7
+    }
+  ],
+  "logs": [
+    {
+      "path": "logs/build.txt",
+      "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+      "size": 7
+    }
+  ]
+}

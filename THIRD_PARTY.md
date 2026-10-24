@@ -1,6 +1,6 @@
 # Third-party scope and publication review
 
-C01 uses the following locked development dependencies. Cargo packages are resolved by Cargo.lock; Python wheels and versions are fixed by requirements-dev.lock. Project-authored files use Apache-2.0; third-party rights remain unchanged.
+The host and repository checks use the following direct dependencies; the original C01 entries remain listed for continuity. Cargo packages are resolved by Cargo.lock; Python wheels and versions are fixed by requirements-dev.lock. Project-authored files use Apache-2.0; third-party rights remain unchanged.
 
 | Component | Version | Declared license |
 |---|---|---|
@@ -9,16 +9,23 @@ C01 uses the following locked development dependencies. Cargo packages are resol
 | clap_builder | 4.6.7 | MIT OR Apache-2.0 |
 | clap_lex | 1.1.1 | MIT OR Apache-2.0 |
 | strsim | 0.11.1 | MIT |
+| serde (host) | 1.0.229 | MIT OR Apache-2.0 |
+| serde_json (host) | 1.0.154 | MIT OR Apache-2.0 |
+| jsonschema (Rust host; HTTP/file resolution disabled) | 0.60.1 | MIT |
+| sha2 (host) | 0.11.1 | MIT OR Apache-2.0 |
+| toml (host; parser only) | 1.1.6+spec-1.1.0 | MIT OR Apache-2.0 |
 | jsonschema (checks only) | 4.26.0 | MIT |
 | jsonschema-specifications (checks only) | 2025.9.1 | MIT |
 | referencing (checks only) | 0.37.0 | MIT |
 | rpds-py (checks only) | 2026.9.1 | MIT |
 | attrs (checks only) | 26.1.0 | MIT |
 
-The pinned GitHub Actions are maintained in .github/workflows/ci.yml; their upstream licenses apply. No upstream generator implementation, embedded template fragment or generated SDK has been copied into C01 product code.
+The pinned GitHub Actions are maintained in .github/workflows/ci.yml; their upstream licenses apply. No upstream generator implementation, embedded template fragment or generated SDK is bundled. The C02 ABI fixtures are project-authored expectations, not copied generator output.
 
 The project owner authorized public visibility on 2026-10-24. The C01 publication scope covers the project baseline and authored design/research material. Historical research and cited excerpts in docs/references retain their source attribution and any applicable third-party rights. The original ZIP contains 20 Markdown/JSON records for traceability; it is not a separately licensed upstream source distribution. No third-party native library or generator implementation is embedded in it. Publication checks are recorded in [the C01 review](docs/reviews/2026-10-24-c01-public-repositories.md).
 
 Future imported code, template fragments and release assets require their own source and license review before redistribution. Public visibility and the project LICENSE do not grant rights to third-party material.
 
 Package coordinates are not reserved by publish=false. The initial distribution channel is the owned GitHub repositories; future crate/Maven/Swift/HAR coordinates must be verified when those channels are enabled.
+
+C02 resolved 99 registry packages, including target-specific dependencies; their versions, registry checksums and declared license expressions are recorded in [the dependency inventory](docs/reviews/c02-dependency-licenses.json). All reported a license. The `r-efi` alternative permits MIT; Unicode data dependencies additionally require Unicode-3.0 notices. This source-only change does not publish a compiled distribution. C10 must collect applicable license texts/notices for the dependencies actually redistributed in a release; a metadata inventory alone is not that bundle.
