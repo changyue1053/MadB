@@ -36,6 +36,8 @@
 
 独立只读审查覆盖所有权认领、原子 current/CAS、祖先租约、取消与提交线性化、父批次证据、受限依赖闭包、缓存与只读检查。发现的目录认领、信号取消、续行规范化、目标/输入域检查及构建诊断问题已修复并补回归；当前范围内无未解决的 P1/P2。执行契约按 spec/artifact/build/dependencies/files/package 拆分，公开路径和原定义经逐项复核，拆分前后相同测试均通过。
 
-macOS Arm64 上 `.venv/bin/python scripts/check.py` 全部通过：254 项 Rust 测试、216 项 Python 测试（含 68 项 C04 整包集成），另含 Node 摘要向量、隔离 CLI 安装、架构依赖和文档/HTML 检查。最后的诊断补丁另通过 CLI all-targets Clippy 和真实失败/取消测试；统一门禁的集成阶段覆盖该补丁。远程 Linux CI 待按 PR 提交核实，不以本地结果替代。运行目录保留、受信工具链/系统运行库、受限原生缓存、Unix 本地文件系统及未认证 SDK 的边界见 README 和生成规范。C05 的实际语言 reader/generator、完整资源协议及独立 Lab 验收不属于本记录。
+macOS Arm64 上 `.venv/bin/python scripts/check.py` 全部通过：254 项 Rust 测试、216 项 Python 测试（含 68 项 C04 整包集成），另含 Node 摘要向量、隔离 CLI 安装、架构依赖和文档/HTML 检查。最后的诊断补丁另通过 CLI all-targets Clippy 和真实失败/取消测试；统一门禁的集成阶段覆盖该补丁。Linux Ubuntu 24.04 在代码提交 `edd2daf53c089809109a552461da77753387d9a7` 上通过 255 项 Rust 与 216 项 Python 测试（多一项 Linux 原始文件名拒绝测试）；[分支 CI](https://github.com/changyue1053/MadB/actions/runs/40091338427) 与 [PR CI](https://github.com/changyue1053/MadB/actions/runs/40091341605) 均 success。后续状态/链接/HTML 文档提交的最终检查以 PR 当前 head 为准。运行目录保留、受信工具链/系统运行库、受限原生缓存、Unix 本地文件系统及未认证 SDK 的边界见 README 和生成规范。C05 的实际语言 reader/generator、完整资源协议及独立 Lab 验收不属于本记录。
 
 首次 Linux CI 揭示测试 shell 路径差异：Ubuntu `/bin/sh` 为符号链接，触发生产路径保护。修复仅在测试准备中解析真实可执行文件并锁定其字节，不放宽宿主的符号链接拒绝规则。
+
+C04 更新为 `implemented / passed`。本地全量门禁后仅修改了诊断测试、已验证的 shell fixture 与文档，最终 Linux 门禁覆盖全部最终代码。文档和生成 HTML 另通过静态检查、21 项工具测试及 DOM 替身交互检查；未声称浏览器视觉验收。PR 保持未合并，MadB-Lab 未改动。

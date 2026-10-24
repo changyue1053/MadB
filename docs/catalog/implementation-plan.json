@@ -239,7 +239,7 @@
         "C03"
       ],
       "status": "implemented",
-      "verification": "running",
+      "verification": "passed",
       "evidence": [
         "reviews/2026-10-24-c04-readonly-queries.md",
         "https://github.com/changyue1053/MadB/pull/4",
@@ -283,7 +283,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "C04 整包实现已交付：查询/受控执行、缺 IR 准备、生成/构建/候选三层事务、固定父批次/CAS/租约/恢复、受限真实 Clang 依赖发现与缓存、generate --check、CLI 信号取消与原始诊断。macOS 统一门禁通过；远程 Linux CI 待核对具体提交。缓存仅开放已证明完整输入的配置，C05 语言 SDK/Lab 认证继续独立验收。"
+      "notes": "C04 六项整体验收已通过：固定快照/端口隔离、只读查询与 generate --check、三层事务与父批次来源、短锁/CAS/租约/取消/恢复、受限真实 Clang 依赖发现与缓存、正式 CLI 与真实独立消费者。macOS 254 Rust + 216 Python、Linux 255 Rust + 216 Python 测试通过，含 68 项整包集成；交付 PR #10，合入状态见 GitHub。缓存仅开放已证明完整输入的配置，C05 的实际语言 SDK 和独立 Lab 认证继续按计划验收。"
     },
     {
       "id": "C05",
