@@ -22,6 +22,7 @@ pub struct ProcessRequest {
     pub stdin: Vec<u8>,
 }
 
+#[derive(Clone)]
 pub struct ProcessPolicy {
     /// Budget after successful spawn and pipe setup; not a wall-clock bound
     /// on tool/directory validation, OS spawn, or post-run filesystem reads.

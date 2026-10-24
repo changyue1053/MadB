@@ -125,8 +125,8 @@ impl ProcessRunner for LocalProcessRunner {
             .start()
             .map_err(|e| io_error("spawn", e))?;
         let mut run = supervise::run(child, request, &self.policy, cancellation);
-        // A changed image/directory invalidates even a zero exit. Full input
-        // freezing and tool bundle dependency identity remain separate C04 work.
+        // A changed image/directory invalidates even a zero exit. host::inputs
+        // checks declared copies; complete tool-bundle identity is later C04 work.
         if let Err(error) = check_directory().and_then(|()| self.verify_tool(request))
             && run.report.diagnostic.is_none()
         {
