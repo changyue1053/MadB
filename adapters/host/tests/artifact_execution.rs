@@ -60,6 +60,7 @@ fn reference(p: &str, bytes: &[u8]) -> FileReference {
 }
 struct Recipe {
     invocation: ArtifactInvocation,
+    tool_root: PathBuf,
 }
 impl ArtifactRecipe for Recipe {
     fn invocation(&self) -> &ArtifactInvocation {
@@ -80,16 +81,21 @@ impl ArtifactRecipe for Recipe {
     }
 }
 fn setup(dir: &Directory, tail: &str) -> Recipe {
-    let shell = fs::read("/bin/sh").unwrap();
+    // Resolve the fixture's installed executable once: /bin/sh is a symlink
+    // on some hosts. The production reader still refuses symbolic-link images.
+    let shell_path = fs::canonicalize("/bin/sh").unwrap();
+    let shell = fs::read(&shell_path).unwrap();
+    let shell_name = shell_path.file_name().unwrap().to_str().unwrap();
     let script = format!(
         "printf header > api.h\nprintf manifest > manifest.json\n{tail}\nprintf manifest\n"
     );
     fs::write(dir.0.join("recipe.sh"), &script).unwrap();
     Recipe {
+        tool_root: shell_path.parent().unwrap().to_owned(),
         invocation: ArtifactInvocation {
             id: Id::new("artifact").unwrap(),
             process: ProcessRequest {
-                tool: reference("sh", &shell),
+                tool: reference(shell_name, &shell),
                 working_directory: path("work"),
                 arguments: vec!["../inputs/recipe.sh".to_owned()],
                 environment: BTreeMap::new(),
@@ -108,7 +114,7 @@ fn real_artifact_execution_captures_manifest_and_retains_drained_owner() {
     let mut executor = LocalArtifactExecutor::new(
         &dir.0,
         &path("run"),
-        Path::new("/bin"),
+        &recipe.tool_root,
         ProcessPolicy::default(),
     )
     .unwrap();
@@ -153,7 +159,7 @@ fn manifest_mismatch_and_undeclared_files_reject_but_keep_actual_run() {
         let mut executor = LocalArtifactExecutor::new(
             &dir.0,
             &path("run"),
-            Path::new("/bin"),
+            &recipe.tool_root,
             ProcessPolicy::default(),
         )
         .unwrap();
@@ -189,7 +195,7 @@ fn conflicting_run_directory_is_not_claimed_or_removed() {
     let mut executor = LocalArtifactExecutor::new(
         &dir.0,
         &path("run"),
-        Path::new("/bin"),
+        &recipe.tool_root,
         ProcessPolicy::default(),
     )
     .unwrap();

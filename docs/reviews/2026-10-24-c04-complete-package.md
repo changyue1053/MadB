@@ -2,7 +2,7 @@
 
 ## 任务与范围
 
-任务：C04 整包收口，包含此前六个子范围及剩余完整输入、缓存、三层事务、正式 CLI 和故障恢复。依据：`ae290a7131b1e521d8c3e0109fb715332871cb41` 的 C04 acceptance、DEC-04/05/06、模块规范和 CRIT-05/06/09/10。分支：`codex/c04-complete-package`。
+任务：C04 整包收口，包含此前六个子范围及剩余完整输入、缓存、三层事务、正式 CLI 和故障恢复。依据：`ae290a7131b1e521d8c3e0109fb715332871cb41` 的 C04 acceptance、DEC-04/05/06、模块规范和 CRIT-05/06/09/10。分支：`codex/c04-complete-package`；交付 [PR #10](https://github.com/changyue1053/MadB/pull/10)，基于 PR #9。
 
 范围：madb-app 的用例与端口、contracts 的格式转换、host 的依赖发现/缓存/事务、CLI 组合根、对应测试与现行文档。保持已有 C02 格式身份定义；新增内部持久化格式须带版本并验证，不在 extensions 中隐藏权威字段。
 
@@ -38,3 +38,4 @@
 
 macOS Arm64 上 `.venv/bin/python scripts/check.py` 全部通过：254 项 Rust 测试、216 项 Python 测试（含 68 项 C04 整包集成），另含 Node 摘要向量、隔离 CLI 安装、架构依赖和文档/HTML 检查。最后的诊断补丁另通过 CLI all-targets Clippy 和真实失败/取消测试；统一门禁的集成阶段覆盖该补丁。远程 Linux CI 待按 PR 提交核实，不以本地结果替代。运行目录保留、受信工具链/系统运行库、受限原生缓存、Unix 本地文件系统及未认证 SDK 的边界见 README 和生成规范。C05 的实际语言 reader/generator、完整资源协议及独立 Lab 验收不属于本记录。
 
+首次 Linux CI 揭示测试 shell 路径差异：Ubuntu `/bin/sh` 为符号链接，触发生产路径保护。修复仅在测试准备中解析真实可执行文件并锁定其字节，不放宽宿主的符号链接拒绝规则。
