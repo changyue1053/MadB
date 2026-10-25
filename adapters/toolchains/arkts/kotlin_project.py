@@ -290,7 +290,7 @@ def materialize(inputs, config, project, *, identity=None):
         definition.write_text(
             definition.read_text().replace(
                 "headers = executor.h lifecycle.h main_gate.h",
-                "headers = executor.h lifecycle.h main_gate.h observer_provider.h",
+                "headers = executor.h lifecycle.h main_gate.h observer_provider.h thread_probe.h",
             )
         )
     value = (
@@ -364,6 +364,7 @@ def compile_native(inputs, config, project, capture):
                 config,
                 "cpf_clang",
                 [
+                    *(["-DMADB_KN_TEST_SUPPORT=1"] if config["kotlin"]["test_support"] and label == "support" else []),
                     "--target=aarch64-linux-ohos",
                     "--sysroot=" + str(sysroot),
                     "-std=c++17",

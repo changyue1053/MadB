@@ -4,10 +4,38 @@ package com.madb.c07
 import kotlinx.atomicfu.atomic
 import platform.posix.usleep
 import org.cpf.kotlin.akinterop.annotation.KNExportFunction
+import kotlinx.cinterop.*
+import kotlinx.atomicfu.locks.synchronized
+import com.madb.c07.executor.*
 
 /** Mutable controls exist only in the test compilation. Owner callbacks below
  * run under OwnedRuntime's lock, except the explicitly atomic worker gates. */
 internal object ExecutionProbe {
+    // Diagnostics only. No pointer/resource retained after executor destruction.
+    private val completedThread = ULongArray(21)
+    private var completedThreadValid = false
+    fun beforeExecutorDestroy(executor: CPointer<cnames.structs.madb_kn_executor>) = memScoped {
+        val out = allocArray<ULongVar>(21)
+        check(madb_kn_executor_test_command(executor, 0, out, 21) == 0)
+        for (i in 0 until 21) completedThread[i] = out[i]
+        completedThreadValid = true
+    }
+    fun afterExecutorDestroy(result: Int) {
+        if (completedThreadValid) {
+            if (result == 0) completedThread[19] = 1uL else completedThread[20]++
+        }
+    }
+    fun threadProbe(action: Int, out: CPointer<ULongVar>, capacity: Int): Int {
+        if (capacity != 21 || action !in 0..2) return 22
+        val owner = OwnedRuntime.lifecycle
+        if (owner != null) {
+            val result = madb_kn_lifecycle_test_command(owner, action, out, capacity)
+            if (result != 2) return result // ENOENT: executor already detached.
+        }
+        if (action != 0 || !completedThreadValid) return 2
+        for (i in 0 until 21) out[i] = completedThread[i]
+        return 0
+    }
     // Read only while holding the existing OwnedRuntime lock. These counters
     // never own a model, pointer, transaction, or callback and never reset.
     private var ledgerCurrent = 0uL; private var ledgerPeak = 0uL
@@ -51,6 +79,7 @@ internal object ExecutionProbe {
     private var guards = 0uL; private var guardReleases = 0uL; private var rollbacks = 0uL
     fun admissionStage(requested: Int): Int = requested
     fun beginEpoch() {
+        completedThread.fill(0uL); completedThreadValid = false
         work.value = false; source.value = false; terminal.value = false; heldPhase.value = 0
         workEntered.value = 0; sourceEntered.value = 0; terminalEntered.value = 0
         workGeneration = 0uL; workId = 0uL; workTerminal = -1
@@ -155,3 +184,14 @@ internal object ExecutionProbe {
 
 @kotlin.native.CName("madb_kn_owned_memory_metric")
 fun ownedMemoryMetric(index: Int): ULong = try { OwnedRuntime.memoryMetric(index) } catch (_: Throwable) { ULong.MAX_VALUE }
+
+@kotlin.native.CName("madb_kn_owned_thread_probe")
+fun ownedThreadProbe(epoch: ULong, action: Int, out: CPointer<ULongVar>?, capacity: Int): Int = try {
+    if (madb_kn_is_main_thread() != 1) 1
+    else if (out == null || capacity != 21 || !OwnedRuntime.epochMatches(epoch)) 22
+    else synchronized(OwnedRuntime) {
+        val result = ExecutionProbe.threadProbe(action, out, capacity)
+        if (result == 0) { out[1] = epoch; out[3] = 1uL }
+        result
+    }
+} catch (_: Throwable) { 5 }

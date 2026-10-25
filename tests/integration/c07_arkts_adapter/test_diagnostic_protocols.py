@@ -74,6 +74,41 @@ class DiagnosticProtocols(unittest.TestCase):
         changed["frame"]["fields"][14]["description"] = "wording only"
         self.assertEqual(original, diagnostics.protocol(changed, selectors))
 
+    def test_thread_protocol_binds_slots_units_and_encoded_bound(self):
+        name, selectors = diagnostics.KOTLIN_LAYOUTS["thread"]
+        document = support.read_json(ROOT / name)
+        original = diagnostics.protocol(document, selectors)
+        self.assertEqual(
+            (original["format"], original["length"], original["max_bytes"]),
+            (70604, 21, 440),
+        )
+        self.assertEqual(
+            [field["index"] for field in original["fields"]], list(range(21))
+        )
+        for change in ("order", "unit", "bound"):
+            changed = deepcopy(document)
+            if change == "order":
+                changed["fields"][7], changed["fields"][8] = (
+                    changed["fields"][8],
+                    changed["fields"][7],
+                )
+            elif change == "unit":
+                changed["fields"][7]["unit"] = "flag0or1; no unknown state"
+            else:
+                changed["max_bytes"] = 441
+            self.assertNotEqual(original, diagnostics.protocol(changed, selectors))
+        changed = deepcopy(document)
+        changed["scope"] = "commentary only"
+        changed["source"] = {"path": "another.json", "sha256": "other"}
+        changed["fields"][7]["description"] = "wording only"
+        self.assertEqual(original, diagnostics.protocol(changed, selectors))
+        policy = support.read_json(
+            ROOT / "adapters/generators/arkts/profiles/snapshot-kotlin-test-v1.json"
+        )
+        policy["test_types"]["test.thread-csv"]["max_bytes"] = 441
+        with self.assertRaisesRegex(ValueError, "string bound differs"):
+            diagnostics.verify_bounds(self.read("kotlin"), policy)
+
     def test_missing_original_layout_is_rejected(self):
         with self.assertRaisesRegex(ValueError, "omitted"):
             diagnostics.read(ROOT, {"provider": "c", "variant": "test"}, {}, support)
@@ -138,8 +173,8 @@ class KotlinTestPolicy(unittest.TestCase):
     def test_complete_explicit_managed_test_shape(self):
         self.assertNotIn("gateway_surface", self.policy)
         self.assertNotIn("c_seam_surface", self.policy)
-        self.assertEqual(len(self.policy["public_surface"]["functions"]), 29)
-        self.assertEqual(len(self.lower()[0]["symbols"]), 48)
+        self.assertEqual(len(self.policy["public_surface"]["functions"]), 30)
+        self.assertEqual(len(self.lower()[0]["symbols"]), 49)
         self.assertEqual(
             self.policy["calls"]["testSettleProbe"]["slots"]["parameter.action"][
                 "context_owner"
@@ -151,11 +186,38 @@ class KotlinTestPolicy(unittest.TestCase):
             list(range(1, 9)),
         )
 
+    def test_thread_helper_is_not_an_ordinary_or_ksp_export(self):
+        action = self.policy["value_slots"]["testThreadWitness.action"]
+        self.assertEqual(action["allowed_integers"], [0, 1, 2])
+        self.assertEqual(action["closing_actions"], [0, 2])
+        self.assertEqual(action["closed_actions"], [0])
+        frontend = support.read_json(ROOT / "sdk/kotlin/arkts-owned/frontend-policy.json")
+        self.assertEqual(len(frontend["functions"]), 15)
+        self.assertEqual(len(frontend["development_test_functions"]), 8)
+        self.assertNotIn(
+            "testThreadWitness",
+            frontend["functions"] + frontend["development_test_functions"],
+        )
+        ordinary = ROOT / "adapters/generators/arkts/profiles/snapshot-kotlin-v1.json"
+        fixtures = sorted(
+            (ROOT / "tests/fixtures/c07_kotlin_generation").glob("*/runtime-policy.json")
+        )
+        self.assertEqual(len(fixtures), 4)
+        for path in [ordinary, *fixtures]:
+            policy = support.read_json(path)
+            names = [
+                function["name"] for function in policy["public_surface"]["functions"]
+            ]
+            self.assertNotIn("testThreadWitness", names, str(path))
+            self.assertNotIn("testThreadWitness", policy["calls"], str(path))
+
     def test_boolean_and_array_slots_require_their_authored_roles(self):
         for name in (
             "testFinishPublication.commit",
             "testMemoryFrame.return",
             "testSubscriptionState.return",
+            "testThreadWitness.action",
+            "testThreadWitness.return",
         ):
             with self.subTest(name=name):
                 original = self.policy["value_slots"].pop(name)

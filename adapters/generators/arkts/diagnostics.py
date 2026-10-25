@@ -78,6 +78,10 @@ KOTLIN_LAYOUTS = {
             "roles",
         ),
     ),
+    "thread": (
+        KOTLIN_ROOT + "thread-frame.json",
+        ("format", "length", "wire", "max_bytes", "fields"),
+    ),
     "settlement": (KOTLIN_ROOT + "settlement-frame.json", ("length", "wire", "fields")),
     "subscription": (
         KOTLIN_ROOT + "subscription-frame.json",
@@ -161,7 +165,7 @@ def read(root, config, refs, support):
 
 
 def verify_bounds(diagnostic, policy):
-    """Array size comes from the actual protocol, not a second authored count."""
+    """Array and encoded-string bounds come from the frozen protocol authority."""
     for name, slot in policy.get("value_slots", {}).items():
         identity = slot.get("diagnostic_protocol")
         if identity is None:
@@ -175,4 +179,13 @@ def verify_bounds(diagnostic, policy):
             ):
                 raise ValueError(
                     "test array bound differs from frozen diagnostic protocol: " + name
+                )
+        if "max_bytes" in value:
+            declared = policy["test_types"][slot["type_id"]]
+            if (
+                declared["kind"] != "string"
+                or declared["max_bytes"] != value["max_bytes"]
+            ):
+                raise ValueError(
+                    "test string bound differs from frozen diagnostic protocol: " + name
                 )

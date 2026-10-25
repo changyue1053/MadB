@@ -105,6 +105,13 @@
         "subscription": "branded Subscription wrapper, includingretired"
       },
       "returns": "number[4]=1/closing/closed/listenerPresent, flags0or1"
+    },
+    "testThreadWitness": {
+      "parameters": {
+        "runtime": "branded current-epoch Runtime; read/release allowedClosing; snapshot after normal close",
+        "action": "int32 enum0snapshot1arm2release"
+      },
+      "returns": "exactly21 uint64decimal CSV fields per thread-frame.json, max440bytes; identities remainstrings, pairwise comparisons7/8/9 UINT64_MAX when not simultaneouslylive"
     }
   },
   "work_update": "testArmWork phase1beforecompute/2terminalbeforeworkexit; testReleaseWork releases both controls",

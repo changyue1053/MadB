@@ -130,7 +130,7 @@ def render(inputs, config, descriptor, identity, work, *, capture=None):
     )
     if config["kotlin"]["test_support"]:
         properties.update(
-            ("testArmPartialOpen", "testPollAdmission", "testNapiAudit", "testMemoryAudit")
+            ("testArmPartialOpen", "testPollAdmission", "testNapiAudit", "testMemoryAudit", "testThreadWitness")
         )
     # The public interface AST includes SavedCalls.takeStatus; no obfuscator-private name is accepted.
     rules = "-keep-property-name\n" + "\n".join(sorted(properties)) + "\n"

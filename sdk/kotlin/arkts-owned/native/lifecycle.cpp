@@ -5,6 +5,9 @@
 #include <atomic>
 #include <cerrno>
 #include <new>
+#ifdef MADB_KN_TEST_SUPPORT
+#include "thread_probe.h"
+#endif
 
 struct madb_kn_lifecycle {
     // Owner-thread fields. workResult is written by work and read only after
@@ -148,6 +151,14 @@ void envCleanup(napi_async_cleanup_hook_handle handle, void *data) noexcept {
         return;
     }
     owner->envClosing = true;
+#ifdef MADB_KN_TEST_SUPPORT
+    // Only the genuine platform hook bypasses the test's explicit release.
+    // A test exit hold must never prevent actual environment teardown.
+    if (owner->executor) {
+        const int released=madb_kn_executor_test_cleanup_release(owner->executor);
+        if(released!=0)recordError(owner,released);
+    }
+#endif
     (void)callGate(owner);
     // Even a failed managed gate must not leave a running thread unchecked.
     // Existing residuals still prevent successful retirement.
@@ -229,3 +240,13 @@ extern "C" uint64_t madb_kn_lifecycle_metric(int index) {
     if (index < 0 || index >= MADB_KN_LIFE_METRIC_COUNT) return UINT64_MAX;
     return metrics[index].load(std::memory_order_relaxed);
 }
+#ifdef MADB_KN_TEST_SUPPORT
+extern "C" int madb_kn_lifecycle_test_command(madb_kn_lifecycle *owner,int action,
+                                              uint64_t *out,int capacity) {
+    if(!onOwner(owner))return EPERM;
+    if(owner->poisoned)return EIO;
+    if(owner->envClosing||owner->callbackDepth)return EBUSY;
+    if(!owner->executor)return ENOENT;
+    return madb_kn_executor_test_command(owner->executor,action,out,capacity);
+}
+#endif

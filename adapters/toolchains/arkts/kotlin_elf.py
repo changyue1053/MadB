@@ -28,6 +28,7 @@ def check(config, inputs, libraries, work, capture):
     required = set(re.findall(r'dlsym\(library,"([A-Za-z_][A-Za-z0-9_]*)"\)', bootstrap_source))
     required.discard("madb_kn_provider_napi_metric")
     required.discard("madb_kn_owned_memory_metric")
+    required.discard("madb_kn_owned_thread_probe")
     if len(required) != 15:
         raise ValueError("Reviewed Kotlin loader inventory changed")
     records = []
@@ -91,7 +92,9 @@ def check(config, inputs, libraries, work, capture):
                 raise ValueError("Kotlin sole bootstrap registrar/export inventory differs")
         else:
             if config["kotlin"]["test_support"]:
-                required.update(("madb_kn_provider_napi_metric", "madb_kn_owned_memory_metric"))
+                required.update(("madb_kn_provider_napi_metric", "madb_kn_owned_memory_metric", "madb_kn_owned_thread_probe"))
+            elif {"madb_kn_owned_thread_probe", "madb_kn_executor_test_command", "madb_kn_executor_test_cleanup_release", "madb_kn_lifecycle_test_command"} & set(exports):
+                raise ValueError("Ordinary Kotlin provider contains thread test controls")
             if required - set(exports) or "RegisterOwnedRuntime" in exports:
                 raise ValueError(
                     "Kotlin provider loader ABI is incomplete or duplicates registrar"

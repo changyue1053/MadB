@@ -579,6 +579,28 @@
         }
       },
       {
+        "name": "testThreadWitness",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          },
+          {
+            "name": "action",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
         "name": "testControlFrame",
         "owner": null,
         "params": [
@@ -1462,6 +1484,17 @@
         "cancellation": "none",
         "cancellation_confirmation": "not-supported"
       }
+    },
+    "testThreadWitness": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testThreadWitness.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
     }
   },
   "slots": {
@@ -1598,6 +1631,11 @@
       "encoding": "none",
       "mutable": false,
       "max_bytes": 72
+    },
+    "test.thread-csv": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 440
     }
   },
   "value_slots": {
@@ -1971,6 +2009,39 @@
       "layout": "sdk/kotlin/arkts-owned/contracts/subscription-frame.json",
       "diagnostic_protocol": "subscription",
       "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testThreadWitness.action": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2
+      ],
+      "actions": {
+        "0": "snapshot",
+        "1": "arm-exit-hold",
+        "2": "release-exit-hold"
+      },
+      "runtime_admission": "current-epoch-branded-runtime",
+      "closing_actions": [
+        0,
+        2
+      ],
+      "closed_actions": [
+        0
+      ]
+    },
+    "testThreadWitness.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.thread-csv",
+      "layout": "sdk/kotlin/arkts-owned/contracts/thread-frame.json",
+      "diagnostic_protocol": "thread",
+      "meaning": "21 canonical uint64 decimal CSV fields; preserve epoch and generation exactly; distinctness is unknown unless all three roles are live with business exit held"
     }
   },
   "runtime_reopen": {

@@ -654,7 +654,10 @@ internal object OwnedRuntime : SynchronizedObject() {
         if (started != joined || madb_kn_executor_metric(executor, 3) != 0uL) {
             synchronized(this) { failures++ }; return -1
         }
-        if (madb_kn_executor_destroy(executor) != 0) { synchronized(this) { failures++ }; return -1 }
+        ExecutionProbe.beforeExecutorDestroy(executor)
+        val destroyed = madb_kn_executor_destroy(executor)
+        ExecutionProbe.afterExecutorDestroy(destroyed)
+        if (destroyed != 0) { synchronized(this) { failures++ }; return -1 }
         synchronized(this) {
             e.executor = null; e.joined = true; joins += joined
             // A source ticket may still be held if executor stop won before the

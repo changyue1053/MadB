@@ -13,6 +13,8 @@ internal object ExecutionProbe {
     fun bindNapi(env: kotlinx.cinterop.COpaquePointer?) {}
     fun admissionStage(requested: Int): Int = -1
     fun beginEpoch() { }
+    fun beforeExecutorDestroy(executor: kotlinx.cinterop.CPointer<cnames.structs.madb_kn_executor>) { }
+    fun afterExecutorDestroy(result: Int) { }
     fun work(allowed: () -> Boolean) { }
     fun beforeWorkExit(allowed: () -> Boolean) { }
     fun source(allowed: () -> Boolean) { }

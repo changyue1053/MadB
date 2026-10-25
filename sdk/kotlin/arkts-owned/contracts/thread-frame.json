@@ -1,0 +1,127 @@
+{
+  "format": 70604,
+  "length": 21,
+  "wire": "canonical uint64 decimal CSV String; preserve identities exactly",
+  "max_bytes": 440,
+  "fields": [
+    {
+      "index": 0,
+      "name": "Format",
+      "unit": "constant70604"
+    },
+    {
+      "index": 1,
+      "name": "Epoch",
+      "unit": "runtime epoch; exact uint64 identity"
+    },
+    {
+      "index": 2,
+      "name": "Generation",
+      "unit": "executor generation; exact uint64 identity"
+    },
+    {
+      "index": 3,
+      "name": "OwnerEntryActive",
+      "unit": "flag0or1: currently executing legal owner snapshot"
+    },
+    {
+      "index": 4,
+      "name": "BusinessBodyActive",
+      "unit": "flag0or1: actual pthread run body active"
+    },
+    {
+      "index": 5,
+      "name": "BusinessExitHeld",
+      "unit": "flag0or1: actual pre-return condition wait"
+    },
+    {
+      "index": 6,
+      "name": "CleanupJoinCallInFlight",
+      "unit": "flag0or1: actual pthread_join invocation interval"
+    },
+    {
+      "index": 7,
+      "name": "OwnerBusinessDistinct",
+      "unit": "flag0or1 or UINT64_MAX unknown"
+    },
+    {
+      "index": 8,
+      "name": "OwnerCleanupDistinct",
+      "unit": "flag0or1 or UINT64_MAX unknown"
+    },
+    {
+      "index": 9,
+      "name": "BusinessCleanupDistinct",
+      "unit": "flag0or1 or UINT64_MAX unknown"
+    },
+    {
+      "index": 10,
+      "name": "ExitArmCount",
+      "unit": "count per executor"
+    },
+    {
+      "index": 11,
+      "name": "ExitHoldEntered",
+      "unit": "count per executor"
+    },
+    {
+      "index": 12,
+      "name": "ExitReleaseCount",
+      "unit": "count per executor"
+    },
+    {
+      "index": 13,
+      "name": "BodyExited",
+      "unit": "actual body returns per executor"
+    },
+    {
+      "index": 14,
+      "name": "TlsMarkerAttached",
+      "unit": "actual pthread_setspecific success count"
+    },
+    {
+      "index": 15,
+      "name": "TlsMarkerDestructed",
+      "unit": "actual native TLS marker destructor count"
+    },
+    {
+      "index": 16,
+      "name": "JoinCalls",
+      "unit": "actual pthread_join call count"
+    },
+    {
+      "index": 17,
+      "name": "JoinReturned",
+      "unit": "actual pthread_join returned count"
+    },
+    {
+      "index": 18,
+      "name": "JoinSucceeded",
+      "unit": "successful pthread_join count"
+    },
+    {
+      "index": 19,
+      "name": "ExecutorDestroyed",
+      "unit": "actual executor destroy succeeded flag0or1"
+    },
+    {
+      "index": 20,
+      "name": "ProbeErrors",
+      "unit": "probe native failures count"
+    }
+  ],
+  "actions": {
+    "0": "coherent snapshot, also after normal Runtime close in the same epoch",
+    "1": "arm current started executor once before stop",
+    "2": "release previously armed exit hold; allowed while Closing"
+  },
+  "scope": "test-only existing executor/lifecycle observation, KSP inventory unchanged",
+  "admission": "branded Runtime plus static bootstrap main/owner-env/current-epoch gate before provider call; old epoch rejected before owner lookup",
+  "liveness": "BusinessBodyActive spans actual run; BusinessExitHeld spans its real condition wait before body return. CleanupJoinCallInFlight brackets the actual pthread_join invocation/return on the existing libuv work job, not a kernel wait-state sample. OwnerEntryActive means the owner currently executes this snapshot callback.",
+  "comparisons": "pthread_equal on actual owner, worker and join-caller pthread_t while all three live with exit held; otherwise fields7/8/9 are UINT64_MAX unknown. Never stringify/cast pthread_t or use pthread_kill.",
+  "tls": "test-only pthread-key destructor marker proves its own destructor, not Kotlin private TLS counters; actual successful pthread_join is the physical thread/TLS exit witness",
+  "retirement": "before actual executor destruction snapshot is copied into existing ExecutionProbe diagnostic storage; observed destroy success sets field19. No pointer is retained. New epoch invalidates the previous completed snapshot.",
+  "cleanup": "only genuine platform env cleanup hook releases a test exit hold automatically. Public control does not simulate that hook. Normal close waits for explicit test release.",
+  "final_gate": "same epoch: live business/hold/join flags0, native TLS marker and join counts paired, destroyed1, errors0; separate full110 physical ACK remains mandatory",
+  "failure": "unknown snapshot/absent executor is Closed; duplicate/late arm ResourceExhausted; invalid action/unarmed release InvalidArgument; stale Runtime InvalidHandleRetired; native failure BridgeFailure"
+}

@@ -239,6 +239,38 @@ napi_value BootstrapAudit(napi_env env,napi_callback_info){
     return output;
 }
 #ifdef MADB_KN_TEST_SUPPORT
+napi_value ThreadWitness(napi_env env,napi_callback_info info){
+    MADB_KN_NAPI_ENTRY(env);
+    if(!owner(env))return nullptr;
+    size_t count=0;napi_value args[2]{nullptr,nullptr};
+    if(!check(env,napi_get_cb_info(env,info,&count,nullptr,nullptr,nullptr)))return nullptr;
+    if(count!=2)return error(env,"InvalidArgument");
+    if(!check(env,napi_get_cb_info(env,info,&count,args,nullptr,nullptr)))return nullptr;
+    napi_valuetype type=napi_undefined;
+    if(!check(env,napi_typeof(env,args[0],&type)))return nullptr;
+    if(type!=napi_string)return error(env,"InvalidHandle");
+    char key[64]{};size_t length=0;
+    if(!check(env,napi_get_value_string_utf8(env,args[0],key,sizeof(key),&length)))return nullptr;
+    char expected[64]{};std::snprintf(expected,sizeof(expected),"kn:%llu",static_cast<unsigned long long>(epoch));
+    if(length!=std::strlen(expected)||std::memcmp(key,expected,length)!=0)return error(env,"InvalidHandleRetired");
+    double action=-1;
+    if(!check(env,napi_get_value_double(env,args[1],&action)))return nullptr;
+    if(!(action>=0&&action<=2)||action!=static_cast<int>(action))return error(env,"InvalidArgument");
+    using Probe=int(*)(uint64_t,int,uint64_t*,int);
+    Probe probe=library?reinterpret_cast<Probe>(dlsym(library,"madb_kn_owned_thread_probe")):nullptr;
+    if(!probe)return error(env,"KotlinSymbolMissing");
+    uint64_t fields[21]{};
+    const int status=probe(epoch,static_cast<int>(action),fields,21);
+    if(status!=0)return error(env,status==16?"ResourceExhausted":status==2?"Closed":status==22?"InvalidArgument":"BridgeFailure");
+    char buffer[21*21]{};size_t used=0;
+    for(size_t i=0;i<21;++i){
+        const int count=std::snprintf(buffer+used,sizeof(buffer)-used,"%s%llu",i?",":"",static_cast<unsigned long long>(fields[i]));
+        if(count<0||static_cast<size_t>(count)>=sizeof(buffer)-used)return error(env,"MetricRangeExceeded");used+=static_cast<size_t>(count);
+    }
+    napi_value result=nullptr;const napi_status encoded=napi_create_string_utf8(env,buffer,used,&result);
+    if(encoded!=napi_ok&&action==1){uint64_t discarded[21]{};(void)probe(epoch,2,discarded,21);}
+    return check(env,encoded)?result:nullptr;
+}
 napi_value MemoryAudit(napi_env env,napi_callback_info){
     MADB_KN_NAPI_ENTRY(env);
     if(!mainThread())return error(env,"CapabilityUnsupported");
@@ -297,6 +329,7 @@ napi_value Init(napi_env env,napi_value exports){
         {"abortAdmission",nullptr,AbortAdmission,nullptr,nullptr,nullptr,napi_default,nullptr},
 #ifdef MADB_KN_TEST_SUPPORT
         {"testMemoryAudit",nullptr,MemoryAudit,nullptr,nullptr,nullptr,napi_default,nullptr},
+        {"testThreadWitness",nullptr,ThreadWitness,nullptr,nullptr,nullptr,napi_default,nullptr},
         {"testNapiAudit",nullptr,NapiAudit,nullptr,nullptr,nullptr,napi_default,nullptr},
         {"testArmPartialOpen",nullptr,ArmPartial,nullptr,nullptr,nullptr,napi_default,nullptr},
         {"testPollAdmission",nullptr,PollAdmission,nullptr,nullptr,nullptr,napi_default,nullptr},

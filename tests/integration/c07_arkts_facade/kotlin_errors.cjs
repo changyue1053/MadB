@@ -39,7 +39,7 @@ const context = vm.createContext({native, setTimeout:() => 1, clearTimeout:() =>
 vm.runInContext(frameJs + '\n' + js + '\nthis.api = {BoundaryError, Session, RuntimeHandle, EngineHandle, OperationHandle, SubscriptionHandle, ResourceRecord, ' +
   'testObserve,testInspect,testSaveCalls,testObserveNapi,testRawFrame,testLastAdmissionAudit,testPollAdmission,' +
   'testArmPartialOpenFailure,testArmWork,testReleaseWork,testHoldPublication,testReleasePublication,testMemoryFrame,' +
-  'testControlFrame,testArmDelivery,testDeliveryFrame,testReleaseDelivery,testStagePublication,testFinishPublication,' +
+  'testThreadWitness,testControlFrame,testArmDelivery,testDeliveryFrame,testReleaseDelivery,testStagePublication,testFinishPublication,' +
   'testArmCloneFailure,testArmTransferFailure,testEngineHandle,testOperationHandle,testSubscriptionHandle};', context);
 const a = context.api;
 const session = new a.Session();
@@ -52,7 +52,7 @@ const invocations = [
   ['testObserveNapi',[]], ['testRawFrame',[]], ['testLastAdmissionAudit',[]], ['testPollAdmission',[]],
   ['testArmPartialOpenFailure',[1]], ['testArmWork',[engine,1]], ['testReleaseWork',[engine]],
   ['testHoldPublication',[engine]], ['testReleasePublication',[engine]], ['testMemoryFrame',[]],
-  ['testControlFrame',[runtime]], ['testArmDelivery',[subscription]], ['testDeliveryFrame',[subscription]],
+  ['testThreadWitness',[runtime,0]], ['testControlFrame',[runtime]], ['testArmDelivery',[subscription]], ['testDeliveryFrame',[subscription]],
   ['testReleaseDelivery',[subscription]], ['testStagePublication',[engine,0,{value:1,text:'x'}]],
   ['testFinishPublication',[engine,true]], ['testArmCloneFailure',[engine,1,true]],
   ['testArmTransferFailure',[runtime,1]], ['testEngineHandle',[engine,0]],

@@ -78,7 +78,7 @@ def derive_port(port):
     s = replace_once(
         port,
         "  audit(): number[] {",
-        "  saveCalls(runtime: string): SavedCalls { bootstrap.audit(runtime); const api: OwnedApi = this.current(); return new SavedCallsOwner(api); }\n  testGate(runtime: string, kind: number, enabled: number): void { this.current().ownedTestGate(runtime, kind, enabled); }\n  auditKey(runtime: string): number[] { return bootstrap.audit(runtime); }\n  armPartial(stage: number): void { bootstrap.testArmPartialOpen(stage); }\n  pollAdmission(): number[] { return bootstrap.testPollAdmission(); }\n  napiAudit(): string { return bootstrap.testNapiAudit(); }\n  memoryAudit(): string { return bootstrap.testMemoryAudit(); }\n  audit(): number[] {",
+        "  saveCalls(runtime: string): SavedCalls { bootstrap.audit(runtime); const api: OwnedApi = this.current(); return new SavedCallsOwner(api); }\n  testGate(runtime: string, kind: number, enabled: number): void { this.current().ownedTestGate(runtime, kind, enabled); }\n  auditKey(runtime: string): number[] { return bootstrap.audit(runtime); }\n  armPartial(stage: number): void { bootstrap.testArmPartialOpen(stage); }\n  pollAdmission(): number[] { return bootstrap.testPollAdmission(); }\n  napiAudit(): string { return bootstrap.testNapiAudit(); }\n  memoryAudit(): string { return bootstrap.testMemoryAudit(); }\n  threadWitness(runtime: string, action: number): string { return bootstrap.testThreadWitness(runtime, action); }\n  audit(): number[] {",
     )
     s = replace_once(
         s,
@@ -94,7 +94,7 @@ def derive_declaration(declaration):
     s = replace_once(
         declaration,
         "  audit(): number[];",
-        "  audit(runtime?: string): number[];\n  testArmPartialOpen(stage: number): number;\n  testPollAdmission(): number[];\n  testNapiAudit(): string;\n  testMemoryAudit(): string;",
+        "  audit(runtime?: string): number[];\n  testArmPartialOpen(stage: number): number;\n  testPollAdmission(): number[];\n  testNapiAudit(): string;\n  testMemoryAudit(): string;\n  testThreadWitness(runtime: string, action: number): string;",
     )
     return s
 
@@ -109,6 +109,7 @@ function checkedSubscription(value: Subscription): SubscriptionHandle {
   return value as SubscriptionHandle;
 }
 export function testMemoryFrame(): string { return nativeCall(() => native.memoryAudit()); }
+export function testThreadWitness(runtime: Runtime, action: number): string { return nativeCall(() => native.threadWitness(checkedRuntime(runtime).testKey(), action)); }
 export function testControlFrame(runtime: Runtime): string { return nativeCall(() => native.testInspect(checkedRuntime(runtime).testKey())); }
 export function testArmDelivery(subscription: Subscription): void { nativeCall(() => native.testDelivery(checkedSubscription(subscription).testResource(), 0)); }
 export function testDeliveryFrame(subscription: Subscription): string { return nativeCall(() => native.testDelivery(checkedSubscription(subscription).testResource(), 1)); }

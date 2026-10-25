@@ -15,3 +15,15 @@ R6 target evidence covers ordinary behavior, recoverable Worker-first rejection,
 `test-runtime` pins a test-only codec instrumentation delta over the immutable managed R6 patch with exact base/result/patch hashes. The separate memory contract measures canonical UTF8 ledger bytes, actual nativeHeap requested UTF8 storage, successfully cloned precommit publication storage, and actual UTF16 scope array requested bytes. It excludes Kotlin object/String/ByteArray heap, RSS, allocator overhead and unobserved platform storage. UTF16 release is recorded only after memScoped exits. A pure test-only metric CName permits readback after managed metadata teardown, without another registrar or owner. Ordinary uses the original codec and stateless counter hooks.
 
 `contracts` are emitted as original bytes into `generated/contract/test/`; the existing 110-field runtime layout stays at `generated/contract/kotlin-frame-layout.json`. `notices` pins the published runtime POM/KLIB dependency closure, exact source archive attributions and license texts, including transitive serialization; these notices are delivered as HAR members. Build-only dependency notices are not presented as runtime dependencies.
+
+The test companion exposes `testThreadWitness(runtime, action)` (0 snapshot,
+1 arm, 2 release), with the separate 21-slot `thread-frame.json` contract. It
+holds the actual business pthread immediately before body return, while the
+existing libuv cleanup job invokes the real `pthread_join`. A legal owner-env
+snapshot uses `pthread_equal` on the three concurrently live threads; it never
+serializes thread handles. The join interval is not a kernel wait-state sample.
+A native pthread TLS marker proves its own destructor only; successful join and
+the independent full110 ACK remain required for thread and managed retirement.
+Ordinary builds omit the probe fields, gate, TLS marker, CName and public helper.
+A genuine env cleanup hook releases a test gate automatically to avoid preventing
+teardown; invoking this test helper does not count as an observed env cleanup.
