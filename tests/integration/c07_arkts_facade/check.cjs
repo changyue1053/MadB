@@ -46,7 +46,7 @@ function fixture() {
   let engine;
   const control = {timers, resources, observations, calls, failTimer:false,
     failClaim:false, holdOperationClose:false, resultReady:false,
-    physical:false, runtimeClosing:false, failTake:'', failDelivery:0, holdJoinAck:false};
+    physical:false, runtimeClosing:false, failTake:'', failDelivery:0, holdJoinAck:false, failPoll:false, failReceipt:false};
   const lookup = key => {const r=resources.get(key); if(!r || r.retired) throw error('InvalidHandleRetired');return r;};
   const closeTarget = r => {
     r.closing = true;
@@ -127,12 +127,15 @@ function fixture() {
       if(engine)closeTarget(engine);
     },
     pollRuntime() {
+      if(control.failPoll) throw error('PollUnavailable');
       ackClosed();const frame=new Array(54).fill(0);frame[0]=1;
       frame[1]=control.physical ? 3 : control.runtimeClosing ? 1 : 0;
       return frame;
     },
     consumeRuntimeReceipt() {
-      assert.ok(control.physical,'must not consume receipt before physical ACK');calls.receipt++;
+      assert.ok(control.physical,'must not consume receipt before physical ACK');
+      if(control.failReceipt) throw error('ReceiptUnavailable');
+      calls.receipt++;
       return native.pollRuntime();
     },
     audit() {return native.pollRuntime();},
@@ -155,6 +158,7 @@ function fixture() {
   vm.createContext(sandbox);
   vm.runInContext(frameJs+'\n'+js+'\nglobalThis.open = openRuntime; globalThis.ExportedBoundaryError = BoundaryError;',sandbox);
   const runtime=sandbox.open();
+  control.deliverLate=(handle)=>dispatch(1,handle,{status:0,value:1,text:"late"});
   control.BoundaryError=sandbox.ExportedBoundaryError;
   control.runtime=runtime;control.engine=()=>runtime.connect();
   control.tick=async()=>{const first=timers.entries().next();if(!first.done){const[id,fn]=first.value;timers.delete(id);fn();}await Promise.resolve();};
@@ -299,7 +303,68 @@ const tests = {
     const outcome=track(op.result());f.resultReady=true;f.failTake='before';await f.drain();
     assert.equal(outcome.state,'rejected');assert.equal(outcome.value.code,'BridgeFailure');
     assert.equal(f.observations.size,1);assert.equal(f.timers.size,0);
-    await rejected(f.runtime.close(),'BridgeFailure');
+    const closing=f.runtime.close(), closed=track(closing);
+    const repeated=f.runtime.close();track(repeated);
+    assert.equal(repeated,closing,'one parent control is reused');
+    assert.equal(f.calls.runtimeClose,1,'failed facade must still request native shutdown');
+    await f.drain();assert.equal(closed.state,'pending');assert.equal(f.calls.receipt,0);
+    assert.equal(f.observations.size,1,'JS must not retry an unconsumed pre-guard token');
+    // Explicit native-model cleanup, not JS consumption or target evidence.
+    f.observations.clear();f.finishBusiness();f.physical=true;await f.drain();
+    assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
+    assert.equal(f.calls.receipt,1);assert.equal(f.timers.size,0);
+    assert.equal(f.runtime.close(),closing);assert.equal(f.calls.runtimeClose,1);
+  },
+  async failed_parent_close_does_not_reopen_business_or_listeners() {
+    const f=fixture(),e=f.engine();let callbacks=0;
+    e.observeState(()=>{callbacks++;});
+    const sub=[...f.resources.values()].find(r=>r.kind==='s');
+    const op=e.startOperation({value:5,text:'data'}),outcome=track(op.result());
+    f.resultReady=true;f.failTake='before';await f.drain();
+    assert.throws(()=>f.engine(),reason=>reason===outcome.value);
+    assert.throws(()=>e.roundtrip({value:1,text:''}),reason=>reason===outcome.value);
+    const closed=track(f.runtime.close());f.failDelivery=1;
+    assert.throws(()=>f.deliverLate(sub.handle),reason=>reason.code==='Closing');
+    await f.drain();assert.equal(callbacks,0);assert.equal(f.failDelivery,1);
+    assert.equal(closed.state,'pending');
+    f.observations.clear();f.finishBusiness();f.physical=true;await f.drain();
+    assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
+    assert.equal(callbacks,0);assert.equal(f.timers.size,0);
+  },
+  async failed_close_receipt_failure_is_not_a_closed_ack() {
+    const f=fixture(),e=f.engine(),op=e.startOperation({value:5,text:'data'});
+    const outcome=track(op.result());f.resultReady=true;f.failTake='before';await f.drain();
+    const closing=f.runtime.close(),closed=track(closing);
+    f.observations.clear();f.finishBusiness();f.physical=true;f.failReceipt=true;await f.drain();
+    assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
+    assert.equal(f.calls.runtimeClose,1);assert.equal(f.calls.receipt,0);assert.equal(f.timers.size,0);
+    assert.equal(f.runtime.close(),closing,'failed receipt does not start a second close owner');
+  },
+  async preguard_failure_during_parent_close_keeps_cleanup_owner() {
+    const f=fixture(),e=f.engine(),op=e.startOperation({value:5,text:'data'});
+    const outcome=track(op.result()),closed=track(f.runtime.close());
+    f.resultReady=true;f.failTake='before';await f.drain();
+    assert.equal(outcome.state,'rejected');assert.equal(closed.state,'pending');
+    assert.equal(f.calls.runtimeClose,1);assert.equal(f.observations.size,1);
+    f.observations.clear();f.finishBusiness();f.physical=true;await f.drain();
+    assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
+    assert.equal(f.calls.receipt,1);assert.equal(f.timers.size,0);
+  },
+  async failed_close_poll_failure_preserves_original_reason_and_residual() {
+    const f=fixture(),e=f.engine(),op=e.startOperation({value:5,text:'data'});
+    const outcome=track(op.result());f.resultReady=true;f.failTake='before';await f.drain();
+    f.failPoll=true;const closed=track(f.runtime.close());await f.drain();
+    assert.equal(f.calls.runtimeClose,1);assert.equal(closed.state,'rejected');
+    assert.equal(closed.value,outcome.value);assert.equal(f.observations.size,1);
+    assert.equal(f.calls.receipt,0);assert.equal(f.timers.size,0);
+  },
+  async failed_close_timer_failure_still_requests_shutdown() {
+    const f=fixture(),e=f.engine(),op=e.startOperation({value:5,text:'data'});
+    const outcome=track(op.result());f.resultReady=true;f.failTake='before';await f.drain();
+    f.failTimer=true;const closed=track(f.runtime.close());await Promise.resolve();
+    assert.equal(f.calls.runtimeClose,1);assert.equal(closed.state,'rejected');
+    assert.equal(closed.value,outcome.value);assert.equal(f.observations.size,1);
+    assert.equal(f.calls.receipt,0);assert.equal(f.timers.size,0);
   },
   async synchronous_native_error_uses_exported_error_type() {
     const f=fixture(),e=f.engine();f.failSync=error('InvalidArgument');

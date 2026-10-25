@@ -23,6 +23,16 @@ control. Resource close requests occur before observer admission; request-only
 close still receives the bounded internal lifecycle ACK. Immutable wrapper
 outcomes preserve callback failure after native slot reuse.
 
+A bridge failure rejects business waiters and blocks new business delivery, but
+keeps the public Runtime close path available. The same memoized parent close
+requests native shutdown and polls only cleanup progress; it does not retry
+unknown pre-guard result ownership. After the actual physical ACK and receipt,
+close rejects the original failure instead of reporting success. If the cleanup
+poll, receipt or timer itself fails, close rejects that original failure and
+retains an unconfirmed residual state; it never invents a Closed ACK. This follows
+the existing [stop/drain and owner rules](../../../docs/architecture/05-lifecycle-and-concurrency.md)
+and ADR-0013, with no new close API, native queue or owner.
+
 Synchronous native errors and Promise errors use `BoundaryError.code`. Input
 getters and listeners remain outside native error normalization. Property reads
 do not start native operations. `result()` has one accepted claimant; cancelling
