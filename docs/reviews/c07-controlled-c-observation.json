@@ -1,0 +1,393 @@
+{
+  "scope": "C07 development C companion controlled target observations; not candidate certification",
+  "verification": "partial",
+  "certifies_c07": false,
+  "target": "API23 Release arm64 emulator; SDK26.0.0.105 Release build",
+  "build": "Release; property/export/filename obfuscation; SDK public debug signing",
+  "handoffs": [
+    {
+      "path": "/private/tmp/madb-c07-c-route-full-hap-v1/handoff-batch1.json",
+      "sha256": "3da2cbfaf11e5bff1354ef4c0013d2c024fa8459809813a5351c7af18870ef25",
+      "size": 91840
+    },
+    {
+      "path": "/private/tmp/madb-c07-c-route-full-hap-v1/handoff-batch2.json",
+      "sha256": "24c1f0cb464fc2f198c8dff03ad405d20013ef2f32cd77c3648a9d6f3d86434a",
+      "size": 86956
+    },
+    {
+      "path": "/private/tmp/madb-c07-c-route-full-hap-v1/handoff-worker-exit.json",
+      "sha256": "0107cd9cd602c2488e8fc043fbeb35d7b3777b79480c0f9c01b01ca9df0a8ff1",
+      "size": 11353
+    }
+  ],
+  "native": {
+    "path": "/private/tmp/madb-c07-native-gateway-support/builds/1792920252328293000/handoff/manifest.json",
+    "sha256": "49f191e114923a7be96f2105ab5428661ed057f5f75dc59b759b3fb5d1fbe07e",
+    "size": 4872
+  },
+  "har": {
+    "path": "/private/tmp/madb-c07-c-route-support-har-v1/artifacts/madbc07sdkctest-b31050a24a3a13042ca37a4e6b458278221a9dc2a974765f63c0f129b2da13db.har",
+    "sha256": "b31050a24a3a13042ca37a4e6b458278221a9dc2a974765f63c0f129b2da13db",
+    "size": 764627
+  },
+  "test_facade_sha256": "fa07ab119ae87b8929d6a850e99669107eb0564cf2ac6d93107dccf86cd794af",
+  "scenarios": [
+    {
+      "case": "full-waiters",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-042b9db960bb4c30b6eb66dbabed79fd",
+      "pid": 31674,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-042b9db960bb4c30b6eb66dbabed79fd-observation-1792920776947902000.json",
+        "sha256": "9888e1698891886474ed1da5053853047491774e1e8076fbce14a49f0aa7b33a",
+        "size": 12187
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-042b9db960bb4c30b6eb66dbabed79fd.hap",
+        "sha256": "6116ec40f1b43f91850a40ad6504e627c1b07a4d67e9fd76f1b350b9325965e3",
+        "size": 2260726
+      }
+    },
+    {
+      "case": "settling-reentry",
+      "status": "failed",
+      "nonce": "c07-sdk26-d4fe01327e6746789855e9a74e6a6bab",
+      "pid": 704,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-d4fe01327e6746789855e9a74e6a6bab-observation-1792920834439922000.json",
+        "sha256": "643d1e57de03f8d5fbace599bf6ed658dc888fb79790eff63b8c74c0ffb97707",
+        "size": 9948
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-d4fe01327e6746789855e9a74e6a6bab.hap",
+        "sha256": "6c441db15dabdc5428bdd665ede9586b96bf7a64adae76a7a96e6d9d67774a95",
+        "size": 2260729
+      }
+    },
+    {
+      "case": "settling-reentry",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-2d429548cf48422e86f4c221b53bc516",
+      "pid": 3047,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-2d429548cf48422e86f4c221b53bc516-observation-1792920919515880000.json",
+        "sha256": "17b9191792d8bae79d73f1bcbcaf3617ec694ed1d0055c7745700abe9cc8cb6e",
+        "size": 12204
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-2d429548cf48422e86f4c221b53bc516.hap",
+        "sha256": "d756262818dcf8263d7f09e839bfba96d03d89433c6c3f988efe723782b03aa8",
+        "size": 2260398
+      }
+    },
+    {
+      "case": "terminal-cancel",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-16a201c24b4548efb12eb9837af0fd59",
+      "pid": 3092,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-16a201c24b4548efb12eb9837af0fd59-observation-1792920924924067000.json",
+        "sha256": "68ab09582efc34ba8494f5f97a1393795be98c068ad0b03c2e7e8aa6b8ddeaf5",
+        "size": 7976
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-16a201c24b4548efb12eb9837af0fd59.hap",
+        "sha256": "377976417c70c60ca074f9127a57db4436b46e3346eeb362e1454f28240a7a5a",
+        "size": 2260400
+      }
+    },
+    {
+      "case": "terminal-success",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-784769b6536b43c5aee19377ebc44d95",
+      "pid": 3318,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-784769b6536b43c5aee19377ebc44d95-observation-1792920930254972000.json",
+        "sha256": "66634025b8795685c7adbb5262b34715ebffba49b46646f4584b64a2dc750dcd",
+        "size": 7979
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-784769b6536b43c5aee19377ebc44d95.hap",
+        "sha256": "8941b84502c3569a135c85151ebd3c4b43cceeece9c9f613431f877c5ea81412",
+        "size": 2260398
+      }
+    },
+    {
+      "case": "terminal-domain",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-fd2a617eb51b4e058d369a1aad9e66d3",
+      "pid": 3508,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-fd2a617eb51b4e058d369a1aad9e66d3-observation-1792920935701890000.json",
+        "sha256": "61c7201a337478c21bb7c889ebc6ee8988c9baaef22beea9025cf0bcb64ec5d6",
+        "size": 8006
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-fd2a617eb51b4e058d369a1aad9e66d3.hap",
+        "sha256": "51e37a5a8cf9f0e1d7153d4be7922bd402ada673bb443cc7e008fcd772e32004",
+        "size": 2260397
+      }
+    },
+    {
+      "case": "claim-rollback",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-8e09d65e2f204d2f9cb092fcfe595f6f",
+      "pid": 3682,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-8e09d65e2f204d2f9cb092fcfe595f6f-observation-1792920941031799000.json",
+        "sha256": "e3babc0f1a6cad767d05fd307f4673c52dea077a6b7b61dad91aabf933e033f0",
+        "size": 9579
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-8e09d65e2f204d2f9cb092fcfe595f6f.hap",
+        "sha256": "c3f82e1a35dea7d1db36049d1767da34237a707e666c9c5b4f1f90a426dac05d",
+        "size": 2260398
+      }
+    },
+    {
+      "case": "bytes-scratch",
+      "status": "failed",
+      "nonce": "c07-sdk26-17cbb6631086452ead817db2096af886",
+      "pid": 3868,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-17cbb6631086452ead817db2096af886-observation-1792920946372965000.json",
+        "sha256": "9c2542ae6b7f4d1f38ffbf6c5f5b06dc6e3fd3bde0905c1f8b293312a28c53ea",
+        "size": 5449
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-17cbb6631086452ead817db2096af886.hap",
+        "sha256": "9a15bf068da0bfaa50068943c5cb8b15917194616c25b40670e494ef71ba2974",
+        "size": 2260399
+      }
+    },
+    {
+      "case": "bytes-scratch",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-c08e5949d2644a2f98444ead7e92b812",
+      "pid": 6146,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-c08e5949d2644a2f98444ead7e92b812-observation-1792921062440528000.json",
+        "sha256": "40e8e6cac166aa47e487f2ca43d2f28670c94140cf8e5832eb19a72be3de82b5",
+        "size": 9606
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-c08e5949d2644a2f98444ead7e92b812.hap",
+        "sha256": "c770fd5a5937070dd2f560380b346d7d8369335f78a2b427cfd72d1c7c3e8578",
+        "size": 2260398
+      }
+    },
+    {
+      "case": "source-stop",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-c78507fd145a4488ac7ef8dee7577c34",
+      "pid": 6217,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-c78507fd145a4488ac7ef8dee7577c34-observation-1792921067842303000.json",
+        "sha256": "d254891a41dc103c41f50b43ead2a717f3887aa1270a37d611f473fa5b260a22",
+        "size": 9313
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-c78507fd145a4488ac7ef8dee7577c34.hap",
+        "sha256": "8cd4600268a3050f3a21dccc439b754a1d3187b3804b03b126a3411f71d65630",
+        "size": 2260399
+      }
+    },
+    {
+      "case": "state-entered",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-71b33ef0b4bc4253afd40983d8eb29d5",
+      "pid": 6434,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-71b33ef0b4bc4253afd40983d8eb29d5-observation-1792921073243880000.json",
+        "sha256": "65a0b2df3c5b9884db609ba765d241e7ccbd4f309152b72be610067f8a474617",
+        "size": 7613
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-71b33ef0b4bc4253afd40983d8eb29d5.hap",
+        "sha256": "eca94775b147144a6ed0102372a9b390fdfdddb9ae87bdfc314a73158dca032d",
+        "size": 2260397
+      }
+    },
+    {
+      "case": "fanout-state",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-1541a6d64b854a188eec8e8af8c27723",
+      "pid": 6625,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-1541a6d64b854a188eec8e8af8c27723-observation-1792921078637760000.json",
+        "sha256": "8bfd183d60e38422228e9f7ab85a7218832c994c47d2cb1f281674c6903dd1a1",
+        "size": 9340
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-1541a6d64b854a188eec8e8af8c27723.hap",
+        "sha256": "bf77b60a1fc91515aac28e1dbfe389adbf4e23242351ce98539607dc56d1013b",
+        "size": 2260400
+      }
+    },
+    {
+      "case": "fanout-events",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-7272ea06520446b0870cbc7b12574049",
+      "pid": 6829,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-7272ea06520446b0870cbc7b12574049-observation-1792921084037802000.json",
+        "sha256": "512a0c4b4be0b75ecd94044eced9b55fc9e4b6a0cfe2628107ed8d59596cde28",
+        "size": 9343
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-7272ea06520446b0870cbc7b12574049.hap",
+        "sha256": "6379e31d2f3adcca21fde5c016140d643085edc9c73dd805a7cf355595636e84",
+        "size": 2260401
+      }
+    },
+    {
+      "case": "operations-capacity",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-1f0a56e1596e441180289aa7c4945fdd",
+      "pid": 11711,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-1f0a56e1596e441180289aa7c4945fdd-observation-1792921345676249000.json",
+        "sha256": "712a3e77e6a826f5026c6d8d01956e5804351a1b7d819952b3a1c20733768c98",
+        "size": 9607
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-1f0a56e1596e441180289aa7c4945fdd.hap",
+        "sha256": "16f74af823f15404bb056637b13fec0296517fb9a1fae021364c02a6d98f3602",
+        "size": 2266381
+      }
+    },
+    {
+      "case": "subscriptions-capacity",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-7b1b341bfbc7446da022b988c0f5744e",
+      "pid": 11773,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-7b1b341bfbc7446da022b988c0f5744e-observation-1792921351459595000.json",
+        "sha256": "5a57d7a5ebaba4204b2df43f1126b88b1c93f9ec7fcc7ab7c53c06a2602213ad",
+        "size": 7456
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-7b1b341bfbc7446da022b988c0f5744e.hap",
+        "sha256": "351d315faff18d5021e77bd82e359c9cc18c1e7c70b53e98510493f0b2556d99",
+        "size": 2266384
+      }
+    },
+    {
+      "case": "state-staging",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-fb54d7f4472a4f00bb3f027321639914",
+      "pid": 12013,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-fb54d7f4472a4f00bb3f027321639914-observation-1792921357259299000.json",
+        "sha256": "99600ab5ef4f0bc25b86b998ea2e40f8e3f73f37586c3da8212c7aef35d35131",
+        "size": 9364
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-fb54d7f4472a4f00bb3f027321639914.hap",
+        "sha256": "d9aef727f7b6f0b6c9aa03ea838027d1a9df71202fe6ea918377453ade81b756",
+        "size": 2266384
+      }
+    },
+    {
+      "case": "event-atomic",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-c3ed242100d44e988640355cf79a3343",
+      "pid": 12204,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-c3ed242100d44e988640355cf79a3343-observation-1792921362796598000.json",
+        "sha256": "e6328c45c1d35c1217fdcb0f86f750534dc2424cb2a9c40d88a88b2d5d10b943",
+        "size": 9349
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-c3ed242100d44e988640355cf79a3343.hap",
+        "sha256": "5fb3a1a54a5a6729a3961bfb62069c9ba30a361811c21ffc0aee5370a78f29b6",
+        "size": 2266383
+      }
+    },
+    {
+      "case": "event-entered",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-54755398c5624ccfa2a90bd68f5f95f4",
+      "pid": 12397,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-54755398c5624ccfa2a90bd68f5f95f4-observation-1792921368379511000.json",
+        "sha256": "3602978044ad9df7a62000d56e7ae42c686dc9be97d90a5b13572f765bd93f60",
+        "size": 7441
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-54755398c5624ccfa2a90bd68f5f95f4.hap",
+        "sha256": "adf0e6c21871e121ad107d1c6ed15d44b2759149235330f1038233ec5f146fce",
+        "size": 2266384
+      }
+    },
+    {
+      "case": "nonnull-owned-error",
+      "status": "observed-controlled-success",
+      "nonce": "c07-sdk26-b7db10007bb04e93bcb84fa20702e452",
+      "pid": 12573,
+      "observation": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-b7db10007bb04e93bcb84fa20702e452-observation-1792921373875980000.json",
+        "sha256": "49f73466060b406c6efa63675cfc9e53ea4ebe81d5e7dc2d78e740d315fcaee6",
+        "size": 9352
+      },
+      "hap": {
+        "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-b7db10007bb04e93bcb84fa20702e452.hap",
+        "sha256": "48f92cde5671edc55f6f2d1c6915e09e5243fbeda4b83b40abb4d4ab4cbb3417",
+        "size": 2266383
+      }
+    }
+  ],
+  "actual_worker_exit": {
+    "nonce": "c07-sdk26-c071fe0f8d0f46a9841d79e658b31371",
+    "pid": 15708,
+    "hap": {
+      "path": "/private/tmp/madb-c07-c-route-full-hap-v1/artifacts/c07-sdk26-c071fe0f8d0f46a9841d79e658b31371.hap",
+      "sha256": "a5c0e63771371b32edab2970b780a822ebdacc647b926b97e3f3b17d4c7190ae",
+      "size": 2275076
+    },
+    "observation": {
+      "path": "/private/tmp/madb-c07-c-route-full-hap-v1/evidence/c07-sdk26-c071fe0f8d0f46a9841d79e658b31371-observation-1792921539315986000.json",
+      "sha256": "6d1ffe34b2d04f284ac78884d9eba476a4b1b421d566eea46453b9bab51352d3",
+      "size": 8154
+    },
+    "actual_hook_entry": {
+      "operations": 8,
+      "event_tickets": 8,
+      "retained_bytes": 4096,
+      "waiters": 32,
+      "work": 8
+    },
+    "final": {
+      "phase": 3,
+      "read_mode": 2,
+      "provider_allocations": 17,
+      "provider_releases": 17,
+      "worker_exit_code": 0
+    }
+  },
+  "root_review": {
+    "path": "/private/tmp/madb-c07-c-controlled-root-review.json",
+    "sha256": "ffd2f76cc637265f57f602825c09095396ff3b98519c22333708a82f9b176e1f",
+    "size": 80371
+  },
+  "reference_recovery": {
+    "path": "/private/tmp/madb-c07-c-route-full-hap-v1/namecache-reference-addendum.json",
+    "sha256": "e175496a90605f09b3d5d804541a7b9a1d9679441b63c738f7909536073e3e42",
+    "size": 5913
+  },
+  "root_review_result": "20 HAPs and 200 members match. 342 exact file refs match at original path; 2 mutable scratch paths changed and their exact original bytes remain in per-nonce archives. Original reports unchanged.",
+  "preserved_consumer_failures": {
+    "c07-sdk26-d4fe01327e6746789855e9a74e6a6bab": "Old op was Closed at resolver reentry; value-only close correctly needed no waiter. Corrected schedule targets actual source-held subscription, with capacity assertion unchanged.",
+    "c07-sdk26-17cbb6631086452ead817db2096af886": "ScratchPeak was incorrectly interpreted as bytes. Versioned contract clarifies concurrent lease count1;1024-byte actual scratch input and4096 retained budget assertions remain."
+  },
+  "limits": [
+    "17 normal controlled scenarios plus one real Worker exit do not imply all25 companion case groups passed.",
+    "Normal state replacement does not yet prove a separately held native pre-entry delivery lease.",
+    "This frame has no independently exposed illegal-API-attempt or null-env callback counter; full env-exit case remains pending.",
+    "Fault/identity/raw-handle cases, final C04 candidates and exact candidate consumption remain separate work.",
+    "No remote Actions executed for this slice."
+  ],
+  "repository_context_revision": "22ab572",
+  "repository_context_limit": "The development companion is identified by its exact frozen source/build handoff, not represented as committed by this repository revision."
+}
