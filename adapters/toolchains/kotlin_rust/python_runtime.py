@@ -44,9 +44,9 @@ def inventory(root):
     return result
 
 
-def describe(image):
+def describe(image, *, environment=None):
     source = "import json,sys;print(json.dumps({'root':sys.base_prefix,'search_paths':sys.path,'version':sys.version.split()[0]}))"
-    value = json.loads(subprocess.check_output([str(image), *ISOLATION, "-c", source], text=True, timeout=30))
+    value = json.loads(subprocess.check_output([str(image), *ISOLATION, "-c", source], text=True, timeout=30, env=environment))
     root = Path(value["root"]).resolve(strict=True)
     for item in value["search_paths"]:
         # Even absent pythonXY.zip locations must stay in the frozen runtime tree;
@@ -58,7 +58,7 @@ def describe(image):
     return value
 
 
-def native_dependencies(otool, root, image):
+def native_dependencies(otool, root, image, *, environment=None):
     """Follow explicit Mach-O linkage. OS shared-cache libraries remain host inputs."""
     root = Path(root)
     pending = [Path(image)] + [p for p in root.rglob("*")
@@ -72,7 +72,7 @@ def native_dependencies(otool, root, image):
             break
         if len(seen) + len(batch) > 512:
             raise ValueError("Python native dependency closure exceeds supported image count")
-        output = subprocess.check_output([str(otool), "-L", *batch], text=True, timeout=30)
+        output = subprocess.check_output([str(otool), "-L", *batch], text=True, timeout=30, env=environment)
         if len(output) > 4 * 1024 * 1024:
             raise ValueError("Python linkage metadata exceeds its bound")
         seen.update(batch)

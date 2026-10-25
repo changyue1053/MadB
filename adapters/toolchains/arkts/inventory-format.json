@@ -1,0 +1,83 @@
+{
+  "schema": "madb.arkts-tool-inventory-format/1",
+  "canonical_json": {
+    "encoding": "utf-8",
+    "sort_object_keys": true,
+    "separators": [
+      ",",
+      ":"
+    ],
+    "ensure_ascii": true,
+    "trailing_newline": false,
+    "digest": "sha256"
+  },
+  "cli_entries": {
+    "order": "path string ascending",
+    "root_entry": ".",
+    "directory_fields": [
+      "path",
+      "kind",
+      "mode"
+    ],
+    "file_fields": [
+      "path",
+      "kind",
+      "mode",
+      "sha256",
+      "size"
+    ],
+    "symlink_fields": [
+      "path",
+      "kind",
+      "target"
+    ],
+    "mode": "integer permission bits, 0..511",
+    "file_sha256": "lowercase raw 64 hex; no prefix",
+    "entries_sha256": "lowercase raw 64 hex of canonical entries array",
+    "exclusions": [
+      "top-level __MACOSX directories and validated non-executable AppleDouble sidecars",
+      "regular non-executable files named exactly .DS_Store"
+    ],
+    "examples": [
+      {
+        "path": ".",
+        "kind": "directory",
+        "mode": 448
+      },
+      {
+        "path": "LICENSE.txt",
+        "kind": "file",
+        "mode": 384,
+        "sha256": "12730a76ed4c8b6acb20014d6303a32e3b8acbc8de742e1d6da683b3f81f9024",
+        "size": 106536
+      },
+      {
+        "path": "sdk/default/hms/native/BiSheng/bin/bisheng-clang",
+        "kind": "symlink",
+        "target": "clang-15"
+      }
+    ]
+  },
+  "host_jbr": {
+    "order": "Python pathlib.Path ordering of root.rglob(\"*\"), relative POSIX paths emitted",
+    "directories": "omitted, including root",
+    "exclusions": [],
+    "file_fields": [
+      "path",
+      "sha256",
+      "size",
+      "executable"
+    ],
+    "file_sha256": "sha256: followed by lowercase 64 hex",
+    "executable": "boolean any file permission bit 0o111",
+    "symlink_fields": [
+      "path",
+      "symlink"
+    ],
+    "symlink": "exact readlink text; resolved destination must stay inside root",
+    "tree_sha256": "sha256: followed by digest of canonical entries array",
+    "entries": "number of emitted rows",
+    "size": "sum of ordinary file byte sizes"
+  },
+  "provenance": "Local checksum binding of caller-reviewed archive and installed tree; no official vendor signature is asserted."
+}

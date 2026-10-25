@@ -1,0 +1,1250 @@
+{
+  "schema": "madb.private.arkts-runtime-policy.v1",
+  "purpose": "Authored restricted Parcel C07 policy; actual compiler projections must match this reviewed structural allowlist. Runtime semantics are explicit policy, not inferred from TypeScript syntax.",
+  "authority": {
+    "path": "docs/adr/0013-arkts-runtime-and-completion.md",
+    "sha256": "sha256:8280c27c0fd7c2d439cfa2c75c78837060ab01035553a74257a0d868466341ad",
+    "size": 10679
+  },
+  "public_surface": {
+    "records": [
+      {
+        "name": "Parcel",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "name": "Runtime",
+        "methods": [
+          {
+            "name": "connect",
+            "owner": "Runtime",
+            "params": [],
+            "returns": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Runtime",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Engine",
+        "methods": [
+          {
+            "name": "copyRecord",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Parcel"
+            }
+          },
+          {
+            "name": "startOperation",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Operation"
+            }
+          },
+          {
+            "name": "publishState",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "publishEvent",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "observeState",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "listener",
+                "type": {
+                  "tag": "callback",
+                  "params": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "tag": "reference",
+                        "name": "Parcel"
+                      }
+                    }
+                  ],
+                  "returns": {
+                    "tag": "void"
+                  }
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "observeEvents",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "listener",
+                "type": {
+                  "tag": "callback",
+                  "params": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "tag": "reference",
+                        "name": "Parcel"
+                      }
+                    }
+                  ],
+                  "returns": {
+                    "tag": "void"
+                  }
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "requestClose",
+            "owner": "Engine",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Engine",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Operation",
+        "methods": [
+          {
+            "name": "result",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "reference",
+                "name": "Parcel"
+              }
+            }
+          },
+          {
+            "name": "requestCancel",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Subscription",
+        "methods": [
+          {
+            "name": "requestStop",
+            "owner": "Subscription",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Subscription",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "name": "BoundaryError",
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "constructors": [
+          {
+            "params": [
+              {
+                "name": "code",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "openRuntime",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "reference",
+          "name": "Runtime"
+        }
+      }
+    ]
+  },
+  "gateway_surface": {
+    "defaultExport": "gateway",
+    "records": [
+      {
+        "name": "NativeCopy",
+        "fields": [
+          {
+            "name": "status",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ]
+      }
+    ],
+    "callbacks": [
+      {
+        "name": "Dispatcher",
+        "params": [
+          {
+            "name": "kind",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "handle",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "copy",
+            "type": {
+              "tag": "nullable",
+              "item": {
+                "tag": "reference",
+                "name": "NativeCopy"
+              }
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      }
+    ],
+    "methods": [
+      {
+        "name": "runtimeOpen",
+        "params": [
+          {
+            "name": "expectedIdentity",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "dispatcher",
+            "type": {
+              "tag": "reference",
+              "name": "Dispatcher"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "connect",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "roundtrip",
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "reference",
+          "name": "NativeCopy"
+        }
+      },
+      {
+        "name": "submit",
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "cancel",
+        "params": [
+          {
+            "name": "operation",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "observe",
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "stream",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "publish",
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "stream",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "requestClose",
+        "params": [
+          {
+            "name": "target",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "claimResult",
+        "params": [
+          {
+            "name": "operation",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "observationId",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "watchClose",
+        "params": [
+          {
+            "name": "target",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "observationId",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "number"
+        }
+      },
+      {
+        "name": "tryTake",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "observationId",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "nullable",
+          "item": {
+            "tag": "reference",
+            "name": "NativeCopy"
+          }
+        }
+      },
+      {
+        "name": "deliver",
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "number"
+        }
+      },
+      {
+        "name": "requestRuntimeClose",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "pollRuntime",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "consumeRuntimeReceipt",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "audit",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      }
+    ]
+  },
+  "c_seam_surface": {
+    "target": "aarch64-linux-ohos",
+    "records": [
+      {
+        "name": "mp_snapshot",
+        "fields": [
+          {
+            "name": "value",
+            "type": "i32",
+            "spelling": "int32_t"
+          },
+          {
+            "name": "text",
+            "type": "const u8 *",
+            "spelling": "const uint8_t *"
+          },
+          {
+            "name": "size",
+            "type": "u64",
+            "spelling": "size_t"
+          }
+        ],
+        "layout": {
+          "sizeBits": 192,
+          "alignmentBits": 64,
+          "fieldOffsetsBits": [
+            0,
+            64,
+            128
+          ]
+        }
+      },
+      {
+        "name": "mp_stats",
+        "fields": [
+          {
+            "name": "clone_calls",
+            "type": "u64",
+            "spelling": "uint64_t"
+          },
+          {
+            "name": "allocations",
+            "type": "u64",
+            "spelling": "uint64_t"
+          },
+          {
+            "name": "releases",
+            "type": "u64",
+            "spelling": "uint64_t"
+          },
+          {
+            "name": "live",
+            "type": "u64",
+            "spelling": "uint64_t"
+          },
+          {
+            "name": "work_calls",
+            "type": "u64",
+            "spelling": "uint64_t"
+          }
+        ],
+        "layout": {
+          "sizeBits": 320,
+          "alignmentBits": 64,
+          "fieldOffsetsBits": [
+            0,
+            64,
+            128,
+            192,
+            256
+          ]
+        }
+      },
+      {
+        "name": "mp_provider",
+        "fields": [
+          {
+            "name": "context",
+            "type": "void *",
+            "spelling": "void *"
+          },
+          {
+            "name": "clone",
+            "type": "fn(void *,mp_snapshot,void * *)->i32",
+            "spelling": "mp_status (*)(void *, mp_snapshot, void **)"
+          },
+          {
+            "name": "read_view",
+            "type": "fn(void *,const void *,mp_snapshot *)->i32",
+            "spelling": "mp_status (*)(void *, const void *, mp_snapshot *)"
+          },
+          {
+            "name": "increment",
+            "type": "fn(void *,void *)->i32",
+            "spelling": "mp_status (*)(void *, void *)"
+          },
+          {
+            "name": "release",
+            "type": "fn(void *,void *)->i32",
+            "spelling": "mp_status (*)(void *, void *)"
+          },
+          {
+            "name": "stats",
+            "type": "fn(void *,mp_stats *)->i32",
+            "spelling": "mp_status (*)(void *, mp_stats *)"
+          },
+          {
+            "name": "inject",
+            "type": "fn(void *,i32)->i32",
+            "spelling": "mp_status (*)(void *, int32_t)"
+          },
+          {
+            "name": "destroy_context",
+            "type": "fn(void *)->i32",
+            "spelling": "mp_status (*)(void *)"
+          }
+        ],
+        "layout": {
+          "sizeBits": 512,
+          "alignmentBits": 64,
+          "fieldOffsetsBits": [
+            0,
+            64,
+            128,
+            192,
+            256,
+            320,
+            384,
+            448
+          ]
+        }
+      },
+      {
+        "name": "mp_layout",
+        "fields": [
+          {
+            "name": "snapshot_size",
+            "type": "u64",
+            "spelling": "size_t"
+          },
+          {
+            "name": "snapshot_align",
+            "type": "u64",
+            "spelling": "size_t"
+          },
+          {
+            "name": "value_offset",
+            "type": "u64",
+            "spelling": "size_t"
+          },
+          {
+            "name": "text_offset",
+            "type": "u64",
+            "spelling": "size_t"
+          },
+          {
+            "name": "length_offset",
+            "type": "u64",
+            "spelling": "size_t"
+          },
+          {
+            "name": "provider_size",
+            "type": "u64",
+            "spelling": "size_t"
+          },
+          {
+            "name": "provider_align",
+            "type": "u64",
+            "spelling": "size_t"
+          }
+        ],
+        "layout": {
+          "sizeBits": 448,
+          "alignmentBits": 64,
+          "fieldOffsetsBits": [
+            0,
+            64,
+            128,
+            192,
+            256,
+            320,
+            384
+          ]
+        }
+      }
+    ],
+    "enums": [
+      {
+        "constants": [
+          {
+            "name": "MP_OK",
+            "value": 0
+          },
+          {
+            "name": "MP_INVALID_ARGUMENT",
+            "value": 1
+          },
+          {
+            "name": "MP_ALLOCATION_FAILURE",
+            "value": 2
+          },
+          {
+            "name": "MP_DOMAIN_OVERFLOW",
+            "value": 3
+          },
+          {
+            "name": "MP_INTERNAL_FAILURE",
+            "value": 4
+          },
+          {
+            "name": "MP_BUSY",
+            "value": 5
+          }
+        ]
+      },
+      {
+        "constants": [
+          {
+            "name": "MP_INJECT_NONE",
+            "value": 0
+          },
+          {
+            "name": "MP_INJECT_COPY_ALLOC",
+            "value": 1
+          },
+          {
+            "name": "MP_INJECT_COPY_INTERNAL",
+            "value": 2
+          },
+          {
+            "name": "MP_INJECT_WORK_INTERNAL",
+            "value": 3
+          },
+          {
+            "name": "MP_INJECT_COPY_AFTER_ALLOC_INTERNAL",
+            "value": 4
+          }
+        ]
+      }
+    ],
+    "aliases": [
+      {
+        "name": "mp_status",
+        "type": "i32"
+      },
+      {
+        "name": "mp_snapshot",
+        "type": "mp_snapshot"
+      },
+      {
+        "name": "mp_stats",
+        "type": "mp_stats"
+      },
+      {
+        "name": "mp_provider",
+        "type": "mp_provider"
+      },
+      {
+        "name": "mp_layout",
+        "type": "mp_layout"
+      }
+    ],
+    "functions": [
+      {
+        "name": "mp_c_create",
+        "params": [
+          {
+            "name": "out",
+            "type": "mp_provider *",
+            "spelling": "mp_provider *"
+          }
+        ],
+        "returns": "i32"
+      },
+      {
+        "name": "mp_cpp_create",
+        "params": [
+          {
+            "name": "out",
+            "type": "mp_provider *",
+            "spelling": "mp_provider *"
+          }
+        ],
+        "returns": "i32"
+      },
+      {
+        "name": "mp_rust_create",
+        "params": [
+          {
+            "name": "out",
+            "type": "mp_provider *",
+            "spelling": "mp_provider *"
+          }
+        ],
+        "returns": "i32"
+      },
+      {
+        "name": "mp_rust_layout",
+        "params": [
+          {
+            "name": "out",
+            "type": "mp_layout *",
+            "spelling": "mp_layout *"
+          }
+        ],
+        "returns": "i32"
+      }
+    ]
+  },
+  "values": {
+    "Parcel.value": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "i32",
+      "definition": {
+        "kind": "integer",
+        "width": 32,
+        "signed": true
+      }
+    },
+    "Parcel.text": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "utf8.1024",
+      "definition": {
+        "kind": "string",
+        "encoding": "utf-8",
+        "max_bytes": 1024
+      }
+    }
+  },
+  "calls": {
+    "openRuntime": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.openRuntime.v1"
+    },
+    "Runtime.connect": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Runtime.connect.v1"
+    },
+    "Runtime.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Runtime.close.v1"
+    },
+    "Engine.startOperation": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.startOperation.v1"
+    },
+    "Engine.publishState": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.publishState.v1"
+    },
+    "Engine.publishEvent": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.publishEvent.v1"
+    },
+    "Engine.observeState": {
+      "kind": "stream",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported",
+        "stream_kind": "state",
+        "capacity_items": 3,
+        "capacity_bytes": 4096,
+        "overflow": "coalesce-latest",
+        "ordering": "source",
+        "replay": "none",
+        "recovery": "resubscribe",
+        "stop": "delivery-gate-with-source-lease"
+      },
+      "public_id": "madb.c07.Engine.observeState.v1"
+    },
+    "Engine.observeEvents": {
+      "kind": "stream",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported",
+        "stream_kind": "event",
+        "capacity_items": 8,
+        "capacity_bytes": 4096,
+        "overflow": "reject",
+        "ordering": "source",
+        "replay": "none",
+        "recovery": "resubscribe",
+        "stop": "delivery-gate-with-source-lease"
+      },
+      "public_id": "madb.c07.Engine.observeEvents.v1"
+    },
+    "Engine.requestClose": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.requestClose.v1"
+    },
+    "Engine.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.close.v1"
+    },
+    "Operation.result": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Operation.result.v1"
+    },
+    "Operation.requestCancel": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "work",
+        "cancellation_confirmation": "operation-terminal"
+      },
+      "public_id": "madb.c07.Operation.requestCancel.v1"
+    },
+    "Operation.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Operation.close.v1"
+    },
+    "Subscription.requestStop": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "observe",
+        "cancellation_confirmation": "stopped"
+      },
+      "public_id": "madb.c07.Subscription.requestStop.v1"
+    },
+    "Subscription.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Subscription.close.v1"
+    },
+    "Engine.copyRecord": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.roundtrip.v1"
+    }
+  },
+  "slots": {
+    "resource": {
+      "ownership": "shared",
+      "close": "request-await-release",
+      "release_thread": "runtime-environment"
+    },
+    "value": {
+      "ownership": "copy"
+    },
+    "callback": {
+      "ownership": "shared",
+      "synchronous_callback": true,
+      "reentrant": true,
+      "threading": "runtime-environment",
+      "context_owner": "subscription-owner",
+      "stop": "delivery-gate-with-source-lease",
+      "keep_alive": "source-lease"
+    }
+  },
+  "limits": {
+    "operation_handles": 8,
+    "subscription_handles": 8,
+    "event_tickets": 8,
+    "retained_utf8_bytes": 4096,
+    "result_and_close_waiters": 32,
+    "parent_close_control": 1,
+    "roundtrip_scratch_utf8": 1024,
+    "state_pending": 1,
+    "state_entered": 1,
+    "state_staging_per_selected_subscription": 1
+  },
+  "notes": [
+    "Public contract derives Boundary.ets exported syntax. Gateway is mechanism linkage; provider ABI is separate private C seam, not public resource metadata.",
+    "TypeScript number does not imply Int32; this explicit policy assigns Parcel.value Int32 and text strict bounded UTF-8.",
+    "Native pointers have no inferred ownership; provider protocol remains explicit ADR0013 plus paired same-provider release seam.",
+    "No business Promise cancellation from garbage collection or dropping wait.",
+    "State capacity_items=3 bounds one pending, one entered, and one staging reservation per selected subscription; all staging copies count in the shared 4096 retained UTF-8 budget.",
+    "Callback context_owner=subscription-owner describes the persistent listener registration. keep_alive=source-lease describes in-flight producer/delivery retention until lawful callback exit/drop.",
+    "Logical erased error channel ArkTSError admits unmodified user Error as well as BoundaryError. Actual BoundaryError.code declaration stays in the compiler descriptor; no exhaustive enum is inferred.",
+    "calling_convention=system is an explicit backend logical convention, not a physical C ABI derived from .ets. Physical private C layout remains separate Clang evidence.",
+    "Stream classification comes from this explicit policy; TypeScript AST supplies method/callback signatures and Promise return syntax, not stream lifecycle semantics.",
+    "State capacity_items counts retained version responsibilities, not a public queue depth: latest pending remains one slot, entered callback and pre-commit staging have distinct owners. All count in the shared 4096-byte budget.",
+    "Shared resource self/return slots are backend reference handles whose explicit close belongs to the public owner. The erased ArkTSError channel is owned by ArkTS and is not a closable SDK resource.",
+    "Each call carries an authored stable public_id. SourceKey and API shape remain independently compiler-derived; retaining an ID across an explicit rename does not assert shape compatibility."
+  ],
+  "error_channel": {
+    "id": "ArkTSError",
+    "representation": "backend-handle",
+    "owner": "arkts-runtime",
+    "meaning": "Backend-owned erased ArkTS exception channel, including ordinary BoundaryError(code) and unmodified user Error. Not a finite error enum or an explicitly closable SDK owner."
+  }
+}

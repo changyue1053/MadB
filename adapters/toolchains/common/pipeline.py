@@ -128,6 +128,10 @@ class FrozenPipeline:
                     recipe=recipe, tasks=tasks or [], store="domain", run_parent="runs", cache=None,
                     watch=dict(absent=[], directories=[]), dependencies=None)
 
+    def owner_environment(self):
+        """Routes may isolate owner launch without duplicating the watchdog."""
+        return None
+
     def execute(self, command, bundle, *extra):
         save(self.root, command + "-execution.json", bundle)
         args = [str(self.binary), command, "--root", str(self.root), "--execution", command + "-execution.json",
@@ -146,7 +150,8 @@ class FrozenPipeline:
         # full graph plus cleanup, and first interrupts the owner cooperatively.
         budget = (timeout or 300) * max(1, len(bundle.get("tasks", []))) + 60
         self.verify_host()
-        process = subprocess.Popen(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process = subprocess.Popen(args, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                   env=self.owner_environment())
         try:
             stdout, stderr = process.communicate(timeout=budget)
         except subprocess.TimeoutExpired as error:
