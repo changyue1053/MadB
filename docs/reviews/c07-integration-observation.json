@@ -1,0 +1,90 @@
+{
+  "scope": "C07 source integration and independent verifier readiness; development observations are not final candidate certification",
+  "certifies_c07": false,
+  "verification_status": "missing",
+  "commits": {
+    "producer_gateway": "f0a2139ff55cdfde382e2c4fce1c6833e8f90afd",
+    "producer_companion": "5ee53e963664b277923acb20c6561bef6afaed02",
+    "producer_scanner": "a93beed",
+    "producer_rust": "b3aef15",
+    "lab_ordinary_generation": "75e734ca502554bcffeb382f730faf3f46531b03"
+  },
+  "checks": [
+    {
+      "scope": "shared native composition and observer inventory",
+      "tests": 34,
+      "result": "passed"
+    },
+    {
+      "scope": "Rust raw frontend generator",
+      "tests": 6,
+      "result": "passed"
+    },
+    {
+      "scope": "native SDK dependency boundaries",
+      "tests": 15,
+      "result": "passed"
+    },
+    {
+      "scope": "Rust bridge formatting",
+      "result": "passed"
+    },
+    {
+      "scope": "independent Lab repository and harness",
+      "tests": 122,
+      "result": "passed"
+    }
+  ],
+  "source_review": {
+    "rust_compiled_cpp_units": 7,
+    "rust_submitted_gateway_preprocessed_units": 4,
+    "rust_observed_file_static_sites": 72,
+    "meaning": "static call sites in source files seen by preprocessing, not runtime call counts",
+    "kotlin_development_source_files_per_variant": 157,
+    "kotlin_development_har_members_per_variant": 21
+  },
+  "limits": [
+    "The C/C++ public pipeline artifacts remain provisional until final clean-source generation.",
+    "The independent C candidate run passed four ordinary groups; generation stayed blocked. Four subsequent generation subobservations matched but do not transfer to an older candidate.",
+    "Kotlin R6 source/HAR integrity is verified; final high-risk review and target lifecycle observations remain separate.",
+    "Full companion matrix, final four-route candidate pairs and combined remote CI remain pending.",
+    "No GitHub Actions, push or merge was performed in this integration slice."
+  ],
+  "references": [
+    {
+      "path": "/private/tmp/madb-c07-repo-native-integration.json",
+      "sha256": "47840f34718d5913be46e62e7b5746f58d3e5b76e29e562ef872fb7717a52170",
+      "size": 8542
+    },
+    {
+      "path": "/private/tmp/madb-c07-companion-v2-root-review.json",
+      "sha256": "8ee7a7105a8abe135a407f837351bf1ef02666444f3f545b9ecd8b73c27bdedf",
+      "size": 790
+    },
+    {
+      "path": "/private/tmp/madb-c07-rust-scanner-final-review/freeze.json",
+      "sha256": "27a95c928801fc157bb2d5bb059d714c6c3fbf39316f5a8368c6840a13335433",
+      "size": 4017
+    },
+    {
+      "path": "/private/tmp/madb-c07-rust-integration-freeze.json",
+      "sha256": "be9bb36ccdf4da0a8f6436495573ef9fddb3f57bc26f6162930924c65e429c9b",
+      "size": 8710
+    },
+    {
+      "path": "/private/tmp/madb-c07-lab-freeze-v1/manifest.json",
+      "sha256": "7eb8fe880a5c989bf2e20b6cec830547f9f67e7239ecd278d6a7c0e76578c5b5",
+      "size": 15877
+    },
+    {
+      "path": "/private/tmp/madb-c07-lab-freeze-v1/commit-receipt.json",
+      "sha256": "9546ce68fed4ee465d2340ef21b94697b73b1ce4035064fa6d9fdef35238a481",
+      "size": 265
+    },
+    {
+      "path": "/private/tmp/madb-c07-kotlin-r6-dev3-root-integrity-review.json",
+      "sha256": "c99b39e0de111c1366d9c4b354d835dfadc695d5ef67d0ddf25d0272e869ac4b",
+      "size": 1176
+    }
+  ]
+}
