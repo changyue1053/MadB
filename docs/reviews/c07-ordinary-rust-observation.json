@@ -1,0 +1,93 @@
+{
+  "scope": "fixed ordinary rust public HAR independent target observation only",
+  "certifies_c07": false,
+  "status": "observed-ordinary-success",
+  "route": "rust",
+  "nonce": "c07-sdk26-2f47bc3636a54f81b78ac00f9931ae6e",
+  "pid": 21039,
+  "target_kind": "API23 Release arm64 emulator",
+  "target": "127.0.0.1:5557",
+  "sdk": "26.0.0.105 Release",
+  "build_mode": "Release",
+  "obfuscation": [
+    "property",
+    "export",
+    "filename"
+  ],
+  "signing": "fresh SDK public community debug; not production signing",
+  "hap": {
+    "path": "/private/tmp/madb-c07-rust-route-ordinary-hap-v2/artifacts/c07-sdk26-2f47bc3636a54f81b78ac00f9931ae6e.hap",
+    "sha256": "d458efff80472a7d4b87fe844fd6fcbd1f2682824580b359f869ec1c75c01927",
+    "size": 2122867
+  },
+  "har": {
+    "path": "/private/tmp/madb-c07-rust-route-ordinary-har-v2/artifacts/madbc07sdkrust-52a6b5a0db8fdf484a4369f49407bfac9b6e0caf545d359f5c90d8914abfec5b.har",
+    "sha256": "52a6b5a0db8fdf484a4369f49407bfac9b6e0caf545d359f5c90d8914abfec5b",
+    "size": 719842
+  },
+  "packaged_libraries": [
+    {
+      "path": "libs/arm64-v8a/libc++_shared.so",
+      "sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17",
+      "size": 1262504
+    },
+    {
+      "path": "libs/arm64-v8a/libmadbc07sdkrust.so",
+      "sha256": "4e3381f36a019f6d6d58bf1941a3ab961a7c1bf6f386dd164feb1c7a6bcdaaed",
+      "size": 734128
+    }
+  ],
+  "frames": {
+    "values-and-negative-inputs": [
+      16,
+      1,
+      1,
+      2,
+      1,
+      0,
+      2
+    ],
+    "ordinary-api-and-request-only-retirement": [
+      1
+    ],
+    "ordinary-runtime-close-returned": [
+      1
+    ]
+  },
+  "raw_observation": {
+    "path": "/private/tmp/madb-c07-rust-route-ordinary-hap-v2/evidence/c07-sdk26-2f47bc3636a54f81b78ac00f9931ae6e-observation-1792920173720050000.json",
+    "sha256": "03ba4b426661257a5d10f6fee55c7a1ea5e2e98b7f14cef305fe8faa3c353190",
+    "size": 15325
+  },
+  "handoff": {
+    "path": "/private/tmp/madb-c07-rust-route-ordinary-hap-v2/handoff-manifest.json",
+    "sha256": "9574fc9be4e2e87fc125afae55b56ca93d53ed4e211098d9a906e4a0e8a9ff3a",
+    "size": 16510
+  },
+  "consumer_oracle_change": "Only public HAR import changes; fixed C assertions unchanged.",
+  "runtime_zero_counters_independently_observed": false,
+  "actual_system_env_exit_executed": false,
+  "limits": [
+    "No complete candidate/profile or four-route acceptance.",
+    "No companion-held terminal/clone/transfer/full32/source/byte/fault proof.",
+    "Ordinary Runtime.close returned; no independent raw physical-owner ledger was exposed here.",
+    "No actual env-exit/hook/null-env run in this ordinary consumer.",
+    "No performance SLA or physical-device claim.",
+    "Input negatives reached the public facade; raw adapter bypass negatives and wrong identity/ABI/profile are not covered.",
+    "Not a final C04 public candidate digest or formal Lab registration."
+  ],
+  "root_recheck": {
+    "file_refs": 56,
+    "mismatches": []
+  },
+  "root_source_review": {
+    "path": "/private/tmp/madb-c07-rust-v2-root-review.json",
+    "size": 1579,
+    "sha256": "b7fbee043c929d574b7bf62e39aeeafaa0037fa69c9b8b660df0c40db779e516"
+  },
+  "original_lab_compact": {
+    "path": "/private/tmp/madb-c07-rust-route-ordinary-observation-compact.json",
+    "size": 2917,
+    "sha256": "edaf54090e6f50acd634ce30d5c6948363947808342e6ac521daf994a997abe6"
+  }
+}

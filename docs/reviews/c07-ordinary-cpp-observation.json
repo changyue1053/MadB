@@ -1,0 +1,93 @@
+{
+  "scope": "fixed ordinary cpp public HAR independent target observation only",
+  "certifies_c07": false,
+  "status": "observed-ordinary-success",
+  "route": "cpp",
+  "nonce": "c07-sdk26-66bbcd02d9a545448e26339d70072fe8",
+  "pid": 19916,
+  "target_kind": "API23 Release arm64 emulator",
+  "target": "127.0.0.1:5557",
+  "sdk": "26.0.0.105 Release",
+  "build_mode": "Release",
+  "obfuscation": [
+    "property",
+    "export",
+    "filename"
+  ],
+  "signing": "fresh SDK public community debug; not production signing",
+  "hap": {
+    "path": "/private/tmp/madb-c07-cpp-route-ordinary-hap-v2/artifacts/c07-sdk26-66bbcd02d9a545448e26339d70072fe8.hap",
+    "sha256": "6f23a3cf54bcbb6574c88995035f40956d986d045258a14492ac537b19ae15d5",
+    "size": 2171119
+  },
+  "har": {
+    "path": "/private/tmp/madb-c07-cpp-route-ordinary-har-v2/artifacts/madbc07sdkcpp-b94624eacaafa27191c68b356e7a354294c75672d67263a366feee6682eafafd.har",
+    "sha256": "b94624eacaafa27191c68b356e7a354294c75672d67263a366feee6682eafafd",
+    "size": 727623
+  },
+  "packaged_libraries": [
+    {
+      "path": "libs/arm64-v8a/libc++_shared.so",
+      "sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17",
+      "size": 1262504
+    },
+    {
+      "path": "libs/arm64-v8a/libmadbc07sdkcpp.so",
+      "sha256": "ca0400b4086796dcfe9dbd4378d495f44c3a7fe93e77ccdfc4f9e4404e52775c",
+      "size": 780088
+    }
+  ],
+  "frames": {
+    "values-and-negative-inputs": [
+      16,
+      1,
+      1,
+      2,
+      1,
+      0,
+      2
+    ],
+    "ordinary-api-and-request-only-retirement": [
+      1
+    ],
+    "ordinary-runtime-close-returned": [
+      1
+    ]
+  },
+  "raw_observation": {
+    "path": "/private/tmp/madb-c07-cpp-route-ordinary-hap-v2/evidence/c07-sdk26-66bbcd02d9a545448e26339d70072fe8-observation-1792920126873985000.json",
+    "sha256": "839fd92143263fefc30a8ca31de1852d0ee17029c164af7f48bb48adbef59b99",
+    "size": 15319
+  },
+  "handoff": {
+    "path": "/private/tmp/madb-c07-cpp-route-ordinary-hap-v2/handoff-manifest.json",
+    "sha256": "6a89f599c9bbd841450243938a05a2cab12b8e25da803959850caac1dcf18f03",
+    "size": 16437
+  },
+  "consumer_oracle_change": "Only public HAR import changes; fixed C assertions unchanged.",
+  "runtime_zero_counters_independently_observed": false,
+  "actual_system_env_exit_executed": false,
+  "limits": [
+    "No complete candidate/profile or four-route acceptance.",
+    "No companion-held terminal/clone/transfer/full32/source/byte/fault proof.",
+    "Ordinary Runtime.close returned; no independent raw physical-owner ledger was exposed here.",
+    "No actual env-exit/hook/null-env run in this ordinary consumer.",
+    "No performance SLA or physical-device claim.",
+    "Input negatives reached the public facade; raw adapter bypass negatives and wrong identity/ABI/profile are not covered.",
+    "Not a final C04 public candidate digest or formal Lab registration."
+  ],
+  "root_recheck": {
+    "file_refs": 56,
+    "mismatches": []
+  },
+  "root_source_review": {
+    "path": "/private/tmp/madb-c07-cpp-root-review.json",
+    "size": 516,
+    "sha256": "73b92f6f71fea9bc264aab5dc98cedc83b3ddae3fe4f1905f9c6e5ee141ae792"
+  },
+  "original_lab_compact": {
+    "path": "/private/tmp/madb-c07-cpp-route-ordinary-observation-compact.json",
+    "size": 2909,
+    "sha256": "d9191db911ee1da4a5735efeff113bbc63cbbea1bc4cb196eb1ea65e8b363928"
+  }
+}
