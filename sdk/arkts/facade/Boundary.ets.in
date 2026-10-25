@@ -30,12 +30,6 @@ export class BoundaryError extends Error implements Error {
   constructor(code: string) { super(code); this.name = 'BoundaryError'; this.code = code; }
 }
 
-class SnapshotValue implements Snapshot {
-  value: number;
-  text: string;
-  constructor(value: number, text: string) { this.value = value; this.text = text; }
-}
-
 function statusError(status: number): BoundaryError {
   switch (status) {
     case 1: return new BoundaryError('InvalidArgument');
@@ -167,7 +161,10 @@ class Session {
     this.requireResource(record);
     const copy: NativeCopy = nativeCall(() => native.roundtrip(record.handle, value, text));
     if (copy.status !== 0) { throw statusError(copy.status); }
-    return new SnapshotValue(copy.value, copy.text);
+    // Object-literal fields are own data properties. A compiled class field
+    // declaration must not be relied on to shield constructor assignments
+    // from a setter inherited through Object.prototype.
+    return { value: copy.value, text: copy.text };
   }
   start(record: ResourceRecord, input: Snapshot): Operation {
     this.requireResource(record);
@@ -245,7 +242,7 @@ class Session {
       return new Promise<Snapshot>((resolve, reject) => {
         const waiter: Waiter = new Waiter(id, record, true, (copy: NativeCopy) => {
           if (copy.status === 0) {
-            const snapshot: Snapshot = new SnapshotValue(copy.value, copy.text);
+            const snapshot: Snapshot = { value: copy.value, text: copy.text };
             waiter.signalled = true;
             resolve(snapshot);
           } else {
@@ -347,7 +344,8 @@ class Session {
     }
     const listener: ((value: Snapshot) => void) | undefined = record.listener;
     if (listener === undefined) { throw new BoundaryError('Closed'); }
-    try { listener(new SnapshotValue(copy.value, copy.text)); }
+    const snapshot: Snapshot = { value: copy.value, text: copy.text };
+    try { listener(snapshot); }
     catch (error) { record.closeStatus = 9; record.closing = true; throw error as Error; }
   }
 

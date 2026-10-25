@@ -1,0 +1,149 @@
+{
+  "scope": "ordinary genuine C public HAR consumer on API23 Release emulator",
+  "certifies_c07": false,
+  "status": "observed-ordinary-success",
+  "nonce": "c07-sdk26-e1c75f26331b4592a2a7845dac1475b7",
+  "pid": 23489,
+  "target": "127.0.0.1:5557",
+  "api": 23,
+  "api_release": "Release",
+  "target_version": "OpenHarmony-6.1.0.115",
+  "target_model": "emulator",
+  "build_mode": "Release",
+  "obfuscation": [
+    "property",
+    "export",
+    "filename"
+  ],
+  "signing": "fresh SDK public community debug; not production signing",
+  "facade_template_sha256": "d392b9752582185f3af2f3a212cf1b567099e0d8fd344e8e2b4fb47a6bdaf10f",
+  "native_provider_sha256": "6fa0a7031e2f3abc5704b9e70203545692997a9add933d194db7fc96f260bf24",
+  "libcxx_sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17",
+  "identity": "madb-arkts/1:31af174a5ea1632baf1ec1c92e010821f861b5f154c4ff8b08e067f986c0d878:ad4c96c2f2af3c479e36f01b57ef85c87b358a3876d091188d9f4493cc1f22d2:c09249690fa3f1f53cc7e8fff2cad693828bebe8467c281306c5415ba3d58963",
+  "hap": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-hap-r3/artifacts/c07-sdk26-e1c75f26331b4592a2a7845dac1475b7.hap",
+    "sha256": "c11c021bef781765a3a1d6d43d3968a14d0bb99ab52aad227940b42f70934b6e",
+    "size": 2131208
+  },
+  "har": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-har-r3/artifacts/madbc07sdkc-a65c2170a84603ff766e8b1d26378ff2043ddb089b4c0c1c40ed39baa3a85686.har",
+    "sha256": "a65c2170a84603ff766e8b1d26378ff2043ddb089b4c0c1c40ed39baa3a85686",
+    "size": 712848
+  },
+  "observed_frames": {
+    "values-and-negative-inputs": [
+      16,
+      1,
+      1,
+      2,
+      1,
+      0,
+      2
+    ],
+    "ordinary-api-and-request-only-retirement": [
+      1
+    ],
+    "ordinary-runtime-close-returned": [
+      1
+    ]
+  },
+  "runtime_assertions_reached": [
+    "12 valid Snapshot vectors including int32 bounds/-0/Unicode/NUL/1024-byte boundaries and independent copies",
+    "16 InvalidArgument value/text negatives; public BoundaryError type",
+    "getter read-once/original Error identity and recovery",
+    "real inherited setter positive control1; ordinary returned Snapshot setter hits0; own data properties2",
+    "native operation41→42 and DomainOverflow; second result AlreadyConsumed; repeated explicit operation close",
+    "separate actual state/event callbacks with exact values and stop/close",
+    "16 requestStop-only cycles, then all old subscription close observers",
+    "callback failure followed by subscription reuse; old failed close retains CallbackFailure",
+    "engine.requestClose without waiter then new generation admission; old Engine.close remains valid and old work rejected",
+    "getter requestClose prevents post-getter business entry",
+    "ordinary Runtime.close returned and repeated close returned"
+  ],
+  "raw_observation": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-hap-r3/evidence/c07-sdk26-e1c75f26331b4592a2a7845dac1475b7-observation-1792918487400595000.json",
+    "sha256": "157a5002814d9f3eab7f08d032a1d3d18e5b2d66e9caf0a4ffeb1a7f08f505f1",
+    "size": 17734
+  },
+  "raw_hilog": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-hap-r3/evidence/1792918487399618000-hilog.json",
+    "sha256": "f38490c095dd7ab66e2a576f34f81452a3d39b2a98653f13b726fa580d45bf5a",
+    "size": 1865
+  },
+  "handoff": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-hap-r3/handoff-manifest.json",
+    "sha256": "ca1878de1c6a27cbc927817da1e7651b6fe2d98005eae10aa6e5f3380c3e5619",
+    "size": 13320
+  },
+  "source_inventory": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-source-inventory.json",
+    "sha256": "6df0430bf700dffed131cbe91fe37f74ec12403fb5edc74c917513a6c6102bfc",
+    "size": 9296
+  },
+  "previous_failure": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-hap/failed-handoff-v1.json",
+    "sha256": "ff60a955f1dedac1785b6cad8c111a9834d2311d14aa4d2c6e135dff2e994727",
+    "size": 9280
+  },
+  "consumer_changed_to_pass": false,
+  "runtime_zero_counters_independently_observed": false,
+  "actual_system_env_exit_executed": false,
+  "limits": [
+    "No complete candidate/profile or four-route acceptance.",
+    "No companion-held terminal/clone/transfer/full32/source/byte/fault proof.",
+    "Ordinary Runtime.close returned; no independent raw physical-owner ledger was exposed here.",
+    "No actual env-exit/hook/null-env run in this ordinary consumer.",
+    "No performance SLA or physical-device claim."
+  ],
+  "followup": "next full companion batch additionally asserts written output values and original input isolation explicitly; no standalone ordinary rerun",
+  "lab_compact_source": {
+    "path": "/private/tmp/madb-c07-c-route-ordinary-observation-compact.json",
+    "size": 4619,
+    "sha256": "175940c35e1827e9e5f8b3a9b399839afb371acd4e3511680b738d0ebced4099"
+  },
+  "root_recheck": {
+    "handoff_file_refs": 40,
+    "mismatches": 0
+  },
+  "host_regression": {
+    "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-facade-check-72qnb9/receipt.json",
+    "size": 2390,
+    "sha256": "0c17e4ca6a25c9b4307e8e23dad323bcf27de9a0345f0b6a8f26f42942937897"
+  },
+  "formal_type_archive": {
+    "path": "/private/tmp/madb-c07-facade-compile/evidence/1792918170421926000/manifest.json",
+    "size": 8923,
+    "sha256": "e24229a8fb0f44e4a795dbd78270b2bbbd5367f2689312f1de6e9db496c9e36b"
+  },
+  "historical_type_retention_addendum": {
+    "scope": "Historical compile-only harness retention correction; no candidate/device artifacts affected",
+    "original_observation": {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/reviews/c07-facade-observation.json",
+      "sha256": "2f48093de63edc04ffbfaff5d86e2626696b12d06d41b63d5b399be841b6efba"
+    },
+    "finding": "The initial type harness reused its build root without snapshotting rendered_source and unsigned output. A later facade compile changed these historical work paths. Original log/command files remain unchanged; the old HAP is not now independently recoverable and is not counted as retained target evidence.",
+    "changed_work_paths": [
+      {
+        "field": "rendered_source",
+        "original_ref": {
+          "path": "/private/tmp/madb-c07-facade-compile/entry/src/main/ets/Boundary.ets",
+          "size": 22663,
+          "sha256": "aef374bd0746bcbf96b799f53be29538082406e79add59ef67970e2436a71407"
+        },
+        "current_sha": "507f1ccc56c2270f028d25837a1e23bf42faab71519a90c4dfce03ad402c72e4"
+      },
+      {
+        "field": "output",
+        "original_ref": {
+          "path": "/private/tmp/madb-c07-facade-compile/entry/build/default/outputs/default/entry-default-unsigned.hap",
+          "size": 8844,
+          "sha256": "ce2a4c3092257564c357a1e4a5e36e7e3867c3a1d42b618de1b8b95e5d3da15b"
+        },
+        "current_sha": "1068c7dc89fb40642cdc548db0fd5b8b07fa6696f2c66dc86861da8fd2eaeb8e"
+      }
+    ],
+    "original_template_available": "git 052c45051865e46dea615ca021a6930317e5ae50:sdk/arkts/facade/Boundary.ets.in and /private/tmp/madb-c07-arkts-facade/Boundary.before-own-data-literal.ets.in",
+    "correction": "Every subsequent successful compile creates immutable evidence/<stamp> copies of source/config/log/output before the work root can be reused. New d392 typecheck is archived under 1792918170421926000. This does not alter historical JSON or claim old artifact byte recovery.",
+    "new_archive": "/private/tmp/madb-c07-facade-compile/evidence/1792918170421926000/manifest.json"
+  }
+}
