@@ -73,12 +73,41 @@ def check_preprocessed(path, watched, wrappers):
             "gateway_files": sorted(seen), "observer_expressions": expanded}
 
 
+def source_files(root, extras):
+    allowed = {".h", ".hpp", ".cpp", ".c", ".inc"}
+    excluded = {"observer.hpp", "observer.cpp"}
+    files = {path.resolve() for directory in ("include", "src", "worker")
+             for path in (root / directory).glob("*")
+             if path.is_file() and path.suffix in allowed and path.name not in excluded}
+    explicit = set()
+    for path in extras:
+        if not path.is_file() or path.suffix not in allowed or path.name in excluded:
+            raise ValueError(f"invalid explicit gateway source: {path}")
+        explicit.add(path.resolve())
+    return sorted(files | explicit), explicit
+
+
+def compiled_coverage(files, preprocessed, explicit):
+    if not preprocessed:
+        return {"preprocessed_source_paths": None, "unobserved_source_paths": None,
+                "preprocessed_source_call_count": None}
+    seen = {path for unit in preprocessed for path in unit["gateway_files"]}
+    missing = {str(path) for path in explicit} - seen
+    if missing:
+        raise ValueError("explicit gateway source absent from actual preprocessing: " + ", ".join(sorted(missing)))
+    return {"preprocessed_source_paths": sorted(seen),
+            "unobserved_source_paths": sorted(file["path"] for file in files if file["path"] not in seen),
+            "preprocessed_source_call_count": sum(len(file["calls"]) for file in files if file["path"] in seen)}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--observer-header", type=Path, default=Path(__file__).with_name("observer.hpp"))
     parser.add_argument("--napi-headers", type=Path, required=True)
     parser.add_argument("--preprocessed", type=Path, action="append", default=[])
+    parser.add_argument("--source-file", type=Path, action="append", default=[],
+                        help="additional generated gateway source; repeat for raw Rust bridge units")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     wrappers = set(MACRO.findall(args.observer_header.read_text()))
@@ -94,15 +123,14 @@ def main():
     files = []
     watched = set()
     found = set()
-    for directory in ("include", "src", "worker"):
-        for path in sorted((args.source_root / directory).glob("*")):
-            if path.suffix not in (".h", ".hpp", ".cpp", ".c", ".inc") or path.name in ("observer.hpp", "observer.cpp"):
-                continue
-            entries = sites(path, path.read_text(), wrappers, sdk_functions)
-            watched.add(str(path.resolve()))
-            found.update(entry["api"] for entry in entries)
-            files.append({"path": str(path.resolve()), "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-                          "calls": entries})
+    paths, explicit = source_files(args.source_root, args.source_file)
+    for path in paths:
+        data = path.read_bytes()
+        entries = sites(path, data.decode("utf-8"), wrappers, sdk_functions)
+        watched.add(str(path))
+        found.update(entry["api"] for entry in entries)
+        files.append({"path": str(path), "sha256": hashlib.sha256(data).hexdigest(),
+                      "size": len(data), "calls": entries})
     if not files or not found:
         raise ValueError("no composed gateway call sites")
     if args.preprocessed:
@@ -114,7 +142,9 @@ def main():
               "call_count": sum(len(file["calls"]) for file in files), "apis": sorted(found),
               "observer_header_sha256": hashlib.sha256(args.observer_header.read_bytes()).hexdigest(),
               "sdk_headers": headers, "sources": files, "preprocessed": preprocessed,
-              "preprocessing_checked": bool(preprocessed)}
+              "preprocessing_checked": bool(preprocessed),
+              "explicit_source_paths": sorted(str(path) for path in explicit),
+              **compiled_coverage(files, preprocessed, explicit)}
     encoded = json.dumps(result, indent=2) + "\n"
     if args.out:
         args.out.write_text(encoded)
