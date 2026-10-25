@@ -1,8 +1,10 @@
 # MadB 设计与工程文档
 
-设计基线 0.9 · 更新于 2026-10-24。MadB 为 Kotlin、Swift、ArkTS、Rust、C/C++ 提供跨端 SDK 的契约检查、代码生成、工程接入及制品验证；MadB-Lab 独立验证公开候选和开发者使用流程。
+设计基线 0.9 · 更新于 2026-10-25。MadB 为 Kotlin、Swift、ArkTS、Rust、C/C++ 提供跨端 SDK 的契约检查、代码生成、工程接入及制品验证；MadB-Lab 独立验证公开候选和开发者使用流程。
 
-C01 工程基线已验收：两仓库已公开，本地与独立 CI、main 合入保护及失败阻断验证通过；两份 C01 PR 已合入 main；C02 契约与格式实现已通过本地及远端 CI，交付于独立 PR #2，合入状态见 GitHub。C03 首链工具与真实双向探针已通过本地验收及远端 CI，交付于基于 C02 的 PR #3，记录见 [C03 记录](reviews/2026-10-24-c03-native-probes.md)。C04 已接入只读查询、受控执行、三层事务、正式 CLI 与受限原生依赖/缓存；整包验收和实际环境见 [C04 记录](reviews/2026-10-24-c04-complete-package.md)，当前状态以任务目录为准。当前没有正式发布包或已认证组合。范围保留九组语言边界、十六条主线、四十一工作包；旧 mad、MadDemo 和 mad-boundary 仅提供研究案例，不设迁移任务。计划、实现和认证分别管理。
+C01–C05 已按各工作包范围验收，覆盖工程与契约基线、受控构建执行及 Rust ↔ C 首链；结果见[C05 记录](reviews/2026-10-24-c05-rust-c-first-route.md)和[审查索引](reviews/README.md)。C06 的固定 SampleEngine 四个 macOS Arm64 Release 配置已完成本机正式构建、54 个必需案例和 92 项 Lab harness 检查；实现与本机验收已交付；按本轮安排，远端 C06 整包验证并入下一轮，当前不计整包验收通过。具体身份与结果见[C06 记录](reviews/2026-10-24-c06-kotlin-swift-rust.md)，当前任务状态以[实施目录](catalog/implementation-plan.json)为准。
+
+尚未发布正式版本；选定 profile 的验收不代表全部目标、工具组合和分发渠道已经覆盖，也不自动更新路线认证登记。范围仍为九组语言边界、十六条主线、四十一工作包；旧 mad、MadDemo 和 mad-boundary 仅提供研究案例，不设迁移任务。
 
 ## 阅读入口
 
@@ -16,7 +18,7 @@ C01 工程基线已验收：两仓库已公开，本地与独立 CI、main 合�
 | 确认开工前要交付什么 | [设计准入与首链资产](delivery/04-design-readiness-and-first-route.md) · [十二项实施决定](adr/0009-implementation-contracts-and-gates.md) |
 | 查询后端与版本 | [后端配置](architecture/06-backend-profiles.md) · [技术栈、候选及冻结范围](architecture/16-technology-stack-and-versions.md) |
 | 使用 SDK 或创建工程 | [开发者体验](product/03-developer-experience.md) · [一键初始化](product/04-project-initialization.md) |
-| 查看本次变化 | [C04 输入观察](reviews/2026-10-24-c04-input-observations.md) · [C04 串行 DAG](reviews/2026-10-24-c04-dag-execution.md) · [C04 单任务结果](reviews/2026-10-24-c04-task-results.md) · [C04 已声明输入副本](reviews/2026-10-24-c04-frozen-inputs.md) · [C04 受控进程](reviews/2026-10-24-c04-process-execution.md) · [C03 首链探针](reviews/2026-10-24-c03-native-probes.md) · [C02 契约与格式验收](reviews/2026-10-24-c02-contract-formats.md) · [C01 公开与合入保护验收](reviews/2026-10-24-c01-public-repositories.md) · [历史归档](reviews/README.md) |
+| 查看交付与验收记录 | [C06 四路线](reviews/2026-10-24-c06-kotlin-swift-rust.md) · [C05 Rust/C 首链](reviews/2026-10-24-c05-rust-c-first-route.md) · [C04 整包](reviews/2026-10-24-c04-complete-package.md) · [全部审查记录](reviews/README.md) |
 
 鸿蒙 Kotlin 主线为 CPF-KMP-CMP + akinterop，CMP 只在共享 UI 配置启用；KNOI 独立扩展。Swift 主线采用 Objective-C export + SKIE，NativeCoroutines 组合按 X01 验收。候选版本、上游修复与具体支持范围以技术栈规范和实际 profile 证据为准。
 

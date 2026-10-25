@@ -63,7 +63,7 @@ MadB 注解包保持轻量，不直接绑定 SKIE、akinterop 或 KSP 实现。�
 | Android | AGP 9.3.3 + Gradle 9.7.1 + JDK 21 | KMP 库采用新 Android-KMP 插件；App 与需要 externalNativeBuild 的模块独立 |
 | Android Native | NDK r30，30.0.16248370 | 固定完整版本；全部原生库通过目标 ABI 与 16 KB 页检查 |
 | Android SDK | compileSdk 37 | minSdk、targetSdk 及 Java 字节码目标分别决策 |
-| Apple | Xcode 26.4.1 + Swift 6.3 编译器 | Swift 语言模式、最低系统、设备与模拟器分别登记 |
+| Apple | Xcode 26.4.1 + Swift 6.3 编译器 | Swift 语言模式、最低系统、设备与模拟器分别登记；C06 选定 macOS 配置采用下文的独立实测锁 |
 | 独立 C/C++ 工程 | CMake 4.4.4 + Ninja 1.13.2 | 平台 SDK 有独立要求时使用该路线配置，不替换 SDK 自带工具 |
 
 Kotlin 官方表当前列到 Gradle 9.7.0、AGP 9.3.1。采用 9.7.1 与 9.3.3 补丁候选是为了验证其修复后的组合，不能标记为官方已经认证。AGP 9.3 要求的 Gradle 9.5.0 是最低版本，不是唯一可选版本。[Gradle 9.7.1](https://docs.gradle.org/9.7.1/release-notes.html)、[AGP 9.3](https://developer.android.com/build/releases/agp-9-3-0-release-notes)
@@ -247,7 +247,7 @@ CLI 构建版本与生成 Rust SDK 的最低支持 Rust 版本分别管理。CLI
 
 保留默认配置、升级候选和明确有需求的兼容配置。仅认证实际验证过的组合，避免穷举所有版本排列。缓存与制品身份包含影响输出的输入，候选版本不能因配置名相同而复用旧认证。
 
-初始化根据平台与能力选择完整配置。官方 Kotlin 与 CPF 各自拥有固定 Wrapper 和原生 IDE 入口；IDE 与 CLI 使用同一版本配置。生成器分别判断“可生成工程”“可在当前宿主导入”“可在当前宿主构建/运行”：当前 Apple 候选 Xcode 26.4.1 要求 macOS 26.2–26.x；Android 候选 AGP 9.3 对应 Android Studio Quail 2（2026.1.2）或明确支持该 AGP 的后续版本，KMP 功能还按 IDE 插件与宿主单独验证；DevEco/HarmonyOS 使用自身宿主清单。缺目标工具链时可以生成明确标记的工程，不能报告构建就绪。对已有项目保留文件所有权与显式冲突处理，不通过修改用户全局工具设置解决依赖冲突。[Xcode 系统要求](https://developer.apple.com/xcode/system-requirements)、[Android Studio/AGP 配套](https://developer.android.com/build/releases/about-agp)
+初始化根据平台与能力选择完整配置。官方 Kotlin 与 CPF 各自拥有固定 Wrapper 和原生 IDE 入口；IDE 与 CLI 使用同一版本配置。生成器分别判断“可生成工程”“可在当前宿主导入”“可在当前宿主构建/运行”：初始化设计中的 Apple 候选 Xcode 26.4.1 要求 macOS 26.2–26.x；Android 候选 AGP 9.3 对应 Android Studio Quail 2（2026.1.2）或明确支持该 AGP 的后续版本，KMP 功能还按 IDE 插件与宿主单独验证；DevEco/HarmonyOS 使用自身宿主清单。缺目标工具链时可以生成明确标记的工程，不能报告构建就绪。对已有项目保留文件所有权与显式冲突处理，不通过修改用户全局工具设置解决依赖冲突。[Xcode 系统要求](https://developer.apple.com/xcode/system-requirements)、[Android Studio/AGP 配套](https://developer.android.com/build/releases/about-agp)
 
 依赖获取支持来源核验、断点恢复与缓存校验；干净机器必须能够从公开依赖重建。参考工程的本地镜像可提供案例，但不能成为唯一下载来源。
 
@@ -298,3 +298,11 @@ S5 仍要求十六条主线各有最低完整配置和全部适用必需项。�
 2026-10-24 的 P02 使用 Xcode 27.0 (27A266a)、macOS SDK 27.0 (26A425)、Apple Clang/libclang 21.0.0 (clang-2100.3.34.2)、Rust 1.99.1 及其 llvm-tools、bindgen 0.73.2、cbindgen 0.29.4；deployment target 为 14.0。此组合只冻结 Rust/C stateless 探针，不替换其他 Apple/Swift 路线的 Xcode 26.4.1 候选，也不构成最低系统支持或 SDK 认证。
 
 [可复现配方](../../tests/integration/c03/README.md)固定生成器源归档、Cargo.lock 和安装 receipt；运行记录覆盖工具、SDK 标识、所用头文件与标准库摘要、精确命令和产物。Rust archive 使用匹配的 llvm-tools，因为 Apple nm 无法解析其中的较新 LLVM bitcode；不忽略检查失败。两目标、两方向的真实 project/profile/lock 采用既有 v1 schema；[证据](../reviews/c03-native-evidence.json)保留观察范围。生产环境的完整依赖发现和 frozen 执行由 C04/C10 接续。
+
+## C06 四路线实测锁
+
+C06 的 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-kotlin` 四个固定 SampleEngine 配置使用 Xcode 27.0（27A266a）、Swift 6.4、macOS SDK 27.0（26A425）、Kotlin 2.4.20、Gradle 9.7.1、Temurin JDK 21.0.10+7、Rust 1.99.1 和 Python 3.14.4。UniFFI 0.32.2、Gobley 0.3.7 / UniFFI 0.29.4、SKIE 0.10.15 按路线分别锁定源码及受管补丁，不能混用。精确安装、依赖和工具镜像身份以[公开复现指南](../examples/managed-routes/README.md)及实际候选 profile/lock 为准。
+
+本轮本机四路线正式构建、54 个必需案例和 92 项 Lab harness 检查已通过；54 项包括 51 项目标运行及 3 项预期编译/链接拒绝。实际结果与源身份见[C06 记录](../reviews/2026-10-24-c06-kotlin-swift-rust.md)；跨机器验证与正式发布继续按各自证据确认。
+
+此实测锁只适用于本轮 macOS Arm64、未插桩 Release 的四配置，不替换其他 Apple 路线、iOS、初始化或 Swift 宏任务的候选版本。deployment target 14.0 是编译/链接参数，不代表已在该最低系统上运行。选定 profile 的工作包验收不等于整条路线、全部工具组合或公开发布渠道已经认证。

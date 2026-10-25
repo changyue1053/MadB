@@ -1,80 +1,94 @@
-# C06 Kotlin / Swift / Rust 四路线整包记录
+# C06 Kotlin / Swift / Rust 四路线验收
 
-任务：C06；规范基线 0.9，起点为 MadB `cee264bbe93544d9700282ab444a93cc7202af4c`、MadB-Lab `13f0159da92d34746b096c2c07427a897967fe48`。本记录先固定实施范围，验收结果待真实运行补齐；当前不授予路线认证。
+任务 C06 · 规范基线 0.9 · 更新于 2026-10-25。起点为 MadB `cee264bbe93544d9700282ab444a93cc7202af4c` 与 MadB-Lab `13f0159da92d34746b096c2c07427a897967fe48`；当前任务状态以[实施目录](../catalog/implementation-plan.json)为准。
 
-## 最低完整配置
+## 范围与结论
 
-依据 DEC-11 的稀疏矩阵，四条路线各选一个 macOS Arm64 Release 配置，最低系统 macOS 14.0。当前宿主、SDK、工具和实际运行系统分别进入配置锁；最低部署参数不代表已在最低系统实跑。
+本包为固定 SampleEngine 接口提供四个独立 macOS Arm64、未插桩 Release 候选，并由独立 MadB-Lab 从公开文件编译和消费：
 
-| 路线 | 本轮消费者与交付 | 绑定责任 |
-|---|---|---|
-| KJVM-RUST-UNIFFI | 桌面 JVM JAR、JNA 与 Rust 动态库；独立 Kotlin 消费者 | UniFFI 0.32.2 负责 ABI、对象引用与协程接线 |
-| KN-RUST-GOBLEY | Kotlin/Native macosArm64 可消费绑定与 Rust 库 | Gobley 0.3.7 + UniFFI 0.29.4；受控生成器补丁与 P03 回归 |
-| SWIFT-RUST-UNIFFI | Swift 模块、公开头和 Rust 动态库；独立 Swift 6 消费者 | UniFFI 0.32.2 负责 ABI 与绑定 |
-| KN-SWIFT-OBJC | Kotlin/Native 可分发 Release framework；独立 Swift 6 消费者 | Kotlin 2.4.20 Objective-C export + SKIE 0.10.15 |
-
-Android AAR/R8、iOS、CPF/OHOS、SKIE + KMP-NativeCoroutines 组合和 `madb init` 均保持原工作包边界。本轮不能将桌面验收外推为这些配置通过。四配置仍完整覆盖声明的值、错误、对象、异步、取消、同步反向回调、观察和关闭，不用同步子集替代完整配置。
-
-## 实施边界与契约
-
-- `sdk/` 仅依赖语言运行库与对应绑定后端；共享 Rust 语义核心不依赖工具私有 crate，两个 UniFFI 版本保持独立构建根。
-- `adapters/generators/` 读取真实作者声明或编译导出，检查类型与策略并调用后端；工具链、源与模板补丁身份进入锁。
-- `adapters/toolchains/` 经既有 C04 冻结端口执行生成、构建和打包；候选继续使用公共 v1 格式，不另造认证协议。
-- Lab 只消费公开候选，独立预期和真实 Kotlin/JVM、Kotlin/Native、Swift 消费代码不引用工具源码或开发缓存。
-- 每个 SDK 实例拥有一个明确的串行工作执行器；后端 Kotlin 默认调度器由 Kotlin 运行时拥有，不把工作执行器数量误称为整个进程线程上限。实例准入项数和保留字节同时有界。
-- 载荷上限 1024 个逻辑字节，事件队列最多 8 项 / 4096 字节，状态队列为 1 项并显式合并最新值。逻辑字节计算与实际堆内存测量分开；关闭和释放不能依赖业务队列还有空位。
-- `requestCancel` 可阻止未开始工作、拒收迟到结果；不能中断正在运行的同步外国回调，也不撤销副作用。等待取消、工作取消与资源排水分别验证。
-- 关闭先拒绝新工作，再等待源端租约、在途回调和本实例工作退出；同步回调可请求关闭/停止，但必须返回后由独立 owner 等待排水；禁止在同步回调中以 `runBlocking`、信号量等等待依赖自身返回的异步工作。Rust `WouldDeadlock` 只检测同一 worker 的直接重入，不能识别任意跨调度器等待环。Swift 受管 callback 的 TaskLocal 检查另有明确作用域。
-- Swift/JVM 的安全 SDK 工厂先执行 UniFFI ABI/checksum 检查，Gobley 在受管模板初始化中检查；原始上游入口与安全入口的保证分别说明。MadB 的 profile bootstrap 在创建业务资源前拒绝不匹配。SKIE 的模块/接口检查与 profile bootstrap 单独验收，不冒用 UniFFI 机制。
-
-## 验收清单
-
-四路线分别验证类型/空值/整数/字节/变体、错误、对象、异步完成、取消与迟到结果、回调重入、容量、强关闭、身份和错库、干净 Release 消费。Gobley 另验证旧模板受控复现和修复后的单次完成、回调抛错、取消/迟到结果交错；SKIE 实际调用 Flow/suspend/enum/sealed API，并验证 custom cinterop 来源与泛型 lambda 的准确拒绝或显式适配。
-
-必须保留 C05 回归，运行工具及 Lab 的完整基线、适用本机消费者和远程检查。生成器/运行时并发实现须独立审查。未执行、环境不可用、失败和通过分别记录，不以探针、编译成功或文档检查替代运行验收。
-
-## 实施中明确的共同语义
-
-真实接口要求补齐 `throws` 与 `backend-handle`，详细规则归[契约规范](../architecture/03-contract-and-ir.md#c06-的错误通道与后端句柄)。该改动不在核心引入语言后端；它解决错误结构变化无法进入符号摘要、第三方整数句柄可能被误标为安全 registry 的共同模型缺口。可选字段保持旧文档摘要，新能力必须显式协商；错误类型、后端资源、能力拒绝及旧摘要兼容均有针对性正反例。
-
-生成器、原生资源实现、Swift 并发包装和取消模板正在进行独立审查。工作执行器、外国调用与 waker 的析构不能在内部状态锁中发生；相关交错须有可控回归，不能用普通成功调用代替。
-
-## 审查落实的工程决定
-
-- Rust 异步就绪阶段保留 Rust 所有权，只有领取结果时才降为 FFI 值；取消未领取结果和 panic/error 缓冲均有释放路径。反向异步结果采用单一接收所有权守卫，迟到结果不能遗漏释放。两版运行时分别打补丁与复现，不把一个版本的证明迁移给另一个版本。
-- Kotlin/Gobley 完成通知在业务错误捕获范围之外，防止完成回调抛错触发第二次完成；原生 future 的 `finally` 覆盖派发前取消。Swift 取消与 free 通过受管模板同步，不允许 cancel 在句柄释放后访问它。
-- 外部回调、waker、最后引用释放与析构均在内部锁外。Rust 的 stop/close 只交出有界清理责任，实例 worker 执行可能阻塞的外国引用释放；清理 ticket 与订阅共用准入额度，关闭等待源租约实际归还。保证 SDK 引用交接完成，不承诺 JVM GC 最终回收时刻。
-- Kotlin `Job.isCompleted`/`join` 不等于完成处理器清理结束；使用独立清理 ACK。worker 终止在锁外、非自有 worker 的共享控制执行器执行一次，多名关闭等待者共享最终确认；取消等待不取消关闭本身。
-- Swift facade 保持单一引擎 owner、单次 collector 准入和入口等待预算；只管理 Swift 回调投递与排水，不再增加第二个生产队列。DTO 在跨 actor 前复制为 Swift 值；不为所有 Kotlin 类添加 `Sendable`。
-- 保留正常 UUID，不为可复现性剥离已有调试信息；SKIE 保留 DWARF，Rust 使用既定 Release 配置，本包不承诺交付 dSYM。SKIE framework、Rust provider 编译和私有 native smoke 使用显式、按输入身份分配的受管冷构建目录；独占文件锁、owner/marker/symlink 校验、取消收尾及冷清空保护目录复用。它不是缓存，产物仍回到 C04 工作区，由宿主独立复算并校验字节。私有 smoke 与公开 SDK 的发布范围分开。
-- Cargo 的主 crate 身份包含工作区路径，单独追加 `-C metadata` 不能覆盖该影响；Rust provider 复用同一受管冷构建机制，身份包含源、profile、功能和工具闭包，正常与错 profile 分开构建。产物在独占锁内复制回请求工作区，不复用历史编译结果、不改写二进制。
-- 编译器进程组的 leader 保持可等待直到最后一次组信号发出，避免 PGID 复用；Darwin 通过系统 `libproc`、Linux 通过 `/proc` 有界观察同组存活进程，只有确认停止后才删除运行标记。观察失败保留现场。该保证针对不另建会话逃逸的受管编译器；Darwin 系统 `libproc` 由已观测的 macOS build 约束，不宣称任意守护进程隔离。
-- C06 显式申请每阶段 900 秒执行预算与 6000 毫秒终止宽限，后者允许编译器 owner 清理其独立进程组；CLI 既有默认值保持不变。强制中断留下的所有权标记不能自动删除并冒充清理完成。
-- Python 的真实解释器、标准库与必要动态库进入工具身份；隔离导入禁止 site 配置和未锁缓存。Swift 多调用工具保留调用别名，同时校验真实镜像和链接目标。辅助解析器的源码闭包与当前补丁配方必须对应冻结作者输入，旧安装不能借内部自洽继续使用。
-- 固定 Apple 链接器的 chained fixups 会在私有 SKIE smoke 的重复 `_objc_msgSend` GOT 槽间产生不稳定选择。该探针单独使用 `-no_fixup_chains`，保留 UUID/DWARF 和逐字节门禁；公开 framework 不变。五次冷链接及真实运行已验证稳定，整链另行验证。
-- Kotlin/Native 私有 smoke 显式指定受管冷目录内的中间文件目录。真实编译对照表明，随机 `konan_temp` 路径长度会改变链接器 debug-map 与内容 UUID，K/N 后续自身剥离调试映射后仍留下 UUID/签名差异；固定目录不删除 UUID、不改写二进制，也不修改公开 SDK。相同对象、不同长度路径的链接对照重现相同差异，修复后的实际 `stable_link` 连续五次冷构建与运行通过，24 个产物的身份一致、正常 UUID 保留；Swift/Rust 另有五次冷链接与运行通过，无需同步扩大修改。
-- 远端实测共享准备及前两路线已耗时 59 分钟，另有约 12 分钟安装；整作业预算调整为 240 分钟，给四路线和独立 Lab 留出执行空间。每个子进程仍为 900 秒、终止宽限仍为 6000 毫秒，库存校验、逐字节验证和必需案例没有减少。完整四路线耗时仍以实际执行为准。
-- Python.org framework 的内部悬空头文件链接作为“精确链接目标 + 缺失状态”进入库存；空目录目标后来出现同样改变摘要。循环、权限错误和目录逃逸仍失败；实际解释器和本机依赖必须存在。生产者与 Lab 分别实现校验。
-- 公开 runtime protocol 必须同时携带 `schema=madb.native-runtime-protocol/1` 和受支持的版本。两份 Rust 作者文件最初遗漏 schema，独立 Lab 在 SDK 案例执行前准确拒绝；补齐源声明，并在生产者准备阶段验证格式与必要预算形状，避免把无效元数据带到耗时编译之后。Lab 的版本、预算和来源检查不放宽。
-- 生成器返回前拒绝符号链接、特殊文件、路径逃逸和未声明类型的产物；临时 HOME、API 提取与日志留在清理后不会发布的 scratch。C04 只接收声明输出。
-
-## 当前证据
-
-代码与验收工程已提交至 [MadB #12](https://github.com/changyue1053/MadB/pull/12) 和 [MadB-Lab #3](https://github.com/changyue1053/MadB-Lab/pull/3)。截至 2026-10-25，生产者 `14d0c5318ef6e4fb169d996c9adb98fca06440f2`、Lab `c53a64ef2c160fa7ca9b8e23d6365b84d882fc41` 已精确推送；PR 保持草稿，未合入。下面保留阶段性事实，未完成四路线正式验收前，C06 的 `verification` 仍为 `missing`。
-
-| 检查 | 已有结果与证据边界 |
+| 配置 | 后端与公开交付 |
 |---|---|
-| SDK 与仓库检查 | Rust workspace 的 fmt/check/clippy/test、独立 SDK 约束、C03/C04/C05/C06 的适用模块检查通过；最新工具检查 33 项、项目检查 19 项、声明读取 16 项。Lab 当前 92 项独立仓库与 harness 检查通过。`14d0c53` 的远端完整基础检查与 C05 回归均通过；后续源码修改仍须验证。 |
-| C05 正式回归 | 干净生产者 `4d3e8710343dabc528a24ac1de6eedca825476c3` 与干净 Lab `b7d3a50aa8107a1f397140b2da67511019e8b946` 完成 18 个路线案例及 1 个包装完整性案例；三候选均 `provisional=false`。它们保留原提交身份，不冒充后续提交的重跑。 |
-| SKIE 构建取消 | 观察到真实 Swift 编译子进程后取消 C04，约 6.04 秒返回 Cancellation；编译后代停止、受管标记移除、存储索引字节未变。同一工作区冷重试、逐字节检查与打包通过。该故障注入运行是开发证据，不代替正式候选。 |
-| Gobley / UniFFI 0.29.4 | 原模板双完成缺陷复现、修复后单次交接与释放、原生 ready 未领取结果、反向异步及无符号 ABI 已分别验证；四个补丁的来源和摘要进入 receipt。当前公开包仍须通过正式 Lab 的三个 P03 案例。 |
-| UniFFI 0.32.2 | 既有 v7 探针包含原始失败/修复通过、Swift 6 和 JVM P03、1000 次 Swift 取消竞态。当前 v8 的后端源和五个补丁、五个探针文件均与该证据一致；SDK 唯一差异是仅在 `test-support + gobley-029` 同时启用的无符号 fixture。复用的是未变化的 0.32 子闭包证据，不宣称当前全部源码又重跑了一次。 |
-| 正式四路线构建 | `14d0c53` 的 JVM 候选完成；Native 私有 smoke 两次链接存在 UUID/代码签名字节差异，C04 以 DAG003 拒绝。两份产物和日志保留，修复后须重新执行同一次工具观测下的四路线构建及全部 54 个 Lab 案例。 |
+| `kotlin-jvm-rust` | UniFFI 0.32.2 与受管补丁；JAR、依赖、头文件及动态库 |
+| `kotlin-native-rust` | Gobley 0.3.7 / UniFFI 0.29.4 与受管补丁；KLIB、依赖、头文件及动态库 |
+| `swift-rust` | UniFFI 0.32.2 与受管补丁；Swift 源码、头文件及动态库 |
+| `swift-kotlin` | Objective-C export + SKIE 0.10.15；可分发 framework 及 Swift 并发门面 |
 
-旧 C04 的两次整组运行分别出现过 5 秒消费者启动超时。保留原失败记录后，针对性重现与带外部进程观察的原配置 68 项整组全部通过；没有修改断言或超时。尚无足够证据确定根因，因此不把后续成功写成该偶发问题已经修复。
+**C06 实现与本机验收已交付；远端整包验证按用户安排留到下一轮。** 固定干净源为 `b19d48f5f6fda584a6c47f2e0dc7059f5a080d01`，Lab 为 `c53a64ef2c160fa7ca9b8e23d6365b84d882fc41`。Lab 92 项 harness 检查通过；54 个案例中，51 项是目标运行，3 项是预期编译/链接拒绝，不能写成54个运行成功。当前源码触发的基础检查和 C05 回归共四个远端作业成功。用户于 2026-10-25 决定本轮不再等待 C06 远端作业，下一工作包完成后统一验证；本轮远端作业已取消。目录登记为 `implemented / missing`：实现已交付，整包验收尚未通过。
 
-本机证据入口：`/private/tmp/madb-c06-c05-regression-j8yq5lg5/summary.json`、`/private/tmp/madb-c06-skie-cancel-public-proof.json`、`/private/tmp/madb-c06-gobley/unsigned-final-probe/observations.json`、`/private/tmp/madb-c06-uniffi-v7-regressions/report.json`、`/private/tmp/madb-c04-package-targeted-capture/report.json`、`/private/tmp/madb-c06-formal-14d0c53.log`、`/private/tmp/madb-native-fixed-workspace-proof/report.json`、`/private/tmp/madb-c06-swift-rust-link-probe-01/report.json`。这些临时路径用于本次审查追踪，不是公开 SDK 的构建依赖。
+工作包验收只覆盖上述选定 profile。它不表示任意接口都可安全生成，也不覆盖 Android、iOS、CPF/OHOS、其他 Apple 工具组合、SKIE + NativeCoroutines、UI 便利层、`madb init` 或正式发布渠道。deployment target 14.0 是编译参数，不是最低系统实跑证明；C09/C10 全矩阵继续按各自任务收口。任务验收不自动更新全路线认证登记。
 
-`14d0c53` 的远端结果：[完整基础检查](https://github.com/changyue1053/MadB/actions/runs/40106593895)、[C05 回归](https://github.com/changyue1053/MadB/actions/runs/40106593761)、[Lab C05 消费](https://github.com/changyue1053/MadB-Lab/actions/runs/40106525953)通过。[C06 构建](https://github.com/changyue1053/MadB/actions/runs/40106593797)与本机在 Native smoke 字节验证处同样失败；实际 PR 检出为 `cf991ebeb9e381d9caa32ef9fa02ca365b506c91`，其 Git tree 与 `14d0c53` 完全相同，不能将分支 SHA 误写成候选的 producer_revision。该结果同时证明 Python.org 内部悬空链接和 Linux 信号测试夹具修复已通过真实远端检查。
+使用入口：[公开复现指南](../examples/managed-routes/README.md)。工具来源、完整身份和依赖以实际候选 profile/lock 为准；候选不能通过修改内容或沿用旧工具安装冒充当前源。
 
-`527cb23f39edda8bd919d727692171044ba7d0fc` 已完成本机四路线正式构建，Native UUID 修复通过完整流水线；随后 Lab 在准入阶段发现上述 runtime protocol 格式缺失。该次结果为 92 项 harness 测试通过、0 个 SDK 案例执行，不能计为 54 项通过。证据保留于 `/private/tmp/madb-c06-lab-formal-527cb23/admission-summary.json`；修复后需由新干净提交重新生成完整候选。[该源码的远端基础检查](https://github.com/changyue1053/MadB/actions/runs/40155539333)和[C05 回归](https://github.com/changyue1053/MadB/actions/runs/40155539358)通过；已知仍缺格式标识的旧 C06 远端运行已请求停止，避免继续消耗整包构建资源，停止不计为验收通过。
+## 八项验收
+
+下表记录本轮已确认的本地结果。证据绑定下方四个候选及报告；远端 C06 留待下一轮统一验证，本地通过不授予整包验收通过状态。
+
+| # | 要求与实际验证落点 | 本轮结果 |
+|---|---|---|
+| 1 | JVM、Native、Swift 从公开 JAR/KLIB/framework/Swift 源独立编译；四 profile、同次工具 observation、实际装载及完整工具/依赖/补丁身份 | 本机四候选、12份构建证据及四路 identity/distribution 均通过；非provisional，统一tool digest见下方 |
+| 2 | 类型、空值、整数、字节、变体、错误、对象、异步完成、取消方向、迟到结果及显式关闭；Swift 6 strict、actor 前值复制、关闭/排水后引用释放 | 四路 data/errors/objects/async/cancel/late-callback/shutdown 本机通过；GC 最终回收时刻不作保证 |
+| 3 | 后端负责既定 ABI/类型与协程绑定；受检 IR 生成薄入口；runtime 负责预算/所有权/停止；Swift facade 只负责入口与回调排水 | 读取正反例纳入已成功的基础检查，四路独立真实消费通过；适配面仍限 SampleEngine |
+| 4 | Gobley foreign future 旧模板双完成复现及修复；回调抛错、取消/迟到结果只交接/释放一次；0.29/0.32 各自保留补丁与回归证据 | Native公开 foreign-future-once/callback-throw/cancel-late-result 三项本机通过；0.32旧探针范围见后文 |
+| 5 | SKIE 可分发 framework；真实 Swift Flow/suspend/enum/sealed 调用；custom cinterop 来源和泛型 lambda 在指定编译阶段准确拒绝 | enhanced-api目标运行及missing-cinterop-origin/generic-lambda编译拒绝均通过；不含NativeCoroutines组合 |
+| 6 | DEC-08/CRIT-11：1024 载荷字节、4096 保留字节、8 events、1 state slot、32 waiters、每引擎1工作线程；满额、合并、stop/drain/ACK 和资源归零 | 四路 capacity/late-callback/shutdown 本机通过；退出限活运行时的实例owner |
+| 7 | DEC-10/CRIT-12：预期 profile 独立于库自报值；后端 checksum/bootstrap；错库/错 ABI/profile 在业务资源创建前按声明阶段拒绝；工具库存拒绝篡改与逃逸 | 四路wrong-profile及三Rust路线wrong-abi在load拒绝，SKIE wrong-abi在link拒绝；本机全部匹配预期，非超时/崩溃 |
+| 8 | DEC-11：四个最低完整 profile，精确 12+15+12+15=54；P01/P02 独立、P03/P04 按组合；C05 回归独立保留 | 本机54/54通过；当前源触发的baseline/C05四项远端成功；远端 C06 下一轮补验。P05/CPF 不借此通过 |
+
+载荷预算按 UTF-8 字符串与字节数组的逻辑字节计算，不等于堆内存或序列化峰值；每引擎一个业务 worker 不等于进程只有一个线程。同步外国回调可请求停止，但须先返回，再由独立 owner 等待排水；取消等待不保证中断同步外国代码或撤销副作用。
+
+## 当前身份与报告
+
+| 项目 | 真实身份或结果 |
+|---|---|
+| MadB 分支源码 | `b19d48f5f6fda584a6c47f2e0dc7059f5a080d01`；正式源码身份以 candidate 的 `producer_revision` 为准 |
+| MadB-Lab | `c53a64ef2c160fa7ca9b8e23d6365b84d882fc41` |
+| 本机正式构建 | `/private/tmp/madb-c06-formal-b19d48f` 的四个非provisional候选；12份build-evidence已复核。四报告统一tool digest为 `sha256:464448c7d4b307867e1a0ea4aa76aa8b157d7bd7b6e36964d8890c132d5992c6` |
+| 本机独立 Lab | `/private/tmp/madb-c06-lab-formal-b19d48f`：92项harness、54/54案例通过；4candidate/12build-evidence/4report/54case的schema及162个附件引用校验通过。汇总 `/private/tmp/madb-c06-local-b19d48f-summary.json` 的SHA为 `02931af4c01681c9590f31df354010a0285024ab7d0b17c88661aa0645e9f7c5` |
+| 远端 C06 | [本轮运行 40157655879](https://github.com/changyue1053/MadB/actions/runs/40157655879)按用户安排已取消，结果不计通过。远端 JVM、Native 两份正式候选及其公共准入通过，producer 均为实际 PR merge `e45ed94048c2898d7f6795f116eb9da5d3197fe3`，其 tree 与 b19 相同；Swift/Rust 构建时取消，SKIE 未开始，远端 Lab 未执行（0 个案例） |
+| 当前源基础检查/C05 | [baseline PR](https://github.com/changyue1053/MadB/actions/runs/40157655799)、[baseline push](https://github.com/changyue1053/MadB/actions/runs/40157650688)、[C05 PR](https://github.com/changyue1053/MadB/actions/runs/40157655823)、[C05 push](https://github.com/changyue1053/MadB/actions/runs/40157650680)均为SUCCESS；四run触发head均是b19，两个push实际checkout也是b19；两PR日志实际checkout为 `e45ed94048c2898d7f6795f116eb9da5d3197fe3`，tree `0254e1befe3397f0975d12c8f545aaaea115522a` 与b19相同；配套摘要见 `/private/tmp/madb-c06-ci-b19d48f-supporting-checks.json`，不代替C06 artifact producer核对 |
+| 文档收口提交 | 本记录所在提交仅收口说明、任务目录和派生 HTML；功能验收仍绑定 b19。142个冻结作者/schema文件与 b19 一致，集合摘要 `sha256:a5ee73f95fbc852bc0a7de47b35f1e360ae8640d9807abdf298d00ca5c370482`；完整 diff 及提交后闭包对比单独复核，不改写旧候选来源 |
+
+| 本机 profile | candidate digest（SHA-256） | 同名 `.report.json` 的SHA-256 | Lab 必需案例 |
+|---|---|---|---|
+| `kotlin-jvm-rust` | `4281673f425f80cd327bf5daf7de5db11e71da8f038dd779e3da39d8e02588ea` | `423cfee0d8c745b7121d678427bf5cdf3e5a766043040f2d43d63896b7caa09e` | 12/12，均target-run |
+| `kotlin-native-rust` | `e8bbe497f97380a07b55d9f8023cef9dd1c36192d4ee096059d086255734c6e4` | `347a75910e593f091d40d7218fcd8fbf689f0d5ed811d6886c0a08795d360e59` | 15/15，均target-run |
+| `swift-rust` | `cc1651d76baa491fccd04691a8fadd1cc5c5ec0533cf22eee674eb7eafd2ce9a` | `48fbf4ff1c8f82dd82c469fae13b3bb57adae6f8635709e03239c1eb2c8d1871` | 12/12，均target-run |
+| `swift-kotlin` | `872d0cbd49bee21d442f24be6536334a7cc8dff3a525839f2a889a7776ac908c` | `6012e18eb3a54dcb143d94fb6b746b6b02de967f5322fd44e23d46b7cf9c5040` | 15/15：12 target-run，3 compiled |
+
+本机完整日志 `/private/tmp/madb-c06-lab-formal-b19d48f.log` 的SHA-256为 `c00887fbf1914045f0d8d8fe7a0bd471a120700ccc20c69d55c85825cc90ff5c`；独立摘要清单 `/private/tmp/madb-c06-local-b19d48f-report-hashes.json` 记录上述四报告、日志与汇总摘要，已逐项重新计算核对。
+
+取消前保存的远端 JVM、Native candidate digest 分别为 `sha256:cffbfa8ce09881b01b05034adf2ca3133e5f12ec047f81e48ac3946227f939c5`、`sha256:2c2fca383962c6b19a7c4700ed7524626d7e5cee8a6fb8bff6b0142eb7c74268`；run 的 preflight/candidates artifact ID 为 `12586547568` / `12586817319`。两份候选的构建及准入证据不替代尚未执行的远端消费者验收。
+
+远端候选记录其自身真实 producer、工具镜像和候选摘要；不同宿主身份不得拼成同一个 profile。PR 交付于 [MadB #12](https://github.com/changyue1053/MadB/pull/12) 与 [MadB-Lab #3](https://github.com/changyue1053/MadB-Lab/pull/3)，草稿/合入状态以交付时 GitHub 为准，不从测试通过推定合并。
+
+## 审查落实的设计与缺陷修复
+
+| 责任 | 最终设计与验证要求 |
+|---|---|
+| 共同契约 | 显式 `throws` 与 `backend-handle` 进入受检模型，旧文档摘要兼容、新能力显式协商；见[契约规范](../architecture/03-contract-and-ir.md#c06-的错误通道与后端句柄) |
+| 所有权与异步 | Rust ready 结果在领取前保留 Rust 所有权；foreign 结果单一接收守卫；Gobley 完成通知不进入业务错误二次完成路径；Swift cancel/free 同步，各版本补丁分别验证 |
+| 并发与关闭 | 外国调用、waker 和最后引用析构均在内部锁外；cleanup ticket 占用准入额度；Kotlin 独立清理 ACK；多名关闭等待者共享完成，取消等待不取消关闭；Swift 不增加第二生产队列、不普遍授予 Kotlin 对象 Sendable |
+| 可复现构建 | 保留正常 UUID，不改写二进制；SKIE 保留原有 DWARF，Rust 沿用既定 Release 配置，本包不承诺交付 dSYM。Rust/SKIE/Native 私有 smoke 采用输入身份绑定的受管冷目录及独占所有权校验；SKIE 私有 smoke 单独关闭 chained fixups，Native 私有 smoke 固定中间目录；不是构建缓存或公开 SDK 语义降级 |
+| 进程与工具身份 | 进程组 leader 保持可等待，停止后才清理标记；Darwin libproc/Linux proc 观察受管组，范围不含主动逃逸进程。Python 解释器/库、Swift 实际镜像/别名、源码解析器与补丁配方均锁定；Python.org 内部缺失链接保留目标与缺失状态 |
+| 预算与产物准入 | C04 每次阶段端口执行900秒、终止宽限6000毫秒，内部编译与运行保留各自有界预算，远端整包240分钟；没有削减必需案例。runtime protocol 在选定路线的 SDK 生成和编译前检查 schema/版本/预算形状；共享工具观察和声明 helper 准备仍先执行，Lab 独立复核。符号链接、特殊文件、逃逸或未声明输出均拒绝 |
+
+## 阶段失败与证据边界
+
+| 阶段 | 保留的事实与处理 |
+|---|---|
+| `14d0c53` | Native 私有 smoke UUID/签名字节不一致，由 C04 拒绝；[远端失败](https://github.com/changyue1053/MadB/actions/runs/40106593797)实际 PR 检出 `cf991ebeb9e381d9caa32ef9fa02ca365b506c91`，tree 与14d相同。固定中间目录后的专项5冷构建/24产物一致与 Swift/Rust5冷链接分别保留，后由527完整构建验证 |
+| `527cb23` | 四路正式构建成功；两份 Rust 作者 runtime protocol 缺 schema，Lab 在准入阶段拒绝：92项harness通过、0个SDK案例，不能写54通过。证据 `/private/tmp/madb-c06-lab-formal-527cb23/admission-summary.json`；[baseline](https://github.com/changyue1053/MadB/actions/runs/40155539333)与[C05](https://github.com/changyue1053/MadB/actions/runs/40155539358)通过；旧C06远端请求停止不计通过 |
+| `b19d48f` | 补齐两份作者schema、生产者早期严格校验及23项c06_project测试；v9经公开installer重建。四路重新正式构建，本机92harness与54/54案例通过；远端 C06 按用户安排下一轮补验。没有沿用527候选修改字段后认证 |
+| C05 独立回归 | 本机 producer `4d3e8710343dabc528a24ac1de6eedca825476c3`、Lab `b7d3a50aa8107a1f397140b2da67511019e8b946`；18路线+1包装案例、87harness通过，三候选非provisional。该证据保留原身份，不能冒充当前源码重跑 |
+
+UniFFI 0.32.2 复用的是已有 v7 后端/探针子闭包证据：原始失败/修复通过、Swift 6/JVM P03 和1000次Swift取消竞态。只读复核确认 v7/v9 原始源码、284个后端源文件、五补丁、五探针及11份原日志摘要一致；19项作者inputrefs中仅 Gobley 专用条件模块与 runtime protocol schema 新增。前者未进入0.32探针编译，后者已通过本轮新候选的本机 Lab 准入及54案例，远端验收另行补齐。工具二进制在新安装中身份不同，各自与receipt匹配；不能称v9全量探针重跑或旧测试覆盖新交付。
+
+已知限制保留两条：旧 C04 出现过5秒消费者启动超时，后续原配置68项通过仍不足以确定根因；远端0.29 metadata helper的rust-objcopy缺libLLVM造成debug-info清理warning，Cargo仍成功且helper真实字节被锁，未观察为当前功能阻断，但未证明已修复。不得据现有日志宣称全部公开provider构建均无此warning。
+
+详细本机证据保留：`/private/tmp/madb-c06-c05-regression-j8yq5lg5/summary.json`、`/private/tmp/madb-c06-skie-cancel-public-proof.json`、`/private/tmp/madb-c06-gobley/unsigned-final-probe/observations.json`、`/private/tmp/madb-c06-uniffi-v7-regressions/report.json`、`/private/tmp/madb-c06-uniffi-v7-source-integrity/report.json`、`/private/tmp/madb-c04-package-targeted-capture/report.json`、`/private/tmp/madb-native-fixed-workspace-proof/report.json`、`/private/tmp/madb-c06-swift-rust-link-probe-01/report.json`、`/private/tmp/madb-c06-rust-objcopy-assessment.md`。它们是本次审查追踪，不是公开SDK构建依赖；本机新报告已绑定上表，远端完整证据由下一轮补齐。
+
+## 下一轮统一验证
+
+下一核心工作包 C07（ArkTS 四路线）完成后，统一运行适用的完整基础检查、C05 回归、C06 四路线冷构建与独立 Lab 54 项，以及 C07 的必需验收。使用届时的固定生产者和 Lab 提交，重新绑定实际候选与工具身份；本轮本机报告保留原提交，不改写成下一轮证据。C06 只有剩余必需验收完成后才将 `verification` 改为 `passed`；两份 PR 当前保持草稿、未合并。
+
+本轮文档门禁：静态链接/格式/生成一致性、21 项文档契约测试及隔离脚本逻辑测试通过。浏览器安全策略拒绝本地 `file://` 预览，未执行视觉验证；隔离 DOM 测试不作为浏览器实测。
