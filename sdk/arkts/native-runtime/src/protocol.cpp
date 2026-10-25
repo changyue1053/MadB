@@ -136,6 +136,24 @@ struct Core : std::enable_shared_from_this<Core> {
                 return &s;
         return nullptr;
     }
+    Status cloneInto(Payload &payload, Snapshot input) noexcept {
+        // Caller already owns the permit and holds no protocol lock. Adopt first:
+        // an error result may still transfer a cleanup-owned provider allocation.
+        invariant(payload.charged_ && !payload.object_);
+        auto result = provider.clone(provider.context, input);
+        payload.object_ = result.owned;
+        switch (result.status) {
+        case CloneStatus::Ok:
+            return result.owned ? Status::Ok : Status::InternalFailure;
+        case CloneStatus::InvalidArgument:
+            return Status::InvalidArgument;
+        case CloneStatus::AllocationFailure:
+            return Status::ResourceExhausted;
+        case CloneStatus::InternalFailure:
+            return Status::InternalFailure;
+        }
+        return Status::InternalFailure;
+    }
     void reserve(Payload &p, size_t n, uint64_t owner, bool isSub, bool event, bool source,
                  uint64_t order = 0) {
         invariant(!p.charged_);
@@ -521,10 +539,10 @@ Status Publication::allocate(Snapshot s) {
     auto c = data_->core;
     for (size_t i = 0; i < data_->count; ++i) {
         auto &p = data_->payloads[i];
-        p.object_ = c->provider.clone(c->provider.context, s);
-        if (!p.object_) {
+        auto status = c->cloneInto(p, s);
+        if (status != Status::Ok) {
             abandon();
-            return Status::ResourceExhausted;
+            return status;
         }
     }
     data_->allocated = true;
@@ -869,17 +887,14 @@ Status Engine::start(Snapshot s, uint64_t &id) {
         ++core_->admissions;
         core_->reserve(input, s.size, allocated, false, false, false);
     }
-    input.object_ = core_->provider.clone(core_->provider.context, s);
-    Status result = Status::Ok;
+    Status result = core_->cloneInto(input, s);
     {
         std::lock_guard<std::mutex> l(core_->mutex);
         auto *o = core_->op(allocated);
         o->initializing = false;
         invariant(core_->admissions);
         --core_->admissions;
-        if (!input.object_)
-            result = Status::ResourceExhausted;
-        else if (core_->closing || o->closing)
+        if (result == Status::Ok && (core_->closing || o->closing))
             result = Status::Closing;
         if (result == Status::Ok) {
             if (o->winner == Winner::Pending)

@@ -7,9 +7,9 @@ From the repository root, with Clang C and C++ compilers on PATH:
 ```
 
 The script builds real C17 provider objects and the C++17 protocol separately,
-then runs both suites in Release and ASan/UBSan. Missing compilers, a sanitizer
+then runs all three suites in Release and ASan/UBSan. Missing compilers, a sanitizer
 failure, timeout or nonzero test exit fails the check. Logs and exact commands
-remain in the printed temporary directory. LeakSanitizer is explicitly disabled;
+remain in the printed temporary directory, alongside source SHA-256 identities in `result.json`. LeakSanitizer is explicitly disabled;
 allocator counters prove the tested pairs, not every possible heap allocation.
 
 - `author/`: 20 behavior cases, a real malloc/free provider and checked add-one
@@ -17,6 +17,12 @@ allocator counters prove the tested pairs, not every possible heap allocation.
 - `independent/`: 25 independent oracles, a separate allocator ledger and add-seven
   business operation. Expected values, budgets, gated interleavings and exact
   callback releases do not come from the production implementation.
+
+- `typed/`: 11 typed-clone rollback cases, including all four status categories,
+  malformed/unknown results, a failure returning an owned model, reentrant
+  close during clone and second-recipient failure preserving the old state.
+  The existing 20/25 oracle assertions are unchanged; only their provider clone
+  return wrappers use the typed result.
 
 The state pre-entry regression was reproduced against the old implementation:
 a value replaced before callback entry must deliver only the latest value. The

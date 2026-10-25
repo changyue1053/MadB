@@ -31,11 +31,18 @@ struct Snapshot {
     const unsigned char *text;
     size_t size;
 };
+enum class CloneStatus { Ok, InvalidArgument, AllocationFailure, InternalFailure };
+struct CloneResult {
+    CloneStatus status;
+    void *owned;
+};
 // clone must copy the supplied Snapshot; destroy pairs with its own allocator.
-// Both execute outside protocol locks. Neither may throw across this private port.
+// Every non-null result (INCLUDING failure) transfers one genuine paired-release
+// responsibility to the protocol. Ok+null is InternalFailure. Neither function
+// may throw across this private port, and both execute outside protocol locks.
 struct Provider {
     void *context;
-    void *(*clone)(void *, Snapshot) noexcept;
+    CloneResult (*clone)(void *, Snapshot) noexcept;
     void (*destroy)(void *, void *) noexcept;
 };
 struct Callback {

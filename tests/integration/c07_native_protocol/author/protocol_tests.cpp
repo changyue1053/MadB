@@ -30,7 +30,9 @@ Snapshot snapshot(int64_t value = 1, const std::string &text = "abc") {
 Provider port(c_provider *provider) {
     return {provider,
             [](void *p, Snapshot s) noexcept {
-                return c_provider_clone(static_cast<c_provider *>(p), s.value, s.text, s.size);
+                auto *owned =
+                    c_provider_clone(static_cast<c_provider *>(p), s.value, s.text, s.size);
+                return CloneResult{owned ? CloneStatus::Ok : CloneStatus::AllocationFailure, owned};
             },
             [](void *p, void *value) noexcept {
                 c_provider_destroy(static_cast<c_provider *>(p), value);

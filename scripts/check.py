@@ -66,6 +66,8 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c07_pipeline"],
         [sys.executable, "scripts/check_native_sdk.py"],
         [sys.executable, "tests/integration/c07_native_protocol/check.py"],
+        [sys.executable, "tests/integration/c07_native_providers/check.py"],
+        [sys.executable, "tests/integration/c07_native_worker/check.py"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],
         [sys.executable, "docs/tools/check_docs.py", "--node", node],

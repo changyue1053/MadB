@@ -18,8 +18,9 @@ using namespace madb::c07;
             throw std::runtime_error(std::string(__func__) + ":" + std::to_string(__LINE__) +      \
                                      ": " #x);                                                     \
     } while (0)
-void *clone(void *c, Snapshot s) noexcept {
-    return cp_clone(static_cast<cp_context *>(c), s.value, s.text, s.size);
+CloneResult clone(void *c, Snapshot s) noexcept {
+    auto *owned = cp_clone(static_cast<cp_context *>(c), s.value, s.text, s.size);
+    return {owned ? CloneStatus::Ok : CloneStatus::AllocationFailure, owned};
 }
 void destroy(void *c, void *p) noexcept { cp_destroy(static_cast<cp_context *>(c), p); }
 struct Context {

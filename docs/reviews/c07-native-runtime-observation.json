@@ -1,0 +1,389 @@
+{
+  "scope": "C07 typed private Core, actual C/C++/Rust providers and explicit NativeWorker, integrated repository-source host checks; formal SDK compile-only.",
+  "certifies_c07": false,
+  "integration": {
+    "path": "/private/tmp/madb-c07-repo-integration-receipt.json",
+    "size": 52084,
+    "sha256": "115c2557efbf4d9ee25f54fe809ec38cd114a759087f9b84b188112884598a72"
+  },
+  "root_reference_recheck": {
+    "verified_file_references": 171,
+    "mismatch_count": 0
+  },
+  "sources": [
+    {
+      "path": "scripts/check.py",
+      "size": 4964,
+      "sha256": "a559639a87abea9b9392f4508c71ed129ba32edecd7eb30637571582aa891849"
+    },
+    {
+      "path": "scripts/check_native_sdk.py",
+      "size": 9115,
+      "sha256": "5824e0871f0900e46fabc7a26256ba4cab5e5a6656c904a7fcddcfb5a466e75d"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/CMakeLists.txt",
+      "size": 906,
+      "sha256": "16db110b0fa730f244a98e4419de24248af91cd7e3a430a633c53ca4ac85f7c8"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/README.md",
+      "size": 11602,
+      "sha256": "64a05d48efbfc282593b87393d1e314fb5d2245c1cf2435a3d910d700db70588"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/include/protocol.hpp",
+      "size": 8580,
+      "sha256": "2cbd2e55884f5078f0c4fcdde18f6a26a1a308846581b88ad4db8726e12a4f8f"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/include/provider_abi.h",
+      "size": 2237,
+      "sha256": "39828fb09200a11e92d4ce3118f285cd5342afb2b01d49a3bc4e2a6ca44ec41d"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/include/provider_port.hpp",
+      "size": 1958,
+      "sha256": "b35a99585b30559b5b2261f2d5925badf69b531686a38123b6936f9195112e08"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/include/validate_snapshot.h",
+      "size": 1178,
+      "sha256": "62f29e469fab77b80b2eb015e9a66d65830c25e49bc3453d9ee91950be22cde7"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/include/worker.hpp",
+      "size": 1638,
+      "sha256": "7d3cf854c5ff94eb03b985602bc274a777c77d348623e12e9cdc2985746ef9a1"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+      "size": 38825,
+      "sha256": "eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25"
+    },
+    {
+      "path": "sdk/arkts/native-runtime/src/worker.cpp",
+      "size": 5023,
+      "sha256": "65c5d66f096688c808c9bdd041382227107afb94e29a1f74fcb3b7728cf6fd22"
+    },
+    {
+      "path": "sdk/c/arkts-provider/README.md",
+      "size": 1396,
+      "sha256": "61b04656cfac61ed77fb093845ca6a7cdd71dc87102cd258cf2a71f349a92c66"
+    },
+    {
+      "path": "sdk/c/arkts-provider/src/provider.c",
+      "size": 3721,
+      "sha256": "136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e"
+    },
+    {
+      "path": "sdk/cpp/arkts-provider/README.md",
+      "size": 1447,
+      "sha256": "3dae206b72726969b93be261e76b05303a852fd8974c3279195fb7a4bc2052fb"
+    },
+    {
+      "path": "sdk/cpp/arkts-provider/src/provider.cpp",
+      "size": 4470,
+      "sha256": "304ecbfb5ac3523cd98ba472aad365a967f8cc00de9ac4b511c8da49230b85de"
+    },
+    {
+      "path": "sdk/rust/arkts-provider/Cargo.toml",
+      "size": 341,
+      "sha256": "a4933c9c0947cec18f33454859cb437c15ac2849446d006bc2eb2da0314d5337"
+    },
+    {
+      "path": "sdk/rust/arkts-provider/README.md",
+      "size": 2133,
+      "sha256": "012aba83ad3c8b7e811b25b30e8ed86f8ec9a8f6d8f0786a50dd9d4ba9d50f71"
+    },
+    {
+      "path": "sdk/rust/arkts-provider/src/lib.rs",
+      "size": 9583,
+      "sha256": "4b07345b80f35c4f1f08301fdb831d0e42f3e4859d9871ee8bf8b6aa5fc73c7f"
+    },
+    {
+      "path": "tests/architecture/test_native_boundaries.py",
+      "size": 5316,
+      "sha256": "fe1a12797a59c030712b792d592533c5820adf6470b3edd96ea774a07de50edb"
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/README.md",
+      "size": 1775,
+      "sha256": "d0755e2e450f133e5d135bbc32e4719b3a9df751e2f13ec70d495fde1f5b261c"
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/author/protocol_tests.cpp",
+      "size": 25900,
+      "sha256": "4c319b4c300b5c25289b00b570a4c99c899790958e92f2281bd645ddf88e5daf"
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/check.py",
+      "size": 5487,
+      "sha256": "9782e8b93b25a8cd39be123994223d8e280c0a2f7f0426829d5cd679e3f65828"
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/independent/protocol_tests.cpp",
+      "size": 30099,
+      "sha256": "2b8d2716b077c6463cb951c480782f70b182a2ba4ba3266c70345fa650ed1480"
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/typed/typed_clone_tests.cpp",
+      "size": 5721,
+      "sha256": "e16a2d53c3e857ccdc3e21587d7514dc4dc8ca47dc06d81dac81b583d871db47"
+    },
+    {
+      "path": "tests/integration/c07_native_providers/README.md",
+      "size": 1576,
+      "sha256": "cce0a3e2ce16e6cf83747b93eff5837399a8f7245be5cb9f1c2732b0b4e787ff"
+    },
+    {
+      "path": "tests/integration/c07_native_providers/check.py",
+      "size": 5322,
+      "sha256": "f549d772e713c7133a840aa1e0c8d94edc7d352c76a010edba6e29179a49474d"
+    },
+    {
+      "path": "tests/integration/c07_native_providers/provider_tests.cpp",
+      "size": 9901,
+      "sha256": "a2240171073222ca66e4ba06ea0766958d917ce27357fb1832c34580d3ae04cf"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/README.md",
+      "size": 2051,
+      "sha256": "bba59112747228280552597e6a556bc2078d6efb820f9b81a75581a11db47c09"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/check.py",
+      "size": 4454,
+      "sha256": "ec02bbcce80b860695e87d1f5aa847cc4eae5b41f2b899a507170e3950c27752"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/fail_pthread_create.c",
+      "size": 1117,
+      "sha256": "ff7e7732469d49f83fe42e245fdf8ab5fd591a20a5ebe06e5b503c270fbdd5d9"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/failed_thread_creation.cpp",
+      "size": 1384,
+      "sha256": "25df0d8dc0294012da637e99436f6a7558b4dce0a956c2c79cf1577baf6d0f63"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/stale_thread_id.cpp",
+      "size": 3132,
+      "sha256": "9373e077081103023939ddb730b5eb889aae11b79cbc8f94d37b3de148f5d80e"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/tls_destructor_self_join.cpp",
+      "size": 3326,
+      "sha256": "3b9ddd11e14cba6c3c7e73591f84334d2244ef83be1814bc96abdcc4100fa634"
+    },
+    {
+      "path": "tests/integration/c07_native_worker/worker_tests.cpp",
+      "size": 12054,
+      "sha256": "5e3fb5b6cecfaafa9124e577e73424358c9ed59bce03bd91bc51d4cb43ce6db9"
+    },
+    {
+      "path": "sdk/rust/arkts-provider/Cargo.lock",
+      "size": 169,
+      "sha256": "0805851d40b89612a606e3edd44b0ae842bedf6e48729092d1d083285bb5c41b"
+    }
+  ],
+  "reviewed_source_derivation": [
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/include/protocol.hpp",
+      "destination": "sdk/arkts/native-runtime/include/protocol.hpp",
+      "sha256": "2cbd2e55884f5078f0c4fcdde18f6a26a1a308846581b88ad4db8726e12a4f8f",
+      "current_sha256": "2cbd2e55884f5078f0c4fcdde18f6a26a1a308846581b88ad4db8726e12a4f8f",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/src/protocol.cpp",
+      "destination": "sdk/arkts/native-runtime/src/protocol.cpp",
+      "sha256": "eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+      "current_sha256": "eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/adapter/provider_port.hpp",
+      "destination": "sdk/arkts/native-runtime/include/provider_port.hpp",
+      "sha256": "b35a99585b30559b5b2261f2d5925badf69b531686a38123b6936f9195112e08",
+      "current_sha256": "b35a99585b30559b5b2261f2d5925badf69b531686a38123b6936f9195112e08",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-provider-abi/include/provider_abi.h",
+      "destination": "sdk/arkts/native-runtime/include/provider_abi.h",
+      "sha256": "39828fb09200a11e92d4ce3118f285cd5342afb2b01d49a3bc4e2a6ca44ec41d",
+      "current_sha256": "39828fb09200a11e92d4ce3118f285cd5342afb2b01d49a3bc4e2a6ca44ec41d",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-provider-abi/include/validate_snapshot.h",
+      "destination": "sdk/arkts/native-runtime/include/validate_snapshot.h",
+      "sha256": "62f29e469fab77b80b2eb015e9a66d65830c25e49bc3453d9ee91950be22cde7",
+      "current_sha256": "62f29e469fab77b80b2eb015e9a66d65830c25e49bc3453d9ee91950be22cde7",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-worker/worker.hpp",
+      "destination": "sdk/arkts/native-runtime/include/worker.hpp",
+      "sha256": "7d3cf854c5ff94eb03b985602bc274a777c77d348623e12e9cdc2985746ef9a1",
+      "current_sha256": "7d3cf854c5ff94eb03b985602bc274a777c77d348623e12e9cdc2985746ef9a1",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-worker/worker.cpp",
+      "destination": "sdk/arkts/native-runtime/src/worker.cpp",
+      "sha256": "65c5d66f096688c808c9bdd041382227107afb94e29a1f74fcb3b7728cf6fd22",
+      "current_sha256": "65c5d66f096688c808c9bdd041382227107afb94e29a1f74fcb3b7728cf6fd22",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-provider-abi/providers/c/provider.c",
+      "destination": "sdk/c/arkts-provider/src/provider.c",
+      "sha256": "136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+      "current_sha256": "136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-provider-abi/providers/cpp/provider.cpp",
+      "destination": "sdk/cpp/arkts-provider/src/provider.cpp",
+      "sha256": "304ecbfb5ac3523cd98ba472aad365a967f8cc00de9ac4b511c8da49230b85de",
+      "current_sha256": "304ecbfb5ac3523cd98ba472aad365a967f8cc00de9ac4b511c8da49230b85de",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-provider-abi/providers/rust/src/lib.rs",
+      "destination": "sdk/rust/arkts-provider/src/lib.rs",
+      "sha256": "4b07345b80f35c4f1f08301fdb831d0e42f3e4859d9871ee8bf8b6aa5fc73c7f",
+      "current_sha256": "4b07345b80f35c4f1f08301fdb831d0e42f3e4859d9871ee8bf8b6aa5fc73c7f",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/tests/protocol_tests.cpp",
+      "destination": "tests/integration/c07_native_protocol/author/protocol_tests.cpp",
+      "sha256": "4c319b4c300b5c25289b00b570a4c99c899790958e92f2281bd645ddf88e5daf",
+      "current_sha256": "4c319b4c300b5c25289b00b570a4c99c899790958e92f2281bd645ddf88e5daf",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/independent-regression/tests/protocol_tests.cpp",
+      "destination": "tests/integration/c07_native_protocol/independent/protocol_tests.cpp",
+      "sha256": "73ba99dc11455ea254825b6e707dae9f43e02d78587de533cc701b9e416e24fb",
+      "current_sha256": "2b8d2716b077c6463cb951c480782f70b182a2ba4ba3266c70345fa650ed1480",
+      "unchanged": false
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/tests/typed_clone_tests.cpp",
+      "destination": "tests/integration/c07_native_protocol/typed/typed_clone_tests.cpp",
+      "sha256": "e16a2d53c3e857ccdc3e21587d7514dc4dc8ca47dc06d81dac81b583d871db47",
+      "current_sha256": "e16a2d53c3e857ccdc3e21587d7514dc4dc8ca47dc06d81dac81b583d871db47",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-protocol-typed/tests/provider_tests.cpp",
+      "destination": "tests/integration/c07_native_providers/provider_tests.cpp",
+      "sha256": "a2240171073222ca66e4ba06ea0766958d917ce27357fb1832c34580d3ae04cf",
+      "current_sha256": "a2240171073222ca66e4ba06ea0766958d917ce27357fb1832c34580d3ae04cf",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-native-worker/tests.cpp",
+      "destination": "tests/integration/c07_native_worker/worker_tests.cpp",
+      "sha256": "1e5d6b08ae1f6bc08035291b6695f6a73147b17948596c68f6b61c306ed07e34",
+      "current_sha256": "5e3fb5b6cecfaafa9124e577e73424358c9ed59bce03bd91bc51d4cb43ce6db9",
+      "unchanged": false
+    },
+    {
+      "source": "/private/tmp/madb-c07-worker-review/stale_thread_id.cpp",
+      "destination": "tests/integration/c07_native_worker/stale_thread_id.cpp",
+      "sha256": "ba1acf579784f9ce12d009625be71c337b97faaa7bf5a5ee892d1ce03b0f8698",
+      "current_sha256": "9373e077081103023939ddb730b5eb889aae11b79cbc8f94d37b3de148f5d80e",
+      "unchanged": false
+    },
+    {
+      "source": "/private/tmp/madb-c07-worker-review/tls_destructor_self_join.cpp",
+      "destination": "tests/integration/c07_native_worker/tls_destructor_self_join.cpp",
+      "sha256": "3b9ddd11e14cba6c3c7e73591f84334d2244ef83be1814bc96abdcc4100fa634",
+      "current_sha256": "3b9ddd11e14cba6c3c7e73591f84334d2244ef83be1814bc96abdcc4100fa634",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-worker-review/failed_thread_creation.cpp",
+      "destination": "tests/integration/c07_native_worker/failed_thread_creation.cpp",
+      "sha256": "25df0d8dc0294012da637e99436f6a7558b4dce0a956c2c79cf1577baf6d0f63",
+      "current_sha256": "25df0d8dc0294012da637e99436f6a7558b4dce0a956c2c79cf1577baf6d0f63",
+      "unchanged": true
+    },
+    {
+      "source": "/private/tmp/madb-c07-worker-review/fail_pthread_create.c",
+      "destination": "tests/integration/c07_native_worker/fail_pthread_create.c",
+      "sha256": "678600d8819834666af518e7567487326f25fba82c416debf3def1f1647eb1ba",
+      "current_sha256": "ff7e7732469d49f83fe42e245fdf8ab5fd591a20a5ebe06e5b503c270fbdd5d9",
+      "unchanged": false
+    }
+  ],
+  "independent_reviews": [
+    {
+      "path": "/private/tmp/madb-c07-typed-core-review.md",
+      "size": 7887,
+      "sha256": "2eb1a4f721cb5cda3f78af0b1a8e64516416a1fa71eb00dcc673c40a50817aa7"
+    },
+    {
+      "path": "/private/tmp/madb-c07-provider-abi-review.md",
+      "size": 7115,
+      "sha256": "d7b69fafb889d2886bbcbca1ef696d3ab62026a5df391ee859f3ea05b9c42adb"
+    },
+    {
+      "path": "/private/tmp/madb-c07-worker-review/REVIEW.md",
+      "size": 3150,
+      "sha256": "e878e869ad3a0305ec3ac85f329b65001a8e99120185879fdba70c13eba4dd1c"
+    }
+  ],
+  "old_oracle_assertions_unchanged": true,
+  "checks": [
+    {
+      "scope": "protocol",
+      "receipt": {
+        "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-native-check-9sph07ul/result.json",
+        "size": 48766,
+        "sha256": "19b1de5a4e3b612a4c87fb6bc733a2e2d62ece9f3af48fe1cf3fa6bebccd3483"
+      },
+      "commands": 70
+    },
+    {
+      "scope": "providers",
+      "receipt": {
+        "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-provider-check-dx19qw0w/result.json",
+        "size": 14012,
+        "sha256": "e61d1c3de24f35faa6474c8223c39dc79f10e0485e9794536df477ea9f5c7e47"
+      },
+      "commands": 14
+    },
+    {
+      "scope": "worker",
+      "receipt": {
+        "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-worker-check-jdbsash5/result.json",
+        "size": 18951,
+        "sha256": "d106f73780c4a63290adcf7708688989af51b33d167389cbf1e0c6527ca271e9"
+      },
+      "commands": 19
+    }
+  ],
+  "formal_sdk_compile": {
+    "path": "/private/tmp/madb-c07-repo-cmake-formal/compile-only.json",
+    "size": 3356,
+    "sha256": "ab52c6db9b27d2d562dc777ef7ac157bbb8e1f20331456df553f7e1ada8d95f1"
+  },
+  "worker_failure_regression": {
+    "finding": "OS business-thread identifiers can be reused by cleanup threads; self-join detection now uses a trivial TLS marker that remains set during TLS destructors.",
+    "original_failure_preserved": "/private/tmp/madb-c07-worker-review/before-worker.cpp"
+  },
+  "limits": [
+    "No device, Actions, commit, or push",
+    "No public ABI/profile freeze",
+    "Rust archive is not sanitizer-instrumented",
+    "LeakSanitizer and TSan not run",
+    "Linux LD_PRELOAD implementation is present but only Darwin runtime was executed on this host",
+    "No full slow C04 rerun"
+  ]
+}

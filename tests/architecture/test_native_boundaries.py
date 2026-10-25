@@ -80,6 +80,15 @@ class NativeSdkBoundaries(unittest.TestCase):
         errors = self.inject_dependency("boundary-core", "dependencies", "madb-host")
         self.assertTrue(any("NATIVE003" in error and "madb-boundary-core" in error for error in errors), errors)
 
+    def test_c07_provider_cannot_import_tool_host(self):
+        errors = self.inject_dependency("arkts-provider", "dependencies", "madb-host", "hidden")
+        self.assertTrue(any("NATIVE003" in error and "madb-host as hidden" in error for error in errors), errors)
+        self.assertFalse(any("NATIVE000" in error for error in errors), errors)
+
+    def test_c07_provider_cannot_import_other_sdk_runtime(self):
+        errors = self.inject_dependency("arkts-provider", "dev-dependencies", "madb-boundary-core", "hidden")
+        self.assertTrue(any("NATIVE003" in error and "madb-boundary-core as hidden" in error for error in errors), errors)
+
 
 if __name__ == "__main__":
     unittest.main()

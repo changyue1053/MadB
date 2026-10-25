@@ -1,0 +1,19 @@
+[package]
+name = "madb-arkts-provider"
+version = "0.1.0-dev.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[lib]
+crate-type = ["staticlib"]
+
+# Each extern C entry contains unwind panics. Abort/OOM termination is not caught.
+[profile.release]
+panic = "unwind"
+
+[profile.dev]
+panic = "unwind"

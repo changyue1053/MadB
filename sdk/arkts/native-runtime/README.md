@@ -3,11 +3,12 @@
 C07 implements ADR-0011's shared C++17 ownership protocol here. This is an
 internal SDK component, not a stable C ABI, complete Node-API gateway or certified
 profile. It imports no MadB tool-host code and creates no hidden executor.
-`CMakeLists.txt` builds the position-independent static library; its composition
-owner supplies the worker, provider and delivery mechanisms.
+`CMakeLists.txt` builds the position-independent static library containing Core
+and an explicitly started `NativeWorker`. Its composition owner supplies the
+provider, delivery mechanism and external cleanup executor.
 
 The source is independently reviewed. Two separately authored C17 providers and
-20/25-case host suites are kept under
+20/25-case host suites plus 11 typed-clone rollback cases are kept under
 [protocol checks](../../../tests/integration/c07_native_protocol/README.md).
 The regular repository gate executes Release and ASan/UBSan. Formal OHOS compile
 and actual device/runtime evidence are separate; host checks do not certify them.
@@ -40,8 +41,61 @@ Numeric resource ids are per-Engine, monotonically increasing and never reused; 
 
 Engine methods synchronize shared state. A move-only token may transfer between legal threads, but the same token must never be concurrently accessed or re-entered while one of its methods is active. A callback may reenter Engine methods such as stop/status; it may not recursively consume its own token. Provider and callback context, runtime, paired-release entrypoint and DSO must outlive every lease; legal provider/runtime entry threads are the assembling owner's obligation. Provider clone/destroy and callback destroy are noexcept. A provider must not mutate the snapshot byte length after reservation; the checked increment test changes only Int32 value and preserves text/capacity.
 
-Engine destruction requests close but does not fake completion or join a thread. External Work, Publication, Delivery, ResultClaim/ResultDelivery and CloseWaiter owners must really retire. This slice contains no NAPI calls, env references, Promise executor, TSFN, async cleanup handle or domain worker implementation, and does not claim their target safety.
+Engine destruction requests close but does not fake completion or join a thread. External Work, Publication, Delivery, ResultClaim/ResultDelivery and CloseWaiter owners must really retire. This slice contains no NAPI calls, env references, Promise executor, TSFN or async cleanup handle, and does not claim their target safety.
 
 ## Regression coverage
 
 The behavior cases cover strict UTF-8/int32/NUL validation; cancellation before/after terminal and real concurrent claims; domain overflow; unclaimed-result close; already-admitted claimant completion/rollback; op/sub quotas; one worker; state latest replacement including pre-entry replacement; entered callback stop; acquired delivery gate; source-before-enqueue and out-of-order clone completion; atomic fanout and partial allocation failure; event item full including entered; independent byte full and conservative state staging; shared waiter full/ready/entered/rollback; close control under exhaustion; callback throw; callback/provider release reentry; old-id isolation and latched close error across slot reuse; and zero-recipient no-op ownership.
+
+## Typed provider seam
+
+`CloneResult` separates `Ok`, `InvalidArgument`, `AllocationFailure` and
+`InternalFailure`. Core adopts any returned owned pointer before interpreting
+status, including a failure with a partial allocation. That pointer receives its
+paired release before the payload/admission permit retires. Only allocation
+failure maps to `ResourceExhausted`; exceptions, panics, unknown statuses and an
+`Ok` result without an object map to `InternalFailure`.
+
+`provider_abi.h` and `provider_port.hpp` are private assembly interfaces, not a
+released ABI. The adapter accepts only a complete successful provider table and
+Core-validated `Snapshot`: `valid_snapshot` has checked the Int32 range before
+the adapter narrows its `int64_t` value. Do not call that adapter clone callback
+as an unchecked public conversion API. Provider/context/DSO must outlive every
+token, borrowed view and in-flight call. No STL or Rust object layout crosses
+this seam; the table's paired release remains the only valid destructor.
+
+The real C, C++ and Rust implementations live in `sdk/c/arkts-provider`,
+`sdk/cpp/arkts-provider` and `sdk/rust/arkts-provider`. Each owns its domain model,
+allocation/release and checked increment; Core contains no increment algorithm.
+C/C++ share only UTF-8 boundary validation in `validate_snapshot.h`. Rust uses
+its native UTF-8 validator and an independent standalone Cargo workspace.
+
+## Explicit worker and completion witness
+
+`NativeWorker::start` acquires Core's one-shot `Executor` and starts exactly one
+`std::thread`. Callers submit through this driver so accepted work receives its
+wake notification. The provider's `run` port executes on that business thread;
+`ready` is a notification port and must not directly invoke env-only NAPI.
+An operation terminal result, a returned `run` call and a ready hint are not a
+thread-exit witness.
+
+`request_stop` gates admission and requests Core close. The owner then schedules
+`join_and_ack` on an external cleanup thread; it calls actual `std::thread::join`
+before releasing `Executor`. The owning env thread must remain alive until
+cleanup and driver destruction. All method callers must drain before destroying
+the driver. Its destructor neither detaches nor blocks; destroying a joinable
+driver is a contract violation. Constructing-owner and actual business-thread
+joins are rejected before the join mutex, including calls from TLS destructors.
+The business check uses a trivial TLS marker, not a reusable OS thread id.
+
+Concurrent cleanup callers serialize one real join and subsequently receive the
+same completed status. A failed thread construction rolls back the Executor
+lease without a hidden thread; the Engine's executor identity remains consumed,
+so the composition factory discards that failed Engine before attempting a new
+instance. This host driver does not implement target async-cleanup ownership.
+
+Run [provider checks](../../../tests/integration/c07_native_providers/README.md)
+and [worker checks](../../../tests/integration/c07_native_worker/README.md) for
+real repository-source construction and adversarial host cases. Target SDK
+metadata, ArkTS entrypoints, TSFN, env cleanup and final HAR validation remain
+separate C07 work.

@@ -17,6 +17,7 @@ SDK_PACKAGES = {
     "sdk/rust/boundary-core": "madb-boundary-core",
     "sdk/rust/uniffi": "madb-boundary-uniffi",
     "sdk/rust/gobley": "madb-boundary-gobley",
+    "sdk/rust/arkts-provider": "madb-arkts-provider",
 }
 # These SDK build/parser packages use reviewed external dependencies, never host crates.
 SDK_REGISTRY = {
@@ -49,7 +50,7 @@ UNIT_PROFILE_DIGEST = "22" * 32
 def inspect_boundaries(root: Path) -> list[str]:
     """Check Cargo's dependency declarations without compiling SDK templates.
 
-    C05 packages and the shared C06 runtime are dependency-free. C06 binding/parser
+    C05 packages, the shared C06 runtime and the C07 provider are dependency-free. C06 binding/parser
     packages may use only the exact reviewed registry dependencies and shared SDK
     runtime. Every local edge remains in this independently checked set; aliases,
     target/optional/dev edges cannot hide tool-host imports. Candidate builds
@@ -127,7 +128,7 @@ def check(root: Path, boundaries_only: bool = False) -> None:
     errors = inspect_boundaries(root)
     if errors:
         raise RuntimeError("\n".join(errors))
-    print("Native SDK boundaries passed (five standalone workspaces; explicit dependency allowlist, no tool-host imports).", flush=True)
+    print("Native SDK boundaries passed (six standalone workspaces; explicit dependency allowlist, no tool-host imports).", flush=True)
     if boundaries_only:
         return
     environment = os.environ.copy()
