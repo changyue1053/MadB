@@ -445,7 +445,7 @@
         "P05",
         "P06"
       ],
-      "notes": "正式CLI .851 / SDK26.0.0.105 API26 Release已独立安装；CLI/DevEco预检26测试与真实基础检查通过。新SDK构建的四路线基本调用和C++ Worker/TSFN机制在API23 Release模拟器完成；Kotlin显式锁定CPF平台头/运行库及受管补丁，不能推广为完整生命周期通过。Release/HAR、完整profile与主env清理仍待收口，保持in_progress/missing。最终合跑C05/C06/C07，启动GitHub Actions前告知。详见C07记录。"
+      "notes": "正式CLI .851 / SDK26.0.0.105已安装；26项预检、Release混淆/HAR及r2引用/通知探针在API23 Release模拟器通过。r2修复异常返回值并核对131/131引用、51/51载荷；主env仍保留sentinel/TSFN，不等于完整关闭。ADR0010构建策略及真实两阶段主机衔接已验证，整仓检查通过；完整profile、候选/Lab整包待完成。保持in_progress/missing；合跑C05/C06/C07前告知Actions。"
     },
     {
       "id": "C08",

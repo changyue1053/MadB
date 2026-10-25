@@ -66,11 +66,22 @@ pub struct BuildArtifacts {
 pub fn assemble_build_files(
     tasks: &[Vec<u8>],
     results: &BTreeMap<Id, ValidatedTaskResult>,
+    profile: &[u8],
 ) -> Result<BuildArtifacts> {
     let adapter = SnapshotAdapter::new()?;
+    let profile = adapter.decode(DocumentKind::Profile, profile)?;
+    let policy = crate::build_completion_policy(&profile).map_err(format_error)?;
+    let profile_digest = crate::profile_digest(&profile).map_err(format_error)?;
     let mut documents = BTreeMap::new();
     for bytes in tasks {
         let task = adapter.decode(DocumentKind::BuildTask, bytes)?;
+        if task.value()["selector"]["profile_digest"].as_str() != Some(profile_digest.as_str()) {
+            return Err(invalid(
+                "EXECUTION002",
+                "profile_digest",
+                "build task differs from completion policy profile",
+            ));
+        }
         if documents.insert(id(&task.value()["id"])?, task).is_some() {
             return Err(invalid("EXECUTION002", "tasks", "duplicate build task"));
         }
@@ -85,17 +96,16 @@ pub fn assemble_build_files(
             "build results do not cover the exact selected task set",
         ));
     }
-    for phase in ["compile", "link", "run"] {
-        if !documents
-            .values()
-            .any(|task| task.value()["phase"] == phase)
-        {
-            return Err(invalid(
-                "EXECUTION003",
-                "phase",
-                "committed build requires successful compile, link and run tasks",
-            ));
-        }
+    let phases = documents
+        .values()
+        .map(|task| super::build_phase(&task.value()["phase"]))
+        .collect::<Result<Vec<_>>>()?;
+    if !policy.is_complete(phases) {
+        return Err(invalid(
+            "EXECUTION003",
+            "phase",
+            "committed build lacks the selected policy's required phases or includes a forbidden phase",
+        ));
     }
     let identity = Digest::new(semantic_digest(DigestDomain::Task, &json!({"operation":"build-set","tasks":documents.values().map(Document::value).collect::<Vec<_>>()})).map_err(format_error)?)
         .map_err(|e| invalid("HASH004", "build-set", e.to_string()))?;

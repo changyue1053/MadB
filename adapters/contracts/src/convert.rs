@@ -333,6 +333,15 @@ pub(crate) fn profile_defaults(document: &Document) -> Result<(Vec<PolicyValue>,
     let w = Wire::root(document, DocumentKind::Profile)?.field("defaults")?;
     Ok((values(w.field("values")?)?, origin(w.field("origin")?)?))
 }
+/// Resolve a build policy only after checking required feature support.
+pub fn build_completion_policy(
+    document: &Document,
+) -> Result<madb_model::build::BuildCompletionPolicy> {
+    capability(document)?;
+    let required = ids(Wire::root(document, DocumentKind::Profile)?.field("required_features")?)?;
+    Ok(madb_model::build::BuildCompletionPolicy::from_required_features(&required))
+}
+
 pub fn capability(document: &Document) -> Result<Capability> {
     let w = Wire::root(document, DocumentKind::Profile)?;
     if !w.field("backend_config")?.value.is_null() {

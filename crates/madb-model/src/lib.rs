@@ -1,4 +1,5 @@
 //! Boundary values independent of files, compilers, serialization and runtime IO.
+pub mod build;
 pub mod contract;
 pub mod evidence;
 pub mod identity;

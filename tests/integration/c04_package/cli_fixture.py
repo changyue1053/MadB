@@ -164,7 +164,7 @@ class CliWorkspace:
         value["generation_id"] = generation_identity(value)
         return value
 
-    def build(self, *, mode=None, ready=None):
+    def build(self, *, mode=None, ready=None, phases=("compile", "link", "run")):
         flags = self.link_flags
         (self.root / "consumer.c").write_bytes(CONSUMER)
         oracle = self.root / "native-oracle"
@@ -187,6 +187,8 @@ class CliWorkspace:
             ("compile", [], ["src/api.c", "include/api.h"], ["native/api.o"]),
             ("link", ["compile"], ["native/api.o"], ["native/api-linked.o", "native/consumer"]),
             ("run", ["link"], ["native/consumer"], ["native/verified-consumer"])]:
+            if operation not in phases:
+                continue
             task = deepcopy(self.values["build-task"])
             task.update(id=operation, phase=operation, dependencies=dependencies, tool=self.tool,
                         generation_id=self.generation_expected()["generation_id"],
@@ -210,7 +212,7 @@ class CliWorkspace:
     def package(self):
         source, build = self.layer("source"), self.layer("build")
         generation = self.generation_expected()["generation_id"]
-        evidence = [ref(build, f"evidence/task-{index:04}.json", "madb.build-evidence/1") for index in range(3)]
+        evidence = [ref(build, f"evidence/task-{index:04}.json", "madb.build-evidence/1") for index in range(len(self.tasks))]
         contract = self.values["contract-ir"]
         request = dict(schema="madb.package-request/1", selector=deepcopy(self.values["read-request"]["selector"]),
                        output_set=ref(source, "outputs.json", "madb.output-set/1"), build_evidence=evidence,

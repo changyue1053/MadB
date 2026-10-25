@@ -219,6 +219,16 @@ impl CheckedContext {
             "run" => Phase::Run,
             _ => unreachable!("schema validated phase"),
         };
+        if !crate::build_completion_policy(&prepared.profile)
+            .map_err(format_error)?
+            .allows(phase)
+        {
+            return Err(invalid(
+                "EXECUTION003",
+                "phase",
+                "selected build policy forbids this phase before execution",
+            ));
+        }
         Ok(BoundBuildTask {
             adapter: Arc::clone(adapter),
             task: document,

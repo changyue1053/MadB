@@ -151,3 +151,14 @@ class NativePreparationCli(PackageFixture):
                 self.assertFalse(self.marker.exists())
                 self.assertEqual(tree_bytes(self.root), before)
                 self.bundle[field] = original
+
+
+    def test_default_build_bundle_can_prepare_dependencies_before_source_or_receipt_exists(self):
+        bundle = self.fixture.build()
+        bundle["dependencies"] = self.bundle["dependencies"]
+        save(self.root, "generate.json", bundle)
+        self.assertFalse((self.domain / "current.json").exists())
+        prepared = self.prepare()
+        self.assertTrue(Path(prepared["Receipt"]).is_file())
+        self.assertFalse(self.marker.exists(), "dependency preparation invoked a build recipe")
+        self.assertFalse((self.domain / "current.json").exists())

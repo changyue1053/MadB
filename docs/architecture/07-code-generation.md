@@ -178,7 +178,7 @@ golden 测试验证输出形状，编译测试验证可编译，行为测试验�
 
 `madb.execution/1` 只组合现有端口，不把生成任务伪装为 BuildTask。metadata 直接运行 ReadRequest→ContractIR，不依赖待生成 IR；generate 运行 GenerateRequest→OutputSet；build 在真实 generation_id 已知后绑定 BuildTask 图；package 运行 PackageRequest→Candidate。所有命令要求显式 frozen 配方，自动推导各语言后端仍由后续路线实现。
 
-生成配方必须在返回成功 OutputSet 前完成该语言的语法/声明检查。C04 的锁定 C fixture 真实调用 Clang 对最终输出执行声明检查，并以错误声明负例验证拒收；宿主的 exit 0 和清单校验不构成任意语言的语法证明。C05 的具体 generator adapter 负责落实各语言检查。构建提交至少需要成功的 compile、link、run 阶段；未覆盖的命名子图只报告已执行，不提交完整构建批次。候选必须引用固定 source 中的真实 OutputSet 和固定 build 中完整的 BuildEvidence 集合，禁止从外部目录补入同格式自报证据。
+生成配方必须在返回成功 OutputSet 前完成该语言的语法/声明检查。C04 的锁定 C fixture 真实调用 Clang 对最终输出执行声明检查，并以错误声明负例验证拒收；宿主的 exit 0 和清单校验不构成任意语言的语法证明。C05 的具体 generator adapter 负责落实各语言检查。默认构建提交至少需要成功的 compile、link、run 阶段；显式要求 `core.external-runtime-verification@1` 的受检 profile 仅允许 compile/link，并在执行任何 helper 前拒绝其他 Build 阶段，详见 [ADR-0010](../adr/0010-external-runtime-verification.md)。未覆盖所选策略必需阶段的命名子图只报告已执行，不提交完整构建批次。候选必须引用固定 source 中的真实 OutputSet 和固定 build 中完整的 BuildEvidence 集合，禁止从外部目录补入同格式自报证据。
 
 | 状态/身份 | 实施规则 |
 |---|---|

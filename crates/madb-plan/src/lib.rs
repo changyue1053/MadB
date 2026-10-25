@@ -2,14 +2,7 @@
 use madb_model::{Id, LogicalPath, ValueError};
 use std::collections::{BTreeMap, BTreeSet};
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum Phase {
-    Metadata,
-    Generate,
-    Compile,
-    Link,
-    Run,
-}
+pub use madb_model::build::Phase;
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Task {
     pub id: Id,

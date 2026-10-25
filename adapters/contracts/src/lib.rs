@@ -13,8 +13,8 @@ pub mod query;
 pub mod task;
 
 pub use convert::{
-    PolicyInputs, capability, contract, evidence_identity, project_policies, report_results,
-    required_case, requirements,
+    PolicyInputs, build_completion_policy, capability, contract, evidence_identity,
+    project_policies, report_results, required_case, requirements,
 };
 use madb_model::{Finding, policy::Binding};
 pub use madb_protocol::{Document, DocumentKind, FormatError, SchemaRegistry};

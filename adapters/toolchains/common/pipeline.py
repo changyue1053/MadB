@@ -4,11 +4,44 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import signal
 import subprocess
 
-from .documents import ref, save, unique, generation_task, task_digest, sha_file
+from .documents import ref, save, unique, generation_task, task_digest, sha_file, profile_digest
+
+
+EXTERNAL_RUNTIME_VERIFICATION = "core.external-runtime-verification@1"
+
+
+def committed_build_evidence(metadata):
+    """Retain the pinned batch's exact evidence references, never glob work files."""
+    files = metadata.get("files")
+    if not isinstance(files, list) or not files:
+        raise ValueError("committed build metadata lacks its file inventory")
+    evidence, seen = [], set()
+    for item in files:
+        if not isinstance(item, dict) or not isinstance(item.get("path"), str):
+            raise ValueError("invalid committed build file reference")
+        name = item["path"]
+        if name in seen:
+            raise ValueError("duplicate committed build file reference: " + name)
+        seen.add(name)
+        if not name.startswith("evidence/task-"):
+            continue
+        if not re.fullmatch(r"evidence/task-[0-9]{4}\.json", name):
+            raise ValueError("malformed committed evidence number: " + name)
+        if (not isinstance(item.get("sha256"), str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", item["sha256"])
+                or type(item.get("size")) is not int or item["size"] < 0):
+            raise ValueError("invalid committed evidence reference: " + name)
+        evidence.append(dict(item, schema="madb.build-evidence/1"))
+    evidence.sort(key=lambda item: item["path"])
+    if not evidence:
+        raise ValueError("committed build lacks its evidence inventory")
+    if any(item["path"] != f"evidence/task-{index:04}.json" for index, item in enumerate(evidence)):
+        raise ValueError("committed evidence inventory has a gap")
+    return evidence
 
 
 
@@ -27,6 +60,13 @@ def copy_refs(source, destination, references):
         shutil.copyfile(path, target)
 
 
+def verify_refs(source, references):
+    for item in references:
+        path = source / item["path"]
+        if path.stat().st_size != item["size"] or sha_file(path) != item["sha256"]:
+            raise ValueError("frozen input changed: " + item["path"])
+
+
 class FrozenPipeline:
     """Route adapters supply helpers and public inventory, never host commit logic."""
     driver: str
@@ -38,6 +78,10 @@ class FrozenPipeline:
 
     def public_built(self):
         raise NotImplementedError("the route must declare its public build output inventory")
+
+    def build_phases(self):
+        """The shared helper builds one complete linear chain, not an arbitrary DAG."""
+        return ("compile", "link", "run")
 
     def __init__(self, repo, root, prepared, host_image):
         self.repo, self.root = repo, root
@@ -52,6 +96,7 @@ class FrozenPipeline:
         self.tool = {key: python[key] for key in ("id", "version", "sha256")}
         self.installed = dict(path=python["path"].lstrip("/"), sha256=python["sha256"], size=python["size"], schema="madb.tool-image/1")
         self.environment = [dict(name="PYTHONDONTWRITEBYTECODE", value="1")]
+        self._generated_context = None
         (root / "runs").mkdir(exist_ok=True)
 
     def context(self, metadata=False):
@@ -151,11 +196,76 @@ class FrozenPipeline:
         request["task_digest"] = generation_task(request, recipe)
         save(self.root, "generate-request.json", request)
         recipe["request"] = ref(self.root, "generate-request.json", "madb.generate-request/1")
+        preparation_inputs = deepcopy(recipe["inputs"])
         self.execute("generate", self.bundle("generate", recipe))
         self.source = self.layer("source")
         self.outputs = load(self.source / "outputs.json")
+        # Only a successful host generation establishes this preparation context.
+        # Rust remains the authority for schema/capability checks and commits.
+        self._generated_context = dict(
+            selector=deepcopy(self.read["selector"]), source=self.source,
+            profile=ref(self.root, "profile.json", "madb.profile/1"),
+            contract=ref(self.root, "contract.json", "madb.contract-ir/1"),
+            output_set=ref(self.source, "outputs.json"),
+            preparation_inputs=preparation_inputs,
+            metadata_digest=sha_file(self.source.parent / "metadata.json"))
+
+    def checked_build_phases(self):
+        context = self._generated_context
+        if context is None:
+            raise ValueError("build preparation requires a successful host generation")
+        if (self.read["selector"] != context["selector"] or self.source != context["source"]
+                or self.source != self.layer("source")):
+            raise ValueError("build preparation context differs from the committed generation")
+        if (self.read["profile"] != context["profile"]
+                or ref(self.root, "profile.json", "madb.profile/1") != context["profile"]):
+            raise ValueError("build preparation profile differs from the read profile reference")
+        if (ref(self.root, "contract.json", "madb.contract-ir/1") != context["contract"]
+                or load(self.root / "contract.json") != self.contract):
+            raise ValueError("build preparation contract differs from the host-checked context")
+        if (ref(self.source, "outputs.json") != context["output_set"]
+                or sha_file(self.source.parent / "metadata.json") != context["metadata_digest"]
+                or load(self.source / "outputs.json") != self.outputs):
+            raise ValueError("build preparation source generation identity changed")
+        profile = load(self.root / "profile.json")
+        digest = profile_digest(profile)
+        metadata = load(self.source.parent / "metadata.json")
+        specification = metadata.get("spec", {})
+        if (digest != self.read["selector"]["profile_digest"]
+                or self.contract["selector"] != self.read["selector"]
+                or metadata.get("schema") != "madb.storage-batch/1"
+                or metadata.get("id") != "sha256:" + self.source.parent.name
+                or metadata.get("files", []).count(context["output_set"]) != 1
+                or specification.get("layer") != "source"
+                or specification.get("profile_digest") != digest
+                or specification.get("input_digest") != self.contract["source_digest"]
+                or specification.get("generation_id") != self.outputs["generation_id"]
+                or specification.get("task_digest") != self.outputs["task_digest"]
+                or self.outputs["profile_digest"] != digest
+                or self.outputs["input_digest"] != self.contract["source_digest"]):
+            raise ValueError("build preparation profile/source lineage does not match")
+        external = EXTERNAL_RUNTIME_VERIFICATION in profile["required_features"]
+        if external and EXTERNAL_RUNTIME_VERIFICATION not in profile["supported_features"]:
+            raise ValueError("external runtime verification is required but not supported")
+        expected = ("compile", "link") if external else ("compile", "link", "run")
+        phases = tuple(self.build_phases())
+        if phases != expected:
+            raise ValueError("build phase plan must match the profile's complete linear chain: " + ", ".join(expected))
+        return phases
 
     def build(self):
+        # Preparation executes code, including at import time. Validate the whole
+        # plan and its already host-checked lineage before loading any helper.
+        phases = self.checked_build_phases()
+        self.verify_host()
+        base = unique(self.common_inputs())
+        if base != self._generated_context["preparation_inputs"]:
+            raise ValueError("preparation inputs differ from the host-checked generation")
+        if self.worker not in {item["path"] for item in base}:
+            raise ValueError("preparation worker is not a host-checked input")
+        verify_refs(self.root, base)
+        generated = [{key: item[key] for key in ("path", "sha256", "size")} for item in self.outputs["files"]]
+        verify_refs(self.source, generated)
         # Explicit preparation discovers native output identities required by the
         # static C04 DAG. C04 then recompiles independently and verifies every byte.
         # Preparation is never used as acceptance evidence or a semantic oracle.
@@ -165,9 +275,8 @@ class FrozenPipeline:
         previous = []
         previous_root = None
         tasks = []
-        base = self.common_inputs()
-        generated = [ref(self.source, item["path"]) for item in self.outputs["files"]]
-        for phase, dependencies in [("compile", []), ("link", ["compile"]), ("run", ["link"])]:
+        for index, phase in enumerate(phases):
+            dependencies = [] if index == 0 else [phases[index - 1]]
             preview = self.root / "prepare" / phase
             inputs, work = preview / "inputs", preview / "work"
             inputs.mkdir(parents=True)
@@ -195,7 +304,8 @@ class FrozenPipeline:
         self.built = self.layer("build")
 
     def package(self, destination, producer_revision, required_cases, provisional=False):
-        evidence = [ref(self.built, f"evidence/task-{index:04}.json", "madb.build-evidence/1") for index in range(3)]
+        build_metadata = load(self.built.parent / "metadata.json")
+        evidence = committed_build_evidence(build_metadata)
         request = dict(schema="madb.package-request/1", selector=self.read["selector"],
                        output_set=ref(self.source, "outputs.json", "madb.output-set/1"), build_evidence=evidence,
                        lock=ref(self.root, "madb.lock", "madb.lock/1"), contract_digest=self.contract["structure_digest"],
@@ -212,8 +322,7 @@ class FrozenPipeline:
         inventory += [ref(self.source, item["path"]) for item in self.public_generated()]
         inventory += [ref(self.built, name) for name in self.public_built()] + evidence
         save(self.root, "package-files.json", inventory)
-        build_metadata = load(self.built.parent / "metadata.json")
-        build_inputs = [ref(self.built, item["path"]) for item in build_metadata["files"]]
+        build_inputs = [dict(item) for item in build_metadata["files"]]
         source_inputs = [ref(self.source, item["path"]) for item in self.outputs["files"]]
         inputs = unique(self.common_inputs() + inventory + build_inputs + source_inputs +
                         [request["output_set"], ref(self.root, "package-files.json")])

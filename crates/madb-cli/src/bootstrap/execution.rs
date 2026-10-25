@@ -116,6 +116,14 @@ pub fn execute(options: &ExecutionOptions) -> Result<String> {
     )?;
     dependencies::validate_domains(&spec, &documents)?;
     if options.command == "build" && options.task.as_deref() == Some("dependencies") {
+        if spec.operation == ExecutionOperation::Build {
+            // Discovery precedes dependency/tool binding. Inspect phase policy
+            // without requiring the dependency receipt it is about to create.
+            execution::validate_build_phase_admission(
+                configuration(&spec, &documents).profile,
+                &task_documents,
+            )?;
+        }
         return dependencies::prepare(options, &spec, &documents, &workspace);
     }
     if spec.operation == ExecutionOperation::Metadata {
@@ -512,13 +520,8 @@ fn build(
         }
         return Err(failure);
     }
-    let complete = [
-        madb_app::Phase::Compile,
-        madb_app::Phase::Link,
-        madb_app::Phase::Run,
-    ]
-    .iter()
-    .all(|phase| graph.tasks().iter().any(|task| &task.phase == phase));
+    let completion = execution::build_completion_policy(configuration(spec, documents).profile)?;
+    let complete = completion.is_complete(graph.tasks().iter().map(|task| task.phase));
     if !complete {
         documents.verify(workspace)?;
         dependencies::verify(options, &dependency, workspace)?;
@@ -527,11 +530,12 @@ fn build(
             .expect("validated root inputs")
             .verify(&source)?;
         control.finish_without_commit()?;
-        return Ok("Executed: selected tasks passed; complete compile/link/run evidence is required before a build batch can be committed.\n".to_owned());
+        return Ok("Executed: selected tasks passed; the selected profile's complete build evidence is required before a build batch can be committed.\n".to_owned());
     }
     let artifacts = execution::assemble_build_files(
         &selected_bytes,
         run.results().expect("validated results"),
+        configuration(spec, documents).profile,
     )?;
     let batch = parents.build_batch(artifacts.identity, artifacts.files)?;
     let receipt = parents.publish(store, &batch, &control, || {

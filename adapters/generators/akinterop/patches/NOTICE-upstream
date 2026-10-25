@@ -1,0 +1,12 @@
+AKInterop
+Copyright 2026 Huawei Device Co., Ltd.
+
+This product includes software derived from the knoi component of
+Tencent-TDS/KuiklyBase-components
+(https://github.com/Tencent-TDS/KuiklyBase-components/tree/master/knoi),
+Copyright Tencent Inc., licensed under the Apache License, Version 2.0.
+
+The derived portions are located in:
+- AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/
+- AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/NapiUtils.kt
+- AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt

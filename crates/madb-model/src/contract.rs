@@ -181,6 +181,7 @@ pub struct Capability {
 }
 
 pub const CORE_FEATURES: &[&str] = &[
+    crate::build::EXTERNAL_RUNTIME_VERIFICATION,
     "core.errors@1",
     "core.backend-resources@1",
     "core.values@1",

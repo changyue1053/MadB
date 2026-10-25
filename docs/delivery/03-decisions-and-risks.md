@@ -21,6 +21,7 @@
 | UniFFI ArkTS beta 保留实验候选 | X07/P13 独立验证，不替换主线、不增加主线数 | [技术栈选型](../architecture/16-technology-stack-and-versions.md) |
 | Apache-2.0 项目自有内容许可默认 | 设计采用；C01 落实实际许可/权利核对 | [开源交付](02-open-source-and-contributing.md) |
 | 十二项实施契约与阶段准入 | 设计采用；按配置与证据验收 | [ADR-0009](../adr/0009-implementation-contracts-and-gates.md) |
+| 主机构建完成与独立目标运行分离 | C07 显式必需功能；原默认三阶段不变，本地集成已验证 | [ADR-0010](../adr/0010-external-runtime-verification.md) |
 
 ## 必需探针
 
@@ -67,6 +68,6 @@ DEC-01 至 DEC-12 的规则已采用，具体 schema/接口、运行实现、设
 - P05：C07，在 CPF/akinterop 配置推荐前，先核验正式 SDK/sysroot/工具来源，再做设备互调和 Release/HAR；缺设备仍保留未执行状态。
 - P04/P06/P07 分别跟随 C06/C07/C08；P08/P09 跟随 C10/C09；P10/P11/P12 跟随 E04/I01/L01；P13/P14/P15 只跟随 X07/X08/X09。各自阻断点不变，P03/P05 不成为 Rust/C 的全局依赖。
 
-C07 当前的环境观察和 P05/P06 源码风险见[C07 实施记录](../reviews/2026-10-25-c07-arkts.md)。已有 Beta 编译工具和 Release 模拟器分别留证，不能合并成正式 SDK 通过；akinterop 引用/队列/线程退出与 napi async cleanup 的具体责任必须在候选冻结前闭合。源码审查和开发探针均不替代目标验收。
+C07 当前的环境观察和 P05/P06 源码风险见[C07 实施记录](../reviews/2026-10-25-c07-arkts.md)。Beta 开发探针与后续正式 SDK 26 编译、API 23 Release 模拟器运行分别留证；akinterop 引用/队列/线程退出与 napi async cleanup 的具体责任必须在候选冻结前闭合。源码审查和开发探针均不替代目标验收。
 
 C03 发现的宏常量导出/signedness 与 LLVM archive 检查版本问题已进入固定配方和编译断言。完整输入闭包、扩展退出/取消、SDK 资源与并发、干净候选消费继续按既有工作包验收，不由本次探针结论外推。

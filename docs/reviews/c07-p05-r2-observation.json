@@ -1,0 +1,682 @@
+{
+  "scope": "Exploratory P05 mechanisms on the API23 Release emulator; not a public candidate or full-profile acceptance",
+  "certifies_c07": false,
+  "runtime_patch_sha256": "a45a6ffdde21322de392f8b71884182e99648a401b9ceb56d0a610e48bbb5864",
+  "build_sdk": {
+    "version": "26.0.0.105",
+    "release_type": "Release",
+    "api": 26
+  },
+  "target": {
+    "selector": "127.0.0.1:5557",
+    "kind": "emulator",
+    "api": 23,
+    "release_type": "Release",
+    "abi": "arm64-v8a",
+    "version": "OpenHarmony-6.1.0.115"
+  },
+  "signature": "generated probe-specific community debug signature; not production signing",
+  "limitations": [
+    "No public C07 candidate identity or full-profile acceptance is frozen.",
+    "Main-env teardown, final TSFN/sentinel/metadata release and a drain barrier remain unproved.",
+    "Stopping the dedicated bundle and observing PID absence is operational cleanup only.",
+    "Notification Worker termination Future consumption is a job acknowledgment, not pthread/TLS join proof.",
+    "These are distinct instrumented test-support providers, never loaded together."
+  ],
+  "full_observation": {
+    "path": "/private/tmp/madb-c07-p05-r2-observation.json",
+    "sha256": "ed114e246e303c0776b9f6d96ead5f4deded6565fd0e22c07a36f5fbeb8c0500"
+  },
+  "observations": {
+    "notify": {
+      "nonce": "c07-sdk26-c52532109ed347b6928038ebf2baaa13",
+      "pid": 6084,
+      "identity": "CPF=2.2.21-1.1.0;akinterop=managed-akinterop-mainenv-r2;probe=p05-notify-r2",
+      "build_mode": "release",
+      "hap_sha256": "6b419344e94966f78823bbf290d467345fd9b2c4369b27eda7110fd6739da200",
+      "hap_size": 4787446,
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "b5ac3c1a6ae624a65ebb34a21ec85888f4f5cd27afca39238ed1c39616726f40",
+          "size": 3340776
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinnotifyprobe.so",
+          "sha256": "2bbcfaadf28ba9c5f2d95e5fc5567f3ccf1065639e466fe670142973c8cc9093",
+          "size": 5912
+        }
+      ],
+      "provider_inputs": [
+        {
+          "source": "/private/tmp/madb-c07-p05-notify-r2/artifacts/libmadb_kotlin_managed_probe.so",
+          "path": "/private/tmp/madb-c07-p05-notify-hap/entry/libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "38ea15e2ed779b2bd9f5066e697d3927cf5ca0f3af85a8db0de352f2c809f215",
+          "size": 5222416,
+          "scope": "notification-test-support-r2",
+          "patch_sha256": "a45a6ffdde21322de392f8b71884182e99648a401b9ceb56d0a610e48bbb5864"
+        },
+        {
+          "source": "/private/tmp/madb-c07-p05-notify-r2/artifacts/libc++_shared.so",
+          "path": "/private/tmp/madb-c07-p05-notify-hap/entry/libs/arm64-v8a/libc++_shared.so",
+          "sha256": "c1ac8e9623ebd501d73b785264a586e21ce9f83bdbfe7afd35f8d5045caa84cd",
+          "size": 1850184,
+          "scope": "notification-test-support-r2",
+          "patch_sha256": "a45a6ffdde21322de392f8b71884182e99648a401b9ceb56d0a610e48bbb5864"
+        }
+      ],
+      "obfuscation": {
+        "identifier_renames": 26,
+        "property_renames": {
+          "calls": "w1"
+        },
+        "file_renames": {
+          "ProbeConfig": "a",
+          "NotifyCases": "b"
+        },
+        "evidence": {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/c07-sdk26-c52532109ed347b6928038ebf2baaa13-obfuscation-namecache.json",
+          "sha256": "3762df660f279f018cdaa020276a78a4c200f2bbc4632dc99056c5b263ecc9c7",
+          "size": 2543
+        }
+      },
+      "process_absent_after_stop": true,
+      "raw_evidence": [
+        {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/c07-sdk26-c52532109ed347b6928038ebf2baaa13-result.json",
+          "sha256": "d888a1311fc1f226fc626c8d84080f65e35368df674edf2b8e0d100a48200f56",
+          "size": 16247
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/c07-sdk26-c52532109ed347b6928038ebf2baaa13-source-inputs.json",
+          "sha256": "ba0ed59d6b63ebb39468d1c90cc1f5d7a8141e6b944f1973c1b726cbca5b3e66",
+          "size": 4147
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/1792908384618395000-hilog.json",
+          "sha256": "d4242b2dade9b77f21eda666e4e3f25dc7b6cb427b01839abffa6f144ef4dfda",
+          "size": 16184
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/1792908432133441000-pid-after-stop.json",
+          "sha256": "2d8a17663cbe7715ea58a3aef79bc2b532a6f5496ec82b957e079ad44340d636",
+          "size": 460
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/1792908419578162000-app-maps.json",
+          "sha256": "53e2b390dcb78a5857edc4bff8cddbc933ab36c8f6da68262475aab9ad511065",
+          "size": 500
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/c07-sdk26-c52532109ed347b6928038ebf2baaa13-notify-observations.json",
+          "sha256": "299d882f0a9471da7d6fafaa4238dbf7e80c51f68c479c307b9a69e1ca9e9eac",
+          "size": 14834
+        }
+      ],
+      "checks": {
+        "persistent_ref_baseline": 1,
+        "warmup_sentinel_delta": 1,
+        "session_count": 6,
+        "actual_callback_counts": {
+          "warmup": 1,
+          "normal": 1,
+          "saturation": 32,
+          "reentry": 1,
+          "throw": 1,
+          "recovery": 1
+        }
+      },
+      "actual_callback_text": "P05通知:你好é",
+      "callback_reentry_try_close_returns": [
+        "false"
+      ],
+      "case_counter_columns": [
+        "id",
+        "ownerTid",
+        "producerTid",
+        "attempted",
+        "accepted",
+        "rejected",
+        "pending",
+        "completed",
+        "delivered",
+        "skipped",
+        "callbackThrows",
+        "expectedCallbackThrows",
+        "directRejected",
+        "directRefCreatedDelta",
+        "directRefReleasedDelta",
+        "ref_owned",
+        "ref_created",
+        "ref_released",
+        "tsfn_allocated",
+        "tsfn_released",
+        "tsfn_created",
+        "tsfn_finalized"
+      ],
+      "case_counters": {
+        "initial": [
+          0,
+          6084,
+          -1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "warmup": [
+          1,
+          6084,
+          6246,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          4,
+          3,
+          1,
+          1,
+          1,
+          0
+        ],
+        "normal": [
+          2,
+          6084,
+          6247,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          7,
+          6,
+          2,
+          2,
+          1,
+          0
+        ],
+        "saturation-held": [
+          3,
+          6084,
+          6248,
+          64,
+          32,
+          32,
+          32,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          2,
+          8,
+          6,
+          34,
+          2,
+          1,
+          0
+        ],
+        "saturation": [
+          3,
+          6084,
+          6248,
+          64,
+          32,
+          32,
+          0,
+          32,
+          32,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          72,
+          71,
+          34,
+          34,
+          1,
+          0
+        ],
+        "reentry-inner": [
+          4,
+          6084,
+          6249,
+          8,
+          8,
+          0,
+          8,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          4,
+          75,
+          71,
+          42,
+          34,
+          1,
+          0
+        ],
+        "reentry": [
+          4,
+          6084,
+          6249,
+          8,
+          8,
+          0,
+          0,
+          8,
+          1,
+          7,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          75,
+          74,
+          42,
+          42,
+          1,
+          0
+        ],
+        "throw": [
+          5,
+          6084,
+          6250,
+          8,
+          8,
+          0,
+          0,
+          8,
+          0,
+          7,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          78,
+          77,
+          50,
+          50,
+          1,
+          0
+        ],
+        "recovery": [
+          6,
+          6084,
+          6252,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          81,
+          80,
+          51,
+          51,
+          1,
+          0
+        ],
+        "final": [
+          6,
+          6084,
+          6252,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          81,
+          80,
+          51,
+          51,
+          1,
+          0
+        ]
+      },
+      "errors_zero_in_all_closed_sessions": [
+        "failures",
+        "directUnexpected",
+        "unexpectedCallbackThrows",
+        "tsfn_uncertain",
+        "tsfn_napiErrors",
+        "ref_failures",
+        "ref_cleanupFailures",
+        "meta_failures"
+      ],
+      "optional_maps_observation": {
+        "status": "unavailable",
+        "reason": "platform permission denied while reading /proc/6084/maps; HDC exit code 0 rejected by the runner",
+        "evidence": {
+          "path": "/private/tmp/madb-c07-p05-notify-hap/evidence/1792908419578162000-app-maps.json",
+          "sha256": "53e2b390dcb78a5857edc4bff8cddbc933ab36c8f6da68262475aab9ad511065",
+          "size": 500
+        }
+      }
+    },
+    "ownership": {
+      "nonce": "c07-sdk26-c8f44ebfe871413e8874205464dd1600",
+      "pid": 7847,
+      "identity": "CPF=2.2.21-1.1.0;akinterop=managed-akinterop-mainenv-r2;patch=a45a6ffd;probe=p05-ownership-v1;test-support=napi-ref-wrap-v1",
+      "build_mode": "release",
+      "hap_sha256": "79d80756bd19f7f3971432d7712e8dc23409d2807a59239cd95155b772ca2d78",
+      "hap_size": 4759134,
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_kotlin_ownership_r2_probe.so",
+          "sha256": "4bf97ea06c9a0b21ede130d055bc005a055770b3d9407981cd3b97f8aab09d1b",
+          "size": 3320584
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinownershipprobe.so",
+          "sha256": "1cd861e6563cd1e511bffc3012197893d7995636c17dc5f357d4da5436a36832",
+          "size": 5912
+        }
+      ],
+      "provider_inputs": [
+        {
+          "source": "/private/tmp/madb-c07-p05-ownership-r2/artifacts/libmadb_kotlin_ownership_r2_probe.so",
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/entry/libs/arm64-v8a/libmadb_kotlin_ownership_r2_probe.so",
+          "sha256": "32c47c7a61a471ff34573b54fb8bae499e28ebd329842a84b4ea8ea2adc7479c",
+          "size": 5190816,
+          "kind": "ownership-r2-test-support",
+          "runtime_patch_sha256": "a45a6ffdde21322de392f8b71884182e99648a401b9ceb56d0a610e48bbb5864"
+        },
+        {
+          "source": "/private/tmp/madb-c07-p05-ownership-r2/artifacts/libc++_shared.so",
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/entry/libs/arm64-v8a/libc++_shared.so",
+          "sha256": "c1ac8e9623ebd501d73b785264a586e21ce9f83bdbfe7afd35f8d5045caa84cd",
+          "size": 1850184,
+          "kind": "locked-CPF-runtime",
+          "runtime_patch_sha256": "a45a6ffdde21322de392f8b71884182e99648a401b9ceb56d0a610e48bbb5864"
+        }
+      ],
+      "obfuscation": {
+        "identifier_renames": 2,
+        "property_renames": {},
+        "file_renames": {
+          "ProbeConfig": "a"
+        },
+        "evidence": {
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/evidence/c07-sdk26-c8f44ebfe871413e8874205464dd1600-obfuscation-namecache.json",
+          "sha256": "4f87f68267292364ce5241cc55ff0105da506b02103bfaad994cb3fe1a3cb103",
+          "size": 1098
+        }
+      },
+      "process_absent_after_stop": true,
+      "raw_evidence": [
+        {
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/evidence/c07-sdk26-c8f44ebfe871413e8874205464dd1600-result.json",
+          "sha256": "335b793f23a483a865ba904a80df6da37f9e817a17e7f542c817819e94be18a5",
+          "size": 15153
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/evidence/c07-sdk26-c8f44ebfe871413e8874205464dd1600-source-inputs.json",
+          "sha256": "d76853d511801d352f52190a58aad532fa7ef6079afc1502ffee2440e9a5221c",
+          "size": 3999
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/evidence/1792908468166388000-hilog.json",
+          "sha256": "8829fa8dd115e1c1c8bdcddc288894aa79fffe1835d8323d5597fce35df890b1",
+          "size": 22222
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/evidence/1792908502233272000-pid-after-stop.json",
+          "sha256": "698a1c608a376709ec5f42f0d83ff8422b4f7f527b2820c5c0eeba54fda2e1b6",
+          "size": 460
+        },
+        {
+          "path": "/private/tmp/madb-c07-p05-ownership-hap/evidence/c07-sdk26-c8f44ebfe871413e8874205464dd1600-ownership-raw.json",
+          "sha256": "3c825d106a7247c1336c14deb0494c089fd6787117bb6e1e5f45005437578d81",
+          "size": 4431
+        }
+      ],
+      "validated_snapshot_count": 16,
+      "thread_observation": {
+        "owner_tid": 7847,
+        "foreign_tid": 8002,
+        "join_result": 0,
+        "escaped_failure": null
+      },
+      "expected_rejections": {
+        "closed_access": "IllegalStateException:ArkValueClosed",
+        "capacity_129": "IllegalStateException:ManagedRefCapacityExceeded",
+        "foreign_read": "IllegalStateException:CapabilityUnsupported: foreign ref thread",
+        "foreign_close": "IllegalStateException:CapabilityUnsupported: close must run on original env thread",
+        "foreign_create": "IllegalStateException:CapabilityUnsupported: foreign ref thread"
+      },
+      "gc_requested": false,
+      "wrappers_retained_through_final_audit": 131,
+      "checks_true_count": 22,
+      "snapshot_columns": [
+        "owned",
+        "created",
+        "released",
+        "rejected",
+        "napi_create",
+        "napi_get",
+        "napi_delete"
+      ],
+      "snapshots": {
+        "baseline": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "single_created": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "single_read": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "single_closed": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "single_closed_twice": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "closed_access_rejected": [
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          1
+        ],
+        "capacity_128": [
+          128,
+          129,
+          1,
+          0,
+          129,
+          1,
+          1
+        ],
+        "capacity_129_rejected": [
+          128,
+          129,
+          1,
+          1,
+          129,
+          1,
+          1
+        ],
+        "capacity_one_closed": [
+          127,
+          129,
+          2,
+          1,
+          129,
+          1,
+          2
+        ],
+        "capacity_restored": [
+          128,
+          130,
+          2,
+          1,
+          130,
+          1,
+          2
+        ],
+        "capacity_explicitly_drained": [
+          0,
+          130,
+          130,
+          1,
+          130,
+          1,
+          130
+        ],
+        "foreign_before": [
+          1,
+          131,
+          130,
+          1,
+          131,
+          1,
+          130
+        ],
+        "foreign_after_join": [
+          1,
+          131,
+          130,
+          1,
+          131,
+          1,
+          130
+        ],
+        "foreign_value_owner_closed": [
+          0,
+          131,
+          131,
+          1,
+          131,
+          1,
+          131
+        ],
+        "final_with_wrappers_retained": [
+          0,
+          131,
+          131,
+          1,
+          131,
+          1,
+          131
+        ],
+        "retained_wrappers_closed_again": [
+          0,
+          131,
+          131,
+          1,
+          131,
+          1,
+          131
+        ]
+      },
+      "capacity_all_snapshots": 128,
+      "failures_and_cleanupFailures_all_snapshots": 0
+    }
+  }
+}

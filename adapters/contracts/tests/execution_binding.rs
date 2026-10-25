@@ -42,7 +42,16 @@ struct Fixture {
 }
 impl Fixture {
     fn new() -> Self {
-        let profile = encode(&value(DocumentKind::Profile));
+        Self::with_profile(value(DocumentKind::Profile))
+    }
+    fn with_profile(profile: Value) -> Self {
+        let digest = madb_contracts::profile_digest(
+            &registry()
+                .validate(DocumentKind::Profile, profile.clone())
+                .unwrap(),
+        )
+        .unwrap();
+        let profile = encode(&profile);
         let profile_ref = file("profiles/rust-c.json", "madb.profile/1", &profile);
         let source = b"fn fixture() {}\n";
         let source_ref = file("native/fixture.rs", "madb.source-input/1", source);
@@ -52,6 +61,7 @@ impl Fixture {
         project["boundaries"][0]["profile"] = profile_ref.clone();
         let mut lock = value(DocumentKind::Lock);
         lock["profiles"][0]["file"] = profile_ref.clone();
+        lock["profiles"][0]["semantic_digest"] = json!(digest);
         lock["project_digest"] = json!(
             project_digest(
                 &registry()
@@ -66,14 +76,17 @@ impl Fixture {
         lock["schemas"][0].as_object_mut().unwrap().remove("schema");
         let lock = encode(&lock);
         let mut read = value(DocumentKind::ReadRequest);
+        read["selector"]["profile_digest"] = json!(digest);
         read["lock"] = file("madb.lock", "madb.lock/1", &lock);
         read["profile"] = profile_ref;
         read["inputs"] = json!([source_ref]);
         let input_digest = source_digest(&read["inputs"]).unwrap();
         let mut snapshot = value(DocumentKind::ContractIr);
+        snapshot["selector"] = read["selector"].clone();
         snapshot["source_digest"] = json!(input_digest);
         let snapshot = encode(&snapshot);
         let mut generate = value(DocumentKind::GenerateRequest);
+        generate["selector"] = read["selector"].clone();
         for field in ["lock", "profile", "inputs"] {
             generate[field] = read[field].clone();
         }
@@ -173,6 +186,7 @@ impl Fixture {
     }
     fn outputs(&self) -> Value {
         let mut output = value(DocumentKind::OutputSet);
+        output["profile_digest"] = self.generate["selector"]["profile_digest"].clone();
         output["input_digest"] = self.generate["input_digest"].clone();
         output["task_digest"] = self.generate["task_digest"].clone();
         output["files"][0]["sha256"] = json!(Digest::of_bytes(b"generated header\n").as_str());
@@ -416,15 +430,20 @@ fn package_checks_actual_output_set_evidence_dependency_bytes_and_lineage() {
     );
 }
 
-#[test]
-fn build_assembly_preserves_exact_evidence_and_rejects_incomplete_phase_set() {
+fn build_results(
+    f: &Fixture,
+    phases: &[&str],
+) -> (
+    Vec<Vec<u8>>,
+    BTreeMap<madb_app::Id, madb_app::task::ValidatedTaskResult>,
+) {
     use madb_app::{Id, task::capture_task_result};
-    use madb_contracts::{execution::assemble_build_files, task::BoundBuildTask, task_digest};
-    let f = Fixture::new();
+    use madb_contracts::{task::BoundBuildTask, task_digest};
     let mut tasks = Vec::new();
     let mut results = BTreeMap::new();
-    for phase in ["compile", "link", "run"] {
+    for &phase in phases {
         let mut task = value(DocumentKind::BuildTask);
+        task["selector"] = f.generate["selector"].clone();
         task["id"] = json!(phase);
         task["phase"] = json!(phase);
         task["working_directory"] = json!("work");
@@ -450,6 +469,7 @@ fn build_assembly_preserves_exact_evidence_and_rejects_incomplete_phase_set() {
         .unwrap();
         let mut evidence = value(DocumentKind::BuildEvidence);
         evidence["task_id"] = task["id"].clone();
+        evidence["profile_digest"] = task["selector"]["profile_digest"].clone();
         for key in [
             "task_digest",
             "input_digest",
@@ -477,7 +497,16 @@ fn build_assembly_preserves_exact_evidence_and_rejects_incomplete_phase_set() {
         results.insert(Id::new(phase).unwrap(), result);
         tasks.push(bytes);
     }
-    let batch = assemble_build_files(&tasks, &results).unwrap();
+    (tasks, results)
+}
+
+#[test]
+fn build_assembly_preserves_exact_evidence_and_rejects_incomplete_phase_set() {
+    use madb_app::Id;
+    use madb_contracts::execution::assemble_build_files;
+    let f = Fixture::new();
+    let (tasks, mut results) = build_results(&f, &["compile", "link", "run"]);
+    let batch = assemble_build_files(&tasks, &results, &f.profile).unwrap();
     assert_eq!(batch.evidence.len(), 3);
     assert_eq!(batch.files.references().count(), 6);
     for (index, (_, result)) in results.iter().enumerate() {
@@ -492,7 +521,10 @@ fn build_assembly_preserves_exact_evidence_and_rejects_incomplete_phase_set() {
     let compile = Id::new("compile").unwrap();
     let result = results.remove(&compile).unwrap();
     let only = BTreeMap::from([(compile, result)]);
-    code(assemble_build_files(&tasks[..1], &only), "EXECUTION003");
+    code(
+        assemble_build_files(&tasks[..1], &only, &f.profile),
+        "EXECUTION003",
+    );
 }
 
 fn freeze(memory: &Memory) -> FrozenInputs {
@@ -595,5 +627,196 @@ fn dependency_preparation_requires_an_exact_selected_and_locked_image() {
             &f.recipe().installed_tool,
         ),
         "LOCK004",
+    );
+}
+
+fn external_runtime_fixture() -> Fixture {
+    let mut profile = value(DocumentKind::Profile);
+    for key in ["required_features", "supported_features"] {
+        profile[key]
+            .as_array_mut()
+            .unwrap()
+            .push(json!(madb_model::build::EXTERNAL_RUNTIME_VERIFICATION));
+    }
+    Fixture::with_profile(profile)
+}
+
+#[test]
+fn external_runtime_build_assembly_accepts_two_phases_without_relaxing_identity() {
+    use madb_contracts::execution::assemble_build_files;
+    let f = external_runtime_fixture();
+    let (tasks, mut results) = build_results(&f, &["compile", "link"]);
+    let batch = assemble_build_files(&tasks, &results, &f.profile).unwrap();
+    assert_eq!(batch.evidence.len(), 2);
+    code(
+        assemble_build_files(&tasks, &results, &Fixture::new().profile),
+        "EXECUTION002",
+    );
+    let compile = madb_app::Id::new("compile").unwrap();
+    let only = BTreeMap::from([(compile.clone(), results.remove(&compile).unwrap())]);
+    code(
+        assemble_build_files(&tasks[..1], &only, &f.profile),
+        "EXECUTION003",
+    );
+    code(
+        assemble_build_files(&tasks, &only, &f.profile),
+        "EXECUTION002",
+    );
+}
+
+fn package_recipe(f: &Fixture, request: &Value) -> ExecutionRecipe {
+    let mut bundle = f.bundle.clone();
+    bundle["operation"] = json!("package");
+    bundle["recipe"]["inputs"] = json!(
+        f.memory
+            .0
+            .iter()
+            .map(|(path, bytes)| file(path.as_str(), "madb.artifact/1", bytes))
+            .collect::<Vec<_>>()
+    );
+    bundle["recipe"]["response_path"] = json!("candidate.json");
+    bundle["recipe"]["request"] = file("package.json", "madb.package-request/1", &encode(request));
+    read_execution(&encode(&bundle)).unwrap().recipe.unwrap()
+}
+
+#[test]
+fn external_runtime_package_accepts_two_phases_and_keeps_negative_evidence_checks() {
+    let mut f = external_runtime_fixture();
+    let output = f.outputs();
+    let output_bytes = encode(&output);
+    f.memory.0.insert(
+        LogicalPath::new("outputs.json").unwrap(),
+        output_bytes.clone(),
+    );
+    f.memory.0.insert(
+        LogicalPath::new("include/fixture.h").unwrap(),
+        b"generated header\n".to_vec(),
+    );
+    f.memory.0.insert(
+        LogicalPath::new("build/library.a").unwrap(),
+        b"library".to_vec(),
+    );
+    let mut request = value(DocumentKind::PackageRequest);
+    request["selector"] = f.generate["selector"].clone();
+    request["generation_id"] = output["generation_id"].clone();
+    request["lock"] = f.generate["lock"].clone();
+    request["output_set"] = file("outputs.json", "madb.output-set/1", &output_bytes);
+    for mode in [
+        "valid",
+        "missing-link",
+        "duplicate-id",
+        "failed",
+        "wrong-profile",
+        "wrong-generation",
+        "wrong-tool",
+        "forbidden-run",
+    ] {
+        let mut refs = Vec::new();
+        for phase in ["compile", "link"] {
+            if mode == "missing-link" && phase == "link" {
+                continue;
+            }
+            let mut evidence = value(DocumentKind::BuildEvidence);
+            evidence["phase"] = json!(phase);
+            evidence["task_id"] = json!(phase);
+            evidence["generation_id"] = output["generation_id"].clone();
+            evidence["input_digest"] = output["input_digest"].clone();
+            evidence["profile_digest"] = output["profile_digest"].clone();
+            evidence["tool"] = f.bundle["recipe"]["tool"].clone();
+            evidence["outputs"] = json!([{"path":"build/library.a", "sha256":Digest::of_bytes(b"library").as_str(), "size":7}]);
+            if phase == "link" {
+                match mode {
+                    "duplicate-id" => evidence["task_id"] = json!("compile"),
+                    "failed" => {
+                        evidence["status"] = json!("failed");
+                        evidence["exit_code"] = json!(1);
+                    }
+                    "wrong-profile" => {
+                        evidence["profile_digest"] =
+                            json!(Digest::of_bytes(b"other-profile").as_str())
+                    }
+                    "wrong-generation" => {
+                        evidence["generation_id"] =
+                            json!(Digest::of_bytes(b"other-generation").as_str())
+                    }
+                    "wrong-tool" => {
+                        evidence["tool"]["sha256"] = json!(Digest::of_bytes(b"other-tool").as_str())
+                    }
+                    "forbidden-run" => evidence["phase"] = json!("run"),
+                    _ => {}
+                }
+            }
+            let bytes = encode(&evidence);
+            let path = format!("evidence/{phase}.json");
+            refs.push(file(&path, "madb.build-evidence/1", &bytes));
+            f.memory.0.insert(LogicalPath::new(path).unwrap(), bytes);
+        }
+        request["build_evidence"] = json!(refs);
+        let recipe = package_recipe(&f, &request);
+        let result = BoundArtifactRecipe::new(
+            f.configuration(),
+            Some(&f.snapshot),
+            &recipe,
+            &encode(&request),
+            &f.frozen(),
+        );
+        match mode {
+            "valid" => {
+                result.unwrap();
+            }
+            "missing-link" | "forbidden-run" => code(result, "EXECUTION003"),
+            "wrong-tool" => code(result, "LOCK004"),
+            _ => code(result, "EXECUTION002"),
+        }
+    }
+}
+
+#[test]
+fn two_phase_package_parent_gate_rejects_omission_external_and_duplicate_refs() {
+    use madb_contracts::execution::validate_package_parents;
+    let f = external_runtime_fixture();
+    let output = f.outputs();
+    let bytes = encode(&output);
+    let mut source = Memory::default();
+    source
+        .0
+        .insert(LogicalPath::new("outputs.json").unwrap(), bytes.clone());
+    source.0.insert(
+        LogicalPath::new("include/fixture.h").unwrap(),
+        b"generated header\n".to_vec(),
+    );
+    let source = freeze(&source);
+    let mut build = Memory::default();
+    let mut refs = Vec::new();
+    for (index, phase) in ["compile", "link"].iter().enumerate() {
+        let mut evidence = value(DocumentKind::BuildEvidence);
+        evidence["task_id"] = json!(phase);
+        evidence["phase"] = json!(phase);
+        let path = format!("evidence/task-{index:04}.json");
+        let bytes = encode(&evidence);
+        refs.push(file(&path, "madb.build-evidence/1", &bytes));
+        build.0.insert(LogicalPath::new(path).unwrap(), bytes);
+    }
+    let build = freeze(&build);
+    let mut request = value(DocumentKind::PackageRequest);
+    request["output_set"] = file("outputs.json", "madb.output-set/1", &bytes);
+    request["build_evidence"] = json!(refs);
+    validate_package_parents(&encode(&request), &source, &build).unwrap();
+    let mut omitted = request.clone();
+    omitted["build_evidence"].as_array_mut().unwrap().pop();
+    code(
+        validate_package_parents(&encode(&omitted), &source, &build),
+        "EXECUTION002",
+    );
+    let mut duplicate = request.clone();
+    duplicate["build_evidence"][1] = duplicate["build_evidence"][0].clone();
+    code(
+        validate_package_parents(&encode(&duplicate), &source, &build),
+        "FILE001",
+    );
+    request["build_evidence"][0]["path"] = json!("external/forged-evidence.json");
+    code(
+        validate_package_parents(&encode(&request), &source, &build),
+        "FILE003",
     );
 }

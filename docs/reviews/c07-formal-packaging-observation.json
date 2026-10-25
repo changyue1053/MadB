@@ -1,0 +1,593 @@
+{
+  "evidence_scope": "formal_sdk_packaging_mechanism",
+  "certifies_c07": false,
+  "source_summary_sha256": "9d7bf380794672f7ab526956fbcdba4946138f3071b9592209d95ee2c39e955b",
+  "compile_sdk": "26.0.0.105 Release API26",
+  "compatible_sdk": "6.1.0(23)",
+  "target_api": 23,
+  "target_release": "Release",
+  "target_kind": "emulator",
+  "target_abi": "arm64-v8a",
+  "runs": [
+    {
+      "kind": "static",
+      "nonce": "c07-sdk26-2a806865e81f4c89982ff40aab1a5dfd",
+      "pid": 30085,
+      "receipt_sha256": "123445e474aca1af466c2db8f907ab34b6b59d9025619a0c1faa8dd7aa835960",
+      "hap_sha256": "fac14f26f531cc9cce90941c27088ce1fb6f8508b2fb7025e1d6247b18ac84f9",
+      "hap_size": 1350132,
+      "build_mode": "debug",
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17",
+          "size": 1262504
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinprobe.so",
+          "sha256": "885a06ca6da38d89d089899806ef714ca660fadc2e124ebc7737802d25683d5a",
+          "size": 6008
+        }
+      ]
+    },
+    {
+      "kind": "direct_debug",
+      "nonce": "c07-sdk26-8b849f92e8ff42fa9281dd4e122698f1",
+      "pid": 4904,
+      "receipt_sha256": "56cbd55006097bed281e3756765919e604a42dc99eec3077c27dbebff5f80ece",
+      "hap_sha256": "5200e7612557632a5ddbc2cf4c17f31b143402101634333ae2969201c9fa4f52",
+      "hap_size": 5231636,
+      "build_mode": "debug",
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "b11c5e91f135290dae6a3d418d07d5faf3daf9b34bbf1c3bfcc3c6a921447dfb",
+          "size": 3266568
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_rust_probe.so",
+          "sha256": "b479e01020b0049ee13df3d6a45cacfc956c82157698e276b6d5ef3c5e4128be",
+          "size": 413536
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbc07probe.so",
+          "sha256": "02d83203c09e788b893de89bdae51af5f8550c65963de8309f99d970a1547eeb",
+          "size": 65504
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinprobe.so",
+          "sha256": "4bb1a625a41c7c020b9f1af574cb9157ffea264becbc76d5a952f94a2cafe34a",
+          "size": 6040
+        }
+      ],
+      "final_audit": {
+        "activeThreads": 0,
+        "allocations": 15488,
+        "releases": 15488,
+        "outstanding": 0,
+        "peakOutstanding": 12,
+        "tsfnCreated": 5,
+        "tsfnFinalized": 5,
+        "cleanupHooks": 1,
+        "envCreated": 2,
+        "envDestroyed": 1,
+        "callbacks": 1319,
+        "callbackSucceeded": 1318,
+        "callbackThrows": 1,
+        "droppedAfterStop": 13,
+        "nullEnvCallbacks": 5,
+        "queueFull": 14151,
+        "byteBudgetRejected": 0,
+        "enqueueFailures": 0,
+        "enqueueClosing": 0,
+        "enqueued": 1337,
+        "peakInstanceOutstanding": 6,
+        "uncertainEnqueueRetained": 0,
+        "wrongEnvRejected": 2,
+        "invalidEnvCalls": 0,
+        "napiErrors": 0,
+        "workerExited": 5,
+        "instancesCreated": 5,
+        "maxCleanupJoinMicros": 106,
+        "releaseFailures": 0,
+        "currentEnvId": 1,
+        "ownedInstances": 4,
+        "queueCapacity": 4,
+        "payloadBytes": 64,
+        "outstandingLimitPerInstance": 8
+      }
+    },
+    {
+      "kind": "direct_release_obfuscated",
+      "nonce": "c07-sdk26-cecf2dd1c20c4a02aed510e0f841c7de",
+      "pid": 7935,
+      "receipt_sha256": "3b7c280c6505c57672e6565656849b639e0aced86e34fb92a686b32ec0c63c9b",
+      "hap_sha256": "9f7d1b923e331c5bbc226c401cf66a68324f6c1012f86356b810c51e0d8a7a2a",
+      "hap_size": 5210806,
+      "build_mode": "release",
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "b11c5e91f135290dae6a3d418d07d5faf3daf9b34bbf1c3bfcc3c6a921447dfb",
+          "size": 3266568
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_rust_probe.so",
+          "sha256": "b479e01020b0049ee13df3d6a45cacfc956c82157698e276b6d5ef3c5e4128be",
+          "size": 413536
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbc07probe.so",
+          "sha256": "02d83203c09e788b893de89bdae51af5f8550c65963de8309f99d970a1547eeb",
+          "size": 65504
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinprobe.so",
+          "sha256": "47672b80b2a8dabdb957c83fe20e231d4abcfd08d06ef30e492b47ef522f001f",
+          "size": 5896
+        }
+      ],
+      "final_audit": {
+        "activeThreads": 0,
+        "allocations": 14240,
+        "releases": 14240,
+        "outstanding": 0,
+        "peakOutstanding": 12,
+        "tsfnCreated": 5,
+        "tsfnFinalized": 5,
+        "cleanupHooks": 1,
+        "envCreated": 2,
+        "envDestroyed": 1,
+        "callbacks": 4434,
+        "callbackSucceeded": 4433,
+        "callbackThrows": 1,
+        "droppedAfterStop": 18,
+        "nullEnvCallbacks": 5,
+        "queueFull": 9783,
+        "byteBudgetRejected": 0,
+        "enqueueFailures": 0,
+        "enqueueClosing": 0,
+        "enqueued": 4457,
+        "peakInstanceOutstanding": 6,
+        "uncertainEnqueueRetained": 0,
+        "wrongEnvRejected": 2,
+        "invalidEnvCalls": 0,
+        "napiErrors": 0,
+        "workerExited": 5,
+        "instancesCreated": 5,
+        "maxCleanupJoinMicros": 94,
+        "releaseFailures": 0,
+        "currentEnvId": 1,
+        "ownedInstances": 4,
+        "queueCapacity": 4,
+        "payloadBytes": 64,
+        "outstandingLimitPerInstance": 8
+      }
+    },
+    {
+      "kind": "cpp_har_only_release_obfuscated",
+      "nonce": "c07-sdk26-7a669e3585794590b4581340eae6c1bd",
+      "pid": 17842,
+      "receipt_sha256": "80a8356d430d00ab9702dd3f85674f065ca3e4c01887162e0fa1efa4488a3d9b",
+      "hap_sha256": "a857baba0f65264a781d5f6c521213659a39bc796f560b3281169d918d4a7e3e",
+      "hap_size": 1489488,
+      "build_mode": "release",
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbc07probe.so",
+          "sha256": "02d83203c09e788b893de89bdae51af5f8550c65963de8309f99d970a1547eeb",
+          "size": 65504
+        }
+      ],
+      "final_audit": {
+        "activeThreads": 0,
+        "allocations": 15635,
+        "releases": 15635,
+        "outstanding": 0,
+        "peakOutstanding": 12,
+        "tsfnCreated": 5,
+        "tsfnFinalized": 5,
+        "cleanupHooks": 1,
+        "envCreated": 2,
+        "envDestroyed": 1,
+        "callbacks": 1413,
+        "callbackSucceeded": 1412,
+        "callbackThrows": 1,
+        "droppedAfterStop": 18,
+        "nullEnvCallbacks": 5,
+        "queueFull": 14199,
+        "byteBudgetRejected": 0,
+        "enqueueFailures": 0,
+        "enqueueClosing": 0,
+        "enqueued": 1436,
+        "peakInstanceOutstanding": 6,
+        "uncertainEnqueueRetained": 0,
+        "wrongEnvRejected": 2,
+        "invalidEnvCalls": 0,
+        "napiErrors": 0,
+        "workerExited": 5,
+        "instancesCreated": 5,
+        "maxCleanupJoinMicros": 96,
+        "releaseFailures": 0,
+        "currentEnvId": 1,
+        "ownedInstances": 4,
+        "queueCapacity": 4,
+        "payloadBytes": 64,
+        "outstandingLimitPerInstance": 8
+      }
+    },
+    {
+      "kind": "full_har_release_obfuscated",
+      "nonce": "c07-sdk26-8bf1c200137c42509de6c01db2f34ec0",
+      "pid": 17903,
+      "receipt_sha256": "6523fec5bb50d3a5ed7d28851fec43ea36aa7ce5da52038d813a0ee5118680f3",
+      "hap_sha256": "4258e2034db6685b3bdcab788fc624ce10c26a7f324ab6705c2b95e1082d4be4",
+      "hap_size": 5222094,
+      "build_mode": "release",
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "b11c5e91f135290dae6a3d418d07d5faf3daf9b34bbf1c3bfcc3c6a921447dfb",
+          "size": 3266568
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_rust_probe.so",
+          "sha256": "b479e01020b0049ee13df3d6a45cacfc956c82157698e276b6d5ef3c5e4128be",
+          "size": 413536
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbc07probe.so",
+          "sha256": "02d83203c09e788b893de89bdae51af5f8550c65963de8309f99d970a1547eeb",
+          "size": 65504
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinprobe.so",
+          "sha256": "47672b80b2a8dabdb957c83fe20e231d4abcfd08d06ef30e492b47ef522f001f",
+          "size": 5896
+        }
+      ],
+      "final_audit": {
+        "activeThreads": 0,
+        "allocations": 16480,
+        "releases": 16480,
+        "outstanding": 0,
+        "peakOutstanding": 12,
+        "tsfnCreated": 5,
+        "tsfnFinalized": 5,
+        "cleanupHooks": 1,
+        "envCreated": 2,
+        "envDestroyed": 1,
+        "callbacks": 1314,
+        "callbackSucceeded": 1313,
+        "callbackThrows": 1,
+        "droppedAfterStop": 18,
+        "nullEnvCallbacks": 5,
+        "queueFull": 15143,
+        "byteBudgetRejected": 0,
+        "enqueueFailures": 0,
+        "enqueueClosing": 0,
+        "enqueued": 1337,
+        "peakInstanceOutstanding": 6,
+        "uncertainEnqueueRetained": 0,
+        "wrongEnvRejected": 2,
+        "invalidEnvCalls": 0,
+        "napiErrors": 0,
+        "workerExited": 5,
+        "instancesCreated": 5,
+        "maxCleanupJoinMicros": 100,
+        "releaseFailures": 0,
+        "currentEnvId": 1,
+        "ownedInstances": 4,
+        "queueCapacity": 4,
+        "payloadBytes": 64,
+        "outstandingLimitPerInstance": 8
+      }
+    }
+  ],
+  "hars": [
+    {
+      "name": "madbc07cpp",
+      "sha256": "d56cf21a07730df45add0f7b5d9878b0ea666fb19b43d4e611cc4a1318516b54",
+      "size": 30958,
+      "manifest": {
+        "name": "madbc07cpp",
+        "version": "1.0.0",
+        "types": "Index.d.ets",
+        "dependencies": {
+          "libmadbc07probe.so": "file:./src/main/cpp/types/libmadbc07probe",
+          "madbc07runtime": "1.0.0"
+        },
+        "artifactType": "obfuscation",
+        "metadata": {
+          "byteCodeHar": true,
+          "sourceRoots": [
+            "./src/main"
+          ],
+          "debug": false,
+          "dependencyPkgVersion": {
+            "madbc07runtime": "1.0.0"
+          },
+          "declarationEntry": [],
+          "nativeDebugSymbol": true,
+          "useNormalizedOHMUrl": true
+        },
+        "compatibleSdkVersion": 23,
+        "compatibleSdkType": "HarmonyOS",
+        "obfuscated": true
+      },
+      "members": [
+        {
+          "path": "package/Index.d.ets",
+          "sha256": "0ea6d43ebdd5949e66cfaa8b30c756e093809a7e837e3ddd97e4e2c9c846e302",
+          "size": 108
+        },
+        {
+          "path": "package/oh-package.json5",
+          "sha256": "2ce8fcb04b5078ec60887c6587147bc94eee62f2a059b87d336fa29963393796",
+          "size": 473
+        },
+        {
+          "path": "package/ets/modules.abc",
+          "sha256": "461892fd9552ad8c11f808a9777002a1aadeaf95d6afada8e9db4036e446c334",
+          "size": 1160
+        },
+        {
+          "path": "package/libs/arm64-v8a/libmadbc07probe.so",
+          "sha256": "02d83203c09e788b893de89bdae51af5f8550c65963de8309f99d970a1547eeb",
+          "size": 65504
+        },
+        {
+          "path": "package/src/main/module.json",
+          "sha256": "c0723122a37e7ae056ed04ac8c710e46ab58b65c1a71faddd8f53eb85f294cca",
+          "size": 601
+        },
+        {
+          "path": "package/src/main/cpp/types/libmadbc07probe/Index.d.ts",
+          "sha256": "1c3ee0b831ca7f79c5a97c96675570d5b1816442e52bf8a96cdd953f9046a3ae",
+          "size": 1143
+        },
+        {
+          "path": "package/src/main/cpp/types/libmadbc07probe/oh-package.json5",
+          "sha256": "96a63385a5661ea50b906be42900ec842ce6e57a6048f804b939a28ff1a8ce17",
+          "size": 83
+        },
+        {
+          "path": "package/src/main/d/e/f/Index.d.ts",
+          "sha256": "23fbdad71f848d4d6611a72e87c278a0d63220879a041efebae728a163567d72",
+          "size": 1211
+        }
+      ]
+    },
+    {
+      "name": "madbc07kotlin",
+      "sha256": "09233bc946a9d6b70facb0bbeb9a33aeaa58e5c1723353701d647e3cba053332",
+      "size": 1130691,
+      "manifest": {
+        "name": "madbc07kotlin",
+        "version": "1.0.0",
+        "types": "Index.d.ets",
+        "dependencies": {
+          "libmadbkotlinprobe.so": "file:./src/main/cpp/types/libmadbkotlinprobe",
+          "madbc07runtime": "1.0.0"
+        },
+        "artifactType": "obfuscation",
+        "metadata": {
+          "byteCodeHar": true,
+          "sourceRoots": [
+            "./src/main"
+          ],
+          "debug": false,
+          "dependencyPkgVersion": {
+            "madbc07runtime": "1.0.0"
+          },
+          "declarationEntry": [],
+          "nativeDebugSymbol": true,
+          "useNormalizedOHMUrl": true
+        },
+        "compatibleSdkVersion": 23,
+        "compatibleSdkType": "HarmonyOS",
+        "obfuscated": true
+      },
+      "members": [
+        {
+          "path": "package/Index.d.ets",
+          "sha256": "30847d171c0da6d27664bb87ee0d47fc07dee202061eea2f3eca47d7424939da",
+          "size": 99
+        },
+        {
+          "path": "package/oh-package.json5",
+          "sha256": "2060184627022ca832418c2b42c967a7fba21bfb89ef52e5175efe4e853987ca",
+          "size": 482
+        },
+        {
+          "path": "package/ets/modules.abc",
+          "sha256": "eb99f6d9b599468e8b168e69370c1c92a8876ac98432d1a164f26e37c61f4426",
+          "size": 1188
+        },
+        {
+          "path": "package/libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "b11c5e91f135290dae6a3d418d07d5faf3daf9b34bbf1c3bfcc3c6a921447dfb",
+          "size": 3266568
+        },
+        {
+          "path": "package/libs/arm64-v8a/libmadbkotlinprobe.so",
+          "sha256": "47672b80b2a8dabdb957c83fe20e231d4abcfd08d06ef30e492b47ef522f001f",
+          "size": 5896
+        },
+        {
+          "path": "package/src/main/module.json",
+          "sha256": "a370c95416c9ba7aba41f34e85fd4fb8e882d28dba71223b81acac30cd833354",
+          "size": 607
+        },
+        {
+          "path": "package/src/main/cpp/types/libmadbkotlinprobe/Index.d.ts",
+          "sha256": "781f3073879976992feb3f24b948b7a057641bcea0cbef3d9aae321d898a5c3a",
+          "size": 120
+        },
+        {
+          "path": "package/src/main/cpp/types/libmadbkotlinprobe/oh-package.json5",
+          "sha256": "b117dea096998f446d02c4e0024d1eb63ad970f4da1d390ce03a92cdaef636fc",
+          "size": 86
+        },
+        {
+          "path": "package/src/main/d/e/f/Index.d.ts",
+          "sha256": "49c89f0109b74caee822de9262f680c719cf5350eba647af055d7ae00f51842c",
+          "size": 102
+        }
+      ]
+    },
+    {
+      "name": "madbc07runtime",
+      "sha256": "a7c0e4e1228ea86d7b2b97f67dc68b3169f2b2714e78c8b3fdb2da88b8e8012c",
+      "size": 440393,
+      "manifest": {
+        "name": "madbc07runtime",
+        "version": "1.0.0",
+        "types": "Index.d.ets",
+        "dependencies": {},
+        "artifactType": "obfuscation",
+        "metadata": {
+          "byteCodeHar": true,
+          "sourceRoots": [
+            "./src/main"
+          ],
+          "debug": false,
+          "dependencyPkgVersion": {},
+          "declarationEntry": [],
+          "nativeDebugSymbol": true,
+          "useNormalizedOHMUrl": true
+        },
+        "compatibleSdkVersion": 23,
+        "compatibleSdkType": "HarmonyOS",
+        "obfuscated": true
+      },
+      "members": [
+        {
+          "path": "package/Index.d.ets",
+          "sha256": "cb893eae0d5a43ad5d1d6cbaab6accd5c30b838a1ff8157a3a042f3ed81dec1e",
+          "size": 37
+        },
+        {
+          "path": "package/oh-package.json5",
+          "sha256": "9e5050697dccf401601743d056b719ac0489a15fe6612bc6a81c96550054e3e4",
+          "size": 364
+        },
+        {
+          "path": "package/ets/modules.abc",
+          "sha256": "b9a7d078804418e80a83c2eaf754eb107c296f08abcb2408642a40e88110859f",
+          "size": 1112
+        },
+        {
+          "path": "package/libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "package/src/main/module.json",
+          "sha256": "362fed7eb5c79ccf530478dd0b5973d945ffd27f336e57ebb0a3d7edf74a6fb7",
+          "size": 609
+        }
+      ]
+    },
+    {
+      "name": "madbc07rust",
+      "sha256": "80b316353e505b7ddcc497d9c8f29eb4d0344ca5e4a20291ca8b5cd5912dec9c",
+      "size": 211314,
+      "manifest": {
+        "name": "madbc07rust",
+        "version": "1.0.0",
+        "types": "Index.d.ets",
+        "dependencies": {
+          "libmadb_rust_probe.so": "file:./src/main/cpp/types/libmadb_rust_probe"
+        },
+        "artifactType": "obfuscation",
+        "metadata": {
+          "byteCodeHar": true,
+          "sourceRoots": [
+            "./src/main"
+          ],
+          "debug": false,
+          "dependencyPkgVersion": {},
+          "declarationEntry": [],
+          "nativeDebugSymbol": true,
+          "useNormalizedOHMUrl": true
+        },
+        "compatibleSdkVersion": 23,
+        "compatibleSdkType": "HarmonyOS",
+        "obfuscated": true
+      },
+      "members": [
+        {
+          "path": "package/Index.d.ets",
+          "sha256": "b2160dd7eb087b82b4b0efa33ceba900e634a6bae8a4d8329a520534f79ccc46",
+          "size": 95
+        },
+        {
+          "path": "package/oh-package.json5",
+          "sha256": "f5a9f077e1f09e9244097a6a1eef9ce7a71b2007a8cd6a0548503bf1070ec469",
+          "size": 431
+        },
+        {
+          "path": "package/ets/modules.abc",
+          "sha256": "ab7d8a9b786f49dde874b8549c83574a660dbbbd063535e5d8604d15c9127ba2",
+          "size": 1172
+        },
+        {
+          "path": "package/libs/arm64-v8a/libmadb_rust_probe.so",
+          "sha256": "b479e01020b0049ee13df3d6a45cacfc956c82157698e276b6d5ef3c5e4128be",
+          "size": 413536
+        },
+        {
+          "path": "package/src/main/module.json",
+          "sha256": "5642bb1b7fec48e00d4b6513255820916f3575f553ca34be467518250c5fcee5",
+          "size": 603
+        },
+        {
+          "path": "package/src/main/cpp/types/libmadb_rust_probe/Index.d.ts",
+          "sha256": "01014f42192e311119dc0104cce6e7080503c6b3645469fa7fce0f044f83a7b6",
+          "size": 93
+        },
+        {
+          "path": "package/src/main/cpp/types/libmadb_rust_probe/oh-package.json5",
+          "sha256": "45fa4a957f52e572535ae72b1ef5590d6b0688cfed2492098e563bedac98113d",
+          "size": 86
+        },
+        {
+          "path": "package/src/main/d/e/f/Index.d.ts",
+          "sha256": "01014f42192e311119dc0104cce6e7080503c6b3645469fa7fce0f044f83a7b6",
+          "size": 93
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Environment and packaging mechanism evidence only; not final C07 profile/candidate or independent Lab acceptance.",
+    "Community debug profile signs both debug and release build modes; no production publication signature.",
+    "Managed Kotlin basic synchronous registration/string calls do not prove its TSFN/ref/thread lifecycle; later provider-specific probes must have separate identity.",
+    "NAPI queue configured 4 consistently admitted 5 pending payloads on this API23 target; queueFull and cleanup observed, exact capacity4 not certified. No independent byte-budget saturation evidence.",
+    "Native compatibility uses formal SDK26 helper/C/C++/Rust builds and independently locked CPF LLVM19/sysroot/platform headers. Selected CPF runtime is the only packaged libc++_shared.so.",
+    "SDK-generated Index.d.ets includes @ts-nocheck and produces a compiler warning. Valid typed calls compile/run; compile-time misuse rejection was not tested in this run.",
+    "Full values/errors/resources/async/cancel/state/event matrix, wrong-ABI/profile negatives, source/distribution provenance closure, and final independent retrieval remain outside this probe.",
+    "No loaded-process maps claim: prior Beta maps access was denied and was not bypassed. Packaged-library identities and actual direct calls are recorded instead."
+  ]
+}

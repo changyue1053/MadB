@@ -70,7 +70,7 @@ pub(super) fn validate_package(
         ));
     }
     let mut ids = BTreeSet::new();
-    let mut phases = BTreeSet::new();
+    let mut phases = Vec::new();
     for item in q["build_evidence"].as_array().expect("validated") {
         reference_schema(item, DocumentKind::BuildEvidence)?;
     }
@@ -79,7 +79,7 @@ pub(super) fn validate_package(
         let evidence =
             adapter.decode(DocumentKind::BuildEvidence, require_file(provided, &file)?)?;
         let e = evidence.value();
-        phases.insert(e["phase"].as_str().expect("validated").to_owned());
+        phases.push(super::build_phase(&e["phase"])?);
         if !ids.insert(e["task_id"].as_str().expect("validated").to_owned())
             || e["status"] != "passed"
             || e["exit_code"] != 0
@@ -126,14 +126,13 @@ pub(super) fn validate_package(
             require_file(provided, &output)?;
         }
     }
-    if ["compile", "link", "run"]
-        .iter()
-        .any(|phase| !phases.contains(*phase))
-    {
+    let policy =
+        crate::build_completion_policy(&prepared.profile).map_err(crate::query::format_error)?;
+    if !policy.is_complete(phases) {
         return Err(invalid(
             "EXECUTION003",
             "build_evidence",
-            "package requires successful compile, link and run evidence",
+            "package evidence does not satisfy the selected build completion policy",
         ));
     }
     for dependency in references(&q["dependencies"])? {

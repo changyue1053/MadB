@@ -1,0 +1,96 @@
+{
+  "scope": "actual FrozenPipeline + current Rust CLI with C04 C fixture; not ArkTS candidate acceptance",
+  "passed": true,
+  "host_image": {
+    "path": "/Users/changyue/Desktop/MadB/madb/target/debug/madb",
+    "sha256": "sha256:60ce7a674fd9910313682fe1befe84db1960a82730e6fe9bed37c9913dc9e922"
+  },
+  "profile_digest": "sha256:c52fd0d88195dc36eee3f34ac09ff3a6f0888fe90de937b25ff34c11d718b82a",
+  "source": "/private/tmp/madb-c07-frozen-pipeline-real/work/domain/batches/e098dc6697ce4dbe24ab8d53ab7d9cbedb09e1d6ebeea3dd67937cffe0be1ab0/files",
+  "build": "/private/tmp/madb-c07-frozen-pipeline-real/work/domain/batches/4a6c06566740b722693fb6a17d9f1e04ca723bda80f94474dab8a0dd2d01a673/files",
+  "candidate_digest": "sha256:bd13859b84e76d22b243af32d25c7c1a2866c0c589b3e192d3fe5fb5b121b110",
+  "evidence": [
+    {
+      "path": "evidence/task-0000.json",
+      "sha256": "sha256:27d51b7623574aa77333984b9cafa94d95cb256975a0725dd30a68fbdcf82110",
+      "size": 896
+    },
+    {
+      "path": "evidence/task-0001.json",
+      "sha256": "sha256:82b3eff551bc0c71d49bfe1422df825e01c0d82a7faa1fcb03fa283224a6a666",
+      "size": 894
+    }
+  ],
+  "phases": [
+    "compile",
+    "link"
+  ],
+  "worker_calls": [
+    {
+      "phase": "compile",
+      "work": "/private/tmp/madb-c07-frozen-pipeline-real/work/prepare/compile/work",
+      "arguments": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "-nostdinc",
+        "-ffreestanding",
+        "-I../inputs/include",
+        "-c",
+        "../inputs/src/api.c",
+        "-o",
+        "native/api.o"
+      ],
+      "exit_code": 0
+    },
+    {
+      "phase": "link",
+      "work": "/private/tmp/madb-c07-frozen-pipeline-real/work/prepare/link/work",
+      "arguments": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "-nostdlib",
+        "-r",
+        "../inputs/native/api.o",
+        "-o",
+        "native/api-linked.o"
+      ],
+      "exit_code": 0
+    },
+    {
+      "phase": "compile",
+      "work": "/private/tmp/madb-c07-frozen-pipeline-real/work/runs/madb-91274-18e1b0fbb448d928-0/node-0000/work",
+      "arguments": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "-nostdinc",
+        "-ffreestanding",
+        "-I../inputs/include",
+        "-c",
+        "../inputs/src/api.c",
+        "-o",
+        "native/api.o"
+      ],
+      "exit_code": 0
+    },
+    {
+      "phase": "link",
+      "work": "/private/tmp/madb-c07-frozen-pipeline-real/work/runs/madb-91274-18e1b0fbb448d928-0/node-0001/work",
+      "arguments": [
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "-nostdlib",
+        "-r",
+        "../inputs/native/api.o",
+        "-o",
+        "native/api-linked.o"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "required_cases": [
+    "DATA-001/positive/external-runtime-fixture"
+  ],
+  "target_run_performed": false,
+  "certifies_c07": false,
+  "source_files": {
+    "pipeline.py": "sha256:95d037160c4a4d2bd3fe428db87e7c3186f26b4d908db56f10ee6daa9346aa7f",
+    "run.py": "sha256:97c56c047758d8708c9d8186f8e3c221083f5473836bc3049044651117e4a2bc",
+    "worker.py": "sha256:58b598b54e7d318787b01c641576b29e64cd35f70efda1660d68017e0d7f320a"
+  }
+}

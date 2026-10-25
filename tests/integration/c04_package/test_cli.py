@@ -7,8 +7,9 @@ import shutil
 import subprocess
 import signal
 
-from cli_fixture import CliWorkspace, HEADER, IMPLEMENTATION, canonical, generation_identity, candidate_identity
+from cli_fixture import CliWorkspace, HEADER, IMPLEMENTATION, canonical, generation_identity, candidate_identity, tasks, save
 from support import PackageFixture, build_binary, tree_bytes, wait_json
+from dependency_fixture import host_target
 
 
 class FormalExecution(PackageFixture):
@@ -295,3 +296,127 @@ class FormalExecution(PackageFixture):
         self.assertEqual([call["operation"] for call in self.calls()], ["generate", "compile"])
         with self.assertRaises(ProcessLookupError):
             os.kill(helper["pid"], 0)
+
+
+    def select_runtime_verification(self, *, required=True, feature="core.external-runtime-verification@1"):
+        profile = self.fixture.values["profile"]
+        profile["supported_features"].append(feature)
+        if required:
+            profile["required_features"].append(feature)
+        tasks.persist(self.root, self.fixture.values)
+        self.fixture.refresh_generation()
+
+    def test_external_runtime_compile_link_package_keeps_two_real_evidence_files(self):
+        original = self.fixture.values["read-request"]["selector"]["profile_digest"]
+        self.select_runtime_verification()
+        self.assertNotEqual(original, self.fixture.values["read-request"]["selector"]["profile_digest"])
+        self.generated()
+        self.fixture.build(phases=("compile", "link"))
+        out, err = self.execute("build")
+        self.assertIn("Committed", out)
+        self.assertEqual(err, "")
+        built = self.fixture.layer("build")
+        evidence = sorted((built / "evidence").glob("task-*.json"))
+        self.assertEqual([p.name for p in evidence], ["task-0000.json", "task-0001.json"])
+        self.assertEqual([json.loads(p.read_text())["phase"] for p in evidence], ["compile", "link"])
+        self.fixture.package()
+        required = json.loads((self.root / "package-request.json").read_text())["required_cases"]
+        self.assertIn("Committed", self.execute("package")[0])
+        packaged = self.fixture.layer("candidate")
+        manifest = json.loads((packaged / "candidate.json").read_text())
+        self.assertEqual(manifest["candidate_digest"], candidate_identity(manifest))
+        self.assertEqual(manifest["required_cases"], required)
+        self.assertEqual(len(manifest["build_evidence"]), 2)
+        self.assertEqual((packaged / "native/api-linked.o").read_bytes(), (built / "native/api-linked.o").read_bytes())
+        self.assertEqual([c["operation"] for c in self.calls()], ["generate", "compile", "link", "package"])
+
+    def test_external_runtime_compile_subgraph_does_not_commit_build(self):
+        self.select_runtime_verification()
+        self.generated()
+        self.fixture.build(phases=("compile", "link"))
+        before = (self.domain / "current.json").read_bytes()
+        out, err = self.execute("build", extra=("--task", "compile"))
+        self.assertIn("Executed", out)
+        self.assertEqual(err, "")
+        self.assertEqual((self.domain / "current.json").read_bytes(), before)
+        self.assertEqual([c["operation"] for c in self.calls()], ["generate", "compile"])
+
+    def test_external_runtime_forbidden_run_rejects_whole_graph_before_any_helper(self):
+        self.select_runtime_verification()
+        self.generated()
+        self.fixture.build()
+        before = (self.domain / "current.json").read_bytes()
+        calls = self.calls()
+        for selected in [(), ("--task", "compile")]:
+            with self.subTest(selected=selected):
+                _, err = self.execute("build", extra=selected, expected=2)
+                self.assertIn("EXECUTION003", err)
+                self.assertEqual(self.calls(), calls, "a helper ran before forbidden graph rejection")
+                self.assertEqual((self.domain / "current.json").read_bytes(), before)
+
+    def test_supported_only_preserves_default_run_requirement_and_execution(self):
+        self.select_runtime_verification(required=False)
+        self.generated()
+        self.fixture.build()
+        before = (self.domain / "current.json").read_bytes()
+        out, _ = self.execute("build", extra=("--task", "link"))
+        self.assertIn("Executed", out)
+        self.assertEqual((self.domain / "current.json").read_bytes(), before)
+        out, _ = self.execute("build")
+        self.assertIn("Committed", out)
+        self.assertEqual([c["operation"] for c in self.calls()], ["generate", "compile", "link", "compile", "link", "run"])
+
+    def test_unknown_required_build_feature_is_rejected_before_generator(self):
+        self.select_runtime_verification(feature="core.unknown-build-mode@1")
+        _, err = self.execute("generate", expected=2)
+        self.assertIn("CAP002", err)
+        self.assertEqual(self.calls(), [])
+        self.assertFalse((self.domain / "current.json").exists())
+
+    def test_external_runtime_package_cannot_omit_a_pinned_evidence_file(self):
+        self.select_runtime_verification()
+        self.generated()
+        self.fixture.build(phases=("compile", "link"))
+        self.execute("build")
+        self.fixture.package()
+        before = (self.domain / "current.json").read_bytes()
+        request = json.loads((self.root / "package-request.json").read_text())
+        request["build_evidence"].pop()
+        save(self.root, "package-request.json", request)
+        bundle = json.loads((self.root / "package.json").read_text())
+        bundle["recipe"]["request"] = tasks.ref(self.root, "package-request.json", "madb.package-request/1")
+        save(self.root, "package.json", bundle)
+        calls = self.calls()
+        _, err = self.execute("package", expected=2)
+        self.assertIn("EXECUTION002", err)
+        self.assertEqual(self.calls(), calls, "packager ran with incomplete pinned evidence")
+        self.assertEqual((self.domain / "current.json").read_bytes(), before)
+
+
+    def test_forbidden_build_graph_rejects_before_explicit_dependency_helper(self):
+        self.select_runtime_verification()
+        discovery_marker = Path(self.marker_temp.name) / "discovery-ran"
+        image = self.root / "tools/discovery"
+        image.write_text("#!" + str(tasks.PYTHON) + "\nfrom pathlib import Path\nPath(" + repr(str(discovery_marker)) + ").write_text('ran')\nraise SystemExit(42)\n")
+        image.chmod(0o700)
+        installed = tasks.ref(self.root, "tools/discovery", "madb.tool-image/1")
+        tool = dict(self.fixture.values["profile"]["tools"][0], id="fixture-discovery", sha256=installed["sha256"])
+        for document in ["profile", "lock"]:
+            self.fixture.values[document]["tools"].append(tool.copy())
+        tasks.persist(self.root, self.fixture.values)
+        self.fixture.refresh_generation()
+        self.generated()
+        bundle = self.fixture.build()
+        (self.root / "source").mkdir()
+        (self.root / "source/discovery.c").write_text("int discovery(void) { return 1; }\n")
+        save(self.root, "dependencies.json", dict(schema="madb.dependency-request/1", compiler={k: installed[k] for k in ["path", "sha256", "size"]},
+             target=host_target(), sources=["source/discovery.c"], include_directories=[], absent=[], arguments=["-std=c11"], environment={}))
+        bundle["dependencies"] = dict(request=tasks.ref(self.root, "dependencies.json", "madb.dependency-request/1"), receipt=None)
+        save(self.root, "build.json", bundle)
+        before = (self.domain / "current.json").read_bytes()
+        calls = self.calls()
+        _, err = self.execute("build", extra=("--task", "dependencies"), expected=2)
+        self.assertIn("EXECUTION003", err)
+        self.assertFalse(discovery_marker.exists(), "dependency helper ran before graph policy validation")
+        self.assertEqual(self.calls(), calls)
+        self.assertEqual((self.domain / "current.json").read_bytes(), before)

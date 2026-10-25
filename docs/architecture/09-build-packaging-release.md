@@ -10,6 +10,12 @@
 
 目标编译必须使用目标的 sysroot 和头文件。C/C++ 的宏、pack、异常、RTTI、标准库、链接方式和 LTO 影响兼容性，分别记录。原生库页大小与装载属性纳入适用目标检查，不按文件名或宿主编译成功推断。
 
+## 主机构建完成与目标运行
+
+默认 Build 需要 compile/link/run 三种阶段全部成功。profile 只有在 required_features 明确选择 `core.external-runtime-verification@1` 时，才使用 compile/link 完成策略，Build 图仅允许这两种阶段，并在执行任何 helper 前拒绝其他阶段；只声明支持该功能不会改变默认值。选择和证据都受 profile 摘要约束，规则见 [ADR-0010](../adr/0010-external-runtime-verification.md)。
+
+该模式由真实 Package 端口装配 HAR 等制品，独立 Lab 消费候选并执行必需目标用例。构建提交与目标验收保持分离；没有目标报告就不能通过认证。准备/重放中的 helper 不承担签名、安装、设备启动或退出清理，不制造占位运行证据。现有 C05/C06 默认三阶段与父证据完整性规则保持。
+
 ## 制品形态
 
 | 消费者 | 包含内容 | 必须验证 |
