@@ -1,0 +1,22 @@
+{
+  "format": 1,
+  "length": 15,
+  "fields": [
+    "Format",
+    "WaiterMap",
+    "SettlingWaiters",
+    "SubscriptionsMap",
+    "OperationsMap",
+    "ParentCloseControl",
+    "TimerArmed",
+    "TickInFlight",
+    "Closing",
+    "Closed",
+    "Failed",
+    "AcceptedResolveReturned",
+    "AcceptedRejectReturned",
+    "SettlementProbeArmed",
+    "SettlementFaultArmed"
+  ],
+  "semantics": "Owner-env synchronous observation; signals count only actual ordinary waiter accept resolver/rejector returns, excluding admission rejections and fail-path rejection. Native156 frame is separately observed, not atomic with this frame."
+}

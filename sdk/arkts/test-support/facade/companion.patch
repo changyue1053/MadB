@@ -1,0 +1,169 @@
+--- a/Boundary.ets.in
++++ b/Boundary.ets.in
+@@ -87,7 +87,49 @@
+   }
+ }
+ 
++// TEST-SUPPORT VARIANT ONLY. The ordinary facade contains no fault controls.
+ class Session {
++  private testSettlementProbe: (() => void) | undefined = undefined;
++  private testSettlementFault: boolean = false;
++  private testAcceptedResolve: number = 0;
++  private testAcceptedReject: number = 0;
++
++  testAfterSettlement(callback: () => void): void {
++    this.requireOpen();
++    if (this.testSettlementProbe !== undefined || typeof callback !== 'function') {
++      throw new BoundaryError('InvalidArgument');
++    }
++    this.testSettlementProbe = callback;
++  }
++  testFailAfterSettlement(): void {
++    this.requireOpen();
++    if (this.testSettlementFault) { throw new BoundaryError('InvalidArgument'); }
++    this.testSettlementFault = true;
++  }
++  private testAccepted(rejected: boolean): void {
++    if (rejected) { this.testAcceptedReject++; } else { this.testAcceptedResolve++; }
++    // This executes only after the actual resolver/rejector returned. The
++    // ordinary waiter remains settling and its map entry is still charged.
++    const probe: (() => void) | undefined = this.testSettlementProbe;
++    this.testSettlementProbe = undefined;
++    if (probe !== undefined) { probe(); }
++    if (this.testSettlementFault) {
++      this.testSettlementFault = false;
++      throw new BoundaryError('TestAfterAccepted');
++    }
++  }
++  testObserve(): number[] { return nativeCall(() => native.testObserve(this.runtime)); }
++  testExportKey(): string { return nativeCall(() => native.testExportKey(this.runtime)); }
++  testObserveFacade(): number[] {
++    let settling: number = 0;
++    this.waiters.forEach((waiter: Waiter) => { if (waiter.settling) { settling++; } });
++    return [1, this.waiters.size, settling, this.subscriptions.size, this.operations.size,
++      this.closeResolve === undefined ? 0 : 1, this.timer >= 0 ? 1 : 0,
++      this.ticking ? 1 : 0, this.closing ? 1 : 0, this.closed ? 1 : 0,
++      this.failed === undefined ? 0 : 1, this.testAcceptedResolve, this.testAcceptedReject,
++      this.testSettlementProbe === undefined ? 0 : 1, this.testSettlementFault ? 1 : 0];
++  }
++
+   private readonly runtime: string;
+   private engine: ResourceRecord | undefined = undefined;
+   private readonly subscriptions: Map<string, ResourceRecord> = new Map<string, ResourceRecord>();
+@@ -245,10 +287,12 @@
+             const snapshot: Snapshot = { value: copy.value, text: copy.text };
+             waiter.signalled = true;
+             resolve(snapshot);
++            this.testAccepted(false);
+           } else {
+             const reason: Error = statusError(copy.status);
+             waiter.signalled = true;
+             reject(reason);
++            this.testAccepted(true);
+           }
+         }, reject);
+         this.waiters.set(id, waiter);
+@@ -281,11 +325,12 @@
+       return new Promise<void>((resolve, reject) => {
+         const waiter: Waiter = new Waiter(id, record, false, (copy: NativeCopy) => {
+           this.retire(record, copy.status);
+-          if (record.closeStatus === 0) { waiter.signalled = true; resolve(); }
++          if (record.closeStatus === 0) { waiter.signalled = true; resolve(); this.testAccepted(false); }
+           else {
+             const reason: Error = statusError(record.closeStatus);
+             waiter.signalled = true;
+             reject(reason);
++            this.testAccepted(true);
+           }
+         }, reject);
+         this.waiters.set(id, waiter);
+@@ -427,6 +472,8 @@
+         const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
+         if (!physicalRuntimeAck(receipt)) { throw new BoundaryError('BridgeFailure'); }
+         this.closed = true;
++        this.testSettlementProbe = undefined;
++        this.testSettlementFault = false;
+         if (this.engine !== undefined) { this.retire(this.engine, 0); }
+         if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
+         const resolve: () => void = this.closeResolve;
+@@ -458,6 +505,8 @@
+   private fail(reason: Error): void {
+     if (this.failed !== undefined) { return; }
+     this.failed = reason;
++    this.testSettlementProbe = undefined;
++    this.testSettlementFault = false;
+     if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
+     this.waiters.forEach((waiter: Waiter) => {
+       if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
+@@ -471,12 +520,27 @@
+ }
+ 
+ class RuntimeHandle implements Runtime {
++  testObserve(): number[] { return this.session.testObserve(); }
++  testExportKey(): string { return this.session.testExportKey(); }
++  testObserveFacade(): number[] { return this.session.testObserveFacade(); }
++  testAfterSettlement(callback: () => void): void { this.session.testAfterSettlement(callback); }
++  testFailAfterSettlement(): void { this.session.testFailAfterSettlement(); }
+   private readonly session: Session;
+   constructor(session: Session) { this.session = session; }
+   connect(): Engine { return this.session.connect(); }
+   close(): Promise<void> { return this.session.close(); }
+ }
+ class EngineHandle implements Engine {
++  testArmWork(phase: number): void { nativeCall(() => native.testArmWork(this.record.handle, phase)); }
++  testReleaseWork(): void { nativeCall(() => native.testReleaseWork(this.record.handle)); }
++  testHoldPublication(stream: number, value: Snapshot): void {
++    const item: number = value.value;
++    const text: string = value.text;
++    nativeCall(() => native.testHoldPublication(this.record.handle, stream, item, text));
++  }
++  testReleasePublication(commit: number): void { nativeCall(() => native.testReleasePublication(this.record.handle, commit)); }
++  testFailClone(nth: number, mode: number): void { nativeCall(() => native.testFailClone(this.record.handle, nth, mode)); }
++  testFailCompletion(stage: number): void { nativeCall(() => native.testFailCompletion(this.record.handle, stage)); }
+   private readonly session: Session;
+   private readonly record: ResourceRecord;
+   constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
+@@ -490,6 +554,7 @@
+   close(): Promise<void> { return this.session.closeResource(this.record); }
+ }
+ class OperationHandle implements Operation {
++  testObserveOperation(): number[] { return nativeCall(() => native.testObserveOperation(this.record.handle)); }
+   private readonly session: Session;
+   private readonly record: ResourceRecord;
+   constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
+@@ -505,3 +570,35 @@
+   close(): Promise<void> { return this.session.closeResource(this.record); }
+ }
+ export function openRuntime(): Runtime { return new RuntimeHandle(new Session()); }
++
++// Public companion functions accept only wrappers created by this SDK variant.
++// No raw native handle or private-field inspection is exposed to consumers.
++function checkedRuntime(runtime: Runtime): RuntimeHandle {
++  if (!(runtime instanceof RuntimeHandle)) { throw new BoundaryError('InvalidArgument'); }
++  return runtime;
++}
++function checkedEngine(engine: Engine): EngineHandle {
++  if (!(engine instanceof EngineHandle)) { throw new BoundaryError('InvalidArgument'); }
++  return engine;
++}
++function checkedOperation(operation: Operation): OperationHandle {
++  if (!(operation instanceof OperationHandle)) { throw new BoundaryError('InvalidArgument'); }
++  return operation;
++}
++export function testArmWork(engine: Engine, phase: number): void { checkedEngine(engine).testArmWork(phase); }
++export function testReleaseWork(engine: Engine): void { checkedEngine(engine).testReleaseWork(); }
++export function testHoldPublication(engine: Engine, stream: number, value: Snapshot): void {
++  checkedEngine(engine).testHoldPublication(stream, value);
++}
++export function testReleasePublication(engine: Engine, commit: number): void { checkedEngine(engine).testReleasePublication(commit); }
++export function testFailClone(engine: Engine, nth: number, mode: number): void { checkedEngine(engine).testFailClone(nth, mode); }
++export function testFailCompletion(engine: Engine, stage: number): void { checkedEngine(engine).testFailCompletion(stage); }
++export function testObserve(runtime: Runtime): number[] { return checkedRuntime(runtime).testObserve(); }
++export function testExportKey(runtime: Runtime): string { return checkedRuntime(runtime).testExportKey(); }
++export function testInspect(key: string): number[] { return nativeCall(() => native.testInspect(key)); }
++export function testObserveOperation(operation: Operation): number[] { return checkedOperation(operation).testObserveOperation(); }
++export function testArmPartialOpenFailure(): void { nativeCall(() => native.testArmPartialOpenFailure()); }
++export function testLastAdmissionAudit(): number[] { return nativeCall(() => native.testLastAdmissionAudit()); }
++export function testObserveFacade(runtime: Runtime): number[] { return checkedRuntime(runtime).testObserveFacade(); }
++export function testAfterSettlement(runtime: Runtime, callback: () => void): void { checkedRuntime(runtime).testAfterSettlement(callback); }
++export function testFailAfterSettlement(runtime: Runtime): void { checkedRuntime(runtime).testFailAfterSettlement(); }

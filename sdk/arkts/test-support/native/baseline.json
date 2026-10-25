@@ -1,0 +1,18 @@
+{
+  "base_sha256": {
+    "include/codec.hpp": "5ef359714bc88fa67cc3e9facde832c23709689f22c7574b3dcdd7d7782781cf",
+    "include/handle.hpp": "dd31c74e72c28b9d7f3472f8e9a412c1f3d3fa8ce22675e720a0a8cbbd9c8aa4",
+    "include/runtime.hpp": "88e4b119b86a084ad9cae092a82892de1a2ff2d660d316a39021a778f92894d9",
+    "src/api.cpp": "080f1103a118f987778be6586ba9ac75ecea7c0b4aab3e3ab5bd0dbd2b59a0af",
+    "src/runtime.cpp": "6204bafcbf8ad4019f63a37a074c23818478ec83aae91a6953af076368eb1bef",
+    "worker/worker.cpp": "65c5d66f096688c808c9bdd041382227107afb94e29a1f74fcb3b7728cf6fd22"
+  },
+  "derived_sha256": {
+    "include/codec.hpp": "5ef359714bc88fa67cc3e9facde832c23709689f22c7574b3dcdd7d7782781cf",
+    "include/handle.hpp": "dd31c74e72c28b9d7f3472f8e9a412c1f3d3fa8ce22675e720a0a8cbbd9c8aa4",
+    "include/runtime.hpp": "32cb00f1bb7bc60688afa794385d1fa6eab8cfece3ac72a51c630a67259ec4cd",
+    "src/api.cpp": "77590e3b83b8c3ef923424fb052eabdc502e7db1e349f130a53a5aa3a0503416",
+    "src/runtime.cpp": "c13379a404993a82c6a4ebbb2f5e06325dd8d8fe177d28fbbdf95c5de69d0725",
+    "worker/worker.cpp": "4618d1cfe11513b4783c8376bb2b4c35d5c2db9c4fcc27e1f48b70e5ee92891a"
+  }
+}

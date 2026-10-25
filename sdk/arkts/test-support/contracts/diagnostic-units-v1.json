@@ -1,0 +1,55 @@
+{
+  "scope": "Post-failure clarification of existing scalar units; no layout, source, binary, or expected cleanup behavior change",
+  "version": 1,
+  "clarification_trigger": "Lab nonce c07-sdk26-17cbb6631086452ead817db2096af886 bytes-scratch assertion assumed ScratchPeak1024; prior contract had not stated its unit. Preserve original failure.",
+  "fields": {
+    "3": {
+      "name": "ScratchLive",
+      "unit": "concurrently owned synchronous scratch leases",
+      "range": [
+        0,
+        1
+      ]
+    },
+    "52": {
+      "name": "ScratchAcquired",
+      "unit": "cumulative actual scratch guard acquisitions"
+    },
+    "53": {
+      "name": "ScratchReleased",
+      "unit": "cumulative actual scratch guard releases after paired model cleanup"
+    },
+    "97": {
+      "name": "ScratchPeak",
+      "unit": "maximum simultaneously held synchronous scratch leases observed in this runtime",
+      "range": [
+        0,
+        1
+      ],
+      "zero_meaning": "no scratch guard has yet been acquired",
+      "one_meaning": "at least one actual scratch guard acquired; exclusive owner-env guard limits concurrency to one"
+    },
+    "10": {
+      "name": "Bytes",
+      "unit": "Core retained payload canonical UTF8 bytes",
+      "excluded": "separately bounded synchronous roundtrip scratch budget (up to1024 UTF8 bytes); not total process memory"
+    },
+    "78": {
+      "name": "SourceAcquired",
+      "unit": "cumulative supported publication transactions with at least one genuine reserved recipient, not recipient count"
+    },
+    "79": {
+      "name": "SourceCommitted",
+      "unit": "cumulative supported publication transactions successfully committed"
+    },
+    "80": {
+      "name": "SourceAbandoned",
+      "unit": "cumulative supported publication transactions abandoned or rejected with their actual tokens released"
+    },
+    "96": {
+      "name": "GateWorkInput",
+      "unit": "actual work model int32 value after provider increment; input+1 on success, unchanged max on overflow"
+    }
+  },
+  "source_identity": "C test companion4c4ecb3e and contract addendum8be00639 (historical external evidence)"
+}

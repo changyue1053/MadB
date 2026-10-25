@@ -8,3 +8,7 @@ adapters/generators/uniffi/patches/*.patch whitespace=-blank-at-eol,-blank-at-eo
 adapters/generators/akinterop/patches/*.patch whitespace=-blank-at-eol,-blank-at-eof
 # Frozen author bytes must match Git objects, including the upstream Windows wrapper.
 sdk/kotlin/skie/gradlew.bat -text !eol whitespace=cr-at-eol
+
+# Unified patch context lines intentionally contain one leading space.
+sdk/arkts/test-support/facade/companion.patch whitespace=-blank-at-eol,-blank-at-eof
+sdk/arkts/test-support/native/companion.patch whitespace=-blank-at-eol,-blank-at-eof

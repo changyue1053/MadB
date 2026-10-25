@@ -1,0 +1,680 @@
+--- a/include/runtime.hpp
++++ b/include/runtime.hpp
+@@ -2,6 +2,8 @@
+ #include "codec.hpp"
+ #include "frame.generated.hpp"
+ #include "provider_port.hpp"
++#include "support_state.hpp"
++#include "test-frame.generated.hpp"
+ #include "worker.hpp"
+ #include <array>
+ #include <atomic>
+@@ -17,6 +19,9 @@
+ using Owner = std::shared_ptr<Runtime>;
+ struct Audit {
+     std::array<std::atomic<uint64_t>, FrameSize> c{};
++    std::mutex testMutex;
++    std::array<int64_t, 48> test{};
++    std::array<uint64_t, FrameSize> hookEntry{};
+ };
+ struct Slot {
+     uint64_t epoch = 0;
+@@ -71,6 +76,7 @@
+     std::array<Observation, 32> observations;
+     std::array<Resource, 16> resources;
+     CopyTarget *copyTarget = nullptr;
++    TestControl test;
+     Runtime(size_t s, uint64_t e, napi_env n, Audit &a) : slot(s), epoch(e), env(n), audit(a) {
+         ++audit.c[F::ContextCreated];
+         ++audit.c[F::ContextLive];
+@@ -110,4 +116,7 @@
+ napi_value openRuntime(napi_env, napi_value, napi_value);
+ void closeRuntime(const Owner &);
+ std::string identity();
++napi_value testObserve(napi_env, const Handle &, bool foreignAllowed);
++napi_value testLastAdmission(napi_env);
++bool testArmPartialOpen(napi_env);
+ } // namespace gateway
+--- a/src/api.cpp
++++ b/src/api.cpp
+@@ -1,4 +1,5 @@
+ #include "runtime.hpp"
++#include "support.hpp"
+ #include <limits>
+ #include <stdexcept>
+ namespace gateway {
+@@ -10,6 +11,7 @@
+         r.scratch = true;
+         ++r.audit.c[F::ScratchLive];
+         ++r.audit.c[F::ScratchAcquired];
++        testSet(r.audit, T::ScratchPeak, 1);
+     }
+     ~Scratch() {
+         r.scratch = false;
+@@ -26,7 +28,16 @@
+ }
+ Status run(void *p, void *model) noexcept {
+     auto *r = static_cast<Runtime *>(p);
+-    return providerStatus(r->provider.increment(r->provider.context, model));
++    Status outcome;
++    {
++        std::lock_guard<std::mutex> l(r->test.mutex);
++        outcome = providerStatus(r->provider.increment(r->provider.context, model));
++        mp_snapshot view{};
++        if (r->test.gateArmed && r->provider.read_view(r->provider.context, model, &view) == MP_OK)
++            testSet(r->audit, T::GateWorkInput, view.value);
++    }
++    testGate(*r, 1);
++    return outcome;
+ }
+ void ready(void *p) noexcept {
+     auto *r = static_cast<Runtime *>(p);
+@@ -116,18 +127,22 @@
+             Handle target;
+             int depth = std::uncaught_exceptions();
+             ~MarkFailure() {
+-                if (std::uncaught_exceptions() > depth)
++                if (std::uncaught_exceptions() > depth) {
++                    testMark(r.audit, T::DispatchThrows);
+                     if (auto *x = resource(r, target))
+                         x->closeOutcome = Status::CallbackFailure;
++                }
+             }
+         } mark{r, c->target};
+         if (r.envClosing || r.shutting || std::this_thread::get_id() != r.thread)
+             throw ListenerFailure{};
+         ++r.audit.c[F::InDispatch];
++        testMark(r.audit, T::DispatchEntered);
+         struct Leave {
+             Runtime &r;
+             ~Leave() {
+                 --r.audit.c[F::InDispatch];
++                testMark(r.audit, T::DispatchReturned);
+             }
+         } leave{r};
+         mp_snapshot view{};
+@@ -196,7 +211,7 @@
+ #define BEGIN(name, count)                                                                         \
+     napi_value js_##name(napi_env env, napi_callback_info info) {                                  \
+         try {                                                                                      \
+-            napi_value argv[count]{};                                                              \
++            napi_value argv[(count) > 0 ? (count) : 1]{};                                          \
+             if (!arguments(env, info, count, argv))                                                \
+                 return nullptr;
+ // MADB_NATIVE_CALLBACK_END
+@@ -234,7 +249,7 @@
+     o->generationRetired = false;
+     o->engineAcked = false;
+     try {
+-        o->engine = std::make_unique<Engine>(madb::c07::probe::provider_port(o->provider));
++        o->engine = std::make_unique<Engine>(testProvider(*o));
+     } catch (...) {
+         o->provider.destroy_context(o->provider.context);
+         o->provider = {};
+@@ -274,9 +289,8 @@
+         return error(env, "ResourceExhausted");
+     Scratch scratch(*o);
+     void *model = nullptr;
+-    auto s = o->provider.clone(
+-        o->provider.context,
+-        {input.value, reinterpret_cast<const uint8_t *>(input.text.data()), input.text.size()},
++    auto s = testRoundtripClone(
++        *o, {input.value, reinterpret_cast<const uint8_t *>(input.text.data()), input.text.size()},
+         &model);
+     struct Release {
+         Runtime &r;
+@@ -320,6 +334,7 @@
+     if (s != Status::Ok)
+         return error(env, s);
+     *slot = {id, 'o', false};
++    testSubmitted(*o, id);
+     refresh(*o);
+     return returnedHandle(env, o, {o->epoch, o->generation, id, 'o'});
+ END
+@@ -417,6 +432,10 @@
+     auto s = o->engine->claim_result(h.id, claim);
+     if (s != Status::Ok)
+         return error(env, s);
++    if (testFault(*o, 1)) {
++        claim.rollback();
++        return error(env, "ResourceExhausted");
++    }
+     s = claim.commit(std::move(cb));
+     if (s != Status::Ok)
+         return error(env, s);
+@@ -493,6 +512,8 @@
+     auto *x = observation(*o, id);
+     if (!x || x->entered)
+         return error(env, "TakeBeforeGuardResidual");
++    if (testFault(*o, 2))
++        return error(env, "TakeBeforeGuardResidual");
+     ResultDelivery result;
+     Status s;
+     if (x->result) {
+@@ -508,6 +529,13 @@
+         return v;
+     }
+     x->entered = true;
++    if (testFault(*o, 3)) {
++        if (x->result)
++            result.discard();
++        clear(*x, *o);
++        refresh(*o);
++        return error(env, "DeliveryFailureConsumed");
++    }
+     CopyTarget target{id, nullptr, napi_ok};
+     o->copyTarget = &target;
+     if (x->result)
+@@ -574,6 +602,219 @@
+     if (!handle(env, argv[0], h))
+         return nullptr;
+     return pollFrame(env, h, false);
++END
++BEGIN(testArmWork, 2)
++    Handle h;
++    double phase;
++    if (!handle(env, argv[0], h) || napi_get_value_double(env, argv[1], &phase) != napi_ok ||
++        (phase != 1 && phase != 2))
++        return error(env, "InvalidArgument");
++    auto o = find(env, h, 'e', true);
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    if (o->engine->stats().work)
++        return error(env, "ResourceExhausted");
++    std::lock_guard<std::mutex> l(o->test.mutex);
++    if (o->test.gateArmed && !o->test.gateResumed)
++        return error(env, "ResourceExhausted");
++    if (o->test.gateSequence >= 9007199254740991ULL)
++        return error(env, "ResourceExhausted");
++    o->test.gatePhase = static_cast<int>(phase);
++    o->test.gateArmed = true;
++    o->test.gateArrived = false;
++    o->test.gateReleased = false;
++    o->test.gateResumed = false;
++    o->test.gateOperation = 0;
++    testSet(o->audit, T::GatePhase, o->test.gatePhase);
++    testSet(o->audit, T::GateArmed, 1);
++    testSet(o->audit, T::GateArrived, 0);
++    testSet(o->audit, T::GateReleased, 0);
++    testSet(o->audit, T::GateResumed, 0);
++    testSet(o->audit, T::GateSequence, ++o->test.gateSequence);
++    return undefined(env);
++END
++BEGIN(testReleaseWork, 1)
++    Handle h;
++    if (!handle(env, argv[0], h))
++        return nullptr;
++    auto o = find(env, h, 'e');
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    {
++        std::lock_guard<std::mutex> l(o->test.mutex);
++        o->test.gateReleased = true;
++        testSet(o->audit, T::GateReleased, 1);
++    }
++    o->test.changed.notify_all();
++    return undefined(env);
++END
++BEGIN(testHoldPublication, 4)
++    Handle h;
++    Stream kind;
++    if (!handle(env, argv[0], h) || !stream(env, argv[1], kind))
++        return nullptr;
++    auto o = find(env, h, 'e', true);
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    if (o->test.sourceHeld)
++        return error(env, "ResourceExhausted");
++    Input input;
++    if (!snapshot(env, argv[2], argv[3], input))
++        return nullptr;
++    const auto before = o->engine->stats().sources;
++    Publication source;
++    auto status = o->engine->reserve_publish(kind, input.view(), source);
++    if (status != Status::Ok)
++        return error(env, status);
++    if (o->engine->stats().sources <= before) {
++        source.abandon();
++        return error(env, "NoSourceRecipients");
++    }
++    testMark(o->audit, T::SourceAcquired);
++    status = source.allocate(input.view());
++    if (status != Status::Ok) {
++        source.abandon();
++        testMark(o->audit, T::SourceAbandoned);
++        refresh(*o);
++        return error(env, status);
++    }
++    o->test.publication = std::move(source);
++    o->test.sourceHeld = true;
++    testSet(o->audit, T::SourceHeld, 1);
++    refresh(*o);
++    return undefined(env);
++END
++BEGIN(testReleasePublication, 2)
++    Handle h;
++    double commit;
++    if (!handle(env, argv[0], h) || napi_get_value_double(env, argv[1], &commit) != napi_ok ||
++        (commit != 0 && commit != 1))
++        return error(env, "InvalidArgument");
++    auto o = find(env, h, 'e');
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    if (!o->test.sourceHeld)
++        return undefined(env);
++    auto status = commit == 1 ? o->test.publication.commit() : Status::Ok;
++    o->test.publication.abandon();
++    o->test.sourceHeld = false;
++    testSet(o->audit, T::SourceHeld, 0);
++    testMark(o->audit,
++             commit == 1 && status == Status::Ok ? T::SourceCommitted : T::SourceAbandoned);
++    refresh(*o);
++    wake(o);
++    if (status != Status::Ok)
++        return error(env, status);
++    return undefined(env);
++END
++BEGIN(testFailClone, 3)
++    Handle h;
++    double nth, mode;
++    if (!handle(env, argv[0], h) || napi_get_value_double(env, argv[1], &nth) != napi_ok ||
++        napi_get_value_double(env, argv[2], &mode) != napi_ok || std::trunc(nth) != nth ||
++        nth < 1 || nth > 32 || (mode != 1 && mode != 2 && mode != 4))
++        return error(env, "InvalidArgument");
++    auto o = find(env, h, 'e', true);
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    if (o->test.cloneNth > 0)
++        return error(env, "ResourceExhausted");
++    {
++        std::lock_guard<std::mutex> l(o->test.mutex);
++        if (o->engine->stats().work && !(o->test.gateArrived && !o->test.gateReleased))
++            return error(env, "InvalidArgument");
++    }
++    o->test.cloneNth = static_cast<int>(nth);
++    o->test.cloneMode = static_cast<int>(mode);
++    testSet(o->audit, T::CloneNth, o->test.cloneNth);
++    testSet(o->audit, T::CloneCallsSinceArm, 0);
++    return undefined(env);
++END
++BEGIN(testFailCompletion, 2)
++    Handle h;
++    double stage;
++    if (!handle(env, argv[0], h) || napi_get_value_double(env, argv[1], &stage) != napi_ok ||
++        std::trunc(stage) != stage || stage < 1 || stage > 3)
++        return error(env, "InvalidArgument");
++    auto o = find(env, h, 'e');
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    if (o->test.completionFault)
++        return error(env, "ResourceExhausted");
++    o->test.completionFault = static_cast<int>(stage);
++    testSet(o->audit, T::CompletionStage, o->test.completionFault);
++    return undefined(env);
++END
++BEGIN(testObserve, 1)
++    Handle h;
++    if (!handle(env, argv[0], h))
++        return nullptr;
++    return testObserve(env, h, false);
++END
++BEGIN(testExportKey, 1)
++    Handle h;
++    if (!handle(env, argv[0], h))
++        return nullptr;
++    if (h.kind != 'r')
++        return error(env, "InvalidHandle");
++    if (!testObserve(env, h, false))
++        return nullptr;
++    return string(env, "madb-observe/1/" + encode(h));
++END
++BEGIN(testInspect, 1)
++    std::array<char, 320> bytes{};
++    size_t length = 0, copied = 0;
++    if (napi_get_value_string_utf8(env, argv[0], nullptr, 0, &length) != napi_ok ||
++        length >= bytes.size() ||
++        napi_get_value_string_utf8(env, argv[0], bytes.data(), bytes.size(), &copied) != napi_ok ||
++        copied != length)
++        return error(env, "InvalidArgument");
++    std::string_view key(bytes.data(), length), prefix = "madb-observe/1/";
++    if (key.substr(0, prefix.size()) != prefix)
++        return error(env, "InvalidHandle");
++    Handle h;
++    if (!parseBoundHandle(key.substr(prefix.size()), GatewayRouteIdentity, h) || h.kind != 'r')
++        return error(env, "InvalidHandle");
++    return testObserve(env, h, true);
++END
++BEGIN(testObserveOperation, 1)
++    Handle h;
++    if (!handle(env, argv[0], h))
++        return nullptr;
++    auto o = find(env, h, 'o');
++    if (!o)
++        return nullptr;
++    Entry entry(o);
++    const auto s = o->engine->stats();
++    std::array<int64_t, 10> a{};
++    a[0] = 1;
++    a[1] = static_cast<int>(o->engine->winner(h.id));
++    a[2] = o->engine->operation_closed(h.id);
++    a[8] = s.waiters;
++    a[9] = s.work;
++    {
++        std::lock_guard<std::mutex> l(o->test.mutex);
++        a[3] = o->test.gateOperation == h.id;
++        a[4] = o->test.gatePhase;
++        a[5] = o->test.gateArrived;
++        a[6] = o->test.gateReleased;
++        a[7] = o->test.gateResumed;
++    }
++    return testNumbers(env, a);
++END
++BEGIN(testArmPartialOpenFailure, 0)
++    if (!testArmPartialOpen(env))
++        return error(env, "ResourceExhausted");
++    return undefined(env);
++END
++BEGIN(testLastAdmissionAudit, 0)
++    return testLastAdmission(env);
+ END
+ #undef BEGIN
+ #undef END
+--- a/src/runtime.cpp
++++ b/src/runtime.cpp
+@@ -1,5 +1,6 @@
+ #include "runtime.hpp"
+ #include "identity.generated.hpp"
++#include "support.hpp"
+ #include <limits>
+ #include <new>
+ #include <stdexcept>
+@@ -8,11 +9,19 @@
+ std::array<Slot, LiveRuntimes> slots;
+ struct Historical {
+     uint64_t epoch = 0;
++    bool physicalAck = false;
+     std::array<uint64_t, FrameSize> values{};
++    std::array<int64_t, 48> test{};
++    std::array<uint64_t, FrameSize> hook{};
++    napi_env env = nullptr;
++    std::thread::id thread;
+ };
+ std::array<Historical, History> history;
+ size_t historyNext = 0;
+ uint64_t nextEpoch = 0;
++bool partialArmed = false;
++napi_env partialEnv = nullptr;
++uint64_t partialEpoch = 0;
+ std::mutex registryMutex;
+ void failure(Runtime &r) {
+     ++r.audit.c[F::ResidualErrors];
+@@ -43,6 +52,7 @@
+     void operator()(Runtime *p) const {
+         Audit *a = &p->audit;
+         delete p;
++        testMark(*a, T::FinalContextDestroyed);
+         --a->c[F::ContextLive];
+         ++a->c[F::ContextDestroyed];
+     }
+@@ -120,6 +130,7 @@
+ void finalized(napi_env, void *data, void *) {
+     std::unique_ptr<Owner> p(static_cast<Owner *>(data));
+     Audit *a = &(*p)->audit;
++    testMark(*a, T::TsfnFinalizeEntered);
+     p.reset();
+     --a->c[F::TsfnOwnerLive];
+     ++a->c[F::TsfnFinalized];
+@@ -148,6 +159,7 @@
+     o->hookOwner = nullptr;
+     --o->audit.c[F::HookLive];
+     ++o->audit.c[F::HookRetired];
++    testMark(o->audit, T::AsyncHookRemoved);
+     return true;
+ }
+ void teardown(const Owner &o) {
+@@ -196,6 +208,15 @@
+ void asyncCleanup(napi_async_cleanup_hook_handle, void *data) {
+     Owner o = *static_cast<Owner *>(data);
+     o->envClosing = true;
++    refresh(*o);
++    {
++        std::lock_guard<std::mutex> l(o->audit.testMutex);
++        for (size_t i = 0; i < FrameSize; ++i)
++            o->audit.hookEntry[i] = o->audit.c[i];
++        o->audit.hookEntry[F::Format] = 1;
++    }
++    testMark(o->audit, T::AsyncCleanupEntered);
++    testUnwind(*o);
+     o->runtimeClosing = true;
+     o->audit.c[F::EnvExit] = 1;
+     o->audit.c[F::RuntimeCloseRequested] = 1;
+@@ -208,6 +229,7 @@
+     discardObservations(o);
+     deleteRef(o);
+     progress(o);
++    testMark(o->audit, T::AsyncCleanupReturned);
+ }
+ } // namespace
+ std::string identity() {
+@@ -526,6 +548,109 @@
+         s.retired = true;
+     }
+     return result;
++}
++// This observation channel never uses a foreign env/context. Retired slots are
++// copied into a fixed-size, context-free history before their storage is reused.
++napi_value testObserve(napi_env env, const Handle &h, bool foreignAllowed) {
++    if (h.kind != 'r')
++        return error(env, "InvalidHandle");
++    Owner live;
++    const char *problem = nullptr;
++    if (!foreignAllowed) {
++        std::lock_guard<std::mutex> l(registryMutex);
++        for (auto &s : slots)
++            if (s.epoch == h.runtime) {
++                if (s.env != env || s.thread != std::this_thread::get_id())
++                    problem = "WrongEnv";
++                else
++                    live = s.owner;
++                break;
++            }
++    }
++    if (problem)
++        return error(env, problem);
++    if (live)
++        refresh(*live);
++    std::array<int64_t, 156> values{};
++    bool found = false;
++    {
++        std::lock_guard<std::mutex> l(registryMutex);
++        auto copyCounters = [&](const auto &base, const auto &trace, const auto &hook, bool done,
++                                bool liveSnapshot) {
++            for (size_t i = 0; i < FrameSize; ++i) {
++                const uint64_t a = base[i], b = hook[i];
++                if (a > 9007199254740991ULL || b > 9007199254740991ULL) {
++                    problem = "DiagnosticRangeExceeded";
++                    return;
++                }
++                values[i] = static_cast<int64_t>(a);
++                values[102 + i] = static_cast<int64_t>(b);
++            }
++            for (size_t i = 0; i < 48; ++i)
++                values[54 + i] = trace[i];
++            values[F::Format] = 1;
++            values[F::Phase] = done                                  ? 3
++                               : values[F::MechanismTeardownStarted] ? 2
++                               : values[F::RuntimeCloseRequested]    ? 1
++                                                                     : 0;
++            values[54 + T::TestFormat] = 1;
++            values[54 + T::ReadMode] = done ? 2 : liveSnapshot ? 1 : 0;
++        };
++        for (auto &s : slots)
++            if (s.epoch == h.runtime) {
++                found = true;
++                if (!foreignAllowed && (s.env != env || s.thread != std::this_thread::get_id())) {
++                    problem = "WrongEnv";
++                    break;
++                }
++                std::lock_guard<std::mutex> trace(s.audit.testMutex);
++                copyCounters(s.audit.c, s.audit.test, s.audit.hookEntry, physical(s.audit),
++                             bool(live));
++                break;
++            }
++        if (!found)
++            for (const auto &old : history)
++                if (old.epoch == h.runtime) {
++                    found = true;
++                    if (!foreignAllowed &&
++                        (old.env != env || old.thread != std::this_thread::get_id())) {
++                        problem = "WrongEnv";
++                        break;
++                    }
++                    copyCounters(old.values, old.test, old.hook, old.physicalAck, false);
++                    break;
++                }
++    }
++    if (problem)
++        return error(env, problem);
++    if (!found)
++        return error(env, "ObservationExpired");
++    return testNumbers(env, values);
++}
++bool testArmPartialOpen(napi_env env) {
++    std::lock_guard<std::mutex> l(registryMutex);
++    if (partialArmed)
++        return false;
++    partialArmed = true;
++    partialEnv = env;
++    partialEpoch = 0;
++    return true;
++}
++napi_value testLastAdmission(napi_env env) {
++    uint64_t epoch = 0;
++    const char *problem = nullptr;
++    {
++        std::lock_guard<std::mutex> l(registryMutex);
++        if (partialEnv != env)
++            problem = "WrongEnv";
++        else if (!partialEpoch)
++            problem = "NoAdmissionObservation";
++        else
++            epoch = partialEpoch;
++    }
++    if (problem)
++        return error(env, problem);
++    return testObserve(env, {epoch, 0, 0, 'r'}, false);
+ }
+ napi_value openRuntime(napi_env env, napi_value expected, napi_value dispatcher) {
+     std::array<char, 224> id{};
+@@ -576,11 +701,24 @@
+         if (s.epoch) {
+             auto &old = history[historyNext++ % History];
+             old.epoch = s.epoch;
++            old.physicalAck = physical(s.audit);
++            old.env = s.env;
++            old.thread = s.thread;
+             for (size_t i = 0; i < FrameSize; ++i)
+                 old.values[i] = s.audit.c[i];
++            old.values[F::Format] = 1;
++            old.values[F::Phase] = physical(s.audit) ? 3 : 0;
++            std::lock_guard<std::mutex> t(s.audit.testMutex);
++            old.test = s.audit.test;
++            old.hook = s.audit.hookEntry;
+         }
+         for (auto &v : s.audit.c)
+             v = 0;
++        {
++            std::lock_guard<std::mutex> t(s.audit.testMutex);
++            s.audit.test = {};
++            s.audit.hookEntry = {};
++        }
+         s.epoch = epoch = ++nextEpoch;
+         s.env = env;
+         s.thread = std::this_thread::get_id();
+@@ -610,6 +748,8 @@
+         return error(env, "ResourceExhausted");
+     }
+     o->self = o;
++    testSet(o->audit, T::TestFormat, 1);
++    testSet(o->audit, T::OwnerTid, gettid());
+     {
+         std::lock_guard<std::mutex> l(registryMutex);
+         slots[index].owner = o;
+@@ -643,6 +783,20 @@
+     }
+     ++o->audit.c[F::TsfnOwnerLive];
+     ++o->audit.c[F::TsfnCreated];
++    bool injected = false;
++    {
++        std::lock_guard<std::mutex> l(registryMutex);
++        if (partialArmed && partialEnv == env) {
++            partialArmed = false;
++            partialEpoch = epoch;
++            injected = true;
++        }
++    }
++    if (injected) {
++        testSet(o->audit, T::PartialOpenArmed, 0);
++        testMark(o->audit, T::PartialOpenHits);
++        return rollback("ResourceExhausted");
++    }
+     o->hookOwner = new (std::nothrow) Owner(o);
+     if (!o->hookOwner)
+         return rollback("ResourceExhausted");
+--- a/worker/worker.cpp
++++ b/worker/worker.cpp
+@@ -1,4 +1,5 @@
+ #include "worker.hpp"
++#include "support.hpp"
+ #include <new>
+ 
+ namespace madb::c07 {
+@@ -6,7 +7,7 @@
+ // Thread identifiers may be reused after a join. This trivial TLS marker denotes
+ // the actual executing business thread, including its TLS-destructor phase.
+ thread_local const NativeWorker *currentWorker = nullptr;
+-}
++} // namespace
+ NativeWorker::NativeWorker(Engine &engine, WorkerPorts ports)
+     : engine_(engine), ports_(ports), owner_(std::this_thread::get_id()) {}
+ 
+@@ -66,6 +67,11 @@
+ 
+ void NativeWorker::loop() noexcept {
+     currentWorker = this;
++    gateway::testWorkerStarted(ports_.context);
++    struct ExitWitness {
++        void *p;
++        ~ExitWitness() { gateway::testWorkerLoopExited(p); }
++    } exitWitness{ports_.context};
+     for (;;) {
+         {
+             std::lock_guard<std::mutex> lock(mutex_);
+@@ -87,6 +93,7 @@
+                 // All other private-port results remain InternalFailure; finish
+                 // preserves a terminal cancellation already claimed by the caller.
+             }
++            gateway::testWorkerAfterTerminal(ports_.context);
+             work.finish();
+             ports_.ready(ports_.context);
+             continue;
+@@ -124,10 +131,13 @@
+             if (joined_)
+                 return Status::Ok;
+         }
++        gateway::testJoinStarted(ports_.context);
+         thread_.join();
++        gateway::testJoinReturned(ports_.context);
+         // std::thread::join synchronizes with thread completion, including TLS
+         // destructors. Only this real witness returns the protocol's lease.
+         executor_.finish();
++        gateway::testExecutorReleased(ports_.context);
+         {
+             std::lock_guard<std::mutex> lock(mutex_);
+             joined_ = true;

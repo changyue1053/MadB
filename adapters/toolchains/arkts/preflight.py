@@ -27,7 +27,7 @@ def issue(errors: list[dict], code: str, component: str, message: str) -> None:
     errors.append({"code": code, "component": component, "message": message})
 
 
-def read_json_metadata(path: Path) -> object:
+def parse_json_metadata(content: str | bytes) -> object:
     def unique_object(pairs: list[tuple[str, object]]) -> dict:
         result = {}
         for key, value in pairs:
@@ -36,7 +36,12 @@ def read_json_metadata(path: Path) -> object:
             result[key] = value
         return result
 
-    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_object)
+    text = content.decode("utf-8") if isinstance(content, bytes) else content
+    return json.loads(text, object_pairs_hook=unique_object)
+
+
+def read_json_metadata(path: Path) -> object:
+    return parse_json_metadata(path.read_bytes())
 
 
 def metadata(path: Path, component: str, errors: list[dict], *, product: bool = False) -> dict:
