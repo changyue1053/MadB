@@ -35,3 +35,29 @@ closed-set Node-API observer. It has 31 private native methods and 18 public tes
 helpers. The current observation contract is 178 values, including a live process
 segment that is explicitly outside the stable physical-ACK snapshot. See the
 versioned contract attachments. These changes do not appear in ordinary packages.
+
+`build_identity_fixtures.py` derives three CRIT-12 negative native libraries from
+a caller-pinned C04 test-companion compile task and its exact frozen inputs. It
+changes one ABI/profile/build tuple component and the two native strings derived
+from that component. Facade bytes, public expected identity, module name, provider,
+SONAME and build recipe remain unchanged. It invokes the parent's frozen
+compile/link worker; it does not create a candidate, package a HAR or run a target.
+
+```sh
+.venv/bin/python -B sdk/arkts/test-support/build_identity_fixtures.py \
+  --compile-task /absolute/workspace/tasks/compile.json \
+  --compile-task-sha256 REVIEWED_SHA256 \
+  --inputs /absolute/workspace/prepare/compile/inputs \
+  --output /absolute/new-fixtures
+```
+
+Use `--prepare-only` to inspect the exact three derivations without loading the
+worker. Each fresh `wrong-abi`, `wrong-profile` and `wrong-build` directory retains
+its source references, three constant edits, output/log hashes and fixture receipt.
+The unchanged public `openRuntime()` is expected to reject with `AbiMismatch`,
+`ProfileMismatch` and `ArtifactMismatch`, respectively. The helper checks those
+codes and their event increments against the consumed gateway source; a changed
+contract fails preparation. The independent consumer must isolate each DSO and
+measure the real before/after `testBootstrapTotals()` values. Expected deltas are
+one open attempt and one corresponding rejection; identity match and resource
+creation counters stay unchanged. These expectations are not execution evidence.
