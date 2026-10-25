@@ -8,6 +8,8 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import re
+import tomllib
 from pathlib import Path
 import shutil
 
@@ -169,6 +171,24 @@ def _run_ohrs(config, workspace, project, env, capture):
         )
 
 
+def compiled_library(project):
+    """ohrs preserves Cargo's artifact filename; --soname changes only ELF metadata."""
+    manifest = tomllib.loads(
+        support.input_path(
+            project / "author", metadata.CRATE + "/Cargo.toml"
+        ).read_text()
+    )
+    library = manifest.get("lib", {})
+    name = library.get("name")
+    if (
+        not isinstance(name, str)
+        or re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name) is None
+        or library.get("crate-type") != ["cdylib"]
+    ):
+        raise ValueError("Rust bridge requires one explicitly named Cargo cdylib")
+    return support.input_path(project, "dist/arm64-v8a/lib" + name + ".so")
+
+
 def run_link(config, inputs, work, capture=None):
     inputs, work = Path(inputs), Path(work)
     capture = [] if capture is None else capture
@@ -238,9 +258,14 @@ def run_link(config, inputs, work, capture=None):
         macro = metadata.parse_metadata(config, project, declared["gateway"], capture)
         if macro != declared["rust"]["macro"]:
             raise ValueError("ohrs actual macros differ from checked metadata")
-        output = project / "dist/arm64-v8a" / config["native_module"]
-        if output.is_symlink() or not output.is_file():
-            raise ValueError("ohrs did not create the expected route DSO")
+        output = compiled_library(project)
+        dynamic = support.command(
+            config, "readelf", ["-d", output], cwd=work, capture=capture
+        ).decode()
+        sonames = re.findall(r"\(SONAME\).*?Library soname: \[([^]]+)\]", dynamic)
+        if sonames != [config["native_module"]]:
+            raise ValueError("Rust ELF SONAME differs from the declared route module")
+        # The delivery filename changes, never the freshly linked ELF bytes.
         support.copy_new(output, work / "native" / config["native_module"])
         (work / "rust-link.json").write_text(
             json.dumps(
@@ -249,6 +274,8 @@ def run_link(config, inputs, work, capture=None):
                     compiler_workspace_key=key,
                     actual_macro=macro,
                     source_archive_sha256=support.sha(frozen_archive),
+                    backend_artifact=output.relative_to(project).as_posix(),
+                    elf_soname=sonames[0],
                 ),
                 sort_keys=True,
                 indent=2,
