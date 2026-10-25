@@ -1,0 +1,70 @@
+{
+  "scope": "C07 ordinary SDK facade; independent source review and simulated-native host regression, plus formal SDK type/unsigned packaging harness only",
+  "certifies_c07": false,
+  "source": {
+    "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/facade/Boundary.ets.in",
+    "size": 22658,
+    "sha256": "39c4f025c4fe9123c700e26a751c7ddb8c8f806d8979af2c08770f331fa3adfe"
+  },
+  "frame": {
+    "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/facade/RuntimeFrame.ets",
+    "size": 1583,
+    "sha256": "a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492"
+  },
+  "layout": {
+    "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/facade/frame-layout.json",
+    "size": 1298,
+    "sha256": "ea14c35161fe8eb6e977a5f9a7a7f63956917a10a4ae1c07e9562718dc30be69"
+  },
+  "independent_review": {
+    "path": "/private/tmp/madb-c07-facade-review/independent-review.json",
+    "size": 3367,
+    "sha256": "ffe0c65380e7d79a8c9609c20bbae899351f08e672f3cc6ffab72512468da6b7"
+  },
+  "repository_regression": {
+    "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-facade-check-85Tbb1/receipt.json",
+    "size": 2390,
+    "sha256": "950e86c4ac7859ba38a0c9e45b625b469ce11716d760aeefc2d12710e35e9a5d"
+  },
+  "formal_type_harness": {
+    "commands": {
+      "path": "/private/tmp/madb-c07-facade-compile/commands-1792916947260477000.json",
+      "size": 1122,
+      "sha256": "7fb538e12b763772e018102c561a85766a860298e9666a0b1ac56533d594c1a0"
+    },
+    "rendered_source": {
+      "path": "/private/tmp/madb-c07-facade-compile/entry/src/main/ets/Boundary.ets",
+      "size": 22663,
+      "sha256": "aef374bd0746bcbf96b799f53be29538082406e79add59ef67970e2436a71407"
+    },
+    "output": {
+      "path": "/private/tmp/madb-c07-facade-compile/entry/build/default/outputs/default/entry-default-unsigned.hap",
+      "size": 8844,
+      "sha256": "ce2a4c3092257564c357a1e4a5e36e7e3867c3a1d42b618de1b8b95e5d3da15b"
+    },
+    "native_members": [],
+    "signed": false,
+    "target_executed": false,
+    "expected_identity": "compile-only-not-a-candidate"
+  },
+  "native_source_review": {
+    "path": "/private/tmp/madb-c07-full-native-review.json",
+    "size": 7851,
+    "sha256": "dff69fdadc830e925723b762c6484470b3fe9accca3e99d70d4eae58ff8dee5b"
+  },
+  "native_review_source_archive": {
+    "path": "/private/tmp/madb-c07-native-gateway/builds/1792916887494811000/source-snapshot/manifest.json",
+    "size": 10171,
+    "sha256": "3dfa7cceab4dac270db4ac637b3adde5d2e9f3a74107af5b60afc31c3ff8daf1"
+  },
+  "native_review_archive_recheck": {
+    "files": 20,
+    "mismatches": 0
+  },
+  "limits": [
+    "15 Node checks simulate native behavior and physical ACK",
+    "Formal SDK proof covers ArkTS type checking and Release obfuscation/package harness, not NAPI linkage or target execution",
+    "Native review binds the second ordinary development build and archived old ADR; the updated ADR requires a new final build identity",
+    "No C04 candidate, complete route certification or Actions run"
+  ]
+}

@@ -1,0 +1,509 @@
+import native, { NativeCopy } from @MADB_NATIVE_MODULE@;
+import { Frame, FRAME_FORMAT, physicalRuntimeAck } from './RuntimeFrame';
+
+const EXPECTED_IDENTITY: string = @MADB_EXPECTED_IDENTITY@;
+
+export interface Snapshot { value: number; text: string; }
+export interface Runtime { connect(): Engine; close(): Promise<void>; }
+export interface Engine {
+  roundtrip(value: Snapshot): Snapshot;
+  startOperation(value: Snapshot): Operation;
+  publishState(value: Snapshot): void;
+  publishEvent(value: Snapshot): void;
+  observeState(listener: (value: Snapshot) => void): Subscription;
+  observeEvents(listener: (value: Snapshot) => void): Subscription;
+  requestClose(): void;
+  close(): Promise<void>;
+}
+export interface Operation {
+  result(): Promise<Snapshot>;
+  requestCancel(): void;
+  close(): Promise<void>;
+}
+export interface Subscription {
+  requestStop(): void;
+  close(): Promise<void>;
+}
+
+export class BoundaryError extends Error implements Error {
+  readonly code: string;
+  constructor(code: string) { super(code); this.name = 'BoundaryError'; this.code = code; }
+}
+
+class SnapshotValue implements Snapshot {
+  value: number;
+  text: string;
+  constructor(value: number, text: string) { this.value = value; this.text = text; }
+}
+
+function statusError(status: number): BoundaryError {
+  switch (status) {
+    case 1: return new BoundaryError('InvalidArgument');
+    case 2: return new BoundaryError('ResourceExhausted');
+    case 3: return new BoundaryError('Closing');
+    case 4: return new BoundaryError('Closed');
+    case 5: return new BoundaryError('Cancelled');
+    case 6: return new BoundaryError('AlreadyConsumed');
+    case 8: return new BoundaryError('DomainOverflow');
+    case 9: return new BoundaryError('CallbackFailure');
+    default: return new BoundaryError('InternalFailure');
+  }
+}
+
+// This converts native-owned errors only. User property/listener errors are
+// preserved and are never inspected for SDK error codes.
+function nativeError(error: Error): Error {
+  if (error instanceof BoundaryError) { return error; }
+  const code: string = (error as BoundaryError).code;
+  return typeof code === 'string' && code.length > 0 ? new BoundaryError(code) : error;
+}
+function nativeCall<T>(call: () => T): T {
+  try { return call(); } catch (error) { throw nativeError(error as Error); }
+}
+function consumedFailure(error: Error): boolean {
+  return (error as BoundaryError).code === 'DeliveryFailureConsumed';
+}
+
+class ResourceRecord {
+  readonly handle: string;
+  readonly engine: string;
+  readonly kind: number; // 0 Engine, 1 Operation, 2 Subscription
+  closing: boolean = false;
+  closed: boolean = false;
+  closeStatus: number = 0;
+  resultClaimed: boolean = false;
+  listener: ((value: Snapshot) => void) | undefined = undefined;
+  constructor(handle: string, engine: string, kind: number) {
+    this.handle = handle; this.engine = engine; this.kind = kind;
+  }
+}
+
+class Waiter {
+  readonly id: string;
+  readonly record: ResourceRecord;
+  readonly isResult: boolean;
+  readonly accept: (copy: NativeCopy) => void;
+  readonly reject: (error: Error) => void;
+  settling: boolean = false;
+  signalled: boolean = false;
+  constructor(id: string, record: ResourceRecord, isResult: boolean,
+              accept: (copy: NativeCopy) => void, reject: (error: Error) => void) {
+    this.id = id; this.record = record; this.isResult = isResult;
+    this.accept = accept; this.reject = reject;
+  }
+}
+
+class Session {
+  private readonly runtime: string;
+  private engine: ResourceRecord | undefined = undefined;
+  private readonly subscriptions: Map<string, ResourceRecord> = new Map<string, ResourceRecord>();
+  private readonly operations: Map<string, ResourceRecord> = new Map<string, ResourceRecord>();
+  private readonly waiters: Map<string, Waiter> = new Map<string, Waiter>();
+  private nextId: string = '1';
+  private idsExhausted: boolean = false;
+  private timer: number = -1;
+  private ticking: boolean = false;
+  private dirty: boolean = false;
+  private delay: number = 1;
+  private closing: boolean = false;
+  private closed: boolean = false;
+  private failed: Error | undefined = undefined;
+  private closePromise: Promise<void> | undefined = undefined;
+  private closeResolve: (() => void) | undefined = undefined;
+  private closeReject: ((reason: Error) => void) | undefined = undefined;
+
+  constructor() {
+    // Maps/control fields exist before native admission. Expected identities are
+    // generated independently of the library's self-report.
+    this.runtime = nativeCall(() => native.runtimeOpen(EXPECTED_IDENTITY,
+      (kind: number, handle: string, copy: NativeCopy | null) => { this.dispatch(kind, handle, copy); }));
+  }
+
+  private requireOpen(): void {
+    if (this.failed !== undefined) { throw this.failed; }
+    if (this.closed) { throw new BoundaryError('Closed'); }
+    if (this.closing) { throw new BoundaryError('Closing'); }
+  }
+  private requireResource(record: ResourceRecord): void {
+    this.requireOpen();
+    if (record.closed) { throw new BoundaryError('Closed'); }
+    if (record.closing) { throw new BoundaryError('Closing'); }
+  }
+  private id(): string {
+    if (this.idsExhausted) { throw new BoundaryError('ResourceExhausted'); }
+    const current: string = this.nextId;
+    if (current === '18446744073709551615') { this.idsExhausted = true; return current; }
+    let carry: number = 1;
+    let next: string = '';
+    for (let i: number = current.length - 1; i >= 0; i--) {
+      const digit: number = current.charCodeAt(i) - 48 + carry;
+      next = String(digit % 10) + next;
+      carry = digit >= 10 ? 1 : 0;
+    }
+    this.nextId = carry === 0 ? next : '1' + next;
+    return current;
+  }
+
+  connect(): Engine {
+    this.requireOpen();
+    this.refreshClosures();
+    this.requireOpen();
+    if (this.waiters.size > 0 || (this.engine !== undefined && !this.engine.closed)) {
+      throw new BoundaryError('Closing');
+    }
+    const handle: string = nativeCall(() => native.connect(this.runtime));
+    try {
+      const record: ResourceRecord = new ResourceRecord(handle, handle, 0);
+      this.engine = record;
+      return new EngineHandle(this, record);
+    } catch (error) { nativeCall(() => native.requestClose(handle)); throw error as Error; }
+  }
+
+  roundtrip(record: ResourceRecord, input: Snapshot): Snapshot {
+    this.requireResource(record);
+    const value: number = input.value;
+    const text: string = input.text;
+    // Either getter may have reentered and closed this generation.
+    this.requireResource(record);
+    const copy: NativeCopy = nativeCall(() => native.roundtrip(record.handle, value, text));
+    if (copy.status !== 0) { throw statusError(copy.status); }
+    return new SnapshotValue(copy.value, copy.text);
+  }
+  start(record: ResourceRecord, input: Snapshot): Operation {
+    this.requireResource(record);
+    const value: number = input.value;
+    const text: string = input.text;
+    this.refreshClosures();
+    this.requireResource(record);
+    const handle: string = nativeCall(() => native.submit(record.handle, value, text));
+    try {
+      const operation: ResourceRecord = new ResourceRecord(handle, record.handle, 1);
+      this.operations.set(handle, operation);
+      return new OperationHandle(this, operation);
+    } catch (error) {
+      // Admission may already have executed. Request cleanup; do not label this
+      // as a transaction that never ran or infer rollback of business effects.
+      nativeCall(() => native.requestClose(handle));
+      throw error as Error;
+    }
+  }
+  publish(record: ResourceRecord, stream: number, input: Snapshot): void {
+    this.requireResource(record);
+    const value: number = input.value;
+    const text: string = input.text;
+    this.requireResource(record);
+    this.arm();
+    nativeCall(() => native.publish(record.handle, stream, value, text));
+    this.dirty = true;
+  }
+  observe(record: ResourceRecord, stream: number, listener: (value: Snapshot) => void): Subscription {
+    this.requireResource(record);
+    if (typeof listener !== 'function') { throw new BoundaryError('InvalidArgument'); }
+    this.refreshClosures();
+    this.requireResource(record);
+    if (this.subscriptions.size >= 8) { throw new BoundaryError('ResourceExhausted'); }
+    const handle: string = nativeCall(() => native.observe(record.handle, stream));
+    try {
+      const subscription: ResourceRecord = new ResourceRecord(handle, record.handle, 2);
+      subscription.listener = listener;
+      this.subscriptions.set(handle, subscription);
+      this.arm();
+      return new SubscriptionHandle(this, subscription);
+    } catch (error) {
+      nativeCall(() => native.requestClose(handle));
+      this.subscriptions.delete(handle);
+      throw error as Error;
+    }
+  }
+  cancel(record: ResourceRecord): void {
+    this.requireResource(record);
+    nativeCall(() => native.cancel(record.handle));
+    this.dirty = true;
+  }
+
+  requestClose(record: ResourceRecord): void {
+    if (record.closed || this.closed) { return; }
+    if (this.failed !== undefined) { throw this.failed; }
+    record.closing = true;
+    if (record.kind === 0) {
+      this.subscriptions.forEach((child: ResourceRecord) => { child.closing = true; });
+      this.operations.forEach((child: ResourceRecord) => { child.closing = true; });
+    }
+    nativeCall(() => native.requestClose(record.handle));
+    // A close request owns progress even when nobody asks for a Promise.
+    // Native retirement receipts keep the outcome until this owner sees it.
+    try { this.refreshClosures(); this.arm(); }
+    catch (error) { this.fail(error as Error); throw error as Error; }
+  }
+
+  result(record: ResourceRecord): Promise<Snapshot> {
+    try {
+      this.requireResource(record);
+      if (record.resultClaimed) { return Promise.reject(new BoundaryError('AlreadyConsumed')); }
+      if (this.waiters.size >= 32) { return Promise.reject(new BoundaryError('ResourceExhausted')); }
+      const id: string = this.id();
+      return new Promise<Snapshot>((resolve, reject) => {
+        const waiter: Waiter = new Waiter(id, record, true, (copy: NativeCopy) => {
+          if (copy.status === 0) {
+            const snapshot: Snapshot = new SnapshotValue(copy.value, copy.text);
+            waiter.signalled = true;
+            resolve(snapshot);
+          } else {
+            const reason: Error = statusError(copy.status);
+            waiter.signalled = true;
+            reject(reason);
+          }
+        }, reject);
+        this.waiters.set(id, waiter);
+        try {
+          this.arm();
+          native.claimResult(record.handle, id);
+          record.resultClaimed = true;
+        } catch (error) {
+          this.waiters.delete(id);
+          waiter.signalled = true;
+          reject(nativeError(error as Error));
+          this.disarmIfIdle();
+        }
+      });
+    } catch (error) { return Promise.reject(error as Error); }
+  }
+
+  closeResource(record: ResourceRecord): Promise<void> {
+    try {
+      if (record.closed || this.closed) {
+        return record.closeStatus === 0 ? Promise.resolve() : Promise.reject(statusError(record.closeStatus));
+      }
+      this.requestClose(record);
+      if (record.closed) {
+        return record.closeStatus === 0 ? Promise.resolve() : Promise.reject(statusError(record.closeStatus));
+      }
+      this.requireOpen();
+      if (this.waiters.size >= 32) { return Promise.reject(new BoundaryError('ResourceExhausted')); }
+      const id: string = this.id();
+      return new Promise<void>((resolve, reject) => {
+        const waiter: Waiter = new Waiter(id, record, false, (copy: NativeCopy) => {
+          this.retire(record, copy.status);
+          if (record.closeStatus === 0) { waiter.signalled = true; resolve(); }
+          else {
+            const reason: Error = statusError(record.closeStatus);
+            waiter.signalled = true;
+            reject(reason);
+          }
+        }, reject);
+        this.waiters.set(id, waiter);
+        try {
+          this.arm();
+          const immediate: number = native.watchClose(record.handle, id);
+          if (immediate >= 0) {
+            waiter.settling = true;
+            try { waiter.accept({ status: immediate, value: 0, text: '' }); }
+            finally { waiter.settling = false; this.waiters.delete(id); this.disarmIfIdle(); }
+          }
+        } catch (error) {
+          this.waiters.delete(id);
+          if (!waiter.signalled) { waiter.signalled = true; reject(nativeError(error as Error)); }
+          else { this.fail(new BoundaryError('BridgeFailure')); }
+          this.disarmIfIdle();
+        }
+      });
+    } catch (error) { return Promise.reject(error as Error); }
+  }
+
+  private retire(record: ResourceRecord, status: number): void {
+    record.closed = true;
+    record.closing = true;
+    // CallbackFailure is captured at the actual listener entry and survives
+    // native slot retirement. A clean drain never erases that outcome.
+    if (record.closeStatus === 0) { record.closeStatus = status; }
+    record.listener = undefined;
+    if (record.kind === 2) { this.subscriptions.delete(record.handle); }
+    if (record.kind === 1) { this.operations.delete(record.handle); }
+    if (record.kind === 0) {
+      this.subscriptions.forEach((child: ResourceRecord) => {
+        child.closed = true; child.closing = true; child.listener = undefined;
+      });
+      this.subscriptions.clear();
+      this.operations.forEach((child: ResourceRecord) => { child.closed = true; child.closing = true; });
+      this.operations.clear();
+    }
+  }
+
+  private dispatch(kind: number, handle: string, copy: NativeCopy | null): void {
+    if (kind === 0) { this.dirty = true; return; }
+    if (kind === 2 && copy !== null) {
+      // Internal lifecycle ACK only: no business listener or Promise resolver.
+      // Duplicate receipts for already retired wrapper records are harmless.
+      let record: ResourceRecord | undefined = this.operations.get(handle);
+      if (record === undefined) { record = this.subscriptions.get(handle); }
+      if (record === undefined && this.engine !== undefined && this.engine.handle === handle) { record = this.engine; }
+      if (record !== undefined) { this.retire(record, copy.status); }
+      return;
+    }
+    if (kind !== 1 || copy === null) { throw new BoundaryError('InternalFailure'); }
+    const record: ResourceRecord | undefined = this.subscriptions.get(handle);
+    if (record === undefined || record.closing || this.closing || this.failed !== undefined) {
+      throw new BoundaryError('Closing');
+    }
+    const listener: ((value: Snapshot) => void) | undefined = record.listener;
+    if (listener === undefined) { throw new BoundaryError('Closed'); }
+    try { listener(new SnapshotValue(copy.value, copy.text)); }
+    catch (error) { record.closeStatus = 9; record.closing = true; throw error as Error; }
+  }
+
+  private pending(): boolean {
+    if (this.waiters.size > 0 || this.closeResolve !== undefined) { return true; }
+    if (this.engine !== undefined && this.engine.closing && !this.engine.closed) { return true; }
+    if (this.subscriptions.size > 0) { return true; }
+    let observing: boolean = false;
+    this.operations.forEach((record: ResourceRecord) => { if (record.closing && !record.closed) { observing = true; } });
+    return observing;
+  }
+  private refreshClosures(): number[] {
+    const frame: number[] = nativeCall(() => native.pollRuntime(this.runtime));
+    if (frame.length !== 54 || frame[Frame.Format] !== FRAME_FORMAT || frame[Frame.ResidualErrors] !== 0) {
+      throw new BoundaryError('BridgeFailure');
+    }
+    return frame;
+  }
+  private arm(): void {
+    if (this.timer >= 0 || this.ticking || this.closed || this.failed !== undefined || !this.pending()) { return; }
+    this.timer = setTimeout(() => { this.timer = -1; this.tick(); }, this.delay);
+  }
+  private disarmIfIdle(): void {
+    if (!this.pending() && this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
+  }
+
+  private consume(waiter: Waiter): void {
+    waiter.settling = true;
+    let consumed: boolean = false;
+    try {
+      const copy: NativeCopy | null = native.tryTake(this.runtime, waiter.id);
+      if (copy === null) { return; }
+      consumed = true;
+      waiter.accept(copy);
+    } catch (error) {
+      const reason: Error = error as Error;
+      if (waiter.signalled) {
+        // The callback owns completion once invoked. It must not emit a second
+        // terminal signal after a resolver has already accepted one.
+        this.fail(new BoundaryError('BridgeFailure'));
+      } else if (consumed || consumedFailure(reason)) {
+        consumed = true;
+        waiter.signalled = true;
+        waiter.reject(nativeError(reason));
+      } else { this.fail(new BoundaryError('BridgeFailure')); }
+    } finally {
+      waiter.settling = false;
+      if (consumed || this.failed !== undefined) { this.waiters.delete(waiter.id); }
+    }
+  }
+
+  private tick(): void {
+    if (this.closed || this.failed !== undefined) { return; }
+    this.ticking = true;
+    const wasDirty: boolean = this.dirty;
+    this.dirty = false;
+    try {
+      const subscriptions: string[] = [];
+      this.subscriptions.forEach((record: ResourceRecord, handle: string) => {
+        if (!record.closing) { subscriptions.push(handle); }
+      });
+      for (let i: number = 0; i < subscriptions.length && i < 8 && !this.closing; i++) {
+        const record: ResourceRecord | undefined = this.subscriptions.get(subscriptions[i]);
+        if (record === undefined || record.closing) { continue; }
+        const delivered: number = native.deliver(record.handle);
+        if (delivered === 0) { this.dirty = true; }
+        else if (delivered === 9) { record.closing = true; record.closeStatus = 9; }
+        else if (delivered !== 7 && delivered !== 4) { throw statusError(delivered); }
+      }
+      const ids: string[] = [];
+      this.waiters.forEach((_waiter: Waiter, id: string) => { ids.push(id); });
+      for (let i: number = 0; i < ids.length && i < 32 && this.failed === undefined; i++) {
+        const waiter: Waiter | undefined = this.waiters.get(ids[i]);
+        if (waiter !== undefined && !waiter.settling) { this.consume(waiter); }
+      }
+      if (this.failed !== undefined) { return; }
+      const frame: number[] = this.refreshClosures();
+      if (this.closeResolve !== undefined && this.waiters.size === 0 && physicalRuntimeAck(frame)) {
+        const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
+        if (!physicalRuntimeAck(receipt)) { throw new BoundaryError('BridgeFailure'); }
+        this.closed = true;
+        if (this.engine !== undefined) { this.retire(this.engine, 0); }
+        if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
+        const resolve: () => void = this.closeResolve;
+        this.closeResolve = undefined; this.closeReject = undefined;
+        resolve();
+      }
+    } catch (error) { this.fail(nativeError(error as Error)); }
+    finally {
+      this.ticking = false;
+      this.delay = wasDirty || this.dirty ? 1 : Math.min(64, this.delay * 4);
+      try { this.arm(); } catch (error) { this.fail(error as Error); }
+    }
+  }
+
+  close(): Promise<void> {
+    if (this.closePromise !== undefined) { return this.closePromise; }
+    if (this.failed !== undefined) { return Promise.reject(this.failed); }
+    this.closePromise = new Promise<void>((resolve, reject) => {
+      this.closeResolve = resolve; this.closeReject = reject;
+      this.closing = true;
+      if (this.engine !== undefined) { this.engine.closing = true; }
+      this.subscriptions.forEach((record: ResourceRecord) => { record.closing = true; });
+      this.operations.forEach((record: ResourceRecord) => { record.closing = true; });
+      try { native.requestRuntimeClose(this.runtime); this.arm(); }
+      catch (error) { this.fail(nativeError(error as Error)); }
+    });
+    return this.closePromise;
+  }
+  private fail(reason: Error): void {
+    if (this.failed !== undefined) { return; }
+    this.failed = reason;
+    if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
+    this.waiters.forEach((waiter: Waiter) => {
+      if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
+    });
+    this.waiters.clear();
+    if (this.closeReject !== undefined) { this.closeReject(reason); }
+    this.closeResolve = undefined; this.closeReject = undefined;
+    // Unknown pre-guard native ownership is retained truthfully. Actual env
+    // cleanup still owns those records; BridgeFailure is never a Closed ACK.
+  }
+}
+
+class RuntimeHandle implements Runtime {
+  private readonly session: Session;
+  constructor(session: Session) { this.session = session; }
+  connect(): Engine { return this.session.connect(); }
+  close(): Promise<void> { return this.session.close(); }
+}
+class EngineHandle implements Engine {
+  private readonly session: Session;
+  private readonly record: ResourceRecord;
+  constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
+  roundtrip(value: Snapshot): Snapshot { return this.session.roundtrip(this.record, value); }
+  startOperation(value: Snapshot): Operation { return this.session.start(this.record, value); }
+  publishState(value: Snapshot): void { this.session.publish(this.record, 0, value); }
+  publishEvent(value: Snapshot): void { this.session.publish(this.record, 1, value); }
+  observeState(listener: (value: Snapshot) => void): Subscription { return this.session.observe(this.record, 0, listener); }
+  observeEvents(listener: (value: Snapshot) => void): Subscription { return this.session.observe(this.record, 1, listener); }
+  requestClose(): void { this.session.requestClose(this.record); }
+  close(): Promise<void> { return this.session.closeResource(this.record); }
+}
+class OperationHandle implements Operation {
+  private readonly session: Session;
+  private readonly record: ResourceRecord;
+  constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
+  result(): Promise<Snapshot> { return this.session.result(this.record); }
+  requestCancel(): void { this.session.cancel(this.record); }
+  close(): Promise<void> { return this.session.closeResource(this.record); }
+}
+class SubscriptionHandle implements Subscription {
+  private readonly session: Session;
+  private readonly record: ResourceRecord;
+  constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
+  requestStop(): void { this.session.requestClose(this.record); }
+  close(): Promise<void> { return this.session.closeResource(this.record); }
+}
+export function openRuntime(): Runtime { return new RuntimeHandle(new Session()); }

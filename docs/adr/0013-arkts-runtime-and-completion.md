@@ -21,7 +21,7 @@ Engine 的业务排水、JS Promise 结算、整个 env runtime 的清理是不�
 
 第一完整切片限制每 env 一个 Runtime 初始化、一个活动 Engine generation；Kotlin 仅支持主 env。后续 Engine generation 只有在旧代所有业务、等待者、JS settling 和通知责任均清偿后才能准入。关闭的公开对象只保存不可变结果，不访问复用槽。是否允许最终 Runtime 关闭后重新初始化必须另有能力声明和测试，不能默认支持。
 
-保留普通 `roundtrip/startOperation/publishState/publishEvent/observeState/observeEvents/requestClose/close`，操作的 `requestCancel/result/close`，观察的 `requestStop/close`。同步方法返回普通值或抛出类型化错误；Promise 方法的普通准入错误通过拒绝表达。
+保留普通 `roundtrip/startOperation/publishState/publishEvent/observeState/observeEvents/requestClose/close`，操作的 `requestCancel/result/close`，观察的 `requestStop/close`。同步方法返回普通值或抛出类型化错误；Promise 方法的普通准入错误通过拒绝表达。 原生错误在同步与 Promise 入口统一转换为公开 BoundaryError/code；输入 getter 和业务监听器自己的异常保留其身份，不把整个业务回调包进原生错误转换器。
 
 C07 采用 first-terminal-wins：Success、DomainFailure、Cancelled、InternalFailure 中第一个合法终态保持不变；工作退出和结果释放另外计费。取消不是撤销已经发生的业务副作用，丢弃 JS Promise 也不是取消原生工作。首个 result 注册在提交前失败，可撤销认领并重试；提交后必须完成唯一转移或合法清理，不能用第二个请求替换。
 
@@ -50,6 +50,11 @@ Snapshot 单条文本最多1024 UTF-8字节，值为严格 Int32；保留 NUL/Un
 
 `close()` 先执行幂等关闭请求，再注册观察。32项满额可使这次观察返回 ResourceExhausted，但关闭请求不撤销；之后可以重试观察。已经关闭时直接返回已知结果，不重新持有原生等待者。
 
+只执行 requestClose/requestStop 也必须推进完成确认。每个已受理资源的有界记录保留关闭结果，在所属 env 将内部生命周期 ACK 交给 facade 后才清除或复用；子资源先于 Engine。它复用资源记录，不占32项 Promise 等待者、不创建无界历史表，也不调用业务监听器。CallbackFailure 必须在槽复用前锁存到公开对象；不能将任意 InvalidHandleRetired 当作成功关闭。facade 对 closing 对象继续持有轮询责任，准入前收取已就绪的生命周期确认；实际 env 退出时由纯原生清理 owner 丢弃这些不可递送的记录。
+
+父级 Runtime 的关闭请求同样先于计时器创建。计时器分配失败可以使观察失败，但不能阻止已经请求的资源关闭。共用的 ready wake 只属于 Runtime，既不携带旧代资源也不进入业务监听器；旧代业务投递、结果和等待者必须排空，不能把 Runtime 级无载荷提示误当成第二套业务责任。
+
+
 Runtime.close 通过不占业务 waiter 的 request-close 停止子代，等待真实 worker join、Core 业务排水、Core waiters=0、JS settling=0 以及 entered/排队通知归零，再清理环境引用与 TSFN。Core.closed 本身不足以证明这些条件，因为其 ACK 等待者可能仍在递送。facade 对自己的 JS owner 负责；原生释放同时独立校验其原生 owner，不信任调用方传入的零计数。
 
 NativeWorker 的提交入口包含 Core 准入与唤醒。外部预留清理任务在非 env、非业务线程执行真正的 join，线程及 TLS 析构完成后才归还 Executor；不得把工作函数返回或 Kotlin Worker Future 当成物理 join。自身判断使用真实线程作用域，不能把可能复用的历史线程 ID 当作仍存活的业务线程。
@@ -58,7 +63,7 @@ NativeWorker 的提交入口包含 Core 准入与唤醒。外部预留清理任�
 
 实际 env 退出使用预先登记的 async cleanup owner：停止 worker、在合法 env 期间清理引用、丢弃不可递送的 Core token、在清理执行器完成 join，最后在所属线程移除 handle。null-env 回调仅清理其合法原生 owner，不运行 JS/NAPI。平台 finalizer、载荷析构、context 析构分别记录真实完成，失败保留残留，不能清空指针伪造归零。
 
-普通 Runtime.close 通过静态 bootstrap 通道取得最终物理 ACK，停止未来轮询后才 resolve。正常关闭的 registry slot 要等所属 facade 消费最终 receipt 后才可复用；真实 env 退出由系统清理 owner 收尾。epoch 不复用，容量、清理失败和过期身份要明确，不采用无界墓碑或固定生命周期次数冒充并发上限。
+普通 Runtime.close 通过静态 bootstrap 通道取得最终物理 ACK，停止未来轮询后才 resolve。正常关闭的 registry slot 要等所属 facade 消费最终 receipt 后才可复用；真实 env 退出由系统清理 owner 收尾。epoch 不复用，容量、清理失败和过期身份要明确，不采用无界墓碑或固定生命周期次数冒充并发上限。 初始化尚未交付句柄时，保留 RAII slot reservation；失败回滚中的同 env owner 也必须达到真实物理 ACK 后才可再次准入，不能仅凭“初始化失败”标记允许重叠。
 
 ## 实施与验证
 
