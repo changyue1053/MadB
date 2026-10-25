@@ -1,9 +1,10 @@
-"""Exact native composition checks; no compiler, launcher or device is invoked."""
+"""Exact native composition and host facade checks; no native compiler or device."""
 from pathlib import Path
 import hashlib
 import json
 import re
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -54,6 +55,32 @@ class NativeCompositionTests(unittest.TestCase):
                          baseline["derived_sha256"]["Boundary.ets.in"])
         self.assertEqual(len(result.units), 8)
         self.assertTrue((self.output / "src/support.cpp").is_file())
+
+    def test_composed_facade_retains_subscription_wrapper_until_actual_ack(self):
+        result = self.compose()
+        completed = subprocess.run(
+            ["node", str(ROOT / "tests/integration/c07_arkts_facade/check.cjs"),
+             str(result.facade_template), "--test-companion"],
+            cwd=ROOT, text=True, capture_output=True, timeout=30, check=False)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        receipts = [line.removeprefix("receipt ") for line in completed.stdout.splitlines()
+                    if line.startswith("receipt ")]
+        self.assertEqual(len(receipts), 1, completed.stdout)
+        receipt_path = Path(receipts[0])
+        self.addCleanup(shutil.rmtree, receipt_path.parent)
+        receipt = json.loads(receipt_path.read_text())
+        self.assertTrue(receipt["passed"])
+        self.assertTrue(receipt["test_companion"])
+        self.assertEqual(receipt["source"]["sha256"],
+                         hashlib.sha256(result.facade_template.read_bytes()).hexdigest())
+        self.assertEqual(len(receipt["cases"]), 27)
+        regressions = {case["name"] for case in receipt["cases"]
+                       if case["name"].startswith("c3_")}
+        self.assertEqual(regressions, {
+            "c3_open_request_stop_ack_and_closed_tombstone",
+            "c3_callback_failure_retains_listener_until_actual_ack",
+            "c3_foreign_wrapper_is_rejected_without_native_calls"})
+        self.assertTrue(all(case["passed"] for case in receipt["cases"]))
 
     def test_memory_units_derive_the_actual_core_and_provider(self):
         for route in ("c", "cpp", "rust"):

@@ -19,7 +19,11 @@ Engine 的业务排水、JS Promise 结算、整个 env runtime 的清理是不�
 | Operation | 终态认领、独立工作租约与结果接管；`result()` 是一次原生认领，第二个已受理请求返回 AlreadyConsumed |
 | Subscription | 停止准入、源和投递排水；用户监听器退出或合法丢弃完成后才返还票据 |
 
-第一完整切片限制每 env 一个 Runtime 初始化、一个活动 Engine generation；Kotlin 仅支持主 env。后续 Engine generation 只有在旧代所有业务、等待者、JS settling 和通知责任均清偿后才能准入。关闭的公开对象只保存不可变结果，不访问复用槽。是否允许最终 Runtime 关闭后重新初始化必须另有能力声明和测试，不能默认支持。
+第一完整切片限制每 env 同时只有一个已准入或正在清理的 Runtime、一个活动 Engine generation；Kotlin 仅支持主 env。后续 Engine generation 只有在旧代所有业务、等待者、JS settling 和通知责任均清偿后才能准入。关闭的公开对象只保存不可变结果，不访问复用槽。
+
+C07 收口时明确采用同 env 顺序重开能力：旧 Runtime 的真实物理 ACK 已取得、最终 receipt 已由所属 facade 消费之后，才允许新 Runtime 准入；新 epoch 不复用。`runtime_reopen` 策略以 `same_env`、`requires_physical_ack`、`requires_receipt_consumed` 为 true、`epoch_reuse` 为 false 进入普通与伴随 profile 的语义 ABI。它不允许两个活动 Runtime，不允许清理失败或尚未确认关闭时跳过旧 owner，也不表示 Kotlin 支持 Worker env。
+
+此声明收敛既有 bootstrap/epoch 实现的公开范围，不把机制探针升级为认证。最终普通候选须实际执行 close 后重开、保留旧公开对象并验证其不能干扰新代；伴随候选还须验证 ACK/receipt 前拒绝、旧 epoch 拒绝及资源配平。四条路线分别取得这些目标证据后，才可记录该能力通过；此前仍为待验收。
 
 保留普通 `roundtrip/startOperation/publishState/publishEvent/observeState/observeEvents/requestClose/close`，操作的 `requestCancel/result/close`，观察的 `requestStop/close`。同步方法返回普通值或抛出类型化错误；Promise 方法的普通准入错误通过拒绝表达。 原生错误在同步与 Promise 入口统一转换为公开 BoundaryError/code；输入 getter 和业务监听器自己的异常保留其身份，不把整个业务回调包进原生错误转换器。
 

@@ -10,6 +10,7 @@ const root = path.resolve(__dirname, '../../..');
 const sdk = path.join(root, 'sdk/arkts/facade');
 const sourcePath = process.argv[2] || path.join(sdk, 'Boundary.ets.in');
 const legacy = process.argv.includes('--legacy-native');
+const testCompanion = process.argv.includes('--test-companion');
 const source = fs.readFileSync(sourcePath, 'utf8');
 const framePath = path.join(sdk, 'RuntimeFrame.ets');
 const frameSource = fs.readFileSync(framePath, 'utf8');
@@ -46,7 +47,7 @@ function fixture() {
   let engine;
   const control = {timers, resources, observations, calls, failTimer:false,
     failClaim:false, holdOperationClose:false, resultReady:false,
-    physical:false, runtimeClosing:false, failTake:'', failDelivery:0, holdJoinAck:false, failPoll:false, failReceipt:false};
+    physical:false, runtimeClosing:false, failTake:'', failDelivery:0, holdJoinAck:false, holdSubscriptionAck:false, failPoll:false, failReceipt:false};
   const lookup = key => {const r=resources.get(key); if(!r || r.retired) throw error('InvalidHandleRetired');return r;};
   const closeTarget = r => {
     r.closing = true;
@@ -58,7 +59,7 @@ function fixture() {
     // this prevents parent retirement from erasing a child's failure outcome.
     const ordered=[...resources.values()].sort((a,b)=>(a.kind==='e')-(b.kind==='e'));
     for (const r of ordered) {
-      if(!r.closed || r.acked || (r.kind==='e' && control.holdJoinAck)) continue;
+      if(!r.closed || r.acked || (r.kind==='e' && control.holdJoinAck) || (r.kind==='s' && control.holdSubscriptionAck)) continue;
       if(!legacy) dispatch(2,r.handle,{status:r.status,value:0,text:''});
       r.acked=true;
       if(r.kind==='e') r.retired=true;
@@ -156,10 +157,11 @@ function fixture() {
     setTimeout(fn) {if(control.failTimer)throw error('TimerUnavailable');const id=++nextTimer;timers.set(id,fn);return id;},
     clearTimeout(id) {timers.delete(id);}};
   vm.createContext(sandbox);
-  vm.runInContext(frameJs+'\n'+js+'\nglobalThis.open = openRuntime; globalThis.ExportedBoundaryError = BoundaryError;',sandbox);
+  vm.runInContext(frameJs+'\n'+js+'\nglobalThis.open = openRuntime; globalThis.ExportedBoundaryError = BoundaryError; globalThis.testSubState = typeof testSubscriptionState === "function" ? testSubscriptionState : undefined;',sandbox);
   const runtime=sandbox.open();
   control.deliverLate=(handle)=>dispatch(1,handle,{status:0,value:1,text:"late"});
   control.BoundaryError=sandbox.ExportedBoundaryError;
+  control.testSubState=sandbox.testSubState;
   control.runtime=runtime;control.engine=()=>runtime.connect();
   control.tick=async()=>{const first=timers.entries().next();if(!first.done){const[id,fn]=first.value;timers.delete(id);fn();}await Promise.resolve();};
   control.drain=async(n=6)=>{for(let i=0;i<n;i++)await control.tick();};
@@ -385,6 +387,34 @@ const tests = {
     assert.equal([...f.resources.values()].filter(x=>x.kind==='o').length,0);
   },
 };
+if(testCompanion) Object.assign(tests, {
+  async c3_open_request_stop_ack_and_closed_tombstone() {
+    const f=fixture(),e=f.engine(),sub=e.observeState(()=>{});
+    const calls=JSON.stringify(f.calls), timers=f.timers.size;
+    assert.deepEqual(Array.from(f.testSubState(sub)),[1,0,0,1]);
+    assert.equal(JSON.stringify(f.calls),calls);assert.equal(f.timers.size,timers);
+    f.holdSubscriptionAck=true;sub.requestStop();assert.deepEqual(Array.from(f.testSubState(sub)),[1,1,0,1]);
+    f.holdSubscriptionAck=false;await f.drain();assert.deepEqual(Array.from(f.testSubState(sub)),[1,1,1,0]);
+    await sub.close();assert.deepEqual(Array.from(f.testSubState(sub)),[1,1,1,0]);
+  },
+  async c3_callback_failure_retains_listener_until_actual_ack() {
+    const f=fixture(),e=f.engine(),sub=e.observeEvents(()=>{throw error('UserCallback');});
+    f.holdSubscriptionAck=true;f.failDelivery=9;await f.drain(1);
+    // The actual facade records failure, then a later ACK retires the listener.
+    assert.deepEqual(Array.from(f.testSubState(sub)),[1,1,0,1]);
+    f.holdSubscriptionAck=false;await f.drain();
+    assert.deepEqual(Array.from(f.testSubState(sub)),[1,1,1,0]);
+    await rejected(sub.close(),'CallbackFailure');
+    assert.deepEqual(Array.from(f.testSubState(sub)),[1,1,1,0]);
+  },
+  async c3_foreign_wrapper_is_rejected_without_native_calls() {
+    const f=fixture(),other=fixture(),sub=other.engine().observeState(()=>{});
+    const calls=JSON.stringify(f.calls);
+    assert.throws(()=>f.testSubState(sub),e=>e.code==='InvalidArgument');
+    assert.throws(()=>f.testSubState({}),e=>e.code==='InvalidArgument');
+    assert.equal(JSON.stringify(f.calls),calls);
+  },
+});
 (async()=>{
   const cases=[];
   for(const[name,test]of Object.entries(tests)){
@@ -392,6 +422,6 @@ const tests = {
     catch(e){cases.push({name,passed:false,error:String(e),stack:e.stack});console.log('FAIL',name,String(e));}
   }
   const output=path.join(fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'madb-c07-facade-check-')), 'receipt.json');
-  fs.writeFileSync(output,JSON.stringify({scope:'Independent host JS facade checks with simulated native API; no NAPI/OHOS/target proof',node:process.version,source:{path:sourcePath,sha256:sha(source)},frame:{path:framePath,sha256:sha(frameSource)},test:{path:__filename,sha256:sha(fs.readFileSync(__filename))},layout:{path:layoutPath,sha256:sha(layoutBytes)},legacy_native:legacy,cases,passed:cases.every(x=>x.passed)},null,2)+'\n');
+  fs.writeFileSync(output,JSON.stringify({scope:'Independent host JS facade checks with simulated native API; no NAPI/OHOS/target proof',node:process.version,source:{path:sourcePath,sha256:sha(source)},frame:{path:framePath,sha256:sha(frameSource)},test:{path:__filename,sha256:sha(fs.readFileSync(__filename))},layout:{path:layoutPath,sha256:sha(layoutBytes)},legacy_native:legacy,test_companion:testCompanion,cases,passed:cases.every(x=>x.passed)},null,2)+'\n');
   console.log('receipt',output);if(cases.some(x=>!x.passed))process.exitCode=1;
 })().catch(e=>{console.error(e);process.exitCode=1;});
