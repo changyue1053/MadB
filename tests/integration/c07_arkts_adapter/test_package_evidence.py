@@ -126,6 +126,89 @@ class CandidateLogClosure(unittest.TestCase):
                     obj.package("unused")
                 delegate.assert_not_called()
 
+class KotlinCompileReceiptClosure(unittest.TestCase):
+    def fixture(self, root):
+        pipeline = Pipeline.__new__(Pipeline)
+        pipeline.config = {"provider": "kotlin"}
+        pipeline.built = root / "build/files"
+        pipeline.built.mkdir(parents=True)
+        receipt = pipeline.built / "kotlin-compile.json"
+        receipt.write_bytes(b'{"actual_ksp":"original accepted bytes"}\n')
+        reference = {"path": receipt.name, "sha256": sha(receipt), "size": receipt.stat().st_size}
+        evidence = {"phase": "compile", "outputs": [dict(reference)]}
+        evidence_path = pipeline.built / "evidence/task-0000.json"
+        evidence_path.parent.mkdir()
+        inventory = {"schema": "madb.sdk-inventory/1", "files": ["native/sdk.so"]}
+        (pipeline.built / "sdk-inventory.json").write_text(json.dumps(inventory))
+        self.save_evidence(pipeline, evidence, reference)
+        return pipeline, receipt, reference, evidence
+
+    def save_evidence(self, pipeline, evidence, reference):
+        path = pipeline.built / "evidence/task-0000.json"
+        path.write_text(json.dumps(evidence))
+        refs = [{"path": "evidence/task-0000.json", "sha256": sha(path), "size": path.stat().st_size}]
+        if reference is not None:
+            refs.append(reference)
+        (pipeline.built.parent / "metadata.json").write_text(json.dumps({"files": refs}))
+
+    def test_original_committed_compile_receipt_is_public_without_rewriting(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            obj, receipt, reference, _ = self.fixture(Path(temporary).resolve())
+            original = receipt.read_bytes()
+            self.assertEqual(obj.public_built(), ["native/sdk.so", "kotlin-compile.json"])
+            self.assertEqual(receipt.read_bytes(), original)
+            self.assertEqual(sha(receipt), reference["sha256"])
+            self.assertEqual(obj.public_built(), ["native/sdk.so", "kotlin-compile.json"])
+
+    def test_other_routes_keep_existing_link_inventory(self):
+        for route in ("c", "cpp", "rust"):
+            with self.subTest(route=route), tempfile.TemporaryDirectory() as temporary:
+                obj, receipt, _, _ = self.fixture(Path(temporary).resolve())
+                obj.config["provider"] = route
+                receipt.unlink()
+                (obj.built.parent / "metadata.json").unlink()
+                self.assertEqual(obj.public_built(), ["native/sdk.so"])
+
+    def test_missing_or_changed_receipt_does_not_get_rehashed(self):
+        for mode in ("missing", "changed"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temporary:
+                obj, receipt, _, _ = self.fixture(Path(temporary).resolve())
+                if mode == "missing":
+                    receipt.unlink()
+                else:
+                    receipt.write_bytes(b"replacement")
+                with self.assertRaises((ValueError, FileNotFoundError)):
+                    obj.public_built()
+
+    def test_uncommitted_conflicting_duplicate_or_wrong_phase_reference_fails(self):
+        for mode in ("uncommitted", "conflict", "duplicate", "wrong-phase"):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temporary:
+                obj, _, reference, evidence = self.fixture(Path(temporary).resolve())
+                if mode == "uncommitted":
+                    reference = None
+                elif mode == "conflict":
+                    evidence["outputs"][0]["sha256"] = "sha256:" + "0" * 64
+                elif mode == "duplicate":
+                    evidence["outputs"].append(dict(reference))
+                else:
+                    evidence["phase"] = "link"
+                self.save_evidence(obj, evidence, reference)
+                with self.assertRaises(ValueError):
+                    obj.public_built()
+
+    def test_inventory_does_not_duplicate_the_accepted_receipt(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            obj, _, _, _ = self.fixture(Path(temporary).resolve())
+            path = obj.built / "sdk-inventory.json"
+            value = json.loads(path.read_text())
+            value["files"].append("kotlin-compile.json")
+            path.write_text(json.dumps(value))
+            self.assertEqual(obj.public_built().count("kotlin-compile.json"), 1)
+            value["files"].append("kotlin-compile.json")
+            path.write_text(json.dumps(value))
+            with self.assertRaisesRegex(ValueError, "duplicate"):
+                obj.public_built()
+
 
 if __name__ == "__main__":
     unittest.main()

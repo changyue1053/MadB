@@ -8,7 +8,11 @@ def replace_once(source, before, after):
 
 
 def derive_boundary(boundary):
-    s = boundary
+    s = replace_once(
+        boundary,
+        "import native, { NativeCopy }",
+        "import native, { NativeCopy, SavedCalls as NativeSavedCalls }",
+    )
     s = replace_once(
         s,
         "  private requireOpen(): void {",
@@ -35,28 +39,37 @@ function checkedEngine(value: Engine): EngineHandle {
   if (!(value instanceof EngineHandle)) { throw new BoundaryError('InvalidArgument'); }
   return value as EngineHandle;
 }
-export function testObserve(runtime: Runtime): number[] { return native.auditKey(checkedRuntime(runtime).testKey()); }
+export function testObserve(runtime: Runtime): number[] { return nativeCall(() => native.auditKey(checkedRuntime(runtime).testKey())); }
 export function testExportKey(runtime: Runtime): string { return checkedRuntime(runtime).testKey(); }
-export function testInspect(key: string): number[] { return native.auditKey(key); }
+export function testInspect(key: string): number[] { return nativeCall(() => native.auditKey(key)); }
 export interface SavedCalls {
   peek(runtime: string, id: string): number;
   takeStatus(runtime: string, id: string): number;
   connect(runtime: string): string;
   abort(runtime: string): number[];
 }
-export function testSaveCalls(runtime: Runtime): SavedCalls { return native.saveCalls(checkedRuntime(runtime).testKey()); }
-export function testObserveNapi(): string { return native.napiAudit(); }
-export function testRawFrame(): number[] { return native.audit(); }
-export function testLastAdmissionAudit(): number[] { return native.bootstrapAudit(); }
-export function testPollAdmission(): number[] { return native.pollAdmission(); }
-export function testArmPartialOpenFailure(stage: number): void { native.armPartial(stage); }
+// The retained native calls use the same public error class as immediate helpers.
+class BoundarySavedCalls implements SavedCalls {
+  private readonly calls: NativeSavedCalls;
+  constructor(calls: NativeSavedCalls) { this.calls = calls; }
+  peek(runtime: string, id: string): number { return nativeCall(() => this.calls.peek(runtime, id)); }
+  takeStatus(runtime: string, id: string): number { return nativeCall(() => this.calls.takeStatus(runtime, id)); }
+  connect(runtime: string): string { return nativeCall(() => this.calls.connect(runtime)); }
+  abort(runtime: string): number[] { return nativeCall(() => this.calls.abort(runtime)); }
+}
+export function testSaveCalls(runtime: Runtime): SavedCalls { return new BoundarySavedCalls(nativeCall(() => native.saveCalls(checkedRuntime(runtime).testKey()))); }
+export function testObserveNapi(): string { return nativeCall(() => native.napiAudit()); }
+export function testRawFrame(): number[] { return nativeCall(() => native.audit()); }
+export function testLastAdmissionAudit(): number[] { return nativeCall(() => native.bootstrapAudit()); }
+export function testPollAdmission(): number[] { return nativeCall(() => native.pollAdmission()); }
+export function testArmPartialOpenFailure(stage: number): void { nativeCall(() => native.armPartial(stage)); }
 export function testArmWork(engine: Engine, phase: number): void {
   if (phase !== 1 && phase !== 2) { throw new BoundaryError('CapabilityUnsupported'); }
-  native.testGate(checkedEngine(engine).testKey(), phase === 1 ? 0 : 2, 1);
+  nativeCall(() => native.testGate(checkedEngine(engine).testKey(), phase === 1 ? 0 : 2, 1));
 }
-export function testReleaseWork(engine: Engine): void { native.testGate(checkedEngine(engine).testKey(), 0, 0); native.testGate(checkedEngine(engine).testKey(), 2, 0); }
-export function testHoldPublication(engine: Engine): void { native.testGate(checkedEngine(engine).testKey(), 1, 1); }
-export function testReleasePublication(engine: Engine): void { native.testGate(checkedEngine(engine).testKey(), 1, 0); }
+export function testReleaseWork(engine: Engine): void { nativeCall(() => native.testGate(checkedEngine(engine).testKey(), 0, 0)); nativeCall(() => native.testGate(checkedEngine(engine).testKey(), 2, 0)); }
+export function testHoldPublication(engine: Engine): void { nativeCall(() => native.testGate(checkedEngine(engine).testKey(), 1, 1)); }
+export function testReleasePublication(engine: Engine): void { nativeCall(() => native.testGate(checkedEngine(engine).testKey(), 1, 0)); }
 """
     return s + CONTROL_EXPORTS
 
@@ -95,21 +108,31 @@ function checkedSubscription(value: Subscription): SubscriptionHandle {
   if (!(value instanceof SubscriptionHandle)) { throw new BoundaryError('InvalidArgument'); }
   return value as SubscriptionHandle;
 }
-export function testMemoryFrame(): string { return native.memoryAudit(); }
-export function testControlFrame(runtime: Runtime): string { return native.testInspect(checkedRuntime(runtime).testKey()); }
-export function testArmDelivery(subscription: Subscription): void { native.testDelivery(checkedSubscription(subscription).testResource(), 0); }
-export function testDeliveryFrame(subscription: Subscription): string { return native.testDelivery(checkedSubscription(subscription).testResource(), 1); }
-export function testReleaseDelivery(subscription: Subscription): void { native.testDelivery(checkedSubscription(subscription).testResource(), 2); }
+export function testMemoryFrame(): string { return nativeCall(() => native.memoryAudit()); }
+export function testControlFrame(runtime: Runtime): string { return nativeCall(() => native.testInspect(checkedRuntime(runtime).testKey())); }
+export function testArmDelivery(subscription: Subscription): void { nativeCall(() => native.testDelivery(checkedSubscription(subscription).testResource(), 0)); }
+export function testDeliveryFrame(subscription: Subscription): string { return nativeCall(() => native.testDelivery(checkedSubscription(subscription).testResource(), 1)); }
+export function testReleaseDelivery(subscription: Subscription): void { nativeCall(() => native.testDelivery(checkedSubscription(subscription).testResource(), 2)); }
 export function testStagePublication(engine: Engine, stream: number, snapshot: Snapshot): void {
-  native.testPublication(snapshot, checkedEngine(engine).testResource(), stream);
+  const handle: string = checkedEngine(engine).testResource();
+  // Preserve the codec's object/null/array admission before reading properties.
+  if (snapshot === null || typeof snapshot !== 'object' || Array.isArray(snapshot)) {
+    nativeCall(() => native.testPublication(snapshot, handle, stream));
+    return;
+  }
+  // User getters run outside the native-owned error conversion boundary.
+  const value: number = snapshot.value;
+  const text: string = snapshot.text;
+  const copy: Snapshot = { value: value, text: text };
+  nativeCall(() => native.testPublication(copy, handle, stream));
 }
-export function testFinishPublication(engine: Engine, commit: boolean): void { native.testReleasePublication(checkedEngine(engine).testResource(), commit ? 1 : 0); }
-export function testArmCloneFailure(engine: Engine, nth: number, ownedError: boolean): void { native.testClone(checkedEngine(engine).testResource(), nth, ownedError ? 1 : 0); }
-export function testArmTransferFailure(runtime: Runtime, phase: number): void { native.testTransfer(checkedRuntime(runtime).testKey(), phase); }
-export function testEngineHandle(engine: Engine, probeCase: number): void { native.testHandle(checkedEngine(engine).testResource(), 0, probeCase); }
-export function testOperationHandle(operation: Operation, probeCase: number): void { native.testHandle(checkedOperation(operation).testResource(), 1, probeCase); }
+export function testFinishPublication(engine: Engine, commit: boolean): void { nativeCall(() => native.testReleasePublication(checkedEngine(engine).testResource(), commit ? 1 : 0)); }
+export function testArmCloneFailure(engine: Engine, nth: number, ownedError: boolean): void { nativeCall(() => native.testClone(checkedEngine(engine).testResource(), nth, ownedError ? 1 : 0)); }
+export function testArmTransferFailure(runtime: Runtime, phase: number): void { nativeCall(() => native.testTransfer(checkedRuntime(runtime).testKey(), phase)); }
+export function testEngineHandle(engine: Engine, probeCase: number): void { nativeCall(() => native.testHandle(checkedEngine(engine).testResource(), 0, probeCase)); }
+export function testOperationHandle(operation: Operation, probeCase: number): void { nativeCall(() => native.testHandle(checkedOperation(operation).testResource(), 1, probeCase)); }
 export function testSubscriptionState(subscription: Subscription): number[] { return checkedSubscription(subscription).testState(); }
-export function testSubscriptionHandle(subscription: Subscription, probeCase: number): void { native.testHandle(checkedSubscription(subscription).testResource(), 2, probeCase); }
+export function testSubscriptionHandle(subscription: Subscription, probeCase: number): void { nativeCall(() => native.testHandle(checkedSubscription(subscription).testResource(), 2, probeCase)); }
 export function testSettleProbe(runtime: Runtime, action: () => void, throwAfter: boolean): void { checkedRuntime(runtime).testSettleProbe(action, throwAfter); }
 export function testSettleInspect(runtime: Runtime): number[] { return checkedRuntime(runtime).testSettleInspect(); }
 """

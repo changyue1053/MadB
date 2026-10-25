@@ -35,7 +35,37 @@ class Pipeline(FrozenPipeline):
         inventory = json.loads((self.built / "sdk-inventory.json").read_text())
         if inventory.get("schema") != "madb.sdk-inventory/1":
             raise ValueError("missing C07 SDK output inventory")
-        return inventory["files"]
+        files = inventory["files"]
+        if self.config["provider"] != "kotlin":
+            return files
+        receipt = self._kotlin_compile_receipt()
+        if files.count(receipt) > 1:
+            raise ValueError("duplicate Kotlin compile receipt in SDK inventory")
+        return files if receipt in files else files + [receipt]
+
+    def _kotlin_compile_receipt(self):
+        """Publish exactly the compile receipt already admitted by this Build."""
+        name = "kotlin-compile.json"
+        metadata = json.loads((self.built.parent / "metadata.json").read_text())
+        evidence_refs = committed_build_evidence(metadata)
+        verify_refs(self.built, evidence_refs)
+        references = [item for item in metadata["files"] if item["path"] == name]
+        if len(references) != 1:
+            raise ValueError("committed Build lacks its Kotlin compile receipt")
+        committed = {key: references[0][key] for key in ("path", "sha256", "size")}
+        outputs = []
+        for reference in evidence_refs:
+            evidence = json.loads((self.built / reference["path"]).read_text())
+            if evidence["phase"] == "compile":
+                outputs.extend(
+                    {key: item[key] for key in ("path", "sha256", "size")}
+                    for item in evidence["outputs"]
+                    if item["path"] == name
+                )
+        if outputs != [committed]:
+            raise ValueError("Kotlin compile receipt differs from accepted Compile output")
+        verify_refs(self.built, [committed])
+        return name
 
     def common_inputs(self, metadata=False):
         return super().common_inputs(metadata) + getattr(self, "_package_logs", [])
