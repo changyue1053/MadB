@@ -18,9 +18,14 @@ SDK_PACKAGES = {
     "sdk/rust/uniffi": "madb-boundary-uniffi",
     "sdk/rust/gobley": "madb-boundary-gobley",
     "sdk/rust/arkts-provider": "madb-arkts-provider",
+    "sdk/rust/arkts-bridge": "madb-arkts-bridge",
 }
 # These SDK build/parser packages use reviewed external dependencies, never host crates.
 SDK_REGISTRY = {
+    "madb-arkts-bridge": {("napi-ohos", "normal"): ("=1.2.0", {"napi3"}, False),
+                           ("napi-derive-ohos", "normal"): ("=1.2.0", set(), True),
+                           ("napi-sys-ohos", "normal"): ("=1.2.0", {"napi8"}, False),
+                           ("napi-build-ohos", "build"): ("=1.2.0", set(), True)},
     "madb-boundary-uniffi": {("uniffi", "normal"): ("=0.32.2", {"cli"}), ("uniffi", "build"): ("=0.32.2", {"build"}),
                              ("async-trait", "normal"): ("=0.1.89", set()), ("uniffi_bindgen", "normal"): ("=0.32.2", set()), ("serde_json", "normal"): ("=1.0.154", set())},
     "madb-boundary-gobley": {("uniffi", "normal"): ("=0.29.4", set()), ("uniffi", "build"): ("=0.29.4", {"build"}),
@@ -30,15 +35,17 @@ SDK_REGISTRY = {
 
 def approved_dependency(root, name, dependency):
     kind = dependency.get("kind") or "normal"
-    if dependency.get("rename") or dependency.get("target") or dependency.get("optional") or dependency.get("uses_default_features") is not True:
+    if dependency.get("rename") or dependency.get("target") or dependency.get("optional"):
         return False
-    if name in SDK_REGISTRY and dependency["name"] == "madb-boundary-core":
-        return (kind == "normal" and dependency.get("source") is None and not dependency.get("features")
+    if name in ("madb-boundary-uniffi", "madb-boundary-gobley") and dependency["name"] == "madb-boundary-core":
+        return (kind == "normal" and dependency.get("uses_default_features") is True
+                and dependency.get("source") is None and not dependency.get("features")
                 and Path(dependency.get("path", "")).resolve() == (root / "sdk/rust/boundary-core").resolve())
     expected = SDK_REGISTRY.get(name, {}).get((dependency["name"], kind))
     return (expected is not None and dependency.get("path") is None
             and dependency.get("source") == "registry+https://github.com/rust-lang/crates.io-index"
-            and dependency["req"] == expected[0] and set(dependency["features"]) == expected[1])
+            and dependency["req"] == expected[0] and set(dependency["features"]) == expected[1]
+            and dependency.get("uses_default_features") is (expected[2] if len(expected) == 3 else True))
 
 
 # Deliberately synthetic identities used only for local protocol unit tests.
@@ -128,7 +135,7 @@ def check(root: Path, boundaries_only: bool = False) -> None:
     errors = inspect_boundaries(root)
     if errors:
         raise RuntimeError("\n".join(errors))
-    print("Native SDK boundaries passed (six standalone workspaces; explicit dependency allowlist, no tool-host imports).", flush=True)
+    print("Native SDK boundaries passed (seven standalone workspaces; explicit dependency allowlist, no tool-host imports).", flush=True)
     if boundaries_only:
         return
     environment = os.environ.copy()

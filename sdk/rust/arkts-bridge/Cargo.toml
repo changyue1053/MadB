@@ -1,0 +1,28 @@
+[package]
+name = "madb-arkts-bridge"
+version = "0.1.0-dev.0"
+edition = "2024"
+rust-version = "1.99.1"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[lib]
+name = "madb_arkts_bridge"
+crate-type = ["cdylib"]
+
+[features]
+default = []
+test-support = []
+
+[dependencies]
+napi-ohos = { version = "=1.2.0", default-features = false, features = ["napi3"] }
+napi-derive-ohos = "=1.2.0"
+napi-sys-ohos = { version = "=1.2.0", default-features = false, features = ["napi8"] }
+
+[build-dependencies]
+napi-build-ohos = "=1.2.0"
+
+[profile.release]
+panic = "unwind"

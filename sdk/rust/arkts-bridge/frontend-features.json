@@ -1,0 +1,42 @@
+{
+  "schema": "madb.private-rust-frontend-features/1",
+  "scope": "napi-ohos frontend Env + Unknown + raw napi_value exports only; C++ owns native lifecycle",
+  "napi-ohos": {
+    "version": "1.2.0",
+    "default_features": false,
+    "requested_features": [
+      "napi3"
+    ],
+    "allowed_resolved_features": [
+      "napi1",
+      "napi2",
+      "napi3"
+    ]
+  },
+  "napi-sys-ohos": {
+    "version": "1.2.0",
+    "default_features": false,
+    "requested_features": [
+      "napi8"
+    ],
+    "allowed_resolved_features": [
+      "napi1",
+      "napi2",
+      "napi3",
+      "napi4",
+      "napi5",
+      "napi6",
+      "napi7",
+      "napi8"
+    ]
+  },
+  "forbidden_frontend_apis": [
+    "Buffer",
+    "UnknownRef",
+    "JsDeferred",
+    "ThreadsafeFunction",
+    "async fn",
+    "napi class"
+  ],
+  "reason": "napi-ohos napi4 implicitly creates a CustomGC TSFN at module registration; it is not part of the private runtime lifecycle ledger and must not be enabled"
+}

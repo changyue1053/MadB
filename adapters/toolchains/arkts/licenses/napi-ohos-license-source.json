@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/ohos-rs/ohos-rs",
+  "revision": "e4eb8e1b493d6c3aa98ca220776605963df8135a",
+  "source": "https://github.com/ohos-rs/ohos-rs/blob/e4eb8e1b493d6c3aa98ca220776605963df8135a/LICENSE",
+  "git_blob": "a10a1ea55b70d7ce476e2469d25fbeda2e4fd234",
+  "sha256": "0c0e9a8f1b2914d3e31cec973eaf5d04760b2d68272f3abec676a3ada331b0a6",
+  "reason": "Five published napi 1.2.0 crates declare MIT and pin this source revision but omit the license text; retain all three upstream notices."
+}

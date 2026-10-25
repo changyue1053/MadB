@@ -90,5 +90,22 @@ class NativeSdkBoundaries(unittest.TestCase):
         self.assertTrue(any("NATIVE003" in error and "madb-boundary-core as hidden" in error for error in errors), errors)
 
 
+    def test_c07_bridge_rejects_host_dev_dependency(self):
+        errors = self.inject_dependency("arkts-bridge", "dev-dependencies", "madb-host", "hidden")
+        self.assertTrue(any("NATIVE003" in error and "madb-host as hidden" in error for error in errors), errors)
+
+    def test_c07_bridge_cannot_enable_implicit_gc_frontend(self):
+        manifest = self.root / "sdk/rust/arkts-bridge/Cargo.toml"
+        manifest.write_text(manifest.read_text().replace('features = ["napi3"]', 'features = ["napi4"]'))
+        errors = CHECK.inspect_boundaries(self.root)
+        self.assertTrue(any("NATIVE003" in error and "napi-ohos" in error for error in errors), errors)
+
+    def test_c07_bridge_cannot_import_c06_runtime(self):
+        dependency = {"name": "madb-boundary-core", "kind": "normal", "source": None,
+                      "uses_default_features": True, "features": [],
+                      "path": str(self.root / "sdk/rust/boundary-core")}
+        self.assertFalse(CHECK.approved_dependency(self.root, "madb-arkts-bridge", dependency))
+
+
 if __name__ == "__main__":
     unittest.main()
