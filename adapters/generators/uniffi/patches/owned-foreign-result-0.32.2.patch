@@ -1,0 +1,75 @@
+--- a/src/ffi/foreignfuture.rs
++++ b/src/ffi/foreignfuture.rs
+@@ -18,12 +18,43 @@
+ //!     cancelling the async task for the method.
+ 
+ use crate::{oneshot, LiftReturn, RustCallStatus};
++use std::{marker::PhantomData, panic::{catch_unwind, AssertUnwindSafe}};
+ 
+ /// Callback that's passed to a foreign async functions.
+ ///
+ /// See `LiftReturn` trait for how this is implemented.
+ pub type ForeignFutureCallback<FfiType> =
+     extern "C" fn(oneshot_handle: u64, ForeignFutureResult<FfiType>);
++
++// A dropped receiver must still consume transferred FFI allocations. The ordinary
++// path keeps lifting on the awaiting Rust task; only abandoned results lift during
++// cleanup. MadB's profile permits thread-independent generated lifts only.
++struct OwnedForeignFutureResult<T: LiftReturn<UT>, UT> {
++    value: Option<ForeignFutureResult<T::ReturnType>>,
++    marker: PhantomData<fn() -> (T, UT)>,
++}
++
++impl<T: LiftReturn<UT>, UT> OwnedForeignFutureResult<T, UT> {
++    fn new(value: ForeignFutureResult<T::ReturnType>) -> Self {
++        Self { value: Some(value), marker: PhantomData }
++    }
++
++    fn take(mut self) -> ForeignFutureResult<T::ReturnType> {
++        self.value.take().expect("foreign result consumed once")
++    }
++}
++
++impl<T: LiftReturn<UT>, UT> Drop for OwnedForeignFutureResult<T, UT> {
++    fn drop(&mut self) {
++        if let Some(value) = self.value.take() {
++            // Generated lifts consume success/error allocations. A callback error
++            // may panic after consuming its message; never unwind from C cleanup.
++            let _ = catch_unwind(AssertUnwindSafe(|| {
++                drop(T::lift_foreign_return(value.return_value, value.call_status));
++            }));
++        }
++    }
++}
+ 
+ /// C struct that represents the result of a foreign future
+ #[repr(C)]
+@@ -70,7 +101,7 @@
+     T: LiftReturn<UT>,
+ {
+     // Create a oneshot channel that will receive the result of the callback method
+-    let (sender, receiver) = oneshot::channel::<ForeignFutureResult<T::ReturnType>>();
++    let (sender, receiver) = oneshot::channel::<OwnedForeignFutureResult<T, UT>>();
+     // Create complete callback/data from the oneshot channel
+     let complete_callback = foreign_future_complete::<T, UT>;
+     let complete_callback_data = sender.into_raw() as u64;
+@@ -86,7 +117,7 @@
+         &mut foreign_future_dropped_callback,
+     );
+     // Await the result and use it to return a value
+-    let result = receiver.await;
++    let result = receiver.await.take();
+     T::lift_foreign_return(result.return_value, result.call_status)
+ }
+ 
+@@ -94,8 +125,8 @@
+     oneshot_handle: u64,
+     result: ForeignFutureResult<T::ReturnType>,
+ ) {
+-    let channel = unsafe { oneshot::Sender::from_raw(oneshot_handle as *mut ()) };
+-    channel.send(result);
++    let channel = unsafe { oneshot::Sender::<OwnedForeignFutureResult<T, UT>>::from_raw(oneshot_handle as *mut ()) };
++    channel.send(OwnedForeignFutureResult::new(result));
+ }
+ 
+ #[cfg(test)]

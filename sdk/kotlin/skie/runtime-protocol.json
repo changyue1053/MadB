@@ -1,0 +1,89 @@
+{
+  "schema": "madb.native-runtime-protocol/1",
+  "schema_version": "1.0.0",
+  "provider": "kotlin",
+  "protocol_id": "madb-c06-kn-skie-bounded-v1",
+  "production_boundary": "src/macosArm64Main/kotlin/madb/skie/Boundary.kt",
+  "payload_bytes": "UTF8(id).length + UTF8(text).length + bytes.length",
+  "budgets": {
+    "max_payload_bytes": 1024,
+    "max_retained_payload_bytes": 4096,
+    "max_pending_events": 8,
+    "state_pending_capacity_per_subscription": 1,
+    "max_subscription_handles": 8,
+    "max_operation_handles": 8,
+    "max_registered_waiters": 32,
+    "owned_worker_threads_per_engine": 1
+  },
+  "budget_scope": "Per engine: retained variable payload across operation input/result, pending and emitting observation values; fixed fields are bounded by item/handle counts. This is not a heap measurement. Swift callback snapshots become consumer-owned.",
+  "state_overflow": "coalesce latest pending state, release replaced payload; aggregate bytes checked before admission",
+  "event_overflow": "global eight pending deliveries; atomic all-observer fan-out admission or ResourceExhausted before any transfer",
+  "operation_result": "One run caller; AlreadyStarted on repeated run. Completed undelivered result remains accounted until consumption or cancellation cleanup.",
+  "cancellation": {
+    "wait": "Swift task cancellation cancels only the SKIE bridged waiting coroutine; the instance-owned Deferred continues and its unclaimed result is cleaned",
+    "work": "requestCancel cancels the owned Deferred; a synchronous Host must return before cooperative cancellation and late-result cleanup finish",
+    "observation": "requestStop rejects admission and releases pending values; awaitStopped waits native collection. Swift facade additionally gates and drains entered consumer bodies; no second producer task/queue"
+  },
+  "ownership": {
+    "objects": "Kotlin GC and Objective-C ARC references, no duplicate public pointer registry",
+    "facade_owner": "Only MadBEngineHandle(expectedProfile) creates a facade engine; subscription factories bind it to the same delivery owner. Copies share the owner.",
+    "raw_interop": "Read-only native engine exposure retains ordinary generated APIs; raw close does not include Swift facade delivery guarantees",
+    "callback": "Host transform runs outside the engine lock; host implementation must synchronize its own state",
+    "close": "Explicit request/await; operation cleanup ACK follows clearing input/Host and retained result accounting. Job completion/join alone is not this ACK. No GC timing or blocking deinit cleanup.",
+    "waiter": "public Kotlin and Swift asynchronous wait admission bounded at 32; cancellation and completion claim registered continuation once; resume outside locks"
+  },
+  "execution": {
+    "sync_methods": "caller thread under instance NSLock for admission and mutation",
+    "host_transform": "one instance-owned coroutine worker, never under engine lock; synchronous Objective-C-visible callback only",
+    "swift_delivery": "caller task/executor; a copied Sendable snapshot before async callback actor transfer",
+    "self_drain": "Swift callback TaskLocal rejects awaiting its own subscription/engine with wouldDeadlock; nonblocking request allowed",
+    "collector": "one Swift collector claimed atomically before installing stop cleanup; duplicates rejected without stopping the first",
+    "closure": "Stop admission, stop observations, cancel work, drain operation cleanup ACKs and native collections, close worker; facade also drains registered Swift callbacks.",
+    "shutdown": "At most one instance-owned shutdown coroutine on the shared Dispatchers.Default pool. It drains cleanup ACKs and observations, joins the business worker outside the engine lock, then completes the shared shutdown ACK. Cancelling awaitClosed removes only that waiter."
+  },
+  "initialization": {
+    "native_abi_version": 1,
+    "bootstrap_version": 1,
+    "profile": "openEngine compares compiled sha256 profile identity before worker allocation",
+    "interface": "compiled interfaceIdentity plus Objective-C header and Swift SymbolGraph from actual framework"
+  },
+  "swift_concurrency": {
+    "compiler": "Swift 6 language mode with complete strict concurrency and warnings as errors",
+    "sendable": "Only three resource handles and private lock-protected delivery records use justified unchecked Sendable; Kotlin DTOs do not",
+    "snapshot": "Swift value/event snapshots own copied byte arrays and native Swift scalars"
+  },
+  "test_support": {
+    "production_exported": true,
+    "fixture_only_api": true,
+    "api": [
+      "TestSupport.collectGarbage",
+      "TestSupport.armCompletionCleanup",
+      "TestSupport.completionCleanupEntered",
+      "TestSupport.releaseCompletionCleanup",
+      "TestSupport.armCompletionAcknowledgement"
+    ],
+    "purpose": "Deterministic ARC/GC final-reference evidence and a completion-handler barrier proving explicit cleanup ACK drain; never used to perform business cleanup.",
+    "required_config_flag": true
+  },
+  "role": "conformance-provider",
+  "public_exports": [
+    "Value",
+    "Stats",
+    "Phase",
+    "BoundaryEvent",
+    "BoundaryFailure",
+    "Engine",
+    "Operation",
+    "Subscription",
+    "Host",
+    "BoundaryKt",
+    "TestSupport",
+    "onEnum(of:)",
+    "profileIdentity()",
+    "interfaceIdentity()",
+    "nativeAbiVersion()",
+    "bootstrapVersion()",
+    "openEngine(expectedProfile:)",
+    "failureEvent(code:)"
+  ]
+}

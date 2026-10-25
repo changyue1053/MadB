@@ -57,6 +57,7 @@ pub struct Symbol {
     pub link_name: Id,
     pub parameters: Vec<Parameter>,
     pub result: Id,
+    pub throws: Option<Id>,
     pub constants: Vec<ExactConstant>,
     pub shape_digest: Digest,
 }
@@ -72,6 +73,14 @@ impl Symbol {
                 .map(|p| &p.type_id),
         }
     }
+}
+
+/// Backend-owned handles make no registry validity or pointer-dereference promise.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ResourceRepresentation {
+    RegistryU64,
+    OpaquePointer,
+    BackendHandle,
 }
 
 /// Type relationships are checked together by madb-rules; these are reader values.
@@ -110,12 +119,13 @@ pub enum TypeDefinition {
         preserve_unknown: bool,
     },
     Resource {
-        registry_u64: bool,
+        representation: ResourceRepresentation,
         owner: Id,
     },
     Callback {
         parameters: Vec<Parameter>,
         result: Id,
+        throws: Option<Id>,
         calling_convention: CallingConvention,
     },
 }
@@ -171,6 +181,8 @@ pub struct Capability {
 }
 
 pub const CORE_FEATURES: &[&str] = &[
+    "core.errors@1",
+    "core.backend-resources@1",
     "core.values@1",
     "core.resources@1",
     "core.callbacks@1",

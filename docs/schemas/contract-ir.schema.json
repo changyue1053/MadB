@@ -295,7 +295,8 @@
                   "representation": {
                     "enum": [
                       "registry-u64",
-                      "opaque-pointer"
+                      "opaque-pointer",
+                      "backend-handle"
                     ]
                   },
                   "owner": {
@@ -344,6 +345,9 @@
                       "c",
                       "system"
                     ]
+                  },
+                  "throws": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
                   }
                 },
                 "required": [
@@ -447,6 +451,9 @@
                 },
                 "minItems": 0,
                 "maxItems": 4096
+              },
+              "throws": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
               }
             },
             "required": [

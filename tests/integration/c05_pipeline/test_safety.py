@@ -44,7 +44,7 @@ class PackageRejectionTests(unittest.TestCase):
         self.root = Path(self.temporary.name).resolve()
         self.inputs, self.work = self.root / "inputs", self.root / "work"
         self.work.mkdir()
-        for name in ("adapters/artifacts/rust_c/pack.py", "adapters/toolchains/rust_c/common.py"):
+        for name in ("adapters/artifacts/rust_c/pack.py", "adapters/toolchains/rust_c/common.py", "adapters/toolchains/common/documents.py"):
             target = self.inputs / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / name, target)
@@ -145,6 +145,41 @@ class HostImageRejectionTests(unittest.TestCase):
                     with self.assertRaisesRegex(RuntimeError, "locked MadB host image changed"):
                         subject.execute("build", {})
                     self.assertFalse(marker.exists(), "host executed before its stored identity was verified")
+
+
+class ExplicitProcessBudgetTests(unittest.TestCase):
+    def subject(self, root, config):
+        python = Path(sys.executable).resolve()
+        host = root / "host"
+        host.write_text("#!" + str(python) + "\nimport json, sys\nprint(json.dumps(sys.argv[1:]))\n")
+        host.chmod(0o755)
+        prepared = {"config": {"tools": {"python": {"id": "python", "version": "test",
+            "path": str(python), "sha256": digest(python), "size": python.stat().st_size}}, **config},
+            "read": {}, "lock": {}}
+        return pipeline.Pipeline(ROOT, root, prepared, host)
+
+    def test_default_route_preserves_cli_budgets(self):
+        with tempfile.TemporaryDirectory(prefix="madb-default-budget-") as temporary:
+            args = json.loads(self.subject(Path(temporary), {}).execute("build", {}))
+            self.assertNotIn("--process-timeout-seconds", args)
+            self.assertNotIn("--process-termination-grace-ms", args)
+
+    def test_explicit_route_budgets_reach_the_owner(self):
+        with tempfile.TemporaryDirectory(prefix="madb-managed-budget-") as temporary:
+            config = {"phase_timeout_seconds": 900, "phase_termination_grace_ms": 6000}
+            args = json.loads(self.subject(Path(temporary), config).execute("build", {}))
+            self.assertEqual(args[args.index("--process-timeout-seconds") + 1], "900")
+            self.assertEqual(args[args.index("--process-termination-grace-ms") + 1], "6000")
+
+    def test_invalid_budget_is_rejected_before_owner_launch(self):
+        for key, values in (("phase_timeout_seconds", (0, 3601, True, "900")),
+                            ("phase_termination_grace_ms", (-1, 30001, True, "6000"))):
+            for value in values:
+                with self.subTest(key=key, value=value), tempfile.TemporaryDirectory(prefix="madb-bad-budget-") as temporary:
+                    root = Path(temporary)
+                    with self.assertRaisesRegex(ValueError, "phase.*must be between"):
+                        self.subject(root, {key: value}).execute("build", {})
+                    self.assertFalse((root / "build-execution.log").exists())
 
 
 class GeneratorReceiptTests(unittest.TestCase):

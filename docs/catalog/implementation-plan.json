@@ -1,7 +1,7 @@
 {
   "schema": "madb.implementation-plan/1",
   "baseline": "0.9",
-  "as_of": "2026-10-24",
+  "as_of": "2026-10-25",
   "project": "MadB",
   "basis": "设计基线 0.9：十二项实施决定按责任规范和阶段准入落地；范围、工作包和认证口径保持独立。",
   "schedule_basis": "阶段顺序，不是日历工期；依赖表示验收前置，允许提前探针和并行开发。",
@@ -348,9 +348,11 @@
       "depends_on": [
         "C05"
       ],
-      "status": "not_started",
+      "status": "implemented",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-24-c06-kotlin-swift-rust.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -388,7 +390,7 @@
         "P03",
         "P04"
       ],
-      "notes": "P03 的旧版 foreign future 生成模板修复是适用异步配置的准入条件；同步子集的实验成功不解除主线完整退出条件。"
+      "notes": "实现与本机验收已交付：固定 SampleEngine 的四个 macOS Arm64 Release 候选、独立 Lab 54项必需案例及92项基础检查通过；当前源的远端基础检查与C05回归通过。用户于2026-10-25安排停止等待本轮远端C06，下一工作包完成后统一验证；远端完整四路线/54项结果仍缺失，当前不计整包验收通过。详见C06记录；其他目标、NativeCoroutines、便利层与公开发布保持原任务范围。"
     },
     {
       "id": "C07",
@@ -515,7 +517,8 @@
       "status": "in_progress",
       "verification": "missing",
       "evidence": [
-        "reviews/2026-10-24-c05-rust-c-first-route.md"
+        "reviews/2026-10-24-c05-rust-c-first-route.md",
+        "reviews/2026-10-24-c06-kotlin-swift-rust.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -547,7 +550,7 @@
       "probes": [
         "P09"
       ],
-      "notes": "C05 已交付并验证 S1 首链所需部分：独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定 C05 已绑定的首链结果。depends_on 表示整体验收前置。"
+      "notes": "C05 已验证 S1 首链的独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例；C06 增加四个 macOS Arm64 Release 配置的 54 项独立消费案例及容量、取消、排水、身份和负向编译检查，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。"
     },
     {
       "id": "C10",
@@ -566,7 +569,8 @@
       "status": "in_progress",
       "verification": "missing",
       "evidence": [
-        "reviews/2026-10-24-c05-rust-c-first-route.md"
+        "reviews/2026-10-24-c05-rust-c-first-route.md",
+        "reviews/2026-10-24-c06-kotlin-swift-rust.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -593,7 +597,7 @@
       "probes": [
         "P08"
       ],
-      "notes": "C05 已交付并验证 S1 首链所需部分：三份公开候选、固定来源与身份、干净消费及同目标重建。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定 C05 已绑定的首链结果。depends_on 表示整体验收前置。"
+      "notes": "C05 已验证三份公开候选、固定来源与身份、干净消费及同目标重建；C06 增加四份选定配置的公开候选、精确工具/依赖/补丁身份、可复现构建和独立消费，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道、正式发布资产与下载验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。"
     },
     {
       "id": "C11",

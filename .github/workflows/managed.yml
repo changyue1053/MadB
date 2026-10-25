@@ -1,0 +1,268 @@
+name: C06 managed candidates
+
+# Pending its first successful remote run. This workflow is not a required branch check.
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      lab_revision:
+        description: Optional full 40-hex Lab commit; otherwise use .github/c06-lab-revision
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: c06-managed-${{ github.ref }}-${{ inputs.lab_revision }}
+  cancel-in-progress: false
+
+jobs:
+  managed:
+    name: MadB C06 four-profile Release and independent Lab
+    # PR code runs only for branches owned by this repository, with a read-only token.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: xcode-27
+    # A measured cold run spent 59 minutes on shared setup and the first two
+    # profiles; allow all four plus independent Lab without weakening node limits.
+    timeout-minutes: 240
+    defaults:
+      run:
+        shell: bash
+        working-directory: producer
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+      # Reduce host build disk usage without disabling debug assertions.
+      CARGO_PROFILE_DEV_DEBUG: "0"
+      CARGO_INCREMENTAL: "0"
+      # Attempt the complete cold run; a failed disk check never counts as validation.
+      MADB_MIN_FREE_GIB: "10"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          path: producer
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version-file: producer/.python-version
+
+      - name: Resolve and validate the pinned Lab revision
+        id: revisions
+        env:
+          LAB_REVISION_OVERRIDE: ${{ inputs.lab_revision }}
+          EVENT_NAME: ${{ github.event_name }}
+          PRODUCER_REVISION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/madb-c06/logs"
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import re
+          report = Path(os.environ["RUNNER_TEMP"]) / "madb-c06/preflight.txt"
+          report.write_text("producer_revision=" + os.environ["PRODUCER_REVISION"] + "\n")
+          try:
+              revision = os.environ.get("LAB_REVISION_OVERRIDE", "")
+              if revision:
+                  if os.environ["EVENT_NAME"] != "workflow_dispatch":
+                      raise ValueError("Lab revision override is allowed only for workflow_dispatch")
+                  source = "workflow_dispatch input"
+              else:
+                  pin = Path(".github/c06-lab-revision")
+                  if pin.is_symlink() or not pin.is_file() or pin.stat().st_size > 42:
+                      raise ValueError("Commit .github/c06-lab-revision containing the exact Lab commit SHA; a missing, oversized or symlink pin is rejected")
+                  revision = pin.read_text(encoding="ascii").removesuffix("\n")
+                  source = str(pin)
+              if not re.fullmatch(r"[0-9a-fA-F]{40}", revision):
+                  raise ValueError("Lab revision must be a complete 40-hex commit SHA; branch names, short SHAs and extra text are rejected")
+              revision = revision.lower()
+              with report.open("a") as output:
+                  output.write("lab_revision=" + revision + "\nlab_revision_source=" + source + "\n")
+              with Path(os.environ["GITHUB_OUTPUT"]).open("a") as output:
+                  output.write("lab_revision=" + revision + "\n")
+          except (ValueError, OSError) as error:
+              with report.open("a") as output:
+                  output.write("FAIL: " + str(error) + "\n")
+              raise SystemExit("::error::" + str(error))
+          PY
+
+      - name: Require the exact Apple toolchain and available disk
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import platform
+          import shutil
+          import subprocess
+          report = Path(os.environ["RUNNER_TEMP"]) / "madb-c06/preflight.txt"
+          def note(message):
+              print(message, flush=True)
+              with report.open("a") as output:
+                  output.write(message + "\n")
+          def run(arguments, environment):
+              result = subprocess.run(arguments, env=environment, capture_output=True, text=True, timeout=30)
+              text = (result.stdout + result.stderr).strip()
+              note("$ " + " ".join(arguments) + "\n" + text)
+              if result.returncode:
+                  raise RuntimeError("preflight command failed with exit " + str(result.returncode))
+              return text
+          try:
+              note("host=" + platform.system() + "/" + platform.machine())
+              if (platform.system(), platform.machine()) != ("Darwin", "arm64"):
+                  raise RuntimeError("C06 requires a real macOS Arm64 runner")
+              expected_python = Path(".python-version").read_text().strip()
+              if platform.python_version() != expected_python:
+                  raise RuntimeError("Python differs from the committed project version")
+              note("python=" + platform.python_version())
+              run(["/bin/df", "-h", str(Path.cwd()), os.environ["RUNNER_TEMP"], "/private/tmp"], os.environ)
+              selected = None
+              seen = set()
+              for app in sorted(Path("/Applications").glob("Xcode*.app")):
+                  developer = (app / "Contents/Developer").resolve()
+                  if not developer.is_dir() or developer in seen:
+                      continue
+                  seen.add(developer)
+                  environment = dict(os.environ, DEVELOPER_DIR=str(developer))
+                  note("candidate_developer_dir=" + str(developer))
+                  try:
+                      version = run(["/usr/bin/xcodebuild", "-version"], environment)
+                      if version != "Xcode 27.0\nBuild version 27A266a":
+                          continue
+                      sdk = run(["/usr/bin/xcrun", "--sdk", "macosx", "--show-sdk-version"], environment)
+                      sdk_build = run(["/usr/bin/xcrun", "--sdk", "macosx", "--show-sdk-build-version"], environment)
+                      swift = run(["/usr/bin/xcrun", "--find", "swiftc"], environment)
+                      swift_version = run([swift, "--version"], environment)
+                      clang = run(["/usr/bin/xcrun", "--find", "clang"], environment)
+                      clang_version = run([clang, "--version"], environment)
+                      if sdk != "27.0" or sdk_build != "26A425":
+                          continue
+                      # Swift reports its embedded Clang build; standalone clang is recorded separately.
+                      expected_swift = "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)"
+                      if expected_swift not in swift_version.splitlines():
+                          continue
+                      selected = developer
+                      break
+                  except (RuntimeError, OSError, subprocess.SubprocessError) as error:
+                      note("candidate_rejected=" + str(error))
+              if selected is None:
+                  raise RuntimeError("No installed Xcode matches 27.0/27A266a, SDK 27.0/26A425 and Swift 6.4 swiftlang-6.4.0.34.1 clang-2100.3.34.1; the xcode-27 runner label alone is not proof")
+              minimum = int(os.environ["MADB_MIN_FREE_GIB"]) * 1024**3
+              for directory in (Path.cwd(), Path(os.environ["RUNNER_TEMP"]), Path("/private/tmp")):
+                  free = shutil.disk_usage(directory).free
+                  note("free_bytes[" + str(directory) + "]=" + str(free))
+                  if free < minimum:
+                      raise RuntimeError("C06 cold-run admission requires at least " + os.environ["MADB_MIN_FREE_GIB"] + " GiB free; this runner has " + str(round(free / 1024**3, 2)) + " GiB. Use a runner with more free storage, then rerun all four profiles. System files will not be deleted.")
+              with Path(os.environ["GITHUB_ENV"]).open("a") as output:
+                  output.write("DEVELOPER_DIR=" + str(selected) + "\n")
+              note("selected_developer_dir=" + str(selected))
+              note("PASS: exact Apple toolchain, Python, architecture and disk preflight")
+          except Exception as error:
+              note("FAIL: " + str(error))
+              raise SystemExit("::error::" + str(error))
+          PY
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: changyue1053/MadB-Lab
+          ref: ${{ steps.revisions.outputs.lab_revision }}
+          path: lab
+          persist-credentials: false
+
+      - name: Verify both clean revisions and install the pinned Rust toolchain
+        env:
+          LAB_REVISION: ${{ steps.revisions.outputs.lab_revision }}
+          PRODUCER_REVISION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import subprocess
+          root = Path(os.environ["GITHUB_WORKSPACE"])
+          for name, expected in (("producer", os.environ["PRODUCER_REVISION"]), ("lab", os.environ["LAB_REVISION"])):
+              directory = root / name
+              actual = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=directory, text=True).strip()
+              if actual != expected.lower():
+                  raise SystemExit(name + " checkout is not the requested fixed revision")
+              if subprocess.check_output(["git", "status", "--porcelain"], cwd=directory):
+                  raise SystemExit(name + " checkout is dirty")
+          if (root / "producer/.python-version").read_text().strip() != (root / "lab/.python-version").read_text().strip():
+              raise SystemExit("Producer and Lab require different Python versions")
+          PY
+          rustup show active-toolchain 2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/rust-toolchain.txt"
+
+      - name: Install verified managed compilers and closed Maven dependencies
+        run: |
+          set -euo pipefail
+          python scripts/install_managed_tools.py --root "$RUNNER_TEMP/madb-c06/managed" --cache "$RUNNER_TEMP/madb-c06/archive-cache" 2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/managed-install.txt"
+          python scripts/install_managed_tools.py --root "$RUNNER_TEMP/madb-c06/runtime-dependencies" --maven-lock adapters/toolchains/kotlin_rust/runtime-dependencies.json --cache "$RUNNER_TEMP/madb-c06/archive-cache" 2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/runtime-install.txt"
+          python scripts/install_managed_tools.py --root "$RUNNER_TEMP/madb-c06/maven-repository" --maven-lock adapters/toolchains/kotlin_rust/skie-dependencies.json --cache "$RUNNER_TEMP/madb-c06/archive-cache" 2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/skie-maven-install.txt"
+
+      - name: Install both source-verified binding backends
+        run: |
+          set -euo pipefail
+          python scripts/install_managed_backends.py --root "$RUNNER_TEMP/madb-c06/backends" 2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/backend-install.txt"
+
+      - name: Prepare the verified closed Cargo source tree
+        run: |
+          set -euo pipefail
+          python scripts/prepare_managed_dependencies.py --output "$RUNNER_TEMP/madb-c06/cargo-dependencies" --uniffi-tools "$RUNNER_TEMP/madb-c06/backends/uniffi" --gobley-tools "$RUNNER_TEMP/madb-c06/backends/gobley" 2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/cargo-vendor.txt"
+
+      - name: Build all four formal Release candidates through frozen ports
+        id: build
+        run: |
+          set -euo pipefail
+          python scripts/build_managed_routes.py \
+            --output "$RUNNER_TEMP/madb-c06/candidates" \
+            --managed-root "$RUNNER_TEMP/madb-c06/managed" \
+            --runtime-dependencies "$RUNNER_TEMP/madb-c06/runtime-dependencies" \
+            --maven-repository "$RUNNER_TEMP/madb-c06/maven-repository" \
+            --cargo-vendor "$RUNNER_TEMP/madb-c06/cargo-dependencies/vendor" \
+            --uniffi-tools "$RUNNER_TEMP/madb-c06/backends/uniffi" \
+            --gobley-tools "$RUNNER_TEMP/madb-c06/backends/gobley" \
+            --variants kotlin-jvm-rust kotlin-native-rust swift-rust swift-kotlin \
+            2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/candidates.txt"
+
+      - name: Run the pinned independent Lab against all four candidates
+        id: lab
+        working-directory: lab
+        run: |
+          set -euo pipefail
+          python scripts/check.py --c06 \
+            --managed-root "$RUNNER_TEMP/madb-c06/managed" \
+            --candidates "$RUNNER_TEMP/madb-c06/candidates" \
+            --output "$RUNNER_TEMP/madb-c06/reports" \
+            2>&1 | tee "$RUNNER_TEMP/madb-c06/logs/lab.txt"
+
+      - name: Upload exact preflight evidence and execution logs
+        if: always()
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: c06-managed-preflight
+          path: |
+            ${{ runner.temp }}/madb-c06/preflight.txt
+            ${{ runner.temp }}/madb-c06/logs
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload all produced candidate files
+        if: ${{ always() && steps.build.outcome != 'skipped' }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: c06-managed-candidates
+          path: ${{ runner.temp }}/madb-c06/candidates
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload independent Lab reports
+        if: ${{ always() && steps.lab.outcome != 'skipped' }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: c06-managed-lab
+          path: ${{ runner.temp }}/madb-c06/reports
+          if-no-files-found: error
+          retention-days: 14

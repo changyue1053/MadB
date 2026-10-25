@@ -1,0 +1,21 @@
+[package]
+name = "madb-boundary-uniffi"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+[lib]
+name = "madb_boundary_uniffi"
+crate-type = ["cdylib", "staticlib", "rlib"]
+[workspace]
+[features]
+default = []
+test-support = []
+gobley-029 = []
+[dependencies]
+madb-boundary-core = { path = "../boundary-core" }
+uniffi = { version = "=0.32.2", features = ["cli"] }
+async-trait = "=0.1.89"
+uniffi_bindgen = "=0.32.2"
+serde_json = "=1.0.154"
+[build-dependencies]
+uniffi = { version = "=0.32.2", features = ["build"] }

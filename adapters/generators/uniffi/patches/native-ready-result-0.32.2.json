@@ -1,0 +1,6 @@
+{
+  "source_url": "https://static.crates.io/crates/uniffi_core/uniffi_core-0.32.2.crate",
+  "source_sha256": "f7530ae8efeaaa488622865966763fe0294832779fff80508c36d69c6a874a6a",
+  "patch_sha256": "f72e6fedbb44fa508a1b6d142ea2563019278a8f2cf2d7de41ad619f95c44e2b",
+  "scope": "generated thread-independent lowering; native values remain owned until completion; no external ABI change"
+}

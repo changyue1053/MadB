@@ -4,3 +4,7 @@ __pycache__/
 *.py[cod]
 /target/
 /reports/
+**/target/
+**/.gradle/
+**/.kotlin/
+sdk/kotlin/**/build/

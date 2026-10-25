@@ -123,3 +123,19 @@ BuildTask 的 `input_digest` 保留契约来源链身份，执行绑定时与受
 ## C02 的格式实现入口
 
 [格式与投影 v1](../schemas/README.md)固定 SourceKey 的长度编码、15 类业务 payload 与执行配方格式、离线解析预算、精确数值、语义投影、来源诊断和拒绝边界；[首链 ABI](../examples/first-route/README.md)固定状态值及关闭的声明形状。领域模型保持独立，wire 到 domain 的转换位于 `adapters/contracts`，真实 IO 和用例装配由 C04/C05 接入。schema、纯规则或声明编译通过均不代表路线已认证。
+
+## C06 的错误通道与后端句柄
+
+C06 的真实 UniFFI/Objective-C 接口揭示两项共同语义需要显式表达：错误通道不是成功返回值，第三方对象句柄也不等于 MadB 自有登记令牌。
+
+- `shape.throws` 与 callback 类型的 `throws` 为可选错误类型 ID，引用普通值变体，或由 `backend-handle` 表达后端持有的类型擦除错误。Swift 的 `any Error` 使用独立 `swift.error` owner，只保留错误通道，不虚构可穷举的 Kotlin 错误枚举或 payload。使用时必须声明并由配置支持 `core.errors@1`；后端错误同时需要 `core.backend-resources@1`。它参与结构摘要；错误类型及其字段进入相关符号的可达类型摘要。缺失类型、registry/pointer 型错误和不支持的能力在生成前拒绝。
+- resource 的 `backend-handle` 表示后端独占句柄编码、引用计数与校验责任，要求 `core.backend-resources@1`。不推导任意整数有效、重复释放安全或自有 registry 的能力。原有 `registry-u64` 和 `opaque-pointer` 语义保持不变。
+- UniFFI 0.32 的整数编码可以承载 Arc 指针身份，不能仅按整数宽度登记成安全 registry。实际 FFI 编码和后端校验保留在来源受锁约束的编译描述与后端协议中。
+
+这是现有 v1 文档在显式能力协商下的增量：旧文档不增加默认字段，既有摘要保持原值；不认识新能力或 schema 内容的工具必须拒绝，不静默忽略。尚未发布 SDK 的 C06 开发组合使用同一源版本与 schema 锁；跨版本消费仍须验证兼容性，不能仅凭 `/1` 后缀放行。
+
+C06 reader 的首个范围是 SampleEngine 已声明的类型子集。UniFFI 结构由对应版本的 UDL 解析器提取；宏附加的测试能力必须读取实际库元数据。没有保留行列的解析器只提供文件级位置，不虚构精确声明位置；未知类型或扩展形态需显式适配，不由字符串正则推断安全绑定。
+
+C06 的安全策略绑定[显式语义表](../../adapters/generators/kotlin_rust/semantic-surface.json)：类型、owner、方法、参数、返回、错误、同步/异步形状均须一致。该表是审阅后的能力范围，不是由每次输入自动扩充的允许清单；增加方法、资源、回调、默认参数、借用或 trait interface 必须先更新协议与验收。它不替代编译器读取，实际声明仍由受锁定来源的解析器提取；完整物理调用身份保留在描述、源码身份和生成物中。
+
+SKIE 的普通 Swift 签名来自实际 framework 的 Clang AST 与 Swift SymbolGraph。DTO 字段由真实构造器与只读属性交叉核对，sealed payload 的继承由 Objective-C AST 确认。`Subscription.events` 是由所属订阅控制生命周期的 `SkieSwiftFlow<BoundaryEvent>` 视图；状态与事件行为由各自 factory 和已锁 runtime protocol 指定，不能凭同一个 Flow getter 猜测回放、背压或取消含义。原生支持 API、重复 ObjC 别名及 conformance-only 钩子保留在完整 API 快照，未冒充受检业务调用集合。

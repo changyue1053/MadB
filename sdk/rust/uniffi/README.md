@@ -1,0 +1,22 @@
+# C06 bounded UniFFI SDK provider
+
+`src/boundary.udl` is the production boundary authority. `src/lib.rs` maps it to the standalone `../boundary-core` protocol. Kotlin/JVM and Swift use UniFFI 0.32.2; Gobley builds a separate compatible wrapper with its own 0.29.4 tool/runtime identity. These libraries' handles are never interchangeable.
+
+The exact execution, memory and lifecycle limits are in `runtime-protocol.json`. One engine owns one dispatch worker. Variable payload bytes include UTF-8 ID/text and byte-array contents. Accepted queued work, executing callbacks and undelivered results share 4096 bytes. Events have eight pending slots; a state subscription retains one pending latest snapshot. Fixed storage is bounded separately by eight operation handles, eight subscription handles and 32 wait registrations. An outstanding cleanup ticket keeps its subscription capacity slot until the foreign destructor returns; dropping a handle does not bypass the eight-slot limit. This does not claim a process-wide memory/thread limit.
+
+`Operation.result()` is asynchronous and consumes one result. Cancelling that wait preserves the engine-owned work; `requestCancel()` skips queued work or discards a running synchronous Host callback's late result. A running foreign call is not forcibly interrupted. `requestStop()` and `requestClose()` only gate admission and enqueue bounded cleanup on the existing worker, so caller threads do not execute foreign destructors; their async confirmation methods wait for source leases, queued deliveries, running callbacks and foreign reference cleanup. A synchronous Host/Sink callback may request stop/close, then must return before an independent owner waits for confirmation or dependent results. Blocking that callback with `runBlocking`, a semaphore, or another executor waiting for its own drain is forbidden. `WouldDeadlock` detects direct polling on the engine worker only; it does not detect cross-executor wait cycles.
+
+Use the published Kotlin `openEngine(expectedProfile)` factory: UniFFI 0.32.2 raw Kotlin constructors do not trigger its separate integrity checker, so this factory calls the actual `uniffiEnsureInitialized()` before lowering arguments or allocating an engine. It preserves the upstream precise initialization failure and then enforces the profile check. Use the published Swift `openEngine(expectedProfile:)` factory. It reuses UniFFI's initialization result through `madbCheckAbi()` and reports a typed ABI mismatch before construction. The constructor then checks the compiled profile digest before allocating an engine. Direct raw generated Swift constructors retain the upstream fatal ABI-check behavior. All production asynchronous declarations can throw, so the managed Swift cancellation patch can report `CancellationError`; nonthrowing async declarations are not admitted to that cancellable configuration.
+
+`adapters/generators/uniffi/driver.py` installs checksummed upstream archives, applies controlled runtime/generator patches in isolated source trees, records the entire patched inventory, and builds a real version-matched generator and UDL metadata parser. Its `install`, `build_sdk`, `generate` and `verify` entry points are used by the C06 pipeline. A build must supply both managed Cargo path overrides; an isolated derived lock rebinds only the two checksummed patched source entries and keeps all dependency versions unchanged. No ambient registry source is edited. Generated code is never manually patched.
+
+`test-support` is an independent fixture variant. It adds reverse async callbacks, tracked objects and release counters for P03. The invoking foreign task owns those calls and must acknowledge its backend trampoline's completion; an engine close does not drain unrelated foreign coroutines. The controlled owned-result runtime patch consumes allocated late success/error results. The Gobley 0.29.4 fixture explicitly excludes reverse async object returns because its raw pointer ABI is not Send. Production object ownership and async Rust operations remain covered.
+
+Core verification:
+
+```sh
+cargo +1.99.1 test --manifest-path sdk/rust/boundary-core/Cargo.toml
+cargo +1.99.1 clippy --manifest-path sdk/rust/boundary-core/Cargo.toml --all-targets -- -D warnings
+```
+
+Independent Swift/JVM/Kotlin-Native consumers belong to MadB-Lab and consume frozen candidate bytes. Direct local probe builds are development evidence, not candidate certification.

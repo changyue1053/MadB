@@ -1,0 +1,591 @@
+{
+  "crate": "madb_boundary_uniffi",
+  "functions": [
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_constructor_engine_new",
+      "ffi_result": "Some(Handle)",
+      "kind": "constructor",
+      "name": "new",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "expected_profile",
+          "type": {
+            "kind": "string"
+          }
+        }
+      ],
+      "result": {
+        "implementation": "struct",
+        "kind": "object",
+        "name": "Engine"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": true,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_await_closed",
+      "ffi_result": "Some(Handle)",
+      "kind": "method",
+      "name": "await_closed",
+      "owner": "Engine",
+      "parameters": [],
+      "result": null,
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_observe_events",
+      "ffi_result": "Some(Handle)",
+      "kind": "method",
+      "name": "observe_events",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "sink",
+          "type": {
+            "kind": "callback",
+            "name": "Sink"
+          }
+        }
+      ],
+      "result": {
+        "kind": "object",
+        "name": "Subscription"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_observe_state",
+      "ffi_result": "Some(Handle)",
+      "kind": "method",
+      "name": "observe_state",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "sink",
+          "type": {
+            "kind": "callback",
+            "name": "Sink"
+          }
+        }
+      ],
+      "result": {
+        "kind": "object",
+        "name": "Subscription"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_publish_state",
+      "ffi_result": "None",
+      "kind": "method",
+      "name": "publish_state",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "name": "Value"
+          }
+        }
+      ],
+      "result": null,
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_request_close",
+      "ffi_result": "None",
+      "kind": "method",
+      "name": "request_close",
+      "owner": "Engine",
+      "parameters": [],
+      "result": null,
+      "throws": null
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_roundtrip",
+      "ffi_result": "Some(RustBuffer(Some(ExternalFfiMetadata { name: \"Value\", module_path: \"madb_boundary_uniffi\" })))",
+      "kind": "method",
+      "name": "roundtrip",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "name": "Value"
+          }
+        }
+      ],
+      "result": {
+        "kind": "record",
+        "name": "Value"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_start_operation",
+      "ffi_result": "Some(Handle)",
+      "kind": "method",
+      "name": "start_operation",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "name": "Value"
+          }
+        },
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "host",
+          "type": {
+            "kind": "callback",
+            "name": "Host"
+          }
+        }
+      ],
+      "result": {
+        "kind": "object",
+        "name": "Operation"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_statistics",
+      "ffi_result": "Some(RustBuffer(Some(ExternalFfiMetadata { name: \"Statistics\", module_path: \"madb_boundary_uniffi\" })))",
+      "kind": "method",
+      "name": "statistics",
+      "owner": "Engine",
+      "parameters": [],
+      "result": {
+        "kind": "record",
+        "name": "Statistics"
+      },
+      "throws": null
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_engine_try_publish_event",
+      "ffi_result": "None",
+      "kind": "method",
+      "name": "try_publish_event",
+      "owner": "Engine",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "name": "Value"
+          }
+        }
+      ],
+      "result": null,
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_operation_is_cancel_requested",
+      "ffi_result": "Some(Int8)",
+      "kind": "method",
+      "name": "is_cancel_requested",
+      "owner": "Operation",
+      "parameters": [],
+      "result": {
+        "kind": "bool"
+      },
+      "throws": null
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_operation_request_cancel",
+      "ffi_result": "None",
+      "kind": "method",
+      "name": "request_cancel",
+      "owner": "Operation",
+      "parameters": [],
+      "result": null,
+      "throws": null
+    },
+    {
+      "async": true,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_operation_result",
+      "ffi_result": "Some(Handle)",
+      "kind": "method",
+      "name": "result",
+      "owner": "Operation",
+      "parameters": [],
+      "result": {
+        "kind": "record",
+        "name": "Value"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": true,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_subscription_await_stopped",
+      "ffi_result": "Some(Handle)",
+      "kind": "method",
+      "name": "await_stopped",
+      "owner": "Subscription",
+      "parameters": [],
+      "result": null,
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_method_subscription_request_stop",
+      "ffi_result": "None",
+      "kind": "method",
+      "name": "request_stop",
+      "owner": "Subscription",
+      "parameters": [],
+      "result": null,
+      "throws": null
+    },
+    {
+      "async": false,
+      "kind": "callback_method",
+      "name": "transform",
+      "owner": "Host",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "name": "Value"
+          }
+        }
+      ],
+      "result": {
+        "kind": "record",
+        "name": "Value"
+      },
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "kind": "callback_method",
+      "name": "on_value",
+      "owner": "Sink",
+      "parameters": [
+        {
+          "by_ref": false,
+          "has_default": false,
+          "name": "value",
+          "type": {
+            "kind": "record",
+            "name": "Value"
+          }
+        }
+      ],
+      "result": null,
+      "throws": {
+        "kind": "enum",
+        "name": "BoundaryError"
+      }
+    },
+    {
+      "async": false,
+      "ffi_name": "uniffi_madb_boundary_uniffi_fn_func_profile_identity",
+      "ffi_result": "Some(RustBuffer(None))",
+      "kind": "function",
+      "name": "profile_identity",
+      "owner": null,
+      "parameters": [],
+      "result": {
+        "kind": "string"
+      },
+      "throws": null
+    }
+  ],
+  "namespace": "madb_boundary",
+  "parser": "uniffi-0.32.2",
+  "schema_version": "1.0.0",
+  "source_positions": "not retained by ComponentInterface",
+  "types": [
+    {
+      "fields": [
+        {
+          "has_default": false,
+          "name": "queued_items",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "retained_bytes",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "callbacks_in_flight",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "active_operations",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "active_subscriptions",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "payloads_admitted",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "payloads_released",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "operations_created",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "operations_released",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "subscriptions_created",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "subscriptions_released",
+          "type": {
+            "kind": "u64"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "worker_exits",
+          "type": {
+            "kind": "u64"
+          }
+        }
+      ],
+      "kind": "record",
+      "name": "Statistics"
+    },
+    {
+      "fields": [
+        {
+          "has_default": false,
+          "name": "id",
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "sequence",
+          "type": {
+            "inner": {
+              "kind": "i64"
+            },
+            "kind": "optional"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "text",
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "bytes",
+          "type": {
+            "inner": {
+              "kind": "u8"
+            },
+            "kind": "sequence"
+          }
+        },
+        {
+          "has_default": false,
+          "name": "phase",
+          "type": {
+            "kind": "enum",
+            "name": "Phase"
+          }
+        }
+      ],
+      "kind": "record",
+      "name": "Value"
+    },
+    {
+      "is_error": true,
+      "kind": "enum",
+      "name": "BoundaryError",
+      "variants": [
+        {
+          "fields": [],
+          "name": "InvalidArgument"
+        },
+        {
+          "fields": [],
+          "name": "Closing"
+        },
+        {
+          "fields": [],
+          "name": "Closed"
+        },
+        {
+          "fields": [],
+          "name": "Cancelled"
+        },
+        {
+          "fields": [],
+          "name": "ResourceExhausted"
+        },
+        {
+          "fields": [],
+          "name": "ProfileMismatch"
+        },
+        {
+          "fields": [],
+          "name": "CallbackFailure"
+        },
+        {
+          "fields": [],
+          "name": "WouldDeadlock"
+        },
+        {
+          "fields": [],
+          "name": "AlreadyConsumed"
+        }
+      ]
+    },
+    {
+      "is_error": false,
+      "kind": "enum",
+      "name": "Phase",
+      "variants": [
+        {
+          "fields": [],
+          "name": "Ready"
+        },
+        {
+          "fields": [],
+          "name": "Working"
+        },
+        {
+          "fields": [],
+          "name": "Done"
+        }
+      ]
+    },
+    {
+      "implementation": "struct",
+      "kind": "object",
+      "name": "Engine"
+    },
+    {
+      "implementation": "struct",
+      "kind": "object",
+      "name": "Operation"
+    },
+    {
+      "implementation": "struct",
+      "kind": "object",
+      "name": "Subscription"
+    },
+    {
+      "kind": "callback",
+      "name": "Host"
+    },
+    {
+      "kind": "callback",
+      "name": "Sink"
+    }
+  ]
+}

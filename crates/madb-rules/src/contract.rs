@@ -55,6 +55,25 @@ pub fn validate_contract(contract: &Contract, capability: &Capability) -> Vec<Fi
         require_feature(feature, &declared, item.id.as_str(), &mut errors);
     }
     for item in &contract.types {
+        if let TypeDefinition::Resource {
+            representation: ResourceRepresentation::BackendHandle,
+            ..
+        } = item.definition
+        {
+            require_feature(
+                "core.backend-resources@1",
+                &declared,
+                item.id.as_str(),
+                &mut errors,
+            );
+        }
+        if let TypeDefinition::Callback {
+            throws: Some(error),
+            ..
+        } = &item.definition
+        {
+            validate_error_channel(error, item.id.as_str(), &types, &declared, &mut errors);
+        }
         if inline_cycle(&item.id, &types, &mut BTreeSet::new()) {
             errors.push(Finding::new(
                 "TYPE003",
@@ -177,6 +196,15 @@ pub fn validate_contract(contract: &Contract, capability: &Capability) -> Vec<Fi
             errors.push(
                 Finding::new("TYPE002", symbol.public_id.as_str(), "return type missing")
                     .at(&symbol.location),
+            );
+        }
+        if let Some(error) = &symbol.throws {
+            validate_error_channel(
+                error,
+                symbol.public_id.as_str(),
+                &types,
+                &declared,
+                &mut errors,
             );
         }
         if symbol.kind != CallKind::Sync {
@@ -527,6 +555,33 @@ fn validate_slot(
     }
 }
 
+fn validate_error_channel(
+    error: &Id,
+    subject: &str,
+    types: &BTreeMap<&Id, &TypeDefinition>,
+    declared: &BTreeSet<&str>,
+    errors: &mut Vec<Finding>,
+) {
+    require_feature("core.errors@1", declared, subject, errors);
+    match types.get(error).copied() {
+        None => errors.push(Finding::new(
+            "TYPE002",
+            subject,
+            "declared error type missing",
+        )),
+        Some(TypeDefinition::Variant { .. })
+        | Some(TypeDefinition::Resource {
+            representation: ResourceRepresentation::BackendHandle,
+            ..
+        }) => {}
+        _ => errors.push(Finding::new(
+            "TYPE009",
+            subject,
+            "declared error channel requires a value variant or backend-owned erased error",
+        )),
+    }
+}
+
 fn references(definition: &TypeDefinition) -> Vec<&Id> {
     match definition {
         TypeDefinition::Buffer { element, .. } => vec![element],
@@ -538,11 +593,15 @@ fn references(definition: &TypeDefinition) -> Vec<&Id> {
             .chain(cases.iter().filter_map(|c| c.payload.as_ref()))
             .collect(),
         TypeDefinition::Callback {
-            parameters, result, ..
+            parameters,
+            result,
+            throws,
+            ..
         } => parameters
             .iter()
             .map(|p| &p.type_id)
             .chain(std::iter::once(result))
+            .chain(throws.iter())
             .collect(),
         _ => Vec::new(),
     }

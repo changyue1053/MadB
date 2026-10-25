@@ -1,0 +1,6 @@
+[bindings.kotlin]
+package_name = "madb.boundary"
+cdylib_name = "madb_boundary_uniffi"
+[bindings.swift]
+module_name = "MadbBoundary"
+ffi_module_name = "MadbBoundaryFFI"

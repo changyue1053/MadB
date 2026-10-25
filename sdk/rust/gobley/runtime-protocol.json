@@ -1,0 +1,69 @@
+{
+  "schema": "madb.native-runtime-protocol/1",
+  "schema_version": "1.0.0",
+  "protocol_id": "madb-c06-bounded-v1",
+  "production_boundary": "../uniffi/src/boundary.udl",
+  "semantic_sources": [
+    "../boundary-core/src/model.rs",
+    "../boundary-core/src/engine.rs",
+    "../boundary-core/src/future.rs"
+  ],
+  "payload_bytes": "UTF8(id).length + UTF8(text).length + bytes.length",
+  "budgets": {
+    "max_payload_bytes": 1024,
+    "max_retained_payload_bytes": 4096,
+    "max_pending_events": 8,
+    "state_pending_capacity_per_subscription": 1,
+    "max_subscription_handles": 8,
+    "max_operation_handles": 8,
+    "max_registered_waiters": 32,
+    "owned_worker_threads_per_engine": 1,
+    "max_subscription_and_cleanup_slots": 8
+  },
+  "budget_scope": "SDK-admitted queued, executing and unconsumed-result variable payloads; fixed record storage is bounded by item/handle counts. Caller memory and transient backend encoding buffers are separate.",
+  "state_overflow": "coalesce-latest and release replaced payload; aggregate byte overflow rejects before admission",
+  "event_overflow": "ResourceExhausted before ownership transfer; no silent drops",
+  "operation_result": "single consumer; AlreadyConsumed on a second successful retrieval attempt",
+  "cancellation": {
+    "wait": "drop only this wait registration; operation remains engine-owned",
+    "work": "requestCancel skips queued invocation or discards an executing callback's late result; it does not interrupt foreign synchronous code or roll back effects",
+    "observation": "requestStop gates new callback entry; awaitStopped waits queued tickets, executing callback and foreign reference cleanup",
+    "ready_result_patch": "uniffi_core-0.29.4-native-ready"
+  },
+  "ownership": {
+    "objects": "UniFFI backend references; no duplicate public handle registry",
+    "queued_callback": "source lease exists before enqueue and persists through cleanup",
+    "consumer_reference_release": "on the owned worker outside the protocol mutex, bounded cleanup ticket retains its subscription slot until final destructor return; included in stopped/closed condition",
+    "waiter_waker": "clone, wake and final drop outside protocol mutex",
+    "wrapper_drop": "Engine requests close; Operation requests cancel; Subscription requests stop; no blocking join",
+    "native_ready_result": "Rust-owned result retained until explicit FFI complete; free/drop before complete releases it once"
+  },
+  "execution": {
+    "sync_methods": "caller thread for validation and admission",
+    "production_host_and_sink": "the engine-owned worker, never under protocol mutex",
+    "self_drain": "WouldDeadlock only when this engine worker directly polls its own wait; this is not cross-executor wait-cycle detection",
+    "closure": "stop admission, cancel operations, stop subscriptions, drain queued/inflight work and cleanup, then exit worker",
+    "synchronous_callback_rule": "Host/Sink may requestClose/requestStop and must return before an independent owner awaits closed/stopped/result; blocking waits on work that depends on the current callback are forbidden, including runBlocking or semaphore waits across an executor; the same restriction applies to foreign destructors"
+  },
+  "initialization": {
+    "abi": "Gobley 0.3.7 / UniFFI 0.29.4 contract version and per-symbol checksums before use",
+    "profile": "MADB_PROFILE_DIGEST compiled identity compared before engine allocation",
+    "native_install_name": "@rpath/libmadb_boundary_gobley.dylib",
+    "kotlin_entry": "openEngine(expectedProfile) -> uniffiEnsureInitialized -> generated Native contract/all-checksum checks -> Engine constructor",
+    "native_abi_generator_patch": "gobley-0.3.7-native-abi",
+    "c_abi_unsigned": "uint8_t/uint16_t/uint32_t/uint64_t and opaque uint64_t handles; Native converts signed shared bit carriers explicitly"
+  },
+  "test_support": {
+    "production_exported": false,
+    "async_foreign_owner": "invoking consumer task plus explicit backend trampoline/cleanup acknowledgment",
+    "engine_close_covers_async_foreign_fixture": false,
+    "late_result_runtime_patch": "uniffi_core-0.29.4-owned-result",
+    "completion_generator_patch": "gobley-0.3.7-once-completion",
+    "supported_lifts": "generated thread-independent record/error lifting; no arbitrary custom converters",
+    "async_foreign_object_result": false,
+    "async_foreign_object_reason": "0.29.4 RustArcPtr representation is not Send; no blanket unsafe Send implementation",
+    "native_ready_runtime_patch": "uniffi_core-0.29.4-native-ready",
+    "native_predispatch_generator_fix": "uniffiRustCallAsync owns eager RustFuture before IO dispatch; outer finally frees on pre-cancel",
+    "unsigned_scalar_fixture": "unsigned_fixture.rs: four raw widths, forward and reverse synchronous calls; no record encoding"
+  }
+}

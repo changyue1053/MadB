@@ -1,4 +1,4 @@
-"""C05 standalone Rust SDK checks; these unit builds do not certify a candidate."""
+"""Standalone SDK dependency boundaries and native unit gates; no candidate certification."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,32 @@ ROOT = Path(__file__).resolve().parents[1]
 SDK_PACKAGES = {
     "sdk/rust/engine": "madb-first-route-engine",
     "sdk/rust/c-client": "madb-c-client",
+    "sdk/rust/boundary-core": "madb-boundary-core",
+    "sdk/rust/uniffi": "madb-boundary-uniffi",
+    "sdk/rust/gobley": "madb-boundary-gobley",
 }
+# These SDK build/parser packages use reviewed external dependencies, never host crates.
+SDK_REGISTRY = {
+    "madb-boundary-uniffi": {("uniffi", "normal"): ("=0.32.2", {"cli"}), ("uniffi", "build"): ("=0.32.2", {"build"}),
+                             ("async-trait", "normal"): ("=0.1.89", set()), ("uniffi_bindgen", "normal"): ("=0.32.2", set()), ("serde_json", "normal"): ("=1.0.154", set())},
+    "madb-boundary-gobley": {("uniffi", "normal"): ("=0.29.4", set()), ("uniffi", "build"): ("=0.29.4", {"build"}),
+                             ("async-trait", "normal"): ("=0.1.89", set()), ("uniffi_bindgen", "normal"): ("=0.29.4", set()), ("serde_json", "normal"): ("=1.0.154", set())},
+}
+
+
+def approved_dependency(root, name, dependency):
+    kind = dependency.get("kind") or "normal"
+    if dependency.get("rename") or dependency.get("target") or dependency.get("optional") or dependency.get("uses_default_features") is not True:
+        return False
+    if name in SDK_REGISTRY and dependency["name"] == "madb-boundary-core":
+        return (kind == "normal" and dependency.get("source") is None and not dependency.get("features")
+                and Path(dependency.get("path", "")).resolve() == (root / "sdk/rust/boundary-core").resolve())
+    expected = SDK_REGISTRY.get(name, {}).get((dependency["name"], kind))
+    return (expected is not None and dependency.get("path") is None
+            and dependency.get("source") == "registry+https://github.com/rust-lang/crates.io-index"
+            and dependency["req"] == expected[0] and set(dependency["features"]) == expected[1])
+
+
 # Deliberately synthetic identities used only for local protocol unit tests.
 # They must never be used as a real generated SDK/candidate identity or evidence.
 UNIT_INTERFACE_DIGEST = "11" * 32
@@ -24,10 +49,11 @@ UNIT_PROFILE_DIGEST = "22" * 32
 def inspect_boundaries(root: Path) -> list[str]:
     """Check Cargo's dependency declarations without compiling SDK templates.
 
-    Both approved C05 SDK packages currently have zero Rust package dependencies.
-    Rejecting every dependency also prevents aliases, optional/target/build/dev
-    edges and transitive private-host imports. The incomplete c-client template
-    is deliberately not built here; generated candidate consumption belongs to Lab.
+    C05 packages and the shared C06 runtime are dependency-free. C06 binding/parser
+    packages may use only the exact reviewed registry dependencies and shared SDK
+    runtime. Every local edge remains in this independently checked set; aliases,
+    target/optional/dev edges cannot hide tool-host imports. Candidate builds
+    additionally verify the complete source vendor closure.
     """
     root = root.resolve()
     errors = []
@@ -36,7 +62,7 @@ def inspect_boundaries(root: Path) -> list[str]:
     actual = {path for path in sdk_root.rglob("Cargo.toml")
               if "target" not in path.relative_to(sdk_root).parts}
     if actual != manifests:
-        errors.append("NATIVE001: Rust SDK package manifests differ from the two documented standalone packages")
+        errors.append("NATIVE001: Rust SDK package manifests differ from the documented standalone package set")
     for directory, name in SDK_PACKAGES.items():
         package_root = root / directory
         manifest = package_root / "Cargo.toml"
@@ -72,22 +98,36 @@ def inspect_boundaries(root: Path) -> list[str]:
             errors.append(f"NATIVE002: {name} is not its own standalone Cargo workspace")
             continue
         for dependency in members[0]["dependencies"]:
+            if approved_dependency(root, name, dependency):
+                continue
             kind = dependency.get("kind") or "normal"
             target = dependency.get("target") or "all targets"
             alias = dependency.get("rename")
             label = dependency["name"] + (f" as {alias}" if alias else "")
             errors.append(
                 f"NATIVE003: {name} -> {label} is forbidden ({kind} / {target}); "
-                "C05 SDK packages have no Rust package dependencies or tool-host imports"
+                "dependency is outside the explicit SDK allowlist; tool-host imports are forbidden"
             )
     return sorted(set(errors))
+
+
+
+def check_template_format(package_root: Path) -> None:
+    """Format authored bytes without resolving modules generated only in candidates."""
+    edition = tomllib.loads((package_root / "Cargo.toml").read_text())["package"]["edition"]
+    for source in sorted((package_root / "src").rglob("*.rs")):
+        original = source.read_bytes()
+        command = ["rustfmt", "--edition", edition, "--emit", "stdout"]
+        result = subprocess.run(command, input=original, stdout=subprocess.PIPE, check=True)
+        if result.stdout != original:
+            raise RuntimeError("Rust SDK template is not formatted: " + str(source))
 
 
 def check(root: Path, boundaries_only: bool = False) -> None:
     errors = inspect_boundaries(root)
     if errors:
         raise RuntimeError("\n".join(errors))
-    print("Native SDK boundaries passed (two standalone workspaces; no Rust package dependencies).", flush=True)
+    print("Native SDK boundaries passed (five standalone workspaces; explicit dependency allowlist, no tool-host imports).", flush=True)
     if boundaries_only:
         return
     environment = os.environ.copy()
@@ -95,7 +135,11 @@ def check(root: Path, boundaries_only: bool = False) -> None:
     environment["MADB_PROFILE_DIGEST"] = UNIT_PROFILE_DIGEST
     print("C05 SDK unit builds use explicit synthetic identities; they do not certify a generated candidate.", flush=True)
     manifest = root / "sdk/rust/engine/Cargo.toml"
-    commands = [["cargo", "fmt", "--manifest-path", str(manifest), "--", "--check"]]
+    # c-client's identity/raw modules are created by C05 generation. Formatting
+    # stdin checks its authored template without inventing placeholder modules.
+    check_template_format(root / "sdk/rust/c-client")
+    commands = [["cargo", "fmt", "--manifest-path", str(root / directory / "Cargo.toml"), "--", "--check"]
+                for directory in SDK_PACKAGES if directory != "sdk/rust/c-client"]
     for features in ([], ["--features", "test-support"]):
         commands.extend([
             ["cargo", "clippy", "--manifest-path", str(manifest), "--all-targets", *features,
@@ -103,6 +147,11 @@ def check(root: Path, boundaries_only: bool = False) -> None:
             ["cargo", "test", "--manifest-path", str(manifest), "--release", *features,
              "--locked", "--offline"],
         ])
+    core = root / "sdk/rust/boundary-core/Cargo.toml"
+    commands.extend([
+        ["cargo", "clippy", "--manifest-path", str(core), "--all-targets", "--locked", "--offline", "--", "-D", "warnings"],
+        ["cargo", "test", "--manifest-path", str(core), "--release", "--locked", "--offline"],
+    ])
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=root, env=environment, check=True)

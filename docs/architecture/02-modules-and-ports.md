@@ -232,6 +232,23 @@ ContractSnapshot 保留输入摘要、符号、位置和精度；OutputSet 保�
 
 源码中的最小安全边界、回调、关闭与等待遵循现有 DEC/CRIT。普通 API 先贯通，便利封装复用同一协议。首链通过不替代其他路线与目标的验收，C09/C10 从 S1 提供首链所需部分并在 S5 完成全矩阵。
 
+## C06 四路线的源码落点
+
+| 模块 | 职责与边界 |
+|---|---|
+| `adapters/generators/kotlin_rust` | 真实声明降低、闭合类型/语义表、metadata/generate 端口；只将已审阅语义交给共同规则，不自建认证器 |
+| `adapters/generators/uniffi`、`gobley`、`skie` | 对应上游工具的受管源、补丁、编译导出读取与准确诊断；不进入业务 SDK 依赖图 |
+| `adapters/toolchains/common` | C05/C06 共用的冻结流程编排、文件身份和受管编译目录；宿主仍唯一拥有批次提交权 |
+| `adapters/toolchains/kotlin_rust` | 四配置工具/依赖闭包、profile 与源码证明、编译/链接/运行配方及公开文件清单 |
+| `sdk/rust/boundary-core` | 无第三方依赖的有界资源、同步回调、异步等待和关闭排水协议；不依赖工具核心或 CLI |
+| `sdk/rust/uniffi`、`sdk/rust/gobley` | 独立 Cargo workspace，隔离 0.32.2/0.29.4 后端；依赖仅限审阅的精确注册包与共同 SDK 内核 |
+| `sdk/kotlin`、`sdk/swift` | 平台语义实现与薄安全入口/并发 facade；保留后端资源所有权，不复制第二套引擎状态机 |
+| MadB-Lab C06 | 四类真实消费、独立预期、54 个固定案例及候选/工具身份验证；不导入生产者工具源码 |
+
+两版 UniFFI 的类型读取、运行时和生成器各自绑定，不能共用版本标签假设其 ABI 相同。Python 后端与 Rust 核心之间继续使用既有协议和 `madb-native-finalize`；共同规则只新增错误通道、后端句柄这类语言无关语义。公共打包仍复用既有清单准备器和宿主事务，不按每个语言再建认证/发布协议。
+
+五个 Rust SDK workspace 的依赖由 `scripts/check_native_sdk.py` 检查：C05 两包与 C06 共同内核保持无依赖；两个绑定包只允许准确版本的后端/解析辅助依赖及内核路径。别名、其他目标、开发/构建依赖和额外本地包不能隐藏工具宿主依赖。实际生成 SDK 的独立消费另由 Lab 验证。
+
 ## 扩展与工程初始化
 
 作者注解/宏由 helpers 和 contracts adapters 提取；普通 API 与受限外观由 generators 输出；属性封装器、状态、协程和 UI 入口归对应语言 SDK。诊断 sink 可关闭，资源准入和线程保护仍需执行，详见[语言体验](15-developer-ergonomics.md)与[运行时职责](08-runtime-and-idiomatic-api.md)。
