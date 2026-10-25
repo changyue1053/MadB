@@ -1,0 +1,144 @@
+{
+  "scope": "Two actual cold Release/obfuscated HAR builds, container normalization and independent ohpm install. Basic mechanism fixture only; no C07 candidate or target certification.",
+  "certifies_c07": false,
+  "toolchain": {
+    "cli": "26.0.0.851",
+    "sdk": "26.0.0.105",
+    "hvigor": "6.26.8",
+    "ohpm": "26.0.0.630",
+    "jdk": "DevEco JBR 21.0.8"
+  },
+  "inputs": "source-manifest-selected source/config plus separately hashed existing probe native libraries; native rebuild not claimed",
+  "native_member_policy": "nativeLib.debugSymbol.strip=false; every native member equals its explicit prebuilt input. Final pipeline must explicitly own any Build stripping.",
+  "comparisons": [
+    {
+      "module": "madbc07cpp",
+      "archive_bytes_equal": false,
+      "member_content_equal": true,
+      "differences": []
+    },
+    {
+      "module": "madbc07rust",
+      "archive_bytes_equal": false,
+      "member_content_equal": true,
+      "differences": []
+    },
+    {
+      "module": "madbc07kotlin",
+      "archive_bytes_equal": false,
+      "member_content_equal": true,
+      "differences": []
+    },
+    {
+      "module": "madbc07runtime",
+      "archive_bytes_equal": false,
+      "member_content_equal": true,
+      "differences": []
+    }
+  ],
+  "canonical": [
+    {
+      "module": "madbc07cpp",
+      "sha256": "9a13215aea767489291272a722917a7503d96ae0d9a6b3ec30ca267dec3d9f07",
+      "size": 85084,
+      "members": 8,
+      "both_cold_builds_equal": true
+    },
+    {
+      "module": "madbc07rust",
+      "sha256": "60aecf567568a6b0edeca30fd8ed9cfdf1dd7835d3d3274a0fda79a5cb68cecc",
+      "size": 246190,
+      "members": 8,
+      "both_cold_builds_equal": true
+    },
+    {
+      "module": "madbc07kotlin",
+      "sha256": "b9b5b34f715deece568dc84a94077247ebfe6a6b2dcb8c0bd706e69bc7db8ab9",
+      "size": 1360295,
+      "members": 9,
+      "both_cold_builds_equal": true
+    },
+    {
+      "module": "madbc07runtime",
+      "sha256": "629a29f07cd9e438cbddd0545e1ddfdd0b1be23f71855699b315522f88c407af",
+      "size": 513529,
+      "members": 5,
+      "both_cold_builds_equal": true
+    }
+  ],
+  "installed": [
+    {
+      "module": "madbc07cpp",
+      "installed": "/private/tmp/madb-c07-har-replay-probe/consumer-verified/oh_modules/.ohpm/madbc07cpp@mhmhwup2dikpenknipf6dqpzaudzprpsmmomfew9nwc=/oh_modules/madbc07cpp",
+      "verified_members": 8
+    },
+    {
+      "module": "madbc07rust",
+      "installed": "/private/tmp/madb-c07-har-replay-probe/consumer-verified/oh_modules/.ohpm/madbc07rust@yk7pvnvoprdt7kmp2o2c+fhdedxt0ydkd9p5pctozsw=/oh_modules/madbc07rust",
+      "verified_members": 8
+    },
+    {
+      "module": "madbc07kotlin",
+      "installed": "/private/tmp/madb-c07-har-replay-probe/consumer-verified/oh_modules/.ohpm/madbc07kotlin@ubwzt3fd7s5wjchkladyr+v+amsty4wl1wbmm8fbirk=/oh_modules/madbc07kotlin",
+      "verified_members": 9
+    },
+    {
+      "module": "madbc07runtime",
+      "installed": "/private/tmp/madb-c07-har-replay-probe/consumer-verified/oh_modules/.ohpm/madbc07runtime@ypop8hzz5djl3dbuxh3f3qsb4j9xhvazsxvsl4jeb68=/oh_modules/madbc07runtime",
+      "verified_members": 5
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/run.py",
+      "sha256": "3fbeddf5aa2890da3955ab0207557585b27f71967145e76cd25b4281e2999558",
+      "size": 4690
+    },
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/har.py",
+      "sha256": "7f12b8cf95cce62432bd1c31cf39a554d69ac6ab0dd43972b78a34f76b090f38",
+      "size": 5733
+    },
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/test_har.py",
+      "sha256": "0209b764dda4e0e4dae285b216a79c67ac0209f8e342b46d10b27bd023a8c8f6",
+      "size": 7513
+    },
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/result.json",
+      "sha256": "66bea4e85e68c18ae7a5cb15311be29d8326d210e160bf984d6b6ce42efb2a3c",
+      "size": 21149
+    },
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/normalized-observation.json",
+      "sha256": "dc5d13422f36fc924cb8c14c237b61f8b45113c469082df9f02cd67526d2855d",
+      "size": 7106
+    },
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/consumer-verified/verification.json",
+      "sha256": "e9ae72d7b023033c09fed723107b4663a737b771022fa754082c1c240d8c7cbe",
+      "size": 1128
+    },
+    {
+      "path": "/private/tmp/madb-c07-har-replay-probe/preserved-failures.json",
+      "sha256": "7e8f68004d79b8352dd281dd885837ebd5fa3db41677edef969f285022151fd5",
+      "size": 949
+    }
+  ],
+  "independent_review": {
+    "path": "/private/tmp/madb-c07-har-review.md",
+    "sha256": "01f3ef3ec9d6f7de65fb480037daec200900996fab2066b62350d6633f2853f5",
+    "evidence_path": "/private/tmp/madb-c07-har-review-evidence.json",
+    "evidence_sha256": "02c5094d537396fc07112df99d44edda02f6ceab596c7c0f640e2c1019679451"
+  },
+  "review_corrections": [
+    "Reject casefold/NFC equivalent member names because case-insensitive or normalization-insensitive consumers would otherwise observe order-dependent contents.",
+    "Reject control characters and translate a bounded deeply nested PAX parser failure to an invalid-HAR diagnostic.",
+    "Corrupt deflate is classified as invalid gzip."
+  ],
+  "focused_tests": 27,
+  "repository_helper": {
+    "path": "adapters/artifacts/arkts/har.py",
+    "sha256": "7f12b8cf95cce62432bd1c31cf39a554d69ac6ab0dd43972b78a34f76b090f38"
+  }
+}
