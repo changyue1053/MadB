@@ -46,7 +46,7 @@ function fixture() {
   let engine;
   const control = {timers, resources, observations, calls, failTimer:false,
     failClaim:false, holdOperationClose:false, resultReady:false,
-    physical:false, runtimeClosing:false, failTake:'', failDelivery:0};
+    physical:false, runtimeClosing:false, failTake:'', failDelivery:0, holdJoinAck:false};
   const lookup = key => {const r=resources.get(key); if(!r || r.retired) throw error('InvalidHandleRetired');return r;};
   const closeTarget = r => {
     r.closing = true;
@@ -58,7 +58,7 @@ function fixture() {
     // this prevents parent retirement from erasing a child's failure outcome.
     const ordered=[...resources.values()].sort((a,b)=>(a.kind==='e')-(b.kind==='e'));
     for (const r of ordered) {
-      if(!r.closed || r.acked) continue;
+      if(!r.closed || r.acked || (r.kind==='e' && control.holdJoinAck)) continue;
       if(!legacy) dispatch(2,r.handle,{status:r.status,value:0,text:''});
       r.acked=true;
       if(r.kind==='e') r.retired=true;
@@ -172,6 +172,47 @@ async function rejected(promise,code) {
   assert.ok(reason,'expected rejection '+code);assert.equal(reason.code,code);
 }
 const tests = {
+  async engine_pending_close_waits_for_join_ack_after_core_receipt() {
+    const f=fixture(),e=f.engine();f.holdJoinAck=true;
+    const result=track(e.close());assert.equal(f.observations.size,1);
+    f.finishBusiness();await f.drain();
+    assert.equal(f.observations.size,0,'Core token is actually consumed');
+    assert.equal(result.state,'pending','Core.closed alone must not resolve Engine.close');
+    assert.equal(f.timers.size,1,'same JS waiter retains progress');
+    assert.throws(()=>f.engine(),reason=>reason.code==='Closing');
+    f.holdJoinAck=false;await f.drain();assert.equal(result.state,'resolved');
+    assert.equal(f.timers.size,0);f.engine();
+  },
+  async engine_immediate_receipts_keep_32_js_owners_until_join_ack() {
+    const f=fixture(),e=f.engine();f.holdJoinAck=true;
+    e.requestClose();f.finishBusiness();
+    const pending=Array.from({length:32},()=>track(e.close()));
+    await f.drain();assert.equal(f.observations.size,0,'immediate Core receipts own no native waiter');
+    assert.ok(pending.every(x=>x.state==='pending'));
+    const watched=f.calls.watch;
+    await rejected(e.close(),'ResourceExhausted');assert.equal(f.calls.watch,watched);
+    let reentry=0;
+    f.onResolve=()=>{f.onResolve=undefined;reentry++;assert.throws(()=>f.engine(),reason=>reason.code==='Closing');};
+    f.holdJoinAck=false;await f.drain();
+    assert.equal(reentry,1);assert.ok(pending.every(x=>x.state==='resolved'));
+    assert.equal(f.timers.size,0);f.engine();await e.close();
+  },
+  async engine_close_deferred_error_is_delivered_once_after_ack() {
+    const f=fixture(),e=f.engine();f.holdJoinAck=true;
+    const result=track(e.close());
+    [...f.resources.values()].find(x=>x.kind==='e').status=9;
+    f.finishBusiness();await f.drain();assert.equal(result.state,'pending');
+    f.holdJoinAck=false;await f.drain();
+    assert.equal(result.state,'rejected');assert.equal(result.value.code,'CallbackFailure');
+    await rejected(e.close(),'CallbackFailure');f.engine();
+  },
+  async engine_consumed_copy_failure_remains_observable_before_join_ack() {
+    const f=fixture(),e=f.engine();f.holdJoinAck=true;
+    const result=track(e.close());f.finishBusiness();f.failTake='consumed';await f.drain();
+    assert.equal(result.state,'rejected');assert.equal(result.value.code,'DeliveryFailureConsumed');
+    assert.equal(f.observations.size,0);assert.equal(f.timers.size,1);
+    f.holdJoinAck=false;await f.drain();f.engine();
+  },
   async request_close_later_observe_and_reconnect() {
     const f=fixture(),e=f.engine();e.requestClose();f.finishBusiness();await f.drain();
     await e.close();const next=f.engine();assert.equal(next.roundtrip({value:2,text:'x'}).value,2);

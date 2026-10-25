@@ -6,12 +6,14 @@ Run the project-pinned Node version from the repository root:
 node tests/integration/c07_arkts_facade/check.cjs
 ```
 
-The 15 independent cases execute the actual SDK template after type erasure,
+The 19 independent cases execute the actual SDK template after type erasure,
 with controlled native API and timer substitutes. They cover request-only
 close/reconnect, stop-only slot reuse, 32-full observer rejection with real
 request ordering, delayed observation, callback-failure tombstones, strict
 result claim and rollback, settling reentry, one terminal signal, timer failure,
-error-class consistency and user getter identity/reentry. The frame enum must
+error-class consistency and user getter identity/reentry. Delayed Engine join
+ACK cases cover pending and immediate Core receipts, the same 32 JS owners,
+settling reentry and observable conversion/close errors. The frame enum must
 also match the frozen layout exactly. Receipts are written to a fresh temporary
 directory rather than into the source tree.
 

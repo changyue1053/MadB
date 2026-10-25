@@ -1,6 +1,6 @@
 --- a/Boundary.ets.in
 +++ b/Boundary.ets.in
-@@ -87,7 +87,49 @@
+@@ -90,7 +90,49 @@
    }
  }
  
@@ -50,7 +50,7 @@
    private readonly runtime: string;
    private engine: ResourceRecord | undefined = undefined;
    private readonly subscriptions: Map<string, ResourceRecord> = new Map<string, ResourceRecord>();
-@@ -245,10 +287,12 @@
+@@ -248,10 +290,12 @@
              const snapshot: Snapshot = { value: copy.value, text: copy.text };
              waiter.signalled = true;
              resolve(snapshot);
@@ -63,7 +63,7 @@
            }
          }, reject);
          this.waiters.set(id, waiter);
-@@ -281,11 +325,12 @@
+@@ -284,11 +328,12 @@
        return new Promise<void>((resolve, reject) => {
          const waiter: Waiter = new Waiter(id, record, false, (copy: NativeCopy) => {
            this.retire(record, copy.status);
@@ -77,7 +77,7 @@
            }
          }, reject);
          this.waiters.set(id, waiter);
-@@ -427,6 +472,8 @@
+@@ -454,6 +499,8 @@
          const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
          if (!physicalRuntimeAck(receipt)) { throw new BoundaryError('BridgeFailure'); }
          this.closed = true;
@@ -86,7 +86,7 @@
          if (this.engine !== undefined) { this.retire(this.engine, 0); }
          if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
          const resolve: () => void = this.closeResolve;
-@@ -458,6 +505,8 @@
+@@ -485,6 +532,8 @@
    private fail(reason: Error): void {
      if (this.failed !== undefined) { return; }
      this.failed = reason;
@@ -95,7 +95,7 @@
      if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
      this.waiters.forEach((waiter: Waiter) => {
        if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
-@@ -471,12 +520,30 @@
+@@ -498,12 +547,30 @@
  }
  
  class RuntimeHandle implements Runtime {
@@ -126,7 +126,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -490,6 +557,7 @@
+@@ -517,6 +584,7 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class OperationHandle implements Operation {
@@ -134,7 +134,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -498,6 +566,7 @@
+@@ -525,6 +593,7 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class SubscriptionHandle implements Subscription {
@@ -142,7 +142,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -505,3 +574,46 @@
+@@ -532,3 +601,46 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  export function openRuntime(): Runtime { return new RuntimeHandle(new Session()); }

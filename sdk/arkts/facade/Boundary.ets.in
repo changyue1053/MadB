@@ -80,6 +80,9 @@ class Waiter {
   readonly reject: (error: Error) => void;
   settling: boolean = false;
   signalled: boolean = false;
+  // A consumed Engine close receipt stays in this same bounded JS owner until
+  // the lifecycle ACK confirms join/remaining native responsibilities finished.
+  engineCloseStatus: number | undefined = undefined;
   constructor(id: string, record: ResourceRecord, isResult: boolean,
               accept: (copy: NativeCopy) => void, reject: (error: Error) => void) {
     this.id = id; this.record = record; this.isResult = isResult;
@@ -294,8 +297,12 @@ class Session {
           const immediate: number = native.watchClose(record.handle, id);
           if (immediate >= 0) {
             waiter.settling = true;
-            try { waiter.accept({ status: immediate, value: 0, text: '' }); }
-            finally { waiter.settling = false; this.waiters.delete(id); this.disarmIfIdle(); }
+            try { this.acceptCompletion(waiter, { status: immediate, value: 0, text: '' }); }
+            finally {
+              waiter.settling = false;
+              if (waiter.engineCloseStatus === undefined) { this.waiters.delete(id); }
+              this.disarmIfIdle();
+            }
           }
         } catch (error) {
           this.waiters.delete(id);
@@ -372,14 +379,32 @@ class Session {
     if (!this.pending() && this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
   }
 
+  private acceptCompletion(waiter: Waiter, copy: NativeCopy): void {
+    if (!waiter.isResult && waiter.record.kind === 0 && !waiter.record.closed) {
+      // Core.closed can precede the owner-env afterJoin callback. Keep only the
+      // copied scalar outcome, never a second native token or result queue.
+      waiter.engineCloseStatus = copy.status;
+      return;
+    }
+    waiter.accept(copy);
+  }
+
   private consume(waiter: Waiter): void {
     waiter.settling = true;
     let consumed: boolean = false;
     try {
+      if (waiter.engineCloseStatus !== undefined) {
+        if (!waiter.record.closed) { return; }
+        const status: number = waiter.engineCloseStatus;
+        waiter.engineCloseStatus = undefined;
+        consumed = true;
+        waiter.accept({ status: status, value: 0, text: '' });
+        return;
+      }
       const copy: NativeCopy | null = native.tryTake(this.runtime, waiter.id);
       if (copy === null) { return; }
       consumed = true;
-      waiter.accept(copy);
+      this.acceptCompletion(waiter, copy);
     } catch (error) {
       const reason: Error = error as Error;
       if (waiter.signalled) {
@@ -393,7 +418,9 @@ class Session {
       } else { this.fail(new BoundaryError('BridgeFailure')); }
     } finally {
       waiter.settling = false;
-      if (consumed || this.failed !== undefined) { this.waiters.delete(waiter.id); }
+      if ((consumed && waiter.engineCloseStatus === undefined) || this.failed !== undefined) {
+        this.waiters.delete(waiter.id);
+      }
     }
   }
 
