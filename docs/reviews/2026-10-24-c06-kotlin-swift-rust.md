@@ -55,6 +55,7 @@ Android AAR/R8、iOS、CPF/OHOS、SKIE + KMP-NativeCoroutines 组合和 `madb in
 - Kotlin/Native 私有 smoke 显式指定受管冷目录内的中间文件目录。真实编译对照表明，随机 `konan_temp` 路径长度会改变链接器 debug-map 与内容 UUID，K/N 后续自身剥离调试映射后仍留下 UUID/签名差异；固定目录不删除 UUID、不改写二进制，也不修改公开 SDK。相同对象、不同长度路径的链接对照重现相同差异，修复后的实际 `stable_link` 连续五次冷构建与运行通过，24 个产物的身份一致、正常 UUID 保留；Swift/Rust 另有五次冷链接与运行通过，无需同步扩大修改。
 - 远端实测共享准备及前两路线已耗时 59 分钟，另有约 12 分钟安装；整作业预算调整为 240 分钟，给四路线和独立 Lab 留出执行空间。每个子进程仍为 900 秒、终止宽限仍为 6000 毫秒，库存校验、逐字节验证和必需案例没有减少。完整四路线耗时仍以实际执行为准。
 - Python.org framework 的内部悬空头文件链接作为“精确链接目标 + 缺失状态”进入库存；空目录目标后来出现同样改变摘要。循环、权限错误和目录逃逸仍失败；实际解释器和本机依赖必须存在。生产者与 Lab 分别实现校验。
+- 公开 runtime protocol 必须同时携带 `schema=madb.native-runtime-protocol/1` 和受支持的版本。两份 Rust 作者文件最初遗漏 schema，独立 Lab 在 SDK 案例执行前准确拒绝；补齐源声明，并在生产者准备阶段验证格式与必要预算形状，避免把无效元数据带到耗时编译之后。Lab 的版本、预算和来源检查不放宽。
 - 生成器返回前拒绝符号链接、特殊文件、路径逃逸和未声明类型的产物；临时 HOME、API 提取与日志留在清理后不会发布的 scratch。C04 只接收声明输出。
 
 ## 当前证据
@@ -75,3 +76,5 @@ Android AAR/R8、iOS、CPF/OHOS、SKIE + KMP-NativeCoroutines 组合和 `madb in
 本机证据入口：`/private/tmp/madb-c06-c05-regression-j8yq5lg5/summary.json`、`/private/tmp/madb-c06-skie-cancel-public-proof.json`、`/private/tmp/madb-c06-gobley/unsigned-final-probe/observations.json`、`/private/tmp/madb-c06-uniffi-v7-regressions/report.json`、`/private/tmp/madb-c04-package-targeted-capture/report.json`、`/private/tmp/madb-c06-formal-14d0c53.log`、`/private/tmp/madb-native-fixed-workspace-proof/report.json`、`/private/tmp/madb-c06-swift-rust-link-probe-01/report.json`。这些临时路径用于本次审查追踪，不是公开 SDK 的构建依赖。
 
 `14d0c53` 的远端结果：[完整基础检查](https://github.com/changyue1053/MadB/actions/runs/40106593895)、[C05 回归](https://github.com/changyue1053/MadB/actions/runs/40106593761)、[Lab C05 消费](https://github.com/changyue1053/MadB-Lab/actions/runs/40106525953)通过。[C06 构建](https://github.com/changyue1053/MadB/actions/runs/40106593797)与本机在 Native smoke 字节验证处同样失败；实际 PR 检出为 `cf991ebeb9e381d9caa32ef9fa02ca365b506c91`，其 Git tree 与 `14d0c53` 完全相同，不能将分支 SHA 误写成候选的 producer_revision。该结果同时证明 Python.org 内部悬空链接和 Linux 信号测试夹具修复已通过真实远端检查。
+
+`527cb23f39edda8bd919d727692171044ba7d0fc` 已完成本机四路线正式构建，Native UUID 修复通过完整流水线；随后 Lab 在准入阶段发现上述 runtime protocol 格式缺失。该次结果为 92 项 harness 测试通过、0 个 SDK 案例执行，不能计为 54 项通过。证据保留于 `/private/tmp/madb-c06-lab-formal-527cb23/admission-summary.json`；修复后需由新干净提交重新生成完整候选。[该源码的远端基础检查](https://github.com/changyue1053/MadB/actions/runs/40155539333)和[C05 回归](https://github.com/changyue1053/MadB/actions/runs/40155539358)通过；已知仍缺格式标识的旧 C06 远端运行已请求停止，避免继续消耗整包构建资源，停止不计为验收通过。

@@ -155,12 +155,35 @@ def _verify_helper_sources(workspace, observation, variant):
         raise ValueError("declaration helper feature set differs from the selected backend")
 
 
-def _public_observation(workspace, observation, config):
-    protocol_name = VARIANTS[config["variant"]]["protocol"]
+def _load_runtime_protocol(workspace, variant):
+    protocol_name = VARIANTS[variant]["protocol"]
     protocol_path = workspace / protocol_name
     if not protocol_path.is_file():
         raise ValueError("selected SDK has no authored runtime protocol: " + protocol_name)
     protocol = json.loads(protocol_path.read_text())
+    if not isinstance(protocol, dict) or protocol.get("schema") != "madb.native-runtime-protocol/1":
+        raise ValueError("unsupported runtime protocol schema: " + protocol_name)
+    if protocol.get("schema_version") != "1.0.0":
+        raise ValueError("unsupported C06 runtime protocol schema_version: " + protocol_name)
+    # Check the authored format before compilers run. Concrete budget values are
+    # verified against actual runtime behavior by the independent consumer Lab.
+    required_budgets = {
+        "max_payload_bytes", "max_retained_payload_bytes", "max_pending_events",
+        "state_pending_capacity_per_subscription", "max_subscription_handles",
+        "max_operation_handles", "max_registered_waiters", "owned_worker_threads_per_engine",
+    }
+    budgets = protocol.get("budgets")
+    if not isinstance(budgets, dict) or not required_budgets.issubset(budgets):
+        raise ValueError("C06 runtime protocol is missing required budgets: " + protocol_name)
+    for name, value in budgets.items():
+        if type(value) is not int or value <= 0:
+            raise ValueError("C06 runtime protocol budget must be a positive integer: " + protocol_name + "#budgets/" + name)
+    return protocol
+
+
+def _public_observation(workspace, observation, config):
+    protocol_name = VARIANTS[config["variant"]]["protocol"]
+    protocol = _load_runtime_protocol(workspace, config["variant"])
     managed = observation["managed"]
     backend = _backend_identity(workspace, config)
     if "smoke_workspace" in config:

@@ -81,9 +81,57 @@ class PreparationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "different Gradle"):
             project._verify_resolution_source(self.root, "swift-kotlin")
 
+    def test_runtime_protocol_author_documents_are_accepted(self):
+        for variant in ("kotlin-jvm-rust", "kotlin-native-rust", "swift-kotlin"):
+            with self.subTest(variant=variant):
+                name = project.VARIANTS[variant]["protocol"]
+                self.assertEqual(project._load_runtime_protocol(ROOT, variant), json.loads((ROOT / name).read_text()))
+
+    def test_public_observation_rejects_missing_or_unknown_protocol_schema(self):
+        name = "sdk/kotlin/skie/runtime-protocol.json"
+        original = json.loads((ROOT / name).read_text())
+        for schema in (None, "madb.native-runtime-protocol/2"):
+            with self.subTest(schema=schema):
+                value = dict(original)
+                value.pop("schema")
+                if schema is not None:
+                    value["schema"] = schema
+                write(self.root, name, json.dumps(value))
+                with self.assertRaisesRegex(ValueError, "unsupported runtime protocol schema"):
+                    project._public_observation(self.root, {}, {"variant": "swift-kotlin"})
+
+    def test_runtime_protocol_rejects_missing_or_unknown_format_version(self):
+        name = "sdk/kotlin/skie/runtime-protocol.json"
+        original = json.loads((ROOT / name).read_text())
+        for version in (None, "2.0.0"):
+            with self.subTest(version=version):
+                value = dict(original)
+                value.pop("schema_version")
+                if version is not None:
+                    value["schema_version"] = version
+                write(self.root, name, json.dumps(value))
+                with self.assertRaisesRegex(ValueError, "unsupported C06 runtime protocol schema_version"):
+                    project._load_runtime_protocol(self.root, "swift-kotlin")
+
+    def test_runtime_protocol_rejects_missing_and_noninteger_budgets(self):
+        name = "sdk/kotlin/skie/runtime-protocol.json"
+        original = json.loads((ROOT / name).read_text())
+        for bad in (None, True, 0, -1, 1.5, "1024"):
+            with self.subTest(budget=bad):
+                value = dict(original, budgets=dict(original["budgets"]))
+                if bad is None:
+                    value["budgets"].pop("max_payload_bytes")
+                    diagnostic = "missing required budgets"
+                else:
+                    value["budgets"]["max_payload_bytes"] = bad
+                    diagnostic = "budget must be a positive integer.*#budgets/max_payload_bytes"
+                write(self.root, name, json.dumps(value))
+                with self.assertRaisesRegex(ValueError, diagnostic):
+                    project._load_runtime_protocol(self.root, "swift-kotlin")
+
     def test_public_observation_has_no_host_paths(self):
         for name, text in [
-            ("sdk/kotlin/skie/runtime-protocol.json", '{"protocol":"fixture"}'),
+            ("sdk/kotlin/skie/runtime-protocol.json", (ROOT / "sdk/kotlin/skie/runtime-protocol.json").read_text()),
             ("adapters/toolchains/kotlin_rust/toolchain.json", '{"tools":"fixture"}'),
             ("sdk/kotlin/skie/gradle/verification-metadata.xml", "verified\n"),
             ("sdk/kotlin/skie/gradle.lockfile", "locked\n"),

@@ -1,4 +1,5 @@
 {
+  "schema": "madb.native-runtime-protocol/1",
   "schema_version": "1.0.0",
   "protocol_id": "madb-c06-bounded-v1",
   "production_boundary": "src/boundary.udl",
