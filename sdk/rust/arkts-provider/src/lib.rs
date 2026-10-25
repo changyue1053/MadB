@@ -44,10 +44,40 @@ struct Context {
     live: AtomicU64,
     work: AtomicU64,
     injection: AtomicI32,
+    #[cfg(feature = "test-support")]
+    memory: MemoryObserver,
 }
 struct Model {
     value: i32,
     text: String,
+}
+#[cfg(feature = "test-support")]
+#[repr(C)]
+#[derive(Clone, Copy, Default)]
+pub struct MemoryObserver {
+    context: *mut c_void,
+    notify: Option<unsafe extern "C" fn(*mut c_void, u64, u64, u32)>,
+}
+#[cfg(feature = "test-support")]
+fn memory(ctx: &Context, object: usize, text: usize, action: u32) {
+    if let Some(notify) = ctx.memory.notify {
+        // The already-owned provider lives inside its bound Runtime/Audit.
+        unsafe { notify(ctx.memory.context, object as u64, text as u64, action) };
+    }
+}
+#[cfg(feature = "test-support")]
+struct CopyAccounting<'a> {
+    owner: &'a Context,
+    bytes: usize,
+    armed: bool,
+}
+#[cfg(feature = "test-support")]
+impl Drop for CopyAccounting<'_> {
+    fn drop(&mut self) {
+        if self.armed {
+            memory(self.owner, 0, self.bytes, 2);
+        }
+    }
 }
 fn record_release(ctx: &Context) {
     ctx.releases.fetch_add(1, SeqCst);
@@ -67,7 +97,11 @@ impl OwnedModel<'_> {
 impl Drop for OwnedModel<'_> {
     fn drop(&mut self) {
         if let Some(model) = self.model.take() {
+            #[cfg(feature = "test-support")]
+            let bytes = model.text.capacity();
             drop(model); // Drop String, then free Box storage, then count release.
+            #[cfg(feature = "test-support")]
+            memory(self.owner, size_of::<Model>(), bytes, 2);
             record_release(self.owner);
         }
     }
@@ -122,9 +156,22 @@ unsafe extern "C" fn clone_model(
             2 => panic!("controlled Rust clone panic, caught before C ABI return"),
             _ => {}
         }
+        // Accounting guard owns no allocation and is declared before the real
+        // String, so failure destroys the String before retiring its bytes.
+        #[cfg(feature = "test-support")]
+        let mut accounting = CopyAccounting {
+            owner: ctx,
+            bytes: 0,
+            armed: true,
+        };
         let mut copy = String::new();
         if copy.try_reserve_exact(text.len()).is_err() {
             return ALLOCATION;
+        }
+        #[cfg(feature = "test-support")]
+        {
+            accounting.bytes = copy.capacity();
+            memory(ctx, 0, accounting.bytes, 1);
         }
         copy.push_str(text);
         let model = match try_box(Model {
@@ -134,12 +181,18 @@ unsafe extern "C" fn clone_model(
             Ok(m) => m,
             Err(s) => return s,
         };
+        #[cfg(feature = "test-support")]
+        memory(ctx, size_of::<Model>(), 0, 1);
         ctx.allocations.fetch_add(1, SeqCst);
         ctx.live.fetch_add(1, SeqCst);
         let owned = OwnedModel {
             model: Some(model),
             owner: ctx,
         };
+        #[cfg(feature = "test-support")]
+        {
+            accounting.armed = false;
+        }
         if injection == 4 {
             panic!("controlled Rust panic after Box allocation; Drop must reclaim");
         }
@@ -193,10 +246,14 @@ unsafe extern "C" fn release_model(opaque: *mut c_void, ptr: *mut c_void) -> i32
     }
     // SAFETY: this provider created the unique Box and caller consumes it once.
     // Model/String Drop cannot unwind; no foreign cleanup callback is involved.
-    unsafe {
-        drop(Box::from_raw(ptr.cast::<Model>()));
-    }
-    record_release(unsafe { &*opaque.cast::<Context>() });
+    let model = unsafe { Box::from_raw(ptr.cast::<Model>()) };
+    #[cfg(feature = "test-support")]
+    let bytes = model.text.capacity();
+    drop(model);
+    let ctx = unsafe { &*opaque.cast::<Context>() };
+    #[cfg(feature = "test-support")]
+    memory(ctx, size_of::<Model>(), bytes, 2);
+    record_release(ctx);
     OK
 }
 unsafe extern "C" fn stats(opaque: *mut c_void, out: *mut Stats) -> i32 {
@@ -311,5 +368,34 @@ pub unsafe extern "C" fn mp_rust_layout(out: *mut AbiLayout) -> i32 {
             provider_align: align_of::<Provider>(),
         });
     }
+    OK
+}
+
+/// Bind a test-only non-owning accounting observer before any models/worker.
+/// # Safety
+/// Context provenance and lifetime follow mp_rust_create. The observer remains
+/// valid until this context and every original model have actually drained.
+#[cfg(feature = "test-support")]
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn mp_rust_test_memory_bind(
+    opaque: *mut c_void,
+    observer: MemoryObserver,
+) -> i32 {
+    if opaque.is_null() || observer.context.is_null() || observer.notify.is_none() {
+        return INVALID;
+    }
+    let ctx = unsafe { &mut *opaque.cast::<Context>() };
+    if let Some(prior) = ctx.memory.notify {
+        if ctx.memory.context != observer.context
+            || !std::ptr::fn_addr_eq(prior, observer.notify.unwrap())
+        {
+            return INVALID;
+        }
+    }
+    if ctx.live.load(SeqCst) > 0 {
+        return BUSY;
+    }
+    ctx.memory = observer;
+    memory(ctx, size_of::<Model>(), 0, 0);
     OK
 }

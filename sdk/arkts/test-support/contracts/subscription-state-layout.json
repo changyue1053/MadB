@@ -1,0 +1,26 @@
+{
+  "scope": "test-only pure ArkTS wrapper-state observation; no Node-API call or added owner",
+  "format": 1,
+  "length": 4,
+  "public_signature": "testSubscriptionState(subscription:Subscription):number[]",
+  "fields": {
+    "0": "Format",
+    "1": "Closing",
+    "2": "Closed",
+    "3": "ListenerRetained"
+  },
+  "units": {
+    "Format": "format marker1",
+    "Closing": "0 or1 from original ResourceRecord.closing",
+    "Closed": "0 or1 from original ResourceRecord.closed",
+    "ListenerRetained": "0 or1 from original ResourceRecord.listener !== undefined"
+  },
+  "semantics": [
+    "Only actual SDK SubscriptionHandle wrappers accepted via checkedSubscription.",
+    "This reads the existing record, including its immutable closed tombstone after native ACK; it neither progresses nor releases anything.",
+    "No inference of native physical cleanup from these JS-only flags."
+  ],
+  "errors": {
+    "foreign_wrapper": "InvalidArgument"
+  }
+}

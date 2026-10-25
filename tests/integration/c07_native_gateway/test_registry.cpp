@@ -108,6 +108,10 @@ int main() {
     require(testObserve(env, {999, 0, 0, 'r'}, true) == nullptr &&
             lastError == "ObservationExpired");
     require(testObserve(env, {first, 1, 1, 'o'}, true) == nullptr && lastError == "InvalidHandle");
+    // New memory view must not turn a failed admission into synthetic zero data.
+    require(testMemoryFrame(env, {first, 0, 0, 'r'}) == nullptr && lastError == "NotReady");
+    require(testMemoryFrame(other, {first, 0, 0, 'r'}) == nullptr && lastError == "WrongEnv");
+    require(testMemoryFrame(env, {999, 0, 0, 'r'}) == nullptr && lastError == "ObservationExpired");
     // Positive serialization control: only a stored true predicate permits ACK.
     history[0].physicalAck = true;
     history[0].values[F::MechanismTeardownStarted] = 1;
@@ -127,6 +131,10 @@ int main() {
     owner->generationRetired = false;
     require(GatewayProviderCreate(&owner->provider) == MP_OK);
     owner->engine = std::make_unique<Engine>(testProvider(*owner));
+    auto memory = testMemoryFrame(env, {epoch, 0, 0, 'r'});
+    require(memory && memory->frame.size() == 27 && memory->frame[0] == 1);
+    require(memory->frame[static_cast<size_t>(MemoryField::ModelObjectSize)] > 0);
+
     int callbacks = 0, closeCallbacks = 0;
     uint64_t subscription = 0;
     require(owner->engine->observe(Stream::State,
@@ -164,8 +172,15 @@ int main() {
     require(providerStats.live == 0 && providerStats.allocations == providerStats.releases);
     require(owner->provider.destroy_context(owner->provider.context) == MP_OK);
     owner->provider = {};
+    memory = testMemoryFrame(env, {epoch, 0, 0, 'r'});
+    require(memory && memory->frame[5] == 0 && memory->frame[7] == 0);
+    require(memory->frame[10] > 0 && memory->frame[10] == memory->frame[11]);
+    slot.audit.memory.invalidate();
+    require(testMemoryFrame(env, {epoch, 0, 0, 'r'}) == nullptr &&
+            lastError == "DiagnosticAccountingFailure");
+
     slot.owner.reset();
     owner.reset();
     slot.retired = true;
-    std::cout << "12 registry checks passed; host NAPI return harness, no target claim\n";
+    std::cout << "15 registry checks passed; host NAPI return harness, no target claim\n";
 }

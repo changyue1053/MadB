@@ -12,3 +12,7 @@ sdk/kotlin/skie/gradlew.bat -text !eol whitespace=cr-at-eol
 # Unified patch context lines intentionally contain one leading space.
 sdk/arkts/test-support/facade/companion.patch whitespace=-blank-at-eol,-blank-at-eof
 sdk/arkts/test-support/native/companion.patch whitespace=-blank-at-eol,-blank-at-eof
+sdk/arkts/test-support/native/memory-runtime.patch whitespace=-blank-at-eol,-blank-at-eof
+sdk/arkts/test-support/native/memory-provider-c.patch whitespace=-blank-at-eol,-blank-at-eof
+sdk/arkts/test-support/native/memory-provider-cpp.patch whitespace=-blank-at-eol,-blank-at-eof
+sdk/kotlin/arkts-owned/test-runtime/codec-memory.patch whitespace=-blank-at-eol,-blank-at-eof

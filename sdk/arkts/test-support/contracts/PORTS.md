@@ -55,3 +55,43 @@ production permission, suppresses a call, or retains a Runtime. Its checked
 source/preprocessor inventory excludes Rust backend calls; those need independent
 macro/import evidence. Null-env cleanup is exercised only when its measured
 entry count is positive, never inferred from an observed zero.
+
+
+## Test-only memory observation
+
+`testMemory(runtime)` accepts an actual SDK Runtime and returns exactly 27 checked
+scalars defined by the distributed `memory-layout.json`. It adds no owner and
+never progresses work. The existing 178/16/8 observations keep their layouts.
+The counters accumulate across this Runtime's Engine generations and remain in
+the bounded history after final ACK. Before a provider binds, it reports
+`NotReady`; accounting overflow, underflow or inconsistent object layouts report
+`DiagnosticAccountingFailure`, never synthesized zeros.
+
+CoreRetained is the existing canonical UTF-8 reservation ledger. PublicationStaging
+counts only adopted source allocations before commit; commit transfers this role,
+while abort removes it after actual destruction. Their peaks are captured at real
+transitions. They are not provider heap sizes.
+
+ProviderObject records actual successful model allocation requests (`sizeof` or
+Rust `Layout`); ProviderText records C flexible tail bytes, external C++ string
+capacity plus terminator, or Rust String capacity. C++ inline storage is already
+inside Model and is not counted again. ProviderStoragePeak is the simultaneous
+sum, not the sum of independent peaks. Temporary Rust String storage before a
+Box succeeds is included and retires after real destruction on failure. Context,
+allocator metadata, VM strings and RSS are excluded.
+
+Utf8Backing reports the actual external Input string capacity plus terminator.
+InputObject/Utf16Array report active lexical object storage, not measured machine
+stack frames. Their scopes exit after the original object lifetime; the UTF-16
+array is bounded at 1025 code units. The pinned C++17 library uses requested
+allocation counts for these string capacities. One memory-frame copy is locked;
+it is not atomic with the separate lifecycle frame. Cross-frame conclusions need
+a held checkpoint or actual final ACK. Ordinary builds contain none of these
+hooks, fields or provider branches; C/C++/Core test copies are strict derivations
+of their ordinary source, with original/patch/result hashes retained in inputs.
+
+`testSubscriptionState(subscription)` is a separate pure ArkTS four-scalar view
+of the actual SDK wrapper's existing closing/closed/listener flags. Its versioned
+`subscription-state-layout.json` is distributed with the test candidate. It does
+not invoke Node-API, advance cleanup, or infer native physical ACK. Only the same
+SDK's checked Subscription wrapper is accepted; no private token is exposed.

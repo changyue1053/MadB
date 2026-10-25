@@ -47,9 +47,9 @@ def main():
                  "GatewayIdentity": identity, "GatewayRouteIdentity": args.route + "test/" + identity,
                  "GatewayModuleName": "host_test_only"}
     (generated / "identity.generated.hpp").write_text(
-        '#pragma once\n#include "provider_abi.h"\nnamespace gateway {\n'
+        '#pragma once\n#include "provider_abi.h"\n#include "memory_hook.h"\nnamespace gateway {\n'
         + "\n".join(f'inline constexpr const char* {key}="{value}";' for key, value in constants.items())
-        + f'\ninline constexpr auto GatewayProviderCreate = &{composition.provider_factory};\n}}\n')
+        + f'\ninline constexpr auto GatewayProviderCreate = &{composition.provider_factory};\ninline constexpr auto GatewayProviderMemoryBind = &mp_{args.route}_test_memory_bind;\n}}\n')
     # Make only the needed platform declaration headers visible to the host.
     headers = args.output / "host-headers"
     headers.mkdir()
@@ -59,7 +59,7 @@ def main():
     tests = Path(__file__).resolve().parent
     runtime = ROOT / "sdk/arkts/native-runtime"
     inputs = [x.path for x in composition.source_inputs] + [x.path for x in composition.derived_files]
-    inputs += [tests / name for name in ("test_native.cpp", "test_registry.cpp", "host-platform.hpp", "test_observer.cpp", "run_host.py")]
+    inputs += [tests / name for name in ("test_native.cpp", "test_registry.cpp", "host-platform.hpp", "test_observer.cpp", "test_memory.cpp", "run_host.py")]
     inputs += sorted(generated.iterdir()) + [args.native_sdk / "oh-uni-package.json"]
     inputs += sorted(p for p in header_root.joinpath("napi").rglob("*") if p.is_file())
     inputs += [header_root / name for name in ("node_api.h", "node_api_types.h", "js_native_api.h", "js_native_api_types.h")]
@@ -83,14 +83,15 @@ def main():
         unit = composition.units[-1]
         run([args.cc if unit.language == "c" else args.cxx,
              "-std=c17" if unit.language == "c" else "-std=c++17", *flags,
-             "-I", runtime / "include", "-c", unit.path, "-o", provider])
+             "-I", runtime / "include", "-I", args.output / "source/include", "-c", unit.path, "-o", provider])
         common = [args.cxx, "-std=c++17", *flags, "-g", "-Wall", "-Wextra", "-Werror",
                   "-Wno-deprecated-declarations", "-include", tests / "host-platform.hpp",
                   *[value for path in includes for value in ("-I", path)]]
         dependencies = [args.output / "source/src/support.cpp", args.output / "source/src/observer.cpp", args.output / "source/worker/worker.cpp",
-                        runtime / "src/protocol.cpp", provider]
+                        composition.units[0].path, args.output / "source/src/memory.cpp", provider]
         for kind, extra in (("native", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"]),
-                            ("registry", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"])):
+                            ("registry", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"]),
+                            ("memory", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"])):
             executable = args.output / (label + "-" + kind)
             run([*common, tests / f"test_{kind}.cpp", *dependencies, *extra, "-o", executable])
             run([executable])
@@ -103,7 +104,7 @@ def main():
         raise ValueError("host regression inputs changed during execution")
     (args.output / "receipt.json").write_text(json.dumps({
         "scope": "real Core/provider/worker host regression; registry Node-API return harness; no target claim",
-        "route": args.route, "checks_per_configuration": 23, "observer_stub_calls_per_configuration": 32,
+        "route": args.route, "checks_per_configuration": 33, "memory_checks_per_configuration": 7, "observer_stub_calls_per_configuration": 32,
         "configurations": ["Release", "ASan/UBSan"], "inputs": before,
         "commands": record(args.output / "commands.json"),
     }, indent=2) + "\n")

@@ -15,4 +15,5 @@ export interface NativeSupport {
   testDeliveryGate(subscription: string, command: number): number[];
   testHandleAdmission(engine: string, scenario: number, foreignObservationKey: string): void;
   testBootstrapTotals(): number[];
+  testMemory(runtime: string): number[];
 }

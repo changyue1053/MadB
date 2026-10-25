@@ -1,0 +1,8 @@
+{
+  "base_sha256": {
+    "runtime/protocol.cpp": "eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25"
+  },
+  "derived_sha256": {
+    "runtime/protocol.cpp": "cca120ddfa3f1ab22a1fc2b25bebc2433cfcac84a97aff751ac1a8b88a5dfcc7"
+  }
+}

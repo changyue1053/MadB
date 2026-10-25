@@ -49,6 +49,14 @@ class RawSeam(unittest.TestCase):
             with self.assertRaises(ValueError):
                 rust_frontend.raw_api(text)
 
+    def test_memory_binder_is_hidden_only_in_test_bridge(self):
+        def descriptor(count):
+            return {"methods": [{"name": "f" + str(i), "params": []} for i in range(count)]}
+        ordinary = rust_frontend.render_bridge(descriptor(16))["runtime_ffi.cpp"].decode()
+        companion = rust_frontend.render_bridge(descriptor(32), test_support=True)["runtime_ffi.cpp"].decode()
+        self.assertNotIn("mp_rust_test_memory_bind", ordinary)
+        self.assertIn('.hidden mp_rust_test_memory_bind', companion)
+
     def test_raw_dispatch_permits_zero_without_dereferencing_argv(self):
         descriptor = {
             "methods": [{"name": "f" + str(i), "params": []} for i in range(16)]
@@ -98,7 +106,7 @@ class RawSeam(unittest.TestCase):
                     test_support=True,
                 )
         descriptor = {
-            "methods": [{"name": "f" + str(i), "params": []} for i in range(31)]
+            "methods": [{"name": "f" + str(i), "params": []} for i in range(32)]
         }
         bridge = rust_frontend.render_bridge(descriptor, test_support=True)[
             "runtime_ffi.cpp"

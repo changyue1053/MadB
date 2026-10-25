@@ -65,13 +65,18 @@ def source_paths(repository: Path, *, route: str, variant: str) -> tuple[Path, .
         support = repository / "sdk/arkts/test-support"
         paths += [support / "native" / name for name in
                   ("companion.patch", "baseline.json", "support.hpp", "support_state.hpp", "support.cpp",
-                   "observer.hpp", "observer.cpp", "observer_inventory.py")]
+                   "observer.hpp", "observer.cpp", "observer_inventory.py",
+                   "memory.hpp", "memory_hook.h", "memory.cpp",
+                   "memory-runtime.patch", "memory-runtime-baseline.json")]
         paths += [support / "facade" / name for name in
                   ("companion.patch", "baseline.json", "TestFrame.ets", "FacadeFrame.ets")]
         paths += [support / "contracts" / name for name in
                   ("support.d.ts", "test-frame-layout.json", "facade-frame-layout.json",
                    "diagnostic-units-v1.json", "PORTS.md", "bootstrap-totals-layout.json",
-                   "ports-layout.json", "observer-layout.json")]
+                   "ports-layout.json", "observer-layout.json", "memory-layout.json", "subscription-state-layout.json")]
+    if variant == "test" and route in {"c", "cpp"}:
+        paths += [support / "native" / ("memory-provider-" + route + suffix)
+                  for suffix in (".patch", "-baseline.json")]
     return tuple(paths)
 
 
@@ -184,8 +189,25 @@ def compose_native(repository: Path, output: Path, *, route: str, variant: str) 
                                   ("support_state.hpp", "include/support_state.hpp"),
                                   ("support.cpp", "src/support.cpp"),
                                   ("observer.hpp", "include/observer.hpp"),
-                                  ("observer.cpp", "src/observer.cpp")):
+                                  ("observer.cpp", "src/observer.cpp"),
+                                  ("memory.hpp", "include/memory.hpp"),
+                                  ("memory_hook.h", "include/memory_hook.h"),
+                                  ("memory.cpp", "src/memory.cpp")):
             material[destination] = data[support / "native" / name].decode()
+        # Instrument the original Core/provider at checked source transitions;
+        # these derived units replace, never duplicate, their ordinary units.
+        material.update(_derive(
+            {"runtime/protocol.cpp": data[runtime / "src/protocol.cpp"].decode()},
+            data[support / "native/memory-runtime.patch"].decode(),
+            parse_json_metadata(data[support / "native/memory-runtime-baseline.json"])))
+        if route in {"c", "cpp"}:
+            suffix = "c" if route == "c" else "cpp"
+            logical = "provider/provider." + suffix
+            original = repository / f"sdk/{route}/arkts-provider/src/provider.{suffix}"
+            stem = support / "native" / ("memory-provider-" + route)
+            material.update(_derive(
+                {logical: data[original].decode()}, data[stem.with_suffix(".patch")].decode(),
+                parse_json_metadata(data[Path(str(stem) + "-baseline.json")])))
         support_declaration = data[support / "contracts/support.d.ts"].decode()
         match = re.fullmatch(r"/\*\*[^\n]*\*/\nexport interface NativeSupport \{\n(.*)\}\n",
                              support_declaration, re.S)
@@ -208,17 +230,22 @@ def compose_native(repository: Path, output: Path, *, route: str, variant: str) 
         with path.open("xb") as stream:
             stream.write(encoded)
         derived.append(_identity(path, encoded))
-    units = [NativeUnit(runtime / "src/protocol.cpp", "c++"),
+    units = [NativeUnit(output / "runtime/protocol.cpp" if variant == "test"
+                        else runtime / "src/protocol.cpp", "c++"),
              NativeUnit(output / "worker/worker.cpp", "c++"),
              NativeUnit(output / "src/runtime.cpp", "c++"),
              NativeUnit(output / "src/api.cpp", "c++")]
     if variant == "test":
         units.extend((NativeUnit(output / "src/support.cpp", "c++"),
-                      NativeUnit(output / "src/observer.cpp", "c++")))
+                      NativeUnit(output / "src/observer.cpp", "c++"),
+                      NativeUnit(output / "src/memory.cpp", "c++")))
     provider = {"c": ("sdk/c/arkts-provider/src/provider.c", "c"),
                 "cpp": ("sdk/cpp/arkts-provider/src/provider.cpp", "c++"),
                 "rust": ("sdk/rust/arkts-provider/src/lib.rs", "rust")}[route]
-    units.append(NativeUnit(repository / provider[0], provider[1]))
+    provider_path = (output / ("provider/provider." + route)
+                     if variant == "test" and route in {"c", "cpp"}
+                     else repository / provider[0])
+    units.append(NativeUnit(provider_path, provider[1]))
     return NativeComposition(tuple(units), (output / "include", runtime / "include"),
                              output / "Index.d.ts", output / "Boundary.ets.in", inputs,
                              tuple(derived), "mp_" + route + "_create",

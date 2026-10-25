@@ -1,0 +1,57 @@
+--- a/provider/provider.c
++++ b/provider/provider.c
+@@ -1,3 +1,4 @@
++#include "memory_hook.h"
+ #include "provider_abi.h"
+ #include "validate_snapshot.h"
+ #include <limits.h>
+@@ -7,6 +8,7 @@
+ typedef struct {
+     _Atomic uint64_t clone_calls, allocations, releases, live, work_calls;
+     _Atomic int32_t injection;
++    mp_test_memory_observer memory;
+ } c_context;
+ typedef struct {
+     int32_t value;
+@@ -14,6 +16,23 @@
+     uint8_t text[];
+ } c_model;
+ static mp_status release_model(void *, void *);
++static void memory(c_context *ctx, uint64_t object, uint64_t text, uint32_t action) {
++    if (ctx->memory.notify)
++        ctx->memory.notify(ctx->memory.context, object, text, action);
++}
++mp_status mp_c_test_memory_bind(void *opaque, mp_test_memory_observer observer) {
++    if (!opaque || !observer.context || !observer.notify)
++        return MP_INVALID_ARGUMENT;
++    c_context *ctx = opaque;
++    if (ctx->memory.notify &&
++        (ctx->memory.notify != observer.notify || ctx->memory.context != observer.context))
++        return MP_INVALID_ARGUMENT;
++    if (atomic_load(&ctx->live))
++        return MP_BUSY;
++    ctx->memory = observer;
++    memory(ctx, sizeof(c_model), 0, 0);
++    return MP_OK;
++}
+ static mp_status clone_model(void *opaque, mp_snapshot source, void **out) {
+     if (!out)
+         return MP_INVALID_ARGUMENT;
+@@ -30,6 +49,7 @@
+     c_model *model = malloc(sizeof(*model) + source.size);
+     if (!model)
+         return MP_ALLOCATION_FAILURE;
++    memory(ctx, sizeof(*model), source.size, 1);
+     model->value = source.value;
+     model->size = source.size;
+     if (source.size)
+@@ -67,7 +87,9 @@
+     if (!opaque || !model)
+         return MP_INVALID_ARGUMENT;
+     c_context *ctx = opaque;
++    const size_t text_bytes = ((c_model *)model)->size;
+     free(model);
++    memory(ctx, sizeof(c_model), text_bytes, 2);
+     atomic_fetch_add(&ctx->releases, 1);
+     if (atomic_fetch_sub(&ctx->live, 1) == 0)
+         abort();

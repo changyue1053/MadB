@@ -125,6 +125,9 @@ int testBeforeClone(Runtime &r) noexcept {
     return r.test.cloneMode;
 }
 Provider testProvider(Runtime &r) noexcept {
+    if (GatewayProviderMemoryBind(r.provider.context, {&r.audit.memory, memoryProviderNotify}) !=
+        MP_OK)
+        r.audit.memory.invalidate();
     return {&r,
             [](void *p, Snapshot s) noexcept -> CloneResult {
                 auto &r = *static_cast<Runtime *>(p);

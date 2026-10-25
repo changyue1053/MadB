@@ -276,4 +276,8 @@ mod test_exports {
     pub fn test_bootstrap_totals(env: Env) -> napi_value {
         call(env, 30, &[])
     }
+    #[napi(js_name = "testMemory", ts_return_type = "unknown", catch_unwind)]
+    pub fn test_memory(env: Env, runtime: Unknown<'_>) -> napi_value {
+        call(env, 31, &[runtime.raw()])
+    }
 }

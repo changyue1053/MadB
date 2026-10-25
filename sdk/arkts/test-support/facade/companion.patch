@@ -1,6 +1,6 @@
 --- a/Boundary.ets.in
 +++ b/Boundary.ets.in
-@@ -90,7 +90,49 @@
+@@ -90,7 +90,50 @@
    }
  }
  
@@ -36,6 +36,7 @@
 +    }
 +  }
 +  testObserve(): number[] { return nativeCall(() => native.testObserve(this.runtime)); }
++  testMemory(): number[] { return nativeCall(() => native.testMemory(this.runtime)); }
 +  testExportKey(): string { return nativeCall(() => native.testExportKey(this.runtime)); }
 +  testObserveFacade(): number[] {
 +    let settling: number = 0;
@@ -50,7 +51,7 @@
    private readonly runtime: string;
    private engine: ResourceRecord | undefined = undefined;
    private readonly subscriptions: Map<string, ResourceRecord> = new Map<string, ResourceRecord>();
-@@ -248,10 +290,12 @@
+@@ -248,10 +291,12 @@
              const snapshot: Snapshot = { value: copy.value, text: copy.text };
              waiter.signalled = true;
              resolve(snapshot);
@@ -63,7 +64,7 @@
            }
          }, reject);
          this.waiters.set(id, waiter);
-@@ -284,11 +328,12 @@
+@@ -284,11 +329,12 @@
        return new Promise<void>((resolve, reject) => {
          const waiter: Waiter = new Waiter(id, record, false, (copy: NativeCopy) => {
            this.retire(record, copy.status);
@@ -77,7 +78,7 @@
            }
          }, reject);
          this.waiters.set(id, waiter);
-@@ -454,6 +499,8 @@
+@@ -454,6 +500,8 @@
          const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
          if (!physicalRuntimeAck(receipt)) { throw new BoundaryError('BridgeFailure'); }
          this.closed = true;
@@ -86,7 +87,7 @@
          if (this.engine !== undefined) { this.retire(this.engine, 0); }
          if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
          const resolve: () => void = this.closeResolve;
-@@ -485,6 +532,8 @@
+@@ -498,6 +546,8 @@
    private fail(reason: Error): void {
      if (this.failed !== undefined) { return; }
      this.failed = reason;
@@ -95,11 +96,12 @@
      if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
      this.waiters.forEach((waiter: Waiter) => {
        if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
-@@ -498,12 +547,30 @@
+@@ -513,12 +563,31 @@
  }
  
  class RuntimeHandle implements Runtime {
 +  testObserve(): number[] { return this.session.testObserve(); }
++  testMemory(): number[] { return this.session.testMemory(); }
 +  testExportKey(): string { return this.session.testExportKey(); }
 +  testObserveFacade(): number[] { return this.session.testObserveFacade(); }
 +  testAfterSettlement(callback: () => void): void { this.session.testAfterSettlement(callback); }
@@ -126,7 +128,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -517,6 +584,7 @@
+@@ -532,6 +601,7 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class OperationHandle implements Operation {
@@ -134,15 +136,19 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -525,6 +593,7 @@
+@@ -540,6 +610,11 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class SubscriptionHandle implements Subscription {
++  testState(): number[] {
++    return [1, this.record.closing ? 1 : 0, this.record.closed ? 1 : 0,
++      this.record.listener !== undefined ? 1 : 0];
++  }
 +  testDeliveryGate(command: number): number[] { return nativeCall(() => native.testDeliveryGate(this.record.handle, command)); }
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -532,3 +601,46 @@
+@@ -547,3 +622,52 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  export function openRuntime(): Runtime { return new RuntimeHandle(new Session()); }
@@ -189,3 +195,9 @@
 +export function testObserveFacade(runtime: Runtime): number[] { return checkedRuntime(runtime).testObserveFacade(); }
 +export function testAfterSettlement(runtime: Runtime, callback: () => void): void { checkedRuntime(runtime).testAfterSettlement(callback); }
 +export function testFailAfterSettlement(runtime: Runtime): void { checkedRuntime(runtime).testFailAfterSettlement(); }
++
++export function testMemory(runtime: Runtime): number[] { return checkedRuntime(runtime).testMemory(); }
++
++export function testSubscriptionState(subscription: Subscription): number[] {
++  return checkedSubscription(subscription).testState();
++}

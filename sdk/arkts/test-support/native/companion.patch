@@ -1,13 +1,31 @@
 --- a/include/codec.hpp
 +++ b/include/codec.hpp
-@@ -1,6 +1,7 @@
+@@ -1,6 +1,8 @@
  #pragma once
  #include "handle.hpp"
  #include "identity.generated.hpp"
++#include "memory.hpp"
 +#include "observer.hpp"
  #include "protocol.hpp"
  #include <array>
  #include <cmath>
+@@ -90,6 +92,7 @@
+ inline bool snapshot(napi_env env, napi_value value, napi_value text, Input &out) {
+     double number = 0;
+     size_t length = 0, copied = 0;
++    MemoryUtf16Scope memoryUtf16(sizeof(std::array<char16_t, 1025>));
+     std::array<char16_t, 1025> chars{};
+     if (napi_get_value_double(env, value, &number) != napi_ok || !std::isfinite(number) ||
+         std::trunc(number) != number || number < INT32_MIN || number > INT32_MAX ||
+@@ -102,6 +105,8 @@
+     out.value = static_cast<int32_t>(number);
+     out.text.clear();
+     out.text.reserve(1024);
++    if (auto *memory = MemoryInputScope::current())
++        memory->backing(out.text);
+     for (size_t i = 0; i < length; ++i) {
+         uint32_t c = chars[i];
+         if (c >= 0xD800 && c <= 0xDBFF) {
 --- a/include/runtime.hpp
 +++ b/include/runtime.hpp
 @@ -2,6 +2,8 @@
@@ -19,11 +37,12 @@
  #include "worker.hpp"
  #include <array>
  #include <atomic>
-@@ -16,7 +18,11 @@
+@@ -16,7 +18,12 @@
  struct Runtime;
  using Owner = std::shared_ptr<Runtime>;
  struct Audit {
 +    napi_observer::State napi;
++    MemoryState memory;
      std::array<std::atomic<uint64_t>, FrameSize> c{};
 +    std::mutex testMutex;
 +    std::array<int64_t, 48> test{};
@@ -31,7 +50,7 @@
  };
  struct Slot {
      uint64_t epoch = 0;
-@@ -71,14 +77,17 @@
+@@ -71,14 +78,17 @@
      std::array<Observation, 32> observations;
      std::array<Resource, 16> resources;
      CopyTarget *copyTarget = nullptr;
@@ -50,12 +69,13 @@
          ++owner->audit.c[F::BusinessEntries];
      }
      ~Entry() {
-@@ -110,4 +119,7 @@
+@@ -110,4 +120,8 @@
  napi_value openRuntime(napi_env, napi_value, napi_value);
  void closeRuntime(const Owner &);
  std::string identity();
 +napi_value testObserve(napi_env, const Handle &, bool foreignAllowed);
 +napi_value testLastAdmission(napi_env);
++napi_value testMemoryFrame(napi_env, const Handle &);
 +bool testArmPartialOpen(napi_env);
  } // namespace gateway
 --- a/src/api.cpp
@@ -157,7 +177,15 @@
      o->audit.c[F::WorkerJoined] = 0;
      auto s = NativeWorker::start(*o->engine, {o.get(), run, ready}, o->worker);
      if (s != Status::Ok) {
-@@ -274,9 +294,8 @@
+@@ -265,6 +285,7 @@
+     if (!o)
+         return nullptr;
+     Entry entry(o);
++    MemoryInputScope memoryInput(o->audit.memory, sizeof(Input));
+     Input input;
+     if (!snapshot(env, argv[1], argv[2], input))
+         return nullptr;
+@@ -274,9 +295,8 @@
          return error(env, "ResourceExhausted");
      Scratch scratch(*o);
      void *model = nullptr;
@@ -169,7 +197,15 @@
          &model);
      struct Release {
          Runtime &r;
-@@ -320,6 +339,7 @@
+@@ -307,6 +327,7 @@
+     if (!o)
+         return nullptr;
+     Entry entry(o);
++    MemoryInputScope memoryInput(o->audit.memory, sizeof(Input));
+     Input input;
+     if (!snapshot(env, argv[1], argv[2], input))
+         return nullptr;
+@@ -320,6 +341,7 @@
      if (s != Status::Ok)
          return error(env, s);
      *slot = {id, 'o', false};
@@ -177,7 +213,15 @@
      refresh(*o);
      return returnedHandle(env, o, {o->epoch, o->generation, id, 'o'});
  END
-@@ -417,6 +437,10 @@
+@@ -371,6 +393,7 @@
+     if (!o)
+         return nullptr;
+     Entry entry(o);
++    MemoryInputScope memoryInput(o->audit.memory, sizeof(Input));
+     Input input;
+     if (!snapshot(env, argv[2], argv[3], input))
+         return nullptr;
+@@ -417,6 +440,10 @@
      auto s = o->engine->claim_result(h.id, claim);
      if (s != Status::Ok)
          return error(env, s);
@@ -188,7 +232,7 @@
      s = claim.commit(std::move(cb));
      if (s != Status::Ok)
          return error(env, s);
-@@ -493,6 +517,8 @@
+@@ -493,6 +520,8 @@
      auto *x = observation(*o, id);
      if (!x || x->entered)
          return error(env, "TakeBeforeGuardResidual");
@@ -197,7 +241,7 @@
      ResultDelivery result;
      Status s;
      if (x->result) {
-@@ -508,6 +534,13 @@
+@@ -508,6 +537,13 @@
          return v;
      }
      x->entered = true;
@@ -211,7 +255,7 @@
      CopyTarget target{id, nullptr, napi_ok};
      o->copyTarget = &target;
      if (x->result)
-@@ -537,10 +570,7 @@
+@@ -537,10 +573,7 @@
      if (!o)
          return nullptr;
      Entry entry(o);
@@ -223,7 +267,7 @@
      refresh(*o);
      napi_value result = nullptr;
      if (napi_create_int32(env, static_cast<int32_t>(s), &result) != napi_ok)
-@@ -554,6 +584,7 @@
+@@ -554,6 +587,7 @@
      auto o = find(env, h, 'r');
      if (!o)
          return nullptr;
@@ -231,7 +275,7 @@
      closeRuntime(o);
      return undefined(env);
  END
-@@ -575,11 +606,310 @@
+@@ -575,11 +609,318 @@
          return nullptr;
      return pollFrame(env, h, false);
  END
@@ -293,6 +337,7 @@
 +    Entry entry(o);
 +    if (o->test.sourceHeld)
 +        return error(env, "ResourceExhausted");
++    MemoryInputScope memoryInput(o->audit.memory, sizeof(Input));
 +    Input input;
 +    if (!snapshot(env, argv[2], argv[3], input))
 +        return nullptr;
@@ -533,6 +578,13 @@
 +    return testNumbers(env, values);
 +END
 +
++BEGIN(testMemory, 1)
++    Handle h;
++    if (!handle(env, argv[0], h))
++        return nullptr;
++    return testMemoryFrame(env, h);
++END
++
  #undef BEGIN
  #undef END
  // MADB_NATIVE_REGISTRAR_BEGIN
@@ -542,7 +594,7 @@
  #include "exports.generated.inc"
      if (napi_define_properties(env, exports, sizeof(methods) / sizeof(methods[0]), methods) !=
          napi_ok)
-@@ -588,6 +918,7 @@
+@@ -588,6 +929,7 @@
  }
  static napi_module module{1, 0, nullptr, init, GatewayModuleName, nullptr, {0}};
  __attribute__((constructor)) static void registerModule() {
@@ -559,7 +611,7 @@
  #include <limits>
  #include <new>
  #include <stdexcept>
-@@ -8,11 +9,20 @@
+@@ -8,11 +9,21 @@
  std::array<Slot, LiveRuntimes> slots;
  struct Historical {
      uint64_t epoch = 0;
@@ -568,6 +620,7 @@
 +    std::array<int64_t, 48> test{};
 +    std::array<uint64_t, FrameSize> hook{};
 +    napi_observer::LocalSnapshot napi{};
++    MemorySnapshot memory;
 +    napi_env env = nullptr;
 +    std::thread::id thread;
  };
@@ -580,7 +633,7 @@
  std::mutex registryMutex;
  void failure(Runtime &r) {
      ++r.audit.c[F::ResidualErrors];
-@@ -43,6 +53,7 @@
+@@ -43,6 +54,7 @@
      void operator()(Runtime *p) const {
          Audit *a = &p->audit;
          delete p;
@@ -588,7 +641,7 @@
          --a->c[F::ContextLive];
          ++a->c[F::ContextDestroyed];
      }
-@@ -58,6 +69,7 @@
+@@ -58,6 +70,7 @@
      void operator()(Wake *p) const {
          Audit *a = &p->owner->audit;
          delete p;
@@ -596,7 +649,7 @@
          --a->c[F::WakeLive];
          ++a->c[F::WakeReleased];
      }
-@@ -97,9 +109,11 @@
+@@ -97,9 +110,11 @@
      --o->audit.c[F::InDispatch];
  }
  void wakeJs(napi_env env, napi_value, void *, void *data) {
@@ -610,7 +663,7 @@
      Owner o = ticket->owner;
      o->queued = false;
      if (!env || o->envClosing || o->shutting)
-@@ -117,9 +131,12 @@
+@@ -117,9 +132,12 @@
      if (napi_close_handle_scope(env, scope) != napi_ok)
          failure(*o);
  }
@@ -624,7 +677,7 @@
      p.reset();
      --a->c[F::TsfnOwnerLive];
      ++a->c[F::TsfnFinalized];
-@@ -148,6 +165,7 @@
+@@ -148,6 +166,7 @@
      o->hookOwner = nullptr;
      --o->audit.c[F::HookLive];
      ++o->audit.c[F::HookRetired];
@@ -632,7 +685,7 @@
      return true;
  }
  void teardown(const Owner &o) {
-@@ -173,11 +191,15 @@
+@@ -173,11 +192,15 @@
  }
  void joinWork(uv_work_t *req) {
      auto *j = static_cast<JoinJob *>(req->data);
@@ -648,7 +701,7 @@
      if (status != 0 || j->result != Status::Ok) {
          failure(*o);
          return;
-@@ -195,7 +217,17 @@
+@@ -195,7 +218,17 @@
  }
  void asyncCleanup(napi_async_cleanup_hook_handle, void *data) {
      Owner o = *static_cast<Owner *>(data);
@@ -666,7 +719,7 @@
      o->runtimeClosing = true;
      o->audit.c[F::EnvExit] = 1;
      o->audit.c[F::RuntimeCloseRequested] = 1;
-@@ -208,6 +240,7 @@
+@@ -208,6 +241,7 @@
      discardObservations(o);
      deleteRef(o);
      progress(o);
@@ -674,7 +727,7 @@
  }
  } // namespace
  std::string identity() {
-@@ -440,6 +473,10 @@
+@@ -440,6 +474,10 @@
      return true;
  }
  bool progress(const Owner &o, bool notify) {
@@ -685,7 +738,7 @@
      if (o->envClosing)
          discardObservations(o);
      if ((o->envClosing || notify) && !closeNotifications(o))
-@@ -470,6 +507,7 @@
+@@ -470,6 +508,7 @@
              }
      }
      if (o) {
@@ -693,7 +746,7 @@
          if (advance && !o->shutting && !progress(o, true))
              return error(env, "CloseAcknowledgementFailure");
          refresh(*o);
-@@ -527,7 +565,125 @@
+@@ -527,7 +566,163 @@
      }
      return result;
  }
@@ -789,6 +842,44 @@
 +    }
 +    return testNumbers(env, values);
 +}
++napi_value testMemoryFrame(napi_env env, const Handle &h) {
++    if (h.kind != 'r')
++        return error(env, "InvalidHandle");
++    MemorySnapshot snapshot;
++    bool found = false;
++    const char *problem = nullptr;
++    {
++        std::lock_guard<std::mutex> lock(registryMutex);
++        for (const auto &slot : slots)
++            if (slot.epoch == h.runtime) {
++                found = true;
++                if (slot.env != env || slot.thread != std::this_thread::get_id())
++                    problem = "WrongEnv";
++                else
++                    snapshot = slot.audit.memory.snapshot();
++                break;
++            }
++        if (!found)
++            for (const auto &old : history)
++                if (old.epoch == h.runtime) {
++                    found = true;
++                    if (old.env != env || old.thread != std::this_thread::get_id())
++                        problem = "WrongEnv";
++                    else
++                        snapshot = old.memory;
++                    break;
++                }
++    }
++    if (problem)
++        return error(env, problem);
++    if (!found)
++        return error(env, "ObservationExpired");
++    if (!snapshot.valid)
++        return error(env, "DiagnosticAccountingFailure");
++    if (!snapshot.values[static_cast<size_t>(MemoryField::ModelObjectSize)])
++        return error(env, "NotReady");
++    return testNumbers(env, snapshot.values);
++}
 +bool testArmPartialOpen(napi_env env) {
 +    std::lock_guard<std::mutex> l(registryMutex);
 +    if (partialArmed)
@@ -819,7 +910,7 @@
      std::array<char, 224> id{};
      size_t len = 0, actual = 0;
      napi_valuetype type;
-@@ -550,12 +706,19 @@
+@@ -550,12 +745,19 @@
          if (part < 2 && input[start + 64] != ':')
              return error(env, "InvalidArgument");
      }
@@ -842,7 +933,7 @@
      if (napi_typeof(env, dispatcher, &type) != napi_ok || type != napi_function)
          return error(env, "InvalidArgument");
      size_t index = LiveRuntimes;
-@@ -576,12 +739,28 @@
+@@ -576,12 +778,30 @@
          if (s.epoch) {
              auto &old = history[historyNext++ % History];
              old.epoch = s.epoch;
@@ -857,6 +948,7 @@
 +            old.test = s.audit.test;
 +            old.hook = s.audit.hookEntry;
 +            old.napi = s.audit.napi.localSnapshot();
++            old.memory = s.audit.memory.snapshot();
          }
          for (auto &v : s.audit.c)
              v = 0;
@@ -866,12 +958,13 @@
 +            s.audit.hookEntry = {};
 +        }
 +        s.audit.napi.reset(env, std::this_thread::get_id());
++        s.audit.memory.reset();
          s.epoch = epoch = ++nextEpoch;
 +        testBootstrapEvent(BootstrapEvent::Reservation);
          s.env = env;
          s.thread = std::this_thread::get_id();
          s.retired = false;
-@@ -609,7 +788,10 @@
+@@ -609,7 +829,10 @@
          slots[index].retired = true;
          return error(env, "ResourceExhausted");
      }
@@ -882,7 +975,7 @@
      {
          std::lock_guard<std::mutex> l(registryMutex);
          slots[index].owner = o;
-@@ -643,6 +825,20 @@
+@@ -643,6 +866,20 @@
      }
      ++o->audit.c[F::TsfnOwnerLive];
      ++o->audit.c[F::TsfnCreated];

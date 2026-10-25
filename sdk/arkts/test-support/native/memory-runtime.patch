@@ -1,0 +1,55 @@
+--- a/runtime/protocol.cpp
++++ b/runtime/protocol.cpp
+@@ -1,4 +1,5 @@
+ #include "protocol.hpp"
++#include "memory.hpp"
+ #include <array>
+ #include <cstdlib>
+ #include <limits>
+@@ -142,6 +143,10 @@
+         invariant(payload.charged_ && !payload.object_);
+         auto result = provider.clone(provider.context, input);
+         payload.object_ = result.owned;
++        if (result.owned && payload.source_) {
++            std::lock_guard<std::mutex> l(mutex);
++            gateway::memoryCoreStaging(provider.context, payload.bytes_, true);
++        }
+         switch (result.status) {
+         case CloneStatus::Ok:
+             return result.owned ? Status::Ok : Status::InternalFailure;
+@@ -166,6 +171,7 @@
+         p.order_ = order;
+         p.charged_ = true;
+         bytes += n;
++        gateway::memoryCoreLedger(provider.context, bytes);
+         if (isSub) {
+             ++sub(owner)->outstanding;
+             if (event)
+@@ -188,6 +194,8 @@
+         }
+     }
+     void unsource(const Payload &p) {
++        if (p.object_)
++            gateway::memoryCoreStaging(provider.context, p.bytes_, false);
+         invariant(sources);
+         --sources;
+         auto *s = sub(p.owner_);
+@@ -205,6 +213,7 @@
+             std::lock_guard<std::mutex> l(mutex);
+             invariant(bytes >= p.bytes_);
+             bytes -= p.bytes_;
++            gateway::memoryCoreLedger(provider.context, bytes);
+             if (p.subscription_) {
+                 auto *s = sub(p.owner_);
+                 invariant(s && s->outstanding);
+@@ -402,6 +411,10 @@
+     if (ptr)
+         core->provider.destroy(core->provider.context,
+                                ptr); // Still charged throughout provider release.
++    if (ptr && source_) {
++        std::lock_guard<std::mutex> l(core->mutex);
++        gateway::memoryCoreStaging(core->provider.context, bytes_, false);
++    }
+     core->retire(*this);
+     charged_ = false;
+     core_.reset();

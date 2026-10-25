@@ -2,7 +2,7 @@
 
 This standalone SDK crate provides the real napi-ohos registrar and borrowed
 `Unknown`/raw-return entry points. The single source declares the ordinary 16
-methods and conditionally enables 15 test methods with `test-support`. The real
+methods and conditionally enables 16 test methods with `test-support`. The real
 business provider remains in `../arkts-provider`; no business model is copied
 into this crate. Shared C++ protocol/env source remains in the ArkTS SDK.
 
@@ -29,7 +29,7 @@ The raw C seam catches C++ exceptions. Raw return conversion preserves nullptr
 with an existing pending native exception. Release uses unwind to contain
 ordinary Rust panics at the exported boundary; abort/OOM is not claimed catchable.
 
-The companion has 31 actual native exports. Its generated C++ raw entry and
+The companion has 32 actual native exports. Its generated C++ raw entry and
 C bridge retain the same Entry observer scope, including validation failures
 before dispatch. Nested scopes establish callback authority; they are not
 counted as two native API calls. The Rust macro prelude has separate fixed-version

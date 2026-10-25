@@ -6,6 +6,10 @@ rust-version = "1.99.1"
 license = "Apache-2.0"
 publish = false
 
+[features]
+default = []
+test-support = []
+
 [workspace]
 
 [lib]

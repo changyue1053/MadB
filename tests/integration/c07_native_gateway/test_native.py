@@ -41,10 +41,10 @@ class NativeCompositionTests(unittest.TestCase):
                          (self.repo / "sdk/arkts/facade/Boundary.ets.in").read_bytes())
         self.assertFalse(any("test-support" in str(item.path) for item in result.source_inputs))
 
-    def test_companion_has_exact_frozen_facade_and_thirty_one_methods(self):
+    def test_companion_has_exact_frozen_facade_and_thirty_two_methods(self):
         result = self.compose()
         declaration = result.native_declaration.read_text()
-        self.assertEqual(len(re.findall(r"^  \w+\(", declaration, re.M)), 31)
+        self.assertEqual(len(re.findall(r"^  \w+\(", declaration, re.M)), 32)
         self.assertIn("testArmPartialOpenFailure(): void;", declaration)
         self.assertIn("testLastAdmissionAudit(): number[];", declaration)
         self.assertIn("testBootstrapTotals(): number[];", declaration)
@@ -52,8 +52,42 @@ class NativeCompositionTests(unittest.TestCase):
         baseline = json.loads((self.repo / "sdk/arkts/test-support/facade/baseline.json").read_text())
         self.assertEqual(hashlib.sha256(result.facade_template.read_bytes()).hexdigest(),
                          baseline["derived_sha256"]["Boundary.ets.in"])
-        self.assertEqual(len(result.units), 7)
+        self.assertEqual(len(result.units), 8)
         self.assertTrue((self.output / "src/support.cpp").is_file())
+
+    def test_memory_units_derive_the_actual_core_and_provider(self):
+        for route in ("c", "cpp", "rust"):
+            result = native.compose_native(self.repo, self.work / route,
+                                           route=route, variant="test")
+            self.assertEqual(result.units[0].path, self.work / route / "runtime/protocol.cpp")
+            self.assertEqual(sum(u.path.name == "protocol.cpp" for u in result.units), 1)
+            self.assertTrue(any(u.path.name == "memory.cpp" for u in result.units))
+            if route != "rust":
+                self.assertEqual(result.units[-1].path,
+                                 self.work / route / ("provider/provider." + route))
+            self.assertIn("testMemory(runtime: string): number[];",
+                          result.native_declaration.read_text())
+
+    def test_memory_original_core_and_provider_drift_rejected(self):
+        for source in ("sdk/arkts/native-runtime/src/protocol.cpp",
+                       "sdk/c/arkts-provider/src/provider.c"):
+            with self.subTest(source=source):
+                path = self.repo / source
+                old = path.read_bytes()
+                path.write_bytes(old + b"// drift\n")
+                with self.assertRaisesRegex(ValueError, "baseline changed"):
+                    self.compose()
+                self.assertFalse(self.output.exists())
+                path.write_bytes(old)
+
+    def test_memory_patch_output_hash_is_checked(self):
+        path = self.repo / "sdk/arkts/test-support/native/memory-provider-c-baseline.json"
+        data = json.loads(path.read_text())
+        data["derived_sha256"]["provider/provider.c"] = "0" * 64
+        path.write_text(json.dumps(data))
+        with self.assertRaisesRegex(ValueError, "derived content mismatch"):
+            self.compose()
+        self.assertFalse(self.output.exists())
 
     def test_unique_core_and_real_provider_sources_all_routes(self):
         for route, language in (("c", "c"), ("cpp", "c++"), ("rust", "rust")):

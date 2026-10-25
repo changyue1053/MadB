@@ -1,0 +1,59 @@
+{
+  "scope": "test-only runtime memory accounting; ordinary provider/Core/codec ownership unchanged; excludes allocator internals/RSS/VM memory",
+  "format": 1,
+  "length": 27,
+  "native_ordinal": 31,
+  "native_signature": "testMemory(runtime:string):number[]",
+  "public_signature": "testMemory(runtime:Runtime):number[]",
+  "fields": {
+    "0": "Format",
+    "1": "CoreRetainedCurrent",
+    "2": "CoreRetainedPeak",
+    "3": "PublicationStagingCurrent",
+    "4": "PublicationStagingPeak",
+    "5": "ProviderObjectCurrent",
+    "6": "ProviderObjectPeak",
+    "7": "ProviderTextCurrent",
+    "8": "ProviderTextPeak",
+    "9": "ProviderStoragePeak",
+    "10": "ProviderStorageAcquired",
+    "11": "ProviderStorageReleased",
+    "12": "Utf8BackingCurrent",
+    "13": "Utf8BackingPeak",
+    "14": "Utf8BackingAcquired",
+    "15": "Utf8BackingReleased",
+    "16": "InputObjectCurrent",
+    "17": "InputObjectPeak",
+    "18": "Utf16ArrayCurrent",
+    "19": "Utf16ArrayPeak",
+    "20": "InputScopesEntered",
+    "21": "InputScopesExited",
+    "22": "Utf16ScopesEntered",
+    "23": "Utf16ScopesExited",
+    "24": "ModelObjectSize",
+    "25": "InputObjectSize",
+    "26": "Utf16ArraySize"
+  },
+  "units": {
+    "bytes": "all fields except Format and scope-event counts20..23; peak is simultaneous per-domain accounting maximum",
+    "scope_counts": "20..23 cumulative lexical-object scope events",
+    "object_layout": "24..26 actual compiler sizeof, not allocator usable-size or measured physical stack frames"
+  },
+  "semantics": [
+    "CoreRetained includes actual reserved canonical UTF-8 permits, never a failed pre-admission request.",
+    "PublicationStaging includes only adopted nonnull provider allocations before commit; commit transfers role, abort decrements after paired destruction.",
+    "ProviderObject and ProviderText split actual object allocation requests and external text capacity/storage; inline string bytes are already within object sizeof. ProviderStoragePeak is their simultaneous sum, not sum of independent peaks.",
+    "C flexible bytes use source.size; C++ uses observed external capacity+1 and excludes SSO; Rust uses actual successful String.capacity plus exact Model Layout, including temporary String before Box.",
+    "Utf8Backing is actual external Input.text capacity+1 under the pinned C++17 library; InputObject/Utf16Array are declared active-scope object storage.",
+    "Provider and conversion acquired/released totals follow actual success and after-destruction events. Test bookkeeping and Context/Core/VM/allocator storage are excluded.",
+    "Runtime cumulative across sequential Engine generations, not reset per connect; bounded history retains final counters.",
+    "One locked counter-copy is internally consistent; it is not a transaction with the separate178 frame or the VM heap. Stable held gate/final lifetime is required for cross-frame assertions.",
+    "ModelObjectSize is set at the actual provider bind; without that bind testMemory returns NotReady. InputObjectSize/Utf16ArraySize remain zero until their respective actual conversion scope first executes; zero means that layout has not yet been observed, not a measured zero-sized object."
+  ],
+  "errors": {
+    "unbound_provider": "NotReady",
+    "accounting_underflow_overflow_or_layout_change": "DiagnosticAccountingFailure",
+    "out_of_safe_integer_range": "DiagnosticRangeExceeded",
+    "invalid_runtime_or_env": "same testObserve typed handle/env/history checks"
+  }
+}

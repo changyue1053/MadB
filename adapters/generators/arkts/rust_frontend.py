@@ -56,7 +56,7 @@ def methods(descriptor):
     result = descriptor["methods"]
     names = [m["name"] for m in result]
     if (
-        len(result) not in (16, 31)
+        len(result) not in (16, 32)
         or len(set(names)) != len(names)
         or any(not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", n) for n in names)
         or any(len(m["params"]) > 4 for m in result)
@@ -67,7 +67,7 @@ def methods(descriptor):
 
 def render_bridge(descriptor, *, test_support=False):
     selected = methods(descriptor)
-    if len(selected) != (31 if test_support else 16):
+    if len(selected) != (32 if test_support else 16):
         raise ValueError("raw bridge variant differs from actual method authority")
     declarations = "\n".join(
         f'napi_value raw_{m["name"]}(napi_env, size_t, const napi_value*) noexcept;'
@@ -127,6 +127,9 @@ extern "C" napi_value madb_c07_native_call(napi_env env, uint32_t method,
     if test_support:
         source = source.replace(
             "#include <new>", '#include <new>\n#include "observer.hpp"'
+        )
+        source = source.replace(
+            "namespace gateway {", '__asm__(".hidden mp_rust_test_memory_bind");\nnamespace gateway {', 1
         )
         source = source.replace(
             "    if (!env) return nullptr;",
