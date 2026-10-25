@@ -10,7 +10,9 @@ if __name__ == "__main__" and (
     or not sys.flags.dont_write_bytecode
     or sys._xoptions.get("pycache_prefix") != "/dev/null"
 ):
-    raise SystemExit("Use Python -I -S -B -X pycache_prefix=/dev/null for this frozen public entry")
+    raise SystemExit(
+        "Use Python -I -S -B -X pycache_prefix=/dev/null for this frozen public entry"
+    )
 
 import argparse
 import hashlib
@@ -51,7 +53,9 @@ def require_revision(revision):
 
 
 def verify_revision_inputs(workspace, prepared, revision):
-    references = {r["path"]: r for r in prepared["read"]["inputs"] + prepared["lock"]["schemas"]}
+    references = {
+        r["path"]: r for r in prepared["read"]["inputs"] + prepared["lock"]["schemas"]
+    }
     for logical, source in sorted(prepared["producer_inputs"].items()):
         data = git(["show", revision + ":" + source])
         expected = "sha256:" + hashlib.sha256(data).hexdigest()
@@ -70,7 +74,12 @@ def file_reference(path, logical):
     path = Path(path).absolute()
     if path.is_symlink() or not path.is_file():
         raise ValueError("expected an ordinary reviewed input: " + str(path))
-    return {"path": logical, "source": str(path), "sha256": sha(path), "size": path.stat().st_size}
+    return {
+        "path": logical,
+        "source": str(path),
+        "sha256": sha(path),
+        "size": path.stat().st_size,
+    }
 
 
 def requirements(args):
@@ -99,13 +108,17 @@ def arguments():
     parser.add_argument(
         "--output", required=True, type=Path, help="new output root; never overwrite"
     )
-    parser.add_argument("--route", choices=("c", "cpp"), default="c")
+    parser.add_argument("--route", choices=("c", "cpp", "rust"), default="c")
     parser.add_argument("--variant", choices=("ordinary", "test"), default="ordinary")
+    parser.add_argument("--rust-configuration", type=Path)
+    parser.add_argument("--rust-configuration-sha256", type=digest_argument)
     parser.add_argument("--madb-image", required=True, type=Path)
     parser.add_argument("--madb-sha256", required=True, type=digest_argument)
     parser.add_argument("--finalizer-image", required=True, type=Path)
     parser.add_argument("--finalizer-sha256", required=True, type=digest_argument)
-    parser.add_argument("--stop-after", choices=("generate", "build", "package"), default="package")
+    parser.add_argument(
+        "--stop-after", choices=("generate", "build", "package"), default="package"
+    )
     parser.add_argument("--cli-root", required=True, type=Path)
     parser.add_argument("--cli-inventory", required=True, type=Path)
     parser.add_argument("--cli-inventory-sha256", required=True, type=digest_argument)
@@ -121,6 +134,11 @@ def arguments():
         "--allow-dirty", action="store_true", help="emit provisional development artifacts"
     )
     args = parser.parse_args()
+    rust_inputs = (args.rust_configuration, args.rust_configuration_sha256)
+    if args.route == "rust" and any(value is None for value in rust_inputs):
+        parser.error("Rust requires --rust-configuration and --rust-configuration-sha256")
+    if args.route != "rust" and any(value is not None for value in rust_inputs):
+        parser.error("Rust configuration is only valid for --route rust")
     if args.output.exists() or args.output.is_symlink():
         parser.error("--output must not exist")
     if args.author_fixture is not None and (
@@ -128,7 +146,8 @@ def arguments():
     ):
         parser.error("--author-fixture is restricted to the public generation check")
     if args.stop_after == "package" and any(
-        v is None for v in (args.case_allocation, args.case_allocation_sha256, args.requirements)
+        v is None
+        for v in (args.case_allocation, args.case_allocation_sha256, args.requirements)
     ):
         parser.error(
             "Package requires independent --case-allocation, --case-allocation-sha256 and --requirements"
@@ -147,6 +166,13 @@ def main():
     inventory = file_reference(args.cli_inventory, "cli-inventory.json")
     if inventory["sha256"] != args.cli_inventory_sha256:
         raise ValueError("CLI inventory differs from the caller-reviewed SHA256")
+    rust_configuration = None
+    if args.route == "rust":
+        rust_configuration = file_reference(
+            args.rust_configuration, "tools/rust-configuration.json"
+        )
+        if rust_configuration["sha256"] != args.rust_configuration_sha256:
+            raise ValueError("Rust configuration differs from the caller-reviewed SHA256")
     images = {}
     for name, path, expected in (
         ("madb-host", args.madb_image, args.madb_sha256),
@@ -185,9 +211,17 @@ def main():
             "path": str(args.cli_inventory.absolute())
         }
         observation = observe(
-            ROOT, args.cli_root, inventory_ref, args.python_image, args.java_home, finalizer, host
+            ROOT,
+            args.cli_root,
+            inventory_ref,
+            args.python_image,
+            args.java_home,
+            finalizer,
+            host,
         )
-        (output / "tool-observation.json").write_text(json.dumps(observation, indent=2) + "\n")
+        (output / "base-tool-observation.json").write_text(
+            json.dumps(observation, indent=2) + "\n"
+        )
         if not args.allow_dirty:
             require_revision(revision)
         workspace = output / "workspace"
@@ -199,6 +233,8 @@ def main():
             variant=args.variant,
             author_fixture=args.author_fixture,
             delivery_inputs=delivery,
+            rust_configuration=rust_configuration,
+            observation_path=output / "tool-observation.json",
         )
         if not args.allow_dirty:
             verify_revision_inputs(workspace, prepared, revision)
@@ -210,7 +246,9 @@ def main():
         result["metadata"] = "host-checked"
         result["contract"] = str(workspace / "contract.json")
         pipeline.generate()
-        result.update(source=str(pipeline.source), generation_id=pipeline.outputs["generation_id"])
+        result.update(
+            source=str(pipeline.source), generation_id=pipeline.outputs["generation_id"]
+        )
         if args.stop_after != "generate":
             pipeline.build()
             result["build"] = str(pipeline.built)

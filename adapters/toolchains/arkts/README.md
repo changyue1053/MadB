@@ -7,10 +7,11 @@ and replays an explicit compile/link plan. Package builds a real Release HAR,
 checks the compiler-emitted declarations, native closure and notices, and only
 normalizes archive metadata. No device or Lab verification runs here.
 
-The current entry supports ordinary and test-companion C and C++ profiles.
+The entry supports ordinary and test-companion C, C++ and Rust profiles.
 Select `--variant test` for the separately identified companion; its strict
-composition has 31 private native methods and 25 public exports. Rust and Kotlin helpers
-are being connected separately; their existence is not a completed candidate.
+composition has 31 private native methods and 25 public exports. Kotlin hooks
+are being connected separately. Producing a candidate does not complete its
+independent target verification.
 The ordinary required five cases and companion required twenty-five come from
 the separately pinned Lab allocation. A five-case candidate alone does not pass
 C07. Verification remains `missing` until independent Lab observations exist.
@@ -126,3 +127,21 @@ contiguous buffer. Each scalar is an exact checked JS-safe integer; command
 parameters have explicit ordinal/count domains. The Runtime-owned one-shot
 settlement hook remains retained after registration; it is not a subscription
 listener or a call-frame borrow. Ordinary reader acceptance is unchanged.
+
+Rust uses the same public entry with `--route rust`, plus
+`--rust-configuration "$RUST_CONFIGURATION"` and
+`--rust-configuration-sha256 "$RUST_CONFIGURATION_SHA256"`. This explicit reviewed
+configuration supplies the existing offline vendor receipt, Rust sysroot, source-built
+ohrs installation and host compiler closure. The entry verifies them; it does not
+install dependencies. Configuration bytes, original receipts, actual bridge/provider
+sources and nested runtime license files join the same frozen Source inventory.
+
+Rust Metadata runs actual napi proc macros/type checking in a new metadata-only
+workspace. This fourth authority is distinct from the typed facade, typed gateway
+and Clang C seam; `unknown` exports never infer public value or ownership policy.
+Compile builds the shared C++ mechanism archive and repeats macro checking; Link
+performs actual ohrs Rust code generation and DSO linking. The sole dynamic export
+is `napi_register_module_v1`. The existing worker still verifies all ELF dependencies
+and the complete output set. Package preserves each nested Rust runtime notice's
+original bytes in the HAR. Use the same route and reviewed configuration for public
+author-fixture generation; the actual Rust declaration authority is checked again.

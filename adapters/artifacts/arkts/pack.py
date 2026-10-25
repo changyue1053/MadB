@@ -48,7 +48,9 @@ def run_har_command(label, args, project, work, env, commands, timeout=900):
     err = b""
     receipt = {"label": label, "arguments": argv, "exit_code": None}
     try:
-        result = subprocess.run(argv, cwd=project, env=env, capture_output=True, timeout=timeout)
+        result = subprocess.run(
+            argv, cwd=project, env=env, capture_output=True, timeout=timeout
+        )
         out = result.stdout
         err = result.stderr
         receipt["exit_code"] = result.returncode
@@ -142,6 +144,12 @@ def main():
         r"madbc07sdk(?:c|cpp|rust)(?:test)?", module
     ):
         raise ValueError("native package/module identity differs from the frozen route")
+    additional_notices = config.get("additional_notices", [])
+    if any(not name.startswith("notices/rust/") for name in additional_notices):
+        raise ValueError("unsupported additional runtime notice path")
+    additional_assets = [
+        "THIRD_PARTY_NOTICES/" + name.removeprefix("notices/") for name in additional_notices
+    ]
     project = work / "har-project"
     project.mkdir()
     mod = project / module
@@ -171,7 +179,10 @@ def main():
                         "compatibleSdkVersion": "6.1.0(23)",
                         "runtimeOS": "HarmonyOS",
                         "buildOption": {
-                            "strictMode": {"caseSensitiveCheck": True, "useNormalizedOHMUrl": True}
+                            "strictMode": {
+                                "caseSensitiveCheck": True,
+                                "useNormalizedOHMUrl": True,
+                            }
                         },
                         "compileSdkVersion": "26.0.0",
                     }
@@ -240,6 +251,7 @@ def main():
                             "THIRD_PARTY_NOTICES/llvm-NOTICE.txt",
                             "LICENSE",
                             "NOTICE",
+                            *additional_assets,
                         ]
                     }
                 },
@@ -285,6 +297,12 @@ def main():
             raise ValueError("Source parent runtime notice is missing: " + source)
         copied(source, module + "/THIRD_PARTY_NOTICES/" + basename)
         notice_passthrough["package/THIRD_PARTY_NOTICES/" + basename] = by_name[source]
+    for name, asset in zip(additional_notices, additional_assets):
+        source = "generated/" + name
+        if source not in by_name:
+            raise ValueError("Source parent Rust runtime notice is missing: " + source)
+        copied(source, module + "/" + asset)
+        notice_passthrough["package/" + asset] = by_name[source]
     copied("generated/facade/Boundary.ets", module + "/src/main/ets/Boundary.ets")
     copied("generated/facade/RuntimeFrame.ets", module + "/src/main/ets/RuntimeFrame.ets")
     if config["variant"] == "test":
@@ -357,7 +375,13 @@ def main():
     # Only a local native declaration package is declared; no registry dependency.
     run(
         "ohpm",
-        [config["tools"]["ohpm"]["path"], "install", "--all", "--cache", project / "ohpm-cache"],
+        [
+            config["tools"]["ohpm"]["path"],
+            "install",
+            "--all",
+            "--cache",
+            project / "ohpm-cache",
+        ],
     )
     run(
         "hvigor",
@@ -384,7 +408,9 @@ def main():
         **notice_passthrough,
     }
     canonical = bind.bind_har(archive.read_bytes(), inputs, native, passthrough)
-    public_receipt = public.verify_public_har(canonical, descriptor["public"], config, work, har)
+    public_receipt = public.verify_public_har(
+        canonical, descriptor["public"], config, work, har
+    )
     support.verify_refs(inputs, refs)
     verifier.verify_inventory(inventory, cli)
     for t in config["tools"].values():

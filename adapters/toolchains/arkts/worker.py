@@ -87,7 +87,9 @@ def native_arguments(config, inputs, work):
     ]
     includes = []
     for relative in recipe["includes"]:
-        if Path(relative).is_absolute() or any(p in ("", ".", "..") for p in relative.split("/")):
+        if Path(relative).is_absolute() or any(
+            p in ("", ".", "..") for p in relative.split("/")
+        ):
             raise ValueError("invalid frozen include directory")
         directory = inputs / relative
         if directory.is_symlink() or not directory.is_dir():
@@ -156,7 +158,9 @@ def compile_native(config, inputs, work, capture=None):
                 target,
             ],
         )
-        dependencies = checked_dependencies(depfile, inputs, native.resolve(strict=True), original)
+        dependencies = checked_dependencies(
+            depfile, inputs, native.resolve(strict=True), original
+        )
         logs.append(
             {
                 "kind": "actual-compiler-dependencies",
@@ -216,63 +220,85 @@ def run_phase(config, phase, input_root, work):
 
     common, includes = native_arguments(config, inputs, work)
     if phase == "compile":
-        outputs = compile_native(config, inputs, work, capture=logs)
+        if config.get("provider") == "rust":
+            backend = support.load_module(Path(__file__).with_name("rust.py"))
+            try:
+                outputs = backend.run_compile(config, inputs, work, capture=logs)
+            finally:
+                d.save(work, log_path, logs)
+        else:
+            outputs = compile_native(config, inputs, work, capture=logs)
     else:
         soname = config["native_module"]
         if not re.fullmatch(r"lib[A-Za-z0-9_]+\.so", soname):
             raise ValueError("invalid fixed SONAME")
         target = work / "native" / soname
         target.parent.mkdir()
-        objects = [support.input_path(inputs, "objects/" + u["name"] + ".o") for u in units]
-        run(
-            "clangxx",
-            [
-                *common,
-                "-shared",
-                "-Wl,--no-undefined",
-                "-Wl,--build-id=sha1",
-                "-Wl,-soname," + soname,
-                "-Wl,--version-script="
-                + str(support.input_path(inputs, "generated/native/exports.map")),
-                *objects,
-                "-lace_napi.z",
-                "-luv",
-                "-o",
-                target,
-            ],
-        )
-        # Symbols are transformed only by a separately declared Build policy.
-        if recipe.get("strip") is not False:
-            raise ValueError("this profile requires explicit unstripped Build; Package strip=false")
-        outputs.append("native/" + soname)
-        dynsym = run("readelf", ["--dyn-syms", "--wide", target]).decode()
-        defined = []
-        for line in dynsym.splitlines():
-            parts = line.split()
-            if (
-                len(parts) >= 8
-                and parts[0].endswith(":")
-                and parts[4] in ("GLOBAL", "WEAK")
-                and parts[6] != "UND"
-            ):
-                defined.append(parts[7])
-        if defined:
-            raise ValueError(
-                "constructor-only NAPI library exported internal symbols: " + repr(defined)
+        if config.get("provider") == "rust":
+            if recipe.get("strip") is not False:
+                raise ValueError(
+                    "this profile requires explicit unstripped Build; Package strip=false"
+                )
+            backend = support.load_module(Path(__file__).with_name("rust.py"))
+            try:
+                # Actual ohrs performs Rust code generation and DSO linking.
+                # Its macro registrar has a different explicit symbol policy.
+                outputs = backend.run_link(config, inputs, work, capture=logs)
+            finally:
+                d.save(work, log_path, logs)
+        else:
+            objects = [support.input_path(inputs, "objects/" + u["name"] + ".o") for u in units]
+            run(
+                "clangxx",
+                [
+                    *common,
+                    "-shared",
+                    "-Wl,--no-undefined",
+                    "-Wl,--build-id=sha1",
+                    "-Wl,-soname," + soname,
+                    "-Wl,--version-script="
+                    + str(support.input_path(inputs, "generated/native/exports.map")),
+                    *objects,
+                    "-lace_napi.z",
+                    "-luv",
+                    "-o",
+                    target,
+                ],
             )
-        dynamic_text = run("readelf", ["-d", target]).decode()
-        if not re.search(r"\(INIT_ARRAYSZ\).*?[1-9][0-9]* \(bytes\)", dynamic_text):
-            raise ValueError("constructor registration has no init-array")
-        d.save(
-            work,
-            "native-symbols.json",
-            {
-                "schema": "madb.private.native-symbols/1",
-                "mechanism": "static constructor registers napi_module; no dlsym entry exports",
-                "defined_dynamic_symbols": defined,
-            },
-        )
-        outputs.append("native-symbols.json")
+            # Symbols are transformed only by a separately declared Build policy.
+            if recipe.get("strip") is not False:
+                raise ValueError(
+                    "this profile requires explicit unstripped Build; Package strip=false"
+                )
+            outputs.append("native/" + soname)
+            dynsym = run("readelf", ["--dyn-syms", "--wide", target]).decode()
+            defined = []
+            for line in dynsym.splitlines():
+                parts = line.split()
+                if (
+                    len(parts) >= 8
+                    and parts[0].endswith(":")
+                    and parts[4] in ("GLOBAL", "WEAK")
+                    and parts[6] != "UND"
+                ):
+                    defined.append(parts[7])
+            if defined:
+                raise ValueError(
+                    "constructor-only NAPI library exported internal symbols: " + repr(defined)
+                )
+            dynamic_text = run("readelf", ["-d", target]).decode()
+            if not re.search(r"\(INIT_ARRAYSZ\).*?[1-9][0-9]* \(bytes\)", dynamic_text):
+                raise ValueError("constructor registration has no init-array")
+            d.save(
+                work,
+                "native-symbols.json",
+                {
+                    "schema": "madb.private.native-symbols/1",
+                    "mechanism": "static constructor registers napi_module; no dlsym entry exports",
+                    "defined_dynamic_symbols": defined,
+                },
+            )
+            outputs.append("native-symbols.json")
         dependencies = {}
 
         def dynamic(p):
@@ -314,7 +340,9 @@ def run_phase(config, phase, input_root, work):
         )
         outputs.append("native-dependencies.json")
         d.save(
-            work, "sdk-inventory.json", {"schema": "madb.sdk-inventory/1", "files": sorted(outputs)}
+            work,
+            "sdk-inventory.json",
+            {"schema": "madb.sdk-inventory/1", "files": sorted(outputs)},
         )
         outputs.append("sdk-inventory.json")
     d.save(work, log_path, logs)

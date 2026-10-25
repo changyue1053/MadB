@@ -9,7 +9,9 @@ from pathlib import Path
 import sys
 import tempfile
 
-_spec = importlib.util.spec_from_file_location("_c07_port", Path(__file__).with_name("support.py"))
+_spec = importlib.util.spec_from_file_location(
+    "_c07_port", Path(__file__).with_name("support.py")
+)
 support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
 lowering = support.load_module(Path(__file__).with_name("lowering.py"))
@@ -39,7 +41,10 @@ def render_template(data, module, identity):
     ):
         raise ValueError("invalid generated identity literal")
     text = data.decode("utf-8")
-    for marker, value in [("@MADB_NATIVE_MODULE@", module), ("@MADB_EXPECTED_IDENTITY@", identity)]:
+    for marker, value in [
+        ("@MADB_NATIVE_MODULE@", module),
+        ("@MADB_EXPECTED_IDENTITY@", identity),
+    ]:
         if text.count(marker) != 1:
             raise ValueError("facade template marker must occur exactly once: " + marker)
         text = text.replace(marker, json.dumps(value))
@@ -47,7 +52,9 @@ def render_template(data, module, identity):
 
 
 def verify(request, config, root, *, tree=True):
-    if config.get("schema") != "madb.private.c07-native-backend/1" or config["boundary_id"] not in (
+    if config.get("schema") != "madb.private.c07-native-backend/1" or config[
+        "boundary_id"
+    ] not in (
         "c-arkts",
         "cpp-arkts",
         "rust-arkts",
@@ -80,7 +87,9 @@ def verify(request, config, root, *, tree=True):
         config["runtime_frame"],
     ):
         if name not in names:
-            raise ValueError("declaration/policy/tool inventory omitted from read inputs: " + name)
+            raise ValueError(
+                "declaration/policy/tool inventory omitted from read inputs: " + name
+            )
     for name in config.get("delivery_inputs", []):
         if name not in names:
             raise ValueError("delivery input omitted from source closure: " + name)
@@ -93,6 +102,9 @@ def verify(request, config, root, *, tree=True):
         raise ValueError("runtime notice inventory differs from the fixed Native SDK recipe")
     if any(n["source"] not in names for n in notices):
         raise ValueError("runtime notice omitted from original read inputs")
+    for name in config.get("additional_notices", []):
+        if not name.startswith("notices/rust/") or name not in names:
+            raise ValueError("Rust runtime notice omitted from original read inputs")
     for tool in config["tools"].values():
         support.verify_tool(tool)
     support.load_module(
@@ -148,8 +160,35 @@ def verify(request, config, root, *, tree=True):
     return {r["path"]: r for r in request["inputs"]}
 
 
+def read_gateway(config, root, reference, work):
+    """Read the actual typed native declaration through the fixed SDK parser."""
+    ts = config["tools"]["typescript"]
+    node = config["tools"]["node"]
+    gr = reference
+    return json.loads(
+        support.command(
+            config,
+            "node",
+            [
+                Path(__file__).with_name("read_arkts.cjs"),
+                root,
+                gr["path"],
+                gr["sha256"],
+                gr["size"],
+                ts["path"],
+                ts["sha256"],
+                ts["size"],
+                node["sha256"],
+                node["size"],
+            ],
+            cwd=work,
+        )
+    )
+
+
 def _read(request, config, root, work):
     refs = verify(request, config, root)
+    gateway = read_gateway(config, root, refs[config["gateway_source"]], work)
     composition = config.get("composition")
     if composition is not None:
         native = support.load_module(Path(root) / "adapters/toolchains/arkts/native.py")
@@ -166,6 +205,9 @@ def _read(request, config, root, work):
         value = native.compose_native(
             Path(root), out, route=composition["route"], variant=composition["variant"]
         )
+        if config["provider"] == "rust":
+            backend = support.load_module(Path(root) / "adapters/toolchains/arkts/rust.py")
+            value = backend.derive_native(value, out, config["variant"], gateway)
         derived = [
             composition["prefix"] + "/" + f.path.relative_to(out).as_posix()
             for f in value.derived_files
@@ -197,26 +239,6 @@ def _read(request, config, root, work):
             stdin=support.input_path(root, config["public_source"]).read_bytes(),
         )
     )
-    gr = refs[config["gateway_source"]]
-    gateway = json.loads(
-        support.command(
-            config,
-            "node",
-            [
-                base / "read_arkts.cjs",
-                root,
-                gr["path"],
-                gr["sha256"],
-                gr["size"],
-                ts["path"],
-                ts["sha256"],
-                ts["size"],
-                node["sha256"],
-                node["size"],
-            ],
-            cwd=work,
-        )
-    )
     seam_config = {
         "tools": {"clang": config["tools"]["clang"]},
         "native_sdk": config["native_sdk"],
@@ -243,6 +265,9 @@ def _read(request, config, root, work):
             "identity": "declaration-only, not a runtime handshake",
         },
     }
+    if config["provider"] == "rust":
+        reader = support.load_module(Path(root) / "adapters/toolchains/arkts/rust_metadata.py")
+        descriptor["rust"] = reader.read_metadata(root, config, work, gateway)
     verify(request, config, root, tree=False)
     return descriptor, seed, policies
 
@@ -298,7 +323,11 @@ def generate(request, config, root, work):
 
     abi = d.semantic(
         "madb.c07-abi/1",
-        {k: lowering.projection(descriptor[k]) for k in ("public", "gateway", "c_seam")},
+        {
+            k: lowering.projection(descriptor[k])
+            for k in ("public", "gateway", "c_seam", "rust")
+            if k in descriptor
+        },
     )
     # All author/template/recipe/tool-inventory inputs are in source_digest. No
     # artifact hash or later generation_id enters its own compiled identity.
@@ -312,7 +341,9 @@ def generate(request, config, root, work):
         },
     )
     profile = request["selector"]["profile_digest"]
-    identity = "madb-arkts/1:" + ":".join(x.removeprefix("sha256:") for x in (abi, profile, build))
+    identity = "madb-arkts/1:" + ":".join(
+        x.removeprefix("sha256:") for x in (abi, profile, build)
+    )
     emit_json(
         "identity.json",
         {
@@ -335,7 +366,9 @@ def generate(request, config, root, work):
     )
     emit(
         "generated/contract/inventory-format.json",
-        support.input_path(root, "adapters/toolchains/arkts/inventory-format.json").read_bytes(),
+        support.input_path(
+            root, "adapters/toolchains/arkts/inventory-format.json"
+        ).read_bytes(),
     )
     for name in config.get("delivery_inputs", []):
         emit("generated/contract/" + name, support.input_path(root, name).read_bytes())
@@ -344,6 +377,8 @@ def generate(request, config, root, work):
             "generated/notices/" + Path(notice["source"]).name,
             support.input_path(root, notice["source"]).read_bytes(),
         )
+    for name in config.get("additional_notices", []):
+        emit("generated/" + name, support.input_path(root, name).read_bytes())
     emit(
         "generated/facade/Boundary.ets",
         render_template(
@@ -363,7 +398,10 @@ def generate(request, config, root, work):
                 support.input_path(root, name).read_bytes(),
             )
         for name in config["test_facade_inputs"]:
-            emit("generated/facade/" + Path(name).name, support.input_path(root, name).read_bytes())
+            emit(
+                "generated/facade/" + Path(name).name,
+                support.input_path(root, name).read_bytes(),
+            )
         test_layout = support.read_json(
             support.input_path(root, "sdk/arkts/test-support/contracts/test-frame-layout.json")
         )
@@ -504,7 +542,9 @@ def main():
     # Tool scratch and logs are not public Metadata/Generate products. A failed
     # invocation retains its scratch in the failed run for diagnosis.
     scratch = Path(tempfile.mkdtemp(prefix="private-driver-", dir=work))
-    value = (metadata if args.operation == "metadata" else generate)(request, config, root, scratch)
+    value = (metadata if args.operation == "metadata" else generate)(
+        request, config, root, scratch
+    )
     output = (documents(root).canonical(value) + "\n").encode()
     if len(output) > support.MAX_JSON:
         raise ValueError("response exceeds 1 MiB")

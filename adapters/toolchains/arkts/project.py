@@ -62,6 +62,7 @@ def prepare(
     composition=None,
     policy_source=None,
     delivery_inputs=(),
+    additional_notices=(),
 ):
     """author_files: exact {path,source,sha256,size} refs, never directory globbing.
 
@@ -91,7 +92,8 @@ def prepare(
         if source.suffix in (".so", ".o", ".a", ".har", ".hap", ".hsp", ".klib"):
             raise ValueError("prebuilt artifact is not an author declaration/implementation")
         if expected and (
-            source.stat().st_size != expected["size"] or support.sha(source) != expected["sha256"]
+            source.stat().st_size != expected["size"]
+            or support.sha(source) != expected["sha256"]
         ):
             raise ValueError("original author input changed: " + name)
         support.copy_new(source, workspace / name)
@@ -110,7 +112,8 @@ def prepare(
         if name not in names:
             copy(repo / name, name)
     for name in HELPERS:
-        copy(repo / name, name)
+        if name not in names:
+            copy(repo / name, name)
     schemas = sorted(
         p.relative_to(repo).as_posix() for p in (repo / "docs/schemas").glob("*.schema.json")
     )
@@ -130,7 +133,9 @@ def prepare(
         ("sdk/default/openharmony/native/llvm/NOTICE", "llvm-NOTICE.txt"),
     ]:
         entries = [
-            e for e in inventory_data["entries"] if e["path"] == original and e["kind"] == "file"
+            e
+            for e in inventory_data["entries"]
+            if e["path"] == original and e["kind"] == "file"
         ]
         if len(entries) != 1:
             raise ValueError("Native SDK notice missing from verified archive inventory")
@@ -145,6 +150,7 @@ def prepare(
     boundary = route + "-arkts"
     config = deepcopy(observation["config"])
     config["runtime_notices"] = runtime_notices
+    config["additional_notices"] = list(additional_notices)
     config["delivery_inputs"] = list(delivery_inputs)
     if variant == "test":
         config["test_contracts"] = sorted(
@@ -168,13 +174,17 @@ def prepare(
         profile="profile.json",
         policy="runtime-policy.json",
         public_template=(
-            "derived/native/Boundary.ets.in" if composition else "sdk/arkts/facade/Boundary.ets.in"
+            "derived/native/Boundary.ets.in"
+            if composition
+            else "sdk/arkts/facade/Boundary.ets.in"
         ),
         public_source="derived/Boundary.declarations.ets",
         runtime_frame="sdk/arkts/facade/RuntimeFrame.ets",
         frame_layout="sdk/arkts/facade/frame-layout.json",
         gateway_source=(
-            "derived/native/Index.d.ts" if composition else "sdk/arkts/native-gateway/Index.d.ts"
+            "derived/native/Index.d.ts"
+            if composition
+            else "sdk/arkts/native-gateway/Index.d.ts"
         ),
         provider_source="sdk/arkts/native-runtime/include/provider_abi.h",
         cli_inventory="tools/cli-inventory.json",
@@ -218,7 +228,7 @@ def prepare(
         target="aarch64-linux-ohos",
         abi="harmonyos-napi8-c07-snapshot",
         artifact_kind="har",
-        build_system="clang-hvigor",
+        build_system="cargo-ohrs-hvigor" if route == "rust" else "clang-hvigor",
         deployment_target="API23",
         tools=public_tools,
         sdk=d.ref(workspace, "toolchain.json", "madb.native-toolchain/1"),
@@ -239,7 +249,9 @@ def prepare(
     d.save(workspace, "profile.json", profile)
     selector = {k: profile[k] for k in ("route", "target", "direction")}
     selector.update(profile_id=profile["id"], profile_digest=d.profile_digest(profile))
-    inputs = [d.ref(workspace, n, "madb.source-input/1") for n in sorted(set(names) - set(schemas))]
+    inputs = [
+        d.ref(workspace, n, "madb.source-input/1") for n in sorted(set(names) - set(schemas))
+    ]
     preliminary = {
         "schema": "madb.read-request/1",
         "boundary_id": boundary,
@@ -301,7 +313,13 @@ def prepare(
         output_root="staging/read",
     )
     d.save(workspace, "read.json", read)
-    return {"config": config, "read": read, "lock": lock, "profile": profile, "project": project}
+    return {
+        "config": config,
+        "read": read,
+        "lock": lock,
+        "profile": profile,
+        "project": project,
+    }
 
 
 def prepare_route(
@@ -313,19 +331,50 @@ def prepare_route(
     variant="ordinary",
     author_fixture=None,
     delivery_inputs=(),
+    rust_configuration=None,
+    observation_path=None,
 ):
     """Freeze original sources, then replay the exact ordinary/test derivation."""
     repo = Path(repo).resolve(strict=True)
     native = support.load_module(repo / "adapters/toolchains/arkts/native.py")
     paths = native.source_paths(repo, route=route, variant=variant)
+    backend_inputs = {"source_inputs": [], "notice_inputs": [], "receipt_inputs": []}
+    if route == "rust":
+        if rust_configuration is None:
+            raise ValueError("Rust route requires caller-pinned configuration")
+        source = Path(rust_configuration["source"])
+        if (
+            support.sha(source) != rust_configuration["sha256"]
+            or source.stat().st_size != rust_configuration["size"]
+        ):
+            raise ValueError("Rust configuration changed before preparation")
+        backend = support.load_module(repo / "adapters/toolchains/arkts/rust.py")
+        native_module = "libmadbc07sdkrust" + ("test" if variant == "test" else "") + ".so"
+        backend_inputs = backend.prepare_configuration(
+            observation, support.read_json(source), native_module, variant
+        )
+        observation = backend_inputs["observation"]
+    elif rust_configuration is not None:
+        raise ValueError("Rust configuration supplied to another route")
+    if observation_path is not None:
+        # Publish the configuration actually selected before any declaration
+        # compiler can fail. Keep the earlier base observation separately.
+        with Path(observation_path).open("x") as output:
+            json.dump(observation, output, indent=2)
+            output.write("\n")
     if author_fixture is not None:
         author_fixture = Path(author_fixture).absolute()
         if variant != "ordinary" or author_fixture.is_symlink():
             raise ValueError("author fixture requires an ordinary source directory")
         if not author_fixture.is_dir() or any(p.is_symlink() for p in author_fixture.parents):
             raise ValueError("author fixture path must not traverse symlinks")
-        if {p.name for p in author_fixture.iterdir()} != {"Boundary.ets.in", "runtime-policy.json"}:
-            raise ValueError("author fixture must contain exactly the source template and policy")
+        if {p.name for p in author_fixture.iterdir()} != {
+            "Boundary.ets.in",
+            "runtime-policy.json",
+        }:
+            raise ValueError(
+                "author fixture must contain exactly the source template and policy"
+            )
         for name in ("Boundary.ets.in", "runtime-policy.json"):
             support.input_path(author_fixture, name)
     with tempfile.TemporaryDirectory(prefix="madb-c07-source-") as temporary:
@@ -333,8 +382,23 @@ def prepare_route(
         seed = temp / "inputs"
         seed.mkdir()
         source_refs = []
-        for path in paths:
-            logical = path.relative_to(repo).as_posix()
+        originals = {path.relative_to(repo).as_posix(): path for path in paths}
+        frozen_sources = dict(originals)
+        if route == "rust":
+            for ref in backend_inputs["source_inputs"]:
+                path = support.input_path(repo, ref["path"])
+                if (
+                    path != Path(ref["source"])
+                    or support.sha(path) != ref["sha256"]
+                    or path.stat().st_size != ref["size"]
+                ):
+                    raise ValueError("Rust source input differs from its repository pin")
+                if ref["path"] in frozen_sources and frozen_sources[ref["path"]] != path:
+                    raise ValueError("conflicting Rust/native source input")
+                frozen_sources[ref["path"]] = path
+            for name in (*SHARED, *HELPERS):
+                frozen_sources.setdefault(name, support.input_path(repo, name))
+        for logical, path in frozen_sources.items():
             source = path
             if author_fixture is not None and logical == "sdk/arkts/facade/Boundary.ets.in":
                 source = Path(author_fixture) / "Boundary.ets.in"
@@ -353,6 +417,21 @@ def prepare_route(
         frozen_native = support.load_module(seed / "adapters/toolchains/arkts/native.py")
         composed = temp / "composed"
         value = frozen_native.compose_native(seed, composed, route=route, variant=variant)
+        if route == "rust":
+            driver = support.load_module(seed / "adapters/generators/arkts/driver.py")
+            declaration = value.native_declaration
+            gateway = driver.read_gateway(
+                observation["config"],
+                composed,
+                {
+                    "path": declaration.relative_to(composed).as_posix(),
+                    "sha256": support.sha(declaration),
+                    "size": declaration.stat().st_size,
+                },
+                temp,
+            )
+            frozen_backend = support.load_module(seed / "adapters/toolchains/arkts/rust.py")
+            value = frozen_backend.derive_native(value, composed, variant, gateway)
 
         def logical(path):
             if path.is_relative_to(seed):
@@ -399,6 +478,10 @@ def prepare_route(
             }
         )
         authors.extend(delivery_inputs)
+        authors.extend(backend_inputs["notice_inputs"])
+        authors.extend(backend_inputs["receipt_inputs"])
+        if rust_configuration is not None:
+            authors.append(rust_configuration)
         units = [
             dict(
                 name=u.path.stem.replace("_", "-"),
@@ -413,14 +496,24 @@ def prepare_route(
             "includes": [logical(d) for d in value.include_dirs] + ["generated/native"],
             "strip": False,
             "runtime_libraries": [observation["native_runtime"]],
-            "system_libraries": ["libace_napi.z.so", "libuv.so", "libc.so", "libm.so", "libdl.so"],
-            "symbol_policy": "constructor-only; all defined dynamic symbols local",
+            "system_libraries": [
+                "libace_napi.z.so",
+                "libuv.so",
+                "libc.so",
+                "libm.so",
+                "libdl.so",
+            ],
+            "symbol_policy": (
+                "napi-ohos-macro-only; napi_register_module_v1 is the sole dynamic export"
+                if route == "rust"
+                else "constructor-only; all defined dynamic symbols local"
+            ),
         }
         composition = {
             "route": route,
             "variant": variant,
             "prefix": "derived/native",
-            "original_inputs": [ref["path"] for ref in source_refs],
+            "original_inputs": list(originals),
             "derived_inputs": [logical(f.path) for f in value.derived_files],
         }
         prepared = prepare(
@@ -434,6 +527,7 @@ def prepare_route(
             composition=composition,
             policy_source=policy_path,
             delivery_inputs=[f["path"] for f in delivery_inputs],
+            additional_notices=[f["path"] for f in backend_inputs["notice_inputs"]],
         )
         producer_paths = {ref["path"]: ref["path"] for ref in source_refs}
         producer_paths.update({name: name for name in (*SHARED, *HELPERS)})
