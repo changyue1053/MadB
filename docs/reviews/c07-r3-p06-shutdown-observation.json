@@ -1,0 +1,512 @@
+{
+  "scope": "Observed P05 r3 explicit runtime shutdown and separate P06 real Worker async cleanup; exploratory mechanisms only",
+  "certifies_c07": false,
+  "target": {
+    "selector": "127.0.0.1:5557",
+    "kind": "emulator",
+    "api": 23,
+    "release": "Release",
+    "abi": "arm64-v8a"
+  },
+  "compile_sdk": {
+    "version": "26.0.0.105",
+    "api": 26,
+    "release": "Release"
+  },
+  "signing": "fresh per-HAP community debug signing; not production signing",
+  "limits": [
+    "No full C07 public candidate/profile acceptance is claimed.",
+    "P05 r3 explicit runtime shutdown keeps the main env valid and removes hooks; it does not prove actual main-env hook invocation or null-env managed payload handling.",
+    "P05 source Worker Future consumption remains a termination-job ACK, not pthread/TLS join.",
+    "P05 full-queue Busy plus recovery is not an autonomous full-queue Engine.close implementation.",
+    "P06 exit-request queue occupancy and hook-entry occupancy are distinct; observed hook-entry payload counts are zero.",
+    "P06 proves its separate native test-support cleanup mechanism, not Kotlin shutdown or full state/event/byte-budget coverage.",
+    "Force-stop and empty PID after collection are operational cleanup only."
+  ],
+  "full_observation": {
+    "path": "/private/tmp/madb-c07-r3-p06-shutdown-observation.json",
+    "sha256": "bc556aeeba1a7ccef934d56b594c68aa71e2d12be7325522abfc7f2d8117ebf7",
+    "size": 37697
+  },
+  "runs": {
+    "p05_r3": {
+      "nonce": "c07-sdk26-649e175e075c488bb45f25bce80d65de",
+      "pid": 8488,
+      "build_mode": "release",
+      "hap": {
+        "path": "/private/tmp/madb-c07-p05-shutdown-r3-hap/artifacts/c07-sdk26-649e175e075c488bb45f25bce80d65de.hap",
+        "sha256": "bd76fa9981a443e0bb164df6a1b09b4a10f9dab472664a037a9e396a9a6acad3",
+        "size": 4906034
+      },
+      "provider_inputs": [
+        {
+          "source": "/private/tmp/madb-c07-p05-shutdown-r3/artifacts/libmadb_kotlin_managed_probe.so",
+          "path": "/private/tmp/madb-c07-p05-shutdown-r3-hap/entry/libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "2f9d7da586444f06206fda365af4d9244ca281a0aaff6ffe46726ff73d316dd7",
+          "size": 5364440,
+          "runtime_patch_sha256": "046e06e55bb9dde641e5be76c40b94e13310084b9571800c5ee738201f7054eb"
+        },
+        {
+          "source": "/private/tmp/madb-c07-p05-shutdown-r3/artifacts/libc++_shared.so",
+          "path": "/private/tmp/madb-c07-p05-shutdown-r3-hap/entry/libs/arm64-v8a/libc++_shared.so",
+          "sha256": "c1ac8e9623ebd501d73b785264a586e21ce9f83bdbfe7afd35f8d5045caa84cd",
+          "size": 1850184,
+          "runtime_patch_sha256": "046e06e55bb9dde641e5be76c40b94e13310084b9571800c5ee738201f7054eb"
+        }
+      ],
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+          "size": 1333480
+        },
+        {
+          "path": "libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+          "sha256": "97165dd498312a3ce3da6b10598f58d6869af8deb13dfff6a2170b7e44d24d8a",
+          "size": 3403576
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbkotlinshutdownprobe.so",
+          "sha256": "16a4395d708b010a99c74b89ad73232302eddedfee76de143cc69c439adf70fe",
+          "size": 55888
+        }
+      ],
+      "obfuscation": {
+        "identifier_renames": 28,
+        "property_renames": {
+          "calls": "a2"
+        },
+        "file_renames": {
+          "ProbeConfig": "a",
+          "ShutdownCases": "b"
+        },
+        "evidence": {
+          "path": "/private/tmp/madb-c07-p05-shutdown-r3-hap/evidence/c07-sdk26-649e175e075c488bb45f25bce80d65de-obfuscation-namecache.json",
+          "sha256": "b789dd1d0a7e7cd61ac77a5333d8c28935be394e1f7e69593486511136152c29",
+          "size": 2733
+        }
+      },
+      "final_oracle": {
+        "path": "/private/tmp/madb-c07-p05-shutdown-r3-hap/shutdown_observations.py",
+        "sha256": "288cb841ddedabdbbb8cd53655d96f23de2f041127ede876ef7f5bf1525b9a2e",
+        "size": 13773
+      },
+      "raw_observations": {
+        "path": "/private/tmp/madb-c07-p05-shutdown-r3-hap/evidence/c07-sdk26-649e175e075c488bb45f25bce80d65de-shutdown-observations.json",
+        "sha256": "c509b9c385491d1d125a73bdb62231537d297f24546cca242366287c619a5576",
+        "size": 28216
+      },
+      "process_absent_after_stop": true,
+      "checked": {
+        "busy_count": 2,
+        "saved_generated_rejections": 4,
+        "actual_callback_counts": {
+          "warmup": 1,
+          "saturation": 32,
+          "callback-busy": 1
+        },
+        "final_native": {
+          "schema": "p05-shutdown-r3",
+          "state": 4,
+          "phase": 3,
+          "entriesActive": 0,
+          "rejectedEntries": 4,
+          "busy": 2,
+          "acceptedRequests": 1,
+          "refOwned": 0,
+          "refCreated": 72,
+          "refReleased": 72,
+          "descriptorOwned": 0,
+          "descriptorCreated": 7,
+          "descriptorReleased": 7,
+          "hooksOwned": 0,
+          "hooksAdded": 3,
+          "hooksRemoved": 3,
+          "hooksInvoked": 0,
+          "cleanupFailures": 0,
+          "unsupportedRequests": 0,
+          "snapshotPublished": 1,
+          "eventSeq": 5,
+          "openSeq": 1,
+          "gateSeq": 2,
+          "drainedSeq": 3,
+          "finalizerSeq": 5,
+          "contextDestroyedSeq": 4,
+          "classRefsOwned": 0,
+          "classRefsCreated": 1,
+          "classRefsReleased": 1,
+          "tsfn_outstanding": 0,
+          "tsfn_allocated": 34,
+          "tsfn_released": 34,
+          "tsfn_created": 1,
+          "tsfn_finalized": 1,
+          "tsfn_nullEnvDisposals": 0,
+          "tsfn_uncertain": 0,
+          "tsfn_rejected": 32,
+          "tsfn_napiErrors": 0,
+          "tsfn_contextsCreated": 1,
+          "tsfn_contextsDestroyed": 1,
+          "source_id": 3,
+          "source_stopped": 1,
+          "source_producerDone": 1,
+          "source_workerFutureConsumed": 1,
+          "source_pending": 0,
+          "source_callbackDepth": 0,
+          "source_closed": 1,
+          "source_failures": 0,
+          "source_sessionRetained": 0,
+          "source_closes": 1
+        }
+      },
+      "managed_pre_shutdown": {
+        "schema": "p05-notify-v1",
+        "id": 3,
+        "ownerTid": 8488,
+        "producerTid": 8640,
+        "attempted": 1,
+        "accepted": 1,
+        "rejected": 0,
+        "pending": 0,
+        "completed": 1,
+        "delivered": 1,
+        "skipped": 0,
+        "callbackThrows": 0,
+        "expectedCallbackThrows": 0,
+        "unexpectedCallbackThrows": 0,
+        "callbackDepth": 0,
+        "directRejected": 1,
+        "directUnexpected": 0,
+        "directRefCreatedDelta": 0,
+        "directRefReleasedDelta": 0,
+        "producerDone": true,
+        "workerFutureConsumed": true,
+        "closed": true,
+        "closes": 1,
+        "failures": 0,
+        "ref_capacity": 128,
+        "ref_owned": 1,
+        "ref_created": 72,
+        "ref_released": 71,
+        "ref_rejected": 0,
+        "ref_failures": 0,
+        "ref_cleanupFailures": 0,
+        "tsfn_outstanding": 0,
+        "tsfn_allocated": 34,
+        "tsfn_released": 34,
+        "tsfn_created": 1,
+        "tsfn_finalized": 0,
+        "tsfn_nullEnvDisposals": 0,
+        "tsfn_uncertain": 0,
+        "tsfn_rejected": 32,
+        "tsfn_napiErrors": 0,
+        "tsfn_contextsCreated": 1,
+        "tsfn_contextsDestroyed": 0,
+        "meta_descriptorCreated": 7,
+        "meta_descriptorReleased": 0,
+        "meta_descriptorCapacity": 256,
+        "meta_classCapacity": 32,
+        "meta_classRefsCreated": 1,
+        "meta_classRefsReleased": 0,
+        "meta_classRefsOwned": 1,
+        "meta_failures": 0
+      },
+      "closing_before_finalizer": {
+        "schema": "p05-shutdown-r3",
+        "state": 3,
+        "phase": 3,
+        "entriesActive": 0,
+        "rejectedEntries": 0,
+        "busy": 2,
+        "acceptedRequests": 1,
+        "refOwned": 0,
+        "refCreated": 72,
+        "refReleased": 72,
+        "descriptorOwned": 0,
+        "descriptorCreated": 7,
+        "descriptorReleased": 7,
+        "hooksOwned": 0,
+        "hooksAdded": 3,
+        "hooksRemoved": 3,
+        "hooksInvoked": 0,
+        "cleanupFailures": 0,
+        "unsupportedRequests": 0,
+        "snapshotPublished": 1,
+        "eventSeq": 3,
+        "openSeq": 1,
+        "gateSeq": 2,
+        "drainedSeq": 3,
+        "finalizerSeq": 0,
+        "contextDestroyedSeq": 0,
+        "classRefsOwned": 0,
+        "classRefsCreated": 1,
+        "classRefsReleased": 1,
+        "tsfn_outstanding": 0,
+        "tsfn_allocated": 34,
+        "tsfn_released": 34,
+        "tsfn_created": 1,
+        "tsfn_finalized": 0,
+        "tsfn_nullEnvDisposals": 0,
+        "tsfn_uncertain": 0,
+        "tsfn_rejected": 32,
+        "tsfn_napiErrors": 0,
+        "tsfn_contextsCreated": 1,
+        "tsfn_contextsDestroyed": 0,
+        "source_id": 3,
+        "source_stopped": 1,
+        "source_producerDone": 1,
+        "source_workerFutureConsumed": 1,
+        "source_pending": 0,
+        "source_callbackDepth": 0,
+        "source_closed": 1,
+        "source_failures": 0,
+        "source_sessionRetained": 0,
+        "source_closes": 1
+      },
+      "expected_requests": [
+        [
+          "full",
+          1
+        ],
+        [
+          "callback",
+          1
+        ],
+        [
+          "outer",
+          0
+        ],
+        [
+          "repeat",
+          0
+        ]
+      ],
+      "expected_closed_rejections": [
+        [
+          "closing-version",
+          "ERR_MANAGED_CLOSED",
+          "ManagedInteropClosingOrClosed"
+        ],
+        [
+          "closing-start",
+          "ERR_MANAGED_CLOSED",
+          "ManagedInteropClosingOrClosed"
+        ],
+        [
+          "closed-version",
+          "ERR_MANAGED_CLOSED",
+          "ManagedInteropClosingOrClosed"
+        ],
+        [
+          "closed-start",
+          "ERR_MANAGED_CLOSED",
+          "ManagedInteropClosingOrClosed"
+        ]
+      ],
+      "host_correction": {
+        "type": "oracle parser/snapshot interpretation only; same HAP, nonce, PID and original target observations",
+        "details": "Initial producerTid=-1 is allowed only for initial no-producer stage. Native refs/descriptors/classRefs are final shutdown snapshots; positive class-ref baseline comes from live managed audit. Original parser and failure retained."
+      }
+    },
+    "p06_async": {
+      "nonce": "c07-sdk26-a7d3618bf4b7402ea236fa3dcaaf7681",
+      "pid": 14449,
+      "build_mode": "release",
+      "hap": {
+        "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/artifacts/c07-sdk26-a7d3618bf4b7402ea236fa3dcaaf7681.hap",
+        "sha256": "04a869a013c0ad0a1dc6fd4e70dff09f8d440a3901bece8d86f91fd8c64cc033",
+        "size": 1414517
+      },
+      "provider_inputs": [
+        {
+          "source": "/private/tmp/madb-c07-async-cleanup/build/libmadbc07asyncprobe.so",
+          "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/entry/libs/arm64-v8a/libmadbc07asyncprobe.so",
+          "sha256": "2867b2aa7eb9577c5f0d0d5172ed1fd3d2b46420c1aa299b090ec090619a00d6",
+          "size": 203936
+        },
+        {
+          "source": "/private/tmp/madb-c07-formal-native/runtime/libc++_shared.so",
+          "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/entry/libs/arm64-v8a/libc++_shared.so",
+          "sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17",
+          "size": 1262504
+        }
+      ],
+      "packaged_libraries": [
+        {
+          "path": "libs/arm64-v8a/libc++_shared.so",
+          "sha256": "965803c3fe53e02452e4c0479ad13c88f166c04207d27e3c531161a7c75a6c17",
+          "size": 1262504
+        },
+        {
+          "path": "libs/arm64-v8a/libmadbc07asyncprobe.so",
+          "sha256": "7c656f5d8c4e4e9bdff9b109e68644334bf5f0b6bd960f9563ef2483d7fc4ab6",
+          "size": 72296
+        }
+      ],
+      "obfuscation": {
+        "identifier_renames": 13,
+        "property_renames": {
+          "calls": "f1"
+        },
+        "file_renames": {
+          "ProbeConfig": "a",
+          "AsyncCleanupCases": "b"
+        },
+        "evidence": {
+          "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/evidence/c07-sdk26-a7d3618bf4b7402ea236fa3dcaaf7681-obfuscation-namecache.json",
+          "sha256": "ab31458192db676c80120e032837a95a71cd2ff480c4dad6cc80065b18baff11",
+          "size": 2101
+        }
+      },
+      "final_oracle": {
+        "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/async_cleanup_observations.py",
+        "sha256": "41732d7435059b996c7b3526f3ab47027fec276ffcb4393c413282070d0a439b",
+        "size": 12436
+      },
+      "raw_observations": {
+        "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/evidence/c07-sdk26-a7d3618bf4b7402ea236fa3dcaaf7681-async-cleanup-observations.json",
+        "sha256": "6cd729a8807a076e1d9c76a5c3f8af4fc066bea0418f41be2d857c2e217c98cd",
+        "size": 45413
+      },
+      "process_absent_after_stop": true,
+      "checked_cases": [
+        {
+          "case": "normal-one",
+          "id": 1,
+          "accepted_at_exit": 1,
+          "outstanding_at_hook": 0,
+          "known_queue_full": 0,
+          "own_limit_rejected": 0,
+          "null_env_callbacks": 0,
+          "user_callbacks": 2,
+          "allocations": 2,
+          "releases": 2,
+          "owner_tid": 14580,
+          "native_worker_tid": 14581,
+          "cleanup_tid": 14585,
+          "parent_tid": 14449,
+          "last_sequence": 16
+        },
+        {
+          "case": "normal-full",
+          "id": 2,
+          "accepted_at_exit": 5,
+          "outstanding_at_hook": 0,
+          "known_queue_full": 4,
+          "own_limit_rejected": 0,
+          "null_env_callbacks": 0,
+          "user_callbacks": 6,
+          "allocations": 10,
+          "releases": 10,
+          "owner_tid": 14587,
+          "native_worker_tid": 14588,
+          "cleanup_tid": 14582,
+          "parent_tid": 14449,
+          "last_sequence": 28
+        },
+        {
+          "case": "abort-one",
+          "id": 3,
+          "accepted_at_exit": 1,
+          "outstanding_at_hook": 0,
+          "known_queue_full": 0,
+          "own_limit_rejected": 0,
+          "null_env_callbacks": 1,
+          "user_callbacks": 1,
+          "allocations": 2,
+          "releases": 2,
+          "owner_tid": 14589,
+          "native_worker_tid": 14590,
+          "cleanup_tid": 14584,
+          "parent_tid": 14449,
+          "last_sequence": 16
+        },
+        {
+          "case": "abort-full",
+          "id": 4,
+          "accepted_at_exit": 5,
+          "outstanding_at_hook": 0,
+          "known_queue_full": 4,
+          "own_limit_rejected": 0,
+          "null_env_callbacks": 5,
+          "user_callbacks": 1,
+          "allocations": 10,
+          "releases": 10,
+          "owner_tid": 14595,
+          "native_worker_tid": 14596,
+          "cleanup_tid": 14583,
+          "parent_tid": 14449,
+          "last_sequence": 28
+        }
+      ],
+      "held_cleanup_gate_audits": {
+        "normal-one": {
+          "id": 1,
+          "hookCalls": 1,
+          "hookReturned": 1,
+          "workQueued": 1,
+          "workBeginSeq": 9,
+          "workerActive": 1,
+          "nativeResourceLive": 1,
+          "workerJoined": 0,
+          "workCompleted": 0,
+          "removeCalls": 0,
+          "gateOpened": 0,
+          "ack": 0
+        },
+        "normal-full": {
+          "id": 2,
+          "hookCalls": 1,
+          "hookReturned": 1,
+          "workQueued": 1,
+          "workBeginSeq": 19,
+          "workerActive": 1,
+          "nativeResourceLive": 1,
+          "workerJoined": 0,
+          "workCompleted": 0,
+          "removeCalls": 0,
+          "gateOpened": 0,
+          "ack": 0
+        },
+        "abort-one": {
+          "id": 3,
+          "hookCalls": 1,
+          "hookReturned": 1,
+          "workQueued": 1,
+          "workBeginSeq": 9,
+          "workerActive": 1,
+          "nativeResourceLive": 1,
+          "workerJoined": 0,
+          "workCompleted": 0,
+          "removeCalls": 0,
+          "gateOpened": 0,
+          "ack": 0
+        },
+        "abort-full": {
+          "id": 4,
+          "hookCalls": 1,
+          "hookReturned": 1,
+          "workQueued": 1,
+          "workBeginSeq": 21,
+          "workerActive": 1,
+          "nativeResourceLive": 1,
+          "workerJoined": 0,
+          "workCompleted": 0,
+          "removeCalls": 0,
+          "gateOpened": 0,
+          "ack": 0
+        }
+      },
+      "previous_attempt": {
+        "nonce": "c07-sdk26-09d14cb4d2584dfc97214c36ec7403a3",
+        "pid": 11716,
+        "status": "collector rejected obfuscated internal diagnostic property calls->f1",
+        "correction": "Fresh HAP emits fixed scalar handshake frames; property/file/export obfuscation and native lifecycle predicates remain enabled/unchanged.",
+        "hap": {
+          "path": "/private/tmp/madb-c07-p06-async-cleanup-hap/artifacts/c07-sdk26-09d14cb4d2584dfc97214c36ec7403a3.hap",
+          "sha256": "4e0a8f587adbdd682b7d4ef2b0a0f7370a04eb9b056d7eb8d6801bc6560322bb",
+          "size": 1414618
+        }
+      }
+    }
+  }
+}

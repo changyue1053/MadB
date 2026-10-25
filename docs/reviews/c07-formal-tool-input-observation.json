@@ -1,0 +1,155 @@
+{
+  "inventory_path": "/private/tmp/madb-c07-tool-acquisition-corrected-1792909931834343000/acquisition-inventory.json",
+  "inventory_sha256": "3fd5f07a1544baf46abcac095572a21a773823bd010aca42adb9a64b8ce6ae24",
+  "source_hashes": {
+    "adapters/toolchains/arkts/tools.py": "2c312568f648dc2c15362c4f0a41a9738238efdd1ab0d7f7e7ba7d90ff4b4ddf",
+    "adapters/toolchains/arkts/preflight.py": "20e81bbd1a1711227bf1cd55d6c5c4d0e4d3b14dabafb40c22691d9289a3d4cf"
+  },
+  "provenance_correction": {
+    "previous_inventory": "/private/tmp/madb-c07-tool-acquisition-1792909558737313000/acquisition-inventory.json",
+    "previous_sha256": "2156d9aeefc2e87dd07c9117145193120f4f79b38e8283a0b320c2e3f9b3f098",
+    "reason": "The user supplied the archive/directory, not a checksum. The expected checksum was locally computed and reviewed by the caller.",
+    "archive_and_entries_unchanged": true,
+    "zip_reinventory_performed": false,
+    "installed_tree_reverified": true
+  },
+  "certifies_c07": false,
+  "observation": {
+    "root": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools",
+    "archive": {
+      "path": "/Users/changyue/Downloads/commandline-tools-mac-arm64-26.0.0.851.zip",
+      "sha256": "4c7f0eabd5c96a5a54f5e892c1cf8cf580154d6100d0d1fa6be23e189e33b771",
+      "size": 2139840078,
+      "checksum_source": "caller-reviewed expected checksum; locally computed from the user-supplied archive",
+      "official_checksum_or_signature_verified": false
+    },
+    "entries_sha256": "9be026c5d7f136e697db4bb56d4cf9b9cb0f53fd79f62f9141fcec6c106f1790",
+    "entry_count": 101927,
+    "ignored_installed_metadata": [],
+    "launchers": {
+      "node": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+        "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+        "image_sha256": "35d4bc736bbe4161f0c074aa140ddb74586e46969bc2ad63d32c838bec4463ff",
+        "link_target": null
+      },
+      "clang": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin/clang",
+        "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin/clang-15",
+        "image_sha256": "b9a36b6a434fd245460ddfa9abedefbfafe83b1f87749fe00491ee90d039d723",
+        "link_target": "clang-15"
+      },
+      "hdc": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+        "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+        "image_sha256": "f170c24ea37472562bba90860586c31b77928ba36830ed8dc1e5a2c5d19ff3cc",
+        "link_target": null
+      },
+      "hvigor": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+        "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+        "image_sha256": "468c9cdbb1dc43799a2024fea63c6c5f60993e3837b4a4d131b14680aac1aa05",
+        "link_target": null
+      },
+      "ohpm": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+        "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+        "image_sha256": "46cdd6216d402e5c1e16c9bfb3de6eaa563fb982370e11201a8e64275b94adb5",
+        "link_target": null
+      }
+    },
+    "metadata": {
+      "command_line_tools": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools",
+        "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/version.txt",
+        "version_source": "version.txt",
+        "version": "26.0.0.851",
+        "distribution_platform": "mac-arm64",
+        "releaseType": "release",
+        "hvigor_version": "6.26.8",
+        "ohpm_version": "26.0.0.630",
+        "bundled_sdk": {
+          "version": "26.0.0.105",
+          "apiVersion": "26",
+          "platformVersion": "26.0.0",
+          "releaseType": "Release"
+        }
+      },
+      "sdk": {
+        "root": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default",
+        "product": {
+          "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/sdk-pkg.json",
+          "apiVersion": "26",
+          "version": "26.0.0.105",
+          "releaseType": "Release",
+          "stage": "Release",
+          "displayName": "HarmonyOS 26.0.0",
+          "path": "HarmonyOS-26.0.0",
+          "platformVersion": "26.0.0"
+        },
+        "components": {
+          "ets": {
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/oh-uni-package.json",
+            "apiVersion": "26",
+            "version": "26.0.0.105",
+            "releaseType": "Release",
+            "displayName": "Ets",
+            "path": "ets",
+            "platformVersion": "26.0.0"
+          },
+          "native": {
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/oh-uni-package.json",
+            "apiVersion": "26",
+            "version": "26.0.0.105",
+            "releaseType": "Release",
+            "displayName": "Native",
+            "path": "native",
+            "platformVersion": "26.0.0"
+          },
+          "toolchains": {
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/oh-uni-package.json",
+            "apiVersion": "26",
+            "version": "26.0.0.105",
+            "releaseType": "Release",
+            "displayName": "Toolchains",
+            "path": "toolchains",
+            "platformVersion": "26.0.0"
+          }
+        },
+        "is_formal": true,
+        "components_consistent": true,
+        "cpf_sysroot_checked": false
+      },
+      "packages": {
+        "@ohos/hvigor": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+          "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/package.json",
+          "version_source": "package_metadata",
+          "name": "@ohos/hvigor",
+          "version": "6.26.8"
+        },
+        "@ohos/hvigor-ohos-plugin": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor-ohos-plugin/package.json",
+          "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor-ohos-plugin/package.json",
+          "version_source": "package_metadata",
+          "name": "@ohos/hvigor-ohos-plugin",
+          "version": "6.26.8"
+        },
+        "@ohos/ohpm": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+          "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/package.json",
+          "version_source": "package_metadata",
+          "name": "@ohos/ohpm",
+          "version": "26.0.0.630"
+        }
+      }
+    },
+    "cpf": {
+      "state": "incomplete",
+      "reason": "separate reviewed compiler/LLVM/sysroot/runtime inputs required"
+    },
+    "certifies_c07": false
+  },
+  "state": "archive_tree_match",
+  "elapsed_seconds": 5.9724617910105735
+}

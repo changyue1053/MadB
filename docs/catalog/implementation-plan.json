@@ -445,7 +445,7 @@
         "P05",
         "P06"
       ],
-      "notes": "正式CLI .851 / SDK26.0.0.105已安装；26项预检、Release混淆/HAR及r2引用/通知探针在API23 Release模拟器通过。r2修复异常返回值并核对131/131引用、51/51载荷；主env仍保留sentinel/TSFN，不等于完整关闭。ADR0010构建策略及真实两阶段主机衔接已验证，整仓检查通过；完整profile、候选/Lab整包待完成。保持in_progress/missing；合跑C05/C06/C07前告知Actions。"
+      "notes": "正式CLI .851/SDK26.0.0.105输入闭包已核对，26项预检与21项工具检查通过。API23 Release模拟器已完成基础调用、Release混淆/HAR、r2引用通知、r3显式runtime关闭及P06真实Worker异步清理；范围不等于完整SDK。ADR0010公共两阶段构建已验证，ADR0011共享原生协议进入实施；完整异步/state/event、profile、候选/Lab整包待完成。保持in_progress/missing；合跑C05/C06/C07前告知Actions。"
     },
     {
       "id": "C08",

@@ -22,6 +22,7 @@
 | Apache-2.0 项目自有内容许可默认 | 设计采用；C01 落实实际许可/权利核对 | [开源交付](02-open-source-and-contributing.md) |
 | 十二项实施契约与阶段准入 | 设计采用；按配置与证据验收 | [ADR-0009](../adr/0009-implementation-contracts-and-gates.md) |
 | 主机构建完成与独立目标运行分离 | C07 显式必需功能；原默认三阶段不变，本地集成已验证 | [ADR-0010](../adr/0010-external-runtime-verification.md) |
+| ArkTS 原生 SDK 协议复用 | C/C++/Rust 共享私有协议实现，各语言 provider 和验收独立；设计采用 | [ADR-0011](../adr/0011-arkts-native-protocol-owner.md) |
 
 ## 必需探针
 
