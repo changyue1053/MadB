@@ -103,7 +103,7 @@ def main():
         raise ValueError("host regression inputs changed during execution")
     (args.output / "receipt.json").write_text(json.dumps({
         "scope": "real Core/provider/worker host regression; registry Node-API return harness; no target claim",
-        "route": args.route, "checks_per_configuration": 22, "observer_stub_calls_per_configuration": 32,
+        "route": args.route, "checks_per_configuration": 23, "observer_stub_calls_per_configuration": 32,
         "configurations": ["Release", "ASan/UBSan"], "inputs": before,
         "commands": record(args.output / "commands.json"),
     }, indent=2) + "\n")

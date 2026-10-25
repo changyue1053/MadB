@@ -83,6 +83,14 @@ Status testDeliver(Runtime &r, uint64_t id) {
     }
     return delivery.invoke();
 }
+void testProgress(Runtime &r) {
+    const auto &t = r.test;
+    // The facade excludes stopped subscriptions from its listener traversal.
+    // Consume the released original lease during an owner-env runtime poll too.
+    // Core.invoke itself rejects a stopped listener before callback entry.
+    if (t.deliveryHeld && t.deliveryReleased && t.deliveryGeneration == r.generation)
+        testDeliver(r, t.deliveryTarget);
+}
 void testUnwind(Runtime &r) noexcept {
     r.test.deliveryArmed = false;
     if (r.test.deliveryHeld) {

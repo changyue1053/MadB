@@ -113,5 +113,59 @@ int main() {
     history[0].values[F::MechanismTeardownStarted] = 1;
     auto ack = testObserve(other, {first, 0, 0, 'r'}, true);
     require(ack && ack->frame[F::Phase] == 3 && ack->frame[54 + T::ReadMode] == 2);
-    std::cout << "11 registry checks passed; host NAPI return harness, no target claim\n";
+    // The facade skips stopped subscriptions. A released held lease must still
+    // be consumed by the actual runtime poll path, without another deliver call.
+    auto &slot = slots[2];
+    const auto epoch = ++nextEpoch;
+    slot.epoch = epoch;
+    slot.env = env;
+    slot.thread = std::this_thread::get_id();
+    slot.retired = false;
+    auto owner = std::make_shared<Runtime>(2, epoch, env, slot.audit);
+    slot.owner = owner;
+    owner->generation = 1;
+    owner->generationRetired = false;
+    require(GatewayProviderCreate(&owner->provider) == MP_OK);
+    owner->engine = std::make_unique<Engine>(testProvider(*owner));
+    int callbacks = 0, closeCallbacks = 0;
+    uint64_t subscription = 0;
+    require(owner->engine->observe(Stream::State,
+        Callback(&callbacks, [](void *p, Status, const void *) {
+            ++*static_cast<int *>(p);
+        }, [](void *) noexcept {}), subscription) == Status::Ok);
+    owner->test.deliveryTarget = subscription;
+    owner->test.deliveryGeneration = 1;
+    owner->test.deliveryArmed = true;
+    require(owner->engine->publish(Stream::State, {7, nullptr, 0}) == Status::Ok);
+    require(testDeliver(*owner, subscription) == Status::NotReady);
+    owner->engine->stop(subscription);
+    CloseWaiter closing;
+    require(owner->engine->watch_subscription_close(subscription,
+        Callback(&closeCallbacks, [](void *p, Status status, const void *) {
+            require(status == Status::Ok);
+            ++*static_cast<int *>(p);
+        }, [](void *) noexcept {}), closing) == Status::Ok);
+    const Handle runtimeHandle{epoch, 0, 0, 'r'};
+    require(pollFrame(env, runtimeHandle, true));
+    require(owner->test.deliveryHeld && !closing.ready());
+    owner->test.deliveryReleased = true;
+    require(pollFrame(env, runtimeHandle, false)); // Inspection cannot consume.
+    require(owner->test.deliveryHeld && !closing.ready());
+    require(pollFrame(env, runtimeHandle, true)); // No listener traversal remains.
+    require(!owner->test.deliveryHeld && owner->test.deliveryInvokes == 1);
+    require(closing.ready() && callbacks == 0);
+    require(closing.invoke() == Status::Ok && closeCallbacks == 1);
+    require(pollFrame(env, runtimeHandle, true));
+    require(owner->test.deliveryInvokes == 1 && callbacks == 0);
+    require(owner->engine->stats().waiters == 0);
+    owner->engine.reset();
+    mp_stats providerStats{};
+    require(owner->provider.stats(owner->provider.context, &providerStats) == MP_OK);
+    require(providerStats.live == 0 && providerStats.allocations == providerStats.releases);
+    require(owner->provider.destroy_context(owner->provider.context) == MP_OK);
+    owner->provider = {};
+    slot.owner.reset();
+    owner.reset();
+    slot.retired = true;
+    std::cout << "12 registry checks passed; host NAPI return harness, no target claim\n";
 }

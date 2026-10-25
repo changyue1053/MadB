@@ -674,7 +674,18 @@
  }
  } // namespace
  std::string identity() {
-@@ -470,6 +503,7 @@
+@@ -440,6 +473,10 @@
+     return true;
+ }
+ bool progress(const Owner &o, bool notify) {
++    if (notify && !o->envClosing && !o->shutting) {
++        Entry entry(o);
++        testProgress(*o);
++    }
+     if (o->envClosing)
+         discardObservations(o);
+     if ((o->envClosing || notify) && !closeNotifications(o))
+@@ -470,6 +507,7 @@
              }
      }
      if (o) {
@@ -682,7 +693,7 @@
          if (advance && !o->shutting && !progress(o, true))
              return error(env, "CloseAcknowledgementFailure");
          refresh(*o);
-@@ -527,7 +561,125 @@
+@@ -527,7 +565,125 @@
      }
      return result;
  }
@@ -808,7 +819,7 @@
      std::array<char, 224> id{};
      size_t len = 0, actual = 0;
      napi_valuetype type;
-@@ -550,12 +702,19 @@
+@@ -550,12 +706,19 @@
          if (part < 2 && input[start + 64] != ':')
              return error(env, "InvalidArgument");
      }
@@ -831,7 +842,7 @@
      if (napi_typeof(env, dispatcher, &type) != napi_ok || type != napi_function)
          return error(env, "InvalidArgument");
      size_t index = LiveRuntimes;
-@@ -576,12 +735,28 @@
+@@ -576,12 +739,28 @@
          if (s.epoch) {
              auto &old = history[historyNext++ % History];
              old.epoch = s.epoch;
@@ -860,7 +871,7 @@
          s.env = env;
          s.thread = std::this_thread::get_id();
          s.retired = false;
-@@ -609,7 +784,10 @@
+@@ -609,7 +788,10 @@
          slots[index].retired = true;
          return error(env, "ResourceExhausted");
      }
@@ -871,7 +882,7 @@
      {
          std::lock_guard<std::mutex> l(registryMutex);
          slots[index].owner = o;
-@@ -643,6 +821,20 @@
+@@ -643,6 +825,20 @@
      }
      ++o->audit.c[F::TsfnOwnerLive];
      ++o->audit.c[F::TsfnCreated];

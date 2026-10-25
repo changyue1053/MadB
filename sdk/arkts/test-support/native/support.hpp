@@ -28,6 +28,7 @@ void testGate(Runtime &, int phase) noexcept;
 void testSubmitted(Runtime &, uint64_t id) noexcept;
 void testUnwind(Runtime &) noexcept;
 Status testDeliver(Runtime &, uint64_t);
+void testProgress(Runtime &);
 std::array<int64_t, 8> testDeliverySnapshot(const Runtime &) noexcept;
 int testBeforeClone(Runtime &) noexcept;
 Provider testProvider(Runtime &) noexcept;
