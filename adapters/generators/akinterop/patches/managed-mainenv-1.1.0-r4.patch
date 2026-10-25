@@ -1,0 +1,1755 @@
+diff --git a/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h b/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h
+--- a/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h
++++ b/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h
+@@ -28,6 +28,37 @@ napi_status registerEnvCleanupHook(napi_env env, void (*callback)(void *), void
+ 
+ void releaseThreadSafeFunction(napi_threadsafe_function tsfn);
+ 
++// managed-akinterop-mainenv-v1. Rebuild cinterop and runtime together.
++// Token reservation precedes Kotlin StableRef allocation. Registry lock must
++// cover reserve/submit and release; these functions never wait for JavaScript.
++void *createManagedThreadSafeFunction(napi_env env, const char *name, size_t capacity);
++void *reserveManagedThreadSafeFunction(void *handle);
++void cancelManagedThreadSafeFunctionReservation(void *token);
++// 0 accepted; 1 queue full; 2 closing; 3 invalid input; 4 ownership uncertain.
++// 1/2/3 leave Kotlin payload unconsumed; 4 retains it until a runtime callback.
++int submitManagedThreadSafeFunction(void *token, void *invoke, void *dispose, void *data);
++void releaseManagedThreadSafeFunction(void *handle);
++// 0 outstanding, 1 allocated, 2 released, 3 created, 4 finalized,
++// 5 null-env disposal, 6 uncertain (monotonic), 7 rejected, 8 native API errors,
++// 9 contexts created, 10 contexts destroyed (independent of finalize ordering).
++uint64_t managedThreadSafeFunctionMetric(int metric);
++const char *managedInteropPatchVersion(void);
++// r3 internal shutdown integration ABI; not a generated application SDK surface.
++// 0 phase; 1 active entries; 2 rejected entries; 3 Busy; 4 accepted requests;
++// 5 refs owned; 6 refs created; 7 refs released; 8 descriptors owned;
++// 9 descriptors created; 10 descriptors released; 11 hooks owned; 12 hooks added;
++// 13 hooks removed explicitly; 14 hooks actually invoked; 15 failures;
++// 16 unsupported requests; 17 final cleanup snapshot published;
++// 18 monotonic event sequence; 19 Open; 20 Closing gate; 21 refs/drain snapshot;
++// 22 finalizer holder released; 23 last context destroyed (sequence numbers);
++// 24 class constructor refs owned; 25 created; 26 released.
++void managedShutdownSet(int metric, uint64_t value);
++void managedShutdownAdd(int metric, int64_t delta);
++uint64_t managedShutdownMetric(int metric);
++// 0 uninitialized, 1 open, 2 closing, 3 awaiting finalizer, 4 closed, 5 failed.
++// Pure read: never drives cleanup and does not count itself as an active entry.
++int managedShutdownState(void);
++
+ #ifdef __cplusplus
+ }
+ #endif
+diff --git a/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp b/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp
+--- a/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp
++++ b/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp
+@@ -25,12 +25,14 @@ struct CallbackData {
+ napi_value
+ callFunction(napi_env env, napi_value recv, napi_value func, int size, const napi_value *argv,
+              napi_value *exceptionObj) {
+-    napi_value result;
++    // NAPI error returns need not write result; never read an indeterminate pointer.
++    napi_value result = nullptr;
++    if (exceptionObj != nullptr) *exceptionObj = nullptr;
+     auto status = napi_call_function(env, recv, func, size, argv, &result);
+     if (exceptionObj != nullptr && status == napi_pending_exception) {
+         napi_get_and_clear_last_exception(env, exceptionObj);
+     }
+-    return result;
++    return status == napi_ok ? result : nullptr;
+ }
+ 
+ napi_value createFunction(napi_env env, const char *name, napi_callback callback, void *release) {
+@@ -147,3 +149,189 @@ napi_status registerEnvCleanupHook(napi_env env, void (*callback)(void *), void
+ void releaseThreadSafeFunction(napi_threadsafe_function tsfn) {
+     napi_release_threadsafe_function(tsfn, napi_tsfn_abort);
+ }
++
++
++// Isolated owned-data ABI for the restricted main-env profile. Legacy helpers
++// above remain available, but the patched runtime registry never enters them.
++#include <atomic>
++#include <memory>
++#include <new>
++#include <thread>
++
++namespace {
++std::atomic<uint64_t> managedMetrics[11]{};
++std::atomic<uint64_t> shutdownMetrics[27]{};
++struct ManagedContext {
++    napi_threadsafe_function tsfn = nullptr;
++    const size_t capacity;
++    const napi_env ownerEnv;
++    const std::thread::id ownerThread;
++    std::atomic<size_t> outstanding{0};
++    std::atomic<bool> closing{false}; // callbacks may observe closure concurrently
++    bool runtimeClosing = false;
++    explicit ManagedContext(size_t limit, napi_env env)
++        : capacity(limit), ownerEnv(env), ownerThread(std::this_thread::get_id()) { ++managedMetrics[9]; }
++    ~ManagedContext() {
++        ++managedMetrics[10];
++        shutdownMetrics[23].store(shutdownMetrics[18].fetch_add(1) + 1);
++    }
++};
++using ManagedHandle = std::shared_ptr<ManagedContext>;
++struct ManagedData {
++    ManagedHandle context;
++    void *invoke = nullptr;
++    void *dispose = nullptr;
++    void *data = nullptr;
++    explicit ManagedData(ManagedHandle owner) : context(std::move(owner)) {
++        ++managedMetrics[0]; ++managedMetrics[1];
++    }
++    ~ManagedData() {
++        --context->outstanding; --managedMetrics[0]; ++managedMetrics[2];
++    }
++};
++void managedFinalize(napi_env, void *data, void *) {
++    // A runtime may finalize before draining null-env callbacks. Each queued
++    // ManagedData has its own shared context, independent of this holder.
++    delete static_cast<ManagedHandle *>(data);
++    shutdownMetrics[22].store(shutdownMetrics[18].fetch_add(1) + 1);
++    ++managedMetrics[4]; // Publish only after this finalizer holder was released.
++}
++void managedCallJs(napi_env env, napi_value, void *, void *raw) {
++    std::unique_ptr<ManagedData> item(static_cast<ManagedData *>(raw));
++    if (!item) return;
++    auto dispose = reinterpret_cast<void (*)(void *)>(item->dispose);
++    if (env == nullptr) {
++        ++managedMetrics[5];
++        dispose(item->data);
++        return; // absolutely no NAPI access and no user invocation
++    }
++    if (item->context->closing.load()) {
++        dispose(item->data); return; // stopped work never invokes user code
++    }
++    if (env != item->context->ownerEnv || std::this_thread::get_id() != item->context->ownerThread) {
++        ++managedMetrics[8]; dispose(item->data); return;
++    }
++    napi_handle_scope scope = nullptr;
++    if (napi_open_handle_scope(env, &scope) != napi_ok) {
++        ++managedMetrics[8]; dispose(item->data); return;
++    }
++    // Kotlin invoke disposes its StableRef before invoking and catches Throwable.
++    reinterpret_cast<void *(*)(void *)>(item->invoke)(item->data);
++    if (napi_close_handle_scope(env, scope) != napi_ok) ++managedMetrics[8];
++}
++}
++
++void *createManagedThreadSafeFunction(napi_env env, const char *name, size_t capacity) {
++    if (env == nullptr || capacity == 0) return nullptr;
++    ManagedHandle context;
++    try {
++        context = std::make_shared<ManagedContext>(capacity, env);
++    } catch (const std::bad_alloc &) {
++        return nullptr; // never unwind a C++ exception through Kotlin cinterop
++    }
++    auto *finalizer = new (std::nothrow) ManagedHandle(context);
++    auto *handle = new (std::nothrow) ManagedHandle(context);
++    if (!finalizer || !handle) { delete finalizer; delete handle; return nullptr; }
++    napi_value workName = nullptr;
++    napi_status status = napi_create_string_utf8(env, name, NAPI_AUTO_LENGTH, &workName);
++    if (status == napi_ok) {
++        status = napi_create_threadsafe_function(env, nullptr, nullptr, workName,
++            capacity, 1, finalizer, managedFinalize, nullptr, managedCallJs, &context->tsfn);
++    }
++    if (status != napi_ok) {
++        ++managedMetrics[8]; delete finalizer; delete handle; return nullptr;
++    }
++    ++managedMetrics[3];
++    if (napi_unref_threadsafe_function(env, context->tsfn) != napi_ok) {
++        ++managedMetrics[8];
++        napi_release_threadsafe_function(context->tsfn, napi_tsfn_abort);
++        delete handle; return nullptr; // finalizer remains runtime owned
++    }
++    return handle;
++}
++
++void *reserveManagedThreadSafeFunction(void *raw) {
++    auto *handle = static_cast<ManagedHandle *>(raw);
++    if (!handle || (*handle)->closing) { ++managedMetrics[7]; return nullptr; }
++    auto &context = **handle;
++    size_t count = context.outstanding.load();
++    do {
++        if (count >= context.capacity) { ++managedMetrics[7]; return nullptr; }
++    } while (!context.outstanding.compare_exchange_weak(count, count + 1));
++    auto *item = new (std::nothrow) ManagedData(*handle);
++    if (!item) { --context.outstanding; ++managedMetrics[7]; }
++    return item;
++}
++
++void cancelManagedThreadSafeFunctionReservation(void *token) {
++    delete static_cast<ManagedData *>(token);
++}
++
++int submitManagedThreadSafeFunction(void *raw, void *invoke, void *dispose, void *data) {
++    auto *item = static_cast<ManagedData *>(raw);
++    if (!item || !invoke || !dispose || !data) { delete item; ++managedMetrics[7]; return 3; }
++    item->invoke = invoke; item->dispose = dispose; item->data = data;
++    // Keep context alive separately: a successful submit may race the callback
++    // deleting item before this function has returned.
++    auto context = item->context;
++    if (context->closing) { delete item; ++managedMetrics[7]; return 2; }
++    napi_status status = napi_call_threadsafe_function(context->tsfn, item, napi_tsfn_nonblocking);
++    if (status == napi_ok) return 0;
++    if (status == napi_queue_full || status == napi_closing) {
++        if (status == napi_closing) { context->closing = true; context->runtimeClosing = true; }
++        delete item; ++managedMetrics[7];
++        return status == napi_queue_full ? 1 : 2;
++    }
++    // OHOS can append to its queue before uv_async_send reports failure. Do not
++    // touch item or dispose data here. Reject all subsequent admissions and keep
++    // this monotonic failure visible even if a later callback reclaims it.
++    context->closing = true;
++    ++managedMetrics[6]; ++managedMetrics[8];
++    return 4;
++}
++
++void releaseManagedThreadSafeFunction(void *raw) {
++    std::unique_ptr<ManagedHandle> handle(static_cast<ManagedHandle *>(raw));
++    if (!handle) return;
++    auto context = *handle;
++    context->closing = true;
++    // After napi_closing the producer must never use that TSFN again.
++    if (!context->runtimeClosing) {
++        napi_status status = napi_release_threadsafe_function(context->tsfn, napi_tsfn_abort);
++        if (status != napi_ok && status != napi_closing) ++managedMetrics[8];
++    }
++}
++uint64_t managedThreadSafeFunctionMetric(int metric) {
++    return metric >= 0 && metric < 11 ? managedMetrics[metric].load() : 0;
++}
++const char *managedInteropPatchVersion(void) { return "managed-akinterop-mainenv-r4"; }
++
++// Internal integration/test-support ABI. Fixed counters, no env/TLS/JS access.
++void managedShutdownSet(int metric, uint64_t value) {
++    if (metric < 0 || metric >= 27) return;
++    if (metric == 0 && value >= 1 && value <= 3) {
++        shutdownMetrics[18 + value].store(shutdownMetrics[18].fetch_add(1) + 1);
++    }
++    shutdownMetrics[metric].store(value);
++}
++void managedShutdownAdd(int metric, int64_t delta) {
++    if (metric >= 0 && metric < 27) shutdownMetrics[metric].fetch_add(delta);
++}
++uint64_t managedShutdownMetric(int metric) {
++    return metric >= 0 && metric < 27 ? shutdownMetrics[metric].load() : 0;
++}
++int managedShutdownState(void) {
++    const auto phase = shutdownMetrics[0].load();
++    if (phase != 3) return static_cast<int>(phase);
++    if (shutdownMetrics[15].load() || managedMetrics[6].load() || managedMetrics[8].load()) return 5;
++    // phase 3 is published after the owner wrote every final cleanup snapshot.
++    if (shutdownMetrics[1].load() == 0 && shutdownMetrics[5].load() == 0 &&
++        shutdownMetrics[6].load() == shutdownMetrics[7].load() && shutdownMetrics[8].load() == 0 &&
++        shutdownMetrics[9].load() == shutdownMetrics[10].load() && shutdownMetrics[11].load() == 0 &&
++        shutdownMetrics[12].load() == shutdownMetrics[13].load() && shutdownMetrics[17].load() == 1 &&
++        shutdownMetrics[24].load() == 0 && shutdownMetrics[25].load() == shutdownMetrics[26].load() &&
++        managedMetrics[0].load() == 0 && managedMetrics[1].load() == managedMetrics[2].load() &&
++        managedMetrics[3].load() > 0 && managedMetrics[3].load() == managedMetrics[4].load() &&
++        managedMetrics[9].load() == managedMetrics[10].load()) return 4;
++    return 3;
++}
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt
+@@ -73,6 +73,9 @@ object FFIConstructorRegistry : SynchronizedObject() {
+     private val fqnToJs = atomic<Map<String, String>>(emptyMap())
+ 
+     fun storeConstructor(className: String, env: napi_env, constructor: napi_value) {
++        check(!OhosFFIContext.managedShutdownGlobalsOnly) {
++            "CapabilityUnsupported: managed shutdown constructor registry"
++        }
+         val ref = constructor.createRef(env)
+ 
+         synchronized(this) {
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt
+@@ -16,7 +16,16 @@
+ package org.cpf.kotlin.akinterop
+ 
+ import org.cpf.kotlin.akinterop.generate.KNapiRegisterExports
+-import org.cpf.kotlin.akinterop.invoke.KNapiEnvHolder
++import org.cpf.kotlin.akinterop.generate.KNapiClassDefiner
++import org.cpf.kotlin.akinterop.generate.KSPInterface
++import org.cpf.kotlin.akinterop.generate.KSPClassCreatorRegister
++import org.cpf.kotlin.akinterop.generate.KSPGlobalFunctionRegister
++import org.cpf.kotlin.akinterop.generate.KNapiSuspendInvokable
++import platform.cpf.kotlin.akinterop.managedShutdownSet
++import platform.cpf.kotlin.akinterop.managedShutdownAdd
++import platform.cpf.kotlin.akinterop.managedShutdownMetric
++import platform.cpf.kotlin.akinterop.managedThreadSafeFunctionMetric
++import org.cpf.kotlin.akinterop.types.NapiRefCleaner
+ import platform.cpf.kotlin.akinterop.get_tid
+ import platform.cpf.kotlin.akinterop.get_pid
+ import platform.cpf.kotlin.akinterop.hasCallsiteInfoSupport
+@@ -33,7 +42,10 @@ private var threadLocalEnv: napi_env? = null
+  * values are locked after the first main-thread init.
+  */
+ data class OhosFFIConfig(
+-    val icEnabled: Boolean = true
++    val icEnabled: Boolean = true,
++    // Experimental coordinated-shutdown subset: global non-suspend exports and
++    // owned ArkProxy notifications only; no classes/function binders/Promises.
++    val managedShutdownGlobalsOnly: Boolean = false
+ )
+ 
+ object OhosFFIContext {
+@@ -47,6 +59,11 @@ object OhosFFIContext {
+     private var defaultConfig: OhosFFIConfig = OhosFFIConfig()
+     private var config: OhosFFIConfig = defaultConfig
+     private var configLocked: Boolean = false
++    private var initStarted: Boolean = false
++    private var envClosed: Boolean = false
++    private var shutdownRequested = false
++    private var activeEntries = 0
++    val managedShutdownGlobalsOnly: Boolean get() = config.managedShutdownGlobalsOnly
+ 
+     val icSupported: Boolean by lazy { hasCallsiteInfoSupport() }
+     val icEnabled: Boolean
+@@ -56,10 +73,13 @@ object OhosFFIContext {
+         get() = "$bundleName/$moduleName"
+ 
+     val tlsEnv: napi_env
+-        get() = threadLocalEnv ?: throw RuntimeException("[FFI] current thread doesn't have a napi_env")
++        get() {
++            check(!envClosed) { "ManagedEnvClosed" }
++            return threadLocalEnv ?: throw RuntimeException("[FFI] current thread doesn't have a napi_env")
++        }
+ 
+     val tlsEnvOrMain: napi_env
+-        get() = threadLocalEnv ?: mainEnv
++        get() = tlsEnv
+ 
+     fun configure(config: OhosFFIConfig) {
+         check(!configLocked) {
+@@ -70,6 +90,11 @@ object OhosFFIContext {
+         this.config = config
+     }
+ 
++    internal fun requireRecordInstallPhase() {
++        check(get_tid() == mainTid && !initStarted && !configLocked && managedShutdownGlobalsOnly) { "ManagedRecordInstallPhase" }
++        check(KSPClassCreatorRegister.creators.isEmpty() && KSPGlobalFunctionRegister.methods.isEmpty()) { "ManagedRecordInstallBeforeMetadata" }
++    }
++
+     fun init(
+         env: napi_env,
+         exports: napi_value,
+@@ -77,22 +102,100 @@ object OhosFFIContext {
+         moduleName: String,
+         config: OhosFFIConfig = defaultConfig
+     ) {
+-        if (get_tid() == mainTid) {
+-            if (configLocked && this.config != config) {
+-                throw IllegalStateException(
+-                    "[FFI] OhosFFIContext config is immutable after initialization: " +
+-                        "current=${this.config}, requested=$config"
+-                )
++        check(get_tid() == mainTid) { "CapabilityUnsupported: Worker env" }
++        check(!initStarted) { "ManagedInteropAlreadyInitialized" }
++        initStarted = true // fail closed even if initialization only partly succeeds
++        this.config = config
++        configLocked = true
++        if (config.managedShutdownGlobalsOnly) {
++            check(KSPClassCreatorRegister.creators.all { creator ->
++                val type = creator.create()
++                org.cpf.kotlin.akinterop.generate.ManagedRecordCodec.matchesMetadata(type) ||
++                    (type is KSPInterface && type.constructors.isEmpty() && type.properties.isEmpty() &&
++                    type.methods.values.none { it.invokable is KNapiSuspendInvokable })
++            }) { "CapabilityUnsupported: managed shutdown classes" }
++            check(KSPGlobalFunctionRegister.methods.values.none { it.invokable is KNapiSuspendInvokable }) {
++                "CapabilityUnsupported: managed shutdown suspend/Promise"
+             }
+-            this.config = config
+-            configLocked = true
+-            mainEnv = env
+-            this.bundleName = bundle
+-            this.moduleName = moduleName
+-            KNapiEnvHolder.initEnv(env)
+         }
+-        KNapiRegisterExports(env, exports)
++        mainEnv = env
++        this.bundleName = bundle
++        this.moduleName = moduleName
+         threadLocalEnv = env
+-        tsfnRegister.registerThreadSafeFunctionIfNeed(env)
++        try {
++            NapiRefCleaner.initialize(env)
++            tsfnRegister.registerThreadSafeFunctionIfNeed(env)
++            KNapiRegisterExports(env, exports)
++            managedShutdownSet(0, 1uL)
++        } catch (failure: Throwable) {
++            envClosed = true
++            managedShutdownAdd(15, 1)
++            managedShutdownSet(0, 5uL)
++            threadLocalEnv = null
++            throw failure
++        }
++    }
++
++    // Each generated NAPI entry obtains this lease BEFORE reading callback data.
++    // Owner-only state: reject another thread before reading process owner fields.
++    internal fun enterManagedCall(env: napi_env?): Boolean {
++        if (get_tid() != mainTid || !initStarted || !this::mainEnv.isInitialized || envClosed || shutdownRequested || env != mainEnv) {
++            managedShutdownAdd(2, 1)
++            return false
++        }
++        activeEntries++
++        managedShutdownSet(1, activeEntries.toULong())
++        return true
++    }
++
++    internal fun leaveManagedCall() {
++        activeEntries--
++        managedShutdownSet(1, activeEntries.toULong())
++    }
++
++    /** Internal integration API. Caller first stops/ACKs its own producers.
++     * Busy leaves the runtime open so business work can still drain. This is
++     * not a general Engine.close or a replacement for business disposal ACKs.
++     * 0 accepted/idempotent; 1 Busy; 2 Unsupported/WrongOwner; 3 cleanup failure.
++     */
++    fun requestManagedShutdown(env: napi_env): Int {
++        if (get_tid() != mainTid || !initStarted || !this::mainEnv.isInitialized || env != mainEnv || !managedShutdownGlobalsOnly) {
++            managedShutdownAdd(16, 1); return 2
++        }
++        if (shutdownRequested) return if (managedShutdownMetric(15) == 0uL) 0 else 3
++        if (envClosed) { managedShutdownAdd(16, 1); return 2 }
++        if (activeEntries != 0) {
++            managedShutdownAdd(3, 1); return 1
++        }
++        if (managedThreadSafeFunctionMetric(6) != 0uL || managedThreadSafeFunctionMetric(8) != 0uL) {
++            managedShutdownAdd(15, 1); return 3
++        }
++        val admission = tsfnRegister.beginShutdown(env)
++        if (admission != 0) {
++            if (admission == 1) managedShutdownAdd(3, 1) else managedShutdownAdd(15, 1)
++            return admission
++        }
++        shutdownRequested = true
++        managedShutdownAdd(4, 1)
++        // No business entry or accepted native payload remains. Remove each
++        // registered hook before disposing its data; actual hooks remain distinct.
++        try { tsfnRegister.shutdown(env) } catch (_: Throwable) { managedShutdownAdd(15, 1) }
++        try { KNapiClassDefiner.shutdown(env) } catch (_: Throwable) { managedShutdownAdd(15, 1) }
++        try { NapiRefCleaner.shutdown() } catch (_: Throwable) { managedShutdownAdd(15, 1) }
++        KNapiClassDefiner.publishShutdownAudit()
++        NapiRefCleaner.publishShutdownAudit()
++        managedShutdownSet(17, 1uL)
++        managedShutdownSet(0, 3uL) // native getter alone observes finalizer/context ACK
++        return if (managedShutdownMetric(15) == 0uL) 0 else 3
++    }
++
++    internal fun hookAdded() { managedShutdownAdd(11, 1); managedShutdownAdd(12, 1) }
++    internal fun hookRemoved() { managedShutdownAdd(11, -1); managedShutdownAdd(13, 1) }
++    internal fun hookInvoked() { managedShutdownAdd(11, -1); managedShutdownAdd(14, 1) }
++    internal fun cleanupFailure() { managedShutdownAdd(15, 1) }
++
++    internal fun managedEnvClosed() {
++        envClosed = true
++        threadLocalEnv = null
+     }
+ }
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt
+@@ -20,6 +20,7 @@ package org.cpf.kotlin.akinterop.generate
+ import kotlinx.cinterop.ExperimentalForeignApi
+ import org.cpf.kotlin.akinterop.types.ArkObject
+ import org.cpf.kotlin.akinterop.types.ArkValue
++import org.cpf.kotlin.akinterop.types.tsfnRegister
+ import org.cpf.kotlin.akinterop.types.EMPTY_ArkObject
+ import org.cpf.kotlin.akinterop.types.ProxyReleasedException
+ import kotlin.experimental.ExperimentalNativeApi
+@@ -34,10 +35,31 @@ object ArkProxyInvokerContext {
+         returnType: KType,
+     ): Any? {
+         requireBoundRef(ref, "invoke method '$method'")
+-        return ref.callMethod<Any?>(method, Array(params.size) { index ->
+-            ArkValue(ref.env, convertKTValueToJSValue(ref.env, params[index], paramsType[index])!!)
+-        }) { e, result ->
+-            convertJSValueToKTValue(e, result, returnType)
++        val arguments = ArrayList<ArkValue>(params.size)
++        var invocationFailure: Throwable? = null
++        try {
++            params.indices.forEach { index ->
++                arguments.add(ArkValue(ref.env, convertKTValueToJSValue(ref.env, params[index], paramsType[index])!!))
++            }
++            return ref.callMethod<Any?>(method, arguments.toTypedArray()) { e, result ->
++                convertJSValueToKTValue(e, result, returnType)
++            }
++        } catch (failure: Throwable) {
++            invocationFailure = failure
++            throw failure
++        } finally {
++            // These are bridge-owned temporaries, not user-owned proxy refs.
++            var cleanupFailure: Throwable? = null
++            arguments.forEach {
++                try { it.close() } catch (failure: Throwable) {
++                    if (cleanupFailure == null) cleanupFailure = failure
++                    else cleanupFailure!!.addSuppressed(failure)
++                }
++            }
++            cleanupFailure?.let { failure ->
++                if (invocationFailure != null) invocationFailure!!.addSuppressed(failure)
++                else throw failure
++            }
+         }
+     }
+ 
+@@ -78,10 +100,13 @@ object ArkProxyInvokerContext {
+     }
+ 
+     private fun requireBoundRef(ref: ArkObject, operation: String) {
++        // Reject before EMPTY_ArkObject lazy initialization or argument conversion
++        // can create a NAPI value on the wrong thread.
++        tsfnRegister.requireActiveThread(ref.tid)
+         if (ref == EMPTY_ArkObject || ref.isNotAvailable()) {
+             throw ProxyReleasedException(
+                 "The napi_ref of proxy is empty, cannot $operation. "
+             )
+         }
+     }
+-}
+\ No newline at end of file
++}
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt
+@@ -43,40 +43,132 @@ internal fun KNapiEnvCleanupHook(arg: COpaquePointer?) {
+     if (arg == null) return
+     val ref = arg.asStableRef<KNapiSubthreadEnvHolder>()
+     val env = ref.get().env
+-    ref.dispose()
+-    KNapiClassDefiner.unregisterEnv(env)
++    try { KNapiClassDefiner.hookFired(env) } catch (_: Throwable) {
++        org.cpf.kotlin.akinterop.OhosFFIContext.cleanupFailure()
++    } finally { ref.dispose() }
+ }
+ 
+ /**
+  * 维护所有已被定义的 KNapiDefinedClass
+  */
++private class ManagedClassBucket {
++    val classes = mutableMapOf<String, KNapiDefinedClass>()
++    // Preallocated cleanup slots precede all descriptor StableRef creation.
++    val descriptors = arrayOfNulls<StableRef<KNapiSymbolDescriptor>>(256)
++    var nextDescriptor = 0
++    var hook: StableRef<KNapiSubthreadEnvHolder>? = null
++}
++
+ object KNapiClassDefiner {
+-    private var classesMap = mutableMapOf<napi_env?, MutableMap<String, KNapiDefinedClass>>()
++    private val buckets = mutableMapOf<napi_env?, ManagedClassBucket>()
++    private var descriptorCreated = 0L
++    private var descriptorReleased = 0L
++    private var failures = 0L
++    private var classRefsCreated = 0L
++    private var classRefsReleased = 0L
++    internal fun noteClassRefCreated() { classRefsCreated++ }
++
++    private fun requireOwner(env: napi_env?) {
++        check(platform.cpf.kotlin.akinterop.get_tid() == org.cpf.kotlin.akinterop.OhosFFIContext.mainTid) {
++            "CapabilityUnsupported: Worker class registry"
++        }
++        check(env != null && env == org.cpf.kotlin.akinterop.OhosFFIContext.tlsEnv) { "ManagedClassForeignEnv" }
++    }
+ 
+     fun getByName(env: napi_env?, name: String): KNapiDefinedClass? {
+-        return classesMap[env]?.get(name)
++        requireOwner(env)
++        return buckets[env]?.classes?.get(name)
++    }
++
++    fun ensureClassCapacity(env: napi_env?, name: String) {
++        requireOwner(env)
++        val bucket = buckets[env] ?: error("ManagedClassEnvNotRegistered")
++        check(bucket.classes.size < 32 && name !in bucket.classes) { "ManagedClassCapacityOrDuplicate" }
+     }
+ 
+     fun add(env: napi_env?, name: String, clazz: KNapiDefinedClass) {
+-        if (classesMap[env] == null) {
+-            classesMap[env] = mutableMapOf()
++        ensureClassCapacity(env, name)
++        buckets.getValue(env).classes[name] = clazz
++    }
++
++    fun ownDescriptor(env: napi_env?, value: KNapiSymbolDescriptor): COpaquePointer {
++        requireOwner(env)
++        val bucket = buckets[env] ?: error("ManagedClassEnvNotRegistered")
++        check(bucket.nextDescriptor < bucket.descriptors.size) { "ManagedDescriptorCapacityExceeded" }
++        val index = bucket.nextDescriptor++
++        val ref = try { StableRef.create(value) } catch (failure: Throwable) {
++            bucket.nextDescriptor--
++            throw failure
+         }
+-        classesMap[env]?.set(name, clazz)
++        bucket.descriptors[index] = ref
++        descriptorCreated++
++        return ref.asCPointer()
+     }
+ 
+     fun registerEnv(env: napi_env?) {
+-        classesMap[env] = mutableMapOf()
+-        napi_add_env_cleanup_hook(env, staticCFunction(::KNapiEnvCleanupHook), StableRef.create(KNapiSubthreadEnvHolder(env)).asCPointer())
++        requireOwner(env)
++        check(buckets.isEmpty() && env !in buckets) { "ManagedClassEnvAlreadyRegistered" }
++        val bucket = ManagedClassBucket()
++        val hook = StableRef.create(KNapiSubthreadEnvHolder(env))
++        val status = napi_add_env_cleanup_hook(env, staticCFunction(::KNapiEnvCleanupHook), hook.asCPointer())
++        if (status != platform.ArkTS.ArkTS_Napi_NativeModule.napi_ok) {
++            hook.dispose()
++            error("ManagedClassCleanupHookFailed: $status")
++        }
++        bucket.hook = hook
++        org.cpf.kotlin.akinterop.OhosFFIContext.hookAdded()
++        buckets[env] = bucket
++    }
++
++    internal fun hookFired(env: napi_env?) {
++        buckets[env]?.hook = null
++        org.cpf.kotlin.akinterop.OhosFFIContext.hookInvoked()
++        unregisterEnv(env)
++    }
++
++    internal fun shutdown(env: napi_env) {
++        val hook = buckets[env]?.hook
++        if (hook != null) {
++            if (platform.ArkTS.ArkTS_Napi_NativeModule.napi_remove_env_cleanup_hook(
++                    env, staticCFunction(::KNapiEnvCleanupHook), hook.asCPointer()) == platform.ArkTS.ArkTS_Napi_NativeModule.napi_ok) {
++                buckets[env]?.hook = null
++                hook.dispose(); org.cpf.kotlin.akinterop.OhosFFIContext.hookRemoved()
++            } else org.cpf.kotlin.akinterop.OhosFFIContext.cleanupFailure()
++        }
++        unregisterEnv(env)
++    }
++
++    internal fun publishShutdownAudit() {
++        platform.cpf.kotlin.akinterop.managedShutdownSet(8, (descriptorCreated - descriptorReleased).toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(9, descriptorCreated.toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(10, descriptorReleased.toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(24, (classRefsCreated - classRefsReleased).toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(25, classRefsCreated.toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(26, classRefsReleased.toULong())
++        if (failures != 0L) org.cpf.kotlin.akinterop.OhosFFIContext.cleanupFailure()
+     }
+ 
+     fun unregisterEnv(env: napi_env?) {
+-        classesMap[env]?.forEach { (_, defined) ->
++        val bucket = buckets.remove(env) ?: return
++        // Env cleanup forbids later JS entries; coordinated shutdown closes the
++        // shared pre-descriptor entry gate and waits for every entry lease first.
++        // Instance finalizers own distinct StableRefs and do not use descriptors.
++        bucket.classes.values.forEach { defined ->
+             val consref = defined.consref
+             if (consref != null) {
+-                napi_delete_reference(env, consref.value)
++                if (napi_delete_reference(env, consref.value) != platform.ArkTS.ArkTS_Napi_NativeModule.napi_ok) failures++
++                else classRefsReleased++
+                 nativeHeap.free(consref.ptr)
+             }
+         }
+-        classesMap.remove(env)
++        bucket.descriptors.forEach { ref ->
++            if (ref != null) { ref.dispose(); descriptorReleased++ }
++        }
+     }
+-}
+\ No newline at end of file
++
++    fun managedAudit(): Map<String, Long> = mapOf(
++        "descriptorCreated" to descriptorCreated, "descriptorReleased" to descriptorReleased,
++        "descriptorCapacity" to 256L, "classCapacity" to 32L,
++        "classRefsCreated" to classRefsCreated, "classRefsReleased" to classRefsReleased,
++        "classRefsOwned" to (classRefsCreated - classRefsReleased), "failures" to failures)
++}
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt
+@@ -49,7 +49,10 @@ import kotlin.reflect.typeOf
+ /**
+  * 构造函数统一入口
+  */
+-internal fun KNapiConstructorEntry(env: napi_env?, info: napi_callback_info?): napi_value? {
++internal fun KNapiConstructorEntry(env: napi_env?, info: napi_callback_info?): napi_value? =
++    managedNapiEntry(env, false) { KNapiConstructorEntryBody(env, info) }
++
++private fun KNapiConstructorEntryBody(env: napi_env?, info: napi_callback_info?): napi_value? {
+     val aj = getArgsAndDataByCBInfo(env, info)
+     if (aj == null) {
+         KNapiExceptionUtil.triggerNapiFastFail(env, "getArgsAndDataByCBInfo failed")
+@@ -145,7 +148,10 @@ fun KNapiDestructorEntry(env: napi_env?, data: COpaquePointer?, hint: COpaquePoi
+ /**
+  * 类方法统一入口
+  */
+-internal fun KNapiServiceInvokerEntry(env: napi_env?, info: napi_callback_info?): napi_value? {
++internal fun KNapiServiceInvokerEntry(env: napi_env?, info: napi_callback_info?): napi_value? =
++    managedNapiEntry(env, false) { KNapiServiceInvokerEntryBody(env, info) }
++
++private fun KNapiServiceInvokerEntryBody(env: napi_env?, info: napi_callback_info?): napi_value? {
+ 
+     val aj = getArgsAndDataByCBInfo(env, info)
+     if (aj == null) {
+@@ -241,7 +247,10 @@ internal fun KNapiServiceInvokerEntry(env: napi_env?, info: napi_callback_info?)
+ /**
+  * 类属性 getter 统一入口
+  */
+-internal fun KNapiServiceGetterEntry(env: napi_env?, info: napi_callback_info?): napi_value? {
++internal fun KNapiServiceGetterEntry(env: napi_env?, info: napi_callback_info?): napi_value? =
++    managedNapiEntry(env, false) { KNapiServiceGetterEntryBody(env, info) }
++
++private fun KNapiServiceGetterEntryBody(env: napi_env?, info: napi_callback_info?): napi_value? {
+     val aj = getArgsAndDataByCBInfo(env, info)
+ 
+     if (aj == null) {
+@@ -336,7 +345,10 @@ internal fun KNapiServiceGetterEntry(env: napi_env?, info: napi_callback_info?):
+ /**
+  * 类属性 setter 统一入口
+  */
+-internal fun KNapiServiceSetterEntry(env: napi_env?, info: napi_callback_info?): napi_value? {
++internal fun KNapiServiceSetterEntry(env: napi_env?, info: napi_callback_info?): napi_value? =
++    managedNapiEntry(env, false) { KNapiServiceSetterEntryBody(env, info) }
++
++private fun KNapiServiceSetterEntryBody(env: napi_env?, info: napi_callback_info?): napi_value? {
+     val aj = getArgsAndDataByCBInfo(env, info)
+ 
+     if (aj == null) {
+@@ -431,7 +443,10 @@ internal fun KNapiServiceSetterEntry(env: napi_env?, info: napi_callback_info?):
+ /**
+  * 全局函数、变量、静态方法、属性统一访问入口
+  */
+-internal fun KNapiGlobalInvokerEntry(env: napi_env?, info: napi_callback_info?): napi_value? {
++internal fun KNapiGlobalInvokerEntry(env: napi_env?, info: napi_callback_info?): napi_value? =
++    managedNapiEntry(env) { KNapiGlobalInvokerEntryBody(env, info) }
++
++private fun KNapiGlobalInvokerEntryBody(env: napi_env?, info: napi_callback_info?): napi_value? {
+     val ad = getArgsAndDataByCBInfo(env, info)
+ 
+     /**
+@@ -479,6 +494,10 @@ internal fun KNapiGlobalInvokerEntry(env: napi_env?, info: napi_callback_info?):
+         val invokable = method.invokable as KNapiInvokable
+         val params = convertJSArgsToKTParams(env, args, method.paramConverters)
+         return convertKTValueToJSValue(env, invokable.invoke(*params), method.returnConverter)
++    } catch (e: ManagedRecordCodecException) {
++        // Narrow r4 validation boundary. Preserve a getter/proxy's pending JS exception.
++        reportManagedRecordError(env, e)
++        return null
+     } catch (e: Throwable) {
+         /**
+          * FastFail 原因：全局方法调用发生异常
+@@ -498,7 +517,10 @@ internal fun KNapiGlobalInvokerEntry(env: napi_env?, info: napi_callback_info?):
+  * Callback 统一入口，实现原理见：https://discuss.kotlinlang.org/t/using-kfunction1-and-lambda/4089
+  */
+ @Suppress("UNCHECKED_CAST")
+-internal fun KNapiCallbackEntry(env: napi_env?, info: napi_callback_info?): napi_value? {
++internal fun KNapiCallbackEntry(env: napi_env?, info: napi_callback_info?): napi_value? =
++    managedNapiEntry(env, false) { KNapiCallbackEntryBody(env, info) }
++
++private fun KNapiCallbackEntryBody(env: napi_env?, info: napi_callback_info?): napi_value? {
+     // (1) 获取到 Binder
+     val ad = getArgsAndDataByCBInfo(env, info)
+ 
+@@ -825,3 +847,20 @@ fun KNapiConstructorExternalWrapper(
+         return jsThis
+     }
+ }
++
++// Called only as a real NAPI entry with the current callback env. Closed entries
++// throw before get_cb_info/asStableRef; the callback data may already be freed.
++private inline fun managedNapiEntry(env: napi_env?, globalsOnlyAllowed: Boolean = true, body: () -> napi_value?): napi_value? {
++    if (!org.cpf.kotlin.akinterop.OhosFFIContext.enterManagedCall(env)) {
++        if (env != null) platform.ArkTS.ArkTS_Napi_NativeModule.napi_throw_error(
++            env, "ERR_MANAGED_CLOSED", "ManagedInteropClosingOrClosed")
++        return null
++    }
++    return try {
++        if (!globalsOnlyAllowed && org.cpf.kotlin.akinterop.OhosFFIContext.managedShutdownGlobalsOnly) {
++            if (env != null) platform.ArkTS.ArkTS_Napi_NativeModule.napi_throw_error(
++                env, "ERR_MANAGED_UNSUPPORTED", "CapabilityUnsupported: managed shutdown non-global entry")
++            null
++        } else body()
++    } finally { org.cpf.kotlin.akinterop.OhosFFIContext.leaveManagedCall() }
++}
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt
+@@ -46,6 +46,9 @@ class KNapiKtNapiCallbackBinder(val function: Any?, val type: KType) {
+             return getArkNull(env!!)
+         }
+ 
++        check(!org.cpf.kotlin.akinterop.OhosFFIContext.managedShutdownGlobalsOnly) {
++            "CapabilityUnsupported: managed shutdown function binder"
++        }
+         val ref = StableRef.create(this).asCPointer()
+ 
+         val napi_func = createFunction(env, null, staticCFunction(::KNapiCallbackEntry), ref)
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt
+@@ -23,6 +23,7 @@ import kotlinx.cinterop.allocArray
+ import kotlinx.cinterop.cstr
+ import kotlinx.cinterop.get
+ import kotlinx.cinterop.getBytes
++import kotlinx.cinterop.free
+ import kotlinx.cinterop.memScoped
+ import kotlinx.cinterop.nativeHeap
+ import kotlinx.cinterop.ptr
+@@ -33,6 +34,7 @@ import kotlinx.cinterop.staticCFunction
+ import kotlinx.cinterop.value
+ import platform.ArkTS.ArkTS_Napi_NativeModule.NAPI_AUTO_LENGTH
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_create_reference
++import platform.ArkTS.ArkTS_Napi_NativeModule.napi_ok
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_default
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_define_class
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_define_properties
+@@ -56,19 +58,22 @@ fun KNapiRegisterExports(env: napi_env?, exports: napi_value?): napi_value? {
+         // 注册全局函数信息
+         val size = KSPGlobalFunctionRegister.methods.size
+         val descriptors = allocArray<napi_property_descriptor>(size)
++        memset(descriptors, 0, size.toULong() * sizeOf<napi_property_descriptor>().toULong())
+         for ((idx, method) in KSPGlobalFunctionRegister.methods.values.withIndex()) {
+             val descriptor = descriptors.get(idx)
+-            descriptor.utf8name = method.name.cstr()
++            descriptor.utf8name = method.name.cstr.ptr
+             descriptor.attributes = napi_default
+             descriptor.method = staticCFunction(::KNapiGlobalInvokerEntry)
+-            descriptor.data = StableRef.create(KNapiSymbolDescriptor(null, method)).asCPointer()
++            descriptor.data = KNapiClassDefiner.ownDescriptor(env, KNapiSymbolDescriptor(null, method))
+         }
+-        napi_define_properties(env, exports, size.toULong(), descriptors.reinterpret())
++        check(napi_define_properties(env, exports, size.toULong(), descriptors.reinterpret()) == napi_ok) { "ManagedDefinePropertiesFailed" }
+     }
+ 
+     // 注册类信息
+     for ((_, creator) in KSPClassCreatorRegister.creators.withIndex()) {
+         val clazz = creator.create()
++        if (ManagedRecordCodec.matchesMetadata(clazz)) continue // copied record: no constructor/ref/StableRef
++        KNapiClassDefiner.ensureClassCapacity(env, clazz.qualifiedName)
+         memScoped {
+             val size = clazz.functions.size + clazz.properties.size
+             val descriptors = allocArray<napi_property_descriptor>(size)
+@@ -76,37 +81,41 @@ fun KNapiRegisterExports(env: napi_env?, exports: napi_value?): napi_value? {
+             // 注册类方法
+             for ((idx, method) in clazz.functions.withIndex()) {
+                 val descriptor = descriptors.get(idx)
+-                descriptor.utf8name = method.name.cstr()
++                descriptor.utf8name = method.name.cstr.ptr
+                 descriptor.attributes = if (method.isStatic) napi_default or napi_static else napi_default
+                 descriptor.method = staticCFunction(::KNapiServiceInvokerEntry)
+-                descriptor.data = StableRef.create(KNapiSymbolDescriptor(clazz, method)).asCPointer()
++                descriptor.data = KNapiClassDefiner.ownDescriptor(env, KNapiSymbolDescriptor(clazz, method))
+             }
+ 
+             for ((idx, property) in clazz.properties.values.withIndex()) {
+                 val descriptor = descriptors[clazz.functions.size + idx]
+-                descriptor.utf8name = property.name.cstr()
++                descriptor.utf8name = property.name.cstr.ptr
+                 descriptor.attributes = if (property.isStatic) napi_default or napi_static else napi_default
+                 descriptor.getter = staticCFunction(::KNapiServiceGetterEntry)
+                 descriptor.setter = staticCFunction(::KNapiServiceSetterEntry)
+-                descriptor.data = StableRef.create(KNapiSymbolDescriptor(clazz, null, property)).asCPointer()
++                descriptor.data = KNapiClassDefiner.ownDescriptor(env, KNapiSymbolDescriptor(clazz, null, property))
+             }
+ 
+ //            val defined = if (clazz !is KSPTsClass) {
+             val constructor = alloc<napi_valueVar>()
+-            napi_define_class(
++            check(napi_define_class(
+                 env,
+                 clazz.name,
+                 NAPI_AUTO_LENGTH,
+                 staticCFunction(::KNapiConstructorEntry),
+-                StableRef.create(KNapiSymbolDescriptor(clazz, null)).asCPointer(),
++                KNapiClassDefiner.ownDescriptor(env, KNapiSymbolDescriptor(clazz, null)),
+                 size.toULong(),
+                 descriptors.reinterpret(),
+                 constructor.ptr
+-            )
+-            napi_set_named_property(env, exports, clazz.name, constructor.value)
++            ) == napi_ok) { "ManagedDefineClassFailed" }
++            check(napi_set_named_property(env, exports, clazz.name, constructor.value) == napi_ok) { "ManagedExportClassFailed" }
+ 
+             val consref = nativeHeap.alloc<napi_refVar>()
+-            napi_create_reference(env, constructor.value, 1u, consref.ptr)
++            if (napi_create_reference(env, constructor.value, 1u, consref.ptr) != napi_ok) {
++                nativeHeap.free(consref.ptr)
++                error("ManagedClassReferenceFailed")
++            }
++            KNapiClassDefiner.noteClassRefCreated()
+             val defined = KNapiDefinedClass(consref, clazz)
+ //            } else {
+ //                KNapiDefinedClass(null, clazz)
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt
+new file mode 100644
+--- /dev/null
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt
+@@ -0,0 +1,166 @@
++/* MADB development r4. Narrow generated Int/String value record support.
++ * This is not a general registry or the public C07 SDK surface. */
++@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
++package org.cpf.kotlin.akinterop.generate
++
++import kotlinx.cinterop.*
++import org.cpf.kotlin.akinterop.OhosFFIContext
++import platform.ArkTS.ArkTS_Napi_NativeModule.*
++import platform.posix.size_tVar
++import kotlin.reflect.KClass
++import kotlin.reflect.KType
++import kotlin.math.floor
++
++// No NAPI values/refs are retained here. Installation is single-shot before KSP metadata.
++object ManagedRecordCodec {
++    private var klass: KClass<*>? = null
++    private var name: String? = null
++    private var fields: List<Pair<String, KClass<*>>> = emptyList()
++    private var decode: JS2KTConverter? = null
++    private var encode: KT2JSConverter? = null
++    fun install(type: KClass<*>, qualifiedName: String, schema: List<Pair<String, KClass<*>>>,
++                decoder: JS2KTConverter, encoder: KT2JSConverter) {
++        OhosFFIContext.requireRecordInstallPhase()
++        check(type.qualifiedName == qualifiedName) { "ManagedRecordClassIdentity" }
++        check(klass == null && schema.size == 2 && schema.map { it.first }.distinct().size == 2 &&
++            schema.map { it.second }.toSet() == setOf(Int::class, String::class)) { "ManagedRecordUnsupportedShape" }
++        klass = type; name = qualifiedName; fields = schema.toList(); decode = decoder; encode = encoder
++    }
++    fun decoder(type: KType): JS2KTConverter? {
++        if (type.classifier != klass || klass == null) return null
++        check(!type.isMarkedNullable) { "ManagedRecordNullableUnsupported" }
++        return decode
++    }
++    fun encoder(type: KType): KT2JSConverter? {
++        if (type.classifier != klass || klass == null) return null
++        check(!type.isMarkedNullable) { "ManagedRecordNullableUnsupported" }
++        return encode
++    }
++    fun matchesMetadata(meta: KSPClass): Boolean {
++        if (meta.qualifiedName != name || klass == null) return false
++        check(meta !is KSPInterface && meta.functions.isEmpty() && meta.properties.size == fields.size) { "ManagedRecordMetadataShape" }
++        check(fields.all { (field, type) ->
++            val p = meta.properties[field]
++            p != null && !p.isStatic && p.setter == null &&
++                p.getter?.returnType?.classifier == type && p.getter?.returnType?.isMarkedNullable == false
++        }) { "ManagedRecordMetadataFields" }
++        check(meta.constructors.all { c -> c.invokable.params.map { it.classifier } == fields.map { it.second } }) { "ManagedRecordMetadataConstructor" }
++        return true
++    }
++}
++
++class ManagedRecordCodecException(val category: String, message: String) : RuntimeException(message)
++
++fun reportManagedRecordError(env: napi_env?, failure: ManagedRecordCodecException) = memScoped {
++    if (env == null) return@memScoped
++    val pending = alloc<BooleanVar>(); pending.value = false
++    if (napi_is_exception_pending(env, pending.ptr) != napi_ok || pending.value) return@memScoped
++    when (failure.category) {
++        "type" -> napi_throw_type_error(env, "ERR_RECORD_TYPE", failure.message)
++        "range" -> napi_throw_range_error(env, "ERR_RECORD_RANGE", failure.message)
++        else -> napi_throw_error(env, "ERR_RECORD_NAPI", failure.message)
++    }
++}
++
++// Every out-parameter starts initialized and is read only after a checked status.
++object ManagedRecordValues {
++    private fun status(value: napi_status, operation: String) {
++        if (value != napi_ok) throw ManagedRecordCodecException("napi", "Record NAPI: $operation")
++    }
++    private fun owner(env: napi_env?) {
++        check(env != null && env == OhosFFIContext.tlsEnv) { "ManagedRecordWrongOwner" }
++    }
++    private fun type(env: napi_env?, value: napi_value?, expected: napi_valuetype, field: String) = memScoped {
++        if (value == null) throw ManagedRecordCodecException("type", "$field is missing")
++        val actual = alloc<napi_valuetype.Var>(); actual.value = napi_valuetype.napi_undefined
++        status(napi_typeof(env, value, actual.ptr), "typeof $field")
++        if (actual.value != expected) throw ManagedRecordCodecException("type", "$field has wrong type")
++    }
++    fun objectValue(env: napi_env?, value: napi_value?): napi_value? = memScoped {
++        owner(env); type(env, value, napi_valuetype.napi_object, "record")
++        val nil = alloc<napi_valueVar>(); nil.value = null
++        status(napi_get_null(env, nil.ptr), "null")
++        val same = alloc<BooleanVar>(); same.value = false
++        status(napi_strict_equals(env, value, nil.value, same.ptr), "null check")
++        if (same.value) throw ManagedRecordCodecException("type", "record must not be null")
++        val array = alloc<BooleanVar>(); array.value = false
++        status(napi_is_array(env, value, array.ptr), "array check")
++        if (array.value) throw ManagedRecordCodecException("type", "record must not be array")
++        value
++    }
++    fun property(env: napi_env?, obj: napi_value?, field: String): napi_value? = memScoped {
++        val out = alloc<napi_valueVar>(); out.value = null
++        status(napi_get_named_property(env, obj, field, out.ptr), "get $field")
++        out.value
++    }
++    fun int32(env: napi_env?, value: napi_value?, field: String): Int = memScoped {
++        type(env, value, napi_valuetype.napi_number, field)
++        val out = alloc<DoubleVar>(); out.value = 0.0
++        status(napi_get_value_double(env, value, out.ptr), "number $field")
++        val number = out.value
++        if (!number.isFinite() || floor(number) != number || number < Int.MIN_VALUE.toDouble() || number > Int.MAX_VALUE.toDouble())
++            throw ManagedRecordCodecException("range", "$field must be finite integral int32")
++        number.toInt() // -0 is accepted and normalized to +0 on the copied result.
++    }
++    fun string(env: napi_env?, value: napi_value?, field: String): String = memScoped {
++        type(env, value, napi_valuetype.napi_string, field)
++        val length = alloc<size_tVar>(); length.value = 0uL
++        status(napi_get_value_string_utf16(env, value, null, 0uL, length.ptr), "UTF16 length $field")
++        if (length.value > 1024uL) throw ManagedRecordCodecException("range", "$field exceeds UTF16 bound")
++        val count = length.value.toInt()
++        val chars = allocArray<UShortVar>(count + 1)
++        val copied = alloc<size_tVar>(); copied.value = 0uL
++        status(napi_get_value_string_utf16(env, value, chars, (count + 1).toULong(), copied.ptr), "UTF16 read $field")
++        if (copied.value != length.value) throw ManagedRecordCodecException("napi", "Record string length changed")
++        val result = CharArray(count) { chars[it].toInt().toChar() }.concatToString()
++        validateString(result, field)
++        result
++    }
++    fun validateString(text: String, field: String) {
++        if (text.length > 1024) throw ManagedRecordCodecException("range", "$field exceeds UTF16 bound")
++        var bytes = 0; var index = 0
++        while (index < text.length) {
++            val ch = text[index++].code
++            bytes += when {
++                ch < 0x80 -> 1
++                ch < 0x800 -> 2
++                ch in 0xD800..0xDBFF -> {
++                    if (index == text.length || text[index].code !in 0xDC00..0xDFFF)
++                        throw ManagedRecordCodecException("type", "$field contains unpaired surrogate")
++                    index++; 4
++                }
++                ch in 0xDC00..0xDFFF -> throw ManagedRecordCodecException("type", "$field contains unpaired surrogate")
++                else -> 3
++            }
++            if (bytes > 1024) throw ManagedRecordCodecException("range", "$field exceeds 1024 UTF8 bytes")
++        }
++    }
++    fun newObject(env: napi_env?): napi_value? = memScoped {
++        owner(env)
++        val out = alloc<napi_valueVar>(); out.value = null
++        status(napi_create_object(env, out.ptr), "create object"); out.value
++    }
++    private fun ownProperty(env: napi_env?, obj: napi_value?, field: String, value: napi_value?) = memScoped {
++        // Define own data properties: do not invoke an inherited Object.prototype setter.
++        val descriptor = alloc<napi_property_descriptor>()
++        descriptor.utf8name = field.cstr.ptr
++        descriptor.name = null; descriptor.method = null; descriptor.getter = null; descriptor.setter = null
++        descriptor.value = value; descriptor.data = null
++        descriptor.attributes = napi_writable or napi_enumerable or napi_configurable
++        status(napi_define_properties(env, obj, 1uL, descriptor.ptr), "define $field")
++    }
++    fun setInt32(env: napi_env?, obj: napi_value?, field: String, value: Int) = memScoped {
++        val out = alloc<napi_valueVar>(); out.value = null
++        status(napi_create_int32(env, value, out.ptr), "create int32")
++        ownProperty(env, obj, field, out.value)
++    }
++    fun setString(env: napi_env?, obj: napi_value?, field: String, text: String) = memScoped {
++        validateString(text, field)
++        val chars = allocArray<UShortVar>(text.length + 1)
++        text.forEachIndexed { index, ch -> chars[index] = ch.code.toUShort() }
++        chars[text.length] = 0u
++        val out = alloc<napi_valueVar>(); out.value = null
++        status(napi_create_string_utf16(env, chars, text.length.toULong(), out.ptr), "create UTF16")
++        ownProperty(env, obj, field, out.value)
++    }
++}
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt
+@@ -420,6 +420,7 @@ private fun createMapKT2JSConverter(type: KType): KT2JSConverter {
+ }
+ 
+ fun createJS2KTConverter(type: KType): JS2KTConverter {
++    ManagedRecordCodec.decoder(type)?.let { return it }
+     val classifier = type.classifier as? KClass<*> ?: return { _, _ -> null }
+     val nullable = type.isMarkedNullable
+ 
+@@ -698,6 +699,7 @@ private fun createExportTypeKT2JSConverter(type: KType, classifier: KClass<*>):
+ }
+ 
+ fun createKT2JSConverter(type: KType): KT2JSConverter {
++    ManagedRecordCodec.encoder(type)?.let { return it }
+     val classifier = type.classifier as? KClass<*> ?: return { _, _ -> null }
+ 
+     /**
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt
+@@ -45,13 +45,7 @@ class KNapiTsFnInvokerSyncContext<R>(
+ ) : KNapiInvokerSyncContext<R>() {
+ 
+     override fun invoke(env: napi_env?, params: List<Any?>, paramsType: List<KType>?) {
+-        val ref = StableRef.create(this)
+-        try {
+-            callThreadsafeFunction(env, func, ref.asCPointer(), napi_threadsafe_function_call_mode.napi_tsfn_blocking)
+-            wait()
+-        } finally {
+-            ref.dispose()
+-        }
++        error("CapabilityUnsupported: legacy blocking callback context")
+     }
+ }
+ 
+@@ -66,17 +60,18 @@ open class KNapiTsFnFunction<R>(
+ 
+     fun invoke(params: List<Any?>, paramsType: List<KType>): R {
+         return if (pthread_equal(pid, pthread_self()) != 0) {
++            val ownerEnv = env ?: error("ManagedCallbackEnvMissing")
++            val ownerTid = tsfnRegister.getTidByEnv(ownerEnv) ?: error("ManagedCallbackEnvClosed")
++            tsfnRegister.requireActiveThread(ownerTid)
+             val scope = openHandleScope(env)
+-            val result = context.invoke(env, params, paramsType)
+-            val r = converter(env, result)
+-            closeHandleScope(env, scope)
+-            r
++            try {
++                val result = context.invoke(env, params, paramsType)
++                converter(env, result)
++            } finally {
++                closeHandleScope(env, scope)
++            }
+         } else {
+-            // 此处改成全局唯一会不会有多线程问题
+-            val syncContext = KNapiTsFnInvokerSyncContext(env, KNapiEnvHolder.mainRefCleaner, params, paramsType, context, converter)
+-            syncContext.invoke(env, params, paramsType)
+-            syncContext.dispose()
+-            syncContext.result()
++            error("CapabilityUnsupported: cross-thread synchronous callback")
+         }
+     }
+ 
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt
+@@ -16,9 +16,6 @@
+ package org.cpf.kotlin.akinterop.types
+ 
+ import org.cpf.kotlin.akinterop.OhosFFIContext
+-import org.cpf.kotlin.akinterop.napi.createRef
+-import org.cpf.kotlin.akinterop.napi.deleteRef
+-import org.cpf.kotlin.akinterop.napi.getRefValue
+ import platform.cpf.kotlin.akinterop.get_tid
+ import platform.cpf.kotlin.akinterop.typeOf
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_valuetype
+@@ -27,16 +24,6 @@ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_ref
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_value
+ import kotlin.native.ref.createCleaner
+ 
+-private class Resource(
+-    override val napiRef: napi_ref,
+-    val tid: Int,
+-    val className: String
+-) : NapiRefResource {
+-    override fun close() {
+-        super.close()
+-    }
+-}
+-
+ /**
+  * 对应 ArkTS 的一个值（可能是对象、方法、字符串、数字等任意的值），持有该 ArkTS 值的 napi_ref 强引用。
+  *
+@@ -50,34 +37,16 @@ open class ArkValue(
+     constructor(env: napi_env, value: napi_value): this(env, value, get_tid())
+     constructor(value: napi_value): this(OhosFFIContext.tlsEnv, value)
+ 
+-    private val className = this::class.simpleName ?: "ArkValue"
+-
+-    // 绑定的 napi_ref 指针
+-    private val napiRef = value.createRef(env)
++    private val managedRef = NapiRefCleaner.create(env, tid, value)
+ 
+-    // 被包装的 napi_value 指针
+-    // 注意：非线程安全，业务不需要、也不应该直接访问该属性。
++    /** Access only while open, on the original env thread. */
+     val napiValue: napi_value
+-        get() {
+-            val currentTid = get_tid()
+-            if (currentTid != tid) {
+-                throw RuntimeException("$className.napiValue cannot run in multi-thread! expect tid: $tid, actual tid: $currentTid")
+-            }
+-            return napiRef.getRefValue(env)
+-        }
+-
+-    private val clean = createCleaner(Resource(napiRef, tid, className)) {
+-        // 对象被销毁时，需同时销毁其所持有的 napi_ref 引用，否则对应的 ArkTS 对象无法被释放。
+-        if (it.tid == OhosFFIContext.mainTid) {
+-            // 仅在主线程进行批量清理。
+-            NapiRefCleaner.dispose(it)
+-        } else {
+-            // 非主线程则直接切换到对应 ArkTS 线程进行清理
+-            tsfnRegister.callAsyncSafe(it.tid) {
+-                it.napiRef.deleteRef()
+-            }
+-        }
+-    }
++        get() = NapiRefCleaner.value(managedRef)
++
++    /** Idempotent explicit release; foreign-thread close fails before NAPI access. */
++    fun close() = NapiRefCleaner.close(managedRef)
++
++    private val clean = createCleaner(managedRef) { NapiRefCleaner.markPending(it) }
+ 
+     /**
+      * 获取 ArkValue 包装的 napi_value 类型
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt
+@@ -13,98 +13,189 @@
+  * limitations under the License.
+  */
+ 
++@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
++
+ package org.cpf.kotlin.akinterop.types
+ 
+-import org.cpf.kotlin.akinterop.napi.deleteRef
+-import kotlinx.coroutines.CoroutineScope
+-import kotlinx.coroutines.Dispatchers
+-import kotlinx.coroutines.SupervisorJob
+-import kotlinx.coroutines.channels.Channel
+-import kotlinx.coroutines.launch
+-import kotlinx.coroutines.withTimeoutOrNull
+-import kotlinx.datetime.Clock
+-import platform.ArkTS.ArkTS_Napi_NativeModule.napi_ref
++import kotlinx.atomicfu.atomic
++import kotlinx.atomicfu.locks.SynchronizedObject
++import kotlinx.atomicfu.locks.synchronized
++import kotlinx.cinterop.*
++import org.cpf.kotlin.akinterop.OhosFFIContext
++import platform.ArkTS.ArkTS_Napi_NativeModule.*
++import platform.cpf.kotlin.akinterop.get_tid
+ 
+-/**
+- * 待清理的 napi_ref 公共接口，可扩展提供更多信息
+- */
+-interface NapiRefResource {
+-    val napiRef: napi_ref
++/** One pre-reserved cleanup slot. It never references the ArkValue wrapper. */
++internal class ManagedNapiRefSlot(val index: Int, val env: napi_env, val tid: Int) {
++    val pending = atomic(false)
++    var ref: napi_ref? = null // accessed only by owner thread under registry lock
++    var closed = false
++}
+ 
+-    fun close() {
+-        napiRef.deleteRef()
+-    }
++private fun managedRefCleanup(data: COpaquePointer?) {
++    val owner = data?.asStableRef<NapiRefCleaner>() ?: return
++    try { owner.get().hookFired() } catch (_: Throwable) {
++        OhosFFIContext.cleanupFailure()
++    } finally { owner.dispose() }
+ }
+ 
+ /**
+- * 用于在主线程批量清理 napi_ref，减少主线程 event 数量堆积
++ * managed-akinterop-mainenv-v1. Capacity is reserved before creating a NAPI ref.
++ * Explicit close is the drain protocol. GC only marks an existing slot; owner
++ * entry/teardown sweeps it without allocating a queue or calling into a dead env.
+  */
+-object NapiRefCleaner {
+-    // 批量清理的 napi_ref 数量阈值，超过制定数量，会触发一次批量清理。
+-    private const val BATCH_SIZE = 1_000L
+-    // 超时时间。如果距离上一次清理的时间超过此时长，且队列不为空，则触发一次批量清理的动作。
+-    private const val TIMEOUT_MS = 7_000L
+-    // 上一次清理的时间戳。
+-    private var lastCleanTime: Long = 0
+-    // 泛型 Channel：接收任意实现了 NapiRefResource 接口的对象。
+-    private val channel = Channel<NapiRefResource>(Channel.UNLIMITED)
+-    // 自定义 CoroutineScope
+-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+-
+-    init {
+-        startCleaningLoop()
++object NapiRefCleaner : SynchronizedObject() {
++    const val CAPACITY = 128
++    private var env: napi_env? = null
++    private var tid = -1
++    private var accepting = false
++    private val slots = arrayOfNulls<ManagedNapiRefSlot>(CAPACITY)
++    private var created = 0L
++    private var released = 0L
++    private var rejected = 0L
++    private var failures = 0L
++    private var cleanupFailures = 0L
++    private var cleanupHook: StableRef<NapiRefCleaner>? = null
++
++    internal fun initialize(ownerEnv: napi_env) {
++        check(get_tid() == OhosFFIContext.mainTid) { "CapabilityUnsupported: Worker env" }
++        synchronized(this) {
++            check(env == null) { "ManagedRefRegistryAlreadyInitialized" }
++            val hook = StableRef.create(this)
++            val status = napi_add_env_cleanup_hook(ownerEnv, staticCFunction(::managedRefCleanup), hook.asCPointer())
++            if (status != napi_ok) {
++                hook.dispose()
++                error("ManagedRefCleanupHookFailed: $status")
++            }
++            cleanupHook = hook
++            OhosFFIContext.hookAdded()
++            env = ownerEnv; tid = get_tid(); accepting = true
++        }
+     }
+ 
+-    /**
+-     * 启动后台清理循环
+-     */
+-    private fun startCleaningLoop() {
+-        scope.launch {
+-            println("[NapiRefCleaner] Start cleaning loop")
+-            lastCleanTime = Clock.System.now().toEpochMilliseconds()
+-            val batch = mutableListOf<NapiRefResource>()
+-
+-            while (true) {
+-                // 接收数据（带全局超时兜底）
+-                val item = withTimeoutOrNull(TIMEOUT_MS) {
+-                    channel.receive()
+-                }
++    private fun requireOwner(ownerEnv: napi_env, ownerTid: Int) {
++        check(get_tid() == ownerTid && ownerTid == tid) { "CapabilityUnsupported: foreign ref thread" }
++        check(env == ownerEnv && accepting) { "ManagedRefEnvClosedOrForeign" }
++    }
+ 
+-                item?.let { batch.add(it) }
++    internal fun create(ownerEnv: napi_env, ownerTid: Int, value: napi_value): ManagedNapiRefSlot {
++        synchronized(this) { requireOwner(ownerEnv, ownerTid) }
++        sweepPending()
++        val slot = synchronized(this) {
++            requireOwner(ownerEnv, ownerTid)
++            val index = slots.indexOfFirst { it == null }
++            if (index < 0) { rejected++; error("ManagedRefCapacityExceeded") }
++            ManagedNapiRefSlot(index, ownerEnv, ownerTid).also { slots[index] = it }
++        }
++        try {
++            memScoped {
++                val out = alloc<napi_refVar>()
++                out.value = null
++                val status = napi_create_reference(ownerEnv, value, 1u, out.ptr)
++                check(status == napi_ok && out.value != null) { "ManagedRefCreateFailed: $status" }
++                synchronized(this@NapiRefCleaner) { slot.ref = out.value; created++ }
++            }
++            return slot
++        } catch (failure: Throwable) {
++            synchronized(this) { slots[slot.index] = null; slot.closed = true }
++            throw failure
++        }
++    }
+ 
+-                val now = Clock.System.now().toEpochMilliseconds()
+-                // 触发条件：批次满 或 全局超时
+-                val shouldClean = batch.size >= BATCH_SIZE || (now - lastCleanTime >= TIMEOUT_MS && batch.isNotEmpty())
++    internal fun value(slot: ManagedNapiRefSlot): napi_value {
++        val ref = synchronized(this) {
++            requireOwner(slot.env, slot.tid)
++            check(!slot.closed && slots[slot.index] === slot) { "ArkValueClosed" }
++            slot.ref ?: error("ArkValueUninitialized")
++        }
++        return memScoped {
++            val out = alloc<napi_valueVar>()
++            out.value = null
++            val status = napi_get_reference_value(slot.env, ref, out.ptr)
++            check(status == napi_ok && out.value != null) { "ManagedRefReadFailed: $status" }
++            out.value!!
++        }
++    }
+ 
+-                if (shouldClean) {
+-                    performBatchClean(batch.toList())
+-                    batch.clear()
+-                    lastCleanTime = now
+-                }
+-            }
++    internal fun close(slot: ManagedNapiRefSlot) {
++        check(get_tid() == slot.tid) { "CapabilityUnsupported: close must run on original env thread" }
++        val ref = synchronized(this) {
++            if (slot.closed && slot.ref == null) return
++            requireOwner(slot.env, slot.tid)
++            slot.closed = true // a failed delete cannot make the value usable again
++            slot.ref ?: return
++        }
++        val status = napi_delete_reference(slot.env, ref)
++        synchronized(this) {
++            if (status == napi_ok) {
++                slot.ref = null; slots[slot.index] = null; released++
++            } else { failures++ }
++        }
++        check(status == napi_ok) { "ManagedRefDeleteFailed: $status" }
++    }
++
++    internal fun markPending(slot: ManagedNapiRefSlot) { slot.pending.value = true }
++
++    /** Bounded owner-thread maintenance; it is not an asynchronous GC drain. */
++    fun sweepPending() {
++        synchronized(this) {
++            val ownerEnv = env ?: error("ManagedRefRegistryNotInitialized")
++            requireOwner(ownerEnv, tid)
++        }
++        // Only this owner thread changes the fixed array. Cleaner threads merely
++        // set atomic pending bits, so sweeping needs no temporary cleanup queue.
++        slots.forEach { if (it != null && it.pending.value) close(it) }
++    }
++
++    internal fun hookFired() {
++        cleanupHook = null
++        OhosFFIContext.hookInvoked()
++        cleanup()
++    }
++
++    internal fun shutdown() {
++        check(get_tid() == tid) { "ManagedRefShutdownWrongThread" }
++        val hook = cleanupHook
++        if (hook != null) {
++            if (napi_remove_env_cleanup_hook(env, staticCFunction(::managedRefCleanup), hook.asCPointer()) == napi_ok) {
++                cleanupHook = null; hook.dispose(); OhosFFIContext.hookRemoved()
++            } else OhosFFIContext.cleanupFailure()
+         }
++        cleanup()
+     }
+ 
+-    /**
+-     * 批量清理，主线程执行，单个失败不影响整体
+-     */
+-    private fun performBatchClean(batch: List<NapiRefResource>) {
+-        scope.launch(Dispatchers.Main) {
+-            println("[NapiRefCleaner] Start cleaning batch napi_ref, size: ${batch.size}")
+-            batch.forEach { resource ->
+-                runCatching {
+-                    resource.close()
+-                }.onFailure { e ->
+-                    println("[NapiRefCleaner] Failed to clean ${e.message}")
++    internal fun publishShutdownAudit() = synchronized(this) {
++        platform.cpf.kotlin.akinterop.managedShutdownSet(5, slots.count { it != null }.toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(6, created.toULong())
++        platform.cpf.kotlin.akinterop.managedShutdownSet(7, released.toULong())
++        if (failures != 0L || cleanupFailures != 0L) OhosFFIContext.cleanupFailure()
++    }
++
++    internal fun cleanup() {
++        check(get_tid() == tid) { "ManagedRefCleanupWrongThread" }
++        synchronized(this) {
++            accepting = false
++            slots.forEach { it?.closed = true }
++        }
++        slots.forEachIndexed { index, slot ->
++            if (slot == null) return@forEachIndexed
++            val ref = slot.ref
++            if (ref != null) {
++                val status = napi_delete_reference(slot.env, ref)
++                synchronized(this) {
++                    if (status == napi_ok) released++ else { failures++; cleanupFailures++ }
++                    // Never retry through a dead env. Failure counts stay visible.
++                    slot.ref = null
++                    slots[index] = null
+                 }
+-            }
++            } else synchronized(this) { slots[index] = null }
+         }
++        OhosFFIContext.managedEnvClosed()
+     }
+ 
+-    /**
+-     * 统一入队逻辑
+-     */
+-    fun dispose(res: NapiRefResource) {
+-        channel.trySend(res)
++    fun audit(): Map<String, Long> = synchronized(this) {
++        mapOf("capacity" to CAPACITY.toLong(), "owned" to slots.count { it != null }.toLong(),
++            "created" to created, "released" to released, "rejected" to rejected,
++            "failures" to failures, "cleanupFailures" to cleanupFailures)
+     }
+ }
+diff --git a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt
+--- a/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt
++++ b/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt
+@@ -19,11 +19,14 @@ import org.cpf.kotlin.akinterop.debug.OhosLog
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_env
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_ok
+ import platform.ArkTS.ArkTS_Napi_NativeModule.napi_threadsafe_function
+-import platform.cpf.kotlin.akinterop.callThreadSafeFunction
+-import platform.cpf.kotlin.akinterop.createThreadSafeFunctionWithSync
++import platform.cpf.kotlin.akinterop.submitManagedThreadSafeFunction
++import platform.cpf.kotlin.akinterop.reserveManagedThreadSafeFunction
++import platform.cpf.kotlin.akinterop.cancelManagedThreadSafeFunctionReservation
++import platform.cpf.kotlin.akinterop.managedThreadSafeFunctionMetric
++import platform.cpf.kotlin.akinterop.createManagedThreadSafeFunction
+ import platform.cpf.kotlin.akinterop.get_tid
+ import platform.cpf.kotlin.akinterop.registerEnvCleanupHook
+-import platform.cpf.kotlin.akinterop.releaseThreadSafeFunction
++import platform.cpf.kotlin.akinterop.releaseManagedThreadSafeFunction
+ 
+ val tsfnRegister = ThreadSafeFunctionRegister()
+ 
+@@ -34,7 +37,9 @@ internal const val TSFN_NOT_REGISTERED_MESSAGE = "thread safe function not regis
+ private fun tsfnCleanupCallback(data: COpaquePointer?) {
+     val stableRef = data?.asStableRef<TsfnEnvContext>() ?: return
+     try {
+-        tsfnRegister.cleanup(stableRef.get())
++        tsfnRegister.hookFired(stableRef.get())
++    } catch (_: Throwable) {
++        org.cpf.kotlin.akinterop.OhosFFIContext.cleanupFailure()
+     } finally {
+         stableRef.dispose()
+     }
+@@ -47,8 +52,10 @@ private fun tsfnCleanupCallback(data: COpaquePointer?) {
+ internal class TsfnEnvContext(
+     val env: napi_env,
+     val tid: Int,
+-    val tsfn: napi_threadsafe_function
+-)
++    val tsfn: COpaquePointer
++) {
++    var hook: StableRef<TsfnEnvContext>? = null
++}
+ 
+ private data class TsfnRegistry(
+     val tidToContext: Map<Int, TsfnEnvContext> = emptyMap(),
+@@ -56,58 +63,56 @@ private data class TsfnRegistry(
+ )
+ 
+ class ThreadSafeFunctionRegister : SynchronizedObject() {
+-    private val registry = atomic(TsfnRegistry())
++    private val emptyRegistry = TsfnRegistry()
++    private val registry = atomic(emptyRegistry)
+ 
+     /**
+      * 注册 Thread Safe Function
+      */
+     fun registerThreadSafeFunctionIfNeed(env: napi_env) {
+         val tid = get_tid()
++        check(tid == org.cpf.kotlin.akinterop.OhosFFIContext.mainTid) { "CapabilityUnsupported: Worker env" }
+ 
+         synchronized(this) {
+             val current = registry.value
+             val existingByTid = current.tidToContext[tid]
+             val existingTidByEnv = current.envToTid[env]
+-            if (existingByTid != null || existingTidByEnv != null) {
+-                if (existingByTid?.env != env || existingTidByEnv != tid) {
+-                    OhosLog.error("TSFNRegister") {
+-                        "requested tid=$tid, env=$env conflicts with " +
+-                            "registered env=${existingByTid?.env}, tid=$existingTidByEnv"
+-                    }
+-                }
+-                return
++            check(existingByTid == null && existingTidByEnv == null) { "ManagedTsfnAlreadyRegistered" }
++            val tsfn = createManagedThreadSafeFunction(env, "managed-mainenv-v1", 32uL)
++                ?: error("ManagedTsfnCreationFailed")
++            val context = try { TsfnEnvContext(env, tid, tsfn) } catch (failure: Throwable) {
++                releaseManagedThreadSafeFunction(tsfn)
++                throw failure
+             }
+-
+-            val tsfn = createThreadSafeFunctionWithSync(env, "tsfn-worker")
+-            if (tsfn == null) {
+-                OhosLog.error("TSFNRegister") {
+-                    "failed to create thread safe function for env=$env, tid=$tid"
+-                }
+-                return
++            val stableRef = try { StableRef.create(context) } catch (failure: Throwable) {
++                releaseManagedThreadSafeFunction(tsfn)
++                throw failure
++            }
++            // Prepare every allocating snapshot before installing the hook.
++            // Once registered, publication is a non-allocating atomic store.
++            val updated = try {
++                current.copy(
++                    tidToContext = current.tidToContext + (tid to context),
++                    envToTid = current.envToTid + (env to tid)
++                )
++            } catch (failure: Throwable) {
++                stableRef.dispose()
++                releaseManagedThreadSafeFunction(tsfn)
++                throw failure
+             }
+-            val context = TsfnEnvContext(env, tid, tsfn)
+-            val stableRef = StableRef.create(context)
+             val status = registerEnvCleanupHook(
+                 env,
+                 staticCFunction(::tsfnCleanupCallback),
+                 stableRef.asCPointer()
+             )
+             if (status == napi_ok) {
+-                val updated = current.copy(
+-                    tidToContext = current.tidToContext + (tid to context),
+-                    envToTid = current.envToTid + (env to tid)
+-                )
++                context.hook = stableRef
++                org.cpf.kotlin.akinterop.OhosFFIContext.hookAdded()
+                 registry.value = updated
+-                OhosLog.info("TSFNRegister") {
+-                    "register: tid=$tid, env=$env, tidMapSize=${updated.tidToContext.size}, " +
+-                        "envMapSize=${updated.envToTid.size}"
+-                }
+             } else {
+                 stableRef.dispose()
+-                releaseThreadSafeFunction(tsfn)
+-                OhosLog.error("TSFNRegister") {
+-                    "failed to register TSFN cleanup hook for env=$env, tid=$tid: napi_status=$status"
+-                }
++                releaseManagedThreadSafeFunction(tsfn)
++                error("ManagedTsfnCleanupHookFailed: $status")
+             }
+         }
+     }
+@@ -115,19 +120,46 @@ class ThreadSafeFunctionRegister : SynchronizedObject() {
+     /**
+      * 清理指定 env 的资源，由 cleanup hook 回调
+      */
++    internal fun hookFired(context: TsfnEnvContext) {
++        context.hook = null
++        org.cpf.kotlin.akinterop.OhosFFIContext.hookInvoked()
++        cleanup(context)
++    }
++
++    // Linearize Open -> Closing with reserve/submit, not with a prior snapshot.
++    internal fun beginShutdown(env: napi_env): Int = synchronized(this) {
++        val context = registry.value.tidToContext[get_tid()] ?: return@synchronized 3
++        if (context.env != env) return@synchronized 2
++        if (managedThreadSafeFunctionMetric(6) != 0uL || managedThreadSafeFunctionMetric(8) != 0uL) return@synchronized 3
++        if (managedThreadSafeFunctionMetric(0) != 0uL) return@synchronized 1
++        platform.cpf.kotlin.akinterop.managedShutdownSet(0, 2uL)
++        0
++    }
++
++    internal fun shutdown(env: napi_env) {
++        synchronized(this) {
++            val context = registry.value.tidToContext[get_tid()] ?: return
++            check(context.env == env) { "ManagedTsfnShutdownWrongEnv" }
++            val hook = context.hook
++            if (hook != null) {
++                if (platform.ArkTS.ArkTS_Napi_NativeModule.napi_remove_env_cleanup_hook(
++                        env, staticCFunction(::tsfnCleanupCallback), hook.asCPointer()) == napi_ok) {
++                    context.hook = null
++                    hook.dispose(); org.cpf.kotlin.akinterop.OhosFFIContext.hookRemoved()
++                } else org.cpf.kotlin.akinterop.OhosFFIContext.cleanupFailure()
++            }
++            registry.value = emptyRegistry
++            releaseManagedThreadSafeFunction(context.tsfn)
++        }
++    }
++
+     internal fun cleanup(context: TsfnEnvContext) {
+         synchronized(this) {
+             val current = registry.value
+-            registry.value = current.copy(
+-                tidToContext = current.tidToContext - context.tid,
+-                envToTid = current.envToTid - context.env
+-            )
+-            OhosLog.info("TSFNRegister") {
+-                val snap = registry.value
+-                "cleanup: env=${context.env}, tid=${context.tid}, " +
+-                    "tidMapSize=${snap.tidToContext.size}, envMapSize=${snap.envToTid.size}"
+-            }
+-            releaseThreadSafeFunction(context.tsfn)
++            if (current.tidToContext[context.tid] !== context) return
++            // This profile admits only one main env; cleanup needs no allocation.
++            registry.value = emptyRegistry
++            releaseManagedThreadSafeFunction(context.tsfn)
+         }
+     }
+ 
+@@ -135,30 +167,45 @@ class ThreadSafeFunctionRegister : SynchronizedObject() {
+      * 将 block 在 tid 的 ArkTS 线程执行
+      */
+     fun callFunctionInOtherThread(tid: Int, sync: Boolean, block: () -> COpaquePointer?): COpaquePointer? {
+-        val context = registry.value.tidToContext[tid]
+-        if (context == null) {
+-            throw RuntimeException(TSFN_NOT_REGISTERED_MESSAGE)
+-        }
+-        val tsfn = context.tsfn
+-        val ref = StableRef.create(block)
+-        return memScoped {
+-            val resultPtr = alloc<COpaquePointerVar>()
+-            val success = callThreadSafeFunction(
+-                tsfn,
+-                staticCFunction(::callbackInJSThread),
+-                ref.asCPointer(),
+-                sync,
+-                tid,
+-                resultPtr.ptr
+-            )
+-            if (!success) {
+-                ref.dispose()
+-                throw RuntimeException("thread safe function enqueue failed")
++        check(!sync) { "CapabilityUnsupported: cross-thread synchronous callback" }
++        // Cleanup uses this same lock. It cannot release the native handle
++        // between lookup and nonblocking submission; no JavaScript runs here.
++        synchronized(this) {
++            check(platform.cpf.kotlin.akinterop.managedShutdownMetric(0) == 1uL) { "ManagedInteropClosingOrClosed" }
++            val context = registry.value.tidToContext[tid]
++                ?: throw RuntimeException(TSFN_NOT_REGISTERED_MESSAGE)
++            val token = reserveManagedThreadSafeFunction(context.tsfn)
++                ?: error("ManagedTsfnCapacityOrClosing")
++            val ref = try { StableRef.create(block) } catch (failure: Throwable) {
++                cancelManagedThreadSafeFunctionReservation(token)
++                throw failure
++            }
++            val status = submitManagedThreadSafeFunction(
++                token, staticCFunction(::callbackInJSThread),
++                staticCFunction(::disposeWithoutInvocation), ref.asCPointer())
++            if (status != 0) {
++                // A generic OHOS send failure may happen after queue insertion.
++                // Only a later callback may dispose ownership-uncertain data.
++                if (status != 4) ref.dispose()
++                error("ManagedTsfnEnqueueFailed: status=$status")
+             }
+-            resultPtr.value
++            return null
+         }
+     }
+ 
++    fun managedAudit(): Map<String, ULong> = mapOf(
++        "outstanding" to managedThreadSafeFunctionMetric(0),
++        "allocated" to managedThreadSafeFunctionMetric(1),
++        "released" to managedThreadSafeFunctionMetric(2),
++        "created" to managedThreadSafeFunctionMetric(3),
++        "finalized" to managedThreadSafeFunctionMetric(4),
++        "nullEnvDisposals" to managedThreadSafeFunctionMetric(5),
++        "uncertain" to managedThreadSafeFunctionMetric(6),
++        "rejected" to managedThreadSafeFunctionMetric(7),
++        "napiErrors" to managedThreadSafeFunctionMetric(8),
++        "contextsCreated" to managedThreadSafeFunctionMetric(9),
++        "contextsDestroyed" to managedThreadSafeFunctionMetric(10))
++
+     fun callFunctionInOtherThread(env: napi_env, sync: Boolean, block: () -> COpaquePointer?): COpaquePointer? {
+         val tid: Int = getTidByEnv(env)
+             ?: throw RuntimeException(TSFN_NOT_REGISTERED_MESSAGE)
+@@ -170,20 +217,17 @@ class ThreadSafeFunctionRegister : SynchronizedObject() {
+      */
+     inline fun <reified R : Any> callSyncSafe(tid: Int, crossinline block: () -> R?): R? {
+         if (get_tid() == tid) {
++            requireActiveThread(tid)
+             return block.invoke()
+         } else {
+-            val ptr = callFunctionInOtherThread(tid, true) {
+-                val result = block.invoke() ?: return@callFunctionInOtherThread null
+-                val ref = StableRef.create(result)
+-                ref.asCPointer()
+-            }
+-            val ref = ptr?.asStableRef<R>() ?: return null
+-            val result = ref.get()
+-            ref.dispose()
+-            return result
++            error("CapabilityUnsupported: cross-thread synchronous callback")
+         }
+     }
+ 
++    fun requireActiveThread(tid: Int) {
++        check(get_tid() == tid && registry.value.tidToContext.containsKey(tid)) { "ManagedTsfnEnvClosedOrForeignThread" }
++    }
++
+     fun getTidByEnv(env: napi_env): Int? {
+         return registry.value.envToTid[env]
+     }
+@@ -199,6 +243,7 @@ class ThreadSafeFunctionRegister : SynchronizedObject() {
+      */
+     fun callAsyncSafe(tid: Int, block: () -> Unit) {
+         if (get_tid() == tid) {
++            requireActiveThread(tid)
+             return block.invoke()
+         } else {
+             callFunctionInOtherThread(tid, false) {
+@@ -226,3 +271,8 @@ fun callbackInJSThread(ptr: COpaquePointer?): COpaquePointer? {
+         null
+     }
+ }
++
++/** Called for accepted work abandoned by the env; never invoke the closure. */
++fun disposeWithoutInvocation(ptr: COpaquePointer?) {
++    ptr?.asStableRef<() -> COpaquePointer?>()?.dispose()
++}

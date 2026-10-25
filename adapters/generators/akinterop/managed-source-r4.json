@@ -1,0 +1,117 @@
+{
+  "identity": "managed-akinterop-mainenv-r4",
+  "source_repository": "https://gitcode.com/CPF-KMP-CMP/akinterop.git",
+  "source_revision": "75ba50c77afda2845a3a6c51cdcddb03d4fd0ab8",
+  "runtime_version": "1.1.0",
+  "source_jar": {
+    "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/cpf/kotlin/akinterop-runtime-ohosarm64/1.1.0/akinterop-runtime-ohosarm64-1.1.0-sources.jar",
+    "sha256": "faf4560347aaa4e9cef4cdc387b99b9fb3c472f3c1f07afb5a209a624a8138b8",
+    "scope": "Kotlin runtime source; native helper source comes from the pinned repository"
+  },
+  "patch": "patches/managed-mainenv-1.1.0-r4.patch",
+  "patch_sha256": "c8dd03563b05c71193140c819047b840cc5c736884ac12729dae75f9f8e2f6db",
+  "files": [
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h",
+      "base_sha256": "bf7470d7d1a9a66341b87f75919debec47a7e8a4d6c9ed88c10bd1507a13a7b8",
+      "patched_sha256": "e466964cbab447e9aacc27639364345f8825d821b5bd28c9380d8d35b23e33d4",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp",
+      "base_sha256": "ed1aab061ab7a43438448958a2ffec7f3da92485f7249d6fa1c38f774b3c71b0",
+      "patched_sha256": "1dddd9cad5f8f1c5f1c1f6c4172ea59a4a96513a036aad5cf582a98e22fb84fc",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt",
+      "base_sha256": "a0e42275eed5f18444e800f6770ed673c84b814b56ae9334ead160ede9f9d811",
+      "patched_sha256": "3812e8c613fa51293e112043a97a676a93b46e156afa61465b196431f2d79f70",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt",
+      "base_sha256": "77a25ecf5ffcd6f7e27d9589fc9c3775618f76de5df5826b71f3cc0de58d416c",
+      "patched_sha256": "bf0c7e9ca9ce6a9fc298ac9e3b32e39187dd2be79785dc2eb8e681006e814b6c",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt",
+      "base_sha256": "27f80a3e80f8e62b70187d4512b7591b6d619e43b9da333722efff15dba4f05e",
+      "patched_sha256": "e34224b673585b183f51c7f0abc31832b4b6a6bde1f9937d8b9602ab15333399",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt",
+      "base_sha256": "f0cdf785a792d1cccf8559a6aa0614890bff8d92379cf744cde56735e9af5748",
+      "patched_sha256": "877fc1dca6759dc591530e265b75493c9a395736ec8ce153421c9d9516d4ca25",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt",
+      "base_sha256": "be4eed9af41b6a3ff6716297873665e6e437602160099cead252c33e47723337",
+      "patched_sha256": "e4c7d87d4b1a7afb01607cd90258309c8e7493f808b3138c595616c11c1d29cd",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt",
+      "base_sha256": "2d56837e4de50117a26bdfc86af408087b02ad780edd77c27161ecc99eea432d",
+      "patched_sha256": "1a89f0d09b29f799fc54c371cede39b70e5b529bbba853fe663ad5772ed794f0",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt",
+      "base_sha256": "c6c16ebdfa5993d6573d3905223549a5d14e73267fd6071a366359c6df172dbf",
+      "patched_sha256": "113c68d28ad1e126bb299e64e4056a80ab0e08f7b4ebdd26f4bbdd3a8119ffd8",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt",
+      "base_sha256": null,
+      "patched_sha256": "76fc5c5f9b7aa611a13082deedd3a72121d2674b8af8f892a316e3b518a9aaf7",
+      "origin": "new MADB development source"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt",
+      "base_sha256": "d4c82c725ec21309c0ebce9abea6f9281f06dc91ba7522a9f24ffa8790e80316",
+      "patched_sha256": "cacf270efdbc4e7f411425210c7fcf673bca7025fe18f846d3fd10caa52b483f",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt",
+      "base_sha256": "f9c30f5196923b4ba33eba5521f405c55beed483c87a7660ea82491d7883b42c",
+      "patched_sha256": "fe3117d6f85cd062abf35a99b1a4d4236ea12dfb18ce3e7d9efcc0317fe47e7a",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt",
+      "base_sha256": "95949f20067dacbbe8855c2dc165b3d7bf8d90492008fde3452c21019a22e4e7",
+      "patched_sha256": "5fa3a25ac4f91457126b56bc880b0a6e8ea04fb2d8937cefe127065780ae9d8b",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt",
+      "base_sha256": "f3aea0899e30b7794980c3c49b4c783765fbb68d6eefd742f9e3c3ef706c36b4",
+      "patched_sha256": "995813404ddb0fd728952c717d6492815f329e30fdd11e749aaa9002471bb7db",
+      "origin": "modified public upstream"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt",
+      "base_sha256": "191053102d467105409955da133a703334744dd7caa741cf1f4c582bcbed3ef5",
+      "patched_sha256": "a8bdbac599acc6690c7ea7a313dc09f51e3ac3236345a8abeed7e861a332c425",
+      "origin": "modified public upstream"
+    }
+  ],
+  "notices": [
+    {
+      "source_path": "LICENSE",
+      "path": "patches/LICENSE-Apache-2.0",
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    {
+      "source_path": "NOTICE",
+      "path": "patches/NOTICE-upstream",
+      "sha256": "963d998b6c8530b724a50451e4d2840b289d871ee893e2ec1d08a7f52865e733"
+    }
+  ]
+}

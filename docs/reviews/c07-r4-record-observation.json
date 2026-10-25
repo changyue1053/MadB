@@ -1,0 +1,210 @@
+{
+  "scope": "Fixed single-record KSP codec and typed notification development probe; not full C07 SDK/profile",
+  "certifies_c07": false,
+  "source": {
+    "revision": "75ba50c77afda2845a3a6c51cdcddb03d4fd0ab8",
+    "patch_sha256": "c8dd03563b05c71193140c819047b840cc5c736884ac12729dae75f9f8e2f6db",
+    "files_verified": 15,
+    "replay": {
+      "path": "/private/tmp/madb-c07-r4-independent-replay.json",
+      "sha256": "56ca4f189935f27b119f972960a4b24b2eb5286452006915c2408b02e7050255",
+      "size": 676
+    },
+    "review": {
+      "path": "/private/tmp/madb-c07-akinterop-r4-review.md",
+      "sha256": "13ae7f56a8cdee651fea1186ff5774c809b8a98a41ccd1e57192f9a906ca8b85",
+      "size": 9087
+    }
+  },
+  "build": {
+    "receipt": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/build-observation-record-r4.json",
+      "sha256": "20a292fae711a2d148b0c789e11e8715af373c0b64f3bb9ac3d43853c8f81f6f",
+      "size": 42903
+    },
+    "artifacts": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/artifact-manifest.json",
+      "sha256": "5d9ae80cd7f860fa8b337cad0268be07e55101aec05e6e861f78c4cebec02593",
+      "size": 2066
+    },
+    "source_manifest": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/probe-source-manifest.json",
+      "sha256": "d59316847aec34631175621b51dd734d4c54878b5a7d24ddbe6b995fea129dec",
+      "size": 5479
+    },
+    "actual_ksp_classpath_supplement": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/ksp-classpath-supplement.json",
+      "sha256": "c1eb3d7e08e065fc5626a2e6bff3d320cf6b71649d38025db8a1bedd5427b635",
+      "size": 4840
+    },
+    "record_generator": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/record-codegen/src/main/java/com/madb/record/RecordProvider.java",
+      "sha256": "6619a8f71d083b06d38d0c6307860c51e8b7f2570ea69cca806f6f2b7e841120",
+      "size": 10009
+    },
+    "provider": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/artifacts/libmadb_kotlin_managed_probe.so",
+      "sha256": "c9bb0c0d300cebb2dd7f1243008f4be4b8420214ab19df79cba948bf7ed7dc3e",
+      "size": 5459704
+    }
+  },
+  "target": {
+    "selector": "127.0.0.1:5557",
+    "kind": "emulator",
+    "api": 23,
+    "release": "Release",
+    "abi": "arm64-v8a",
+    "nonce": "c07-sdk26-c3a16b8bd5fb46e6b5437ff1fd6749b1",
+    "pid": 7782,
+    "compile_sdk": "26.0.0.105 Release",
+    "build_mode": "release",
+    "signing": "community debug signing; not production signing",
+    "hap": {
+      "path": "/private/tmp/madb-c07-kotlin-record-r4-hap/artifacts/c07-sdk26-c3a16b8bd5fb46e6b5437ff1fd6749b1.hap",
+      "sha256": "a2a5a1606b4e2ba5860e294deab830dc32453483a752e8c8eded0629ec09f7fd",
+      "size": 4962779
+    },
+    "independent_result": {
+      "path": "/private/tmp/madb-c07-kotlin-record-r4-hap/evidence/c07-sdk26-c3a16b8bd5fb46e6b5437ff1fd6749b1-result.json",
+      "sha256": "a86d822f01669bba99d9987ddcfb2c7c948728e27695cb382675c0c0624efee7",
+      "size": 17283
+    },
+    "raw_observations": {
+      "path": "/private/tmp/madb-c07-kotlin-record-r4-hap/evidence/c07-sdk26-c3a16b8bd5fb46e6b5437ff1fd6749b1-record-observations.json",
+      "sha256": "793563bf4c6b3fbcece6e2fea08b746dc63c2e626c6eb2138093765fce504430",
+      "size": 43795
+    },
+    "checks": {
+      "record_valid_cases": 9,
+      "record_negative_and_getter_cases": 28,
+      "busy_count": 2,
+      "saved_generated_rejections": 4,
+      "actual_callback_counts": {
+        "warmup": 1,
+        "normal": 1,
+        "saturation": 32,
+        "callback-stop": 1,
+        "throw": 1,
+        "recovery": 1
+      },
+      "final_native": {
+        "schema": "p05-shutdown-r3",
+        "state": 4,
+        "phase": 3,
+        "entriesActive": 0,
+        "rejectedEntries": 4,
+        "busy": 2,
+        "acceptedRequests": 1,
+        "refOwned": 0,
+        "refCreated": 44,
+        "refReleased": 44,
+        "descriptorOwned": 0,
+        "descriptorCreated": 9,
+        "descriptorReleased": 9,
+        "hooksOwned": 0,
+        "hooksAdded": 3,
+        "hooksRemoved": 3,
+        "hooksInvoked": 0,
+        "cleanupFailures": 0,
+        "unsupportedRequests": 0,
+        "snapshotPublished": 1,
+        "eventSeq": 5,
+        "openSeq": 1,
+        "gateSeq": 2,
+        "drainedSeq": 3,
+        "finalizerSeq": 5,
+        "contextDestroyedSeq": 4,
+        "classRefsOwned": 0,
+        "classRefsCreated": 1,
+        "classRefsReleased": 1,
+        "tsfn_outstanding": 0,
+        "tsfn_allocated": 37,
+        "tsfn_released": 37,
+        "tsfn_created": 1,
+        "tsfn_finalized": 1,
+        "tsfn_nullEnvDisposals": 0,
+        "tsfn_uncertain": 0,
+        "tsfn_rejected": 32,
+        "tsfn_napiErrors": 0,
+        "tsfn_contextsCreated": 1,
+        "tsfn_contextsDestroyed": 1,
+        "source_id": 6,
+        "source_stopped": 1,
+        "source_producerDone": 1,
+        "source_workerFutureConsumed": 1,
+        "source_pending": 0,
+        "source_callbackDepth": 0,
+        "source_closed": 1,
+        "source_failures": 0,
+        "source_sessionRetained": 0,
+        "source_closes": 1
+      }
+    },
+    "provider_inputs": [
+      {
+        "path": "/private/tmp/madb-c07-kotlin-record-probe/artifacts/libmadb_kotlin_managed_probe.so",
+        "packaged_path": "/private/tmp/madb-c07-kotlin-record-r4-hap/entry/libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+        "sha256": "c9bb0c0d300cebb2dd7f1243008f4be4b8420214ab19df79cba948bf7ed7dc3e",
+        "bytes": 5459704
+      },
+      {
+        "path": "/private/tmp/madb-c07-kotlin-record-probe/artifacts/libc++_shared.so",
+        "packaged_path": "/private/tmp/madb-c07-kotlin-record-r4-hap/entry/libs/arm64-v8a/libc++_shared.so",
+        "sha256": "c1ac8e9623ebd501d73b785264a586e21ce9f83bdbfe7afd35f8d5045caa84cd",
+        "bytes": 1850184
+      }
+    ],
+    "handoff": {
+      "path": "/private/tmp/madb-c07-kotlin-record-r4-hap/handoff-manifest.json",
+      "sha256": "828289fd8f05b570d90bda44fdff478fd658c345a9681ff1b3b29cf1d4c91c7c",
+      "size": 16032
+    },
+    "independent_compact_observation": {
+      "path": "/private/tmp/madb-c07-r4-observation-compact.json",
+      "sha256": "12d12e60748e2378bfe8ae5dd73557259c6d4466b2b204b9782ae80cb7d2623b",
+      "size": 12012
+    },
+    "packaged_libraries": [
+      {
+        "path": "libs/arm64-v8a/libc++_shared.so",
+        "sha256": "5a6d3fb527eaeec496338bc57dce70e2308c7548a3abd0310fbf95e427a4651d",
+        "size": 1333480
+      },
+      {
+        "path": "libs/arm64-v8a/libmadb_kotlin_managed_probe.so",
+        "sha256": "09d997361642f12c7a2b8efdf4cac6b27bb815e77ee7f07808123c5b2ba1a023",
+        "size": 3450912
+      },
+      {
+        "path": "libs/arm64-v8a/libmadbkotlinrecordprobe.so",
+        "sha256": "51c94a8039288561b6855d38ea9e681546f853d590a197b0f4c773c7aa04c23c",
+        "size": 56480
+      }
+    ]
+  },
+  "retained_failure": {
+    "receipt": {
+      "path": "/private/tmp/madb-c07-kotlin-record-r4-hap/evidence/c07-sdk26-da769ef82c9042b99e75ad6809929398-failed-result.json",
+      "sha256": "f305d131b21c3e5737be692af93d10846f65fb21269897d31f1d62486bf54972",
+      "size": 16017
+    },
+    "diagnosis": {
+      "path": "/private/tmp/madb-c07-kotlin-record-probe/diagnostics/first-target-gate-analysis.md",
+      "sha256": "efe098cd5c36e641626e4e8c51632cf210ffbae4d70aa5e84b8056c31f009b39",
+      "size": 1977
+    },
+    "observed": "Throw callback was skipped; consumer requested stop before actual callback-entry prerequisite.",
+    "correction": "Require observed callback entry before the throw-case close attempt; same provider and assertions retained.",
+    "inference_limit": "Non-atomic diagnostic counter sampling supports the explanation; exact interleaving was not directly captured."
+  },
+  "limits": [
+    "Full queue Busy plus recovery is not autonomously draining Engine.close.",
+    "Explicit removal of hooks with hooksInvoked=0 is not system env teardown.",
+    "Source Worker termination Future consumption is job ACK, not pthread/TLS join.",
+    "Main env remains valid; no invalid-env API path or abandoned managed null-env payload exercised.",
+    "KSP processor and compiler public acquisition closure remains separate from the consumed-byte supplement.",
+    "No arbitrary multi-argument rollback guarantee: fixed record-first, owned-observer-last signature only.",
+    "Current module initialization is not identity bootstrap before business-resource admission.",
+    "No full Engine/Operation/state/event, release HAR candidate or independent Lab package certification."
+  ]
+}
