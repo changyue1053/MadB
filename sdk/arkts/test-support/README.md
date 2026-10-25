@@ -31,10 +31,12 @@ or establish target Node-API lifecycle behavior.
 
 Companion v2 extends that strict derivation with one held Delivery test seam,
 shared native handle-admission controls, real bootstrap event totals and a
-closed-set Node-API observer. It has 31 private native methods and 18 public test
-helpers. The current observation contract is 178 values, including a live process
-segment that is explicitly outside the stable physical-ACK snapshot. See the
-versioned contract attachments. These changes do not appear in ordinary packages.
+closed-set Node-API observer. That version had 31 private native methods and 18
+public test helpers. The current companion adds native `testMemory` as ordinal 31
+and pure ArkTS `testSubscriptionState`, for exactly 32 private native methods and
+20 public test helpers. The observation contract remains 178 values, including a
+live process segment outside the stable physical-ACK snapshot. See the versioned
+contract attachments. These changes do not appear in ordinary packages.
 
 `build_identity_fixtures.py` derives three CRIT-12 negative native libraries from
 a caller-pinned C04 test-companion compile task and its exact frozen inputs. It
@@ -52,8 +54,11 @@ compile/link worker; it does not create a candidate, package a HAR or run a targ
 ```
 
 Use `--prepare-only` to inspect the exact three derivations without loading the
-worker. Each fresh `wrong-abi`, `wrong-profile` and `wrong-build` directory retains
-its source references, three constant edits, output/log hashes and fixture receipt.
+worker. Preparation requires the actual 32-method companion declaration, including
+`testMemory` at the final ordinal; old 31-method fixtures remain historical inputs
+and are not relabeled or reused for a new candidate. Each fresh `wrong-abi`,
+`wrong-profile` and `wrong-build` directory retains its source references, three
+constant edits, output/log hashes and fixture receipt.
 The unchanged public `openRuntime()` is expected to reject with `AbiMismatch`,
 `ProfileMismatch` and `ArtifactMismatch`, respectively. The helper checks those
 codes and their event increments against the consumed gateway source; a changed
@@ -61,3 +66,18 @@ contract fails preparation. The independent consumer must isolate each DSO and
 measure the real before/after `testBootstrapTotals()` values. Expected deltas are
 one open attempt and one corresponding rejection; identity match and resource
 creation counters stay unchanged. These expectations are not execution evidence.
+
+Identity-negative fixture construction accepts an actual ordinary or test C04
+parent with the exact 16/32-method declaration and matching module/variant. It
+changes only one compiled identity component and its derived strings, preserving
+the original facade expectation. Ordinary fixtures carry no bootstrap counter
+claim; same-source companion counter evidence remains independently required.
+Every receipt and fixtures.json records the parent variant. These libraries are
+separate negative fixtures, never additional members of the normal HAR.
+
+The Kotlin helper at `sdk/kotlin/arkts-owned/test-support/build_identity_fixtures.py`
+accepts exact actual 15/23-function KSP inventories for ordinary/test respectively,
+with matching module and `test_support` flags. It changes the compiled identity
+input while keeping the original facade; each `fixtures.json` records the variant.
+The ordinary fixture has no counter claim. Companion observations independently
+prove zero new owners through the shared admission gate source.

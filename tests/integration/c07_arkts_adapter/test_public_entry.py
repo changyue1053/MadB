@@ -142,10 +142,20 @@ class ExplicitPolicy(unittest.TestCase):
             (ROOT / "adapters/generators/arkts/profiles/snapshot-test-v1.json").read_text()
         )
         contract, bindings = self.lower()
-        self.assertEqual(len(contract["symbols"]), 34)
+        self.assertEqual(len(contract["symbols"]), 36)
         types = {item["id"]: item["definition"] for item in contract["types"]}
         self.assertEqual(types["test.array.178"]["max_bytes"], 1424)
         self.assertEqual(types["test.array.178"]["length_unit"], "elements")
+        self.assertEqual(types["test.array.27"]["max_bytes"], 216)
+        self.assertEqual(types["test.array.4"]["max_bytes"], 32)
+        state = self.policy["value_slots"]["testSubscriptionState.return"]
+        self.assertEqual(state["length_elements"], 4)
+        self.assertEqual(json.loads((ROOT / state["layout"]).read_text())["length"], 4)
+        memory = self.policy["value_slots"]["testMemory.return"]
+        layout = json.loads((ROOT / memory["layout"]).read_text())
+        self.assertEqual(memory["length_elements"], layout["length"])
+        self.assertEqual(layout["length"], 27)
+        self.assertIn("excludes allocator overhead and VM/RSS", memory["element_domain"])
         self.assertEqual(
             self.policy["value_slots"]["testFailClone.mode"]["allowed_integers"], [1, 2, 4]
         )

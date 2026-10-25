@@ -12,10 +12,19 @@ import sys
 import tempfile
 
 _spec = importlib.util.spec_from_file_location(
-    "_c07_port", Path(__file__).resolve().parents[3] / "adapters/generators/arkts/support.py"
+    "_c07_port",
+    Path(__file__).resolve().parents[3] / "adapters/generators/arkts/support.py",
 )
 support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
+
+
+OBFUSCATION_OPTIONS = (
+    "-enable-property-obfuscation",
+    "-enable-export-obfuscation",
+    "-enable-filename-obfuscation",
+    "-keep-parameter-names",
+)
 
 
 def native_inputs(inputs, refs):
@@ -69,9 +78,13 @@ def run_har_command(label, args, project, work, env, commands, timeout=900):
     if "error" in receipt:
         raise RuntimeError("HAR " + label + " could not complete: " + receipt["error"])
     if receipt["output_truncated"]:
-        raise ValueError("HAR " + label + " output exceeded budget; partial output retained")
+        raise ValueError(
+            "HAR " + label + " output exceeded budget; partial output retained"
+        )
     if receipt["exit_code"]:
-        raise RuntimeError("HAR " + label + " failed: " + err.decode(errors="replace")[-12000:])
+        raise RuntimeError(
+            "HAR " + label + " failed: " + err.decode(errors="replace")[-12000:]
+        )
     commands.append(
         {
             "label": label,
@@ -151,7 +164,8 @@ def main():
     ):
         raise ValueError("unsupported additional runtime notice path")
     additional_assets = [
-        "THIRD_PARTY_NOTICES/" + name.removeprefix("notices/") for name in additional_notices
+        "THIRD_PARTY_NOTICES/" + name.removeprefix("notices/")
+        for name in additional_notices
     ]
     project = work / "har-project"
     project.mkdir()
@@ -261,7 +275,10 @@ def main():
                 "nativeLib": {"debugSymbol": {"strip": False}},
                 "arkOptions": {
                     "obfuscation": {
-                        "ruleOptions": {"enable": True, "files": ["./obfuscation-rules.txt"]}
+                        "ruleOptions": {
+                            "enable": True,
+                            "files": ["./obfuscation-rules.txt"],
+                        }
                     }
                 },
             },
@@ -288,7 +305,8 @@ def main():
     copied("generated/native/Index.d.ts", module + "/" + local + "/Index.d.ts")
     if config["provider"] == "kotlin":
         copied(
-            "generated/native/record-export.d.ts", module + "/" + local + "/record-export.d.ts"
+            "generated/native/record-export.d.ts",
+            module + "/" + local + "/record-export.d.ts",
         )
     notice_passthrough = {}
     by_name = {r["path"]: r for r in refs}
@@ -330,7 +348,8 @@ def main():
         "export { " + ", ".join(exported) + " } from './src/main/ets/Boundary';\n",
     )
     rules = (
-        "-enable-property-obfuscation\n-enable-export-obfuscation\n-enable-filename-obfuscation\n-keep-dts "
+        "\n".join(OBFUSCATION_OPTIONS)
+        + "\n-keep-dts "
         + str(mod / local)
         + "\n-keep-global-name\n"
         + "\n".join(exported)
@@ -413,7 +432,9 @@ def main():
     passthrough = {
         "package/"
         + local
-        + "/Index.d.ts": next(r for r in refs if r["path"] == "generated/native/Index.d.ts"),
+        + "/Index.d.ts": next(
+            r for r in refs if r["path"] == "generated/native/Index.d.ts"
+        ),
         **notice_passthrough,
     }
     canonical = bind.bind_har(archive.read_bytes(), inputs, native, passthrough)

@@ -1,4 +1,5 @@
 """Producer negative-fixture guards; these tests do not claim target rejection."""
+
 import importlib.util
 import json
 from pathlib import Path
@@ -13,7 +14,8 @@ from adapters.generators.arkts import support
 from adapters.toolchains.arkts.native import compose_native
 
 spec = importlib.util.spec_from_file_location(
-    "identity_fixtures", ROOT / "sdk/arkts/test-support/build_identity_fixtures.py")
+    "identity_fixtures", ROOT / "sdk/arkts/test-support/build_identity_fixtures.py"
+)
 fixtures = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fixtures)
 
@@ -29,24 +31,53 @@ class IdentityFixtures(unittest.TestCase):
         compose_native(ROOT, composed, route="c", variant="test")
         self.identity = "madb-arkts/1:" + ":".join(letter * 64 for letter in "abc")
         constants = {
-            "GatewayAbi": "a" * 64, "GatewayProfile": "b" * 64, "GatewayBuild": "c" * 64,
-            "GatewayIdentity": self.identity, "GatewayRouteIdentity": "c/" + self.identity,
+            "GatewayAbi": "a" * 64,
+            "GatewayProfile": "b" * 64,
+            "GatewayBuild": "c" * 64,
+            "GatewayIdentity": self.identity,
+            "GatewayRouteIdentity": "c/" + self.identity,
             "GatewayModuleName": "madbc07sdkctest",
         }
-        self.write(fixtures.HEADER, '#pragma once\n#include "provider_abi.h"\nnamespace gateway {\n'
-                   + "".join("inline constexpr const char* " + key + "=" + json.dumps(value)
-                             + ";\n" for key, value in constants.items())
-                   + "inline constexpr auto GatewayProviderCreate = ::mp_c_create;\n}\n")
-        self.write(fixtures.FACADE, "const EXPECTED_IDENTITY: string = " + json.dumps(self.identity) + ";\n")
-        self.write(fixtures.WORKER, "raise AssertionError('prepare-only must not import the worker')\n")
-        self.config = dict(variant="test", provider="c", native_module="libmadbc07sdkctest.so",
-                           tools={"python": {}}, build={"units": [
-                               {"source": "derived/native/src/runtime.cpp", "name": "runtime", "language": "cpp"}]})
+        self.write(
+            fixtures.HEADER,
+            '#pragma once\n#include "provider_abi.h"\nnamespace gateway {\n'
+            + "".join(
+                "inline constexpr const char* " + key + "=" + json.dumps(value) + ";\n"
+                for key, value in constants.items()
+            )
+            + "inline constexpr auto GatewayProviderCreate = ::mp_c_create;\n}\n",
+        )
+        self.write(
+            fixtures.FACADE,
+            "const EXPECTED_IDENTITY: string = " + json.dumps(self.identity) + ";\n",
+        )
+        self.write(
+            fixtures.WORKER,
+            "raise AssertionError('prepare-only must not import the worker')\n",
+        )
+        self.config = dict(
+            variant="test",
+            provider="c",
+            native_module="libmadbc07sdkctest.so",
+            tools={"python": {}},
+            build={
+                "units": [
+                    {
+                        "source": "derived/native/src/runtime.cpp",
+                        "name": "runtime",
+                        "language": "cpp",
+                    }
+                ]
+            },
+        )
         self.write("backend.json", json.dumps(self.config))
         self.write("identity.json", json.dumps({"expected_identity": self.identity}))
         names = re.findall(r"^  (\w+)\(", (composed / "Index.d.ts").read_text(), re.M)
-        self.assertEqual(len(names), 31)
-        self.write("declarations.json", json.dumps({"gateway": {"methods": [{"name": name} for name in names]}}))
+        self.assertEqual(len(names), 32)
+        self.write(
+            "declarations.json",
+            json.dumps({"gateway": {"methods": [{"name": name} for name in names]}}),
+        )
         layout = "sdk/arkts/test-support/contracts/bootstrap-totals-layout.json"
         self.write(layout, (ROOT / layout).read_text())
         self.task_path = self.root / "compile.json"
@@ -58,11 +89,23 @@ class IdentityFixtures(unittest.TestCase):
         path.write_text(text)
 
     def refresh_task(self):
-        self.task = dict(schema="madb.build-task/1", phase="compile", dependencies=[],
-                         selector={"target": "aarch64-linux-ohos"}, generation_id="sha256:" + "d" * 64,
-                         arguments=["../inputs/" + fixtures.WORKER, "--config", "../inputs/backend.json"],
-                         inputs=[fixtures.reference(path, path.relative_to(self.inputs).as_posix())
-                                 for path in sorted(self.inputs.rglob("*")) if path.is_file()])
+        self.task = dict(
+            schema="madb.build-task/1",
+            phase="compile",
+            dependencies=[],
+            selector={"target": "aarch64-linux-ohos", "route": "ARKTS-C-NAPI"},
+            generation_id="sha256:" + "d" * 64,
+            arguments=[
+                "../inputs/" + fixtures.WORKER,
+                "--config",
+                "../inputs/backend.json",
+            ],
+            inputs=[
+                fixtures.reference(path, path.relative_to(self.inputs).as_posix())
+                for path in sorted(self.inputs.rglob("*"))
+                if path.is_file()
+            ],
+        )
         self.task_path.write_text(json.dumps(self.task))
         self.pin = support.sha(self.task_path)
 
@@ -76,16 +119,27 @@ class IdentityFixtures(unittest.TestCase):
             with self.subTest(case=case):
                 after, edits = fixtures.derive_header(before, case)
                 changed = fixtures.constants(after)
-                self.assertEqual([item["constant"] for item in edits],
-                                 [component, "GatewayIdentity", "GatewayRouteIdentity"])
-                for key in original.keys() - {component, "GatewayIdentity", "GatewayRouteIdentity"}:
+                self.assertEqual(
+                    [item["constant"] for item in edits],
+                    [component, "GatewayIdentity", "GatewayRouteIdentity"],
+                )
+                for key in original.keys() - {
+                    component,
+                    "GatewayIdentity",
+                    "GatewayRouteIdentity",
+                }:
                     self.assertEqual(original[key], changed[key])
                 self.assertNotEqual(original[component], changed[component])
-                self.assertEqual(sum(a != b for a, b in zip(before.splitlines(), after.splitlines())), 3)
+                self.assertEqual(
+                    sum(a != b for a, b in zip(before.splitlines(), after.splitlines())),
+                    3,
+                )
 
     def test_prepare_is_non_candidate_and_preserves_every_other_byte(self):
         out = self.root / "fixtures"
-        receipts = fixtures.build_fixtures(self.task_path, self.pin, self.inputs, out, prepare_only=True)
+        receipts = fixtures.build_fixtures(
+            self.task_path, self.pin, self.inputs, out, prepare_only=True
+        )
         self.assertEqual(len(receipts), 3)
         support.verify_refs(self.inputs, self.task["inputs"])
         for case, (_, _, _, code, counter) in fixtures.CASES.items():
@@ -100,9 +154,14 @@ class IdentityFixtures(unittest.TestCase):
             frozen = out / case / "compile/inputs"
             for ref in self.task["inputs"]:
                 if ref["path"] != fixtures.HEADER:
-                    self.assertEqual((frozen / ref["path"]).read_bytes(), (self.inputs / ref["path"]).read_bytes())
+                    self.assertEqual(
+                        (frozen / ref["path"]).read_bytes(),
+                        (self.inputs / ref["path"]).read_bytes(),
+                    )
         with self.assertRaisesRegex(ValueError, "fresh"):
-            fixtures.build_fixtures(self.task_path, self.pin, self.inputs, out, prepare_only=True)
+            fixtures.build_fixtures(
+                self.task_path, self.pin, self.inputs, out, prepare_only=True
+            )
 
     def test_parent_pin_and_input_drift_rejected(self):
         with self.assertRaisesRegex(ValueError, "caller pin"):
@@ -111,23 +170,106 @@ class IdentityFixtures(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "frozen input changed"):
             self.validate()
 
-    def test_ordinary_route_and_old_companion_rejected(self):
+    def test_variant_mismatch_and_old_companion_rejected(self):
         self.config["variant"] = "ordinary"
         self.write("backend.json", json.dumps(self.config))
         self.refresh_task()
-        with self.assertRaisesRegex(ValueError, "test companion"):
+        with self.assertRaisesRegex(ValueError, "variant/module"):
             self.validate()
         self.config["variant"] = "test"
         self.write("backend.json", json.dumps(self.config))
-        self.write("declarations.json", json.dumps({"gateway": {"methods": [{"name": "runtimeOpen"}]}}))
+        declared = json.loads((self.inputs / "declarations.json").read_text())["gateway"][
+            "methods"
+        ]
+        self.assertEqual(declared[-1]["name"], "testMemory")
+        for methods in (
+            declared[:-1],
+            declared + [{"name": "extraTest"}],
+            declared[:-1] + [{"name": "testBootstrapTotals"}],
+            declared[:-2] + [declared[-1], declared[-2]],
+        ):
+            with self.subTest(methods=[item["name"] for item in methods]):
+                self.write(
+                    "declarations.json", json.dumps({"gateway": {"methods": methods}})
+                )
+                self.refresh_task()
+                with self.assertRaisesRegex(ValueError, "32-method"):
+                    self.validate()
+
+    def ordinary(self):
+        self.config.update(variant="ordinary", native_module="libmadbc07sdkc.so")
+        self.write("backend.json", json.dumps(self.config))
+        header = self.inputs / fixtures.HEADER
+        header.write_text(
+            header.read_text().replace('"madbc07sdkctest"', '"madbc07sdkc"')
+        )
+        self.write(
+            "derived/native/src/runtime.cpp",
+            (ROOT / "sdk/arkts/native-gateway/src/runtime.cpp").read_text(),
+        )
+        self.write(
+            "declarations.json",
+            json.dumps(
+                {
+                    "gateway": {
+                        "methods": [{"name": name} for name in fixtures.ORDINARY_METHODS]
+                    }
+                }
+            ),
+        )
         self.refresh_task()
-        with self.assertRaisesRegex(ValueError, "31-method"):
+
+    def test_ordinary_fixture_retains_facade_without_claiming_test_counters(self):
+        self.ordinary()
+        out = self.root / "ordinary-fixtures"
+        receipts = fixtures.build_fixtures(
+            self.task_path, self.pin, self.inputs, out, prepare_only=True
+        )
+        self.assertEqual(len(receipts), 3)
+        self.assertEqual(
+            json.loads((out / "fixtures.json").read_text())["variant"], "ordinary"
+        )
+        for case in fixtures.CASES:
+            receipt = json.loads((out / case / "fixture-receipt.json").read_text())
+            self.assertEqual(receipt["variant"], "ordinary")
+            self.assertIsNone(receipt["expected_bootstrap_delta"])
+            self.assertIsNone(receipt["expected_rejection_event"])
+            self.assertEqual(receipt["changed_files"], [fixtures.HEADER])
+            self.assertEqual(
+                (out / case / "compile/inputs" / fixtures.FACADE).read_bytes(),
+                (self.inputs / fixtures.FACADE).read_bytes(),
+            )
+
+    def test_ordinary_method_order_and_companion_body_are_rejected(self):
+        self.ordinary()
+        methods = list(fixtures.ORDINARY_METHODS)
+        methods[0], methods[1] = methods[1], methods[0]
+        self.write(
+            "declarations.json",
+            json.dumps({"gateway": {"methods": [{"name": name} for name in methods]}}),
+        )
+        self.refresh_task()
+        with self.assertRaisesRegex(ValueError, "16-method"):
+            self.validate()
+        self.ordinary()
+        path = self.inputs / "derived/native/src/runtime.cpp"
+        path.write_text(
+            path.read_text().replace(
+                'return error(env, "AbiMismatch");', 'return error(env, "Other");'
+            )
+        )
+        self.refresh_task()
+        with self.assertRaisesRegex(ValueError, "rejection code/event"):
             self.validate()
 
     def test_changed_error_or_counter_is_not_silently_reinterpreted(self):
         path = self.inputs / "derived/native/src/runtime.cpp"
-        path.write_text(path.read_text().replace('return error(env, "AbiMismatch");',
-                                                 'return error(env, "InvalidArgument");'))
+        path.write_text(
+            path.read_text().replace(
+                'return error(env, "AbiMismatch");',
+                'return error(env, "InvalidArgument");',
+            )
+        )
         self.refresh_task()
         with self.assertRaisesRegex(ValueError, "rejection code/event changed"):
             self.validate()

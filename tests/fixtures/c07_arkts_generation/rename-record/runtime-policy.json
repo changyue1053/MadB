@@ -3,8 +3,8 @@
   "purpose": "Authored restricted Parcel C07 policy; actual compiler projections must match this reviewed structural allowlist. Runtime semantics are explicit policy, not inferred from TypeScript syntax.",
   "authority": {
     "path": "docs/adr/0013-arkts-runtime-and-completion.md",
-    "sha256": "sha256:8280c27c0fd7c2d439cfa2c75c78837060ab01035553a74257a0d868466341ad",
-    "size": 10679
+    "sha256": "sha256:3f85a6b1e103454379487422db9c836d030e24d890dd366c8041e1adaf59e340",
+    "size": 11506
   },
   "public_surface": {
     "records": [
@@ -1246,5 +1246,11 @@
     "representation": "backend-handle",
     "owner": "arkts-runtime",
     "meaning": "Backend-owned erased ArkTS exception channel, including ordinary BoundaryError(code) and unmodified user Error. Not a finite error enum or an explicitly closable SDK owner."
+  },
+  "runtime_reopen": {
+    "same_env": true,
+    "requires_physical_ack": true,
+    "requires_receipt_consumed": true,
+    "epoch_reuse": false
   }
 }

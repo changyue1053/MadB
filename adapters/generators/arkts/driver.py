@@ -16,6 +16,7 @@ support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
 lowering = support.load_module(Path(__file__).with_name("lowering.py"))
 c_reader = support.load_module(Path(__file__).with_name("read_c_seam.py"))
+diagnostics = support.load_module(Path(__file__).with_name("diagnostics.py"))
 
 
 def documents(root):
@@ -101,15 +102,29 @@ def verify(request, config, root, *, tree=True):
             raise ValueError("delivery input omitted from source closure: " + name)
     notices = config["runtime_notices"]
     expected_notices = {
-        ("third-party/harmony/native-NOTICE.txt", "sdk/default/openharmony/native/NOTICE.txt"),
-        ("third-party/harmony/llvm-NOTICE.txt", "sdk/default/openharmony/native/llvm/NOTICE"),
+        (
+            "third-party/harmony/native-NOTICE.txt",
+            "sdk/default/openharmony/native/NOTICE.txt",
+        ),
+        (
+            "third-party/harmony/llvm-NOTICE.txt",
+            "sdk/default/openharmony/native/llvm/NOTICE",
+        ),
     }
-    if len(notices) != 2 or {(n["source"], n["sdk_path"]) for n in notices} != expected_notices:
-        raise ValueError("runtime notice inventory differs from the fixed Native SDK recipe")
+    if (
+        len(notices) != 2
+        or {(n["source"], n["sdk_path"]) for n in notices} != expected_notices
+    ):
+        raise ValueError(
+            "runtime notice inventory differs from the fixed Native SDK recipe"
+        )
     if any(n["source"] not in names for n in notices):
         raise ValueError("runtime notice omitted from original read inputs")
     for name in config.get("additional_notices", []):
-        if not name.startswith("notices/" + config["provider"] + "/") or name not in names:
+        if (
+            not name.startswith("notices/" + config["provider"] + "/")
+            or name not in names
+        ):
             raise ValueError("runtime notice omitted from original read inputs")
     for tool in config["tools"].values():
         support.verify_tool(tool)
@@ -126,6 +141,8 @@ def verify(request, config, root, *, tree=True):
             "testObserveFacade": ("facade-frame-layout.json", "length"),
             "testBootstrapTotals": ("bootstrap-totals-layout.json", "length"),
             "testDeliveryGate": ("ports-layout.json", "delivery"),
+            "testMemory": ("memory-layout.json", "length"),
+            "testSubscriptionState": ("subscription-state-layout.json", "length"),
         }
         for method, (filename, key) in lengths.items():
             name = "sdk/arkts/test-support/contracts/" + filename
@@ -175,6 +192,12 @@ def public_projection(root, config, identity):
     )
 
 
+def public_reader_mode(config, kind):
+    if config["variant"] != "test":
+        return kind
+    return kind + ("-kotlin-test" if config["provider"] == "kotlin" else "-test")
+
+
 def read_gateway(config, root, reference, work):
     """Read the actual typed native declaration through the fixed SDK parser."""
     ts = config["tools"]["typescript"]
@@ -205,7 +228,9 @@ def _read(request, config, root, work):
     refs = verify(request, config, root)
     managed = config["provider"] == "kotlin"
     gateway = (
-        None if managed else read_gateway(config, root, refs[config["gateway_source"]], work)
+        None
+        if managed
+        else read_gateway(config, root, refs[config["gateway_source"]], work)
     )
     composition = config.get("composition")
     if composition is not None:
@@ -224,7 +249,9 @@ def _read(request, config, root, work):
             Path(root), out, route=composition["route"], variant=composition["variant"]
         )
         if config["provider"] == "rust":
-            backend = support.load_module(Path(root) / "adapters/toolchains/arkts/rust.py")
+            backend = support.load_module(
+                Path(root) / "adapters/toolchains/arkts/rust.py"
+            )
             value = backend.derive_native(value, out, config["variant"], gateway)
         derived = [
             composition["prefix"] + "/" + f.path.relative_to(out).as_posix()
@@ -238,7 +265,9 @@ def _read(request, config, root, work):
                 or refs[name]["sha256"] != "sha256:" + file.sha256
                 or refs[name]["size"] != file.size
             ):
-                raise ValueError("native derived source differs from original recipe: " + name)
+                raise ValueError(
+                    "native derived source differs from original recipe: " + name
+                )
         shutil.rmtree(folder)
     ts = config["tools"]["typescript"]
     node = config["tools"]["node"]
@@ -251,7 +280,7 @@ def _read(request, config, root, work):
                 base / "read_facade.cjs",
                 ts["path"],
                 config["public_source"],
-                "source-test" if config["variant"] == "test" else "source",
+                public_reader_mode(config, "source"),
             ],
             cwd=work,
             stdin=support.input_path(root, config["public_source"]).read_bytes(),
@@ -263,7 +292,9 @@ def _read(request, config, root, work):
             raise ValueError("Kotlin profile requires explicit main-env-only admission")
         sdk = support.read_json(support.input_path(root, "toolchain.json"))
         if sdk["kotlin"].get("execution_domain") != policy["execution_domain"]:
-            raise ValueError("Kotlin SDK admission differs from its authored runtime policy")
+            raise ValueError(
+                "Kotlin SDK admission differs from its authored runtime policy"
+            )
         frontend_policy = policy.get("frontend_policy")
         if (
             frontend_policy != "sdk/kotlin/arkts-owned/frontend-policy.json"
@@ -281,7 +312,9 @@ def _read(request, config, root, work):
             "clang_arguments": config["seam_arguments"],
             "environment": {},
         }
-        seam = c_reader.read_header(root, root, refs[config["provider_source"]], seam_config)
+        seam = c_reader.read_header(
+            root, root, refs[config["provider_source"]], seam_config
+        )
         seed, policies = lowering.lower(public, gateway, seam, policy, request, config)
     d = documents(root)
     source_refs = sorted(
@@ -298,12 +331,18 @@ def _read(request, config, root, work):
             "identity": "declaration-only, not a runtime handshake",
         },
     }
+    diagnostic = diagnostics.read(root, config, refs, support)
+    if diagnostic is not None:
+        diagnostics.verify_bounds(diagnostic, policy)
+        descriptor["diagnostics"] = diagnostic
     if managed:
         descriptor["kotlin"] = kotlin
     else:
         descriptor.update(gateway=gateway, c_seam=seam)
     if config["provider"] == "rust":
-        reader = support.load_module(Path(root) / "adapters/toolchains/arkts/rust_metadata.py")
+        reader = support.load_module(
+            Path(root) / "adapters/toolchains/arkts/rust_metadata.py"
+        )
         descriptor["rust"] = reader.read_metadata(root, config, work, gateway)
     verify(request, config, root, tree=False)
     return descriptor, seed, policies
@@ -322,7 +361,9 @@ def finalize(seed, config, root, work):
         "profile": support.read_json(support.input_path(root, config["profile"])),
     }
     return json.loads(
-        support.command(config, "finalizer", [], cwd=work, stdin=d.canonical(value).encode())
+        support.command(
+            config, "finalizer", [], cwd=work, stdin=d.canonical(value).encode()
+        )
     )
 
 
@@ -342,7 +383,9 @@ def generate(request, config, root, work):
             ("input_digest", "source_digest"),
         ]
     ):
-        raise ValueError("fresh declarations/source/policy differ from checked C04 ContractIR")
+        raise ValueError(
+            "fresh declarations/source/policy differ from checked C04 ContractIR"
+        )
     d = documents(root)
     files = []
 
@@ -352,7 +395,10 @@ def generate(request, config, root, work):
         with path.open("xb") as f:
             f.write(data)
         files.append(
-            dict(d.ref(work, name), sources=sorted(s["public_id"] for s in contract["symbols"]))
+            dict(
+                d.ref(work, name),
+                sources=sorted(s["public_id"] for s in contract["symbols"]),
+            )
         )
 
     def emit_json(name, value):
@@ -539,14 +585,24 @@ def generate(request, config, root, work):
         emit(
             "generated/native/identity.generated.hpp",
             (
-                '#pragma once\n#include "provider_abi.h"\nnamespace gateway {\n'
+                '#pragma once\n#include "provider_abi.h"\n'
+                + ('#include "memory_hook.h"\n' if config["variant"] == "test" else "")
+                + "namespace gateway {\n"
                 + "".join(
                     "inline constexpr const char* " + k + "=" + json.dumps(v) + ";\n"
                     for k, v in constants.items()
                 )
                 + "inline constexpr auto GatewayProviderCreate = ::"
                 + factory
-                + ";\n}\n"
+                + ";\n"
+                + (
+                    "inline constexpr auto GatewayProviderMemoryBind = ::"
+                    + factory.removesuffix("_create")
+                    + "_test_memory_bind;\n"
+                    if config["variant"] == "test"
+                    else ""
+                )
+                + "}\n"
             ).encode(),
         )
     # Re-read the actual generated facade and require exactly the authored public
@@ -559,7 +615,7 @@ def generate(request, config, root, work):
                 Path(__file__).with_name("read_facade.cjs"),
                 config["tools"]["typescript"]["path"],
                 "generated/facade/Boundary.ets",
-                "source-test" if config["variant"] == "test" else "source",
+                public_reader_mode(config, "source"),
             ],
             cwd=work,
             stdin=(Path(work) / "generated/facade/Boundary.ets").read_bytes(),
@@ -608,11 +664,13 @@ def main():
     if args.operation == "generate":
         support.verify_refs(scratch, value["files"])
         for item in value["files"]:
-            support.copy_new(support.input_path(scratch, item["path"]), work / item["path"])
+            support.copy_new(
+                support.input_path(scratch, item["path"]), work / item["path"]
+            )
     shutil.rmtree(scratch)
-    with (work / ("contract.json" if args.operation == "metadata" else "outputs.json")).open(
-        "xb"
-    ) as f:
+    with (
+        work / ("contract.json" if args.operation == "metadata" else "outputs.json")
+    ).open("xb") as f:
         f.write(output)
     sys.stdout.buffer.write(output)
 

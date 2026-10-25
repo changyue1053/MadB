@@ -3,8 +3,8 @@
   "purpose": "Fixed companion declarations captured once from actual derived source TypeScript AST; later reads must match. Ordinary source and behavior remain the strict patch baseline.",
   "authority": {
     "path": "docs/adr/0013-arkts-runtime-and-completion.md",
-    "sha256": "sha256:8280c27c0fd7c2d439cfa2c75c78837060ab01035553a74257a0d868466341ad",
-    "size": 10679
+    "sha256": "sha256:3f85a6b1e103454379487422db9c836d030e24d890dd366c8041e1adaf59e340",
+    "size": 11506
   },
   "public_surface": {
     "records": [
@@ -648,6 +648,44 @@
         "returns": {
           "tag": "void"
         }
+      },
+      {
+        "name": "testMemory",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testSubscriptionState",
+        "owner": null,
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
       }
     ]
   },
@@ -1288,6 +1326,23 @@
       {
         "name": "testBootstrapTotals",
         "params": [],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testMemory",
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
         "returns": {
           "tag": "array",
           "item": {
@@ -2033,6 +2088,29 @@
         "cancellation_confirmation": "not-supported"
       },
       "lifetime": "Checked Runtime Session owns one next-settlement fault slot; no new native waiter/payload."
+    },
+    "testMemory": {
+      "kind": "sync",
+      "public_id": "madb.c07.testMemory.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testSubscriptionState": {
+      "kind": "sync",
+      "public_id": "madb.c07.testSubscriptionState.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "lifetime": "Read-only copy of the original held Subscription wrapper record, including after close; no new native reference or observer owner; not GC evidence."
     }
   },
   "slots": {
@@ -2144,6 +2222,22 @@
       "encoding": "none",
       "mutable": false,
       "max_bytes": 120
+    },
+    "test.array.27": {
+      "kind": "buffer",
+      "element": "test.safe-integer",
+      "length_unit": "elements",
+      "encoding": "none",
+      "mutable": false,
+      "max_bytes": 216
+    },
+    "test.array.4": {
+      "kind": "buffer",
+      "element": "test.safe-integer",
+      "length_unit": "elements",
+      "encoding": "none",
+      "mutable": false,
+      "max_bytes": 32
     }
   },
   "value_slots": {
@@ -2384,6 +2478,38 @@
       "layout": "sdk/arkts/test-support/contracts/bootstrap-totals-layout.json",
       "element_domain": "checked integer in [-9007199254740991,9007199254740991]; each slot has exact units in frozen layouts",
       "representation": "backend-owned logical ArkTS array copied to caller; not a contiguous C buffer; max_bytes is logical numeric storage bound (8 per element), not total JS heap"
+    },
+    "testMemory.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.27",
+      "length_elements": 27,
+      "layout": "sdk/arkts/test-support/contracts/memory-layout.json",
+      "element_domain": "checked nonnegative integer in [0,9007199254740991]; memory-layout.json fixes per-slot bytes, counts and actual sizeof units; excludes allocator overhead and VM/RSS",
+      "representation": "backend-owned logical ArkTS array copied to caller; not a contiguous C buffer; max_bytes is logical numeric storage bound (8 per element), not total JS heap"
+    },
+    "testSubscriptionState.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.4",
+      "length_elements": 4,
+      "layout": "sdk/arkts/test-support/contracts/subscription-state-layout.json",
+      "element_domain": "exact format 1 and three 0|1 flags: closing, closed, original listener presence",
+      "representation": "backend-owned logical ArkTS array copied to caller; not a contiguous C buffer; max_bytes is logical numeric storage bound (8 per element), not total JS heap"
     }
+  },
+  "runtime_reopen": {
+    "same_env": true,
+    "requires_physical_ack": true,
+    "requires_receipt_consumed": true,
+    "epoch_reuse": false
   }
 }

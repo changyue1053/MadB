@@ -72,7 +72,9 @@ def derive_port(port):
         "class KotlinPort {",
         "export interface SavedCalls { peek(runtime: string, id: string): number; takeStatus(runtime: string, id: string): number; connect(runtime: string): string; abort(runtime: string): number[]; }\nclass SavedCallsOwner implements SavedCalls { private readonly api: OwnedApi; constructor(api: OwnedApi) { this.api = api; } peek(runtime: string, id: string): number { return this.api.ownedPeek(runtime, id); } takeStatus(runtime: string, id: string): number { return this.api.ownedTakeStatus(runtime, id); } connect(runtime: string): string { return this.api.ownedConnect(runtime); } abort(runtime: string): number[] { return bootstrap.abortAdmission(runtime); } }\nclass KotlinPort {",
     )
-    return replace_once(s, "  audit(): number[] {", CONTROL_PORT + "  audit(): number[] {")
+    return replace_once(
+        s, "  audit(): number[] {", CONTROL_PORT + "  audit(): number[] {"
+    )
 
 
 def derive_declaration(declaration):
@@ -130,7 +132,9 @@ def controls_boundary(source):
         "  requestStop(): void { this.session.requestClose(this.record); }",
     ):
         s = replace_once(
-            s, member, "  testResource(): string { return this.record.handle; }\n" + member
+            s,
+            member,
+            "  testResource(): string { return this.record.handle; }\n" + member,
         )
     s = replace_once(
         s,
@@ -172,7 +176,7 @@ def controls_boundary(source):
     let current: number = 0;
     this.waiters.forEach((waiter: Waiter) => { if (waiter.settling) { current++; } });
     const values: number[] = [this.settleArms, this.settleHits, this.settleResolve, this.settleReject,
-      this.settleExceptions, current, this.settleMaxObserved];
+      this.settleExceptions, current, this.settleMaxObserved, this.timer >= 0 ? 1 : 0, this.ticking ? 1 : 0];
     for (let i: number = 0; i < values.length; i++) {
       if (!Number.isSafeInteger(values[i]) || values[i] < 0) { throw new BoundaryError('MetricRangeExceeded'); }
     }

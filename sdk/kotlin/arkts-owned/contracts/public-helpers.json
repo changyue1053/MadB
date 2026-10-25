@@ -90,7 +90,7 @@
       "parameters": {
         "runtime": "branded Runtime, readable afterlogicalclose/fail whileJSwrapperheld"
       },
-      "returns": "exactly7 number safeinteger nonnegative fields arms,hits,resolveAccepted,rejectAccepted,exceptions,currentSettling,maxObservedWaiterMap"
+      "returns": "exactly9 number safeinteger nonnegative fields arms,hits,resolveAccepted,rejectAccepted,exceptions,currentSettling,maxObservedWaiterMap,timerArmed,tickInFlight; last two are actual Session flags0or1"
     },
     "testObserveNapi": {
       "parameters": {},

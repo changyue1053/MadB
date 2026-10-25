@@ -5,8 +5,10 @@ const fs = require('node:fs');
 const crypto = require('node:crypto');
 const {TextDecoder} = require('node:util');
 function readFacade(ts, bytes, logical, mode = 'source') {
-  const testProfile=mode.endsWith('-test');
-  if(testProfile) mode=mode.slice(0,-5);
+  const kotlinTest=mode.endsWith('-kotlin-test');
+  const testProfile=kotlinTest||mode.endsWith('-test');
+  if(kotlinTest) mode=mode.slice(0,-12);
+  else if(testProfile) mode=mode.slice(0,-5);
   if (!['source','declaration'].includes(mode)) throw new Error('unknown public reader mode');
   if (bytes.length > 1024 * 1024) throw new Error('facade source exceeds 1 MiB');
   const text = new TextDecoder('utf-8', {fatal:true}).decode(bytes);
@@ -26,6 +28,7 @@ function readFacade(ts, bytes, logical, mode = 'source') {
     if(n.kind===ts.SyntaxKind.NumberKeyword)return {tag:'number'};
     if(n.kind===ts.SyntaxKind.StringKeyword)return {tag:'string'};
     if(n.kind===ts.SyntaxKind.VoidKeyword)return {tag:'void'};
+    if(kotlinTest&&n.kind===ts.SyntaxKind.BooleanKeyword)return {tag:'boolean'};
     if(testProfile&&ts.isArrayTypeNode(n)&&n.elementType.kind===ts.SyntaxKind.NumberKeyword)return {tag:'array',item:{tag:'number'}};
     if(ts.isTypeReferenceNode(n)){
       const name=id(n.typeName);

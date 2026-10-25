@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[3]))
-from adapters.artifacts.arkts.pack import run_har_command
+from adapters.artifacts.arkts.pack import run_har_command, OBFUSCATION_OPTIONS
 from adapters.toolchains.arkts.pipeline import Pipeline, FrozenPipeline
 from adapters.generators.arkts.support import sha
 
@@ -23,7 +23,9 @@ class CommandDiagnostics(unittest.TestCase):
                 'import sys,time;print("PARTIAL_OUT",flush=True);print("PARTIAL_ERR",file=sys.stderr,flush=True);time.sleep(3)',
             ]
             with self.assertRaisesRegex(RuntimeError, "could not complete"):
-                run_har_command("probe", argv, work, work, dict(os.environ), commands, timeout=0.25)
+                run_har_command(
+                    "probe", argv, work, work, dict(os.environ), commands, timeout=0.25
+                )
             self.assertEqual((work / "probe.stdout").read_bytes(), b"PARTIAL_OUT\n")
             self.assertEqual((work / "probe.stderr").read_bytes(), b"PARTIAL_ERR\n")
             receipt = json.loads((work / "probe-command.json").read_text())
@@ -31,6 +33,19 @@ class CommandDiagnostics(unittest.TestCase):
             self.assertIsNone(receipt["exit_code"])
             self.assertIn("error", receipt)
             self.assertEqual(commands, [])
+
+
+class PublicDeclarationPackaging(unittest.TestCase):
+    def test_parameter_names_are_kept_without_disabling_the_three_obfuscations(self):
+        self.assertEqual(
+            set(OBFUSCATION_OPTIONS),
+            {
+                "-enable-property-obfuscation",
+                "-enable-export-obfuscation",
+                "-enable-filename-obfuscation",
+                "-keep-parameter-names",
+            },
+        )
 
 
 class CandidateLogClosure(unittest.TestCase):
@@ -94,7 +109,9 @@ class CandidateLogClosure(unittest.TestCase):
             destination = obj.root / log["path"]
             destination.parent.mkdir()
             destination.write_bytes(b"other admitted context")
-            with patch.object(FrozenPipeline, "package") as delegate, self.assertRaises(ValueError):
+            with patch.object(FrozenPipeline, "package") as delegate, self.assertRaises(
+                ValueError
+            ):
                 obj.package("unused")
             delegate.assert_not_called()
             self.assertEqual(destination.read_bytes(), b"other admitted context")
@@ -103,9 +120,9 @@ class CandidateLogClosure(unittest.TestCase):
         for mode in ("missing", "corrupt", "conflict"):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as temp:
                 obj, _, _ = self.fixture(Path(temp).resolve(), **{mode: True})
-                with patch.object(FrozenPipeline, "package") as delegate, self.assertRaises(
-                    ValueError
-                ):
+                with patch.object(
+                    FrozenPipeline, "package"
+                ) as delegate, self.assertRaises(ValueError):
                     obj.package("unused")
                 delegate.assert_not_called()
 

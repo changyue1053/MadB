@@ -6,7 +6,8 @@ import json
 import hashlib
 
 _spec = importlib.util.spec_from_file_location(
-    "_c07_port", Path(__file__).resolve().parents[3] / "adapters/generators/arkts/support.py"
+    "_c07_port",
+    Path(__file__).resolve().parents[3] / "adapters/generators/arkts/support.py",
 )
 support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
@@ -40,7 +41,9 @@ def verify_public_har(raw, expected, config, work, har_module):
         raise ValueError("restricted HAR requires one explicit public declaration module")
     group = groups[0]
     names = {
-        r["name"] for key in ("records", "resources", "errors", "functions") for r in expected[key]
+        r["name"]
+        for key in ("records", "resources", "errors", "functions")
+        for r in expected[key]
     }
     if set(group["names"]) != names or len(group["names"]) != len(names):
         raise ValueError("HAR public exports differ from frozen source declarations")
@@ -61,17 +64,28 @@ def verify_public_har(raw, expected, config, work, har_module):
             config,
             "node",
             [
-                Path(__file__).resolve().parents[3] / "adapters/generators/arkts/read_facade.cjs",
+                Path(__file__).resolve().parents[3]
+                / "adapters/generators/arkts/read_facade.cjs",
                 ts["path"],
                 target,
-                "declaration-test" if config.get("variant") == "test" else "declaration",
+                (
+                    (
+                        "declaration-kotlin-test"
+                        if config.get("provider") == "kotlin"
+                        else "declaration-test"
+                    )
+                    if config.get("variant") == "test"
+                    else "declaration"
+                ),
             ],
             cwd=work,
             stdin=members[target],
         )
     )
     if lowering.projection(actual) != lowering.projection(expected):
-        raise ValueError("compiled HAR declaration differs from frozen public source shape")
+        raise ValueError(
+            "compiled HAR declaration differs from frozen public source shape"
+        )
     support.verify_tool(ts)
     return {
         "scope": "actual compiler-emitted HAR public declarations compared with frozen source AST; not target execution",

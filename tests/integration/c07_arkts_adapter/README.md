@@ -7,3 +7,9 @@ output retention, compiler dependency roots, and public entry/policy gates.
 Synthetic archive and policy fixtures are unit evidence, not actual SDK builds.
 Actual compiler/C04 checks use `scripts/build_arkts_routes.py` and the public
 author fixtures; independent Lab owns assertions and target runs.
+
+Diagnostic protocol regression tests read the real frozen C-family and Kotlin
+layout authorities, check same-length field/unit ABI changes and commentary/path
+stability, and reject missing layouts or inconsistent array bounds. Kotlin test
+policy checks require explicit boolean/string/array slots and all 28 helpers;
+these host checks do not replace actual KSP/HAR or target validation.

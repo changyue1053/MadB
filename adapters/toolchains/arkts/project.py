@@ -9,7 +9,8 @@ import shutil
 import tempfile
 
 _spec = importlib.util.spec_from_file_location(
-    "_c07_port", Path(__file__).resolve().parents[3] / "adapters/generators/arkts/support.py"
+    "_c07_port",
+    Path(__file__).resolve().parents[3] / "adapters/generators/arkts/support.py",
 )
 support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
@@ -22,6 +23,7 @@ HELPERS = (
     "adapters/generators/arkts/read_har_exports.cjs",
     "adapters/generators/arkts/read_c_seam.py",
     "adapters/generators/arkts/lowering.py",
+    "adapters/generators/arkts/diagnostics.py",
     "adapters/toolchains/arkts/toolchain.py",
     "adapters/toolchains/arkts/worker.py",
     "adapters/artifacts/arkts/pack.py",
@@ -90,7 +92,9 @@ def prepare(
         if source.is_symlink() or not source.is_file():
             raise ValueError("author must be an ordinary source file")
         if source.suffix in (".so", ".o", ".a", ".har", ".hap", ".hsp", ".klib"):
-            raise ValueError("prebuilt artifact is not an author declaration/implementation")
+            raise ValueError(
+                "prebuilt artifact is not an author declaration/implementation"
+            )
         if expected and (
             source.stat().st_size != expected["size"]
             or support.sha(source) != expected["sha256"]
@@ -100,7 +104,8 @@ def prepare(
         if expected:
             copied = workspace / name
             if any(
-                p.stat().st_size != expected["size"] or support.sha(p) != expected["sha256"]
+                p.stat().st_size != expected["size"]
+                or support.sha(p) != expected["sha256"]
                 for p in (source, copied)
             ):
                 raise ValueError("author changed while being frozen: " + name)
@@ -115,7 +120,8 @@ def prepare(
         if name not in names:
             copy(repo / name, name)
     schemas = sorted(
-        p.relative_to(repo).as_posix() for p in (repo / "docs/schemas").glob("*.schema.json")
+        p.relative_to(repo).as_posix()
+        for p in (repo / "docs/schemas").glob("*.schema.json")
     )
     for name in schemas:
         copy(repo / name, name)
@@ -139,7 +145,10 @@ def prepare(
         ]
         if len(entries) != 1:
             raise ValueError("Native SDK notice missing from verified archive inventory")
-        expected = {"sha256": "sha256:" + entries[0]["sha256"], "size": entries[0]["size"]}
+        expected = {
+            "sha256": "sha256:" + entries[0]["sha256"],
+            "size": entries[0]["size"],
+        }
         logical = "third-party/harmony/" + name
         copy(cli / original, logical, expected)
         runtime_notices.append({"source": logical, "sdk_path": original})
@@ -157,7 +166,8 @@ def prepare(
             n for n in names if n.startswith("sdk/arkts/test-support/contracts/")
         )
         config["test_facade_inputs"] = [
-            "sdk/arkts/test-support/facade/" + n for n in ("TestFrame.ets", "FacadeFrame.ets")
+            "sdk/arkts/test-support/facade/" + n
+            for n in ("TestFrame.ets", "FacadeFrame.ets")
         ]
     config.update(
         provider=route,
@@ -226,8 +236,13 @@ def prepare(
     ]
     profile = dict(
         schema="madb.profile/1",
-        id="c07-" + route + "-arkts-aarch64-ohos23" + ("-test" if variant == "test" else ""),
-        route="KN-ARKTS-NAPI" if route == "kotlin" else "ARKTS-" + route.upper() + "-NAPI",
+        id="c07-"
+        + route
+        + "-arkts-aarch64-ohos23"
+        + ("-test" if variant == "test" else ""),
+        route=(
+            "KN-ARKTS-NAPI" if route == "kotlin" else "ARKTS-" + route.upper() + "-NAPI"
+        ),
         provider={
             "language": route,
             "runtime": "kotlin-native" if route == "kotlin" else "native",
@@ -261,7 +276,8 @@ def prepare(
     selector = {k: profile[k] for k in ("route", "target", "direction")}
     selector.update(profile_id=profile["id"], profile_digest=d.profile_digest(profile))
     inputs = [
-        d.ref(workspace, n, "madb.source-input/1") for n in sorted(set(names) - set(schemas))
+        d.ref(workspace, n, "madb.source-input/1")
+        for n in sorted(set(names) - set(schemas))
     ]
     preliminary = {
         "schema": "madb.read-request/1",
@@ -281,7 +297,10 @@ def prepare(
                 id=boundary,
                 route=profile["route"],
                 direction=profile["direction"],
-                source={"kind": "arkts-compiler-declarations", "path": config["public_source"]},
+                source={
+                    "kind": "arkts-compiler-declarations",
+                    "path": config["public_source"],
+                },
                 profile=d.ref(workspace, "profile.json", "madb.profile/1"),
                 target=profile["target"],
                 output="generated",
@@ -376,7 +395,9 @@ def prepare_route(
         ):
             raise ValueError("Rust configuration changed before preparation")
         backend = support.load_module(repo / "adapters/toolchains/arkts/rust.py")
-        native_module = "libmadbc07sdkrust" + ("test" if variant == "test" else "") + ".so"
+        native_module = (
+            "libmadbc07sdkrust" + ("test" if variant == "test" else "") + ".so"
+        )
         backend_inputs = backend.prepare_configuration(
             observation, support.read_json(source), native_module, variant
         )
@@ -391,7 +412,9 @@ def prepare_route(
         author_fixture = Path(author_fixture).absolute()
         if variant != "ordinary" or author_fixture.is_symlink():
             raise ValueError("author fixture requires an ordinary source directory")
-        if not author_fixture.is_dir() or any(p.is_symlink() for p in author_fixture.parents):
+        if not author_fixture.is_dir() or any(
+            p.is_symlink() for p in author_fixture.parents
+        ):
             raise ValueError("author fixture path must not traverse symlinks")
         if {p.name for p in author_fixture.iterdir()} != {
             "Boundary.ets.in",
@@ -425,7 +448,10 @@ def prepare_route(
                 frozen_sources.setdefault(name, support.input_path(repo, name))
         for logical, path in frozen_sources.items():
             source = path
-            if author_fixture is not None and logical == "sdk/arkts/facade/Boundary.ets.in":
+            if (
+                author_fixture is not None
+                and logical == "sdk/arkts/facade/Boundary.ets.in"
+            ):
                 source = Path(author_fixture) / "Boundary.ets.in"
             if source.is_symlink() or not source.is_file():
                 raise ValueError("author source is not an ordinary file")
@@ -455,7 +481,9 @@ def prepare_route(
                 },
                 temp,
             )
-            frozen_backend = support.load_module(seed / "adapters/toolchains/arkts/rust.py")
+            frozen_backend = support.load_module(
+                seed / "adapters/toolchains/arkts/rust.py"
+            )
             value = frozen_backend.derive_native(value, composed, variant, gateway)
 
         def logical(path):
@@ -463,7 +491,9 @@ def prepare_route(
                 return path.relative_to(seed).as_posix()
             if path.is_relative_to(composed):
                 return "derived/native/" + path.relative_to(composed).as_posix()
-            raise ValueError("native composition returned a file outside its frozen roots")
+            raise ValueError(
+                "native composition returned a file outside its frozen roots"
+            )
 
         authors = [
             {
@@ -559,7 +589,9 @@ def prepare_route(
         producer_paths.update({r["path"]: r["path"] for r in prepared["lock"]["schemas"]})
         producer_paths[authority["path"]] = authority["path"]
         if author_fixture is None:
-            producer_paths["runtime-policy.json"] = policy_path.relative_to(repo).as_posix()
+            producer_paths["runtime-policy.json"] = policy_path.relative_to(
+                repo
+            ).as_posix()
         else:
             producer_paths.pop("sdk/arkts/facade/Boundary.ets.in")
         prepared["producer_inputs"] = producer_paths
@@ -577,10 +609,6 @@ def prepare_kotlin(
     observation_path,
 ):
     """KSP owns Kotlin declarations; there is no synthetic C native composition."""
-    if variant != "ordinary":
-        raise ValueError(
-            "Kotlin companion requires its independently completed test-control policy"
-        )
     if configuration is None:
         raise ValueError("Kotlin route requires caller-pinned configuration")
     source = Path(configuration["source"])
@@ -590,8 +618,9 @@ def prepare_kotlin(
     ):
         raise ValueError("Kotlin configuration changed before preparation")
     backend = support.load_module(repo / "adapters/toolchains/arkts/kotlin.py")
+    native_module = "libmadbc07sdkkotlin" + ("test" if variant == "test" else "") + ".so"
     selected = backend.prepare_configuration(
-        observation, support.read_json(source), "libmadbc07sdkkotlin.so", variant
+        observation, support.read_json(source), native_module, variant
     )
     selected["observation"]["public"]["kotlin"]["execution_domain"] = "main-env-only"
     authors = [
@@ -601,7 +630,10 @@ def prepare_kotlin(
         configuration,
         *delivery_inputs,
     ]
-    policy_path = repo / "adapters/generators/arkts/profiles/snapshot-kotlin-v1.json"
+    policy_name = (
+        "snapshot-kotlin-test-v1.json" if variant == "test" else "snapshot-kotlin-v1.json"
+    )
+    policy_path = repo / "adapters/generators/arkts/profiles" / policy_name
     authority = support.read_json(policy_path)["authority"]
     authority_ref = dict(authority, source=str(repo / authority["path"]))
     existing = [ref for ref in authors if ref["path"] == authority["path"]]
@@ -615,7 +647,7 @@ def prepare_kotlin(
         "strip": False,
         "runtime_libraries": [selected["observation"]["native_runtime"]],
         "implementation_libraries": [
-            "libmadbc07sdkkotlin.so",
+            native_module,
             "libmadb_kotlin_owned_runtime.so",
         ],
         "system_libraries": sorted(elf.SYSTEM),
@@ -644,11 +676,15 @@ def prepare_kotlin(
             if ref["path"] in mapping:
                 source = support.input_path(fixture, mapping[ref["path"]])
                 ref.update(
-                    source=str(source), sha256=support.sha(source), size=source.stat().st_size
+                    source=str(source),
+                    sha256=support.sha(source),
+                    size=source.stat().st_size,
                 )
                 overridden.add(ref["path"])
         if overridden != set(mapping):
-            raise ValueError("Kotlin author fixture did not replace its exact declared sources")
+            raise ValueError(
+                "Kotlin author fixture did not replace its exact declared sources"
+            )
         for ref in selected["observation"]["config"]["kotlin"]["source_inputs"]:
             match = next((a for a in authors if a["path"] == ref["path"]), None)
             if match is not None:
@@ -675,7 +711,9 @@ def prepare_kotlin(
         source_path = Path(entry["source"])
         if source_path.is_relative_to(repo):
             producer_paths[entry["path"]] = source_path.relative_to(repo).as_posix()
-    producer_paths.update({ref["path"]: ref["path"] for ref in prepared["lock"]["schemas"]})
+    producer_paths.update(
+        {ref["path"]: ref["path"] for ref in prepared["lock"]["schemas"]}
+    )
     producer_paths[authority["path"]] = authority["path"]
     if author_fixture is None:
         producer_paths["runtime-policy.json"] = policy_path.relative_to(repo).as_posix()

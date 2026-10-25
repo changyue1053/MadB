@@ -1,0 +1,1982 @@
+{
+  "schema": "madb.private.arkts-runtime-policy.v1",
+  "purpose": "Authored restricted Snapshot C07 policy; actual compiler projections must match this reviewed structural allowlist. Runtime semantics are explicit policy, not inferred from TypeScript syntax.",
+  "authority": {
+    "path": "docs/adr/0013-arkts-runtime-and-completion.md",
+    "sha256": "sha256:3f85a6b1e103454379487422db9c836d030e24d890dd366c8041e1adaf59e340",
+    "size": 11506
+  },
+  "public_surface": {
+    "records": [
+      {
+        "name": "Snapshot",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "name": "Runtime",
+        "methods": [
+          {
+            "name": "connect",
+            "owner": "Runtime",
+            "params": [],
+            "returns": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Runtime",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Engine",
+        "methods": [
+          {
+            "name": "roundtrip",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Snapshot"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Snapshot"
+            }
+          },
+          {
+            "name": "startOperation",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Snapshot"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Operation"
+            }
+          },
+          {
+            "name": "publishState",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Snapshot"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "publishEvent",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Snapshot"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "observeState",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "listener",
+                "type": {
+                  "tag": "callback",
+                  "params": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "tag": "reference",
+                        "name": "Snapshot"
+                      }
+                    }
+                  ],
+                  "returns": {
+                    "tag": "void"
+                  }
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "observeEvents",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "listener",
+                "type": {
+                  "tag": "callback",
+                  "params": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "tag": "reference",
+                        "name": "Snapshot"
+                      }
+                    }
+                  ],
+                  "returns": {
+                    "tag": "void"
+                  }
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "requestClose",
+            "owner": "Engine",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Engine",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Operation",
+        "methods": [
+          {
+            "name": "result",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "reference",
+                "name": "Snapshot"
+              }
+            }
+          },
+          {
+            "name": "requestCancel",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Subscription",
+        "methods": [
+          {
+            "name": "requestStop",
+            "owner": "Subscription",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Subscription",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "SavedCalls",
+        "methods": [
+          {
+            "name": "peek",
+            "owner": "SavedCalls",
+            "params": [
+              {
+                "name": "runtime",
+                "type": {
+                  "tag": "string"
+                }
+              },
+              {
+                "name": "id",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "takeStatus",
+            "owner": "SavedCalls",
+            "params": [
+              {
+                "name": "runtime",
+                "type": {
+                  "tag": "string"
+                }
+              },
+              {
+                "name": "id",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "connect",
+            "owner": "SavedCalls",
+            "params": [
+              {
+                "name": "runtime",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "string"
+            }
+          },
+          {
+            "name": "abort",
+            "owner": "SavedCalls",
+            "params": [
+              {
+                "name": "runtime",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "array",
+              "item": {
+                "tag": "number"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "name": "BoundaryError",
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "constructors": [
+          {
+            "params": [
+              {
+                "name": "code",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "openRuntime",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "reference",
+          "name": "Runtime"
+        }
+      },
+      {
+        "name": "testObserve",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testExportKey",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "testInspect",
+        "owner": null,
+        "params": [
+          {
+            "name": "key",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testSaveCalls",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "reference",
+          "name": "SavedCalls"
+        }
+      },
+      {
+        "name": "testObserveNapi",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "testRawFrame",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testLastAdmissionAudit",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testPollAdmission",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testArmPartialOpenFailure",
+        "owner": null,
+        "params": [
+          {
+            "name": "stage",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testArmWork",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "phase",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testReleaseWork",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testHoldPublication",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testReleasePublication",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testMemoryFrame",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "testControlFrame",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "testArmDelivery",
+        "owner": null,
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testDeliveryFrame",
+        "owner": null,
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "string"
+        }
+      },
+      {
+        "name": "testReleaseDelivery",
+        "owner": null,
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testStagePublication",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "stream",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "snapshot",
+            "type": {
+              "tag": "reference",
+              "name": "Snapshot"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testFinishPublication",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "commit",
+            "type": {
+              "tag": "boolean"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testArmCloneFailure",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "nth",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "ownedError",
+            "type": {
+              "tag": "boolean"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testArmTransferFailure",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          },
+          {
+            "name": "phase",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testEngineHandle",
+        "owner": null,
+        "params": [
+          {
+            "name": "engine",
+            "type": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "probeCase",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testOperationHandle",
+        "owner": null,
+        "params": [
+          {
+            "name": "operation",
+            "type": {
+              "tag": "reference",
+              "name": "Operation"
+            }
+          },
+          {
+            "name": "probeCase",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testSubscriptionState",
+        "owner": null,
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      },
+      {
+        "name": "testSubscriptionHandle",
+        "owner": null,
+        "params": [
+          {
+            "name": "subscription",
+            "type": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "probeCase",
+            "type": {
+              "tag": "number"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testSettleProbe",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          },
+          {
+            "name": "action",
+            "type": {
+              "tag": "callback",
+              "params": [],
+              "returns": {
+                "tag": "void"
+              }
+            }
+          },
+          {
+            "name": "throwAfter",
+            "type": {
+              "tag": "boolean"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
+      },
+      {
+        "name": "testSettleInspect",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          }
+        ],
+        "returns": {
+          "tag": "array",
+          "item": {
+            "tag": "number"
+          }
+        }
+      }
+    ]
+  },
+  "values": {
+    "Snapshot.value": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "i32",
+      "definition": {
+        "kind": "integer",
+        "width": 32,
+        "signed": true
+      }
+    },
+    "Snapshot.text": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "utf8.1024",
+      "definition": {
+        "kind": "string",
+        "encoding": "utf-8",
+        "max_bytes": 1024
+      }
+    }
+  },
+  "calls": {
+    "openRuntime": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.openRuntime.v1"
+    },
+    "Runtime.connect": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Runtime.connect.v1"
+    },
+    "Runtime.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Runtime.close.v1"
+    },
+    "Engine.roundtrip": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.roundtrip.v1"
+    },
+    "Engine.startOperation": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.startOperation.v1"
+    },
+    "Engine.publishState": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.publishState.v1"
+    },
+    "Engine.publishEvent": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.publishEvent.v1"
+    },
+    "Engine.observeState": {
+      "kind": "stream",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported",
+        "stream_kind": "state",
+        "capacity_items": 3,
+        "capacity_bytes": 4096,
+        "overflow": "coalesce-latest",
+        "ordering": "source",
+        "replay": "none",
+        "recovery": "resubscribe",
+        "stop": "delivery-gate-with-source-lease"
+      },
+      "public_id": "madb.c07.Engine.observeState.v1"
+    },
+    "Engine.observeEvents": {
+      "kind": "stream",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported",
+        "stream_kind": "event",
+        "capacity_items": 8,
+        "capacity_bytes": 4096,
+        "overflow": "reject",
+        "ordering": "source",
+        "replay": "none",
+        "recovery": "resubscribe",
+        "stop": "delivery-gate-with-source-lease"
+      },
+      "public_id": "madb.c07.Engine.observeEvents.v1"
+    },
+    "Engine.requestClose": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.requestClose.v1"
+    },
+    "Engine.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.close.v1"
+    },
+    "Operation.result": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Operation.result.v1"
+    },
+    "Operation.requestCancel": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "work",
+        "cancellation_confirmation": "operation-terminal"
+      },
+      "public_id": "madb.c07.Operation.requestCancel.v1"
+    },
+    "Operation.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Operation.close.v1"
+    },
+    "Subscription.requestStop": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "observe",
+        "cancellation_confirmation": "stopped"
+      },
+      "public_id": "madb.c07.Subscription.requestStop.v1"
+    },
+    "Subscription.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Subscription.close.v1"
+    },
+    "testObserve": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testObserve.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testExportKey": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testExportKey.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testInspect": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testInspect.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testSaveCalls": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testSaveCalls.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "lifetime": "JS wrapper retaining actual KSP function references, no additional native owner; original Runtime controls close; stale invocation gates before retired descriptor access"
+    },
+    "testRawFrame": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testRawFrame.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testLastAdmissionAudit": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testLastAdmissionAudit.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testPollAdmission": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testPollAdmission.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testArmPartialOpenFailure": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testArmPartialOpenFailure.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testArmWork": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testArmWork.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testReleaseWork": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testReleaseWork.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testHoldPublication": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testHoldPublication.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testReleasePublication": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testReleasePublication.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testControlFrame": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testControlFrame.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testArmDelivery": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testArmDelivery.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testDeliveryFrame": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testDeliveryFrame.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testReleaseDelivery": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testReleaseDelivery.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testStagePublication": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testStagePublication.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testFinishPublication": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testFinishPublication.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testArmCloneFailure": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testArmCloneFailure.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testArmTransferFailure": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testArmTransferFailure.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testEngineHandle": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testEngineHandle.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testOperationHandle": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testOperationHandle.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testSubscriptionHandle": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testSubscriptionHandle.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testSettleProbe": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testSettleProbe.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "slots": {
+        "parameter.action": {
+          "ownership": "shared",
+          "synchronous_callback": true,
+          "reentrant": true,
+          "threading": "runtime-environment",
+          "context_owner": "caller",
+          "stop": "request-and-drain",
+          "keep_alive": "source-lease"
+        }
+      },
+      "lifetime": "Runtime-owned one-shot until actual settler-return hook or close/fail; synchronous void invocation does not imply call-scope retention"
+    },
+    "testSettleInspect": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testSettleInspect.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "SavedCalls.peek": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.SavedCalls.peek.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "SavedCalls.takeStatus": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.SavedCalls.takeStatus.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "SavedCalls.connect": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.SavedCalls.connect.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "SavedCalls.abort": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.SavedCalls.abort.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testObserveNapi": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testObserveNapi.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testMemoryFrame": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testMemoryFrame.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    },
+    "testSubscriptionState": {
+      "kind": "sync",
+      "public_id": "madb.c07.kotlin.testSubscriptionState.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      }
+    }
+  },
+  "slots": {
+    "resource": {
+      "ownership": "shared",
+      "close": "request-await-release",
+      "release_thread": "runtime-environment"
+    },
+    "value": {
+      "ownership": "copy"
+    },
+    "callback": {
+      "ownership": "shared",
+      "synchronous_callback": true,
+      "reentrant": true,
+      "threading": "runtime-environment",
+      "context_owner": "subscription-owner",
+      "stop": "delivery-gate-with-source-lease",
+      "keep_alive": "source-lease"
+    }
+  },
+  "limits": {
+    "operation_handles": 8,
+    "subscription_handles": 8,
+    "event_tickets": 8,
+    "retained_utf8_bytes": 4096,
+    "result_and_close_waiters": 32,
+    "parent_close_control": 1,
+    "roundtrip_scratch_utf8": 1024,
+    "state_pending": 1,
+    "state_entered": 1,
+    "state_staging_per_selected_subscription": 1
+  },
+  "notes": [
+    "Public contract derives actual Kotlin public Boundary exported syntax; actual KSP facts/record schema are the managed implementation authority.",
+    "TypeScript number does not imply Int32; this explicit policy assigns Snapshot.value Int32 and text strict bounded UTF-8.",
+    "Managed allocation and paired cleanup follow the sole Kotlin owner and checked akinterop path; no C provider pointer ownership is inferred.",
+    "No business Promise cancellation from garbage collection or dropping wait.",
+    "State capacity_items=3 bounds one pending, one entered, and one staging reservation per selected subscription; all staging copies count in the shared 4096 retained UTF-8 budget.",
+    "Callback context_owner=subscription-owner describes the persistent listener registration. keep_alive=source-lease describes in-flight producer/delivery retention until lawful callback exit/drop.",
+    "Logical erased error channel ArkTSError admits unmodified user Error as well as BoundaryError. Actual BoundaryError.code declaration stays in the compiler descriptor; no exhaustive enum is inferred.",
+    "calling_convention=system is a logical backend convention; actual KSP/compiler facts and managed bootstrap evidence remain separate.",
+    "Stream classification comes from this explicit policy; TypeScript AST supplies method/callback signatures and Promise return syntax, not stream lifecycle semantics.",
+    "State capacity_items counts retained version responsibilities, not a public queue depth: latest pending remains one slot, entered callback and pre-commit staging have distinct owners. All count in the shared 4096-byte budget.",
+    "Shared resource self/return slots are backend reference handles whose explicit close belongs to the public owner. The erased ArkTSError channel is owned by ArkTS and is not a closable SDK resource.",
+    "Each call carries an authored stable public_id. SourceKey and API shape remain independently compiler-derived; retaining an ID across an explicit rename does not assert shape compatibility.",
+    "SavedCalls retains actual generated JavaScript function references without allocating another native owner. Runtime remains the lifecycle owner; stale and retired calls exercise actual native gates.",
+    "The one-shot settlement hook is retained by its checked Runtime until invocation or close/fail. Synchronous callback return does not imply call-scoped retention.",
+    "Diagnostic CSV values preserve full integer identity strings and UINT64_MAX unknown sentinels. Observations are bounded windows, not an unbounded cumulative counter guarantee.",
+    "Native memory metrics exclude Kotlin managed heap, VM memory, allocator overhead and RSS; original retired wrapper listener state is pure JavaScript and not a GC claim."
+  ],
+  "error_channel": {
+    "id": "ArkTSError",
+    "representation": "backend-handle",
+    "owner": "arkts-runtime",
+    "meaning": "Backend-owned erased ArkTS exception channel, including ordinary BoundaryError(code) and unmodified user Error. Not a finite error enum or an explicitly closable SDK owner."
+  },
+  "frontend_policy": "sdk/kotlin/arkts-owned/frontend-policy.json",
+  "scope": "Restricted Snapshot test profile: actual KSP23 managed declarations and actual public facade; independent ordinary15 profile remains separate.",
+  "execution_domain": "main-env-only",
+  "variant": "test",
+  "test_types": {
+    "test.i32": {
+      "kind": "integer",
+      "width": 32,
+      "signed": true
+    },
+    "test.safe-integer": {
+      "kind": "integer",
+      "width": 64,
+      "signed": true
+    },
+    "test.boolean": {
+      "kind": "boolean"
+    },
+    "test.runtime-key": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 23
+    },
+    "test.observation-id": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 20
+    },
+    "test.engine-handle": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 48
+    },
+    "test.control-csv": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 650
+    },
+    "test.array.13": {
+      "kind": "buffer",
+      "element": "test.safe-integer",
+      "length_unit": "elements",
+      "encoding": "none",
+      "mutable": false,
+      "max_bytes": 104
+    },
+    "test.array.110": {
+      "kind": "buffer",
+      "element": "test.safe-integer",
+      "length_unit": "elements",
+      "encoding": "none",
+      "mutable": false,
+      "max_bytes": 880
+    },
+    "test.napi-csv": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 2750
+    },
+    "test.memory-csv": {
+      "kind": "string",
+      "encoding": "utf-8",
+      "max_bytes": 461
+    },
+    "test.array.4": {
+      "kind": "buffer",
+      "element": "test.safe-integer",
+      "length_unit": "elements",
+      "encoding": "none",
+      "mutable": false,
+      "max_bytes": 32
+    },
+    "test.array.9": {
+      "kind": "buffer",
+      "element": "test.safe-integer",
+      "length_unit": "elements",
+      "encoding": "none",
+      "mutable": false,
+      "max_bytes": 72
+    }
+  },
+  "value_slots": {
+    "testArmPartialOpenFailure.stage": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "testArmWork.phase": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        1,
+        2
+      ]
+    },
+    "testStagePublication.stream": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1
+      ]
+    },
+    "testArmCloneFailure.nth": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    },
+    "testArmTransferFailure.phase": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        1,
+        2,
+        3
+      ]
+    },
+    "testEngineHandle.probeCase": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "testOperationHandle.probeCase": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "testSubscriptionHandle.probeCase": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "testFinishPublication.commit": {
+      "source_type": {
+        "tag": "boolean"
+      },
+      "type_id": "test.boolean"
+    },
+    "testArmCloneFailure.ownedError": {
+      "source_type": {
+        "tag": "boolean"
+      },
+      "type_id": "test.boolean"
+    },
+    "testSettleProbe.throwAfter": {
+      "source_type": {
+        "tag": "boolean"
+      },
+      "type_id": "test.boolean"
+    },
+    "testExportKey.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.runtime-key",
+      "meaning": "valid kn:u64 epoch key, exact decimal identity; invalid values are explicit rejection probes, not valid handles"
+    },
+    "testInspect.key": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.runtime-key",
+      "meaning": "valid kn:u64 epoch key, exact decimal identity; invalid values are explicit rejection probes, not valid handles"
+    },
+    "SavedCalls.peek.runtime": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.runtime-key",
+      "meaning": "valid kn:u64 epoch key, exact decimal identity; invalid values are explicit rejection probes, not valid handles"
+    },
+    "SavedCalls.takeStatus.runtime": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.runtime-key",
+      "meaning": "valid kn:u64 epoch key, exact decimal identity; invalid values are explicit rejection probes, not valid handles"
+    },
+    "SavedCalls.connect.runtime": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.runtime-key",
+      "meaning": "valid kn:u64 epoch key, exact decimal identity; invalid values are explicit rejection probes, not valid handles"
+    },
+    "SavedCalls.abort.runtime": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.runtime-key",
+      "meaning": "valid kn:u64 epoch key, exact decimal identity; invalid values are explicit rejection probes, not valid handles"
+    },
+    "SavedCalls.peek.id": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.observation-id",
+      "meaning": "exact u64 local observation id, decimal without leading zero"
+    },
+    "SavedCalls.takeStatus.id": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.observation-id",
+      "meaning": "exact u64 local observation id, decimal without leading zero"
+    },
+    "SavedCalls.connect.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.engine-handle",
+      "meaning": "exact kn:epoch:generation:e:0, two uint64 decimal identities"
+    },
+    "SavedCalls.peek.return": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "SavedCalls.takeStatus.return": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "test.i32",
+      "allowed_integers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "testControlFrame.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.control-csv",
+      "meaning": "31 exact decimal CSV fields, identities remain decimal strings; consumer rejects counter overflow/negative anomalies; not infinite monotonicity",
+      "layout": "sdk/kotlin/arkts-owned/contracts/controls-frame.json",
+      "diagnostic_protocol": "controls"
+    },
+    "testDeliveryFrame.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.control-csv",
+      "meaning": "31 exact decimal CSV fields, identities remain decimal strings; consumer rejects counter overflow/negative anomalies; not infinite monotonicity",
+      "layout": "sdk/kotlin/arkts-owned/contracts/controls-frame.json",
+      "diagnostic_protocol": "controls"
+    },
+    "testObserve.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.110",
+      "length_elements": 110,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "adapters/toolchains/arkts/kotlin_frame.py",
+      "diagnostic_protocol": "runtime",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testInspect.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.110",
+      "length_elements": 110,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "adapters/toolchains/arkts/kotlin_frame.py",
+      "diagnostic_protocol": "runtime",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testRawFrame.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.110",
+      "length_elements": 110,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "adapters/toolchains/arkts/kotlin_frame.py",
+      "diagnostic_protocol": "runtime",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "SavedCalls.abort.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.110",
+      "length_elements": 110,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "adapters/toolchains/arkts/kotlin_frame.py",
+      "diagnostic_protocol": "runtime",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testLastAdmissionAudit.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.13",
+      "length_elements": 13,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "sdk/kotlin/arkts-owned/contracts/admission-frame.json",
+      "diagnostic_protocol": "admission",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testPollAdmission.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.13",
+      "length_elements": 13,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "sdk/kotlin/arkts-owned/contracts/admission-frame.json",
+      "diagnostic_protocol": "admission",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testSettleInspect.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.9",
+      "length_elements": 9,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "sdk/kotlin/arkts-owned/contracts/settlement-frame.json",
+      "diagnostic_protocol": "settlement",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    },
+    "testObserveNapi.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.napi-csv",
+      "layout": "sdk/kotlin/arkts-owned/contracts/napi-observer-frame.json",
+      "diagnostic_protocol": "napi_observer",
+      "meaning": "bootstrap CSV;provider CSV; exact role counts30/101; preserve uint64 strings and unavailable/UINT64_MAX unknown"
+    },
+    "testMemoryFrame.return": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "test.memory-csv",
+      "layout": "sdk/kotlin/arkts-owned/contracts/memory-frame.json",
+      "diagnostic_protocol": "memory",
+      "meaning": "22 uint64 decimal CSV fields or unavailable before load; requested native allocation and canonical ledger bytes, not total heap or RSS"
+    },
+    "testSubscriptionState.return": {
+      "source_type": {
+        "tag": "array",
+        "item": {
+          "tag": "number"
+        }
+      },
+      "type_id": "test.array.4",
+      "length_elements": 4,
+      "representation": "copied logical ArkTS array, not contiguous C storage",
+      "layout": "sdk/kotlin/arkts-owned/contracts/subscription-frame.json",
+      "diagnostic_protocol": "subscription",
+      "element_domain": "checked safe integer; per-field domains and units are fixed by the frozen protocol layout"
+    }
+  },
+  "runtime_reopen": {
+    "same_env": true,
+    "requires_physical_ack": true,
+    "requires_receipt_consumed": true,
+    "epoch_reuse": false
+  }
+}

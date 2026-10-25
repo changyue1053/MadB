@@ -70,7 +70,9 @@ def lower(public, gateway, seam, policy, request, config):
         ("c_seam_surface", seam),
     ]:
         if projection(value) != policy[key]:
-            raise ValueError("actual declarations changed outside authored C07 policy: " + key)
+            raise ValueError(
+                "actual declarations changed outside authored C07 policy: " + key
+            )
     return lower_public(public, policy, request, config)
 
 
@@ -131,7 +133,9 @@ def lower_public(public, policy, request, config):
         mapping = policy.get("value_slots", {}).get(context)
         if mapping is not None:
             if mapping["source_type"] != t or mapping["type_id"] not in types:
-                raise ValueError("test slot differs from explicit type policy: " + context)
+                raise ValueError(
+                    "test slot differs from explicit type policy: " + context
+                )
             return mapping["type_id"]
         if t["tag"] == "void":
             return "unit"
@@ -160,7 +164,9 @@ def lower_public(public, policy, request, config):
     calls = public["functions"] + [m for r in public["resources"] for m in r["methods"]]
     actual_names = {".".join(filter(None, [f["owner"], f["name"]])) for f in calls}
     if actual_names != set(policy["calls"]):
-        raise ValueError("C07 call policy closure differs from actual public declarations")
+        raise ValueError(
+            "C07 call policy closure differs from actual public declarations"
+        )
     public_ids = {}
     for name, role in policy["calls"].items():
         explicit_id = role.get("public_id")
@@ -279,10 +285,12 @@ def abi_projection(descriptor, contract, runtime_policy):
     logical = {
         "types": contract["types"],
         "symbols": [
-            {"public_id": s["public_id"], "shape": s["shape"]} for s in contract["symbols"]
+            {"public_id": s["public_id"], "shape": s["shape"]}
+            for s in contract["symbols"]
         ],
         "policies": [
-            {k: p[k] for k in ("symbol_id", "slot", "values")} for p in contract["policies"]
+            {k: p[k] for k in ("symbol_id", "slot", "values")}
+            for p in contract["policies"]
         ],
         "required_features": contract["required_features"],
     }
@@ -325,6 +333,8 @@ def abi_projection(descriptor, contract, runtime_policy):
             "parameters": policy["parameters"],
             "execution_domain": runtime_policy["execution_domain"],
         }
+    if "diagnostics" in descriptor:
+        physical["diagnostics"] = descriptor["diagnostics"]["protocols"]
     roles = {
         key: runtime_policy[key]
         for key in (
@@ -336,7 +346,13 @@ def abi_projection(descriptor, contract, runtime_policy):
             "value_slots",
             "test_types",
             "execution_domain",
+            "runtime_reopen",
         )
         if key in runtime_policy
     }
+    if "value_slots" in roles:
+        roles["value_slots"] = {
+            name: {key: value for key, value in slot.items() if key != "layout"}
+            for name, slot in roles["value_slots"].items()
+        }
     return {"logical": logical, "physical": physical, "runtime_roles": roles}

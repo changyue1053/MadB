@@ -1,5 +1,5 @@
 {
-  "length": 7,
+  "length": 9,
   "wire": "number[]",
   "fields": [
     {
@@ -29,6 +29,16 @@
     {
       "index": 6,
       "name": "MaxObservedWaiterMap"
+    },
+    {
+      "index": 7,
+      "name": "TimerArmed",
+      "domain": "boolean flag0or1"
+    },
+    {
+      "index": 8,
+      "name": "TickInFlight",
+      "domain": "boolean flag0or1"
     }
   ],
   "scope": "JS Session observer at actual waiter accept/reject return before finally detaches owner; no native ownership fabricated; Map size includes currently settling waiter",

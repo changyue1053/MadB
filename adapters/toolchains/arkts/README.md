@@ -122,7 +122,12 @@ source pins are published in `generated/contract/composition.json`; all original
 also remain in the Source/lock inventory. `generated/contract/test/` contains
 PORTS, versioned layouts and units. The 178-element native diagnostic frame, the
 16-element bootstrap totals and 8-element delivery-gate frame are distinct;
-changing an actual layout without its explicit bounded array role is rejected.
+the testMemory frame has 27 separate fields for actual provider allocations,
+Core retained/staging permits and conversion storage. Its units exclude allocator
+overhead and VM/RSS; it is not a heap-size claim. The separate four-field
+`testSubscriptionState` reads the original held wrapper record, so a closed
+wrapper can prove its listener is absent without inferring native cleanup or GC. Changing an actual layout without
+its explicit bounded array role is rejected.
 The test-only number-array projection is a logical ArkTS value copy, not a C
 contiguous buffer. Each scalar is an exact checked JS-safe integer; command
 parameters have explicit ordinal/count domains. The Runtime-owned one-shot
@@ -179,3 +184,25 @@ selected NAPI features; Kotlin contributes actual KSP/TypeScript declarations,
 record types and notification protocol. Source locations, input checksums, tool
 bytes, generated implementation text and compiler diagnostics remain fully bound
 by Source/build identity and evidence, but do not enter this semantic ABI projection.
+
+The test variants additionally bind diagnostic protocol fields, index/order, units,
+formats, ranges and typed NAPI counter roles. The fixed selectors are in
+`adapters/generators/arkts/diagnostics.py`; the checked descriptor separates those
+protocols from their original source references. Descriptions, source paths and
+checksums remain Source/build inputs. Renaming a layout file or editing commentary
+does not change ABI; changing the meaning of a same-length frame does.
+
+The Kotlin test variant uses its own actual KSP 23-function inventory and public
+28-helper facade, including SavedCalls and the Runtime-owned one-shot settlement
+hook. Its boolean arguments are accepted only in the explicit Kotlin test reader
+mode. The ordinary reader and C-family test reader retain their previous type
+limits. Candidate files include the generated 110-field runtime layout and all
+seven original test contracts; CSV metrics preserve full integer strings and
+explicit unavailable/unknown states. These diagnostics do not imply total managed
+heap measurement, VM destruction, or passed target cases.
+
+The explicit `runtime_reopen` role permits same-env admission only after physical
+ACK and receipt consumption, with fresh non-reused epochs. It is part of semantic
+ABI for each ordinary/test profile; declaring it does not certify older candidates.
+Kotlin settlement diagnostics retain the original seven fields and append the
+actual Session timer-armed and tick-in-flight flags, for a nine-field frame.

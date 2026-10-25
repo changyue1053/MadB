@@ -16,7 +16,9 @@ class SemanticIdentity(unittest.TestCase):
     def setUp(self):
         # Small typed test vectors, not a claim of compiler/target observations.
         self.contract = {
-            "types": [{"id": "Handle", "definition": {"kind": "resource", "owner": "owner-a"}}],
+            "types": [
+                {"id": "Handle", "definition": {"kind": "resource", "owner": "owner-a"}}
+            ],
             "symbols": [
                 {
                     "public_id": "call",
@@ -49,6 +51,12 @@ class SemanticIdentity(unittest.TestCase):
             "limits": {"waiters": 32},
             "value_slots": {"command": {"allowed_integers": [0, 1]}},
             "execution_domain": "main-env-only",
+            "runtime_reopen": {
+                "same_env": True,
+                "requires_physical_ack": True,
+                "requires_receipt_consumed": True,
+                "epoch_reuse": False,
+            },
             "authority": {"sha256": "old"},
             "notes": "documentation",
         }
@@ -66,7 +74,10 @@ class SemanticIdentity(unittest.TestCase):
                 "methods": [{"name": "call", "returns": {"tag": "string"}}],
                 "tools": {"node": "old"},
             },
-            "c_seam": {"records": [{"name": "owned", "size": 16}], "source": {"sha256": "old"}},
+            "c_seam": {
+                "records": [{"name": "owned", "size": 16}],
+                "source": {"sha256": "old"},
+            },
             "rust": {
                 "macro": {
                     "descriptor": {
@@ -101,7 +112,11 @@ class SemanticIdentity(unittest.TestCase):
             "kotlin": {
                 "facts": {
                     "functions": [
-                        {"name": "call", "returnType": "kotlin.Int", "source": {"line": 1}}
+                        {
+                            "name": "call",
+                            "returnType": "kotlin.Int",
+                            "source": {"line": 1},
+                        }
                     ]
                 },
                 "descriptor": {
@@ -112,7 +127,11 @@ class SemanticIdentity(unittest.TestCase):
                 "record_schema": {
                     "qualifiedName": "Snapshot",
                     "fields": [
-                        {"name": "value", "kotlinType": "kotlin.Int", "location": "line 1"}
+                        {
+                            "name": "value",
+                            "kotlinType": "kotlin.Int",
+                            "location": "line 1",
+                        }
                     ],
                     "generator": "old-tool",
                 },
@@ -132,7 +151,9 @@ class SemanticIdentity(unittest.TestCase):
 
     def digest(self, descriptor=None, contract=None, policy=None):
         value = abi_projection(
-            descriptor or self.descriptor, contract or self.contract, policy or self.policy
+            descriptor or self.descriptor,
+            contract or self.contract,
+            policy or self.policy,
         )
         return hashlib.sha256(
             json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
@@ -180,6 +201,10 @@ class SemanticIdentity(unittest.TestCase):
             ("policy", ["limits", "waiters"], 31),
             ("policy", ["value_slots", "command", "allowed_integers"], [0, 1, 2]),
             ("policy", ["execution_domain"], "any-env"),
+            ("policy", ["runtime_reopen", "same_env"], False),
+            ("policy", ["runtime_reopen", "requires_physical_ack"], False),
+            ("policy", ["runtime_reopen", "requires_receipt_consumed"], False),
+            ("policy", ["runtime_reopen", "epoch_reuse"], True),
         ]
         self.check_mutations(cases)
 
