@@ -64,12 +64,14 @@ def source_paths(repository: Path, *, route: str, variant: str) -> tuple[Path, .
     if variant == "test":
         support = repository / "sdk/arkts/test-support"
         paths += [support / "native" / name for name in
-                  ("companion.patch", "baseline.json", "support.hpp", "support_state.hpp", "support.cpp")]
+                  ("companion.patch", "baseline.json", "support.hpp", "support_state.hpp", "support.cpp",
+                   "observer.hpp", "observer.cpp", "observer_inventory.py")]
         paths += [support / "facade" / name for name in
                   ("companion.patch", "baseline.json", "TestFrame.ets", "FacadeFrame.ets")]
         paths += [support / "contracts" / name for name in
                   ("support.d.ts", "test-frame-layout.json", "facade-frame-layout.json",
-                   "diagnostic-units-v1.json", "PORTS.md")]
+                   "diagnostic-units-v1.json", "PORTS.md", "bootstrap-totals-layout.json",
+                   "ports-layout.json", "observer-layout.json")]
     return tuple(paths)
 
 
@@ -180,7 +182,9 @@ def compose_native(repository: Path, output: Path, *, route: str, variant: str) 
                               parse_json_metadata(data[support / "facade/baseline.json"]))["Boundary.ets.in"]
         for name, destination in (("support.hpp", "include/support.hpp"),
                                   ("support_state.hpp", "include/support_state.hpp"),
-                                  ("support.cpp", "src/support.cpp")):
+                                  ("support.cpp", "src/support.cpp"),
+                                  ("observer.hpp", "include/observer.hpp"),
+                                  ("observer.cpp", "src/observer.cpp")):
             material[destination] = data[support / "native" / name].decode()
         support_declaration = data[support / "contracts/support.d.ts"].decode()
         match = re.fullmatch(r"/\*\*[^\n]*\*/\nexport interface NativeSupport \{\n(.*)\}\n",
@@ -209,7 +213,8 @@ def compose_native(repository: Path, output: Path, *, route: str, variant: str) 
              NativeUnit(output / "src/runtime.cpp", "c++"),
              NativeUnit(output / "src/api.cpp", "c++")]
     if variant == "test":
-        units.append(NativeUnit(output / "src/support.cpp", "c++"))
+        units.extend((NativeUnit(output / "src/support.cpp", "c++"),
+                      NativeUnit(output / "src/observer.cpp", "c++")))
     provider = {"c": ("sdk/c/arkts-provider/src/provider.c", "c"),
                 "cpp": ("sdk/cpp/arkts-provider/src/provider.cpp", "c++"),
                 "rust": ("sdk/rust/arkts-provider/src/lib.rs", "rust")}[route]

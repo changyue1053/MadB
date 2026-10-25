@@ -1,0 +1,41 @@
+{
+  "scope": "test-only narrow delivery/admission fixtures",
+  "native_ordinals": {
+    "28": "testDeliveryGate(subscription:string, command:number):number[]",
+    "29": "testHandleAdmission(engine:string, scenario:number, foreignObservationKey:string):void",
+    "30": "testBootstrapTotals():number[]"
+  },
+  "delivery": {
+    "commands": {
+      "0": "arm on an open subscription; one lease per Runtime",
+      "1": "read",
+      "2": "release schedules normal deliver; repeated release is idempotent while handle remains valid; releasing before arrival disarms"
+    },
+    "length": 8,
+    "format": 1,
+    "fields": {
+      "0": "Format",
+      "1": "Armed",
+      "2": "Held",
+      "3": "Entered",
+      "4": "Released",
+      "5": "Takes",
+      "6": "Invokes",
+      "7": "Discards"
+    },
+    "units": "booleans for fields1..4, cumulative lease/event counts for5..7",
+    "close": "Held lease retains the real Core inFlight owner. Stop/close stays pending until normal release/invoke or actual env cleanup discards. Retired handles retain normal InvalidHandleRetired/Closed semantics."
+  },
+  "admission": {
+    "cases": {
+      "0": "unchanged real Engine handle: accepts, creates no operation",
+      "1": "wrong kind: InvalidHandle",
+      "2": "different generation: InvalidHandleRetired; use second Engine for an actual prior generation",
+      "3": "uint64 decimal overflow: InvalidHandle",
+      "4": "leading zero: InvalidHandle",
+      "5": "embedded NUL: InvalidHandle",
+      "6": "real observation key of another currently-live env: WrongEnv; uses caller valid napi_env, no foreign Engine dereference"
+    },
+    "scope": "Runs actual shared handle()/find(expected=e,requireOpen=true), not full submit. Lab compares real Core/provider/work baselines. Invalid format/case or nonforeign key is a fixture error, not a promised negative rejection."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "scope": "test-only DSO lifetime monotonic events; not owner/physical ACK ledger",
+  "format": 1,
+  "length": 16,
+  "fields": {
+    "0": "Format",
+    "1": "OpenAttempts",
+    "2": "IdentityMatched",
+    "3": "AbiRejected",
+    "4": "ProfileRejected",
+    "5": "ArtifactRejected",
+    "6": "Reservations",
+    "7": "ContextsCreated",
+    "8": "EnginesCreated",
+    "9": "WorkerStarted",
+    "10": "RefCreated",
+    "11": "RefDeleted",
+    "12": "TsfnCreated",
+    "13": "TsfnReleaseAccepted",
+    "14": "HookAdded",
+    "15": "HookRemoved"
+  },
+  "units": "event counts except Format",
+  "scope_details": {
+    "OpenAttempts": "Entered openRuntime after exact callback arity; includes malformed/failed identity reads.",
+    "IdentityMatched": "All three 64hex digests matched; dispatcher/admission may still fail.",
+    "Reservations": "A new actual registry epoch was reserved.",
+    "ContextsCreated": "Runtime constructor body actually entered.",
+    "EnginesCreated": "Actual Core Engine construction succeeded.",
+    "WorkerStarted": "Actual native worker thread entered its loop.",
+    "resources": "Only actual Node-API status==napi_ok increments; TSFN release is not its finalizer ACK."
+  },
+  "limits": [
+    "Not atomic across concurrently active runtimes; isolate before/after identity failures in a fresh DSO/env fixture.",
+    "Diagnostic serialization itself calls NAPI, counted separately in process observer, not these resource creations.",
+    "All events saturate at 2^53; any out-of-range observation fails DiagnosticRangeExceeded.",
+    "No reset API or synthesized missing-runtime zeros."
+  ]
+}

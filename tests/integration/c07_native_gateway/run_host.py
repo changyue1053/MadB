@@ -59,7 +59,7 @@ def main():
     tests = Path(__file__).resolve().parent
     runtime = ROOT / "sdk/arkts/native-runtime"
     inputs = [x.path for x in composition.source_inputs] + [x.path for x in composition.derived_files]
-    inputs += [tests / name for name in ("test_native.cpp", "test_registry.cpp", "host-platform.hpp", "run_host.py")]
+    inputs += [tests / name for name in ("test_native.cpp", "test_registry.cpp", "host-platform.hpp", "test_observer.cpp", "run_host.py")]
     inputs += sorted(generated.iterdir()) + [args.native_sdk / "oh-uni-package.json"]
     inputs += sorted(p for p in header_root.joinpath("napi").rglob("*") if p.is_file())
     inputs += [header_root / name for name in ("node_api.h", "node_api_types.h", "js_native_api.h", "js_native_api_types.h")]
@@ -87,17 +87,23 @@ def main():
         common = [args.cxx, "-std=c++17", *flags, "-g", "-Wall", "-Wextra", "-Werror",
                   "-Wno-deprecated-declarations", "-include", tests / "host-platform.hpp",
                   *[value for path in includes for value in ("-I", path)]]
-        dependencies = [args.output / "source/src/support.cpp", args.output / "source/worker/worker.cpp",
+        dependencies = [args.output / "source/src/support.cpp", args.output / "source/src/observer.cpp", args.output / "source/worker/worker.cpp",
                         runtime / "src/protocol.cpp", provider]
-        for kind, extra in (("native", []), ("registry", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"])):
+        for kind, extra in (("native", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"]),
+                            ("registry", ["-Wl,-undefined,dynamic_lookup", "-Wl,-dead_strip"])):
             executable = args.output / (label + "-" + kind)
             run([*common, tests / f"test_{kind}.cpp", *dependencies, *extra, "-o", executable])
             run([executable])
+        observer = args.output / (label + "-observer")
+        run([args.cxx, "-std=c++17", *flags, "-Wall", "-Wextra", "-Werror",
+             "-Wno-deprecated-declarations", "-I", headers, "-I", args.output / "source/include",
+             args.output / "source/src/observer.cpp", tests / "test_observer.cpp", "-o", observer])
+        run([observer])
     if before != [record(path) for path in inputs]:
         raise ValueError("host regression inputs changed during execution")
     (args.output / "receipt.json").write_text(json.dumps({
         "scope": "real Core/provider/worker host regression; registry Node-API return harness; no target claim",
-        "route": args.route, "checks_per_configuration": 16,
+        "route": args.route, "checks_per_configuration": 22, "observer_stub_calls_per_configuration": 32,
         "configurations": ["Release", "ASan/UBSan"], "inputs": before,
         "commands": record(args.output / "commands.json"),
     }, indent=2) + "\n")

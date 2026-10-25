@@ -1,7 +1,7 @@
 {
   "native_prefix_length": 54,
   "test_length": 48,
-  "total_length": 156,
+  "total_length": 178,
   "fields": {
     "54": "TestFormat",
     "55": "ReadMode",
@@ -71,5 +71,7 @@
   ],
   "hook_entry_offset": 102,
   "hook_entry_length": 54,
-  "hook_entry_presence": "AsyncCleanupEntered > 0; otherwise this fixed reserved segment is explicitly unobserved, not evidence of zero entry occupancy"
+  "hook_entry_presence": "AsyncCleanupEntered > 0; otherwise this fixed reserved segment is explicitly unobserved, not evidence of zero entry occupancy",
+  "legacy_total_length": 156,
+  "observer_extension": "observer-layout.json"
 }

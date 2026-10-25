@@ -3,11 +3,32 @@
 #include <unistd.h>
 namespace gateway {
 using T = TestFrame;
+inline bool testObservationHandle(napi_env env, napi_value value, Handle &out) {
+    std::array<char, 320> bytes{};
+    size_t length = 0, copied = 0;
+    if (napi_get_value_string_utf8(env, value, nullptr, 0, &length) != napi_ok ||
+        length >= bytes.size() ||
+        napi_get_value_string_utf8(env, value, bytes.data(), bytes.size(), &copied) != napi_ok ||
+        copied != length) {
+        error(env, "InvalidArgument");
+        return false;
+    }
+    std::string_view key(bytes.data(), length), prefix = "madb-observe/1/";
+    if (key.substr(0, prefix.size()) != prefix ||
+        !parseBoundHandle(key.substr(prefix.size()), GatewayRouteIdentity, out) ||
+        out.kind != 'r') {
+        error(env, "InvalidHandle");
+        return false;
+    }
+    return true;
+}
 void testMark(Audit &, size_t field, size_t sequence = 48) noexcept;
 void testSet(Audit &, size_t field, int64_t value) noexcept;
 void testGate(Runtime &, int phase) noexcept;
 void testSubmitted(Runtime &, uint64_t id) noexcept;
 void testUnwind(Runtime &) noexcept;
+Status testDeliver(Runtime &, uint64_t);
+std::array<int64_t, 8> testDeliverySnapshot(const Runtime &) noexcept;
 int testBeforeClone(Runtime &) noexcept;
 Provider testProvider(Runtime &) noexcept;
 mp_status testRoundtripClone(Runtime &, mp_snapshot, void **) noexcept;

@@ -12,4 +12,7 @@ export interface NativeSupport {
   testObserveOperation(operation: string): number[];
   testArmPartialOpenFailure(): void;
   testLastAdmissionAudit(): number[];
+  testDeliveryGate(subscription: string, command: number): number[];
+  testHandleAdmission(engine: string, scenario: number, foreignObservationKey: string): void;
+  testBootstrapTotals(): number[];
 }

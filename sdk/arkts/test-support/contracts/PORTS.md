@@ -23,3 +23,35 @@ releasePublication(commit=1) calls the real Publication.commit: if the engine is
 GateWorkInput records the actual work model value after the real provider increment, before the selected terminal gate; it is therefore input.value+1 on success, or the unchanged maximum value on DomainOverflow. Once the gate is consumed, later work leaves this observation unchanged.
 
 ReadMode1 requires an actual same-env live Owner refresh. A cached residual with no live Owner and all historical entries that never reached physical ACK are mode0, even when queried from the original env. Only the actual stored physical predicate permits mode2/Phase3. An early failed reservation does not become closed merely because its slot was reused.
+
+## Companion v2 additions
+
+The ordinary SDK remains unchanged. Native methods append `testDeliveryGate`,
+`testHandleAdmission`, and `testBootstrapTotals` at ordinals 28, 29 and 30. Their
+public helpers accept actual SDK wrappers; no private handle is exposed. See
+`ports-layout.json` for the eight-value delivery frame, exact commands and seven
+admission cases. The gate holds the original Core Delivery, preserving its
+pre-entry replacement and callback lifetime. Release schedules ordinary delivery;
+actual env cleanup discards the owned lease. The handle fixture runs the ordinary
+shared parser/admission helpers, with a real valid-env positive control. It does
+not claim to execute the full submit operation.
+
+`testBootstrapTotals()` is a static, read-only, 16-value DSO event observation.
+`bootstrap-totals-layout.json` distinguishes attempted identity checks, matching
+identity, actual reservations/contexts/engines/workers and successful Node-API
+resource calls. Values are cumulative and never reset; no missing Runtime is
+converted to synthetic zeros. A successful TSFN release call is not finalizer ACK.
+
+Observation frames now have 178 values. The original 156-value prefix is intact;
+`observer-layout.json` adds 12 runtime-local counters followed by 10 process-wide
+observations. Physical stability covers the old prefix and local 12 only. Process
+counters remain live, including diagnostic serialization calls, and are not an
+atomic snapshot. History stores only the local segment. Every value is checked
+against the JS safe-integer range; saturated counters fail instead of wrapping.
+
+The closed-set observer records actual gateway attempts before forwarding and
+successful resource events after real Node-API returns. It never grants
+production permission, suppresses a call, or retains a Runtime. Its checked
+source/preprocessor inventory excludes Rust backend calls; those need independent
+macro/import evidence. Null-env cleanup is exercised only when its measured
+entry count is positive, never inferred from an observed zero.

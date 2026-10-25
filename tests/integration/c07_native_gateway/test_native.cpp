@@ -218,6 +218,76 @@ void unwind_actual_owners() {
     require(!r.test.sourceHeld && r.engine->stats().sources == 0 && stats(r).live == 0);
     require(trace(f.audit, T::SourceAbandoned) == 1);
 }
+struct DeliveryCapture { Runtime *runtime; int calls = 0, value = 0; bool entered = false; };
+uint64_t stateSubscription(Fixture &f, DeliveryCapture &capture) {
+    auto callback = Callback(&capture, [](void *p, Status outcome, const void *model) {
+        auto &capture = *static_cast<DeliveryCapture *>(p);
+        require(outcome == Status::Ok);
+        mp_snapshot view{};
+        require(capture.runtime->provider.read_view(capture.runtime->provider.context, model, &view) == MP_OK);
+        ++capture.calls;
+        capture.value = view.value;
+        capture.entered = capture.runtime->test.deliveryEntered;
+    }, [](void *) noexcept {});
+    uint64_t id = 0;
+    require(f.runtime.engine->observe(Stream::State, std::move(callback), id) == Status::Ok);
+    f.runtime.test.deliveryTarget = id;
+    f.runtime.test.deliveryGeneration = f.runtime.generation;
+    f.runtime.test.deliveryArmed = true;
+    return id;
+}
+void held_state_replacement() {
+    Fixture f;
+    auto &r = f.runtime;
+    DeliveryCapture capture{&r};
+    auto id = stateSubscription(f, capture);
+    auto first = input(); first.value = 1;
+    require(r.engine->publish(Stream::State, first) == Status::Ok);
+    require(testDeliver(r, id) == Status::NotReady);
+    require(r.test.deliveryHeld && !r.test.deliveryArmed && capture.calls == 0);
+    auto second = input(); second.value = 2;
+    require(r.engine->publish(Stream::State, second) == Status::Ok);
+    require(testDeliver(r, id) == Status::NotReady && capture.calls == 0);
+    require(r.engine->stats().stateTickets == 1 && r.engine->stats().entered == 0);
+    r.test.deliveryReleased = true;
+    require(testDeliver(r, id) == Status::Ok);
+    require(capture.calls == 1 && capture.value == 2 && capture.entered);
+    require(!r.test.deliveryHeld && !r.test.deliveryEntered && r.test.deliveryInvokes == 1);
+    require(testDeliver(r, id) == Status::NotReady && capture.calls == 1);
+    r.engine->stop(id);
+    require(r.engine->subscription_closed(id));
+}
+void held_state_close_before_release() {
+    Fixture f;
+    auto &r = f.runtime;
+    DeliveryCapture capture{&r};
+    auto id = stateSubscription(f, capture);
+    require(r.engine->publish(Stream::State, input()) == Status::Ok);
+    require(testDeliver(r, id) == Status::NotReady);
+    r.engine->stop(id);
+    require(!r.engine->subscription_closed(id));
+    r.test.deliveryReleased = true;
+    require(testDeliver(r, id) == Status::Closing);
+    require(r.engine->subscription_closed(id) && capture.calls == 0);
+    require(r.test.deliveryInvokes == 1 && !r.test.deliveryHeld);
+    require(testDeliver(r, id) == Status::Closed && capture.calls == 0);
+}
+void held_state_env_unwind() {
+    Fixture f;
+    auto &r = f.runtime;
+    DeliveryCapture capture{&r};
+    auto id = stateSubscription(f, capture);
+    require(r.engine->publish(Stream::State, input()) == Status::Ok);
+    require(testDeliver(r, id) == Status::NotReady);
+    r.engine->request_close();
+    require(!r.engine->stats().closed);
+    r.envClosing = true;
+    testUnwind(r);
+    require(r.engine->stats().closed && capture.calls == 0);
+    require(r.test.deliveryDiscards == 1 && !r.test.deliveryHeld);
+    testUnwind(r);
+    require(r.test.deliveryDiscards == 1 && stats(r).live == 0);
+}
 } // namespace
 int main() {
     std::cerr << "own_error_core\n";
@@ -234,6 +304,9 @@ int main() {
     publication_closing();
     std::cerr << "unwind_actual_owners\n";
     unwind_actual_owners();
-    std::cout << "8 native companion checks passed; host-only Core/provider/work hooks, no "
+    held_state_replacement();
+    held_state_close_before_release();
+    held_state_env_unwind();
+    std::cout << "11 native companion checks passed; host-only Core/provider/work hooks, no "
                  "NAPI/target claim\n";
 }

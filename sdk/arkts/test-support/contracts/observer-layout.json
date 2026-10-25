@@ -1,0 +1,37 @@
+{
+  "format": 1,
+  "length": 178,
+  "unchanged_prefix": 156,
+  "local_offset": 156,
+  "local": {
+    "156": "Format",
+    "157": "Attempts",
+    "158": "IllegalAttempts",
+    "159": "WrongThread",
+    "160": "WrongEnv",
+    "161": "InvalidOwner",
+    "162": "NullWakeEntered",
+    "163": "NullWakeDestroyed",
+    "164": "NullFinalizerEntered",
+    "165": "CleanupRefDeleted",
+    "166": "CleanupTsfnReleased",
+    "167": "CleanupHookRemoved"
+  },
+  "process_offset": 168,
+  "process": {
+    "168": "GlobalAttempts",
+    "169": "GlobalIllegalAttempts",
+    "170": "GlobalUnscopedAttempts",
+    "171": "GlobalModuleRegistrations",
+    "172": "GlobalRefCreated",
+    "173": "GlobalRefDeleted",
+    "174": "GlobalTsfnCreated",
+    "175": "GlobalTsfnReleased",
+    "176": "GlobalHookAdded",
+    "177": "GlobalHookRemoved"
+  },
+  "physical_stability": "old prefix and local12 only; process10 are fresh non-atomic DSO cumulative observations, including inspection calls",
+  "range": "integer0..2^53-1; overflow sentinel must error",
+  "null_env": "zero is measured but does not prove null-env branch execution; require entered>0 and entered==destroyed for such claim",
+  "coverage": "instrumented composed gateway only; Rust backend requires independent macro/import inventory"
+}

@@ -95,7 +95,7 @@
      if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
      this.waiters.forEach((waiter: Waiter) => {
        if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
-@@ -471,12 +520,27 @@
+@@ -471,12 +520,30 @@
  }
  
  class RuntimeHandle implements Runtime {
@@ -110,6 +110,9 @@
    close(): Promise<void> { return this.session.close(); }
  }
  class EngineHandle implements Engine {
++  testHandleAdmission(scenario: number, foreignObservationKey: string): void {
++    nativeCall(() => native.testHandleAdmission(this.record.handle, scenario, foreignObservationKey));
++  }
 +  testArmWork(phase: number): void { nativeCall(() => native.testArmWork(this.record.handle, phase)); }
 +  testReleaseWork(): void { nativeCall(() => native.testReleaseWork(this.record.handle)); }
 +  testHoldPublication(stream: number, value: Snapshot): void {
@@ -123,7 +126,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -490,6 +554,7 @@
+@@ -490,6 +557,7 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class OperationHandle implements Operation {
@@ -131,7 +134,15 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -505,3 +570,35 @@
+@@ -498,6 +566,7 @@
+   close(): Promise<void> { return this.session.closeResource(this.record); }
+ }
+ class SubscriptionHandle implements Subscription {
++  testDeliveryGate(command: number): number[] { return nativeCall(() => native.testDeliveryGate(this.record.handle, command)); }
+   private readonly session: Session;
+   private readonly record: ResourceRecord;
+   constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
+@@ -505,3 +574,46 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  export function openRuntime(): Runtime { return new RuntimeHandle(new Session()); }
@@ -149,6 +160,17 @@
 +function checkedOperation(operation: Operation): OperationHandle {
 +  if (!(operation instanceof OperationHandle)) { throw new BoundaryError('InvalidArgument'); }
 +  return operation;
++}
++function checkedSubscription(subscription: Subscription): SubscriptionHandle {
++  if (!(subscription instanceof SubscriptionHandle)) { throw new BoundaryError('InvalidArgument'); }
++  return subscription;
++}
++export function testBootstrapTotals(): number[] { return nativeCall(() => native.testBootstrapTotals()); }
++export function testDeliveryGate(subscription: Subscription, command: number): number[] {
++  return checkedSubscription(subscription).testDeliveryGate(command);
++}
++export function testHandleAdmission(engine: Engine, scenario: number, foreignObservationKey: string): void {
++  checkedEngine(engine).testHandleAdmission(scenario, foreignObservationKey);
 +}
 +export function testArmWork(engine: Engine, phase: number): void { checkedEngine(engine).testArmWork(phase); }
 +export function testReleaseWork(engine: Engine): void { checkedEngine(engine).testReleaseWork(); }

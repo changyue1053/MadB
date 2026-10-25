@@ -1,5 +1,6 @@
 // Host-only Node-API return harness for the actual runtime registry. This does
 // not execute a JS engine or establish target lifetime/Node-API behavior.
+#define MADB_NAPI_OBSERVER_NO_WRAPPERS
 #include "runtime.cpp"
 #include <cstring>
 #include <iostream>
@@ -69,6 +70,23 @@ int main() {
     napi_value expected = value();
     expected->text = identity();
     napi_value dispatcher = value();
+    napi_observer::Scope authority(napi_observer::Mode::Entry, env);
+    // Shared bootstrap executes the real identity branches before any reservation.
+    const auto start = testBootstrapSnapshot();
+    for (size_t index = 0; index < 3; ++index) {
+        auto bad = identity();
+        bad[13 + index * 65] = bad[13 + index * 65] == 'a' ? 'b' : 'a';
+        expected->text = bad;
+        require(openRuntime(env, expected, dispatcher) == nullptr);
+        require(lastError == (index == 0 ? "AbiMismatch" : index == 1 ? "ProfileMismatch" : "ArtifactMismatch"));
+    }
+    const auto rejected = testBootstrapSnapshot();
+    require(rejected[static_cast<size_t>(BootstrapEvent::OpenAttempt)] == start[0] + 3);
+    for (size_t index = 2; index <= 4; ++index)
+        require(rejected[index] == start[index] + 1);
+    for (size_t index = 5; index < rejected.size(); ++index)
+        require(rejected[index] == start[index]);
+    expected->text = identity();
     // Actual openRuntime reserves epoch1, its returned handle string fails before
     // Owner adoption, and Reservation marks it retired without physical teardown.
     require(openRuntime(env, expected, dispatcher) == nullptr);
@@ -76,7 +94,7 @@ int main() {
     const auto first = nextEpoch;
     require(slots[0].retired && !physical(slots[0].audit));
     auto direct = testObserve(env, {first, 0, 0, 'r'}, false);
-    require(direct && direct->frame.size() == 156);
+    require(direct && direct->frame.size() == 178);
     require(direct->frame[F::Phase] == 0 && direct->frame[54 + T::ReadMode] == 0);
     // A second real reservation archives the failed first epoch and also fails.
     require(openRuntime(env, expected, dispatcher) == nullptr);
@@ -95,5 +113,5 @@ int main() {
     history[0].values[F::MechanismTeardownStarted] = 1;
     auto ack = testObserve(other, {first, 0, 0, 'r'}, true);
     require(ack && ack->frame[F::Phase] == 3 && ack->frame[54 + T::ReadMode] == 2);
-    std::cout << "8 registry checks passed; host NAPI return harness, no target claim\n";
+    std::cout << "11 registry checks passed; host NAPI return harness, no target claim\n";
 }

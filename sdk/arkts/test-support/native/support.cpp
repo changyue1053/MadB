@@ -1,6 +1,22 @@
 #include "support.hpp"
 #include <unistd.h>
 namespace gateway {
+namespace {
+std::array<std::atomic<uint64_t>, static_cast<size_t>(BootstrapEvent::Count)> bootstrap{};
+constexpr uint64_t DiagnosticOverflow = 9007199254740992ULL;
+} // namespace
+void testBootstrapEvent(BootstrapEvent event) noexcept {
+    auto &counter = bootstrap[static_cast<size_t>(event)];
+    auto value = counter.load();
+    while (value < DiagnosticOverflow && !counter.compare_exchange_weak(value, value + 1)) {
+    }
+}
+std::array<uint64_t, static_cast<size_t>(BootstrapEvent::Count)> testBootstrapSnapshot() noexcept {
+    std::array<uint64_t, static_cast<size_t>(BootstrapEvent::Count)> result{};
+    for (size_t i = 0; i < result.size(); ++i)
+        result[i] = bootstrap[i].load();
+    return result;
+}
 void testMark(Audit &a, size_t field, size_t sequence) noexcept {
     std::lock_guard<std::mutex> l(a.testMutex);
     ++a.test[field];
@@ -30,7 +46,50 @@ void testSubmitted(Runtime &r, uint64_t id) noexcept {
     if (r.test.gateArmed && !r.test.gateOperation)
         r.test.gateOperation = id;
 }
+std::array<int64_t, 8> testDeliverySnapshot(const Runtime &r) noexcept {
+    const auto &t = r.test;
+    return {1,
+            t.deliveryArmed,
+            t.deliveryHeld,
+            t.deliveryEntered,
+            t.deliveryReleased,
+            static_cast<int64_t>(t.deliveryTakes),
+            static_cast<int64_t>(t.deliveryInvokes),
+            static_cast<int64_t>(t.deliveryDiscards)};
+}
+Status testDeliver(Runtime &r, uint64_t id) {
+    auto &t = r.test;
+    if (t.deliveryHeld && t.deliveryTarget == id && t.deliveryGeneration == r.generation) {
+        if (!t.deliveryReleased)
+            return Status::NotReady;
+        auto delivery = std::move(t.delivery);
+        t.deliveryHeld = false;
+        t.deliveryEntered = true;
+        const auto status = delivery.invoke(); // Original Core invocation boundary.
+        t.deliveryEntered = false;
+        ++t.deliveryInvokes;
+        return status;
+    }
+    Delivery delivery;
+    auto status = r.engine->take_delivery(id, delivery);
+    if (status != Status::Ok)
+        return status;
+    if (t.deliveryArmed && t.deliveryTarget == id && t.deliveryGeneration == r.generation) {
+        t.delivery = std::move(delivery);
+        t.deliveryArmed = false;
+        t.deliveryHeld = true;
+        ++t.deliveryTakes;
+        return Status::NotReady; // The env is free to publish/stop/release.
+    }
+    return delivery.invoke();
+}
 void testUnwind(Runtime &r) noexcept {
+    r.test.deliveryArmed = false;
+    if (r.test.deliveryHeld) {
+        r.test.delivery.discard();
+        r.test.deliveryHeld = false;
+        ++r.test.deliveryDiscards;
+    }
     {
         std::lock_guard<std::mutex> l(r.test.mutex);
         r.test.gateReleased = true;
@@ -105,6 +164,7 @@ struct TlsWitness {
 thread_local TlsWitness witness;
 } // namespace
 void testWorkerStarted(void *p) noexcept {
+    testBootstrapEvent(BootstrapEvent::WorkerStarted);
     auto &r = *static_cast<Runtime *>(p);
     witness.a = &r.audit;
     testSet(r.audit, T::WorkerTid, gettid());

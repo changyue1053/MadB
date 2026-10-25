@@ -41,16 +41,18 @@ class NativeCompositionTests(unittest.TestCase):
                          (self.repo / "sdk/arkts/facade/Boundary.ets.in").read_bytes())
         self.assertFalse(any("test-support" in str(item.path) for item in result.source_inputs))
 
-    def test_companion_has_exact_frozen_facade_and_twenty_eight_methods(self):
+    def test_companion_has_exact_frozen_facade_and_thirty_one_methods(self):
         result = self.compose()
         declaration = result.native_declaration.read_text()
-        self.assertEqual(len(re.findall(r"^  \w+\(", declaration, re.M)), 28)
+        self.assertEqual(len(re.findall(r"^  \w+\(", declaration, re.M)), 31)
         self.assertIn("testArmPartialOpenFailure(): void;", declaration)
         self.assertIn("testLastAdmissionAudit(): number[];", declaration)
+        self.assertIn("testBootstrapTotals(): number[];", declaration)
+        self.assertTrue((self.output / "src/observer.cpp").is_file())
         baseline = json.loads((self.repo / "sdk/arkts/test-support/facade/baseline.json").read_text())
         self.assertEqual(hashlib.sha256(result.facade_template.read_bytes()).hexdigest(),
                          baseline["derived_sha256"]["Boundary.ets.in"])
-        self.assertEqual(len(result.units), 6)
+        self.assertEqual(len(result.units), 7)
         self.assertTrue((self.output / "src/support.cpp").is_file())
 
     def test_unique_core_and_real_provider_sources_all_routes(self):
