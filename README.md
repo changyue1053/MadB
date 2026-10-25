@@ -4,7 +4,7 @@
 
 ## 开发环境
 
-使用 Python 3.14.4、Node.js 26.8.2、Rust 1.99.1 和 Clang 工具链（用于 C11 声明检查、真实依赖发现及消费测试）。Python/Node 版本分别记录在 .python-version/.node-version，Rust 由 rust-toolchain.toml 固定；不需要修改全局 Rust 默认版本。
+使用 Python 3.14.4、Node.js 26.8.2、Rust 1.99.1 和 Clang 工具链（用于 C11 声明检查、真实依赖发现及消费测试；C07 宿主检查还要求 C17/C++17 与 ASan/UBSan 运行库）。Python/Node 版本分别记录在 .python-version/.node-version，Rust 由 rust-toolchain.toml 固定；不需要修改全局 Rust 默认版本。
 
 在仓库根执行：
 
@@ -53,7 +53,7 @@ madb package --root /path/to/workspace --execution package.execution.json --froz
 
 metadata 在缺少 IR 时执行真实读取配方，返回固定 IR 路径；生成执行 `GenerateRequest→OutputSet` 并提交源码批次；构建固定该批次，只消费受检依赖输出；打包只接受固定源码和构建批次中的真实证据。未知输出身份先计算、再显式绑定下一阶段，不能在执行中改写任务摘要。
 
-构建子图缺少 compile/link/run 任一阶段时，只报告任务已执行，不提交完整构建批次。`package` 产生不可变候选，不能据此宣布 SDK 已认证。
+默认构建需要 compile/link/run 三阶段；profile 显式要求并支持 `core.external-runtime-verification@1` 时，构建完成策略改为 compile/link，运行验收交给独立消费者。缺少所选策略的必要阶段时，只报告任务已执行，不提交完整构建批次；参见[执行策略](docs/adr/0010-external-runtime-verification.md)。`package` 产生不可变候选，不能据此宣布 SDK 已认证。
 
 输出以不可变物理批次存储。短提交锁内复核输入和索引代次；旧结果不能覆盖新 current，同身份复用仍校验实际文件。消费者持有固定批次和祖先租约；源码更新清空旧构建与候选的 current，旧消费者继续读取自己的旧批次。
 
@@ -111,6 +111,8 @@ C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-k
 ## ArkTS 环境预检
 
 C07 已提供 `scripts/check_arkts_environment.py`，检查显式选择的应用 SDK 元数据、工具和已连接目标。用法见[预检说明](tests/integration/c07_environment/README.md)。该命令不安装或启动设备；输出是基础环境观察，不代表四路线实现、正式工具组合或 P05/P06 验收通过。当前发现与实施要求见[C07 记录](docs/reviews/2026-10-25-c07-arkts.md)。
+
+C07 另已接入[私有原生协议宿主检查](tests/integration/c07_native_protocol/README.md)、工具输入核验和受检 HAR 归档组件；它们不表示完整 ArkTS SDK 或候选构建入口已交付。
 
 ## 依赖与缓存边界
 

@@ -1,0 +1,225 @@
+{
+  "scope": "Reviewed private C++17 protocol; two real C17 host provider suites and formal SDK compile-only. No target or C07 acceptance.",
+  "certifies_c07": false,
+  "author_verification": {
+    "path": "/private/tmp/madb-c07-native-protocol/verification-manifest.json",
+    "sha256": "a06a993c7b0f8002d8f66c888ad21480fba77adadc09c4c83dcab93ab443cdeb"
+  },
+  "independent_review": {
+    "scope": "Independent source review and host C17 provider/C++17 protocol behavior only; no Node-API, ArkTS, target or full C07 certification",
+    "review_result": "No remaining substantive findings within the reviewed pure-protocol scope",
+    "certifies_c07": false,
+    "frozen_source_sha256": {
+      "include/protocol.hpp": "5a294a333f4ecdc3401652af8dabe2b33645fe2c755058c1bf64a987d9961c8c",
+      "src/protocol.cpp": "9ddb6d6a3fb04ac67c859ca59040d96267e4c024d180a1a2992bb84630fbca7f"
+    },
+    "source_revision": "6e77641b8dfb",
+    "independent_source_allowlist": [
+      {
+        "relative_path": "include/c_provider.h",
+        "path": "/private/tmp/madb-c07-protocol-independent/include/c_provider.h",
+        "sha256": "525c97fe6651295411056c35617a1d7af6410df31c6e329efdac922b595cde35",
+        "recommended_archive_path": "independent/include/c_provider.h"
+      },
+      {
+        "relative_path": "src/c_provider.c",
+        "path": "/private/tmp/madb-c07-protocol-independent/src/c_provider.c",
+        "sha256": "e6595d28e944c04ce2349e736b6b73adcdf14a562fbd4ec6ac8e38b556ca3293",
+        "recommended_archive_path": "independent/src/c_provider.c"
+      },
+      {
+        "relative_path": "tests/protocol_tests.cpp",
+        "path": "/private/tmp/madb-c07-protocol-independent/tests/protocol_tests.cpp",
+        "sha256": "6d57049a8c8a5a4f7a370f1d867343a386c08511977020bfb4e5b6176b6f72f0",
+        "recommended_archive_path": "independent/tests/protocol_tests.cpp"
+      }
+    ],
+    "evidence": [
+      {
+        "path": "/private/tmp/madb-c07-protocol-independent/evidence/1792912849351726000/receipt.json",
+        "sha256": "0366d985b42cb94010c9f6e101f7af4fb77967bbf9e75e579872101277924cdf",
+        "configuration": "release",
+        "passed": true,
+        "case_count": 25
+      },
+      {
+        "path": "/private/tmp/madb-c07-protocol-independent/evidence/1792912849351729000/receipt.json",
+        "sha256": "9b7d7a9e59e86b13256333602cad76e2127a53a61a60e2af7f4b5e104ba43981",
+        "configuration": "asan-ubsan",
+        "passed": true,
+        "case_count": 25
+      }
+    ],
+    "formatter": {
+      "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-format",
+      "style": {
+        "BasedOnStyle": "LLVM",
+        "IndentWidth": 4,
+        "ColumnLimit": 100
+      },
+      "receipt": "/private/tmp/madb-c07-protocol-independent/evidence/format-1792912842017882000/receipt.json"
+    },
+    "regression": {
+      "path": "/private/tmp/madb-c07-protocol-independent/evidence/old-state-reproducer-1792912554416668000/receipt.json",
+      "sha256": "f4afbbc46a66d2ebfa9222e2fbacb17fc90e2c667ac040c211abf7886cbd78db",
+      "old_source_revision": "f03c68a12ef3",
+      "old_exit": 1,
+      "assertion": "state publish(1), take without entry, publish(2), invoke must deliver only 2; old source delivered stale 1",
+      "fixed_cases": [
+        "state_preentry_observes_latest_only",
+        "state_preentry_stop_releases_only_after_lease"
+      ]
+    },
+    "reviewed_fixes": [
+      {
+        "issue": "Close waiter result changed after subscription slot reuse",
+        "evidence_kind": "Independent static finding plus author correction; initial broken version was not executed",
+        "verification": "callback_failure_survives_slot_reuse"
+      },
+      {
+        "issue": "Already-closed observers retained uncharged native callback ownership",
+        "evidence_kind": "Independent static finding plus author correction",
+        "verification": "waiter_budget_and_ready_receipt"
+      },
+      {
+        "issue": "Zero-subscriber publication held unbounded Core/admission ownership",
+        "evidence_kind": "Independent static finding plus author correction",
+        "verification": "empty_publication_has_no_owner"
+      },
+      {
+        "issue": "State delivery froze old pending value before entry",
+        "evidence_kind": "Author finding, independently reproduced against preserved old snapshot",
+        "verification": "Actual old exit1 then fixed Release and ASan/UBSan passes"
+      }
+    ],
+    "independence": [
+      "Pure C provider compiled separately by clang -std=c17; real malloc/copy/free and add7 business transform",
+      "Expected callback values/statuses and resource budgets specified directly; allocator ledger independent of protocol stats",
+      "Entered callbacks and source allocation are gated by bounded condition variables; stop/close tested before gate release",
+      "Result terminal and Work/executor completion tested as separate events",
+      "Fanout rollback verified from zero callbacks and C allocation/free witnesses, including preserved previous state"
+    ],
+    "remaining_boundaries": [
+      "Pure protocol does not own a real worker thread or an env; Executor/Work leases are driven by the test",
+      "No thread-sanitizer proof or unbounded schedule coverage",
+      "No device, HAP, NAPI/TSFN, Promise or full profile claims",
+      "Private numeric lookups are not durable public Closed tombstones; future binding must preserve immutable closed results",
+      "run_checks.py is a temporary local evidence runner with hardcoded author source path; parameterize source root/compiler/output paths before repository reuse"
+    ],
+    "case_names": [
+      "vector_and_c_algorithm",
+      "terminal_before_work_exit",
+      "cancel_and_late_result",
+      "failure_outcomes",
+      "result_claim_rollback",
+      "result_claim_commit_across_close",
+      "atomic_fanout_clone_failure",
+      "atomic_fanout_stop_during_source",
+      "event_order_across_sources",
+      "entered_event_budget_and_stop",
+      "stop_before_enter",
+      "state_latest_with_entered",
+      "staging_counts_bytes",
+      "operation_and_subscription_limits",
+      "full_close_independent_control",
+      "waiter_budget_and_ready_receipt",
+      "shared_waiter_budget_claim_rollback",
+      "callback_failure_survives_slot_reuse",
+      "empty_publication_has_no_owner",
+      "provider_ports_reenter_and_remain_charged",
+      "source_lease_survives_stop_before_clone",
+      "state_fanout_failure_preserves_previous",
+      "success_winner_survives_late_cancel",
+      "state_preentry_observes_latest_only",
+      "state_preentry_stop_releases_only_after_lease"
+    ]
+  },
+  "repository_sources": [
+    {
+      "path": "sdk/arkts/native-runtime/CMakeLists.txt",
+      "sha256": "0b701f12a749efba598eac9e04fbb6e15ad6357fe35248e42c3df269145a6133",
+      "size": 786
+    },
+    {
+      "path": "sdk/arkts/native-runtime/README.md",
+      "sha256": "e5dc5e7f3b64606bac124ae9afe04e410776511bf56b7cf17c59dde331a159a8",
+      "size": 8292
+    },
+    {
+      "path": "sdk/arkts/native-runtime/include/protocol.hpp",
+      "sha256": "5a294a333f4ecdc3401652af8dabe2b33645fe2c755058c1bf64a987d9961c8c",
+      "size": 8267
+    },
+    {
+      "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+      "sha256": "9ddb6d6a3fb04ac67c859ca59040d96267e4c024d180a1a2992bb84630fbca7f",
+      "size": 38117
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/README.md",
+      "sha256": "d23ae0f13c151625a1e23a20078d4b24f83c37531e8ff1fefa8870fe1f2cc8af",
+      "size": 1363
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/author/c_provider.c",
+      "sha256": "ef4deb57c4ad5699250c48a532efa606f61e6788748bc01de93cb80a6f0fa5bb",
+      "size": 2625
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/author/c_provider.h",
+      "sha256": "9d6ebc8c5ac8d57c82f07551ee32c2d42b8fef9e06ebbe73cadbb85b51ac3b32",
+      "size": 941
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/author/protocol_tests.cpp",
+      "sha256": "abb9587bfb6dc1a53c613a6d40008adfc933e57dc746a13fe46711e061253a27",
+      "size": 25772
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/check.py",
+      "sha256": "d1773a88bba76464b966e2a987d3a7d67688a852a0a14aba6e85b76a7a9ee26b",
+      "size": 4252
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/independent/c_provider.c",
+      "sha256": "e6595d28e944c04ce2349e736b6b73adcdf14a562fbd4ec6ac8e38b556ca3293",
+      "size": 3531
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/independent/c_provider.h",
+      "sha256": "525c97fe6651295411056c35617a1d7af6410df31c6e329efdac922b595cde35",
+      "size": 935
+    },
+    {
+      "path": "tests/integration/c07_native_protocol/independent/protocol_tests.cpp",
+      "sha256": "6d57049a8c8a5a4f7a370f1d867343a386c08511977020bfb4e5b6176b6f72f0",
+      "size": 30008
+    }
+  ],
+  "repository_verification": {
+    "host": {
+      "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-native-check-apzgeon0/result.json",
+      "sha256": "bfbccfe6bae47d4005c88c279b3dfd6c2677bccb1816d15215a11542926fef1e",
+      "size": 31001
+    },
+    "formal_cmake_compile_only": {
+      "path": "/private/tmp/madb-c07-core-cmake-pv8xj90d/receipt.json",
+      "sha256": "9356c79e9d8cb1632492d7e7af493549bc108c54d44faa651d77df2a69930622",
+      "size": 4400
+    },
+    "host_result": "Author20 and independent25, each Release and ASan/UBSan passed",
+    "first_integration_failure": {
+      "log": {
+        "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-c07-native-check-m2t4xbob/independent-release-behavior.log",
+        "sha256": "fc16bf9ca955accfe486e6b6383dd3243ffd373a9a2e0601b65f54a0ba209791",
+        "size": 32
+      },
+      "original_runner": {
+        "path": "/private/tmp/madb-c07-core-integration/check.py",
+        "sha256": "6f3ef40f7c07a9f4aa3a29ccf612116b87f6a04a70735f56abeeb6f322375728",
+        "size": 3573
+      },
+      "reason": "Independent binary requires one explicit case argument. Initial integration called it without an argument; exit2 occurred before any case. Runner now uses --list then executes every unique case separately. Assertions and expected outcomes unchanged."
+    }
+  }
+}
