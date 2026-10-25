@@ -143,7 +143,7 @@ def prepare(
         logical = "third-party/harmony/" + name
         copy(cli / original, logical, expected)
         runtime_notices.append({"source": logical, "sdk_path": original})
-    if route not in ("c", "cpp", "rust") or variant not in ("ordinary", "test"):
+    if route not in ("c", "cpp", "rust", "kotlin") or variant not in ("ordinary", "test"):
         raise ValueError("unsupported native source profile")
     suffix = "test" if variant == "test" else ""
     package_name = "madbc07sdk" + route + suffix
@@ -152,7 +152,7 @@ def prepare(
     config["runtime_notices"] = runtime_notices
     config["additional_notices"] = list(additional_notices)
     config["delivery_inputs"] = list(delivery_inputs)
-    if variant == "test":
+    if variant == "test" and route != "kotlin":
         config["test_contracts"] = sorted(
             n for n in names if n.startswith("sdk/arkts/test-support/contracts/")
         )
@@ -193,12 +193,18 @@ def prepare(
         phase_termination_grace_ms=6000,
         build=deepcopy(build_recipe),
     )
+    if route == "kotlin":
+        config.update(
+            provider_factory=None,
+            gateway_source=None,
+            provider_source=None,
+            runtime_frame=None,
+            frame_layout=None,
+        )
     driver = support.load_module(workspace / "adapters/generators/arkts/driver.py")
     config["features"] = driver.lowering.FEATURES
-    projection = driver.render_template(
-        (workspace / config["public_template"]).read_bytes(),
-        config["native_module"],
-        "madb-declaration-projection-not-runtime",
+    projection = driver.public_projection(
+        workspace, config, "madb-declaration-projection-not-runtime"
     )
     (workspace / "derived").mkdir(exist_ok=True)
     (workspace / config["public_source"]).write_bytes(projection)
@@ -221,14 +227,19 @@ def prepare(
     profile = dict(
         schema="madb.profile/1",
         id="c07-" + route + "-arkts-aarch64-ohos23" + ("-test" if variant == "test" else ""),
-        route="ARKTS-" + route.upper() + "-NAPI",
-        provider={"language": route, "runtime": "native"},
+        route="KN-ARKTS-NAPI" if route == "kotlin" else "ARKTS-" + route.upper() + "-NAPI",
+        provider={
+            "language": route,
+            "runtime": "kotlin-native" if route == "kotlin" else "native",
+        },
         consumer={"language": "arkts", "runtime": "harmonyos"},
         direction="consumer-to-provider",
         target="aarch64-linux-ohos",
         abi="harmonyos-napi8-c07-snapshot",
         artifact_kind="har",
-        build_system="cargo-ohrs-hvigor" if route == "rust" else "clang-hvigor",
+        build_system={"rust": "cargo-ohrs-hvigor", "kotlin": "cpf-gradle-hvigor"}.get(
+            route, "clang-hvigor"
+        ),
         deployment_target="API23",
         tools=public_tools,
         sdk=d.ref(workspace, "toolchain.json", "madb.native-toolchain/1"),
@@ -332,10 +343,26 @@ def prepare_route(
     author_fixture=None,
     delivery_inputs=(),
     rust_configuration=None,
+    kotlin_configuration=None,
     observation_path=None,
 ):
     """Freeze original sources, then replay the exact ordinary/test derivation."""
     repo = Path(repo).resolve(strict=True)
+    if route == "kotlin":
+        if rust_configuration is not None:
+            raise ValueError("Rust configuration supplied to Kotlin")
+        return prepare_kotlin(
+            repo,
+            workspace,
+            observation,
+            variant,
+            kotlin_configuration,
+            author_fixture,
+            delivery_inputs,
+            observation_path,
+        )
+    if kotlin_configuration is not None:
+        raise ValueError("Kotlin configuration supplied to another route")
     native = support.load_module(repo / "adapters/toolchains/arkts/native.py")
     paths = native.source_paths(repo, route=route, variant=variant)
     backend_inputs = {"source_inputs": [], "notice_inputs": [], "receipt_inputs": []}
@@ -357,8 +384,6 @@ def prepare_route(
     elif rust_configuration is not None:
         raise ValueError("Rust configuration supplied to another route")
     if observation_path is not None:
-        # Publish the configuration actually selected before any declaration
-        # compiler can fail. Keep the earlier base observation separately.
         with Path(observation_path).open("x") as output:
             json.dump(observation, output, indent=2)
             output.write("\n")
@@ -539,3 +564,122 @@ def prepare_route(
             producer_paths.pop("sdk/arkts/facade/Boundary.ets.in")
         prepared["producer_inputs"] = producer_paths
         return prepared
+
+
+def prepare_kotlin(
+    repo,
+    workspace,
+    observation,
+    variant,
+    configuration,
+    author_fixture,
+    delivery_inputs,
+    observation_path,
+):
+    """KSP owns Kotlin declarations; there is no synthetic C native composition."""
+    if variant != "ordinary":
+        raise ValueError(
+            "Kotlin companion requires its independently completed test-control policy"
+        )
+    if configuration is None:
+        raise ValueError("Kotlin route requires caller-pinned configuration")
+    source = Path(configuration["source"])
+    if (
+        support.sha(source) != configuration["sha256"]
+        or source.stat().st_size != configuration["size"]
+    ):
+        raise ValueError("Kotlin configuration changed before preparation")
+    backend = support.load_module(repo / "adapters/toolchains/arkts/kotlin.py")
+    selected = backend.prepare_configuration(
+        observation, support.read_json(source), "libmadbc07sdkkotlin.so", variant
+    )
+    selected["observation"]["public"]["kotlin"]["execution_domain"] = "main-env-only"
+    authors = [
+        *selected["source_inputs"],
+        *selected["notice_inputs"],
+        *selected["receipt_inputs"],
+        configuration,
+        *delivery_inputs,
+    ]
+    policy_path = repo / "adapters/generators/arkts/profiles/snapshot-kotlin-v1.json"
+    authority = support.read_json(policy_path)["authority"]
+    authority_ref = dict(authority, source=str(repo / authority["path"]))
+    existing = [ref for ref in authors if ref["path"] == authority["path"]]
+    if existing:
+        if any(existing[0][key] != authority[key] for key in ("sha256", "size")):
+            raise ValueError("conflicting Kotlin/public policy authority")
+    else:
+        authors.append(authority_ref)
+    elf = support.load_module(repo / "adapters/toolchains/arkts/kotlin_elf.py")
+    recipe = {
+        "strip": False,
+        "runtime_libraries": [selected["observation"]["native_runtime"]],
+        "implementation_libraries": [
+            "libmadbc07sdkkotlin.so",
+            "libmadb_kotlin_owned_runtime.so",
+        ],
+        "system_libraries": sorted(elf.SYSTEM),
+        "symbol_policy": "CPF managed provider and independently checked static bootstrap",
+    }
+    overridden = set()
+    if author_fixture is not None:
+        fixture = Path(author_fixture).absolute()
+        if fixture.is_symlink() or any(parent.is_symlink() for parent in fixture.parents):
+            raise ValueError("Kotlin author fixture path must not traverse symlinks")
+        if not fixture.is_dir() or {p.name for p in fixture.iterdir()} != {
+            "BoundaryTypes.kt",
+            "OwnedExports.kt",
+            "Boundary.ets.in",
+            "runtime-policy.json",
+        }:
+            raise ValueError(
+                "Kotlin author fixture requires exactly Kotlin types/exports, public source and role policy"
+            )
+        mapping = {
+            "sdk/kotlin/arkts-owned/src/common/BoundaryTypes.kt": "BoundaryTypes.kt",
+            "sdk/kotlin/arkts-owned/src/common/OwnedExports.kt": "OwnedExports.kt",
+            "sdk/arkts/facade/Boundary.ets.in": "Boundary.ets.in",
+        }
+        for ref in authors:
+            if ref["path"] in mapping:
+                source = support.input_path(fixture, mapping[ref["path"]])
+                ref.update(
+                    source=str(source), sha256=support.sha(source), size=source.stat().st_size
+                )
+                overridden.add(ref["path"])
+        if overridden != set(mapping):
+            raise ValueError("Kotlin author fixture did not replace its exact declared sources")
+        for ref in selected["observation"]["config"]["kotlin"]["source_inputs"]:
+            match = next((a for a in authors if a["path"] == ref["path"]), None)
+            if match is not None:
+                ref.update(sha256=match["sha256"], size=match["size"])
+        policy_path = support.input_path(fixture, "runtime-policy.json")
+    if observation_path is not None:
+        with Path(observation_path).open("x") as output:
+            json.dump(selected["observation"], output, indent=2)
+            output.write("\n")
+    prepared = prepare(
+        repo,
+        workspace,
+        authors,
+        selected["observation"],
+        recipe,
+        route="kotlin",
+        variant=variant,
+        policy_source=policy_path,
+        delivery_inputs=[f["path"] for f in delivery_inputs],
+        additional_notices=[f["path"] for f in selected["notice_inputs"]],
+    )
+    producer_paths = {name: name for name in (*SHARED, *HELPERS)}
+    for entry in selected["source_inputs"]:
+        source_path = Path(entry["source"])
+        if source_path.is_relative_to(repo):
+            producer_paths[entry["path"]] = source_path.relative_to(repo).as_posix()
+    producer_paths.update({ref["path"]: ref["path"] for ref in prepared["lock"]["schemas"]})
+    producer_paths[authority["path"]] = authority["path"]
+    if author_fixture is None:
+        producer_paths["runtime-policy.json"] = policy_path.relative_to(repo).as_posix()
+    for name in overridden:
+        producer_paths.pop(name, None)
+    prepared["producer_inputs"] = producer_paths
+    return prepared

@@ -9,9 +9,10 @@ normalizes archive metadata. No device or Lab verification runs here.
 
 The entry supports ordinary and test-companion C, C++ and Rust profiles.
 Select `--variant test` for the separately identified companion; its strict
-composition has 31 private native methods and 25 public exports. Kotlin hooks
-are being connected separately. Producing a candidate does not complete its
-independent target verification.
+composition has 31 private native methods and 25 public exports. Kotlin's ordinary
+profile has separate KSP and managed-runtime hooks; its unfinished test-control
+policy is explicitly rejected rather than mapped to the C companion. Producing a
+candidate does not complete its independent target verification.
 The ordinary required five cases and companion required twenty-five come from
 the separately pinned Lab allocation. A five-case candidate alone does not pass
 C07. Verification remains `missing` until independent Lab observations exist.
@@ -145,3 +146,36 @@ is `napi_register_module_v1`. The existing worker still verifies all ELF depende
 and the complete output set. Package preserves each nested Rust runtime notice's
 original bytes in the HAR. Use the same route and reviewed configuration for public
 author-fixture generation; the actual Rust declaration authority is checked again.
+
+For the managed ordinary route select `--route kotlin` with
+`--kotlin-configuration "$KOTLIN_CONFIGURATION"` and its explicit
+`--kotlin-configuration-sha256`. Its existing route ID is `KN-ARKTS-NAPI`.
+The actual CPF KSP declarations and record schema are a separate authority; the
+common public Snapshot roles do not include a fabricated C seam or private NAPI
+gateway. A checked public-source projection applies the same KotlinPort import,
+identity and frame changes as the generated facade. Generate then derives native
+declarations from fresh KSP facts. Compile and Link read those facts again before
+publishing the two implementation libraries and the original CPF C++ runtime.
+
+The Kotlin profile admits only the legal main ArkTS env. CPF uses its separately
+pinned JDK (`cpf_java`), LLVM, compiler-platform sysroots and matching KLIB inputs.
+The formal application SDK supplies reviewed native headers and HAR tooling;
+Hvigor retains its base JBR. The Kotlin ELF audit lists the preserved compiler
+runtime exports and checks the loader's required symbols; it does not claim the
+provider has the C route's zero-export layout. All generated libraries remain
+subject to the common closed ELF/HAR inventory and original notice checks.
+
+Kotlin generation author fixtures use the same `--author-fixture` Generate-only
+entry with exactly `BoundaryTypes.kt`, `OwnedExports.kt`, `Boundary.ets.in`, and `runtime-policy.json`.
+The first two replace actual reviewed Kotlin declaration files; owner/runtime and
+compiler recipes stay fixed. KSP still compiles and checks the changed declaration.
+Such fixtures need their own independently observed success or exact source-located
+rejection and do not inherit results from the C-family fixtures.
+
+The ABI digest projects checked public and physical type shapes, resolved contract
+policies and explicit runtime roles, including names, error channels, cancellation,
+threading, ownership and limits. Rust contributes actual raw export types and
+selected NAPI features; Kotlin contributes actual KSP/TypeScript declarations,
+record types and notification protocol. Source locations, input checksums, tool
+bytes, generated implementation text and compiler diagnostics remain fully bound
+by Source/build identity and evidence, but do not enter this semantic ABI projection.

@@ -47,7 +47,7 @@ class RustEntry(unittest.TestCase):
             *extra,
         ]
 
-    def test_explicit_configuration_pair_is_required_only_for_rust(self):
+    def test_explicit_backend_configuration_pair_and_route(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary).resolve() / "candidate"
             cases = [
@@ -63,6 +63,13 @@ class RustEntry(unittest.TestCase):
                     ["--rust-configuration-sha256", "0" * 64],
                     "only valid for --route rust",
                 ),
+                ("kotlin", [], "Kotlin requires --kotlin-configuration"),
+                (
+                    "kotlin",
+                    ["--kotlin-configuration", "/missing"],
+                    "Kotlin requires --kotlin-configuration",
+                ),
+                ("c", ["--kotlin-configuration", "/missing"], "only valid for --route kotlin"),
             ]
             for route, extra, expected in cases:
                 with self.subTest(route=route, extra=extra):

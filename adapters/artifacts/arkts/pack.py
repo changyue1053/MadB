@@ -141,11 +141,14 @@ def main():
     native_module = config["native_module"]
     native_package = native_module.removesuffix(".so")
     if native_module != "lib" + module + ".so" or not re.fullmatch(
-        r"madbc07sdk(?:c|cpp|rust)(?:test)?", module
+        r"madbc07sdk(?:c|cpp|rust|kotlin)(?:test)?", module
     ):
         raise ValueError("native package/module identity differs from the frozen route")
     additional_notices = config.get("additional_notices", [])
-    if any(not name.startswith("notices/rust/") for name in additional_notices):
+    if any(
+        not name.startswith("notices/" + config["provider"] + "/")
+        for name in additional_notices
+    ):
         raise ValueError("unsupported additional runtime notice path")
     additional_assets = [
         "THIRD_PARTY_NOTICES/" + name.removeprefix("notices/") for name in additional_notices
@@ -283,6 +286,10 @@ def main():
         {"name": native_module, "version": "0.0.1", "types": "./Index.d.ts"},
     )
     copied("generated/native/Index.d.ts", module + "/" + local + "/Index.d.ts")
+    if config["provider"] == "kotlin":
+        copied(
+            "generated/native/record-export.d.ts", module + "/" + local + "/record-export.d.ts"
+        )
     notice_passthrough = {}
     by_name = {r["path"]: r for r in refs}
     for name in ("LICENSE", "NOTICE"):
@@ -305,7 +312,9 @@ def main():
         notice_passthrough["package/" + asset] = by_name[source]
     copied("generated/facade/Boundary.ets", module + "/src/main/ets/Boundary.ets")
     copied("generated/facade/RuntimeFrame.ets", module + "/src/main/ets/RuntimeFrame.ets")
-    if config["variant"] == "test":
+    if config["provider"] == "kotlin":
+        copied("generated/facade/KotlinPort.ets", module + "/src/main/ets/KotlinPort.ets")
+    if config["variant"] == "test" and config["provider"] != "kotlin":
         for name in ("TestFrame.ets", "FacadeFrame.ets"):
             source = "generated/facade/" + name
             if source not in by_name:

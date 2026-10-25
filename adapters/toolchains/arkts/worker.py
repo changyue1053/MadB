@@ -200,8 +200,11 @@ def run_phase(config, phase, input_root, work):
     support.load_module(Path(__file__).with_name("toolchain.py")).verify_runtime(config, inputs)
     recipe = config["build"]
     native = Path(config["native_sdk"])
-    units = recipe["units"]
-    if not units or len(units) > 32 or len({u["name"] for u in units}) != len(units):
+    managed = config.get("provider") == "kotlin"
+    units = [] if managed else recipe["units"]
+    if not managed and (
+        not units or len(units) > 32 or len({u["name"] for u in units}) != len(units)
+    ):
         raise ValueError("invalid compile unit inventory")
     for u in units:
         if not re.fullmatch("[a-z][a-z0-9-]*", u["name"]) or u["language"] not in ("c", "cpp"):
@@ -218,10 +221,10 @@ def run_phase(config, phase, input_root, work):
             # Logs are BuildEvidence references, not reproducible output hashes.
             d.save(work, log_path, logs)
 
-    common, includes = native_arguments(config, inputs, work)
+    common, includes = ([], []) if managed else native_arguments(config, inputs, work)
     if phase == "compile":
-        if config.get("provider") == "rust":
-            backend = support.load_module(Path(__file__).with_name("rust.py"))
+        if config.get("provider") in ("rust", "kotlin"):
+            backend = support.load_module(Path(__file__).with_name(config["provider"] + ".py"))
             try:
                 outputs = backend.run_compile(config, inputs, work, capture=logs)
             finally:
@@ -234,12 +237,12 @@ def run_phase(config, phase, input_root, work):
             raise ValueError("invalid fixed SONAME")
         target = work / "native" / soname
         target.parent.mkdir()
-        if config.get("provider") == "rust":
+        if config.get("provider") in ("rust", "kotlin"):
             if recipe.get("strip") is not False:
                 raise ValueError(
                     "this profile requires explicit unstripped Build; Package strip=false"
                 )
-            backend = support.load_module(Path(__file__).with_name("rust.py"))
+            backend = support.load_module(Path(__file__).with_name(config["provider"] + ".py"))
             try:
                 # Actual ohrs performs Rust code generation and DSO linking.
                 # Its macro registrar has a different explicit symbol policy.
@@ -305,11 +308,28 @@ def run_phase(config, phase, input_root, work):
             text = run("readelf", ["-d", p]).decode()
             return sorted(set(re.findall(r"\(NEEDED\).*?Shared library: \[([^]]+)\]", text)))
 
-        dependencies[soname] = dynamic(target)
+        implementation = recipe.get("implementation_libraries", [soname])
+        if (
+            not implementation
+            or len(implementation) != len(set(implementation))
+            or soname not in implementation
+        ):
+            raise ValueError("invalid implementation library inventory")
         declared = {r["soname"]: r for r in recipe["runtime_libraries"]}
+        initial_native = {Path(name).name for name in outputs if name.startswith("native/")}
+        if not set(implementation) <= initial_native or initial_native - set(
+            implementation
+        ) - set(declared):
+            raise ValueError(
+                "backend native output differs from declared implementation/runtime libraries"
+            )
+        for name in implementation:
+            if not re.fullmatch(r"lib[A-Za-z0-9_]+\.so", name):
+                raise ValueError("invalid implementation SONAME")
+            dependencies[name] = dynamic(support.input_path(work, "native/" + name))
         if len(declared) != len(recipe["runtime_libraries"]):
             raise ValueError("duplicate runtime library SONAME")
-        needed = set(dependencies[soname])
+        needed = {name for values in dependencies.values() for name in values}
         pending = list(needed - set(recipe["system_libraries"]))
         copied = set()
         while pending:
@@ -321,8 +341,21 @@ def run_phase(config, phase, input_root, work):
             entry = declared[name]
             source = support.verify_tool(entry)
             out = work / "native" / name
-            support.copy_new(source, out)
-            outputs.append("native/" + name)
+            if out.exists() or out.is_symlink():
+                support.verify_refs(
+                    work,
+                    [
+                        {
+                            "path": "native/" + name,
+                            "sha256": entry["sha256"],
+                            "size": entry["size"],
+                        }
+                    ],
+                )
+            else:
+                support.copy_new(source, out)
+            if "native/" + name not in outputs:
+                outputs.append("native/" + name)
             copied.add(name)
             dependencies[name] = dynamic(out)
             needed.update(dependencies[name])

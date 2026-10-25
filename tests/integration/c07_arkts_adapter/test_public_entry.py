@@ -169,6 +169,34 @@ class ExplicitPolicy(unittest.TestCase):
             self.lower()
 
 
+class KotlinPublicRoles(unittest.TestCase):
+    def setUp(self):
+        self.policy = json.loads(
+            (ROOT / "adapters/generators/arkts/profiles/snapshot-kotlin-v1.json").read_text()
+        )
+
+    def test_kotlin_roles_do_not_manufacture_c_or_napi_gateway_facts(self):
+        self.assertNotIn("c_seam_surface", self.policy)
+        self.assertNotIn("gateway_surface", self.policy)
+        public = deepcopy(self.policy["public_surface"])
+        for function in public["functions"] + [
+            m for r in public["resources"] for m in r["methods"]
+        ]:
+            function["location"] = {"path": "unit-shape.ets", "line": 5, "column": 3}
+        config = {
+            "features": lowering.FEATURES,
+            "boundary_id": "kotlin-arkts",
+            "source_package": "madbc07sdkkotlin",
+            "variant": "ordinary",
+            "policy": "runtime-policy.json",
+        }
+        contract, _ = lowering.lower_public(public, self.policy, {"selector": {}}, config)
+        self.assertEqual(len(contract["symbols"]), len(self.policy["calls"]))
+        public["records"][0]["fields"][0]["type"] = {"tag": "string"}
+        with self.assertRaisesRegex(ValueError, "public_surface"):
+            lowering.lower_public(public, self.policy, {"selector": {}}, config)
+
+
 class Allocation(unittest.TestCase):
     def values(self):
         ordinary = "c07-c-arkts-aarch64-ohos23"
@@ -239,7 +267,11 @@ class Distribution(unittest.TestCase):
             },
             "sdk": {
                 "is_formal": True,
-                "product": {"version": "26.0.0.105", "apiVersion": "26", "releaseType": "Release"},
+                "product": {
+                    "version": "26.0.0.105",
+                    "apiVersion": "26",
+                    "releaseType": "Release",
+                },
             },
         }
         check_distribution(value)

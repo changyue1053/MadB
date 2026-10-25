@@ -71,6 +71,17 @@ def lower(public, gateway, seam, policy, request, config):
     ]:
         if projection(value) != policy[key]:
             raise ValueError("actual declarations changed outside authored C07 policy: " + key)
+    return lower_public(public, policy, request, config)
+
+
+def lower_public(public, policy, request, config):
+    """Lower the common public roles after the selected backend checked its own declarations."""
+    if policy.get("schema") != "madb.private.arkts-runtime-policy.v1":
+        raise ValueError("unsupported C07 policy")
+    if projection(public) != policy["public_surface"]:
+        raise ValueError(
+            "actual declarations changed outside authored C07 policy: public_surface"
+        )
     if config["features"] != FEATURES:
         raise ValueError("C07 requires its complete explicit feature set")
     if policy.get("variant", "ordinary") != config.get("variant", "ordinary"):
@@ -81,7 +92,11 @@ def lower(public, gateway, seam, policy, request, config):
     owner = "madb.c07." + config["boundary_id"]
     resource_names = {r["name"] for r in public["resources"]}
     for r in public["resources"]:
-        types[r["name"]] = {"kind": "resource", "representation": "backend-handle", "owner": owner}
+        types[r["name"]] = {
+            "kind": "resource",
+            "representation": "backend-handle",
+            "owner": owner,
+        }
     # Error is a backend-owned erased exception channel (code remains declared
     # in the source descriptor), not a new closable SDK owner or invented enum.
     channel = policy["error_channel"]
@@ -127,7 +142,10 @@ def lower(public, gateway, seam, policy, request, config):
             types[name] = {
                 "kind": "callback",
                 "parameters": [
-                    {"name": p["name"], "type_id": type_id(p["type"], context + "." + p["name"])}
+                    {
+                        "name": p["name"],
+                        "type_id": type_id(p["type"], context + "." + p["name"]),
+                    }
                     for p in t["params"]
                 ],
                 "result": type_id(t["returns"], context + ".return"),
@@ -172,7 +190,9 @@ def lower(public, gateway, seam, policy, request, config):
         result = type_id(returned["item"] if is_promise else returned, name + ".return")
         kind = role["kind"]
         if (kind == "async") != is_promise or kind not in ("sync", "async", "stream"):
-            raise ValueError("authored call kind differs from actual Promise declaration: " + name)
+            raise ValueError(
+                "authored call kind differs from actual Promise declaration: " + name
+            )
         if kind == "stream" and not any(
             types[p["type_id"]]["kind"] == "callback" for p in parameters
         ):
@@ -252,3 +272,71 @@ def lower(public, gateway, seam, policy, request, config):
         "observations": [],
     }
     return contract, bindings
+
+
+def abi_projection(descriptor, contract, runtime_policy):
+    """Only checked type/protocol facts; byte provenance remains in Source/build."""
+    logical = {
+        "types": contract["types"],
+        "symbols": [
+            {"public_id": s["public_id"], "shape": s["shape"]} for s in contract["symbols"]
+        ],
+        "policies": [
+            {k: p[k] for k in ("symbol_id", "slot", "values")} for p in contract["policies"]
+        ],
+        "required_features": contract["required_features"],
+    }
+    physical = {
+        key: projection(descriptor[key])
+        for key in ("public", "gateway", "c_seam")
+        if key in descriptor
+    }
+    if "rust" in descriptor:
+        rust = descriptor["rust"]
+        physical["rust"] = {
+            "exports": [
+                {key: export[key] for key in ("name", "arity", "parameters", "rawReturn")}
+                for export in rust["macro"]["descriptor"]["exports"]
+            ],
+            "napi_features": [
+                {key: package[key] for key in ("name", "features")}
+                for package in rust["resolved_packages"]
+                if package["name"]
+                in (
+                    "napi-ohos",
+                    "napi-sys-ohos",
+                    "napi-build-ohos",
+                    "napi-derive-ohos",
+                    "napi-derive-backend-ohos",
+                )
+            ],
+        }
+    if "kotlin" in descriptor:
+        kotlin = descriptor["kotlin"]
+        policy = kotlin["frontend_policy"]
+        physical["kotlin"] = {
+            "facts": projection(kotlin["facts"]),
+            "declaration": projection(kotlin["descriptor"]),
+            "record": {
+                key: projection(kotlin["record_schema"][key])
+                for key in ("qualifiedName", "fields")
+            },
+            "notification_interfaces": policy["notification_interfaces"],
+            "parameters": policy["parameters"],
+            "execution_domain": runtime_policy["execution_domain"],
+        }
+    roles = {
+        key: runtime_policy[key]
+        for key in (
+            "values",
+            "calls",
+            "slots",
+            "limits",
+            "error_channel",
+            "value_slots",
+            "test_types",
+            "execution_domain",
+        )
+        if key in runtime_policy
+    }
+    return {"logical": logical, "physical": physical, "runtime_roles": roles}

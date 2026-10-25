@@ -90,7 +90,11 @@ def requirements(args):
         args.case_allocation_sha256,
         args.requirements,
         profile_id="c07-" + args.route + "-arkts-aarch64-ohos23",
-        route="madb.arkts-" + args.route + "-napi",
+        route=(
+            "madb.kn-arkts-napi"
+            if args.route == "kotlin"
+            else "madb.arkts-" + args.route + "-napi"
+        ),
     )
     if args.variant == "test":
         selected = next(
@@ -108,8 +112,10 @@ def arguments():
     parser.add_argument(
         "--output", required=True, type=Path, help="new output root; never overwrite"
     )
-    parser.add_argument("--route", choices=("c", "cpp", "rust"), default="c")
+    parser.add_argument("--route", choices=("c", "cpp", "rust", "kotlin"), default="c")
     parser.add_argument("--variant", choices=("ordinary", "test"), default="ordinary")
+    parser.add_argument("--kotlin-configuration", type=Path)
+    parser.add_argument("--kotlin-configuration-sha256", type=digest_argument)
     parser.add_argument("--rust-configuration", type=Path)
     parser.add_argument("--rust-configuration-sha256", type=digest_argument)
     parser.add_argument("--madb-image", required=True, type=Path)
@@ -134,6 +140,11 @@ def arguments():
         "--allow-dirty", action="store_true", help="emit provisional development artifacts"
     )
     args = parser.parse_args()
+    kotlin_inputs = (args.kotlin_configuration, args.kotlin_configuration_sha256)
+    if args.route == "kotlin" and any(value is None for value in kotlin_inputs):
+        parser.error("Kotlin requires --kotlin-configuration and --kotlin-configuration-sha256")
+    if args.route != "kotlin" and any(value is not None for value in kotlin_inputs):
+        parser.error("Kotlin configuration is only valid for --route kotlin")
     rust_inputs = (args.rust_configuration, args.rust_configuration_sha256)
     if args.route == "rust" and any(value is None for value in rust_inputs):
         parser.error("Rust requires --rust-configuration and --rust-configuration-sha256")
@@ -166,6 +177,13 @@ def main():
     inventory = file_reference(args.cli_inventory, "cli-inventory.json")
     if inventory["sha256"] != args.cli_inventory_sha256:
         raise ValueError("CLI inventory differs from the caller-reviewed SHA256")
+    kotlin_configuration = None
+    if args.route == "kotlin":
+        kotlin_configuration = file_reference(
+            args.kotlin_configuration, "tools/kotlin-configuration.json"
+        )
+        if kotlin_configuration["sha256"] != args.kotlin_configuration_sha256:
+            raise ValueError("Kotlin configuration differs from the caller-reviewed SHA256")
     rust_configuration = None
     if args.route == "rust":
         rust_configuration = file_reference(
@@ -234,6 +252,7 @@ def main():
             author_fixture=args.author_fixture,
             delivery_inputs=delivery,
             rust_configuration=rust_configuration,
+            kotlin_configuration=kotlin_configuration,
             observation_path=output / "tool-observation.json",
         )
         if not args.allow_dirty:

@@ -58,6 +58,7 @@ def verify(request, config, root, *, tree=True):
         "c-arkts",
         "cpp-arkts",
         "rust-arkts",
+        "kotlin-arkts",
     ):
         raise ValueError("unsupported C07 native backend")
     if (
@@ -65,8 +66,13 @@ def verify(request, config, root, *, tree=True):
         or request["selector"]["direction"] != "consumer-to-provider"
     ):
         raise ValueError("C07 target/direction mismatch")
+    route = (
+        "KN-ARKTS-NAPI"
+        if config["provider"] == "kotlin"
+        else "ARKTS-" + config["provider"].upper() + "-NAPI"
+    )
     if (
-        request["selector"]["route"] != "ARKTS-" + config["provider"].upper() + "-NAPI"
+        request["selector"]["route"] != route
         or config["boundary_id"] != config["provider"] + "-arkts"
     ):
         raise ValueError("C07 provider/route identity differs")
@@ -86,7 +92,7 @@ def verify(request, config, root, *, tree=True):
         config["frame_layout"],
         config["runtime_frame"],
     ):
-        if name not in names:
+        if name is not None and name not in names:
             raise ValueError(
                 "declaration/policy/tool inventory omitted from read inputs: " + name
             )
@@ -103,15 +109,15 @@ def verify(request, config, root, *, tree=True):
     if any(n["source"] not in names for n in notices):
         raise ValueError("runtime notice omitted from original read inputs")
     for name in config.get("additional_notices", []):
-        if not name.startswith("notices/rust/") or name not in names:
-            raise ValueError("Rust runtime notice omitted from original read inputs")
+        if not name.startswith("notices/" + config["provider"] + "/") or name not in names:
+            raise ValueError("runtime notice omitted from original read inputs")
     for tool in config["tools"].values():
         support.verify_tool(tool)
     support.load_module(
         Path(__file__).resolve().parents[3] / "adapters/toolchains/arkts/toolchain.py"
     ).verify_runtime(config, root)
     policy = support.read_json(support.input_path(root, config["policy"]))
-    if config["variant"] == "test":
+    if config["variant"] == "test" and config["provider"] != "kotlin":
         lengths = {
             "testObserve": ("test-frame-layout.json", "total_length"),
             "testInspect": ("test-frame-layout.json", "total_length"),
@@ -144,11 +150,7 @@ def verify(request, config, root, *, tree=True):
     support.verify_refs(root, [authority])
     if authority["path"] not in names:
         raise ValueError("explicit policy authority omitted from read inputs")
-    expected = render_template(
-        support.input_path(root, config["public_template"]).read_bytes(),
-        config["native_module"],
-        "madb-declaration-projection-not-runtime",
-    )
+    expected = public_projection(root, config, "madb-declaration-projection-not-runtime")
     if support.input_path(root, config["public_source"]).read_bytes() != expected:
         raise ValueError("public declaration projection differs from authored template")
     if tree:
@@ -158,6 +160,19 @@ def verify(request, config, root, *, tree=True):
         verifier = support.load_module(Path(root) / "adapters/toolchains/arkts/tools.py")
         verifier.verify_inventory(inventory, Path(config["cli_root"]))
     return {r["path"]: r for r in request["inputs"]}
+
+
+def public_projection(root, config, identity):
+    if config["provider"] == "kotlin":
+        binding = support.load_module(
+            Path(root) / "adapters/toolchains/arkts/kotlin_binding.py"
+        )
+        return binding.public_source(root, config, identity)
+    return render_template(
+        support.input_path(root, config["public_template"]).read_bytes(),
+        config["native_module"],
+        identity,
+    )
 
 
 def read_gateway(config, root, reference, work):
@@ -188,7 +203,10 @@ def read_gateway(config, root, reference, work):
 
 def _read(request, config, root, work):
     refs = verify(request, config, root)
-    gateway = read_gateway(config, root, refs[config["gateway_source"]], work)
+    managed = config["provider"] == "kotlin"
+    gateway = (
+        None if managed else read_gateway(config, root, refs[config["gateway_source"]], work)
+    )
     composition = config.get("composition")
     if composition is not None:
         native = support.load_module(Path(root) / "adapters/toolchains/arkts/native.py")
@@ -239,15 +257,32 @@ def _read(request, config, root, work):
             stdin=support.input_path(root, config["public_source"]).read_bytes(),
         )
     )
-    seam_config = {
-        "tools": {"clang": config["tools"]["clang"]},
-        "native_sdk": config["native_sdk"],
-        "clang_arguments": config["seam_arguments"],
-        "environment": {},
-    }
-    seam = c_reader.read_header(root, root, refs[config["provider_source"]], seam_config)
     policy = support.read_json(support.input_path(root, config["policy"]))
-    seed, policies = lowering.lower(public, gateway, seam, policy, request, config)
+    if managed:
+        if policy.get("execution_domain") != "main-env-only":
+            raise ValueError("Kotlin profile requires explicit main-env-only admission")
+        sdk = support.read_json(support.input_path(root, "toolchain.json"))
+        if sdk["kotlin"].get("execution_domain") != policy["execution_domain"]:
+            raise ValueError("Kotlin SDK admission differs from its authored runtime policy")
+        frontend_policy = policy.get("frontend_policy")
+        if (
+            frontend_policy != "sdk/kotlin/arkts-owned/frontend-policy.json"
+            or frontend_policy not in refs
+        ):
+            raise ValueError("Kotlin frontend policy omitted from frozen read inputs")
+        reader = support.load_module(Path(root) / "adapters/toolchains/arkts/kotlin.py")
+        kotlin = reader.read_metadata(root, config, work, public)
+        seed, policies = lowering.lower_public(public, policy, request, config)
+        seam = None
+    else:
+        seam_config = {
+            "tools": {"clang": config["tools"]["clang"]},
+            "native_sdk": config["native_sdk"],
+            "clang_arguments": config["seam_arguments"],
+            "environment": {},
+        }
+        seam = c_reader.read_header(root, root, refs[config["provider_source"]], seam_config)
+        seed, policies = lowering.lower(public, gateway, seam, policy, request, config)
     d = documents(root)
     source_refs = sorted(
         [{k: r[k] for k in ("path", "sha256", "size")} for r in request["inputs"]],
@@ -256,8 +291,6 @@ def _read(request, config, root, work):
     seed["source_digest"] = d.semantic("madb.source/1", source_refs)
     descriptor = {
         "public": public,
-        "gateway": gateway,
-        "c_seam": seam,
         "public_derivation": {
             "template": refs[config["public_template"]],
             "compiler_input": refs[config["public_source"]],
@@ -265,6 +298,10 @@ def _read(request, config, root, work):
             "identity": "declaration-only, not a runtime handshake",
         },
     }
+    if managed:
+        descriptor["kotlin"] = kotlin
+    else:
+        descriptor.update(gateway=gateway, c_seam=seam)
     if config["provider"] == "rust":
         reader = support.load_module(Path(root) / "adapters/toolchains/arkts/rust_metadata.py")
         descriptor["rust"] = reader.read_metadata(root, config, work, gateway)
@@ -321,13 +358,9 @@ def generate(request, config, root, work):
     def emit_json(name, value):
         emit(name, (d.canonical(value) + "\n").encode())
 
+    runtime_policy = support.read_json(support.input_path(root, config["policy"]))
     abi = d.semantic(
-        "madb.c07-abi/1",
-        {
-            k: lowering.projection(descriptor[k])
-            for k in ("public", "gateway", "c_seam", "rust")
-            if k in descriptor
-        },
+        "madb.c07-abi/1", lowering.abi_projection(descriptor, contract, runtime_policy)
     )
     # All author/template/recipe/tool-inventory inputs are in source_digest. No
     # artifact hash or later generation_id enters its own compiled identity.
@@ -344,26 +377,25 @@ def generate(request, config, root, work):
     identity = "madb-arkts/1:" + ":".join(
         x.removeprefix("sha256:") for x in (abi, profile, build)
     )
-    emit_json(
-        "identity.json",
-        {
-            "schema": "madb.arkts-runtime-identity/1",
-            "bootstrap_version": 1,
-            "abi_digest": abi,
-            "profile_digest": profile,
-            "build_id": build,
-            "expected_identity": identity,
-        },
-    )
+    identity_document = {
+        "schema": "madb.arkts-runtime-identity/1",
+        "bootstrap_version": 1,
+        "abi_digest": abi,
+        "profile_digest": profile,
+        "build_id": build,
+        "expected_identity": identity,
+    }
+    emit_json("identity.json", identity_document)
     emit_json("declarations.json", descriptor)
     emit(
         "generated/contract/runtime-policy.json",
         support.input_path(root, config["policy"]).read_bytes(),
     )
-    emit(
-        "generated/contract/frame-layout.json",
-        support.input_path(root, config["frame_layout"]).read_bytes(),
-    )
+    if config["provider"] != "kotlin":
+        emit(
+            "generated/contract/frame-layout.json",
+            support.input_path(root, config["frame_layout"]).read_bytes(),
+        )
     emit(
         "generated/contract/inventory-format.json",
         support.input_path(
@@ -379,120 +411,144 @@ def generate(request, config, root, work):
         )
     for name in config.get("additional_notices", []):
         emit("generated/" + name, support.input_path(root, name).read_bytes())
-    emit(
-        "generated/facade/Boundary.ets",
-        render_template(
-            support.input_path(root, config["public_template"]).read_bytes(),
-            config["native_module"],
-            identity,
-        ),
-    )
-    emit(
-        "generated/facade/RuntimeFrame.ets",
-        support.input_path(root, config["runtime_frame"]).read_bytes(),
-    )
-    if config["variant"] == "test":
-        for name in config["test_contracts"]:
-            emit(
-                "generated/contract/test/" + Path(name).name,
-                support.input_path(root, name).read_bytes(),
-            )
-        for name in config["test_facade_inputs"]:
-            emit(
-                "generated/facade/" + Path(name).name,
-                support.input_path(root, name).read_bytes(),
-            )
-        test_layout = support.read_json(
-            support.input_path(root, "sdk/arkts/test-support/contracts/test-frame-layout.json")
+    if config["provider"] == "kotlin":
+        binding = support.load_module(
+            Path(root) / "adapters/toolchains/arkts/kotlin_binding.py"
         )
-        fields = test_layout["fields"]
-        if list(map(int, fields)) != list(range(54, 102)):
-            raise ValueError("test trace layout differs from the frozen 48 fields")
+        generated_files = binding.render(
+            root, config, descriptor["kotlin"], identity_document, work
+        )
+        for name in generated_files:
+            files.append(
+                dict(
+                    d.ref(work, name),
+                    sources=sorted(s["public_id"] for s in contract["symbols"]),
+                )
+            )
+    else:
         emit(
-            "generated/native/test-frame.generated.hpp",
+            "generated/facade/Boundary.ets",
+            render_template(
+                support.input_path(root, config["public_template"]).read_bytes(),
+                config["native_module"],
+                identity,
+            ),
+        )
+        emit(
+            "generated/facade/RuntimeFrame.ets",
+            support.input_path(root, config["runtime_frame"]).read_bytes(),
+        )
+        if config["variant"] == "test":
+            for name in config["test_contracts"]:
+                emit(
+                    "generated/contract/test/" + Path(name).name,
+                    support.input_path(root, name).read_bytes(),
+                )
+            for name in config["test_facade_inputs"]:
+                emit(
+                    "generated/facade/" + Path(name).name,
+                    support.input_path(root, name).read_bytes(),
+                )
+            test_layout = support.read_json(
+                support.input_path(
+                    root, "sdk/arkts/test-support/contracts/test-frame-layout.json"
+                )
+            )
+            fields = test_layout["fields"]
+            if list(map(int, fields)) != list(range(54, 102)):
+                raise ValueError("test trace layout differs from the frozen 48 fields")
+            emit(
+                "generated/native/test-frame.generated.hpp",
+                (
+                    "#pragma once\n#include <cstddef>\nnamespace gateway { enum TestFrame : size_t {\n"
+                    + ",\n".join(v + "=" + str(int(k) - 54) for k, v in fields.items())
+                    + ",\nTestCount=48\n}; }\n"
+                ).encode(),
+            )
+            refs = {r["path"]: r for r in request["inputs"]}
+            emit_json(
+                "generated/contract/composition.json",
+                {
+                    "route": config["provider"],
+                    "variant": "test",
+                    "ordinary_facade": refs["sdk/arkts/facade/Boundary.ets.in"],
+                    "original_inputs": [
+                        refs[n] for n in config["composition"]["original_inputs"]
+                    ],
+                    "derived_inputs": [
+                        refs[n] for n in config["composition"]["derived_inputs"]
+                    ],
+                    "scope": "strict ordinary baseline plus companion patches; separate source/profile/build identity",
+                },
+            )
+        emit("generated/native/exports.map", b"{ local: *; };\n")
+        emit(
+            "generated/native/Index.d.ts",
+            support.input_path(root, config["gateway_source"]).read_bytes(),
+        )
+        methods = descriptor["gateway"]["methods"]
+        lines = ["napi_property_descriptor methods[] = {"]
+        lines += [
+            '{"'
+            + m["name"]
+            + '",nullptr,js_'
+            + m["name"]
+            + ",nullptr,nullptr,nullptr,napi_default,nullptr},"
+            for m in methods
+        ]
+        emit(
+            "generated/native/exports.generated.inc",
+            ("\n".join(lines + ["};"]) + "\n").encode(),
+        )
+        names = {m["name"] for m in methods}
+        for key in ("public", "gateway"):
+            for record in descriptor[key]["records"]:
+                names.update(f["name"] for f in record["fields"])
+        for resource in descriptor["public"]["resources"]:
+            names.update(m["name"] for m in resource["methods"])
+        for error in descriptor["public"]["errors"]:
+            names.update(f["name"] for f in error["fields"])
+        emit(
+            "generated/keep-rules.txt",
+            ("-keep-property-name\n" + "\n".join(sorted(names)) + "\n").encode(),
+        )
+        layout = support.read_json(support.input_path(root, config["frame_layout"]))
+        if list(map(int, layout)) != list(range(len(layout))) or len(
+            set(layout.values())
+        ) != len(layout):
+            raise ValueError("frame layout must have contiguous unique slots")
+        emit(
+            "generated/native/frame.generated.hpp",
             (
-                "#pragma once\n#include <cstddef>\nnamespace gateway { enum TestFrame : size_t {\n"
-                + ",\n".join(v + "=" + str(int(k) - 54) for k, v in fields.items())
-                + ",\nTestCount=48\n}; }\n"
+                "#pragma once\n#include <cstddef>\nnamespace gateway { enum Frame : size_t {\n"
+                + ",\n".join(v + "=" + k for k, v in layout.items())
+                + "\n}; }\n"
             ).encode(),
         )
-        refs = {r["path"]: r for r in request["inputs"]}
-        emit_json(
-            "generated/contract/composition.json",
-            {
-                "route": config["provider"],
-                "variant": "test",
-                "ordinary_facade": refs["sdk/arkts/facade/Boundary.ets.in"],
-                "original_inputs": [refs[n] for n in config["composition"]["original_inputs"]],
-                "derived_inputs": [refs[n] for n in config["composition"]["derived_inputs"]],
-                "scope": "strict ordinary baseline plus companion patches; separate source/profile/build identity",
-            },
+        constants = {
+            "GatewayAbi": abi.removeprefix("sha256:"),
+            "GatewayProfile": profile.removeprefix("sha256:"),
+            "GatewayBuild": build.removeprefix("sha256:"),
+            "GatewayIdentity": identity,
+            "GatewayRouteIdentity": config["provider"] + "/" + identity,
+        }
+        constants["GatewayModuleName"] = config["native_module"][3:-3]
+        factory = config.get("provider_factory", "mp_c_create")
+        if factory not in ("mp_c_create", "mp_cpp_create", "mp_rust_create"):
+            raise ValueError("unsupported native provider factory")
+        emit(
+            "generated/native/identity.generated.hpp",
+            (
+                '#pragma once\n#include "provider_abi.h"\nnamespace gateway {\n'
+                + "".join(
+                    "inline constexpr const char* " + k + "=" + json.dumps(v) + ";\n"
+                    for k, v in constants.items()
+                )
+                + "inline constexpr auto GatewayProviderCreate = ::"
+                + factory
+                + ";\n}\n"
+            ).encode(),
         )
-    emit("generated/native/exports.map", b"{ local: *; };\n")
-    emit(
-        "generated/native/Index.d.ts",
-        support.input_path(root, config["gateway_source"]).read_bytes(),
-    )
-    methods = descriptor["gateway"]["methods"]
-    lines = ["napi_property_descriptor methods[] = {"]
-    lines += [
-        '{"'
-        + m["name"]
-        + '",nullptr,js_'
-        + m["name"]
-        + ",nullptr,nullptr,nullptr,napi_default,nullptr},"
-        for m in methods
-    ]
-    emit("generated/native/exports.generated.inc", ("\n".join(lines + ["};"]) + "\n").encode())
-    names = {m["name"] for m in methods}
-    for key in ("public", "gateway"):
-        for record in descriptor[key]["records"]:
-            names.update(f["name"] for f in record["fields"])
-    for resource in descriptor["public"]["resources"]:
-        names.update(m["name"] for m in resource["methods"])
-    for error in descriptor["public"]["errors"]:
-        names.update(f["name"] for f in error["fields"])
-    emit(
-        "generated/keep-rules.txt",
-        ("-keep-property-name\n" + "\n".join(sorted(names)) + "\n").encode(),
-    )
-    layout = support.read_json(support.input_path(root, config["frame_layout"]))
-    if list(map(int, layout)) != list(range(len(layout))) or len(set(layout.values())) != len(
-        layout
-    ):
-        raise ValueError("frame layout must have contiguous unique slots")
-    emit(
-        "generated/native/frame.generated.hpp",
-        (
-            "#pragma once\n#include <cstddef>\nnamespace gateway { enum Frame : size_t {\n"
-            + ",\n".join(v + "=" + k for k, v in layout.items())
-            + "\n}; }\n"
-        ).encode(),
-    )
-    constants = {
-        "GatewayAbi": abi.removeprefix("sha256:"),
-        "GatewayProfile": profile.removeprefix("sha256:"),
-        "GatewayBuild": build.removeprefix("sha256:"),
-        "GatewayIdentity": identity,
-        "GatewayRouteIdentity": config["provider"] + "/" + identity,
-    }
-    constants["GatewayModuleName"] = config["native_module"][3:-3]
-    factory = config.get("provider_factory", "mp_c_create")
-    if factory not in ("mp_c_create", "mp_cpp_create", "mp_rust_create"):
-        raise ValueError("unsupported native provider factory")
-    emit(
-        "generated/native/identity.generated.hpp",
-        (
-            '#pragma once\n#include "provider_abi.h"\nnamespace gateway {\n'
-            + "".join(
-                "inline constexpr const char* " + k + "=" + json.dumps(v) + ";\n"
-                for k, v in constants.items()
-            )
-            + "inline constexpr auto GatewayProviderCreate = ::"
-            + factory
-            + ";\n}\n"
-        ).encode(),
-    )
     # Re-read the actual generated facade and require exactly the authored public
     # structure, excluding only source locations/provenance and import module.
     generated = json.loads(
