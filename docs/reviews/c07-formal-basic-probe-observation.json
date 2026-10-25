@@ -1,0 +1,82 @@
+{
+  "evidence_scope": "formal_sdk_basic_mechanism_probe",
+  "certifies_c07": false,
+  "source_receipt_sha256": "56cbd55006097bed281e3756765919e604a42dc99eec3077c27dbebff5f80ece",
+  "nonce": "c07-sdk26-8b849f92e8ff42fa9281dd4e122698f1",
+  "pid": 4904,
+  "target": "127.0.0.1:5557",
+  "build": {
+    "sha256": "5200e7612557632a5ddbc2cf4c17f31b143402101634333ae2969201c9fa4f52",
+    "size": 5231636,
+    "sdk_version": "26.0.0.105",
+    "sdk_release": "Release",
+    "build_mode": "debug"
+  },
+  "consumer_api": {
+    "compile_sdk": "26.0.0.105",
+    "target_api": 26,
+    "compatible_api": 23,
+    "runtime_api": 23,
+    "runtime_release": "Release"
+  },
+  "observed_calls": {
+    "kotlin": [
+      "",
+      "probe",
+      "你好é",
+      "left\u0000right"
+    ],
+    "rust": [
+      "",
+      "probe",
+      "你好é",
+      "left\u0000right"
+    ],
+    "c_checksum": "258,0,overlength-rejected"
+  },
+  "cpp_probe_final_counters": {
+    "activeThreads": 0,
+    "allocations": 15488,
+    "releases": 15488,
+    "outstanding": 0,
+    "peakOutstanding": 12,
+    "tsfnCreated": 5,
+    "tsfnFinalized": 5,
+    "cleanupHooks": 1,
+    "envCreated": 2,
+    "envDestroyed": 1,
+    "callbacks": 1319,
+    "callbackSucceeded": 1318,
+    "callbackThrows": 1,
+    "droppedAfterStop": 13,
+    "nullEnvCallbacks": 5,
+    "queueFull": 14151,
+    "byteBudgetRejected": 0,
+    "enqueueFailures": 0,
+    "enqueueClosing": 0,
+    "enqueued": 1337,
+    "peakInstanceOutstanding": 6,
+    "uncertainEnqueueRetained": 0,
+    "wrongEnvRejected": 2,
+    "invalidEnvCalls": 0,
+    "napiErrors": 0,
+    "workerExited": 5,
+    "instancesCreated": 5,
+    "maxCleanupJoinMicros": 106,
+    "releaseFailures": 0,
+    "currentEnvId": 1,
+    "ownedInstances": 4,
+    "queueCapacity": 4,
+    "payloadBytes": 64,
+    "outstandingLimitPerInstance": 8
+  },
+  "limitations": [
+    "The counters concern the C++ native mechanism probe, not full Kotlin/Rust/C SDK lifecycle acceptance.",
+    "Kotlin uses managed akinterop patch 24d1b30e10ce869fa99e2a5910a4371e8d4b09e0a281c4131b6510c37c68efda and the explicit shared-link Scrt1.o correction.",
+    "Native helper uses formal SDK headers; Kotlin cinterop/runtime retain separately locked CPF platform headers and klibs.",
+    "The 49-item ABI comparison covers the bridge subset only, not the complete platform.",
+    "One explicitly selected CPF libc++ is packaged; the SDK libc++ does not supply two symbols required by the managed Kotlin library.",
+    "This receipt is for a debug build with community debug signing, not Release/HAR/obfuscation or production signing.",
+    "Full profile, state/event budgets, Kotlin main-env teardown and CRIT-11/12 acceptance remain outstanding."
+  ]
+}

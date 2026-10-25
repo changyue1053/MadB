@@ -1,7 +1,7 @@
 """Read-only ArkTS environment observations, never candidate certification.
 
-The caller selects the DevEco Contents directory, application SDK package root,
-and target. CPF compiler sysroots are separate inputs to future build checks;
+The caller selects either a DevEco Contents or command-line-tools directory,
+an application SDK package root, and target. CPF compiler sysroots are separate inputs to future build checks;
 this module does not discover them or treat them as application SDKs.
 """
 from __future__ import annotations
@@ -14,7 +14,7 @@ import subprocess
 
 
 COMPONENTS = ("ets", "native", "toolchains")
-SDK_FIELDS = ("apiVersion", "version", "releaseType", "stage", "displayName", "path")
+SDK_FIELDS = ("apiVersion", "version", "releaseType", "stage", "displayName", "path", "platformVersion")
 TARGET_PARAMETERS = (
     "const.ohos.apiversion", "const.ohos.releasetype", "const.ohos.fullname",
     "const.product.software.version", "const.product.model", "const.product.name",
@@ -27,9 +27,21 @@ def issue(errors: list[dict], code: str, component: str, message: str) -> None:
     errors.append({"code": code, "component": component, "message": message})
 
 
+def read_json_metadata(path: Path) -> object:
+    def unique_object(pairs: list[tuple[str, object]]) -> dict:
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError(f"duplicate JSON metadata field: {key}")
+            result[key] = value
+        return result
+
+    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_object)
+
+
 def metadata(path: Path, component: str, errors: list[dict], *, product: bool = False) -> dict:
     try:
-        document = json.loads(path.read_text(encoding="utf-8"))
+        document = read_json_metadata(path)
         value = document.get("data") if product else document
         if not isinstance(value, dict):
             raise ValueError("expected a metadata object")
@@ -93,7 +105,7 @@ def inspect_executable(path: Path, arguments: list[str], name: str,
 def inspect_package(path: Path, executable: Path, expected_name: str, errors: list[dict]) -> dict:
     result = {"path": str(executable), "metadata_path": str(path), "version_source": "package_metadata"}
     try:
-        value = json.loads(path.read_text(encoding="utf-8"))
+        value = read_json_metadata(path)
         if value.get("name") != expected_name or not isinstance(value.get("version"), str) or not value["version"].strip():
             raise ValueError("package name or version is invalid")
         result.update(name=value["name"], version=value["version"])
@@ -104,32 +116,108 @@ def inspect_package(path: Path, executable: Path, expected_name: str, errors: li
     return result
 
 
-def inspect_tools(deveco: Path, sdk: Path, timeout: float, errors: list[dict]) -> dict:
-    tools = {}
+def inspect_command_line_tools(root: Path, errors: list[dict]) -> dict:
+    path = root / "version.txt"
+    result = {"path": str(root), "metadata_path": str(path), "version_source": "version.txt"}
     try:
-        with (deveco / "Info.plist").open("rb") as stream:
-            value = plistlib.load(stream)
-        if not value.get("CFBundleVersion") or not value.get("CFBundleShortVersionString"):
-            raise ValueError("missing DevEco version fields")
-        tools["deveco"] = {"path": str(deveco), "version": value["CFBundleShortVersionString"],
-                           "build": value["CFBundleVersion"], "version_source": "Info.plist"}
-    except (OSError, ValueError, plistlib.InvalidFileException, AttributeError) as error:
-        issue(errors, "tool_metadata_invalid", "deveco", str(error))
+        text = path.read_text(encoding="utf-8")
+        if len(text) > OUTPUT_LIMIT:
+            raise ValueError("version.txt exceeds the metadata limit")
+        platforms, versions, fields = [], [], {}
+        for raw in text.splitlines():
+            line = raw.strip()
+            if re.match(r"#\s*Command Line Tools", line):
+                match = re.fullmatch(r"#\s*Command Line Tools\(([^()]+)\)", line)
+                if match is None:
+                    raise ValueError("invalid Command Line Tools platform header")
+                platforms.append(match[1])
+            elif re.match(r"#\s*Version\b", line):
+                match = re.fullmatch(r"#\s*Version:\s*(\d+(?:\.\d+){3})", line)
+                if match is None:
+                    raise ValueError("invalid Command Line Tools Version header")
+                versions.append(match[1])
+            elif line and not line.startswith("#"):
+                key, separator, value = line.partition(":")
+                key, value = key.strip(), value.strip()
+                if not separator or not key or not value or key in fields:
+                    raise ValueError(f"invalid or duplicate version.txt field: {key}")
+                fields[key] = value
+        if len(platforms) != 1 or len(versions) != 1:
+            raise ValueError("expected one Command Line Tools platform and one four-part Version header")
+        for key in ("releaseType", "hvigor", "ohpm", "HarmonyOS SDK", "apiVersion", "platformVersion"):
+            if key not in fields:
+                raise ValueError(f"missing version.txt field: {key}")
+        for key in ("hvigor", "ohpm", "platformVersion"):
+            if not re.fullmatch(r"\d+(?:\.\d+){2,3}", fields[key]):
+                raise ValueError(f"invalid version.txt version: {key}")
+        if not fields["apiVersion"].isdigit() or int(fields["apiVersion"]) < 1:
+            raise ValueError("invalid version.txt apiVersion")
+        descriptor = re.fullmatch(
+            r"HarmonyOS\s+(\d+(?:\.\d+){2})\s+(\w+)\s+"
+            r"\(include\s+Ohos_sdk_public\s+(\d+(?:\.\d+){3})\s+"
+            r"\(API Version\s+(\d+)\s+(\w+)\)\)", fields["HarmonyOS SDK"])
+        if descriptor is None:
+            raise ValueError("invalid version.txt HarmonyOS SDK descriptor")
+        platform_version, platform_release, sdk_version, sdk_api, sdk_release = descriptor.groups()
+        result.update(version=versions[0], distribution_platform=platforms[0], releaseType=fields["releaseType"],
+                      hvigor_version=fields["hvigor"], ohpm_version=fields["ohpm"],
+                      bundled_sdk={"version": sdk_version, "apiVersion": sdk_api,
+                                   "platformVersion": platform_version, "releaseType": sdk_release})
+        if platforms[0] != "mac-arm64":
+            issue(errors, "tool_platform_unsupported", "command_line_tools", "This layout requires the mac-arm64 Command Line Tools distribution.")
+        if fields["releaseType"].casefold() != "release":
+            issue(errors, "tool_not_release", "command_line_tools", "Command Line Tools metadata must identify a Release distribution.")
+        if (fields["apiVersion"] != sdk_api or fields["platformVersion"] != platform_version
+                or len({fields["releaseType"].casefold(), platform_release.casefold(), sdk_release.casefold()}) != 1):
+            issue(errors, "tool_metadata_conflict", "command_line_tools", "version.txt API/platform/release fields disagree with its SDK descriptor.")
+    except (OSError, ValueError) as error:
+        issue(errors, "tool_metadata_invalid", "command_line_tools", f"{path}: {error}")
+    return result
+
+
+def inspect_tools(deveco: Path, sdk: Path, timeout: float, errors: list[dict], *,
+                  command_line_tools: bool = False, sdk_observation: dict | None = None) -> dict:
+    tools = {}
+    if command_line_tools:
+        tools["command_line_tools"] = inspect_command_line_tools(deveco, errors)
+    else:
+        try:
+            with (deveco / "Info.plist").open("rb") as stream:
+                value = plistlib.load(stream)
+            if not value.get("CFBundleVersion") or not value.get("CFBundleShortVersionString"):
+                raise ValueError("missing DevEco version fields")
+            tools["deveco"] = {"path": str(deveco), "version": value["CFBundleShortVersionString"],
+                               "build": value["CFBundleVersion"], "version_source": "Info.plist"}
+        except (OSError, ValueError, plistlib.InvalidFileException, AttributeError) as error:
+            issue(errors, "tool_metadata_invalid", "deveco", str(error))
+    tool_root = deveco if command_line_tools else deveco / "tools"
+    node = deveco / "tool/node/bin/node" if command_line_tools else tool_root / "node/bin/node"
     for name, path, arguments in (
-        ("node", deveco / "tools/node/bin/node", ["--version"]),
+        ("node", node, ["--version"]),
         ("clang", sdk / "openharmony/native/llvm/bin/clang", ["--version"]),
         ("hdc", sdk / "openharmony/toolchains/hdc", ["-v"]),
     ):
         tools[name] = inspect_executable(path, arguments, name, timeout, errors)
     for name, package, executable in (
-        ("@ohos/hvigor", "tools/hvigor/hvigor/package.json", "tools/hvigor/bin/hvigorw.js"),
-        ("@ohos/hvigor-ohos-plugin", "tools/hvigor/hvigor-ohos-plugin/package.json", "tools/hvigor/hvigor-ohos-plugin/package.json"),
-        ("@ohos/ohpm", "tools/ohpm/package.json", "tools/ohpm/bin/ohpm"),
+        ("@ohos/hvigor", "hvigor/hvigor/package.json", "hvigor/bin/hvigorw.js"),
+        ("@ohos/hvigor-ohos-plugin", "hvigor/hvigor-ohos-plugin/package.json", "hvigor/hvigor-ohos-plugin/package.json"),
+        ("@ohos/ohpm", "ohpm/package.json", "ohpm/bin/ohpm"),
     ):
-        tools[name] = inspect_package(deveco / package, deveco / executable, name, errors)
+        tools[name] = inspect_package(tool_root / package, tool_root / executable, name, errors)
     hvigor, plugin = tools["@ohos/hvigor"], tools["@ohos/hvigor-ohos-plugin"]
     if hvigor.get("version") != plugin.get("version"):
         issue(errors, "hvigor_component_mismatch", "hvigor", "Hvigor and its OHOS plugin versions differ.")
+    if command_line_tools:
+        identity = tools["command_line_tools"]
+        for name, expected in (("@ohos/hvigor", identity.get("hvigor_version")),
+                               ("@ohos/ohpm", identity.get("ohpm_version"))):
+            if expected is not None and tools[name].get("version") != expected:
+                issue(errors, "tool_component_mismatch", name, "Package version differs from Command Line Tools version.txt.")
+        expected_sdk = identity.get("bundled_sdk")
+        if expected_sdk and sdk_observation is not None:
+            for name, observed in {"sdk": sdk_observation["product"], **sdk_observation["components"]}.items():
+                if any(observed.get(key) != value for key, value in expected_sdk.items()):
+                    issue(errors, "tool_sdk_mismatch", name, "Selected SDK metadata differs from Command Line Tools version.txt.")
     return tools
 
 
@@ -181,14 +269,18 @@ def inspect_target(hdc: Path, target: str | None, target_abi: str, timeout: floa
     return result
 
 
-def inspect_environment(deveco: Path, sdk: Path, target: str | None, timeout: float = 10,
-                        target_abi: str = "arm64-v8a") -> dict:
+def inspect_environment(deveco: Path | None, sdk: Path, target: str | None, timeout: float = 10,
+                        target_abi: str = "arm64-v8a", *, command_line_tools: Path | None = None) -> dict:
+    if (deveco is None) == (command_line_tools is None):
+        raise ValueError("Select exactly one DevEco Contents or Command Line Tools directory")
     if not 0 < timeout <= 30:
         raise ValueError("timeout must be greater than zero and at most 30 seconds per command")
     if not re.fullmatch(r"[A-Za-z0-9_-]+", target_abi):
         raise ValueError("target_abi must be one ABI name")
-    deveco, sdk = deveco.absolute(), sdk.absolute()
+    tool_root = (deveco if deveco is not None else command_line_tools).absolute()
+    sdk = sdk.absolute()
     errors: list[dict] = []
+    sdk_observation = inspect_sdk(sdk, errors)
     report = {
         "diagnostic_kind": "arkts_environment_preflight", "evidence_scope": "environment_only",
         "certifies_c07": False,
@@ -199,8 +291,9 @@ def inspect_environment(deveco: Path, sdk: Path, target: str | None, timeout: fl
                         "CPF compiler, akinterop and compiler sysroots are not inspected.",
                         "No build, HAP/HAR consumption, signing, P05/P06 or C07 acceptance is performed.",
                         "Target parameters do not attest physical hardware or SDK/target compatibility."],
-        "sdk": inspect_sdk(sdk, errors),
-        "tools": inspect_tools(deveco, sdk, timeout, errors),
+        "sdk": sdk_observation,
+        "tools": inspect_tools(tool_root, sdk, timeout, errors, command_line_tools=command_line_tools is not None,
+                               sdk_observation=sdk_observation),
         "target": inspect_target(sdk / "openharmony/toolchains/hdc", target, target_abi, timeout, errors),
         "errors": errors,
     }

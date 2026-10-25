@@ -1,0 +1,272 @@
+{
+  "diagnostic_kind": "arkts_environment_preflight",
+  "evidence_scope": "environment_only",
+  "certifies_c07": false,
+  "requirements": {
+    "sdk_release_type": "Release",
+    "target_release_type": "Release",
+    "explicit_target": true,
+    "target_abi": "arm64-v8a",
+    "matching_sdk_components": [
+      "ets",
+      "native",
+      "toolchains"
+    ]
+  },
+  "limitations": [
+    "No source or distribution provenance closure is verified.",
+    "CPF compiler, akinterop and compiler sysroots are not inspected.",
+    "No build, HAP/HAR consumption, signing, P05/P06 or C07 acceptance is performed.",
+    "Target parameters do not attest physical hardware or SDK/target compatibility."
+  ],
+  "sdk": {
+    "root": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default",
+    "product": {
+      "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/sdk-pkg.json",
+      "apiVersion": "26",
+      "version": "26.0.0.105",
+      "releaseType": "Release",
+      "stage": "Release",
+      "displayName": "HarmonyOS 26.0.0",
+      "path": "HarmonyOS-26.0.0",
+      "platformVersion": "26.0.0"
+    },
+    "components": {
+      "ets": {
+        "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/oh-uni-package.json",
+        "apiVersion": "26",
+        "version": "26.0.0.105",
+        "releaseType": "Release",
+        "displayName": "Ets",
+        "path": "ets",
+        "platformVersion": "26.0.0"
+      },
+      "native": {
+        "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/oh-uni-package.json",
+        "apiVersion": "26",
+        "version": "26.0.0.105",
+        "releaseType": "Release",
+        "displayName": "Native",
+        "path": "native",
+        "platformVersion": "26.0.0"
+      },
+      "toolchains": {
+        "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/oh-uni-package.json",
+        "apiVersion": "26",
+        "version": "26.0.0.105",
+        "releaseType": "Release",
+        "displayName": "Toolchains",
+        "path": "toolchains",
+        "platformVersion": "26.0.0"
+      }
+    },
+    "is_formal": true,
+    "components_consistent": true,
+    "cpf_sysroot_checked": false
+  },
+  "tools": {
+    "command_line_tools": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools",
+      "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/version.txt",
+      "version_source": "version.txt",
+      "version": "26.0.0.851",
+      "distribution_platform": "mac-arm64",
+      "releaseType": "release",
+      "hvigor_version": "6.26.8",
+      "ohpm_version": "26.0.0.630",
+      "bundled_sdk": {
+        "version": "26.0.0.105",
+        "apiVersion": "26",
+        "platformVersion": "26.0.0",
+        "releaseType": "Release"
+      }
+    },
+    "node": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+      "version_source": "command",
+      "command": [
+        "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+        "--version"
+      ],
+      "state": "observed",
+      "exit_code": 0,
+      "output": "v24.14.1\n",
+      "output_truncated": false
+    },
+    "clang": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin/clang",
+      "version_source": "command",
+      "command": [
+        "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin/clang",
+        "--version"
+      ],
+      "state": "observed",
+      "exit_code": 0,
+      "output": "OHOS (dev) clang version 15.0.4 (llvm-project 00dcd9ccdb860908f60ff11b32239084b0908a08)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin\n",
+      "output_truncated": false
+    },
+    "hdc": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+      "version_source": "command",
+      "command": [
+        "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+        "-v"
+      ],
+      "state": "observed",
+      "exit_code": 0,
+      "output": "Ver: 3.2.0f\n",
+      "output_truncated": false
+    },
+    "@ohos/hvigor": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+      "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/package.json",
+      "version_source": "package_metadata",
+      "name": "@ohos/hvigor",
+      "version": "6.26.8"
+    },
+    "@ohos/hvigor-ohos-plugin": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor-ohos-plugin/package.json",
+      "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor-ohos-plugin/package.json",
+      "version_source": "package_metadata",
+      "name": "@ohos/hvigor-ohos-plugin",
+      "version": "6.26.8"
+    },
+    "@ohos/ohpm": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+      "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/package.json",
+      "version_source": "package_metadata",
+      "name": "@ohos/ohpm",
+      "version": "26.0.0.630"
+    }
+  },
+  "target": {
+    "requested": "127.0.0.1:5557",
+    "state": "observed",
+    "kind": "emulator",
+    "parameters": {
+      "const.ohos.apiversion": "23",
+      "const.ohos.releasetype": "Release",
+      "const.ohos.fullname": "OpenHarmony-6.1.0.115",
+      "const.product.software.version": "emulator 6.1.0.115(SP11DEVC00E115R4P11)",
+      "const.product.model": "emulator",
+      "const.product.name": "emulator",
+      "const.product.cpu.abilist": "arm64-v8a"
+    },
+    "observations": [
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.ohos.apiversion"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "23 \n",
+        "output_truncated": false
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.ohos.releasetype"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "Release \n",
+        "output_truncated": false
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.ohos.fullname"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "OpenHarmony-6.1.0.115 \n",
+        "output_truncated": false
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.product.software.version"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "emulator 6.1.0.115(SP11DEVC00E115R4P11) \n",
+        "output_truncated": false
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.product.model"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "emulator \n",
+        "output_truncated": false
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.product.name"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "emulator \n",
+        "output_truncated": false
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "-p",
+          "-t",
+          "127.0.0.1:5557",
+          "shell",
+          "param",
+          "get",
+          "const.product.cpu.abilist"
+        ],
+        "state": "observed",
+        "exit_code": 0,
+        "output": "arm64-v8a \n",
+        "output_truncated": false
+      }
+    ]
+  },
+  "errors": [],
+  "environment_checks_passed": true
+}

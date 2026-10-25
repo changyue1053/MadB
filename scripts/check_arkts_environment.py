@@ -32,7 +32,9 @@ def write_new_json(path: Path, value: dict) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--deveco", required=True, type=Path, help="Explicit DevEco Contents directory")
+    layout = parser.add_mutually_exclusive_group(required=True)
+    layout.add_argument("--deveco", type=Path, help="Explicit DevEco Contents directory")
+    layout.add_argument("--command-line-tools", type=Path, help="Explicit mac-arm64 Command Line Tools directory")
     parser.add_argument("--sdk", required=True, type=Path, help="Application SDK package root containing sdk-pkg.json and openharmony/")
     parser.add_argument("--target", help="Existing hdc connect key; omission remains a failed environment check")
     parser.add_argument("--target-abi", default="arm64-v8a", help="Requested target ABI, default arm64-v8a; no profile is certified")
@@ -41,7 +43,7 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     try:
         report = inspect_environment(arguments.deveco, arguments.sdk, arguments.target,
-                                     arguments.timeout, arguments.target_abi)
+                                     arguments.timeout, arguments.target_abi, command_line_tools=arguments.command_line_tools)
         if arguments.json_output is not None:
             write_new_json(arguments.json_output, report)
     except (OSError, ValueError) as error:

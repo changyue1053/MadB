@@ -1,6 +1,6 @@
 # MadB 技术栈与版本选型
 
-选型日期：2026-10-24。设计基线：0.9。状态：设计采用，所有实现与认证仍按计划推进；具体版本是验证候选，正式支持以通过 MadB-Lab 验收的配置、锁和制品摘要为准。
+选型日期：2026-10-24；C07 鸿蒙候选更新：2026-10-25。设计基线：0.9。状态：设计采用，所有实现与认证仍按计划推进；具体版本是验证候选，正式支持以通过 MadB-Lab 验收的配置、锁和制品摘要为准。
 
 MadB 采用四条独立版本线：官方 Kotlin、鸿蒙 CPF、原生实现与绑定、MadB 工具自身。共享契约与业务源码，分别构建，再验证组合应用。鸿蒙 Kotlin 默认采用 **CPF-KMP-CMP 工具链 + akinterop**；CMP 按需启用，KNOI 保留为独立扩展。
 
@@ -97,14 +97,14 @@ Kotlin/Native + SKIE 的源码共同构建与预编译 Framework/XCFramework 是
 
 | 组件 | MadDemo 本机参考环境 | MadB 发布候选 |
 |---|---|---|
-| DevEco Studio | 6.1.1.268 | 26.0.0.821 Release |
-| Native / ETS SDK | 6.1.1.115，API 24，Beta1 | HarmonyOS 26.0.0 Release SDK |
-| Hvigor / OHOS 插件 | 6.24.1 | 官方套装的 6.26.4 配套 |
+| DevEco / Command Line Tools | DevEco 6.1.1.268 | Command Line Tools 26.0.0.851 Release（Mac ARM64） |
+| Native / ETS SDK | 6.1.1.115，API 24，Beta1 | 26.0.0.105，API 26，Release |
+| Hvigor / OHOS 插件 | 6.24.1 | 实际套装两组件均为 6.26.8 |
 | ohpm | 6.1.2.268 | 26.0.0.630 |
 | Node.js | 18.20.1 | 24.14.1 |
 | 用途 | 复现 MadDemo 历史案例 | 验证 CPF 1.1.0 + akinterop 后再形成正式支持配置 |
 
-参考环境来自 2026-10-24 对安装包元数据的读取；SDK 的 Beta1 标记不能被 DevEco 的产品版本号掩盖。发布候选来自[华为官方配套表](https://developer.huawei.com/consumer/en/doc/harmonyos-releases/deveco-studio-new-features-2600)。平台工具自身配套，不证明 CPF 与 akinterop 已经兼容。
+参考环境来自 2026-10-24 对安装包元数据的读取；SDK 的 Beta1 标记不能被 DevEco 的产品版本号掩盖。最初的 `.821 / Hvigor 6.26.4` 来自[华为官方配套表](https://developer.huawei.com/consumer/en/doc/harmonyos-releases/deveco-studio-new-features-2600)。2026-10-25 用户提供并独立安装的实际套装为 `.851 / Hvigor 6.26.8`，因此更新本次 C07 验证候选，不能保留旧锁冒充同一组合。[安装与摘要记录](../reviews/c07-formal-toolchain-observation.json)包含本地 ZIP SHA-256、组件元数据和验证边界；尚未取得该 ZIP 的厂商公布校验值。平台工具自身配套，不证明 CPF、akinterop、目标运行或发布包已经兼容。
 
 CPF 自带 LLVM、Konan 依赖及 sysroot 同时进入锁。MadDemo 的 macOS Arm64 参考组合包含 cpf-llvm-19-aarch64-macos-dev-21 和 ohos-aarch64-6.0.2.640-04；该宿主专用组合不能推广到其他主机架构，也不能等同于应用的 compileSdk。
 

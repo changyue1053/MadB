@@ -445,7 +445,7 @@
         "P05",
         "P06"
       ],
-      "notes": "已落地只读环境预检和15项正反测试；本机为API24 Beta1编译SDK、API23 Release Arm64模拟器，正式26套装已获安装授权但官网需登录。P05公开源码的引用/队列/线程清理与P06 async cleanup需探针及受控修补；Beta开发探针不计正式验收。最终合跑C05/C06/C07，启动GitHub Actions前告知。详见C07记录。"
+      "notes": "正式CLI .851 / SDK26.0.0.105 API26 Release已独立安装；CLI/DevEco预检26测试与真实基础检查通过。新SDK构建的四路线基本调用和C++ Worker/TSFN机制在API23 Release模拟器完成；Kotlin显式锁定CPF平台头/运行库及受管补丁，不能推广为完整生命周期通过。Release/HAR、完整profile与主env清理仍待收口，保持in_progress/missing。最终合跑C05/C06/C07，启动GitHub Actions前告知。详见C07记录。"
     },
     {
       "id": "C08",

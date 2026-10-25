@@ -1,0 +1,46 @@
+{
+  "evidence_scope": "toolchain_installation_only",
+  "certifies_c07": false,
+  "observed_date": "2026-10-25",
+  "source_kind": "user_supplied_official_download",
+  "archive": {
+    "filename": "commandline-tools-mac-arm64-26.0.0.851.zip",
+    "size_bytes": 2139840078,
+    "sha256": "4c7f0eabd5c96a5a54f5e892c1cf8cf580154d6100d0d1fa6be23e189e33b771",
+    "crc_validation": "all_entries_passed",
+    "entries": 101946,
+    "uncompressed_bytes": 6734055257,
+    "official_checksum_match": "not_verified"
+  },
+  "installation": {
+    "root": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools",
+    "method": "ditto -x -k into a new dedicated directory",
+    "existing_deveco_modified": false
+  },
+  "components": {
+    "suite": "26.0.0.851",
+    "release_type": "Release",
+    "sdk": "26.0.0.105",
+    "api": 26,
+    "hvigor": "6.26.8",
+    "hvigor_ohos_plugin": "6.26.8",
+    "ohpm": "26.0.0.630",
+    "node": "24.14.1"
+  },
+  "metadata_sha256": {
+    "version.txt": "225ca2f329df5a1a0e6ea27403f064d9c989d003d5c064c0f13076d26e24df0c",
+    "sdk/default/sdk-pkg.json": "285eded3340dc45d56395792eea52cbc60cfb62cfcb7abed923a0505fac05724",
+    "sdk/default/openharmony/ets/oh-uni-package.json": "250b53f383be634ada496cfb4a1cbebd1e7ad6f14f44fd136ca55d2d9a35acab",
+    "sdk/default/openharmony/native/oh-uni-package.json": "3dbc4a06ffd3b1be6b45c3c346a7900ca42f8a81a5b0454dc7f5cc1e5a9509a8",
+    "sdk/default/openharmony/toolchains/oh-uni-package.json": "62e6845edf9b6436334e64f69f9251a2ee37c9c5217f1c63716298ff6b636fa9",
+    "hvigor/hvigor/package.json": "838492829af55e328082fc4a14bd801a6afc301569b5c77170c1424307d86d09",
+    "hvigor/hvigor-ohos-plugin/package.json": "663fca60dcd8f23bf4717c1bd96d3e54ccf01d5e3ed5957e08738f8c51e747d9",
+    "ohpm/package.json": "cc161917f39e30b9b0e7b05049f7d69355cdc93f9d5e411aa0e30843284ce223"
+  },
+  "limitations": [
+    "The archive hash is local content identity, not a verified vendor-published checksum.",
+    "The installed emulator program does not establish an API 26 runtime image.",
+    "CPF compiler, LLVM and sysroot remain separately locked.",
+    "This installation record does not prove build, target, HAR, Release or C07 conformance."
+  ]
+}

@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import os
 import plistlib
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -204,6 +205,177 @@ else:
         report = json.loads(output.read_text())
         self.assertEqual(self.codes(report), {"target_not_checked"})
         self.assertFalse(report["certifies_c07"])
+
+    def command_line_tools_fixture(self):
+        root = self.root / "command-line-tools"
+        shutil.copytree(self.deveco / "tools/hvigor", root / "hvigor")
+        shutil.copytree(self.deveco / "tools/ohpm", root / "ohpm")
+        shutil.copytree(self.deveco / "tools/node", root / "tool/node")
+        for name, path, version in (
+            ("@ohos/hvigor", "hvigor/hvigor/package.json", "6.26.8"),
+            ("@ohos/hvigor-ohos-plugin", "hvigor/hvigor-ohos-plugin/package.json", "6.26.8"),
+            ("@ohos/ohpm", "ohpm/package.json", "26.0.0.630"),
+        ):
+            self.save(root / path, {"name": name, "version": version})
+        sdk = {"apiVersion": "26", "version": "26.0.0.105", "releaseType": "Release", "platformVersion": "26.0.0"}
+        self.save(self.sdk / "sdk-pkg.json", {"data": sdk})
+        for name in preflight.COMPONENTS:
+            self.save(self.sdk / "openharmony" / name / "oh-uni-package.json", sdk)
+        (root / "version.txt").write_text("""# ======================
+# Command Line Tools(mac-arm64)
+# Version: 26.0.0.851
+# ======================
+hstack         : 6.1.0
+codelinter     : 6.0.240
+hvigor         : 6.26.8
+releaseType    : release
+ohpm           : 26.0.0.630
+HarmonyOS SDK  : HarmonyOS 26.0.0 Release (include Ohos_sdk_public 26.0.0.105 (API Version 26 Release))
+apiVersion     : 26
+platformVersion: 26.0.0
+""")
+        return root
+
+    def inspect_command_line_tools(self, root, *, target=None):
+        return preflight.inspect_environment(None, self.sdk, target, command_line_tools=root)
+
+    def test_command_line_tools_layout_has_its_own_identity(self):
+        root = self.command_line_tools_fixture()
+        result = self.inspect_command_line_tools(root, target="fixture:5557")
+        self.assertTrue(result["environment_checks_passed"], result["errors"])
+        self.assertFalse(result["certifies_c07"])
+        self.assertNotIn("deveco", result["tools"])
+        identity = result["tools"]["command_line_tools"]
+        self.assertEqual(identity["version"], "26.0.0.851")
+        self.assertEqual(identity["distribution_platform"], "mac-arm64")
+        self.assertEqual(identity["version_source"], "version.txt")
+        self.assertEqual(result["tools"]["node"]["path"], str(root / "tool/node/bin/node"))
+        self.assertEqual(result["tools"]["@ohos/hvigor"]["version"], "6.26.8")
+        self.assertEqual(result["sdk"]["product"]["version"], "26.0.0.105")
+
+    def test_command_line_tools_without_target_retains_valid_metadata(self):
+        result = self.inspect_command_line_tools(self.command_line_tools_fixture())
+        self.assertEqual(self.codes(result), {"target_not_checked"})
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertEqual(result["target"]["state"], "not_checked")
+        self.assertNotIn("observations", result["target"])
+
+    def test_command_line_tools_missing_and_bad_version_metadata_fail(self):
+        root = self.command_line_tools_fixture()
+        metadata = root / "version.txt"
+        original = metadata.read_text()
+        for text in (None, "# Version: broken\n", original + "hvigor: 6.26.8\n",
+                     original + "# Version: 26.0.0.999\n", original.replace("apiVersion     : 26\n", ""),
+                     original + "# Version: broken\n", original + "# Command Line Tools invalid\n",
+                     original.replace("apiVersion     : 26", "apiVersion: zero")):
+            with self.subTest(metadata=text):
+                metadata.unlink(missing_ok=True)
+                if text is not None:
+                    metadata.write_text(text)
+                result = self.inspect_command_line_tools(root)
+                self.assertIn("tool_metadata_invalid", self.codes(result))
+                self.assertFalse(result["environment_checks_passed"])
+
+    def test_command_line_tools_wrong_architecture_is_explicit(self):
+        root = self.command_line_tools_fixture()
+        metadata = root / "version.txt"
+        metadata.write_text(metadata.read_text().replace("mac-arm64", "mac-x64"))
+        result = self.inspect_command_line_tools(root)
+        self.assertIn("tool_platform_unsupported", self.codes(result))
+        self.assertEqual(result["tools"]["command_line_tools"]["distribution_platform"], "mac-x64")
+
+    def test_command_line_tools_beta_label_and_internal_conflict_fail(self):
+        root = self.command_line_tools_fixture()
+        metadata = root / "version.txt"
+        metadata.write_text(metadata.read_text().replace("releaseType    : release", "releaseType: beta1"))
+        result = self.inspect_command_line_tools(root)
+        self.assertIn("tool_not_release", self.codes(result))
+        self.assertIn("tool_metadata_conflict", self.codes(result))
+
+    def test_command_line_tools_api_component_and_selected_sdk_conflicts_fail(self):
+        root = self.command_line_tools_fixture()
+        metadata = root / "version.txt"
+        metadata.write_text(metadata.read_text().replace("apiVersion     : 26", "apiVersion: 25"))
+        self.save(root / "ohpm/package.json", {"name": "@ohos/ohpm", "version": "26.0.0.629"})
+        sdk_path = self.sdk / "openharmony/native/oh-uni-package.json"
+        component = json.loads(sdk_path.read_text())
+        component["platformVersion"] = "25.0.0"
+        self.save(sdk_path, component)
+        result = self.inspect_command_line_tools(root)
+        self.assertTrue({"tool_metadata_conflict", "tool_component_mismatch", "tool_sdk_mismatch"} <= self.codes(result))
+
+    def test_command_line_tools_missing_entry_does_not_fall_back_to_deveco(self):
+        root = self.command_line_tools_fixture()
+        (root / "tool/node/bin/node").unlink()
+        result = self.inspect_command_line_tools(root)
+        self.assertIn("tool_probe_failed", self.codes(result))
+        self.assertEqual(result["tools"]["node"]["state"], "unavailable")
+        self.assertTrue((self.deveco / "tools/node/bin/node").is_file())
+
+    def test_duplicate_sdk_json_fields_cannot_hide_nonrelease_metadata(self):
+        root = self.command_line_tools_fixture()
+        paths = [("sdk", self.sdk / "sdk-pkg.json")]
+        paths.extend((name, self.sdk / "openharmony" / name / "oh-uni-package.json")
+                     for name in preflight.COMPONENTS)
+        for component, path in paths:
+            original = path.read_text()
+            conflict = original.replace('"releaseType": "Release"',
+                                        '"releaseType": "Beta1", "releaseType": "Release"')
+            cases = [("releaseType", conflict)]
+            if component == "sdk":
+                # Also reject a duplicate outer data object, not only nested fields.
+                cases.append(("data", '{"data": {"releaseType": "Beta1"}, ' + original[1:]))
+            for field, text in cases:
+                with self.subTest(component=component, field=field):
+                    path.write_text(text)
+                    result = self.inspect_command_line_tools(root, target="fixture:5557")
+                    self.assertFalse(result["environment_checks_passed"])
+                    self.assertFalse(result["sdk"]["is_formal"])
+                    failures = [item for item in result["errors"]
+                                if item["code"] == "sdk_metadata_invalid" and item["component"] == component]
+                    self.assertEqual(len(failures), 1)
+                    self.assertIn(f"duplicate JSON metadata field: {field}", failures[0]["message"])
+                path.write_text(original)
+
+    def test_duplicate_package_json_versions_cannot_hide_conflicts(self):
+        root = self.command_line_tools_fixture()
+        for name, relative in (("@ohos/hvigor", "hvigor/hvigor/package.json"),
+                               ("@ohos/hvigor-ohos-plugin", "hvigor/hvigor-ohos-plugin/package.json"),
+                               ("@ohos/ohpm", "ohpm/package.json")):
+            with self.subTest(package=name):
+                path = root / relative
+                original = path.read_text()
+                path.write_text(original.replace('"version":', '"version": "99.0.0.999", "version":'))
+                result = self.inspect_command_line_tools(root, target="fixture:5557")
+                self.assertFalse(result["environment_checks_passed"])
+                self.assertNotIn("version", result["tools"][name])
+                failures = [item for item in result["errors"]
+                            if item["code"] == "tool_metadata_invalid" and item["component"] == name]
+                self.assertEqual(len(failures), 1)
+                self.assertIn("duplicate JSON metadata field: version", failures[0]["message"])
+                path.write_text(original)
+
+    def test_layout_selection_is_exclusive_in_python_and_cli(self):
+        root = self.command_line_tools_fixture()
+        for deveco, command_line_tools in ((None, None), (self.deveco, root)):
+            with self.subTest(deveco=deveco), self.assertRaisesRegex(ValueError, "exactly one"):
+                preflight.inspect_environment(deveco, self.sdk, None, command_line_tools=command_line_tools)
+        for layouts in ([], ["--deveco", str(self.deveco), "--command-line-tools", str(root)]):
+            result = subprocess.run([sys.executable, str(ROOT / "scripts/check_arkts_environment.py"),
+                                     "--sdk", str(self.sdk), *layouts], capture_output=True, text=True, timeout=10)
+            self.assertEqual(result.returncode, 2)
+            self.assertEqual(result.stdout, "")
+
+    def test_command_line_tools_cli_reports_missing_target_without_misidentifying_layout(self):
+        root = self.command_line_tools_fixture()
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/check_arkts_environment.py"),
+                                 "--command-line-tools", str(root), "--sdk", str(self.sdk)],
+                                capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads(result.stdout)
+        self.assertEqual(self.codes(report), {"target_not_checked"})
+        self.assertNotIn("deveco", report["tools"])
+        self.assertEqual(report["tools"]["command_line_tools"]["version"], "26.0.0.851")
 
 
 if __name__ == "__main__":
