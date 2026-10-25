@@ -23,7 +23,9 @@ jobs:
     # PR code runs only for branches owned by this repository, with a read-only token.
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: xcode-27
-    timeout-minutes: 120
+    # A measured cold run spent 59 minutes on shared setup and the first two
+    # profiles; allow all four plus independent Lab without weakening node limits.
+    timeout-minutes: 240
     defaults:
       run:
         shell: bash

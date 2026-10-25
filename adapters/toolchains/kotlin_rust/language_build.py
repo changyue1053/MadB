@@ -153,7 +153,11 @@ def _link_smoke_at(config,inputs,work,commands):
         names=names+['native/smoke.jar']
     else:
         source=input_path(inputs,'adapters/toolchains/kotlin_rust/smoke.kt')
-        args=[source,'-entry','madb.producer.main','-o',smoke/'smoke',*native_flags(commands)]
+        # The linker UUID is computed before konanc's debug-map stripping. Random
+        # intermediate object path lengths change that UUID even with -reproducible.
+        # Keep those objects inside the existing exclusive cold workspace as well.
+        args=[source,'-entry','madb.producer.main','-o',smoke/'smoke',*native_flags(commands),
+              '-Xtemporary-files-dir='+str(commands.scratch/'native-temp')]
         for p in sorted((work/'klib').glob('*.klib'))+sorted((work/'dependencies').glob('*.klib')):args+=['-library',p]
         args+=['-linker-option','-L'+str(work/'lib'),'-linker-option','-lmadb_boundary_gobley',
                '-linker-option','-rpath','-linker-option=@executable_path/../lib','-linker-option','-Wl,-reproducible','-linker-option','-liconv']

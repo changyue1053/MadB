@@ -52,9 +52,26 @@ Android AAR/R8、iOS、CPF/OHOS、SKIE + KMP-NativeCoroutines 组合和 `madb in
 - C06 显式申请每阶段 900 秒执行预算与 6000 毫秒终止宽限，后者允许编译器 owner 清理其独立进程组；CLI 既有默认值保持不变。强制中断留下的所有权标记不能自动删除并冒充清理完成。
 - Python 的真实解释器、标准库与必要动态库进入工具身份；隔离导入禁止 site 配置和未锁缓存。Swift 多调用工具保留调用别名，同时校验真实镜像和链接目标。辅助解析器的源码闭包与当前补丁配方必须对应冻结作者输入，旧安装不能借内部自洽继续使用。
 - 固定 Apple 链接器的 chained fixups 会在私有 SKIE smoke 的重复 `_objc_msgSend` GOT 槽间产生不稳定选择。该探针单独使用 `-no_fixup_chains`，保留 UUID/DWARF 和逐字节门禁；公开 framework 不变。五次冷链接及真实运行已验证稳定，整链另行验证。
+- Kotlin/Native 私有 smoke 显式指定受管冷目录内的中间文件目录。真实编译对照表明，随机 `konan_temp` 路径长度会改变链接器 debug-map 与内容 UUID，K/N 后续自身剥离调试映射后仍留下 UUID/签名差异；固定目录不删除 UUID、不改写二进制，也不修改公开 SDK。相同对象、不同长度路径的链接对照重现相同差异，修复后的实际 `stable_link` 连续五次冷构建与运行通过，24 个产物的身份一致、正常 UUID 保留；Swift/Rust 另有五次冷链接与运行通过，无需同步扩大修改。
+- 远端实测共享准备及前两路线已耗时 59 分钟，另有约 12 分钟安装；整作业预算调整为 240 分钟，给四路线和独立 Lab 留出执行空间。每个子进程仍为 900 秒、终止宽限仍为 6000 毫秒，库存校验、逐字节验证和必需案例没有减少。完整四路线耗时仍以实际执行为准。
 - Python.org framework 的内部悬空头文件链接作为“精确链接目标 + 缺失状态”进入库存；空目录目标后来出现同样改变摘要。循环、权限错误和目录逃逸仍失败；实际解释器和本机依赖必须存在。生产者与 Lab 分别实现校验。
 - 生成器返回前拒绝符号链接、特殊文件、路径逃逸和未声明类型的产物；临时 HOME、API 提取与日志留在清理后不会发布的 scratch。C04 只接收声明输出。
 
 ## 当前证据
 
-正在实施。实际命令、固定提交、候选摘要、报告和 CI 结果在整包验收后补齐；C06 的 `verification` 保持 `missing`。
+代码与验收工程已提交至 [MadB #12](https://github.com/changyue1053/MadB/pull/12) 和 [MadB-Lab #3](https://github.com/changyue1053/MadB-Lab/pull/3)。截至 2026-10-25，生产者 `14d0c5318ef6e4fb169d996c9adb98fca06440f2`、Lab `c53a64ef2c160fa7ca9b8e23d6365b84d882fc41` 已精确推送；PR 保持草稿，未合入。下面保留阶段性事实，未完成四路线正式验收前，C06 的 `verification` 仍为 `missing`。
+
+| 检查 | 已有结果与证据边界 |
+|---|---|
+| SDK 与仓库检查 | Rust workspace 的 fmt/check/clippy/test、独立 SDK 约束、C03/C04/C05/C06 的适用模块检查通过；最新工具检查 33 项、项目检查 19 项、声明读取 16 项。Lab 当前 92 项独立仓库与 harness 检查通过。`14d0c53` 的远端完整基础检查与 C05 回归均通过；后续源码修改仍须验证。 |
+| C05 正式回归 | 干净生产者 `4d3e8710343dabc528a24ac1de6eedca825476c3` 与干净 Lab `b7d3a50aa8107a1f397140b2da67511019e8b946` 完成 18 个路线案例及 1 个包装完整性案例；三候选均 `provisional=false`。它们保留原提交身份，不冒充后续提交的重跑。 |
+| SKIE 构建取消 | 观察到真实 Swift 编译子进程后取消 C04，约 6.04 秒返回 Cancellation；编译后代停止、受管标记移除、存储索引字节未变。同一工作区冷重试、逐字节检查与打包通过。该故障注入运行是开发证据，不代替正式候选。 |
+| Gobley / UniFFI 0.29.4 | 原模板双完成缺陷复现、修复后单次交接与释放、原生 ready 未领取结果、反向异步及无符号 ABI 已分别验证；四个补丁的来源和摘要进入 receipt。当前公开包仍须通过正式 Lab 的三个 P03 案例。 |
+| UniFFI 0.32.2 | 既有 v7 探针包含原始失败/修复通过、Swift 6 和 JVM P03、1000 次 Swift 取消竞态。当前 v8 的后端源和五个补丁、五个探针文件均与该证据一致；SDK 唯一差异是仅在 `test-support + gobley-029` 同时启用的无符号 fixture。复用的是未变化的 0.32 子闭包证据，不宣称当前全部源码又重跑了一次。 |
+| 正式四路线构建 | `14d0c53` 的 JVM 候选完成；Native 私有 smoke 两次链接存在 UUID/代码签名字节差异，C04 以 DAG003 拒绝。两份产物和日志保留，修复后须重新执行同一次工具观测下的四路线构建及全部 54 个 Lab 案例。 |
+
+旧 C04 的两次整组运行分别出现过 5 秒消费者启动超时。保留原失败记录后，针对性重现与带外部进程观察的原配置 68 项整组全部通过；没有修改断言或超时。尚无足够证据确定根因，因此不把后续成功写成该偶发问题已经修复。
+
+本机证据入口：`/private/tmp/madb-c06-c05-regression-j8yq5lg5/summary.json`、`/private/tmp/madb-c06-skie-cancel-public-proof.json`、`/private/tmp/madb-c06-gobley/unsigned-final-probe/observations.json`、`/private/tmp/madb-c06-uniffi-v7-regressions/report.json`、`/private/tmp/madb-c04-package-targeted-capture/report.json`、`/private/tmp/madb-c06-formal-14d0c53.log`、`/private/tmp/madb-native-fixed-workspace-proof/report.json`、`/private/tmp/madb-c06-swift-rust-link-probe-01/report.json`。这些临时路径用于本次审查追踪，不是公开 SDK 的构建依赖。
+
+`14d0c53` 的远端结果：[完整基础检查](https://github.com/changyue1053/MadB/actions/runs/40106593895)、[C05 回归](https://github.com/changyue1053/MadB/actions/runs/40106593761)、[Lab C05 消费](https://github.com/changyue1053/MadB-Lab/actions/runs/40106525953)通过。[C06 构建](https://github.com/changyue1053/MadB/actions/runs/40106593797)与本机在 Native smoke 字节验证处同样失败；实际 PR 检出为 `cf991ebeb9e381d9caa32ef9fa02ca365b506c91`，其 Git tree 与 `14d0c53` 完全相同，不能将分支 SHA 误写成候选的 producer_revision。该结果同时证明 Python.org 内部悬空链接和 Linux 信号测试夹具修复已通过真实远端检查。
