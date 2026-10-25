@@ -1,0 +1,210 @@
+"""Preflight failure semantics using synthetic tool fixtures, not ArkTS evidence."""
+from pathlib import Path
+import json
+import os
+import plistlib
+import subprocess
+import sys
+import tempfile
+import unittest
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT))
+from adapters.toolchains.arkts import preflight
+from scripts.check_arkts_environment import write_new_json
+
+
+class PreflightTests(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.deveco = self.root / "DevEco-Release/Contents"
+        self.sdk = self.root / "Release-SDK"
+        self.deveco.mkdir(parents=True)
+        (self.deveco / "Info.plist").write_bytes(plistlib.dumps({
+            "CFBundleVersion": "fixture-build", "CFBundleShortVersionString": "fixture-version"}))
+        self.package = {"apiVersion": "23", "version": "fixture-sdk", "releaseType": "Release"}
+        self.save(self.sdk / "sdk-pkg.json", {"data": self.package})
+        for name in preflight.COMPONENTS:
+            self.save(self.sdk / "openharmony" / name / "oh-uni-package.json", self.package)
+        self.executable(self.deveco / "tools/node/bin/node", "print('v18.20.1')")
+        self.executable(self.sdk / "openharmony/native/llvm/bin/clang", "print('fixture clang 15.0.4')")
+        self.target = {key: "fixture" for key in preflight.TARGET_PARAMETERS}
+        self.target.update({"const.ohos.apiversion": "23", "const.ohos.releasetype": "Release",
+                            "const.product.model": "emulator", "const.product.cpu.abilist": "arm64-v8a"})
+        self.target_file = self.root / "parameters.json"
+        self.save(self.target_file, self.target)
+        self.hdc = self.sdk / "openharmony/toolchains/hdc"
+        self.executable(self.hdc, f"""
+import json, pathlib, sys
+if sys.argv[1:] == ['-v']:
+    print('Ver: fixture-hdc')
+elif sys.argv[1:6] == ['-p', '-t', 'fixture:5557', 'shell', 'param'] and sys.argv[6] == 'get':
+    print(json.loads(pathlib.Path({str(self.target_file)!r}).read_text())[sys.argv[7]])
+else:
+    sys.exit(91)
+""")
+        for name, path, entry in (
+            ("@ohos/hvigor", "tools/hvigor/hvigor/package.json", "tools/hvigor/bin/hvigorw.js"),
+            ("@ohos/hvigor-ohos-plugin", "tools/hvigor/hvigor-ohos-plugin/package.json", None),
+            ("@ohos/ohpm", "tools/ohpm/package.json", "tools/ohpm/bin/ohpm"),
+        ):
+            self.save(self.deveco / path, {"name": name, "version": "fixture-tools"})
+            if entry:
+                executable = self.deveco / entry
+                executable.parent.mkdir(parents=True, exist_ok=True)
+                executable.write_text("not executed by metadata-only check")
+
+    def save(self, path, value):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(value))
+
+    def executable(self, path, body):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"#!{sys.executable}\n" + body + "\n")
+        path.chmod(0o755)
+
+    def inspect(self, **kwargs):
+        return preflight.inspect_environment(self.deveco, self.sdk, kwargs.pop("target", "fixture:5557"), **kwargs)
+
+    def codes(self, report):
+        return {error["code"] for error in report["errors"]}
+
+    def test_release_observation_does_not_certify_or_claim_physical_device(self):
+        result = self.inspect()
+        self.assertTrue(result["environment_checks_passed"], result["errors"])
+        self.assertFalse(result["certifies_c07"])
+        self.assertEqual(result["evidence_scope"], "environment_only")
+        self.assertEqual(result["target"]["kind"], "emulator")
+        self.assertFalse(result["sdk"]["cpf_sysroot_checked"])
+        for observed in result["target"]["observations"]:
+            self.assertEqual(observed["command"][1:3], ["-p", "-t"])
+
+    def test_beta_sdk_named_release_still_fails(self):
+        beta = {**self.package, "releaseType": "Beta1"}
+        self.save(self.sdk / "sdk-pkg.json", {"data": beta})
+        for name in preflight.COMPONENTS:
+            self.save(self.sdk / "openharmony" / name / "oh-uni-package.json", beta)
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertFalse(result["sdk"]["is_formal"])
+        self.assertIn("sdk_not_release", self.codes(result))
+
+    def test_inconsistent_component_and_conflicting_stage_fail(self):
+        self.save(self.sdk / "openharmony/ets/oh-uni-package.json",
+                  {**self.package, "apiVersion": "24", "stage": "Beta1"})
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertFalse(result["sdk"]["components_consistent"])
+        self.assertFalse(result["sdk"]["is_formal"])
+        self.assertIn("sdk_component_mismatch", self.codes(result))
+
+    def test_missing_and_malformed_sdk_metadata_are_observed_failures(self):
+        (self.sdk / "openharmony/native/oh-uni-package.json").unlink()
+        (self.sdk / "sdk-pkg.json").write_text("[]")
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertIn("sdk_metadata_invalid", self.codes(result))
+        self.assertEqual(result["target"]["state"], "observed")
+
+    def test_target_omission_keeps_sdk_observations_and_fails(self):
+        result = self.inspect(target=None)
+        self.assertTrue(result["sdk"]["is_formal"])
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertEqual(result["target"]["state"], "not_checked")
+        self.assertEqual(self.codes(result), {"target_not_checked"})
+
+    def test_target_timeout_is_not_absence_and_client_is_reaped(self):
+        pid_file = self.root / "client.pid"
+        self.executable(self.hdc, f"""
+import os, pathlib, sys, time
+if sys.argv[1:] == ['-v']:
+    print('Ver: fixture-hdc')
+else:
+    pathlib.Path({str(pid_file)!r}).write_text(str(os.getpid()))
+    time.sleep(30)
+""")
+        result = self.inspect(timeout=1.5)
+        self.assertEqual(result["target"]["state"], "timeout")
+        self.assertIn("target_timeout", self.codes(result))
+        self.assertNotIn("target_unavailable", self.codes(result))
+        with self.assertRaises(ProcessLookupError):
+            os.kill(int(pid_file.read_text()), 0)
+
+    def test_zero_exit_connection_failure_is_not_success(self):
+        self.executable(self.hdc, "import sys\nprint('Ver: fixture-hdc' if sys.argv[1:] == ['-v'] else 'Connect server failed')")
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertEqual(result["target"]["state"], "unavailable")
+        self.assertIn("target_unavailable", self.codes(result))
+
+    def test_zero_exit_empty_target_output_is_not_success(self):
+        self.executable(self.hdc, "import sys\nif sys.argv[1:] == ['-v']: print('Ver: fixture-hdc')")
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertEqual(result["target"]["state"], "query_failed")
+        self.assertIn("target_query_failed", self.codes(result))
+
+    def test_wrong_architecture_does_not_satisfy_requested_target(self):
+        self.target["const.product.cpu.abilist"] = "x86_64"
+        self.save(self.target_file, self.target)
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertEqual(result["requirements"]["target_abi"], "arm64-v8a")
+        self.assertIn("target_abi_mismatch", self.codes(result))
+        self.assertTrue(self.inspect(target_abi="x86_64")["environment_checks_passed"])
+
+    def test_unusable_target_response_and_nonrelease_runtime_fail(self):
+        self.target["const.ohos.apiversion"] = "not-an-api"
+        self.target["const.ohos.releasetype"] = "Beta1"
+        self.save(self.target_file, self.target)
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertIn("target_api_invalid", self.codes(result))
+        self.assertIn("target_not_release", self.codes(result))
+
+    def test_no_emulator_marker_does_not_prove_physical_hardware(self):
+        self.target["const.product.model"] = "some-model"
+        self.save(self.target_file, self.target)
+        self.assertEqual(self.inspect()["target"]["kind"], "unverified_device")
+
+    def test_missing_executable_and_hvigor_mismatch_fail(self):
+        (self.deveco / "tools/node/bin/node").unlink()
+        self.save(self.deveco / "tools/hvigor/hvigor-ohos-plugin/package.json",
+                  {"name": "@ohos/hvigor-ohos-plugin", "version": "other-version"})
+        result = self.inspect()
+        self.assertFalse(result["environment_checks_passed"])
+        self.assertIn("tool_probe_failed", self.codes(result))
+        self.assertIn("hvigor_component_mismatch", self.codes(result))
+
+    def test_invalid_timeout_is_rejected_before_probing(self):
+        for timeout in (0, -1, 31, float("nan")):
+            with self.subTest(timeout=timeout), self.assertRaises(ValueError):
+                self.inspect(timeout=timeout)
+
+    def test_atomic_output_refuses_overwrite_and_leaves_no_temporary_file(self):
+        output = self.root / "report.json"
+        value = {"environment_checks_passed": False, "certifies_c07": False}
+        write_new_json(output, value)
+        self.assertEqual(json.loads(output.read_text()), value)
+        with self.assertRaises(FileExistsError):
+            write_new_json(output, {"unexpected": True})
+        self.assertEqual(json.loads(output.read_text()), value)
+        self.assertEqual(list(self.root.glob(".arkts-preflight-*")), [])
+        with self.assertRaises(FileNotFoundError):
+            write_new_json(self.root / "absent/report.json", value)
+
+    def test_cli_preserves_failed_observation_with_nonzero_exit(self):
+        output = self.root / "cli.json"
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/check_arkts_environment.py"),
+                                 "--deveco", str(self.deveco), "--sdk", str(self.sdk),
+                                 "--json-output", str(output)], capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        report = json.loads(output.read_text())
+        self.assertEqual(self.codes(report), {"target_not_checked"})
+        self.assertFalse(report["certifies_c07"])
+
+
+if __name__ == "__main__":
+    unittest.main()

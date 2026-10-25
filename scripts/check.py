@@ -60,6 +60,7 @@ def main():
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c06_tools"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c06_project"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c06_reader"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c07_environment"],
         [sys.executable, "scripts/check_native_sdk.py"],
         [sys.executable, "tests/architecture/check_dependencies.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/architecture"],

@@ -108,6 +108,10 @@ C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-k
 
 当前范围为锁定工具链的 macOS Arm64 Release；deployment target 14.0 不代表已在 macOS 14 实跑，桌面 JVM 也不代表 Android。消费方从独立、已验证的候选 `identity.json` 取得 `expectedProfile`，不能用已加载库自报的 profile 代替预期身份。
 
+## ArkTS 环境预检
+
+C07 已提供 `scripts/check_arkts_environment.py`，检查显式选择的应用 SDK 元数据、工具和已连接目标。用法见[预检说明](tests/integration/c07_environment/README.md)。该命令不安装或启动设备；输出是基础环境观察，不代表四路线实现、正式工具组合或 P05/P06 验收通过。当前发现与实施要求见[C07 记录](docs/reviews/2026-10-25-c07-arkts.md)。
+
 ## 依赖与缓存边界
 
 显式缺失路径、目录成员和内容观察用于发现变化；它们本身不证明完整依赖。受限 freestanding Clang 配置进一步执行真实传递依赖发现，固定源和搜索范围，记录工具、参数、宏、环境及目录/缺失条件，再形成可缓存身份。无法证明完整性的配置返回准备要求或禁用缓存；普通脚本生成器不能借一份 Clang 清单继承缓存资格。

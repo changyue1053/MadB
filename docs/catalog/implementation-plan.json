@@ -404,9 +404,11 @@
       "depends_on": [
         "C05"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-c07-arkts.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -443,7 +445,7 @@
         "P05",
         "P06"
       ],
-      "notes": "P05、P06 分别验证 CPF/Kotlin 与 Rust/Node-API；可在 S0 提前探针，不把同一 HAP 内的间接调用作为两条直接路线证据。"
+      "notes": "已落地只读环境预检和15项正反测试；本机为API24 Beta1编译SDK、API23 Release Arm64模拟器，正式26套装已获安装授权但官网需登录。P05公开源码的引用/队列/线程清理与P06 async cleanup需探针及受控修补；Beta开发探针不计正式验收。最终合跑C05/C06/C07，启动GitHub Actions前告知。详见C07记录。"
     },
     {
       "id": "C08",

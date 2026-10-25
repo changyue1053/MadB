@@ -4,6 +4,8 @@
 
 C01–C05 已按各工作包范围验收，覆盖工程与契约基线、受控构建执行及 Rust ↔ C 首链；结果见[C05 记录](reviews/2026-10-24-c05-rust-c-first-route.md)和[审查索引](reviews/README.md)。C06 的固定 SampleEngine 四个 macOS Arm64 Release 配置已完成本机正式构建、54 个必需案例和 92 项 Lab harness 检查；实现与本机验收已交付；按本轮安排，远端 C06 整包验证并入下一轮，当前不计整包验收通过。具体身份与结果见[C06 记录](reviews/2026-10-24-c06-kotlin-swift-rust.md)，当前任务状态以[实施目录](catalog/implementation-plan.json)为准。
 
+C07 已启动四条 ArkTS 路线的目标准入与源码核查，新增可重复的环境预检；正式 SDK 配套与 P05/P06 仍需闭合，开发探针不替代正式验收。见[C07 记录](reviews/2026-10-25-c07-arkts.md)。
+
 尚未发布正式版本；选定 profile 的验收不代表全部目标、工具组合和分发渠道已经覆盖，也不自动更新路线认证登记。范围仍为九组语言边界、十六条主线、四十一工作包；旧 mad、MadDemo 和 mad-boundary 仅提供研究案例，不设迁移任务。
 
 ## 阅读入口
