@@ -1,0 +1,570 @@
+{
+  "scope": "Managed C04 source input derived from public akinterop; source provenance does not substitute final target approval. Generated per-candidate identity headers are excluded. Fixed R6 evidence is unchanged.",
+  "base_commit": "75ba50c77afda2845a3a6c51cdcddb03d4fd0ab8",
+  "base_files": [
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/CMakeLists.txt",
+      "sha256": "b0783cc94a302f1f965e055cf4f2d1d036e08845aa93fb0320c05711c12ea998",
+      "size": 1316
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/README.md",
+      "sha256": "05c24156d41ff1893e279c4a1fe510b1e2d307a5dd07f1c3d938edd0efae3448",
+      "size": 604
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/array.h",
+      "sha256": "963e43f9b547d1ae0812502b99552195de323dc9e7523d1a55548dc2cd41cc24",
+      "size": 568
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/arraybuffer.h",
+      "sha256": "41ddd91022e30b9715afbbf3675d64dc97ac3a7e48f6a6e51c39b9f52fd37819",
+      "size": 858
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/cb_info.h",
+      "sha256": "b5f65c7ca055949d5a1944cf7a4e6693c0d0a3ce84b53d1a73d1d57866f85133",
+      "size": 528
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/clazz.h",
+      "sha256": "ce7a152912b40e365c677f0324454d1f074cd0aa9988c4e05af5af75ee758713",
+      "size": 500
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/exception.h",
+      "sha256": "2ac5c8a7d4c1f9c2075353f871847da2a5b714d1da884bcc158fc839c23b0274",
+      "size": 1134
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h",
+      "sha256": "bf7470d7d1a9a66341b87f75919debec47a7e8a4d6c9ed88c10bd1507a13a7b8",
+      "size": 1098
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/knapi.h",
+      "sha256": "176b3bc1a81bcdd9857439e82df7aff11d47f2c2788041cb91d5fbf585ecd0e3",
+      "size": 2174
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/logger.h",
+      "sha256": "e33ba886a7abec85736dca5c117f13a5c7b6018be1d994fbefbfb13850dcbbe7",
+      "size": 1645
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/module.h",
+      "sha256": "4fe4bc71aa3be36440e705f9d1744f3aa1182a6916c713cc176d6cea77fca7b4",
+      "size": 433
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/object.h",
+      "sha256": "ed60174333f95e1ef00c1cb5c952590ca691ab40de6103ea7b000b713ec7d5d5",
+      "size": 573
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/property.h",
+      "sha256": "46c0f36ad1932cf790d1d0de99491554c8620a06a34e28a85aef78c32e2516be",
+      "size": 1236
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/reference.h",
+      "sha256": "73759190e0995ce4db1bacf280f8e6821ebd0d0d339728667795fc7140414518",
+      "size": 450
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/type.h",
+      "sha256": "87b31ee55db7512ab723978a7aba7853e017e053302eac24fb15a15d116e46ec",
+      "size": 1168
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/array.cpp",
+      "sha256": "758eb1bd4d42492a58a2323106518993428768814ab726564924f182e08add2a",
+      "size": 1629
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/arraybuffer.cpp",
+      "sha256": "71484829325e528eff9cb24d66b24cd87a7451a523c5043e92b501924ddf2b24",
+      "size": 6771
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/cb_info.cpp",
+      "sha256": "ff6fdb6bf956a24495dd5e0f095a9cba1d0ea37887da3b04835646cd256d10c3",
+      "size": 1358
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/clazz.cpp",
+      "sha256": "b16b96dd1f0fdd749635ea673cebb51fed5c3782b35a8afb6facc48b1783b4bd",
+      "size": 787
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/exception.cpp",
+      "sha256": "b988ff30c90b58f9875d0621da43d93202fa536eed5a1a2848d502a7a1226d64",
+      "size": 1596
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp",
+      "sha256": "ed1aab061ab7a43438448958a2ffec7f3da92485f7249d6fa1c38f774b3c71b0",
+      "size": 5557
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/knapi.cpp",
+      "sha256": "7056e7e4eacefbe5f3431f3bbde31d5c2a5489a1ee7e4a3608ab5ddd236f8ca1",
+      "size": 5404
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/module.cpp",
+      "sha256": "4b5a0a491d405fd827761ddde98ae23af49dcccc78075162e6c75679c64b679a",
+      "size": 332
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/object.cpp",
+      "sha256": "079fd9570e0407cbd6422b9dfaa4a87fa47f40c4fc2d55d9633581d43a88bf14",
+      "size": 1901
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/property.cpp",
+      "sha256": "54c8b0cae0c635afd1bc7ff4d360db109dd510abcc9fc20d00b3b61bf5e2b60e",
+      "size": 3897
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/reference.cpp",
+      "sha256": "b94fa7fbeef971ec7627607626506521b6e3f36ca84884d4f49a1f27f4f47345",
+      "size": 844
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/type.cpp",
+      "sha256": "51759a9c97b75edb2506ff762366053db56ade78ebfd3fbe359c6edeb487272e",
+      "size": 4757
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/interop.def",
+      "sha256": "238e857354ae6476fb604a5641c07e5139628bc0f9d0bf72ab6472203c13430f",
+      "size": 768
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFICallWrapper.kt",
+      "sha256": "6f355831f838d5a9b8a76f1cc811e13aa00d6247d121c27c74035c46571388e1",
+      "size": 1903
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt",
+      "sha256": "a0e42275eed5f18444e800f6770ed673c84b814b56ae9334ead160ede9f9d811",
+      "size": 6639
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/NapiUtils.kt",
+      "sha256": "3d9e81528bee29116e233f3798c54d60ed22edc95a9bbbc3dab35e5119065cfc",
+      "size": 1180
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt",
+      "sha256": "77a25ecf5ffcd6f7e27d9589fc9c3775618f76de5df5826b71f3cc0de58d416c",
+      "size": 3262
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FFIPerfTracer.kt",
+      "sha256": "0a13d9a9b09fc52ac41e8f859d1632b74d050106f3506fc4372103da6fd40909",
+      "size": 2312
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FfiDebugDumper.kt",
+      "sha256": "e110176583cda5f8d6542df59842af3c892630b4df0fe31c163b821453e12c2e",
+      "size": 2269
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FfiDebugLogger.kt",
+      "sha256": "945fa9cc29043cf61b934bfbb7da605717540dbe870522b3a7821250b316867c",
+      "size": 4924
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FfiRefTracker.kt",
+      "sha256": "af8d73f910514130ce737ee37b1582cd43dfc054d802f275fe9f69c15752b6d0",
+      "size": 4342
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/OhosLog.kt",
+      "sha256": "91f304e5ef1306bc6e73adc68c8556e02cf0253806af92894f309590e7143c0e",
+      "size": 1573
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt",
+      "sha256": "27f80a3e80f8e62b70187d4512b7591b6d619e43b9da333722efff15dba4f05e",
+      "size": 3015
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt",
+      "sha256": "f0cdf785a792d1cccf8559a6aa0614890bff8d92379cf744cde56735e9af5748",
+      "size": 2781
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt",
+      "sha256": "be4eed9af41b6a3ff6716297873665e6e437602160099cead252c33e47723337",
+      "size": 33968
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiInvokable.kt",
+      "sha256": "79530b5df9521364122ff4c35680ac0badb7c48ef4eb739e0d7c84a3cb53c484",
+      "size": 1069
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt",
+      "sha256": "2d56837e4de50117a26bdfc86af408087b02ad780edd77c27161ecc99eea432d",
+      "size": 2051
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt",
+      "sha256": "c6c16ebdfa5993d6573d3905223549a5d14e73267fd6071a366359c6df172dbf",
+      "size": 6082
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiSymbolDescriptor.kt",
+      "sha256": "0892e1d55c71dc87bdd274dbe5ca6523fd353f3fe37aa64ccd22d42de960c825",
+      "size": 783
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KSPTypes.kt",
+      "sha256": "3c2337ec8a8c7c6d990fb22ff407dcd342f9a5d6d89804f96b71f3b26e38caed",
+      "size": 4760
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt",
+      "sha256": "d4c82c725ec21309c0ebce9abea6f9281f06dc91ba7522a9f24ffa8790e80316",
+      "size": 36861
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/IKNapiTsInvokerContext.kt",
+      "sha256": "f806ed545ae2edafa1b1c8684c92aa927ee9463893c3643c7322e49258354186",
+      "size": 1258
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiEnvHolder.kt",
+      "sha256": "9a81e1338a024ba600d1d0f3c79d3752db5bc06a8e98750685396130a8ec8bf9",
+      "size": 2487
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiInvokerSyncContext.kt",
+      "sha256": "7cc5dbd5dd922379b622d91a192103b84366b28a5732c1875fbd753a6a383e75",
+      "size": 1254
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsCallback.kt",
+      "sha256": "e62a2ec9b2d607ef792683daeded5052bd0499126d391ff6bc023cfd47c38245",
+      "size": 9380
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt",
+      "sha256": "f9c30f5196923b4ba33eba5521f405c55beed483c87a7660ea82491d7883b42c",
+      "size": 3847
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsInvoker.kt",
+      "sha256": "6c037ffe2dc51d01d205ce2f130436bc4de839c0c901ba85a936808db2840752",
+      "size": 1457
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsInvokerContext.kt",
+      "sha256": "1f38c4b66a980caa20e881874f9fa743bb36d686a7a10f5dc968fe75aa5357ae",
+      "size": 1568
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/Sem.kt",
+      "sha256": "fde712a791c850f169381eb550b91c845ff1ef03ee90d8f790bb7fcb61d6be9f",
+      "size": 1327
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Array.kt",
+      "sha256": "ac54b519204ac6566b006c24212b07529f9ab2b9b5182a38d7ab6680a64be717",
+      "size": 24929
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/BigInt.kt",
+      "sha256": "6f7bcc2d942e3eb5d1f04ba78e54e7ddcaa0dcffd96925d0176bb2cd4f3fb6d1",
+      "size": 1465
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Boolean.kt",
+      "sha256": "2d13f0062ce22c2a09d49e9b4bab8f95828842338acd4a48e9cf00ae608572d6",
+      "size": 1462
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/CallbackInfo.kt",
+      "sha256": "12b4baa831b731e76a8ced0eb80fef2677877c875e2f9fda3ad7b9ad786dc670",
+      "size": 2750
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/CallsiteSlot.kt",
+      "sha256": "65604632e1c2fef54c92f85a7ebc542bbcd85188d0ee3a48996b099bb4deb78c",
+      "size": 3761
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Clazz.kt",
+      "sha256": "40841175b18f503e5437d6c2a1e9ed4b127c54aa8ee5ea1ebedd5493b0e648d7",
+      "size": 5869
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Exception.kt",
+      "sha256": "858939a1f65d45fd0239bfb3c27a6d188ccb7a6d4d3f8fa66644e250046e9925",
+      "size": 2088
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Function.kt",
+      "sha256": "1ba3a1a835fe9f0f27e5b92cc2b7fe0ebbe6ad85016028f2fba1afedfd48fe9d",
+      "size": 2905
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/List.kt",
+      "sha256": "d939b44c29497e73cf6cd611797593b9dd0f096c06391cd861b746ad30798aed",
+      "size": 2462
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Map.kt",
+      "sha256": "0a28b5a50c9ca3338c50fcf8e3755b630259c0e542d503102f3ff964421a1717",
+      "size": 5672
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Module.kt",
+      "sha256": "6068210fe639402bd5e3f567789e05be1d3dc1c60772e80fdf23b0f4f9c97b72",
+      "size": 1653
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Number.kt",
+      "sha256": "ce3fe722fae83a48b38552895c50e9eaa9de69fc57f617dceb5bd15550b259fb",
+      "size": 7769
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Object.kt",
+      "sha256": "57a9ed96c4c56a313275cb5cac3b44198bf56fd202052c7bf719a07d30e9231e",
+      "size": 5874
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Promise.kt",
+      "sha256": "a22f4a5edfa8df9f6921c0223146f7c572247bd9cf1d42950d3401889d3e8540",
+      "size": 5192
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Property.kt",
+      "sha256": "50ce123e4ef528312e5e8db1b686fd7e5e2a2607c49e9283ea03f25ffa2bcce8",
+      "size": 3161
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Reference.kt",
+      "sha256": "ae605bf3ad0d4fb97c17de0ad57004257579e120165924acfd1d082dda676155",
+      "size": 1447
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/SendableArray.kt",
+      "sha256": "b519169b00136e12280a4c7b207364ff716a54e1374f860c5bc2c5b89d2fb621",
+      "size": 4565
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/SendableMap.kt",
+      "sha256": "e0ede8e218bfe1f009edaaaef1d2bb118508535092058a0dc25f3d3e37d4813a",
+      "size": 3040
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/String.kt",
+      "sha256": "635e722124a05f04f04d8872ec88bd426b524a8287027c67f124e38bbec5cfe4",
+      "size": 1534
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Undefined.kt",
+      "sha256": "3f47673085180f19abc1bd2c14a314a8bcab07307d5b4de0d78508f6c6cfe4b3",
+      "size": 2055
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkAny.kt",
+      "sha256": "965587562c2577b1b7401890925cf21856769f132b6e61841c81e5a909b99f09",
+      "size": 3395
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkArray.kt",
+      "sha256": "115b89f078435b4db31622d88794ba36b73ff43301c0be58191dde289e2df352",
+      "size": 1722
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkBigInt.kt",
+      "sha256": "c575d72bed108348fada713b84f5ababac7080a98961a9874d53b3c7815729d6",
+      "size": 1550
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkBoolean.kt",
+      "sha256": "1ca9e5ee3af35c6ad5b0a1294fd461df0d3a37e456bd7b3753380663b60625a6",
+      "size": 1566
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkClass.kt",
+      "sha256": "85d8d69eb1783cd6a2cbb2d527c34b50984a4398bf51bcdc335e77ea80396651",
+      "size": 2692
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkException.kt",
+      "sha256": "c0f9c1a21203aa532bc4067b0ec68d1954ae59c818a3b5d2ddf167d3080a3717",
+      "size": 3529
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkFunction.kt",
+      "sha256": "b3a9a86c64cdaafd8be2ba6830c15fecac8e3669273091b23150f75a55e8c633",
+      "size": 6373
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkList.kt",
+      "sha256": "b551be00a353d16629bcb2af4af96bbe3b2e29a86a71ee692074b20745f7015b",
+      "size": 1438
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkMap.kt",
+      "sha256": "8586ab0b3dc85bbb56d7b2fd395bb995ebf5a23caf5994d08b304e80bab45db3",
+      "size": 1439
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkModule.kt",
+      "sha256": "e42c592c1fd68b5d02040df8e32a41b46cb8978fcaa4e1868dc05f27a7c5ec82",
+      "size": 3816
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkNumber.kt",
+      "sha256": "60aee4948b59d9b94c102a9b58f289e29c38a9b4727f32d77ffdc4395dbdf26b",
+      "size": 3020
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkObject.kt",
+      "sha256": "e423dfb9bb2b26a2e42969cd2010a1a6423fda5fce6533ce534702e8ccfa98ce",
+      "size": 15602
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkPromise.kt",
+      "sha256": "07053fb94570031a37b163feaa554d0ed44949496b3552f9bb8436b9a654e001",
+      "size": 10663
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkProxy.kt",
+      "sha256": "a6cc659b19c9ad9dc866125ba62de73d1dd3956815882abc4478659b4674483a",
+      "size": 996
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkSendableArray.kt",
+      "sha256": "febd4ba73b11e9dadc386a721c0ef63bba8b04e296cea985ac17d3392a51c971",
+      "size": 1804
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkSendableMap.kt",
+      "sha256": "93a36ac38e52ca7fd522736e06f606af081ac77d9ba26f043aa20808fa9cbb7f",
+      "size": 1496
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkString.kt",
+      "sha256": "c94fec78ff250e95a82a6526d88663d8596a51e6e48e51ca011f33428c22849c",
+      "size": 1553
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt",
+      "sha256": "95949f20067dacbbe8855c2dc165b3d7bf8d90492008fde3452c21019a22e4e7",
+      "size": 4496
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt",
+      "sha256": "f3aea0899e30b7794980c3c49b4c783765fbb68d6eefd742f9e3c3ef706c36b4",
+      "size": 3698
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt",
+      "sha256": "191053102d467105409955da133a703334744dd7caa741cf1f4c582bcbed3ef5",
+      "size": 8078
+    }
+  ],
+  "patch_sha256": "1587a8251813251537b59328c0e3abba462c86ed7a94ec3654c810452f5081d4",
+  "changed_files": [
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h",
+      "base_sha256": "bf7470d7d1a9a66341b87f75919debec47a7e8a4d6c9ed88c10bd1507a13a7b8",
+      "result_sha256": "e466964cbab447e9aacc27639364345f8825d821b5bd28c9380d8d35b23e33d4"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp",
+      "base_sha256": "ed1aab061ab7a43438448958a2ffec7f3da92485f7249d6fa1c38f774b3c71b0",
+      "result_sha256": "7be977ae0790f17d8b72d2c1818e92a1534c8cda528feca3665177993abb41a0"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt",
+      "base_sha256": "a0e42275eed5f18444e800f6770ed673c84b814b56ae9334ead160ede9f9d811",
+      "result_sha256": "3812e8c613fa51293e112043a97a676a93b46e156afa61465b196431f2d79f70"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/ManagedAdmissionRules.kt",
+      "base_sha256": null,
+      "result_sha256": "ea4f8cb49c3c56e818795c64ca51f57c9f41fa54b9fe22d8979a3386b76be340"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt",
+      "base_sha256": "77a25ecf5ffcd6f7e27d9589fc9c3775618f76de5df5826b71f3cc0de58d416c",
+      "result_sha256": "f8c266d670213c8d91bc73263c50033796b79a5b7234cf8e16029e37faf323b0"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt",
+      "base_sha256": "27f80a3e80f8e62b70187d4512b7591b6d619e43b9da333722efff15dba4f05e",
+      "result_sha256": "e34224b673585b183f51c7f0abc31832b4b6a6bde1f9937d8b9602ab15333399"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt",
+      "base_sha256": "f0cdf785a792d1cccf8559a6aa0614890bff8d92379cf744cde56735e9af5748",
+      "result_sha256": "ee1752417311d8f040772a450720ded226fe4c417d16356b1ccd1944975b58ac"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt",
+      "base_sha256": "be4eed9af41b6a3ff6716297873665e6e437602160099cead252c33e47723337",
+      "result_sha256": "591b258ee695d073f4ea23f6a46492c95d1444f25bbaa765aa3c79cb4b0b2985"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt",
+      "base_sha256": "2d56837e4de50117a26bdfc86af408087b02ad780edd77c27161ecc99eea432d",
+      "result_sha256": "1a89f0d09b29f799fc54c371cede39b70e5b529bbba853fe663ad5772ed794f0"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt",
+      "base_sha256": "c6c16ebdfa5993d6573d3905223549a5d14e73267fd6071a366359c6df172dbf",
+      "result_sha256": "b522b475ddfcf1172c0e432ee093bba77c6ced90bcf34e59f27ac5d574e9d641"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedGlobalInventory.kt",
+      "base_sha256": null,
+      "result_sha256": "d9b857a7d5bf819abdc4e048b5001af7a2a7638d7b741c31e7c9cca57acee13f"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedOwnedBoundary.kt",
+      "base_sha256": null,
+      "result_sha256": "12a1f61d03b290fb31a419bfb68b4d54f8128ed21bb30c87026d0b45affb06b6"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt",
+      "base_sha256": null,
+      "result_sha256": "3bec361b569474efde507ebb8b9e37e603db4c143a8eeca1465138e47e8aee1a"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt",
+      "base_sha256": "d4c82c725ec21309c0ebce9abea6f9281f06dc91ba7522a9f24ffa8790e80316",
+      "result_sha256": "cacf270efdbc4e7f411425210c7fcf673bca7025fe18f846d3fd10caa52b483f"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt",
+      "base_sha256": "f9c30f5196923b4ba33eba5521f405c55beed483c87a7660ea82491d7883b42c",
+      "result_sha256": "fe3117d6f85cd062abf35a99b1a4d4236ea12dfb18ce3e7d9efcc0317fe47e7a"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt",
+      "base_sha256": "95949f20067dacbbe8855c2dc165b3d7bf8d90492008fde3452c21019a22e4e7",
+      "result_sha256": "5fa3a25ac4f91457126b56bc880b0a6e8ea04fb2d8937cefe127065780ae9d8b"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt",
+      "base_sha256": "f3aea0899e30b7794980c3c49b4c783765fbb68d6eefd742f9e3c3ef706c36b4",
+      "result_sha256": "24730f4becb70a27d2b380a8ab0cde0fbfe436f43791a59f0abb934c97703b75"
+    },
+    {
+      "path": "AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt",
+      "base_sha256": "191053102d467105409955da133a703334744dd7caa741cf1f4c582bcbed3ef5",
+      "result_sha256": "2ba1c0dcefe826815e793361ea89465c502ae144f46e3421cf0642d4e16f4f18"
+    }
+  ],
+  "generated_input": "owned_identity.h is generated from standard C04 identity only after fresh KSP Metadata; metadata-only compile uses a visibly non-runtime sentinel"
+}

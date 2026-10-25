@@ -1,0 +1,72 @@
+{
+  "schema": "madb.kotlin-owned-frontend-policy/1",
+  "authority": [
+    "docs/adr/0011-arkts-native-protocol-owner.md",
+    "docs/adr/0013-arkts-runtime-and-completion.md"
+  ],
+  "scope": "CPF Kotlin owned main-env notification profile; actual KSP declarations remain the type authority",
+  "record": {
+    "marker": "com.madb.c07.MadbValueRecord",
+    "count": 1,
+    "fields": [
+      {
+        "role": "value",
+        "name": "value",
+        "kotlin_type": "kotlin.Int"
+      },
+      {
+        "role": "text",
+        "name": "text",
+        "kotlin_type": "kotlin.String"
+      }
+    ]
+  },
+  "notification_interfaces": {
+    "return_type": "kotlin.Unit",
+    "synchronous_cross_thread_return": false
+  },
+  "functions": [
+    "ownedCancel",
+    "ownedClaimResult",
+    "ownedConnect",
+    "ownedDeliver",
+    "ownedObserve",
+    "ownedOpen",
+    "ownedPeek",
+    "ownedPublish",
+    "ownedRequestClose",
+    "ownedRoundtrip",
+    "ownedRuntimeClose",
+    "ownedSubmit",
+    "ownedTakeSnapshot",
+    "ownedTakeStatus",
+    "ownedWatchClose"
+  ],
+  "development_test_functions": [
+    "ownedTestGate",
+    "ownedTestDelivery",
+    "ownedTestPublication",
+    "ownedTestReleasePublication",
+    "ownedTestClone",
+    "ownedTestTransfer",
+    "ownedTestInspect",
+    "ownedTestHandle"
+  ],
+  "parameters": {
+    "owned_interface_maximum": 1,
+    "owned_interface_position": "last",
+    "record_conversion_precedes_owned_interface": true
+  },
+  "unsupported": [
+    "nullable types",
+    "suspend functions",
+    "generic functions",
+    "extension functions",
+    "varargs",
+    "default parameters",
+    "interface returns",
+    "synchronous return-valued notification methods"
+  ],
+  "diagnostic_prefix": "MADB_RECORD",
+  "test_scope": "R6 reuse/rollback plus reviewed controls-v2 real work, delivery, publication, clone, transfer and handle controls; actual NAPI and memory observations are separately declared"
+}

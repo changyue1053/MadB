@@ -1,0 +1,60 @@
+{
+  "length": 13,
+  "wire": "number[]",
+  "numeric_domain": "nonnegative safe integer, larger uint64 fails MetricRangeExceeded",
+  "fields": [
+    {
+      "index": 0,
+      "name": "InitAttempts"
+    },
+    {
+      "index": 1,
+      "name": "InitFailures"
+    },
+    {
+      "index": 2,
+      "name": "MainRejected"
+    },
+    {
+      "index": 3,
+      "name": "IdentityRejected"
+    },
+    {
+      "index": 4,
+      "name": "LibraryLoaded"
+    },
+    {
+      "index": 5,
+      "name": "Initialized"
+    },
+    {
+      "index": 6,
+      "name": "Slot"
+    },
+    {
+      "index": 7,
+      "name": "Epoch"
+    },
+    {
+      "index": 8,
+      "name": "RollbackAcks"
+    },
+    {
+      "index": 9,
+      "name": "LastFailureStage"
+    },
+    {
+      "index": 10,
+      "name": "Delivered"
+    },
+    {
+      "index": 11,
+      "name": "Consumed"
+    },
+    {
+      "index": 12,
+      "name": "TsfnAdmissionFailures"
+    }
+  ],
+  "scope": "Pure bootstrap audit, cumulative native DSO counters and current slot; only PollAdmission progresses rollback; failed initialization count is not live responsibility"
+}

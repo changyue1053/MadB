@@ -1,0 +1,28 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
+apply(plugin = "org.jetbrains.kotlin.multiplatform")
+
+configure<KotlinMultiplatformExtension> {
+    ohosArm64 {
+        compilations.getByName("main").cinterops.create("interop") {
+            defFile(rootProject.file("inputs/runtime/src/nativeInterop/cinterop/interop.def"))
+            includeDirs(rootProject.file("inputs/runtime/src/nativeInterop/cinterop/cpp/include"))
+            extraOpts("-libraryPath", rootProject.file("native/lib").absolutePath)
+        }
+    }
+    sourceSets.getByName("ohosArm64Main") {
+        kotlin.srcDir(rootProject.file("inputs/runtime/src/ohosArm64Main/kotlin"))
+        dependencies {
+            implementation("org.jetbrains.kotlinx:atomicfu:0.31.0-1.0.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2-1.0.0")
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1-1.0.0")
+        }
+    }
+}
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    compilerOptions.optIn.addAll("kotlinx.cinterop.ExperimentalForeignApi", "kotlin.experimental.ExperimentalNativeApi")
+}
+tasks.matching { it.name == "cinteropInteropOhosArm64" }.configureEach {
+    inputs.file(rootProject.file("native/lib/libnapi_bridge.a"))
+}

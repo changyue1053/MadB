@@ -1,0 +1,113 @@
+{
+  "scope": "Producer test declaration input for independent C04 role policy; not target oracle",
+  "actual_ksp_functions": 23,
+  "existing_helpers_preserved": 12,
+  "new_helpers": {
+    "testControlFrame": {
+      "parameters": {
+        "runtime": "branded Runtime of current epoch; metadata must remain live"
+      },
+      "returns": "exactly31 signed/unsigned decimal CSV fields; identity fields4,5,8 remain strings"
+    },
+    "testArmDelivery": {
+      "parameters": {
+        "subscription": "branded live Subscription; reserves one actual pre-entry hold"
+      },
+      "returns": "void"
+    },
+    "testDeliveryFrame": {
+      "parameters": {
+        "subscription": "branded live Subscription; does not progress"
+      },
+      "returns": "same31-fieldCSV"
+    },
+    "testReleaseDelivery": {
+      "parameters": {
+        "subscription": "branded held Subscription; releases actual taken lease"
+      },
+      "returns": "void"
+    },
+    "testStagePublication": {
+      "parameters": {
+        "engine": "branded live Engine",
+        "stream": "int32 enum0State1Event",
+        "snapshot": "actual KSP Snapshot value/text codec"
+      },
+      "returns": "void; staging owns actual clones/source reservations"
+    },
+    "testFinishPublication": {
+      "parameters": {
+        "engine": "same branded Engine, allowedClosing for cleanup",
+        "commit": "boolean; true commit,false abandon"
+      },
+      "returns": "void"
+    },
+    "testArmCloneFailure": {
+      "parameters": {
+        "engine": "branded live Engine",
+        "nth": "int32 integer1..8",
+        "ownedError": "boolean; false preallocationfailure,true allocatederroroutput"
+      },
+      "returns": "void"
+    },
+    "testArmTransferFailure": {
+      "parameters": {
+        "runtime": "branded live Runtime",
+        "phase": "int32 enum1admissionreturn2beforeguard3afterguard"
+      },
+      "returns": "void"
+    },
+    "testEngineHandle": {
+      "parameters": {
+        "engine": "branded Engine with actual resource handle",
+        "probeCase": "int32 enum0valid1wrongkind2priorgeneration3decimaloverflow4leadingzero5NUL"
+      },
+      "returns": "void or exact native handle rejection; case2requiresgeneration>1"
+    },
+    "testOperationHandle": {
+      "parameters": {
+        "operation": "branded Operation with actual resource handle",
+        "probeCase": "same0..5enum"
+      },
+      "returns": "void or exact native handle rejection"
+    },
+    "testSubscriptionHandle": {
+      "parameters": {
+        "subscription": "branded Subscription with actual resource handle",
+        "probeCase": "same0..5enum"
+      },
+      "returns": "void or exact native handle rejection"
+    },
+    "testSettleProbe": {
+      "parameters": {
+        "runtime": "branded live Runtime",
+        "action": "required synchronous noargument voidcallback; retained one-shot until actual settler-return hook or close/fail",
+        "throwAfter": "boolean"
+      },
+      "returns": "void"
+    },
+    "testSettleInspect": {
+      "parameters": {
+        "runtime": "branded Runtime, readable afterlogicalclose/fail whileJSwrapperheld"
+      },
+      "returns": "exactly7 number safeinteger nonnegative fields arms,hits,resolveAccepted,rejectAccepted,exceptions,currentSettling,maxObservedWaiterMap"
+    },
+    "testObserveNapi": {
+      "parameters": {},
+      "returns": "bootstrapCSV;providerCSV, exact current lengths30/101; unloaded or Worker provider unavailable literal; full uint64 decimal strings, NA UINT64_MAX"
+    },
+    "testMemoryFrame": {
+      "parameters": {},
+      "returns": "literalunavailable before provider load, otherwise22 uint64decimal CSV per memory-frame.json; readableafterphysicalACK onmainenv"
+    },
+    "testSubscriptionState": {
+      "parameters": {
+        "subscription": "branded Subscription wrapper, includingretired"
+      },
+      "returns": "number[4]=1/closing/closed/listenerPresent, flags0or1"
+    }
+  },
+  "work_update": "testArmWork phase1beforecompute/2terminalbeforeworkexit; testReleaseWork releases both controls",
+  "frame_authority": "controls-frame.json",
+  "not_yet_present": []
+}

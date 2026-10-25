@@ -1,0 +1,3 @@
+Copyright and attribution blocks from the exact published CPF source archive.
+
+The published source archive contains no leading copyright blocks in Kotlin/C/C++ files. The published POM declares Apache-2.0; the upstream license file is included.

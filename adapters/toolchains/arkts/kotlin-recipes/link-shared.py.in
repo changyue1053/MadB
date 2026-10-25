@@ -1,0 +1,18 @@
+#!@PYTHON@
+"""Pinned CPF shared-link correction; no other linker argument is changed."""
+import json
+import os
+from pathlib import Path
+import sys
+LINKER = @LINKER@
+STARTUP = @STARTUP@
+LOGS = Path(@LOGS@)
+before = sys.argv[1:]
+after = before.copy()
+if '-shared' in before:
+    if before.count(STARTUP) != 1:
+        raise SystemExit('Pinned shared link requires exactly one known Scrt1.o')
+    after.remove(STARTUP)
+with (LOGS / ('linker-argv-' + str(os.getpid()) + '.json')).open('x') as stream:
+    json.dump(dict(linker=LINKER, removed=[STARTUP] if before!=after else [], before=before, after=after),stream,indent=2)
+os.execv(LINKER,[LINKER,*after])

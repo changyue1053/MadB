@@ -1,0 +1,1297 @@
+{
+  "scope": "Test-only static ELF import call-attempt observation; no proof of env invalidity or transitive library internals. Zero attempts means unexercised, not a passed illegal-call predicate.",
+  "wire": "testNapiAudit String = bootstrap decimal CSV + semicolon + provider decimal CSV; provider unavailable until existing library and pure metric symbol are present. No extra dlopen.",
+  "format": 70602,
+  "fixed_fields": [
+    {
+      "index": 0,
+      "name": "Format"
+    },
+    {
+      "index": 1,
+      "name": "Role"
+    },
+    {
+      "index": 2,
+      "name": "WrappedApiCount"
+    },
+    {
+      "index": 3,
+      "name": "Capabilities"
+    },
+    {
+      "index": 4,
+      "name": "TotalAttempts"
+    },
+    {
+      "index": 5,
+      "name": "EnvArgumentAttempts"
+    },
+    {
+      "index": 6,
+      "name": "ThreadNeutralAttempts"
+    },
+    {
+      "index": 7,
+      "name": "RegistrationAttempts"
+    },
+    {
+      "index": 8,
+      "name": "CleanupHandleAttempts"
+    },
+    {
+      "index": 9,
+      "name": "NullEnvAttempts"
+    },
+    {
+      "index": 10,
+      "name": "UnboundEnvAttempts"
+    },
+    {
+      "index": 11,
+      "name": "WrongEnvAttempts"
+    },
+    {
+      "index": 12,
+      "name": "WrongThreadAttempts"
+    },
+    {
+      "index": 13,
+      "name": "UnboundCleanupHandleAttempts"
+    },
+    {
+      "index": 14,
+      "name": "BootstrapEntries"
+    },
+    {
+      "index": 15,
+      "name": "ProviderBindings"
+    },
+    {
+      "index": 16,
+      "name": "NullBindAttempts"
+    },
+    {
+      "index": 17,
+      "name": "EnvValidityUnobservedAttempts"
+    }
+  ],
+  "unknown": "UINT64_MAX (18446744073709551615) means unavailable/not applicable, never zero; bootstrap WrongThreadAttempts is NA. Preserve all CSV fields as decimal strings.",
+  "capabilities": {
+    "1": "bootstrap legitimate callback entry env scope",
+    "2": "provider bound env comparison",
+    "4": "provider owner thread comparison"
+  },
+  "categories": {
+    "0": "API with napi_env argument",
+    "1": "thread-neutral TSFN acquire/call/release including priority call",
+    "2": "module registration with no env",
+    "3": "async cleanup handle removal; no env argument, provider owner-thread still checked"
+  },
+  "validity": "EnvValidityUnobservedAttempts increments for every env-argument call. No invalidation time is inferred from logical close or cleanup-hook entry. Legal ref/TSFN/hook cleanup remains legal.",
+  "snapshot": "Read all pure metric fields before constructing the JS String. Each scalar is atomic; cross-field reads are not an atomic concurrent snapshot. Readback NAPI construction is itself recorded in subsequent snapshots.",
+  "lifetime": "Counters are DSO-lifetime cumulative; no reset API. Bind/entry functions never invoke NAPI or allocate. Observer RAII is required at each actual bootstrap callback entry.",
+  "roles": [
+    {
+      "role": "bootstrap",
+      "count": 30,
+      "per_api_fields": [
+        {
+          "index": 18,
+          "name": "napi_create_array_with_length",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "size_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, size_t, napi_value *)"
+        },
+        {
+          "index": 19,
+          "name": "napi_create_double",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "double",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, double, napi_value *)"
+        },
+        {
+          "index": 20,
+          "name": "napi_create_object",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 21,
+          "name": "napi_create_string_utf8",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "size_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, size_t, napi_value *)"
+        },
+        {
+          "index": 22,
+          "name": "napi_define_properties",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "size_t",
+            "const napi_property_descriptor *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, size_t, const napi_property_descriptor *)"
+        },
+        {
+          "index": 23,
+          "name": "napi_get_cb_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_callback_info",
+            "size_t *",
+            "napi_value *",
+            "napi_value *",
+            "void **"
+          ],
+          "function_type": "napi_status (napi_env, napi_callback_info, size_t *, napi_value *, napi_value *, void **)"
+        },
+        {
+          "index": 24,
+          "name": "napi_get_value_double",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "double *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, double *)"
+        },
+        {
+          "index": 25,
+          "name": "napi_get_value_string_utf8",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "char *",
+            "size_t",
+            "size_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, char *, size_t, size_t *)"
+        },
+        {
+          "index": 26,
+          "name": "napi_is_exception_pending",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, bool *)"
+        },
+        {
+          "index": 27,
+          "name": "napi_module_register",
+          "category": 2,
+          "return": "void",
+          "arguments": [
+            "napi_module *"
+          ],
+          "function_type": "void (napi_module *)"
+        },
+        {
+          "index": 28,
+          "name": "napi_throw_error",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "const char *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, const char *)"
+        },
+        {
+          "index": 29,
+          "name": "napi_typeof",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_valuetype *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_valuetype *)"
+        }
+      ]
+    },
+    {
+      "role": "provider",
+      "count": 101,
+      "per_api_fields": [
+        {
+          "index": 18,
+          "name": "napi_acquire_threadsafe_function",
+          "category": 1,
+          "return": "napi_status",
+          "arguments": [
+            "napi_threadsafe_function"
+          ],
+          "function_type": "napi_status (napi_threadsafe_function)"
+        },
+        {
+          "index": 19,
+          "name": "napi_add_async_cleanup_hook",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_async_cleanup_hook",
+            "void *",
+            "napi_async_cleanup_hook_handle *"
+          ],
+          "function_type": "napi_status (napi_env, napi_async_cleanup_hook, void *, napi_async_cleanup_hook_handle *)"
+        },
+        {
+          "index": 20,
+          "name": "napi_add_env_cleanup_hook",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "void (*)(void *)",
+            "void *"
+          ],
+          "function_type": "napi_status (napi_env, void (*)(void *), void *)"
+        },
+        {
+          "index": 21,
+          "name": "napi_add_finalizer",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "void *",
+            "napi_finalize",
+            "void *",
+            "napi_ref *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, void *, napi_finalize, void *, napi_ref *)"
+        },
+        {
+          "index": 22,
+          "name": "napi_call_function",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "size_t",
+            "const napi_value *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, size_t, const napi_value *, napi_value *)"
+        },
+        {
+          "index": 23,
+          "name": "napi_call_threadsafe_function",
+          "category": 1,
+          "return": "napi_status",
+          "arguments": [
+            "napi_threadsafe_function",
+            "void *",
+            "napi_threadsafe_function_call_mode"
+          ],
+          "function_type": "napi_status (napi_threadsafe_function, void *, napi_threadsafe_function_call_mode)"
+        },
+        {
+          "index": 24,
+          "name": "napi_call_threadsafe_function_with_priority",
+          "category": 1,
+          "return": "napi_status",
+          "arguments": [
+            "napi_threadsafe_function",
+            "void *",
+            "napi_task_priority",
+            "bool"
+          ],
+          "function_type": "napi_status (napi_threadsafe_function, void *, napi_task_priority, bool)"
+        },
+        {
+          "index": 25,
+          "name": "napi_close_handle_scope",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_handle_scope"
+          ],
+          "function_type": "napi_status (napi_env, napi_handle_scope)"
+        },
+        {
+          "index": 26,
+          "name": "napi_create_array",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 27,
+          "name": "napi_create_arraybuffer",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "size_t",
+            "void **",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, size_t, void **, napi_value *)"
+        },
+        {
+          "index": 28,
+          "name": "napi_create_bigint_int64",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "int64_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, int64_t, napi_value *)"
+        },
+        {
+          "index": 29,
+          "name": "napi_create_bigint_uint64",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "uint64_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, uint64_t, napi_value *)"
+        },
+        {
+          "index": 30,
+          "name": "napi_create_callsite_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_callsite_info *"
+          ],
+          "function_type": "napi_status (napi_env, napi_callsite_info *)"
+        },
+        {
+          "index": 31,
+          "name": "napi_create_double",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "double",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, double, napi_value *)"
+        },
+        {
+          "index": 32,
+          "name": "napi_create_error",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, napi_value *)"
+        },
+        {
+          "index": 33,
+          "name": "napi_create_external",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "void *",
+            "napi_finalize",
+            "void *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, void *, napi_finalize, void *, napi_value *)"
+        },
+        {
+          "index": 34,
+          "name": "napi_create_function",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "size_t",
+            "napi_callback",
+            "void *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, size_t, napi_callback, void *, napi_value *)"
+        },
+        {
+          "index": 35,
+          "name": "napi_create_int32",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "int32_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, int32_t, napi_value *)"
+        },
+        {
+          "index": 36,
+          "name": "napi_create_int64",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "int64_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, int64_t, napi_value *)"
+        },
+        {
+          "index": 37,
+          "name": "napi_create_object",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 38,
+          "name": "napi_create_promise",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_deferred *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_deferred *, napi_value *)"
+        },
+        {
+          "index": 39,
+          "name": "napi_create_reference",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "uint32_t",
+            "napi_ref *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, uint32_t, napi_ref *)"
+        },
+        {
+          "index": 40,
+          "name": "napi_create_string_latin1",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "size_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, size_t, napi_value *)"
+        },
+        {
+          "index": 41,
+          "name": "napi_create_string_utf16",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char16_t *",
+            "size_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, const char16_t *, size_t, napi_value *)"
+        },
+        {
+          "index": 42,
+          "name": "napi_create_string_utf8",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "size_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, size_t, napi_value *)"
+        },
+        {
+          "index": 43,
+          "name": "napi_create_threadsafe_function",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "napi_value",
+            "size_t",
+            "size_t",
+            "void *",
+            "napi_finalize",
+            "void *",
+            "napi_threadsafe_function_call_js",
+            "napi_threadsafe_function *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, napi_value, size_t, size_t, void *, napi_finalize, void *, napi_threadsafe_function_call_js, napi_threadsafe_function *)"
+        },
+        {
+          "index": 44,
+          "name": "napi_create_typedarray",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_typedarray_type",
+            "size_t",
+            "napi_value",
+            "size_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_typedarray_type, size_t, napi_value, size_t, napi_value *)"
+        },
+        {
+          "index": 45,
+          "name": "napi_create_uint32",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "uint32_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, uint32_t, napi_value *)"
+        },
+        {
+          "index": 46,
+          "name": "napi_define_class",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "size_t",
+            "napi_callback",
+            "void *",
+            "size_t",
+            "const napi_property_descriptor *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, size_t, napi_callback, void *, size_t, const napi_property_descriptor *, napi_value *)"
+        },
+        {
+          "index": 47,
+          "name": "napi_define_properties",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "size_t",
+            "const napi_property_descriptor *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, size_t, const napi_property_descriptor *)"
+        },
+        {
+          "index": 48,
+          "name": "napi_delete_callsite_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_callsite_info"
+          ],
+          "function_type": "napi_status (napi_env, napi_callsite_info)"
+        },
+        {
+          "index": 49,
+          "name": "napi_delete_reference",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_ref"
+          ],
+          "function_type": "napi_status (napi_env, napi_ref)"
+        },
+        {
+          "index": 50,
+          "name": "napi_get_and_clear_last_exception",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 51,
+          "name": "napi_get_array_length",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "uint32_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, uint32_t *)"
+        },
+        {
+          "index": 52,
+          "name": "napi_get_arraybuffer_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "void **",
+            "size_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, void **, size_t *)"
+        },
+        {
+          "index": 53,
+          "name": "napi_get_boolean",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "bool",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, bool, napi_value *)"
+        },
+        {
+          "index": 54,
+          "name": "napi_get_cb_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_callback_info",
+            "size_t *",
+            "napi_value *",
+            "napi_value *",
+            "void **"
+          ],
+          "function_type": "napi_status (napi_env, napi_callback_info, size_t *, napi_value *, napi_value *, void **)"
+        },
+        {
+          "index": 55,
+          "name": "napi_get_element",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "uint32_t",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, uint32_t, napi_value *)"
+        },
+        {
+          "index": 56,
+          "name": "napi_get_global",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 57,
+          "name": "napi_get_named_property",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "const char *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, const char *, napi_value *)"
+        },
+        {
+          "index": 58,
+          "name": "napi_get_null",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 59,
+          "name": "napi_get_property",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, napi_value *)"
+        },
+        {
+          "index": 60,
+          "name": "napi_get_property_names",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value *)"
+        },
+        {
+          "index": 61,
+          "name": "napi_get_property_with_callsite_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "napi_callsite_info",
+            "napi_value *",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, napi_callsite_info, napi_value *, bool *)"
+        },
+        {
+          "index": 62,
+          "name": "napi_get_reference_value",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_ref",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_ref, napi_value *)"
+        },
+        {
+          "index": 63,
+          "name": "napi_get_typedarray_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_typedarray_type *",
+            "size_t *",
+            "void **",
+            "napi_value *",
+            "size_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_typedarray_type *, size_t *, void **, napi_value *, size_t *)"
+        },
+        {
+          "index": 64,
+          "name": "napi_get_undefined",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value *)"
+        },
+        {
+          "index": 65,
+          "name": "napi_get_uv_event_loop",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "struct uv_loop_s **"
+          ],
+          "function_type": "napi_status (napi_env, struct uv_loop_s **)"
+        },
+        {
+          "index": 66,
+          "name": "napi_get_value_bigint_int64",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "int64_t *",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, int64_t *, bool *)"
+        },
+        {
+          "index": 67,
+          "name": "napi_get_value_bigint_uint64",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "uint64_t *",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, uint64_t *, bool *)"
+        },
+        {
+          "index": 68,
+          "name": "napi_get_value_bool",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, bool *)"
+        },
+        {
+          "index": 69,
+          "name": "napi_get_value_double",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "double *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, double *)"
+        },
+        {
+          "index": 70,
+          "name": "napi_get_value_external",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "void **"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, void **)"
+        },
+        {
+          "index": 71,
+          "name": "napi_get_value_int32",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "int32_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, int32_t *)"
+        },
+        {
+          "index": 72,
+          "name": "napi_get_value_int64",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "int64_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, int64_t *)"
+        },
+        {
+          "index": 73,
+          "name": "napi_get_value_string_utf16",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "char16_t *",
+            "size_t",
+            "size_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, char16_t *, size_t, size_t *)"
+        },
+        {
+          "index": 74,
+          "name": "napi_get_value_uint32",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "uint32_t *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, uint32_t *)"
+        },
+        {
+          "index": 75,
+          "name": "napi_instanceof",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, bool *)"
+        },
+        {
+          "index": 76,
+          "name": "napi_is_array",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, bool *)"
+        },
+        {
+          "index": 77,
+          "name": "napi_is_arraybuffer",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, bool *)"
+        },
+        {
+          "index": 78,
+          "name": "napi_is_exception_pending",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, bool *)"
+        },
+        {
+          "index": 79,
+          "name": "napi_is_promise",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, bool *)"
+        },
+        {
+          "index": 80,
+          "name": "napi_is_typedarray",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, bool *)"
+        },
+        {
+          "index": 81,
+          "name": "napi_module_register",
+          "category": 2,
+          "return": "void",
+          "arguments": [
+            "napi_module *"
+          ],
+          "function_type": "void (napi_module *)"
+        },
+        {
+          "index": 82,
+          "name": "napi_new_instance",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "size_t",
+            "const napi_value *",
+            "napi_value *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, size_t, const napi_value *, napi_value *)"
+        },
+        {
+          "index": 83,
+          "name": "napi_open_handle_scope",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_handle_scope *"
+          ],
+          "function_type": "napi_status (napi_env, napi_handle_scope *)"
+        },
+        {
+          "index": 84,
+          "name": "napi_reject_deferred",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_deferred",
+            "napi_value"
+          ],
+          "function_type": "napi_status (napi_env, napi_deferred, napi_value)"
+        },
+        {
+          "index": 85,
+          "name": "napi_release_threadsafe_function",
+          "category": 1,
+          "return": "napi_status",
+          "arguments": [
+            "napi_threadsafe_function",
+            "napi_threadsafe_function_release_mode"
+          ],
+          "function_type": "napi_status (napi_threadsafe_function, napi_threadsafe_function_release_mode)"
+        },
+        {
+          "index": 86,
+          "name": "napi_remove_async_cleanup_hook",
+          "category": 3,
+          "return": "napi_status",
+          "arguments": [
+            "napi_async_cleanup_hook_handle"
+          ],
+          "function_type": "napi_status (napi_async_cleanup_hook_handle)"
+        },
+        {
+          "index": 87,
+          "name": "napi_remove_env_cleanup_hook",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "void (*)(void *)",
+            "void *"
+          ],
+          "function_type": "napi_status (napi_env, void (*)(void *), void *)"
+        },
+        {
+          "index": 88,
+          "name": "napi_resolve_deferred",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_deferred",
+            "napi_value"
+          ],
+          "function_type": "napi_status (napi_env, napi_deferred, napi_value)"
+        },
+        {
+          "index": 89,
+          "name": "napi_set_element",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "uint32_t",
+            "napi_value"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, uint32_t, napi_value)"
+        },
+        {
+          "index": 90,
+          "name": "napi_set_named_property",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "const char *",
+            "napi_value"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, const char *, napi_value)"
+        },
+        {
+          "index": 91,
+          "name": "napi_set_property",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "napi_value"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, napi_value)"
+        },
+        {
+          "index": 92,
+          "name": "napi_set_property_with_callsite_info",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "napi_value",
+            "napi_callsite_info",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, napi_value, napi_callsite_info, bool *)"
+        },
+        {
+          "index": 93,
+          "name": "napi_strict_equals",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_value",
+            "bool *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_value, bool *)"
+        },
+        {
+          "index": 94,
+          "name": "napi_throw_error",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "const char *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, const char *)"
+        },
+        {
+          "index": 95,
+          "name": "napi_throw_range_error",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "const char *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, const char *)"
+        },
+        {
+          "index": 96,
+          "name": "napi_throw_type_error",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "const char *",
+            "const char *"
+          ],
+          "function_type": "napi_status (napi_env, const char *, const char *)"
+        },
+        {
+          "index": 97,
+          "name": "napi_typeof",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "napi_valuetype *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, napi_valuetype *)"
+        },
+        {
+          "index": 98,
+          "name": "napi_unref_threadsafe_function",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_threadsafe_function"
+          ],
+          "function_type": "napi_status (napi_env, napi_threadsafe_function)"
+        },
+        {
+          "index": 99,
+          "name": "napi_unwrap",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "void **"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, void **)"
+        },
+        {
+          "index": 100,
+          "name": "napi_wrap",
+          "category": 0,
+          "return": "napi_status",
+          "arguments": [
+            "napi_env",
+            "napi_value",
+            "void *",
+            "napi_finalize",
+            "void *",
+            "napi_ref *"
+          ],
+          "function_type": "napi_status (napi_env, napi_value, void *, napi_finalize, void *, napi_ref *)"
+        }
+      ]
+    }
+  ]
+}

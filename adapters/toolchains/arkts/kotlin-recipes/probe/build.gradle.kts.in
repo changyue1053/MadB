@@ -1,0 +1,48 @@
+import org.cpf.kotlin.akinterop.gradle.FfiExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+
+apply(plugin = "org.jetbrains.kotlin.multiplatform")
+apply(plugin = "org.cpf.kotlin.akinterop-gradle-plugin")
+
+configurations.configureEach {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("org.cpf.kotlin:akinterop-runtime")).using(project(":runtime"))
+    }
+}
+configure<KotlinMultiplatformExtension> {
+    ohosArm64 {
+        compilations.getByName("main").cinterops.create("executor") {
+            defFile(rootProject.file("native-support/executor.def"))
+            includeDirs(rootProject.file("native-support"))
+            extraOpts("-libraryPath", rootProject.file("native/lib").absolutePath)
+        }
+        binaries.sharedLib {
+            baseName = "madb_kotlin_owned_runtime"
+            freeCompilerArgs += listOf("-Xoverride-konan-properties=linker.macos_arm64-ohos_arm64=@PROJECT@/link-shared.py")
+            if (providers.gradleProperty("madbProfile").orElse("ordinary").get() == "test") {
+                linkerOpts(*rootProject.file("native-observer/provider-wrap.rsp").readLines().filter { it.isNotBlank() }.toTypedArray())
+            }
+            linkerOpts("-lace_napi.z", "-lhilog_ndk.z", "-luv", "-lunwind",
+                       "--soname=libmadb_kotlin_owned_runtime.so")
+        }
+    }
+    sourceSets.getByName("ohosArm64Main").kotlin.srcDir(if (providers.gradleProperty("madbProfile").orElse("ordinary").get() == "test") "src/testSupportMain/kotlin" else "src/ordinaryMain/kotlin")
+    sourceSets.getByName("ohosArm64Main").dependencies { implementation("org.jetbrains.kotlinx:atomicfu:0.31.0-1.0.0") }
+}
+configure<FfiExtension> {
+    runtimeVersion.set("1.1.0") // Substituted above with this build's patched source project.
+    annotationVersion.set("1.1.0")
+    kspVersion.set("1.1.0")
+    generationMode.set("compact")
+    dtsOutput.set(rootProject.layout.projectDirectory.file("artifacts/ffi_export.d.ts"))
+    releaseSoOutputDir.set(rootProject.layout.projectDirectory.dir("artifacts"))
+}
+tasks.withType<KotlinCompilationTask<*>>().matching { it.name == "kspKotlinOhosArm64" }.configureEach {
+    compilerOptions.apiVersion.set(KotlinVersion.KOTLIN_1_9)
+}
+
+dependencies { add("kspOhosArm64", project(":record-codegen")) }
+
+tasks.matching { it.name == "cinteropExecutorOhosArm64" }.configureEach { inputs.file(rootProject.file("native/lib/libmadb_kn_executor.a")) }

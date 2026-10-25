@@ -1,0 +1,112 @@
+{
+  "format": 70603,
+  "length": 22,
+  "wire": "decimal CSV String; preserve uint64 strings",
+  "fields": [
+    {
+      "index": 0,
+      "name": "Format"
+    },
+    {
+      "index": 1,
+      "name": "LedgerCurrentBytes"
+    },
+    {
+      "index": 2,
+      "name": "LedgerPeakBytes"
+    },
+    {
+      "index": 3,
+      "name": "LedgerChargedBytes"
+    },
+    {
+      "index": 4,
+      "name": "LedgerRetiredBytes"
+    },
+    {
+      "index": 5,
+      "name": "ModelRequestedCurrentBytes"
+    },
+    {
+      "index": 6,
+      "name": "ModelRequestedPeakBytes"
+    },
+    {
+      "index": 7,
+      "name": "ModelAllocatedBytes"
+    },
+    {
+      "index": 8,
+      "name": "ModelFreedBytes"
+    },
+    {
+      "index": 9,
+      "name": "ModelAllocations"
+    },
+    {
+      "index": 10,
+      "name": "ModelFrees"
+    },
+    {
+      "index": 11,
+      "name": "StagingCurrentBytes"
+    },
+    {
+      "index": 12,
+      "name": "StagingPeakBytes"
+    },
+    {
+      "index": 13,
+      "name": "StagingAddedBytes"
+    },
+    {
+      "index": 14,
+      "name": "StagingCommittedBytes"
+    },
+    {
+      "index": 15,
+      "name": "StagingAbandonedBytes"
+    },
+    {
+      "index": 16,
+      "name": "Utf16CurrentRequestedBytes"
+    },
+    {
+      "index": 17,
+      "name": "Utf16PeakRequestedBytes"
+    },
+    {
+      "index": 18,
+      "name": "Utf16AllocatedBytes"
+    },
+    {
+      "index": 19,
+      "name": "Utf16FreedBytes"
+    },
+    {
+      "index": 20,
+      "name": "Utf16Allocations"
+    },
+    {
+      "index": 21,
+      "name": "Utf16Releases"
+    }
+  ],
+  "scope": "Actual boundary counters only; no second owner",
+  "units": "bytes are requested allocation bytes or canonical UTF8 ledger bytes, not RSS",
+  "lifetime": "cumulative per loaded test provider; no reset; read under existing business owner lock for fields1..15 and owner env for UTF fields",
+  "canonical": "retained model UTF8 byte counts, excludes synchronous scratch; real staging clones remain charged until commit/abort",
+  "model": "nativeHeap.allocArray<ByteVar>(maxOf(1,actualUTF8size)); increment only after success; decrement after actual free including constructor failure",
+  "staging": "actual successfully cloned precommit models; commit transfers role without freeing new model; abandon decrements after actual free",
+  "utf16": "actual allocArray<UShortVar>(UTF16length+1); count2*(length+1); decrement in outer finally after memScoped cleanup on success/error",
+  "excluded": [
+    "Kotlin managed object/String/ByteArray heap",
+    "allocator metadata/alignment overhead",
+    "other native small scalar scope allocations",
+    "RSS",
+    "platform/VM internals"
+  ],
+  "representability": "Counters are uint64 within finite test observation windows; no unbounded-execution monotonicity claim",
+  "access": "Pure native bootstrap testMemoryAudit calls test-only CName metrics after provider already loaded; no new dlopen. Readable after physical ACK; unavailable before library load. No JS number conversion.",
+  "unknown": "UINT64_MAX returned by the pure metric CName indicates metric failure/unsupported index, never a fabricated zero; provider unavailable is explicit before loading."
+}

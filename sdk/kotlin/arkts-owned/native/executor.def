@@ -1,0 +1,3 @@
+package = com.madb.c07.executor
+headers = executor.h lifecycle.h main_gate.h
+staticLibraries = libmadb_kn_executor.a

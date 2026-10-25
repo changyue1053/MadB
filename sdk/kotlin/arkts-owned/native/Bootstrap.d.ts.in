@@ -1,0 +1,18 @@
+// Native bootstrap/control ABI, authored separately from the actual KSP declarations.
+import { @MADB_KOTLIN_RECORD@, RuntimeDispatcher } from './record-export';
+export { @MADB_KOTLIN_RECORD@, RuntimeDispatcher } from './record-export';
+export interface OwnedApi {
+  readonly __admissionKey: string;
+@MADB_KOTLIN_METHODS@
+}
+export interface Bootstrap {
+  initialize(expected: string): OwnedApi;
+  commit(runtime: string): string;
+  abortAdmission(runtime: string): number[];
+  poll(runtime: string): number[];
+  audit(): number[];
+  consumeReceipt(runtime: string): number[];
+  bootstrapAudit(): number[];
+}
+declare const native: Bootstrap;
+export default native;

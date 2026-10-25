@@ -1,0 +1,488 @@
+Copyright and attribution blocks from the exact published CPF source archive.
+
+ohosMain/internal/TimeZoneNative.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+ohosMain/internal/TzdbBionic.kt
+/*
+ * Copyright 2019-2026 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/*
+ * Based on the bionic project.
+ * Copyright (C) 2017 The Android Open Source Project
+ */
+
+tzdbOnFilesystemMain/internal/TzdbOnFilesystem.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+tzdbOnFilesystemMain/internal/filesystem.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+tzfileMain/internal/filesystem.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/DeprecatedInstant.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/Instant.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonKotlinMain/LocalDate.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonKotlinMain/LocalDateTime.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonKotlinMain/LocalTime.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonKotlinMain/Month.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/TimeZone.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonKotlinMain/UtcOffset.kt
+/*
+ * Copyright 2019-2021 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/YearMonth.kt
+/*
+ * Copyright 2019-2025 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/ZonedDateTime.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonKotlinMain/internal/MonthDayTime.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/OffsetInfo.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/Platform.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/RegionTimeZone.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/TimeZoneDatabase.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/TimeZoneRules.kt
+/*
+ * Copyright 2019-2025 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/Tzfile.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/dateCalculations.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonKotlinMain/internal/mathNative.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+/* Based on the ThreeTenBp project.
+ * Copyright (c) 2007-present, Stephen Colebourne & Michael Nascimento Santos
+ */
+
+commonMain/Clock.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/DateTimePeriod.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/DateTimeUnit.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/DayOfWeek.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/DeprecatedClock.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/DeprecatedInstant.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/Exceptions.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/Instant.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/LocalDate.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/LocalDateRange.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/LocalDateTime.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/LocalTime.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/Month.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/TimeZone.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/UtcOffset.kt
+/*
+ * Copyright 2019-2021 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/YearMonth.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/YearMonthRange.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/DateTimeComponents.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/DateTimeFormat.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/DateTimeFormatBuilder.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/LocalDateFormat.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/LocalDateTimeFormat.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/LocalTimeFormat.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/Unicode.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/UtcOffsetFormat.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/format/YearMonthFormat.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/BinaryDataReader.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/dateCalculations.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/math.kt
+/*
+ * Copyright 2019-2020 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/toKotlinCode.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/util.kt
+/*
+ * Copyright 2019-2024 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/Builder.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/FieldFormatDirective.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/FieldSpec.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/FormatStructure.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/Predicate.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/formatter/Formatter.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/formatter/FormatterOperation.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/parser/NumberConsumer.kt
+/*
+ * Copyright 2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/parser/ParseResult.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/parser/Parser.kt
+/*
+ * Copyright 2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/internal/format/parser/ParserOperation.kt
+/*
+ * Copyright 2023 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/DateTimePeriodSerializers.kt
+/*
+ * Copyright 2019-2021 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/DateTimeUnitSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/DayOfWeekSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/DeprecatedInstantSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/InstantSerializers.kt
+/*
+ * Copyright 2019-2025 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/LocalDateSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/LocalDateTimeSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/LocalTimeSerializers.kt
+/*
+ * Copyright 2019-2022 JetBrains s.r.o. and contributors.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/MonthSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/TimeZoneSerializers.kt
+/*
+ * Copyright 2019-2021 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */
+
+commonMain/serializers/YearMonthSerializers.kt
+/*
+ * Copyright 2019-2023 JetBrains s.r.o.
+ * Use of this source code is governed by the Apache 2.0 License that can be found in the LICENSE.txt file.
+ */

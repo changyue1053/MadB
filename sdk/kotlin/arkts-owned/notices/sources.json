@@ -1,0 +1,155 @@
+{
+  "schema": "madb.kotlin-runtime-license-sources/1",
+  "scope": "Published CPF runtime POMs and exact distributed KLIB manifests; upstream license texts, not a source-to-binary equivalence claim",
+  "libraries": [
+    {
+      "library": "atomicfu",
+      "published_coordinate": "org.jetbrains.kotlinx:atomicfu-ohosarm64:0.31.0-1.0.0",
+      "license_file": "atomicfu/LICENSE.txt",
+      "license_source": {
+        "url": "https://raw.githubusercontent.com/Kotlin/kotlinx.atomicfu/0.31.0/LICENSE.txt",
+        "sha256": "f4def61b03500df363b99b1781d37b345d335129d33e28d7193de2e6bdb33e96",
+        "size": 596
+      },
+      "artifacts": [
+        {
+          "relative_path": "org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0-cinterop-interop.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0-cinterop-interop.klib",
+          "sha256": "de40b30b770b2ad33431ab9747ad509331da34b5f2fbe1a2c5277c33e19ef334",
+          "bytes": 3529,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-1.0.0\ndepends=stdlib\nexportForwardDeclarations=\nincludedForwardDeclarations=\nincludedHeaders=0f93b0dcf9a50062372dae3e18aee7c05b4fd0ae58c61341d4a72187ef4cc294\ninterop=true\nir_provider=kotlin.native.cinterop\nir_signature_versions=1,2\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\npackage=interop\nunique_name=org.jetbrains.kotlinx\\:atomicfu-cinterop-interop\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0.klib",
+          "sha256": "4f54c4b6518f461d4e930e3c0b45133451ec053f053b9c61e8e2c556515ff8bd",
+          "bytes": 70372,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-1.0.0\ndepends=stdlib org.jetbrains.kotlinx\\:atomicfu-cinterop-interop org.jetbrains.kotlin.native.platform.posix\nir_signature_versions=1,2\nlanguage_features=+MultiPlatformProjects\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\nshort_name=atomicfu\nunique_name=org.jetbrains.kotlinx\\:atomicfu\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0.pom",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0.pom",
+          "sha256": "79c3190a9bcaf2432bac042ea781782c61781717235b1dbdfb33cbee4ff1c793",
+          "bytes": 1660
+        }
+      ],
+      "published_source_archive": {
+        "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/atomicfu-ohosarm64/0.31.0-1.0.0/atomicfu-ohosarm64-0.31.0-1.0.0-sources.jar",
+        "sha256": "856a82880e8be9b763976f38a765b3886d01cfa3056493def7fce61ebe11659a",
+        "size": 21883,
+        "license_or_notice_members": [],
+        "extracted_notice_file": "atomicfu/SOURCE-NOTICES.txt"
+      }
+    },
+    {
+      "library": "coroutines",
+      "published_coordinate": "org.jetbrains.kotlinx:kotlinx-coroutines-core-ohosarm64:1.10.2-1.0.0",
+      "license_file": "coroutines/LICENSE.txt",
+      "license_source": {
+        "url": "https://raw.githubusercontent.com/Kotlin/kotlinx.coroutines/1.10.2/LICENSE.txt",
+        "sha256": "b1febe6399dffb10d19d35e7663ab16300c93cb0476a94115df1cc0097a8ffd8",
+        "size": 11398
+      },
+      "artifacts": [
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0.klib",
+          "sha256": "07c0f218b4455ae36aab2bf260de38e669d787d5ceae61a38b631067222ed772",
+          "bytes": 1018386,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-1.0.0\ndepends=stdlib org.jetbrains.kotlinx\\:atomicfu-cinterop-interop org.jetbrains.kotlin.native.platform.posix org.jetbrains.kotlinx\\:atomicfu org.jetbrains.kotlinx\\:kotlinx-coroutines-core-cinterop-interop org.jetbrains.kotlin.native.platform.HiLog org.jetbrains.kotlin.native.platform.FFRT\nir_signature_versions=1,2\nlanguage_features=+CheckOptInOnPureEnumEntries +ErrorAboutDataClassCopyVisibilityChange +ForbidAnnotationsWithUseSiteTargetOnExpressions +ForbidCaptureInlinableLambdasInJsCode +ForbidCompanionInLocalInnerClass +ForbidExposingLessVisibleTypesInInline +ForbidExposingPackagePrivateInInternal +ForbidImplementationByDelegationWithDifferentGenericSignature +ForbidInitializationBeforeDeclarationInAnonymous +ForbidJvmSerializableLambdaOnInlinedFunctionLiterals +ForbidObjectDelegationToItself +ForbidParenthesizedLhsInAssignments +ForbidReturnInExpressionBodyWithoutExplicitTypeEdgeCases +ForbidTypeAliasWithMissingDependencyType +MultiPlatformProjects +ProhibitNullableTypeThroughTypealias +ReportExposedTypeForInternalTypeParameterBounds +UnstableSmartcastOnDelegatedProperties\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\nshort_name=kotlinx-coroutines-core\nunique_name=org.jetbrains.kotlinx\\:kotlinx-coroutines-core\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0-cinterop-interop.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0-cinterop-interop.klib",
+          "sha256": "8e532d505f7993441e213d2a4c0c8d97a46aa7aaa9ebb788b03ea88466886696",
+          "bytes": 7151,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-1.0.0\ndepends=stdlib\nexportForwardDeclarations=\nheaders=func.h\nincludedForwardDeclarations=\nincludedHeaders=861b3007f4b900a0769da30f24c0c7f84e7501f4073507be81bdd6dbdd29e6c4 c85045e32fa328b1dda2d25a448e8f06213b664b109dba63899aa0f4259ddd3c\ninterop=true\nir_provider=kotlin.native.cinterop\nir_signature_versions=1,2\nlibraryPaths=libs/arm64-v8a\nlinkerOpts=-lace_napi.z\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\npackage=kotlinx.coroutines\nstaticLibraries=libnapi_func.a\nunique_name=org.jetbrains.kotlinx\\:kotlinx-coroutines-core-cinterop-interop\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0.pom",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0.pom",
+          "sha256": "c862433937caf83c2d7d9f03a0c415ce60b1b8517231f0aa16600302337f1323",
+          "bytes": 1914
+        }
+      ],
+      "published_source_archive": {
+        "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-coroutines-core-ohosarm64/1.10.2-1.0.0/kotlinx-coroutines-core-ohosarm64-1.10.2-1.0.0-sources.jar",
+        "sha256": "6f1eb2729cd6151daffce0c682f9dc525ad9471a085b4d1b4da57000136b863a",
+        "size": 331675,
+        "license_or_notice_members": [],
+        "extracted_notice_file": "coroutines/SOURCE-NOTICES.txt"
+      }
+    },
+    {
+      "library": "datetime",
+      "published_coordinate": "org.jetbrains.kotlinx:kotlinx-datetime-ohosarm64:0.7.1-1.0.0",
+      "license_file": "datetime/LICENSE.txt",
+      "license_source": {
+        "url": "https://raw.githubusercontent.com/Kotlin/kotlinx-datetime/v0.7.1/LICENSE.txt",
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "size": 11358
+      },
+      "artifacts": [
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0-cinterop-cppFunctions.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0-cinterop-cppFunctions.klib",
+          "sha256": "a654811106de311ba62166194a667021a065fbf2018fefeb0219c642417ce6d5",
+          "bytes": 3979,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-1.0.0\ndepends=stdlib\nexportForwardDeclarations=\nheaders=BasicServicesKit/time_service.h\nincludedForwardDeclarations=\nincludedHeaders=\ninterop=true\nir_provider=kotlin.native.cinterop\nir_signature_versions=1,2\nlinkerOpts=-ltime_service_ndk\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\npackage=platform.framework\nunique_name=org.jetbrains.kotlinx\\:kotlinx-datetime-cinterop-cppFunctions\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0.klib",
+          "sha256": "6c2c4b0b7503ed53df95156c2b709dab30bfbb9110ee482f7e916cefa95678c5",
+          "bytes": 683894,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-1.0.0\ndepends=stdlib org.jetbrains.kotlinx\\:kotlinx-serialization-core org.jetbrains.kotlinx\\:kotlinx-datetime-cinterop-cppFunctions org.jetbrains.kotlin.native.platform.posix org.jetbrains.kotlin.native.platform.TimeService\nir_signature_versions=1,2\nlanguage_features=+MultiPlatformProjects\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\nshort_name=kotlinx-datetime\nunique_name=org.jetbrains.kotlinx\\:kotlinx-datetime\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0.pom",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0.pom",
+          "sha256": "c4f753c8cf232d5dd3e9a6f352d2ec62f3bcad1308c2e82f05c63035d3f4b824",
+          "bytes": 1831
+        }
+      ],
+      "published_source_archive": {
+        "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-datetime-ohosarm64/0.7.1-1.0.0/kotlinx-datetime-ohosarm64-0.7.1-1.0.0-sources.jar",
+        "sha256": "a652f8b26bdae7cae0319ebfea5e5f0339031bf05a7152a1f60458feb582479f",
+        "size": 173395,
+        "license_or_notice_members": [],
+        "extracted_notice_file": "datetime/SOURCE-NOTICES.txt"
+      }
+    },
+    {
+      "library": "serialization",
+      "published_coordinate": "org.jetbrains.kotlinx:kotlinx-serialization-core-ohosarm64:1.9.1-1.0.0",
+      "license_file": "serialization/LICENSE.txt",
+      "license_source": {
+        "url": "https://raw.githubusercontent.com/Kotlin/kotlinx.serialization/v1.9.0/LICENSE.txt",
+        "sha256": "c5accbbd8546e94c34aed24afe689a617627d18eed5a6c48277e48db57c23851",
+        "size": 11356
+      },
+      "artifacts": [
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-serialization-core-ohosarm64/1.9.1-1.0.0/kotlinx-serialization-core-ohosarm64-1.9.1-1.0.0.klib",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-serialization-core-ohosarm64/1.9.1-1.0.0/kotlinx-serialization-core-ohosarm64-1.9.1-1.0.0.klib",
+          "sha256": "c590820fbc035d2f7ea4f4fc6a9bff29dc215f6dcd9a802f4073fcdf6f8b2a39",
+          "bytes": 371251,
+          "klib_manifest": "abi_version=2.2.0\nbuiltins_platform=NATIVE\ncompiler_version=2.2.21-0.3.0\ndepends=stdlib\nir_signature_versions=1,2\nlanguage_features=+CheckOptInOnPureEnumEntries +ErrorAboutDataClassCopyVisibilityChange +ForbidAnnotationsWithUseSiteTargetOnExpressions +ForbidCaptureInlinableLambdasInJsCode +ForbidCompanionInLocalInnerClass +ForbidExposingLessVisibleTypesInInline +ForbidExposingPackagePrivateInInternal +ForbidImplementationByDelegationWithDifferentGenericSignature +ForbidInitializationBeforeDeclarationInAnonymous +ForbidJvmSerializableLambdaOnInlinedFunctionLiterals +ForbidObjectDelegationToItself +ForbidParenthesizedLhsInAssignments +ForbidReturnInExpressionBodyWithoutExplicitTypeEdgeCases +ForbidTypeAliasWithMissingDependencyType +MultiPlatformProjects +ProhibitNullableTypeThroughTypealias +ReportExposedTypeForInternalTypeParameterBounds +UnstableSmartcastOnDelegatedProperties\nmetadata_version=1.4.1\nnative_targets=ohos_arm64\nshort_name=kotlinx-serialization-core\nunique_name=org.jetbrains.kotlinx\\:kotlinx-serialization-core\n"
+        },
+        {
+          "relative_path": "org/jetbrains/kotlinx/kotlinx-serialization-core-ohosarm64/1.9.1-1.0.0/kotlinx-serialization-core-ohosarm64-1.9.1-1.0.0.pom",
+          "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-serialization-core-ohosarm64/1.9.1-1.0.0/kotlinx-serialization-core-ohosarm64-1.9.1-1.0.0.pom",
+          "sha256": "414c4817daa9a6fc107114e8b800dd73df3fcea5ddf577ece62786a12683dba7",
+          "bytes": 1737
+        }
+      ],
+      "published_source_archive": {
+        "url": "https://maven.eazytec-cloud.com/nexus/repository/maven-public/org/jetbrains/kotlinx/kotlinx-serialization-core-ohosarm64/1.9.1-1.0.0/kotlinx-serialization-core-ohosarm64-1.9.1-1.0.0-sources.jar",
+        "sha256": "2b897ed7572ed8e48e848d5705037063c97bfdc7a892e1f61df26835f688ae35",
+        "size": 103683,
+        "license_or_notice_members": [],
+        "extracted_notice_file": "serialization/SOURCE-NOTICES.txt"
+      }
+    }
+  ]
+}

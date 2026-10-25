@@ -1,0 +1,28 @@
+{
+  "format": 1,
+  "length": 4,
+  "wire": "number[]",
+  "fields": [
+    {
+      "index": 0,
+      "name": "Format",
+      "domain": "constant1"
+    },
+    {
+      "index": 1,
+      "name": "Closing",
+      "domain": "boolean flag0or1"
+    },
+    {
+      "index": 2,
+      "name": "Closed",
+      "domain": "boolean flag0or1"
+    },
+    {
+      "index": 3,
+      "name": "ListenerPresent",
+      "domain": "boolean flag0or1"
+    }
+  ],
+  "scope": "Pure JS reads on original branded ResourceRecord, including a retained retired Subscription wrapper; no NAPI/new owner/GC reachability claim"
+}

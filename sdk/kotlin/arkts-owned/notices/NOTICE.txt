@@ -1,0 +1,24 @@
+CPF Kotlin runtime dependencies included in this distribution
+
+The runtime links the following published CPF fork artifacts, including their
+platform cinterop KLIBs and transitive serialization dependency:
+  org.jetbrains.kotlinx:atomicfu-ohosarm64:0.31.0-1.0.0
+  org.jetbrains.kotlinx:kotlinx-coroutines-core-ohosarm64:1.10.2-1.0.0
+  org.jetbrains.kotlinx:kotlinx-datetime-ohosarm64:0.7.1-1.0.0
+  org.jetbrains.kotlinx:kotlinx-serialization-core-ohosarm64:1.9.1-1.0.0
+
+Their published POMs name JetBrains Team / JetBrains s.r.o. and declare the
+Apache License, Version 2.0. Those exact POMs and the upstream license files are
+included beside this notice, with the complete Apache 2.0 license. These are
+CPF fork coordinates, not unmodified JetBrains binary releases. The current
+consumer does not modify these dependency KLIBs.
+
+sources.json records the public acquisition URLs, exact POM/KLIB hashes and
+native KLIB dependency manifests. Upstream license texts are independently
+retrieved from their named release tags; their inclusion does not assert a
+source-to-binary or version equivalence for the CPF forks. The serialization
+license text is from upstream v1.9.0; the distributed fork's actual license
+and version declaration is its accompanying 1.9.1-1.0.0 POM.
+
+The compiler runtime and LLVM/libc++ notices are distributed separately.
+Build-only Gradle, KSP and JVM dependencies are not part of this runtime notice.

@@ -1,0 +1,31 @@
+Copyright and attribution blocks from the exact published CPF source archive.
+
+nativeMain/kotlinx/atomicfu/AtomicFU.kt
+/*
+ * Copyright 2017-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+nativeMain/kotlinx/atomicfu/Trace.kt
+/*
+ * Copyright 2016-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+commonMain/kotlinx/atomicfu/AtomicFU.common.kt
+/*
+ * Copyright 2017-2018 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+commonMain/kotlinx/atomicfu/Trace.common.kt
+/*
+ * Copyright 2016-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+commonMain/kotlinx/atomicfu/TraceFormat.kt
+/*
+ * Copyright 2016-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+commonMain/kotlinx/atomicfu/locks/Synchronized.common.kt
+/*
+ * Copyright 2017-2024 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */

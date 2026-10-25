@@ -1,0 +1,55 @@
+diff --git a/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt b/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt
+--- a/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt
++++ b/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt
+@@ -104,19 +104,27 @@
+             throw ManagedRecordCodecException("range", "$field must be finite integral int32")
+         number.toInt() // -0 is accepted and normalized to +0 on the copied result.
+     }
+-    fun string(env: napi_env?, value: napi_value?, field: String): String = memScoped {
++    fun string(env: napi_env?, value: napi_value?, field: String): String {
++        val observer = ManagedRecordMemoryProbe // initialize before tracked allocation
++        var trackedBytes = 0
++        try {
++            return memScoped {
+         type(env, value, napi_valuetype.napi_string, field)
+         val length = alloc<size_tVar>(); length.value = 0uL
+         status(napi_get_value_string_utf16(env, value, null, 0uL, length.ptr), "UTF16 length $field")
+         if (length.value > 1024uL) throw ManagedRecordCodecException("range", "$field exceeds UTF16 bound")
+         val count = length.value.toInt()
+         val chars = allocArray<UShortVar>(count + 1)
++        trackedBytes = (count + 1) * 2
++        observer.allocated(trackedBytes)
+         val copied = alloc<size_tVar>(); copied.value = 0uL
+         status(napi_get_value_string_utf16(env, value, chars, (count + 1).toULong(), copied.ptr), "UTF16 read $field")
+         if (copied.value != length.value) throw ManagedRecordCodecException("napi", "Record string length changed")
+         val result = CharArray(count) { chars[it].toInt().toChar() }.concatToString()
+         validateString(result, field)
+         result
++            }
++        } finally { if (trackedBytes != 0) observer.released(trackedBytes) }
+     }
+     fun validateString(text: String, field: String) {
+         if (text.length > 1024) throw ManagedRecordCodecException("range", "$field exceeds UTF16 bound")
+@@ -156,13 +164,21 @@
+         status(napi_create_int32(env, value, out.ptr), "create int32")
+         ownProperty(env, obj, field, out.value)
+     }
+-    fun setString(env: napi_env?, obj: napi_value?, field: String, text: String) = memScoped {
++    fun setString(env: napi_env?, obj: napi_value?, field: String, text: String) {
++        val observer = ManagedRecordMemoryProbe // initialize before tracked allocation
++        var trackedBytes = 0
++        try {
++            return memScoped {
+         validateString(text, field)
+         val chars = allocArray<UShortVar>(text.length + 1)
++        trackedBytes = (text.length + 1) * 2
++        observer.allocated(trackedBytes)
+         text.forEachIndexed { index, ch -> chars[index] = ch.code.toUShort() }
+         chars[text.length] = 0u
+         val out = alloc<napi_valueVar>(); out.value = null
+         status(napi_create_string_utf16(env, chars, text.length.toULong(), out.ptr), "create UTF16")
+         ownProperty(env, obj, field, out.value)
++            }
++        } finally { if (trackedBytes != 0) observer.released(trackedBytes) }
+     }
+ }

@@ -1,0 +1,7 @@
+rootProject.name = "madb-managed-akinterop-mainenv-v1"
+include(":runtime", ":probe", ":record-codegen")
+dependencyResolutionManagement {
+    repositories {
+        maven(url = uri("@MAVEN@"))
+    }
+}

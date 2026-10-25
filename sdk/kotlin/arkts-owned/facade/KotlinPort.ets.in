@@ -1,0 +1,86 @@
+import bootstrap, { OwnedApi, Snapshot, RuntimeDispatcher } from '@MADB_KOTLIN_NATIVE_MODULE@';
+
+// A facade-owned JS normalization type. This is not another Kotlin record and
+// never crosses NAPI: only the actual KSP Snapshot does.
+export interface NativeCopy { status: number; value: number; text: string; }
+type Dispatch = (kind: number, handle: string, copy: NativeCopy | null) => void;
+class PortError extends Error implements Error {
+  readonly code: string;
+  constructor(code: string) { super(code); this.code = code; }
+}
+class Dispatcher implements RuntimeDispatcher {
+  private readonly dispatch: Dispatch;
+  constructor(dispatch: Dispatch) { this.dispatch = dispatch; }
+  onReady(): void { this.dispatch(0, '', null); }
+  onValue(handle: string, snapshot: Snapshot): void {
+    this.dispatch(1, handle, { status: 0, value: snapshot.value, text: snapshot.text });
+  }
+  onClosed(handle: string, status: number): void {
+    this.dispatch(2, handle, { status: status, value: 0, text: '' });
+  }
+}
+function recordCall<T>(call: () => T): T {
+  try { return call(); }
+  catch (error) {
+    // Public facade already evaluated user getters outside nativeCall. The
+    // adapter constructs own-data fields, so these are codec validation errors.
+    const reason: Error = error as Error;
+    const code: string = (reason as PortError).code;
+    if (code === 'ERR_RECORD_TYPE' || code === 'ERR_RECORD_RANGE') { throw new PortError('InvalidArgument'); }
+    throw reason;
+  }
+}
+class KotlinPort {
+  private api: OwnedApi | undefined = undefined;
+  private current(): OwnedApi {
+    if (this.api === undefined) { throw new PortError('Closed'); }
+    return this.api;
+  }
+  runtimeOpen(expected: string, callback: Dispatch): string {
+    const dispatcher: RuntimeDispatcher = new Dispatcher(callback);
+    const api: OwnedApi = bootstrap.initialize(expected);
+    this.api = api;
+    try {
+      const key: string = api.ownedOpen(dispatcher);
+      return bootstrap.commit(key);
+    } catch (error) { bootstrap.abortAdmission(api.__admissionKey); throw error as Error; }
+  }
+  connect(runtime: string): string { return this.current().ownedConnect(runtime); }
+  roundtrip(engine: string, value: number, text: string): NativeCopy {
+    const snapshot: Snapshot = recordCall(() => this.current().ownedRoundtrip({ value: value, text: text }, engine));
+    return { status: 0, value: snapshot.value, text: snapshot.text };
+  }
+  submit(engine: string, value: number, text: string): string {
+    return recordCall(() => this.current().ownedSubmit({ value: value, text: text }, engine));
+  }
+  publish(engine: string, stream: number, value: number, text: string): void {
+    recordCall(() => this.current().ownedPublish({ value: value, text: text }, engine, stream));
+  }
+  observe(engine: string, stream: number): string { return this.current().ownedObserve(engine, stream); }
+  cancel(handle: string): void { this.current().ownedCancel(handle); }
+  requestClose(handle: string): void { this.current().ownedRequestClose(handle); }
+  claimResult(handle: string, id: string): void { this.current().ownedClaimResult(handle, id); }
+  watchClose(handle: string, id: string): number { return this.current().ownedWatchClose(handle, id); }
+  tryTake(runtime: string, id: string): NativeCopy | null {
+    const api: OwnedApi = this.current();
+    const status: number = api.ownedPeek(runtime, id);
+    if (status === 7) { return null; }
+    if (status === 0) {
+      const snapshot: Snapshot = api.ownedTakeSnapshot(runtime, id);
+      try { return { status: 0, value: snapshot.value, text: snapshot.text }; }
+      catch (_error) { throw new PortError('DeliveryFailureConsumed'); }
+    }
+    // Private 11 tag is a successful close receipt, not a second value shape.
+    const outcome: number = api.ownedTakeStatus(runtime, id);
+    try { return { status: outcome, value: 0, text: '' }; }
+    catch (_error) { throw new PortError('DeliveryFailureConsumed'); }
+  }
+  deliver(subscription: string): number { return this.current().ownedDeliver(subscription); }
+  requestRuntimeClose(runtime: string): void { this.current().ownedRuntimeClose(runtime); }
+  pollRuntime(runtime: string): number[] { return bootstrap.poll(runtime); }
+  consumeRuntimeReceipt(runtime: string): number[] { return bootstrap.consumeReceipt(runtime); }
+  // Separate test-support consumers call these private ports, never business UI.
+  audit(): number[] { return bootstrap.audit(); }
+  bootstrapAudit(): number[] { return bootstrap.bootstrapAudit(); }
+}
+export default new KotlinPort();

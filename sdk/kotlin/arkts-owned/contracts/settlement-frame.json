@@ -1,0 +1,36 @@
+{
+  "length": 7,
+  "wire": "number[]",
+  "fields": [
+    {
+      "index": 0,
+      "name": "Arms"
+    },
+    {
+      "index": 1,
+      "name": "Hits"
+    },
+    {
+      "index": 2,
+      "name": "ResolveAccepted"
+    },
+    {
+      "index": 3,
+      "name": "RejectAccepted"
+    },
+    {
+      "index": 4,
+      "name": "Exceptions"
+    },
+    {
+      "index": 5,
+      "name": "CurrentSettling"
+    },
+    {
+      "index": 6,
+      "name": "MaxObservedWaiterMap"
+    }
+  ],
+  "scope": "JS Session observer at actual waiter accept/reject return before finally detaches owner; no native ownership fabricated; Map size includes currently settling waiter",
+  "lifetime": "Runtime JS wrapper lifetime; closure action one-shot, cleared before invocation and on close/fail"
+}

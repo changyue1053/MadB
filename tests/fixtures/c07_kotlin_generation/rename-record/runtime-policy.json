@@ -1,0 +1,571 @@
+{
+  "schema": "madb.private.arkts-runtime-policy.v1",
+  "purpose": "Actual Kotlin Parcel declaration plus public Parcel/copyRecord fixture; fixed owned runtime and frontend policy unchanged",
+  "authority": {
+    "path": "docs/adr/0013-arkts-runtime-and-completion.md",
+    "sha256": "sha256:8280c27c0fd7c2d439cfa2c75c78837060ab01035553a74257a0d868466341ad",
+    "size": 10679
+  },
+  "public_surface": {
+    "records": [
+      {
+        "name": "Parcel",
+        "fields": [
+          {
+            "name": "value",
+            "type": {
+              "tag": "number"
+            }
+          },
+          {
+            "name": "text",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ]
+      }
+    ],
+    "resources": [
+      {
+        "name": "Runtime",
+        "methods": [
+          {
+            "name": "connect",
+            "owner": "Runtime",
+            "params": [],
+            "returns": {
+              "tag": "reference",
+              "name": "Engine"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Runtime",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Engine",
+        "methods": [
+          {
+            "name": "copyRecord",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Parcel"
+            }
+          },
+          {
+            "name": "startOperation",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Operation"
+            }
+          },
+          {
+            "name": "publishState",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "publishEvent",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "value",
+                "type": {
+                  "tag": "reference",
+                  "name": "Parcel"
+                }
+              }
+            ],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "observeState",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "listener",
+                "type": {
+                  "tag": "callback",
+                  "params": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "tag": "reference",
+                        "name": "Parcel"
+                      }
+                    }
+                  ],
+                  "returns": {
+                    "tag": "void"
+                  }
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "observeEvents",
+            "owner": "Engine",
+            "params": [
+              {
+                "name": "listener",
+                "type": {
+                  "tag": "callback",
+                  "params": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "tag": "reference",
+                        "name": "Parcel"
+                      }
+                    }
+                  ],
+                  "returns": {
+                    "tag": "void"
+                  }
+                }
+              }
+            ],
+            "returns": {
+              "tag": "reference",
+              "name": "Subscription"
+            }
+          },
+          {
+            "name": "requestClose",
+            "owner": "Engine",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Engine",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Operation",
+        "methods": [
+          {
+            "name": "result",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "reference",
+                "name": "Parcel"
+              }
+            }
+          },
+          {
+            "name": "requestCancel",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Operation",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Subscription",
+        "methods": [
+          {
+            "name": "requestStop",
+            "owner": "Subscription",
+            "params": [],
+            "returns": {
+              "tag": "void"
+            }
+          },
+          {
+            "name": "close",
+            "owner": "Subscription",
+            "params": [],
+            "returns": {
+              "tag": "promise",
+              "item": {
+                "tag": "void"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "errors": [
+      {
+        "name": "BoundaryError",
+        "fields": [
+          {
+            "name": "code",
+            "type": {
+              "tag": "string"
+            }
+          }
+        ],
+        "constructors": [
+          {
+            "params": [
+              {
+                "name": "code",
+                "type": {
+                  "tag": "string"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "functions": [
+      {
+        "name": "openRuntime",
+        "owner": null,
+        "params": [],
+        "returns": {
+          "tag": "reference",
+          "name": "Runtime"
+        }
+      }
+    ]
+  },
+  "values": {
+    "Parcel.value": {
+      "source_type": {
+        "tag": "number"
+      },
+      "type_id": "i32",
+      "definition": {
+        "kind": "integer",
+        "width": 32,
+        "signed": true
+      }
+    },
+    "Parcel.text": {
+      "source_type": {
+        "tag": "string"
+      },
+      "type_id": "utf8.1024",
+      "definition": {
+        "kind": "string",
+        "encoding": "utf-8",
+        "max_bytes": 1024
+      }
+    }
+  },
+  "calls": {
+    "openRuntime": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.openRuntime.v1"
+    },
+    "Runtime.connect": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Runtime.connect.v1"
+    },
+    "Runtime.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Runtime.close.v1"
+    },
+    "Engine.startOperation": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.startOperation.v1"
+    },
+    "Engine.publishState": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.publishState.v1"
+    },
+    "Engine.publishEvent": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.publishEvent.v1"
+    },
+    "Engine.observeState": {
+      "kind": "stream",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported",
+        "stream_kind": "state",
+        "capacity_items": 3,
+        "capacity_bytes": 4096,
+        "overflow": "coalesce-latest",
+        "ordering": "source",
+        "replay": "none",
+        "recovery": "resubscribe",
+        "stop": "delivery-gate-with-source-lease"
+      },
+      "public_id": "madb.c07.Engine.observeState.v1"
+    },
+    "Engine.observeEvents": {
+      "kind": "stream",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported",
+        "stream_kind": "event",
+        "capacity_items": 8,
+        "capacity_bytes": 4096,
+        "overflow": "reject",
+        "ordering": "source",
+        "replay": "none",
+        "recovery": "resubscribe",
+        "stop": "delivery-gate-with-source-lease"
+      },
+      "public_id": "madb.c07.Engine.observeEvents.v1"
+    },
+    "Engine.requestClose": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.requestClose.v1"
+    },
+    "Engine.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.close.v1"
+    },
+    "Operation.result": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Operation.result.v1"
+    },
+    "Operation.requestCancel": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "work",
+        "cancellation_confirmation": "operation-terminal"
+      },
+      "public_id": "madb.c07.Operation.requestCancel.v1"
+    },
+    "Operation.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Operation.close.v1"
+    },
+    "Subscription.requestStop": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "accepted",
+        "cancellation": "observe",
+        "cancellation_confirmation": "stopped"
+      },
+      "public_id": "madb.c07.Subscription.requestStop.v1"
+    },
+    "Subscription.close": {
+      "kind": "async",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "non-blocking",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Subscription.close.v1"
+    },
+    "Engine.copyRecord": {
+      "kind": "sync",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "result-delivered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "public_id": "madb.c07.Engine.roundtrip.v1"
+    }
+  },
+  "slots": {
+    "resource": {
+      "ownership": "shared",
+      "close": "request-await-release",
+      "release_thread": "runtime-environment"
+    },
+    "value": {
+      "ownership": "copy"
+    },
+    "callback": {
+      "ownership": "shared",
+      "synchronous_callback": true,
+      "reentrant": true,
+      "threading": "runtime-environment",
+      "context_owner": "subscription-owner",
+      "stop": "delivery-gate-with-source-lease",
+      "keep_alive": "source-lease"
+    }
+  },
+  "limits": {
+    "operation_handles": 8,
+    "subscription_handles": 8,
+    "event_tickets": 8,
+    "retained_utf8_bytes": 4096,
+    "result_and_close_waiters": 32,
+    "parent_close_control": 1,
+    "roundtrip_scratch_utf8": 1024,
+    "state_pending": 1,
+    "state_entered": 1,
+    "state_staging_per_selected_subscription": 1
+  },
+  "notes": [
+    "Public contract derives Boundary.ets exported syntax. Gateway is mechanism linkage; provider ABI is separate private C seam, not public resource metadata.",
+    "TypeScript number does not imply Int32; this explicit policy assigns Parcel.value Int32 and text strict bounded UTF-8.",
+    "Native pointers have no inferred ownership; provider protocol remains explicit ADR0013 plus paired same-provider release seam.",
+    "No business Promise cancellation from garbage collection or dropping wait.",
+    "State capacity_items=3 bounds one pending, one entered, and one staging reservation per selected subscription; all staging copies count in the shared 4096 retained UTF-8 budget.",
+    "Callback context_owner=subscription-owner describes the persistent listener registration. keep_alive=source-lease describes in-flight producer/delivery retention until lawful callback exit/drop.",
+    "Logical erased error channel ArkTSError admits unmodified user Error as well as BoundaryError. Actual BoundaryError.code declaration stays in the compiler descriptor; no exhaustive enum is inferred.",
+    "calling_convention=system is an explicit backend logical convention, not a physical C ABI derived from .ets. Physical private C layout remains separate Clang evidence.",
+    "Stream classification comes from this explicit policy; TypeScript AST supplies method/callback signatures and Promise return syntax, not stream lifecycle semantics.",
+    "State capacity_items counts retained version responsibilities, not a public queue depth: latest pending remains one slot, entered callback and pre-commit staging have distinct owners. All count in the shared 4096-byte budget.",
+    "Shared resource self/return slots are backend reference handles whose explicit close belongs to the public owner. The erased ArkTSError channel is owned by ArkTS and is not a closable SDK resource.",
+    "Each call carries an authored stable public_id. SourceKey and API shape remain independently compiler-derived; retaining an ID across an explicit rename does not assert shape compatibility."
+  ],
+  "error_channel": {
+    "id": "ArkTSError",
+    "representation": "backend-handle",
+    "owner": "arkts-runtime",
+    "meaning": "Backend-owned erased ArkTS exception channel, including ordinary BoundaryError(code) and unmodified user Error. Not a finite error enum or an explicitly closable SDK owner."
+  },
+  "frontend_policy": "sdk/kotlin/arkts-owned/frontend-policy.json",
+  "scope": "Shared public Snapshot role policy; Kotlin declarations and bridge facts come from the separately checked actual KSP frontend, never a C seam.",
+  "execution_domain": "main-env-only"
+}

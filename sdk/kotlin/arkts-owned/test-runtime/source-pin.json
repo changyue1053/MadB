@@ -1,0 +1,10 @@
+{
+  "schema": "madb.kotlin-test-codec-memory/1",
+  "scope": "test-only instrumentation applied after the immutable managed-owned-r6 patch; no ordinary codec changes",
+  "path": "ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordCodec.kt",
+  "base_sha256": "3bec361b569474efde507ebb8b9e37e603db4c143a8eeca1465138e47e8aee1a",
+  "result_sha256": "601bb52da585d0816f437e22268576f2efd2ad96c4a67bae382e12c7cd8fc1e7",
+  "patch_sha256": "0bfa22822ee0981851c8e48b80e7d307c90f4268dd984e4f01d08d28a9e55232",
+  "added_path": "ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/ManagedRecordMemoryProbe.kt",
+  "added_sha256": "c68d80ea1fd29316936b4f420ea4527c43662c1e57515a7fbaafec7ec1095f8d"
+}

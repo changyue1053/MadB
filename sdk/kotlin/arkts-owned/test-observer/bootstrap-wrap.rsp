@@ -1,0 +1,12 @@
+--wrap=napi_create_array_with_length
+--wrap=napi_create_double
+--wrap=napi_create_object
+--wrap=napi_create_string_utf8
+--wrap=napi_define_properties
+--wrap=napi_get_cb_info
+--wrap=napi_get_value_double
+--wrap=napi_get_value_string_utf8
+--wrap=napi_is_exception_pending
+--wrap=napi_module_register
+--wrap=napi_throw_error
+--wrap=napi_typeof
