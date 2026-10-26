@@ -1,0 +1,1685 @@
+{
+  "scope": "Shared structural vectors only; original design fixtures remain models, not execution evidence.",
+  "proposal_sha256": "09672664872c3d56fe1b81857692be87f4bd8222e38b012e9d5902055e207fa6",
+  "vectors": [
+    {
+      "id": "template-design-model",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "positive-created-model",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Design wire shape only; not observed execution or a Host receipt."
+    },
+    {
+      "id": "positive-dry-run",
+      "kind": "init-result",
+      "file": "vectors/positive-dry-run.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Design wire shape only; not observed execution or a Host receipt."
+    },
+    {
+      "id": "positive-offline-cache-miss",
+      "kind": "init-result",
+      "file": "vectors/positive-offline-cache-miss.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Design wire shape only; not observed execution or a Host receipt."
+    },
+    {
+      "id": "negative-arbitrary-recipe-argv",
+      "kind": "project-template",
+      "file": "vectors/negative-arbitrary-recipe-argv.json",
+      "patch": [],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "negative-double-sdk-source",
+      "kind": "project-template",
+      "file": "vectors/negative-double-sdk-source.json",
+      "patch": [],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "negative-duplicate-check-key",
+      "kind": "init-result",
+      "file": "vectors/negative-duplicate-check-key.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-inventory-omission",
+      "kind": "project-template",
+      "file": "vectors/negative-inventory-omission.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-json-pointer-overlap",
+      "kind": "project-template",
+      "file": "vectors/negative-json-pointer-overlap.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-missing-required-check",
+      "kind": "init-result",
+      "file": "vectors/negative-missing-required-check.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-open-request-mismatch",
+      "kind": "init-result",
+      "file": "vectors/negative-open-request-mismatch.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-parameter-injection",
+      "kind": "project-template",
+      "file": "vectors/negative-parameter-injection.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-parent-relative-root",
+      "kind": "project-template",
+      "file": "vectors/negative-parent-relative-root.json",
+      "patch": [],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "negative-success-without-created",
+      "kind": "init-result",
+      "file": "vectors/negative-success-without-created.json",
+      "patch": [],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "negative-template-root-collapsed",
+      "kind": "init-result",
+      "file": "vectors/negative-template-root-collapsed.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "negative-unknown-renderer",
+      "kind": "project-template",
+      "file": "vectors/negative-unknown-renderer.json",
+      "patch": [],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "negative-unknown-template-field",
+      "kind": "project-template",
+      "file": "vectors/negative-unknown-template-field.json",
+      "patch": [],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "negative-wrong-package-sha",
+      "kind": "init-result",
+      "file": "vectors/negative-wrong-package-sha.json",
+      "patch": [],
+      "expected": "valid",
+      "semantic_note": "Intentionally schema-valid; rejected by semantic/package/frozen-fact validation."
+    },
+    {
+      "id": "project-template-unknown-version",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/schema",
+          "value": "madb.project-template/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "project-template-top-level-extension",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/extensions",
+          "value": {}
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "init-result-unknown-version",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/schema",
+          "value": "madb.init-result/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "init-result-top-level-extension",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/extensions",
+          "value": {}
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-version-0.0.0",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "0.0.0"
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "template-version-65535.65535.65535",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "65535.65535.65535"
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "template-invalid-version-0",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "65536.0.0"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-1",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "0.65536.0"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-2",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "0.0.65536"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-3",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "01.0.0"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-4",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0.0-alpha"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-5",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0.0+build"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-6",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "latest"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-7",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-invalid-version-8",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/version",
+          "value": "1.0.0\n"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-32-components",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a"
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "template-path-33-components",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-unicode",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "资产/a"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-del",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-trailing-lf",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a\n"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-parent",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a/../x"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-absolute",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "/a"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-drive",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "C:/a"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-backslash",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a\\b"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-path-empty-part",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/output",
+          "value": "a//b"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-file-size",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/files/0/size",
+          "value": 33554433
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-required-host-open",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/profiles/0/requirements/open",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-empty-profiles",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/profiles",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-empty-modules",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/modules",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-empty-validation",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/validation",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-empty-targets",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/profiles/0/targets",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-empty-selected-modules",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/profiles/0/modules",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-duplicate-profile-ref",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/profiles/0/modules",
+          "value": [
+            "root",
+            "root"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-unknown-boundary-schema",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/boundary_refs/0/profile/schema",
+          "value": "madb.profile/3"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "template-arbitrary-pattern",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters/0/pattern",
+          "value": ".*"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "parameter-boolean",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters",
+          "value": [
+            {
+              "id": "flag",
+              "type": "boolean",
+              "required": false,
+              "default": true
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "parameter-boolean-null",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters",
+          "value": [
+            {
+              "id": "flag",
+              "type": "boolean",
+              "required": false,
+              "default": null
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "parameter-integer",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters",
+          "value": [
+            {
+              "id": "count",
+              "type": "integer",
+              "required": false,
+              "default": -9007199254740991,
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "parameter-integer-bool",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters",
+          "value": [
+            {
+              "id": "count",
+              "type": "integer",
+              "required": false,
+              "default": true,
+              "minimum": 0,
+              "maximum": 1
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "parameter-boolean-numeric",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters",
+          "value": [
+            {
+              "id": "flag",
+              "type": "boolean",
+              "required": false,
+              "default": 1
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "parameter-integer-extra",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/parameters",
+          "value": [
+            {
+              "id": "count",
+              "type": "integer",
+              "required": false,
+              "default": 0,
+              "minimum": 0,
+              "maximum": 1,
+              "choices": []
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "renderer-copy",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.copy@1"
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "renderer-copy-extra",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.copy@1",
+            "parameters": []
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "renderer-json-root",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.json-values@1",
+            "bindings": [
+              {
+                "parameter": "name",
+                "pointer": ""
+              }
+            ]
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "renderer-json-escaped",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.json-values@1",
+            "bindings": [
+              {
+                "parameter": "name",
+                "pointer": "/a~1b/~0"
+              }
+            ]
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "renderer-json-bad-escape",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.json-values@1",
+            "bindings": [
+              {
+                "parameter": "name",
+                "pointer": "/bad~2"
+              }
+            ]
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "renderer-identifiers-empty",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.identifiers@1",
+            "language": "c",
+            "parameters": []
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "renderer-identifiers-duplicate",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.identifiers@1",
+            "language": "c",
+            "parameters": [
+              "name",
+              "name"
+            ]
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "renderer-identifiers-language",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/renderer",
+          "value": {
+            "id": "madb.render.identifiers@1",
+            "language": "xml",
+            "parameters": [
+              "name"
+            ]
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "asset-local-state-requires-null",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/ownership",
+          "value": "local-state"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "asset-source-required",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/assets/0/source",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "boundary-profile-v2-format",
+      "kind": "project-template",
+      "file": "package-input/meta/template.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/boundary_refs/0/profile/schema",
+          "value": "madb.profile/2"
+        }
+      ],
+      "expected": "valid",
+      "semantic_note": "Decoder recognition only; no v2 recipe admission or byte identity claim."
+    },
+    {
+      "id": "result-template-pair",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/template_package",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-orphan-package",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/template",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-missing-evidence-root",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/evidence_root",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-wrong-redacted-evidence",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/evidence_root/redacted",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-wrong-redacted-output",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/output/redacted",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-local-state-content",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/files/0/size",
+          "value": 0
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-rendered-no-content",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/files/1/sha256",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-request-duplicate-target",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/targets",
+          "value": [
+            "macos",
+            "macos"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-request-empty-target",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/targets",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-cancelled-zero",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/termination",
+          "value": "cancelled"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-unsupported-exit",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 130
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-dry-run-created",
+      "kind": "init-result",
+      "file": "vectors/positive-dry-run.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/creation",
+          "value": "created"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-dry-run-checks",
+      "kind": "init-result",
+      "file": "vectors/positive-dry-run.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks",
+          "value": [
+            {
+              "id": "structure",
+              "level": "structure",
+              "target": "mac-arm64",
+              "status": "passed",
+              "requirement": "required",
+              "environment": [],
+              "command": null,
+              "evidence_level": "static",
+              "cleanup": "not-run",
+              "diagnostics": [],
+              "attachments": [
+                {
+                  "path": "model-structure.log",
+                  "sha256": "sha256:0391ff83dc31b2cffa93b76cd3a16dfd869d1a5f94fb517c73329434bc4f8390",
+                  "size": 87
+                }
+              ],
+              "reason": null
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-bad-check-command-empty",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/command",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-bad-check-command-first",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/command",
+          "value": [
+            "",
+            "arg"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-bad-recovery-command",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/recovery",
+          "value": [
+            {
+              "kind": "inspect",
+              "message": "Inspect",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-blocked-no-reason",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/status",
+          "value": "blocked"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-not-applicable-no-reason",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/requirement",
+          "value": "not-applicable"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-open-not-requested-passed",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/open/status",
+          "value": "passed"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-redacted-roots",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/evidence_root",
+          "value": {
+            "path": "<evidence-root>",
+            "redacted": true
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/output",
+          "value": {
+            "path": "<project-root>",
+            "redacted": true
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "result-cancelled-keeps-created",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/termination",
+          "value": "cancelled"
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 1
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "result-dry-run-open-not-launched",
+      "kind": "init-result",
+      "file": "vectors/positive-dry-run.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/open",
+          "value": "xcode"
+        },
+        {
+          "op": "replace",
+          "path": "/open/requested",
+          "value": "xcode"
+        }
+      ],
+      "expected": "valid",
+      "semantic_note": "Model only: app must provide dry-run diagnostic and never launch."
+    },
+    {
+      "id": "result-argv-empty-later-argument",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/command",
+          "value": [
+            "compiler",
+            "",
+            "source.c"
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "download-https",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https://example.test/releases/template.tar"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "download-bad-url-0",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "http://example.test/x"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bad-url-1",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https:///x"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bad-url-2",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https://user@example.test/x"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bad-url-3",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https://example.test/x?version=1"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bad-url-4",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https://example.test/x#frag"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bad-url-5",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https://:443/x"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bad-url-6",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "https",
+                "url": "https://example.test/x\n"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "download-bundled",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "bundled"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "download-bundled-extra",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/plan/downloads",
+          "value": [
+            {
+              "id": "archive",
+              "version": "0.1.0",
+              "source": {
+                "kind": "bundled",
+                "url": "https://example.test/x"
+              },
+              "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "size": 10
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "environment-observation",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/environment",
+          "value": [
+            {
+              "id": "clang",
+              "version": "21.0.0",
+              "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "host": "macos-arm64",
+              "target": "aarch64-apple-darwin",
+              "source": "locked compiler image",
+              "arguments": [
+                "",
+                "-v"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "environment-source-not-download-source",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/environment",
+          "value": [
+            {
+              "id": "clang",
+              "version": "21.0.0",
+              "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "host": "macos-arm64",
+              "target": "aarch64-apple-darwin",
+              "source": {
+                "kind": "bundled"
+              },
+              "arguments": [
+                "",
+                "-v"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "environment-argument-budget",
+      "kind": "init-result",
+      "file": "vectors/positive-created-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/environment",
+          "value": [
+            {
+              "id": "clang",
+              "version": "21.0.0",
+              "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "host": "macos-arm64",
+              "target": "aarch64-apple-darwin",
+              "source": "locked compiler image",
+              "arguments": [
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              ]
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    }
+  ],
+  "parse_vectors": [
+    {
+      "file": "vectors/negative-json-fraction.json",
+      "code": "FMT006"
+    },
+    {
+      "file": "vectors/negative-json-negative-zero.json",
+      "code": "FMT006"
+    },
+    {
+      "file": "vectors/negative-json-duplicate-key.json",
+      "code": "FMT005"
+    }
+  ]
+}

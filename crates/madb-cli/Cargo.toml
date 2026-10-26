@@ -24,3 +24,4 @@ madb-host.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true
+madb-templates.workspace = true

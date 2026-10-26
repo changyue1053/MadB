@@ -464,6 +464,7 @@ dependencies = [
  "madb-app",
  "madb-contracts",
  "madb-host",
+ "madb-templates",
  "serde_json",
 ]
 
@@ -473,6 +474,7 @@ version = "0.1.0-dev.0"
 dependencies = [
  "madb-app",
  "madb-model",
+ "madb-plan",
  "madb-protocol",
  "madb-rules",
  "proc-macro2",
@@ -524,6 +526,16 @@ name = "madb-rules"
 version = "0.1.0-dev.0"
 dependencies = [
  "madb-model",
+]
+
+[[package]]
+name = "madb-templates"
+version = "0.1.0-dev.0"
+dependencies = [
+ "madb-model",
+ "madb-plan",
+ "madb-protocol",
+ "serde_json",
 ]
 
 [[package]]

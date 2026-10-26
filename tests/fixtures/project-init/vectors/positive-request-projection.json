@@ -1,0 +1,16 @@
+{
+  "template_selector": "org.madb.template/rust-c-sdk@0.1.0",
+  "template_profile_selector": "macos-arm64-values",
+  "parameter_values": {
+    "name": "hello_c",
+    "namespace": "reading_demo"
+  },
+  "targets": [
+    "macos"
+  ],
+  "verify": "structure",
+  "open": null,
+  "dry_run": true,
+  "offline": true,
+  "output_path": "/private/tmp/设计 项目/hello_c"
+}

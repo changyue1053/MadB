@@ -22,7 +22,7 @@ class DependencyBoundaries(unittest.TestCase):
         shutil.copytree(ROOT / "adapters", self.root / "adapters")
 
     def check_dependency(self, owner, section, declaration, expected):
-        directory = self.root / ("adapters/" + owner.removeprefix("madb-")) if owner in {"madb-contracts", "madb-host"} else self.root / "crates" / owner
+        directory = self.root / ("adapters/" + owner.removeprefix("madb-")) if owner in {"madb-contracts", "madb-host", "madb-templates"} else self.root / "crates" / owner
         manifest = directory / "Cargo.toml"
         content = manifest.read_text()
         heading = f"[{section}]"
@@ -87,6 +87,16 @@ class DependencyBoundaries(unittest.TestCase):
         self.check_dependency("madb-host", "dependencies",
                               'madb-contracts = { path = "../contracts" }',
                               "ARCH003: madb-host -> madb-contracts")
+
+    def test_app_cannot_import_template_adapter(self):
+        self.check_dependency("madb-app", "dependencies",
+                              'madb-templates = { path = "../../adapters/templates" }',
+                              "ARCH003: madb-app -> madb-templates")
+
+    def test_template_renderer_cannot_acquire_host_commit_authority(self):
+        self.check_dependency("madb-templates", "dependencies",
+                              'madb-host = { path = "../host" }',
+                              "ARCH003: madb-templates -> madb-host")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,214 @@
+{
+  "schema": "madb.init-result/1",
+  "request_digest": "sha256:92d3cc22676df9bd3aca970018c02a736e94541adc1b3b8b5db320ae6f06b9d1",
+  "tool": {
+    "id": "org.madb/design-model",
+    "version": "0.1.0",
+    "sha256": "sha256:5011118607a8b00e461487e2ddadb2ddd85b594c7e3753163ab3332f3f852bdb"
+  },
+  "template": {
+    "id": "org.madb.template/rust-c-sdk",
+    "version": "0.1.0",
+    "manifest": {
+      "path": "template-input/meta/template.json",
+      "sha256": "sha256:a5085f8a087bf6c1abe1bdf5183d7c384381402504f2f3811ebbcd6fa95fe034",
+      "size": 8848,
+      "schema": "madb.project-template/1"
+    },
+    "package_sha256": "sha256:0b9b49f49c0d89e58e66bad4018f02e0faddab827d2f03a418aeb31112d00746",
+    "input_root": "template-input"
+  },
+  "template_package": {
+    "path": "template-package.tar",
+    "sha256": "sha256:2a47930bdb3f9298fc055469c8436f019fc648805dbdd3abcb94d78603d0a17b",
+    "size": 43008
+  },
+  "evidence_root": {
+    "path": "/private/tmp/madb-chief-round7/i01-final-format-examples/evidence-root",
+    "redacted": false
+  },
+  "template_profile": "macos-arm64-values",
+  "boundary_profiles": [
+    {
+      "path": "template-input/profile.json",
+      "sha256": "sha256:c65a81c80cff5c76733a52b8c4cc5dc9d7cf5c50c00c6343fa1e984901f35e1d",
+      "size": 3577,
+      "schema": "madb.profile/1"
+    }
+  ],
+  "request": {
+    "targets": [
+      "macos"
+    ],
+    "verify": "structure",
+    "open": null,
+    "dry_run": false,
+    "offline": true
+  },
+  "output": {
+    "path": "/private/tmp/设计 项目/hello_c",
+    "redacted": false
+  },
+  "plan": {
+    "files": [
+      {
+        "module": "root",
+        "path": ".madb/local-machine.json",
+        "ownership": "local-state",
+        "sha256": null,
+        "size": null
+      },
+      {
+        "module": "root",
+        "path": ".madb/project-parameters.json",
+        "ownership": "provenance",
+        "sha256": "sha256:073a9126f2369e7df5dd19a81954c399cfcc1db4d7d87058c550347d84e5c98b",
+        "size": 46
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/assets/CMakeLists.txt",
+        "ownership": "provenance",
+        "sha256": "sha256:9d474f1223d1def25f152e401487d74cbdb48dc1a4d10d4000aef90e8e252f4c",
+        "size": 565
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/assets/Cargo.toml",
+        "ownership": "provenance",
+        "sha256": "sha256:56eb80c625c9a36f5bae09e9dad4728c8055d89b902588a369b25210374c603e",
+        "size": 95
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/assets/README.md",
+        "ownership": "provenance",
+        "sha256": "sha256:9b08ac4a535bcc14dba21c647b5e1b4e3557c606d4946efc38c97662045fd61b",
+        "size": 92
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/assets/author.rs",
+        "ownership": "provenance",
+        "sha256": "sha256:873f89509f0608994a8b36db87e1f86c35d7896366fb6ccdcc69ab95a81a7dd1",
+        "size": 164
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/assets/main.c",
+        "ownership": "provenance",
+        "sha256": "sha256:0136f8e746c2763b684b43a42612bcc23b5b22d08973d89395b88ed31c33cfab",
+        "size": 492
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/assets/settings.json",
+        "ownership": "provenance",
+        "sha256": "sha256:518a0e18c1e4e6a87fbff58b598ad2c98ebe417fc3f7293951401470edbac055",
+        "size": 31
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/meta/template.json",
+        "ownership": "provenance",
+        "sha256": "sha256:a5085f8a087bf6c1abe1bdf5183d7c384381402504f2f3811ebbcd6fa95fe034",
+        "size": 8848
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/profile.json",
+        "ownership": "provenance",
+        "sha256": "sha256:c65a81c80cff5c76733a52b8c4cc5dc9d7cf5c50c00c6343fa1e984901f35e1d",
+        "size": 3577
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-input/toolchain.json",
+        "ownership": "provenance",
+        "sha256": "sha256:bfadfa41c59fe92e3868fa172af8b78be654c451c33f1d3a1344b5fa4c49ecd2",
+        "size": 20795
+      },
+      {
+        "module": "root",
+        "path": ".madb/template-package.tar",
+        "ownership": "provenance",
+        "sha256": "sha256:2a47930bdb3f9298fc055469c8436f019fc648805dbdd3abcb94d78603d0a17b",
+        "size": 43008
+      },
+      {
+        "module": "root",
+        "path": "CMakeLists.txt",
+        "ownership": "user",
+        "sha256": "sha256:151da312e37d9a2a9ea66c0a5befd4c175c5b694ede70c376da1c4b19ef3f9d3",
+        "size": 559
+      },
+      {
+        "module": "root",
+        "path": "README.md",
+        "ownership": "user",
+        "sha256": "sha256:9b08ac4a535bcc14dba21c647b5e1b4e3557c606d4946efc38c97662045fd61b",
+        "size": 92
+      },
+      {
+        "module": "consumer",
+        "path": "consumer/main.c",
+        "ownership": "user",
+        "sha256": "sha256:7f2c086623db9d40a662543dbd3de315e36894452729777cb83682c22d2897fc",
+        "size": 468
+      },
+      {
+        "module": "rust",
+        "path": "rust/Cargo.toml",
+        "ownership": "user",
+        "sha256": "sha256:ac3c587f9b5c1de670fd074e96831a8f0b116d886bc7150b5fd6770b27a3182f",
+        "size": 89
+      },
+      {
+        "module": "rust",
+        "path": "rust/src/lib.rs",
+        "ownership": "user",
+        "sha256": "sha256:873f89509f0608994a8b36db87e1f86c35d7896366fb6ccdcc69ab95a81a7dd1",
+        "size": 164
+      }
+    ],
+    "task_roots": [
+      "native"
+    ],
+    "downloads": []
+  },
+  "creation": "created",
+  "termination": "completed",
+  "exit_code": 0,
+  "checks": [
+    {
+      "id": "structure",
+      "level": "structure",
+      "target": "mac-arm64",
+      "status": "passed",
+      "requirement": "required",
+      "environment": [],
+      "command": null,
+      "evidence_level": "static",
+      "cleanup": "not-run",
+      "diagnostics": [],
+      "attachments": [
+        {
+          "path": "model-structure.log",
+          "sha256": "sha256:0391ff83dc31b2cffa93b76cd3a16dfd869d1a5f94fb517c73329434bc4f8390",
+          "size": 87
+        }
+      ],
+      "reason": null
+    }
+  ],
+  "ide_entries": [],
+  "open": {
+    "requested": null,
+    "status": "skipped",
+    "diagnostics": [],
+    "attachments": []
+  },
+  "recovery": [],
+  "diagnostics": [],
+  "logs": []
+}

@@ -4,7 +4,7 @@
 
 用户体验以[产品规范](../product/04-project-initialization.md)为准；平台能力以[验收规范](../validation/06-project-initialization.md)为准。以下接口与目录是实施设计。
 
-已确认的四项格式增量见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)：请求摘要与错误类别独立，普通成功绑定真实创建且 dry-run 单列，报告显式保存模板原输入根并复用 profile/配方的 SDK 检查，显式 profile 的默认 targets 取完整集合。它们不代表完整模板/InitResult schema 已定稿，包摘要/获取锁与有限配方表仍须明确。
+已确认的四项格式增量见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)：请求摘要与错误类别独立，普通成功绑定真实创建且 dry-run 单列，报告显式保存模板原输入根并复用 profile/配方的 SDK 检查，显式 profile 的默认 targets 取完整集合。剩余 envelope、原包/库存、有限 renderer、结果事实及首个 Rust/C 值接口分片已由 [ADR-0023](../adr/0023-project-template-and-init-result.md)采用；具体实现和真实执行仍分别验收，格式批准不等于 init 或 IDE 已交付。
 
 ## 1 模块和数据流
 

@@ -12,6 +12,7 @@ pub mod process;
 pub mod query;
 pub mod task;
 pub mod transaction;
+pub mod use_cases;
 
 pub use madb_model::{Digest, Finding, Id, LogicalPath};
 pub use madb_plan::{Phase, Task, TaskGraph};

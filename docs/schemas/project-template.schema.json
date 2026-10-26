@@ -1,0 +1,928 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.project-template/1"
+    },
+    "id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "version": {
+      "$ref": "#/$defs/version"
+    },
+    "madb_compatibility": {
+      "type": "object",
+      "properties": {
+        "min_inclusive": {
+          "$ref": "#/$defs/version"
+        },
+        "max_exclusive": {
+          "$ref": "#/$defs/version"
+        }
+      },
+      "required": [
+        "min_inclusive",
+        "max_exclusive"
+      ],
+      "additionalProperties": false
+    },
+    "default_profile": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "parameters": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/parameter"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/profile"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/module"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "boundary_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/boundary"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "ide_entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ide_entry"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "task_roots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/task_root"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "validation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/validation"
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/file"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "version",
+    "madb_compatibility",
+    "default_profile",
+    "parameters",
+    "profiles",
+    "modules",
+    "boundary_refs",
+    "assets",
+    "ide_entries",
+    "task_roots",
+    "validation",
+    "files"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:project-template:1",
+  "title": "MadB project template v1",
+  "$comment": "Approved I01 format: structure only. Identity uniqueness, references, ranges, complete inventory, parameter semantics and executable recipe admission require independent semantic checks.",
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\\.(?:0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\\.(?:0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+      "not": {
+        "pattern": "[^0-9.]"
+      }
+    },
+    "path": {
+      "allOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        {
+          "not": {
+            "pattern": "[^\\u0020-\\u007e]"
+          }
+        },
+        {
+          "pattern": "^[^/]+(?:/[^/]+){0,31}$"
+        }
+      ]
+    },
+    "safe_integer": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "ownership": {
+      "enum": [
+        "user",
+        "managed",
+        "local-state",
+        "provenance"
+      ]
+    },
+    "file": {
+      "allOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/file"
+        },
+        {
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/path"
+            },
+            "size": {
+              "maximum": 33554432
+            }
+          }
+        }
+      ]
+    },
+    "boundary_file": {
+      "allOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        {
+          "properties": {
+            "path": {
+              "$ref": "#/$defs/path"
+            },
+            "size": {
+              "maximum": 33554432
+            },
+            "schema": {
+              "enum": [
+                "madb.profile/1",
+                "madb.profile/2"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "parameter": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "type": {
+              "const": "string"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "default": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 0,
+                  "maxLength": 4096
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "min_length": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4096
+            },
+            "max_length": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4096
+            },
+            "pattern": {
+              "enum": [
+                null,
+                "[A-Za-z][A-Za-z0-9_]{0,47}"
+              ]
+            },
+            "choices": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4096
+              },
+              "minItems": 0,
+              "maxItems": 4096,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "required",
+            "default",
+            "min_length",
+            "max_length",
+            "pattern",
+            "choices"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "type": {
+              "const": "boolean"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "default": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "required",
+            "default"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "type": {
+              "const": "integer"
+            },
+            "required": {
+              "type": "boolean"
+            },
+            "default": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/safe_integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "minimum": {
+              "$ref": "#/$defs/safe_integer"
+            },
+            "maximum": {
+              "$ref": "#/$defs/safe_integer"
+            }
+          },
+          "required": [
+            "id",
+            "type",
+            "required",
+            "default",
+            "minimum",
+            "maximum"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "host": {
+      "type": "object",
+      "properties": {
+        "os": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "arch": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "min_inclusive": {
+          "$ref": "#/$defs/version"
+        },
+        "max_exclusive": {
+          "$ref": "#/$defs/version"
+        }
+      },
+      "required": [
+        "os",
+        "arch",
+        "min_inclusive",
+        "max_exclusive"
+      ],
+      "additionalProperties": false
+    },
+    "requirement": {
+      "type": "object",
+      "properties": {
+        "hosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/host"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/component"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "ide_entries": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "hosts",
+        "tools",
+        "ide_entries"
+      ],
+      "additionalProperties": false
+    },
+    "renderer": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "madb.render.copy@1"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "madb.render.json-values@1"
+            },
+            "bindings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "parameter": {
+                    "$ref": "urn:madb:schema:common:1#/$defs/id"
+                  },
+                  "pointer": {
+                    "type": "string",
+                    "pattern": "^(?:/(?:[^~/]|~[01])*)*$"
+                  }
+                },
+                "required": [
+                  "parameter",
+                  "pointer"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 4096
+            }
+          },
+          "required": [
+            "id",
+            "bindings"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "const": "madb.render.identifiers@1"
+            },
+            "language": {
+              "enum": [
+                "c",
+                "toml",
+                "cmake"
+              ]
+            },
+            "parameters": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "minItems": 1,
+              "maxItems": 4096,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "id",
+            "language",
+            "parameters"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "module": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/file"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output": {
+          "$ref": "#/$defs/path"
+        },
+        "ownership": {
+          "$ref": "#/$defs/ownership"
+        },
+        "renderer": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/renderer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "module",
+        "source",
+        "output",
+        "ownership",
+        "renderer"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ownership": {
+                "const": "local-state"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "source": {
+                "type": "null"
+              },
+              "renderer": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "source": {
+                "type": "object"
+              },
+              "renderer": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ide_entry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "module": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "ide": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "min_inclusive": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "max_exclusive": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "id",
+            "min_inclusive",
+            "max_exclusive"
+          ],
+          "additionalProperties": false
+        },
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "run_target": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "module",
+        "ide",
+        "path",
+        "run_target",
+        "extensions"
+      ],
+      "additionalProperties": false
+    },
+    "module": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "role": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "directory": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/path"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "role",
+        "directory",
+        "dependencies"
+      ],
+      "additionalProperties": false
+    },
+    "boundary": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "profile": {
+          "$ref": "#/$defs/boundary_file"
+        }
+      },
+      "required": [
+        "id",
+        "profile"
+      ],
+      "additionalProperties": false
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "family": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "boundary_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "family",
+        "boundary_refs"
+      ],
+      "additionalProperties": false
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/target"
+          },
+          "minItems": 1,
+          "maxItems": 4096
+        },
+        "modules": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "boundary_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "ide_entries": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "task_roots": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "validation": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "requirements": {
+          "type": "object",
+          "properties": {
+            "structure": {
+              "$ref": "#/$defs/requirement"
+            },
+            "build": {
+              "$ref": "#/$defs/requirement"
+            },
+            "run": {
+              "$ref": "#/$defs/requirement"
+            },
+            "open": {
+              "$ref": "#/$defs/requirement"
+            }
+          },
+          "required": [
+            "structure",
+            "build",
+            "run",
+            "open"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "targets",
+        "modules",
+        "boundary_refs",
+        "assets",
+        "ide_entries",
+        "task_roots",
+        "validation",
+        "requirements"
+      ],
+      "additionalProperties": false
+    },
+    "task_root": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "module": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "recipe": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "boundary_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "module",
+        "recipe",
+        "boundary_refs",
+        "targets"
+      ],
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "level": {
+          "enum": [
+            "structure",
+            "build",
+            "run",
+            "import",
+            "debug"
+          ]
+        },
+        "target": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "task_root": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "minimum_evidence": {
+          "enum": [
+            "static",
+            "generated",
+            "compiled",
+            "linked",
+            "host-run",
+            "target-run",
+            "device-run"
+          ]
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "level",
+        "target",
+        "task_root",
+        "required",
+        "minimum_evidence",
+        "prerequisites"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

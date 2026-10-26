@@ -1,0 +1,56 @@
+{
+  "design_only": true,
+  "not_production_decoder": true,
+  "not_execution_evidence": true,
+  "package": {
+    "path": "template-design.tar",
+    "sha256": "sha256:2a47930bdb3f9298fc055469c8436f019fc648805dbdd3abcb94d78603d0a17b",
+    "size": 43008
+  },
+  "manifest": {
+    "path": "template-input/meta/template.json",
+    "sha256": "sha256:a5085f8a087bf6c1abe1bdf5183d7c384381402504f2f3811ebbcd6fa95fe034",
+    "size": 8848,
+    "schema": "madb.project-template/1"
+  },
+  "profile_source": "/private/tmp/madb-chief-round7/formal-native-values-macos-r7/candidates/author-0/profile.json",
+  "profile_original_sha256": "sha256:c65a81c80cff5c76733a52b8c4cc5dc9d7cf5c50c00c6343fa1e984901f35e1d",
+  "source_producer": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+  "vectors": [
+    "negative-arbitrary-recipe-argv.json",
+    "negative-double-sdk-source.json",
+    "negative-duplicate-check-key.json",
+    "negative-inventory-omission.json",
+    "negative-json-duplicate-key.json",
+    "negative-json-fraction.json",
+    "negative-json-negative-zero.json",
+    "negative-json-pointer-overlap.json",
+    "negative-missing-required-check.json",
+    "negative-open-request-mismatch.json",
+    "negative-parameter-injection.json",
+    "negative-parent-relative-root.json",
+    "negative-success-without-created.json",
+    "negative-template-root-collapsed.json",
+    "negative-unknown-renderer.json",
+    "negative-unknown-template-field.json",
+    "negative-wrong-package-sha.json",
+    "positive-created-model-facts.json",
+    "positive-created-model.json",
+    "positive-dry-run.json",
+    "positive-offline-cache-miss.json",
+    "positive-request-projection.json"
+  ],
+  "files": [
+    "assets/CMakeLists.txt",
+    "assets/Cargo.toml",
+    "assets/README.md",
+    "assets/author.rs",
+    "assets/main.c",
+    "assets/settings.json",
+    "meta/template.json",
+    "profile.json",
+    "toolchain.json"
+  ],
+  "normal_success_is_hypothetical": true,
+  "evidence_root": "/private/tmp/madb-chief-round7/i01-final-format-examples/evidence-root"
+}

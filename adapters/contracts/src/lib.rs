@@ -11,6 +11,7 @@ pub mod extension_lock;
 pub mod extension_session;
 pub mod native;
 pub mod native_values;
+pub mod project_init;
 mod projections;
 mod resolution;
 mod wire;

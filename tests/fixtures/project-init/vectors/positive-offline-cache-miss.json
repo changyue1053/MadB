@@ -1,0 +1,37 @@
+{
+  "schema": "madb.init-result/1",
+  "request_digest": null,
+  "tool": {
+    "id": "org.madb/design-model",
+    "version": "0.1.0",
+    "sha256": "sha256:5011118607a8b00e461487e2ddadb2ddd85b594c7e3753163ab3332f3f852bdb"
+  },
+  "template": null,
+  "template_package": null,
+  "evidence_root": null,
+  "template_profile": null,
+  "boundary_profiles": [],
+  "request": null,
+  "output": null,
+  "plan": null,
+  "creation": "not-created",
+  "termination": "failed",
+  "exit_code": 3,
+  "checks": [],
+  "ide_entries": [],
+  "open": {
+    "requested": null,
+    "status": "skipped",
+    "diagnostics": [],
+    "attachments": []
+  },
+  "recovery": [],
+  "diagnostics": [
+    {
+      "code": "FILE001",
+      "message": "Design vector: trusted package absent from offline cache.",
+      "location": null
+    }
+  ],
+  "logs": []
+}

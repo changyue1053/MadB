@@ -1,0 +1,1198 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.init-result/1"
+    },
+    "request_digest": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tool": {
+      "$ref": "urn:madb:schema:common:1#/$defs/component"
+    },
+    "template": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/template"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "template_package": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/file"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "evidence_root": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/evidence_root"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "template_profile": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "boundary_profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/boundary_file"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "request": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/request"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/output"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "plan": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/plan"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "creation": {
+      "enum": [
+        "not-created",
+        "created"
+      ]
+    },
+    "termination": {
+      "enum": [
+        "completed",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/check"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "ide_entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ide_entry"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "open": {
+      "type": "object",
+      "properties": {
+        "requested": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "error",
+            "skipped",
+            "unsupported",
+            "blocked"
+          ]
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "requested",
+        "status",
+        "diagnostics",
+        "attachments"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "requested": {
+                "type": "null"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "status": {
+                "const": "skipped"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "recovery": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "enum": [
+              "retry",
+              "manual",
+              "inspect"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 8192
+          },
+          "arguments": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/argv"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "message",
+          "arguments"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "logs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    }
+  },
+  "required": [
+    "schema",
+    "request_digest",
+    "tool",
+    "template",
+    "template_package",
+    "evidence_root",
+    "template_profile",
+    "boundary_profiles",
+    "request",
+    "output",
+    "plan",
+    "creation",
+    "termination",
+    "exit_code",
+    "checks",
+    "ide_entries",
+    "open",
+    "recovery",
+    "diagnostics",
+    "logs"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:init-result:1",
+  "title": "MadB initialization result v1",
+  "$comment": "Approved I01 format: validates a wire claim, not a CommitNew receipt or execution evidence. Request digest, original package identity, required checks, saved evidence and same-root creation must be independently bound by the application.",
+  "$defs": {
+    "path": {
+      "allOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        {
+          "not": {
+            "pattern": "[^\\u0020-\\u007e]"
+          }
+        },
+        {
+          "pattern": "^[^/]+(?:/[^/]+){0,31}$"
+        }
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\\.(?:0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])\\.(?:0|[1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$",
+      "not": {
+        "pattern": "[^0-9.]"
+      }
+    },
+    "ownership": {
+      "enum": [
+        "user",
+        "managed",
+        "local-state",
+        "provenance"
+      ]
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "argv": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 0,
+        "maxLength": 4096
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      ]
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "bundled"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "https"
+            },
+            "url": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "format": "uri",
+              "pattern": "^https://(?:\\[[0-9A-Fa-f:.]+\\]|[^:/?#@\\s]+)(?::[0-9]+)?(?:/[^?#\\s]*)?$",
+              "not": {
+                "pattern": "\\s"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "url"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "plan_file": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "ownership": {
+          "$ref": "#/$defs/ownership"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "size": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "module",
+        "path",
+        "ownership",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "ownership": {
+                "const": "local-state"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "sha256": {
+                "type": "null"
+              },
+              "size": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "sha256": {
+                "$ref": "urn:madb:schema:common:1#/$defs/digest"
+              },
+              "size": {
+                "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "level": {
+          "enum": [
+            "structure",
+            "build",
+            "run",
+            "import",
+            "debug"
+          ]
+        },
+        "target": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "error",
+            "skipped",
+            "unsupported",
+            "blocked"
+          ]
+        },
+        "requirement": {
+          "enum": [
+            "required",
+            "optional",
+            "not-applicable"
+          ]
+        },
+        "environment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/environment_item"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "command": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/argv"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_level": {
+          "anyOf": [
+            {
+              "enum": [
+                "static",
+                "generated",
+                "compiled",
+                "linked",
+                "host-run",
+                "target-run",
+                "device-run"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cleanup": {
+          "enum": [
+            "complete",
+            "failed",
+            "not-run"
+          ]
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "level",
+        "target",
+        "status",
+        "requirement",
+        "environment",
+        "command",
+        "evidence_level",
+        "cleanup",
+        "diagnostics",
+        "attachments",
+        "reason"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "anyOf": [
+              {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "skipped",
+                      "unsupported",
+                      "blocked"
+                    ]
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "requirement": {
+                    "const": "not-applicable"
+                  }
+                }
+              }
+            ]
+          },
+          "then": {
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ide_entry": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "module": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "ide": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "min_inclusive": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "max_exclusive": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          "required": [
+            "id",
+            "min_inclusive",
+            "max_exclusive"
+          ],
+          "additionalProperties": false
+        },
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "run_target": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              }
+            },
+            "required": [
+              "id",
+              "version"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "module",
+        "ide",
+        "path",
+        "run_target",
+        "extensions"
+      ],
+      "additionalProperties": false
+    },
+    "environment_item": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "host": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "target": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "host",
+        "target",
+        "source",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_root": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redacted": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "redacted"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "redacted": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "path": {
+                "const": "<evidence-root>"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redacted": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "redacted"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "redacted": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "path": {
+                "const": "<project-root>"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "boundary_file": {
+      "allOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        {
+          "properties": {
+            "schema": {
+              "enum": [
+                "madb.profile/1",
+                "madb.profile/2"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "template": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "manifest": {
+          "allOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            {
+              "properties": {
+                "schema": {
+                  "const": "madb.project-template/1"
+                }
+              }
+            }
+          ]
+        },
+        "package_sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "input_root": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "manifest",
+        "package_sha256",
+        "input_root"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "verify": {
+          "enum": [
+            "structure",
+            "build",
+            "run"
+          ]
+        },
+        "open": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dry_run": {
+          "type": "boolean"
+        },
+        "offline": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "targets",
+        "verify",
+        "open",
+        "dry_run",
+        "offline"
+      ],
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/plan_file"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "task_roots": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        },
+        "downloads": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "$ref": "urn:madb:schema:common:1#/$defs/id"
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128
+              },
+              "source": {
+                "$ref": "#/$defs/source"
+              },
+              "sha256": {
+                "$ref": "urn:madb:schema:common:1#/$defs/digest"
+              },
+              "size": {
+                "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+              }
+            },
+            "required": [
+              "id",
+              "version",
+              "source",
+              "sha256",
+              "size"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "files",
+        "task_roots",
+        "downloads"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "template": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_package": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "template_package": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "request": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "open": {
+            "properties": {
+              "requested": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_root": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template": {
+            "type": "null"
+          },
+          "template_package": {
+            "type": "null"
+          },
+          "boundary_profiles": {
+            "maxItems": 0
+          },
+          "logs": {
+            "maxItems": 0
+          },
+          "checks": {
+            "items": {
+              "properties": {
+                "attachments": {
+                  "maxItems": 0
+                }
+              }
+            }
+          },
+          "open": {
+            "properties": {
+              "attachments": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "const": "cancelled"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "const": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "request_digest": {
+            "$ref": "urn:madb:schema:common:1#/$defs/digest"
+          },
+          "template": {
+            "type": "object"
+          },
+          "template_package": {
+            "type": "object"
+          },
+          "evidence_root": {
+            "type": "object"
+          },
+          "template_profile": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "output": {
+            "type": "object"
+          },
+          "request": {
+            "type": "object"
+          },
+          "plan": {
+            "type": "object"
+          },
+          "termination": {
+            "const": "completed"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          },
+          "request": {
+            "type": "object",
+            "properties": {
+              "dry_run": {
+                "const": true
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "creation": {
+            "const": "not-created"
+          },
+          "checks": {
+            "maxItems": 0
+          },
+          "plan": {
+            "properties": {
+              "downloads": {
+                "maxItems": 0
+              }
+            }
+          },
+          "open": {
+            "properties": {
+              "status": {
+                "const": "skipped"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          },
+          "request": {
+            "type": "object",
+            "properties": {
+              "dry_run": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "creation": {
+            "const": "created"
+          }
+        }
+      }
+    }
+  ]
+}

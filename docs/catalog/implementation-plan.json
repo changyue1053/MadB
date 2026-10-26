@@ -966,7 +966,8 @@
         "reviews/2026-10-26-chief-architect-third-batch.md",
         "reviews/2026-10-26-chief-architect-fifth-batch.md",
         "reviews/2026-10-26-chief-architect-sixth-batch.md",
-        "reviews/2026-10-26-l02-native-values-validation.md"
+        "reviews/2026-10-26-l02-native-values-validation.md",
+        "reviews/2026-10-26-chief-architect-eighth-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -989,7 +990,8 @@
         "product/03-developer-experience.md",
         "delivery/01-implementation-plan.md",
         "adr/0014-swift-production-baseline.md",
-        "adr/0019-project-init-incremental-contracts.md"
+        "adr/0019-project-init-incremental-contracts.md",
+        "adr/0023-project-template-and-init-result.md"
       ],
       "requirements": [
         "REQ-13"
@@ -998,7 +1000,7 @@
       "probes": [
         "P11"
       ],
-      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。 接管第七批补齐剩余模板/结果envelope、原包身份与完整库存、有限renderer及首个Rust/C值接口init分片的具体提案/完整设计向量和独审。仍待具体格式决定，未注册decoder、执行init或获得工程/IDE证据；已批ADR-0019四项不重复审批，首分片不替代原rust-c-sdk及C05资源接口承诺。"
+      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。 接管第七批补齐剩余模板/结果envelope、原包身份与完整库存、有限renderer及首个Rust/C值接口init分片的具体提案/完整设计向量和独审。仍待具体格式决定，未注册decoder、执行init或获得工程/IDE证据；已批ADR-0019四项不重复审批，首分片不替代原rust-c-sdk及C05资源接口承诺。 接管第八批项目所有者已采用第七批剩余格式提案，原文SHA为09672664872c3d56fe1b81857692be87f4bd8222e38b012e9d5902055e207fa6，见ADR-0023；开始格式/纯规则子范围，工具镜像、真实Host创建、最终根执行及IDE仍需各自证据。当前MadB 0.1.0-dev.0不能被偷映射成模板准入要求的正式三元版本；I01整包出口不变。 第八批格式/纯规则已实现：两schema、完整原包库存、三renderer、选择与provenance计划、contracts转换及app事实判断；定向检查和独审按各自范围留证，真实Host/CLI/init与整包不据此通过。CMake4.4.4/Ninja1.13.2正式原包及镜像已核对归档，仅版本/能力观察，不是生产锁或工程运行证据。"
     },
     {
       "id": "I02",

@@ -8,6 +8,7 @@ members = [
     "crates/madb-protocol",
     "adapters/contracts",
     "adapters/host",
+    "adapters/templates",
 ]
 resolver = "3"
 
@@ -31,6 +32,7 @@ madb-app = { path = "crates/madb-app" }
 madb-plan = { path = "crates/madb-plan" }
 madb-contracts = { path = "adapters/contracts" }
 madb-host = { path = "adapters/host" }
+madb-templates = { path = "adapters/templates" }
 madb-model = { path = "crates/madb-model" }
 madb-rules = { path = "crates/madb-rules" }
 madb-protocol = { path = "crates/madb-protocol" }

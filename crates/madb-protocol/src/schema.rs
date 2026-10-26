@@ -35,9 +35,11 @@ pub enum DocumentKind {
     Execution,
     DiagnosticContext,
     ExplainResult,
+    ProjectTemplate,
+    InitResult,
 }
 impl DocumentKind {
-    pub const ALL: [Self; 20] = [
+    pub const ALL: [Self; 22] = [
         Self::Project,
         Self::ContractIr,
         Self::Lock,
@@ -58,6 +60,8 @@ impl DocumentKind {
         Self::Execution,
         Self::DiagnosticContext,
         Self::ExplainResult,
+        Self::ProjectTemplate,
+        Self::InitResult,
     ];
     pub fn name(self) -> &'static str {
         match self {
@@ -81,6 +85,8 @@ impl DocumentKind {
             Self::Execution => "execution",
             Self::DiagnosticContext => "diagnostic-context",
             Self::ExplainResult => "explain-result",
+            Self::ProjectTemplate => "project-template",
+            Self::InitResult => "init-result",
         }
     }
     fn source(self) -> &'static str {
@@ -105,6 +111,8 @@ impl DocumentKind {
             Self::Execution => schema!("execution"),
             Self::DiagnosticContext => schema!("diagnostic-context"),
             Self::ExplainResult => schema!("explain-result"),
+            Self::ProjectTemplate => schema!("project-template"),
+            Self::InitResult => schema!("init-result"),
         }
     }
     pub fn schema_id(self) -> String {

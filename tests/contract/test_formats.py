@@ -70,6 +70,9 @@ class ContractFormats(unittest.TestCase):
         vectors = (read("format-vectors.json")["vectors"]
                    + read("composition-format-vectors.json")["vectors"]
                    + read("explain-format-vectors.json")["vectors"])
+        for vector in read("../project-init/format-vectors.json")["vectors"]:
+            vector["file"] = "../project-init/" + vector["file"]
+            vectors.append(vector)
         for vector in vectors:
             with self.subTest(vector=vector["id"]):
                 value = copy.deepcopy(read(vector["file"]))
@@ -86,7 +89,7 @@ class ContractFormats(unittest.TestCase):
                 validator = Draft202012Validator(schemas[vector["kind"]], registry=registry)
                 self.assertEqual(validator.is_valid(value), vector["expected"] == "valid")
                 seen.add(vector["kind"])
-        self.assertEqual(len(seen), 20)
+        self.assertEqual(len(seen), 22)
 
     def test_jcs_bytes_and_hashes(self):
         vectors = read("canonical-vectors.json")
@@ -102,6 +105,22 @@ class ContractFormats(unittest.TestCase):
             with self.subTest(vector=vector["id"]):
                 with self.assertRaisesRegex(ValueError, vector["code"]):
                     strict_decode(vector["text"])
+
+    def test_init_lexical_vectors_and_request_domain(self):
+        init_root = FIXTURES.parent / "project-init"
+        index = read("../project-init/format-vectors.json")
+        for vector in index["parse_vectors"]:
+            with self.subTest(vector=vector["file"]):
+                with self.assertRaisesRegex(ValueError, vector["code"]):
+                    strict_decode((init_root / vector["file"]).read_text())
+        projection = read("../project-init/vectors/positive-request-projection.json")
+        encoded = ("madb.init-request/1\n" + canonical(projection)).encode("utf-8")
+        self.assertEqual(
+            hashlib.sha256(encoded).hexdigest(),
+            "6c4d1f2969bbcb244fd1b201fb32ac1341756be7e4ceb04040051f383a4ec1cc",
+        )
+        facts = read("../project-init/vectors/positive-created-model-facts.json")
+        self.assertFalse(facts["commit_new"]["actual"])
 
 
 if __name__ == "__main__":

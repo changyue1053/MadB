@@ -13,7 +13,8 @@
 | 开放语言身份、小型端口、独立协议与受控语义演进 | 设计采用，S0/S1 验证扩展成本 | [ADR-0004](../adr/0004-language-extension.md) |
 | 跨路线扩展组合、机制分工与按需交付 | 设计采用；已授权范围自主实施，具体范围和实际进度分开记录 | [ADR-0012](../adr/0012-extension-composition-and-delivery.md) |
 | 扩展 init 创建原生 IDE 工程，模板与边界模型分离 | 设计采用，S0 至 S4 验证生成及 IDE 行为 | [ADR-0005](../adr/0005-project-initialization.md) |
-| I01 请求错误、创建结果、引用根/SDK 与目标默认四项增量 | 项目所有者确认；完整 envelope、包摘要/获取锁及有限配方表仍须定稿 | [ADR-0019](../adr/0019-project-init-incremental-contracts.md) |
+| I01 请求错误、创建结果、引用根/SDK 与目标默认四项增量 | 项目所有者确认；剩余格式另由 ADR-0023 采用，不重复裁定 | [ADR-0019](../adr/0019-project-init-incremental-contracts.md) |
+| I01 完整模板/结果、原包库存与有限 renderer/首配方 | 项目所有者采用具体提案；格式、Host 创建与最终根执行分别取证，正式版本与工具镜像未齐不得执行准入 | [ADR-0023](../adr/0023-project-template-and-init-result.md) |
 | 语言特性作为薄入口，普通 API 可用，诊断与必要保护分离 | 设计采用，随各平台验证工具和语义组合 | [ADR-0006](../adr/0006-developer-ergonomics.md) |
 | explain 只读查询、来源核对及机器结果 | 项目所有者已确认具体格式；实现与运行证据另验 | [ADR-0020](../adr/0020-explain-query-contracts.md) |
 | 首链生产诊断与普通 checked constructor | 项目所有者已采用单条 pull 修订2；默认7/诊断9导出分开固定和消费 | [ADR-0021](../adr/0021-native-diagnostics-and-checked-constructor.md) |

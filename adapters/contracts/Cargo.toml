@@ -11,6 +11,7 @@ description = "Explicit schema-to-domain conversion and contract validation"
 [dependencies]
 madb-app.workspace = true
 madb-model.workspace = true
+madb-plan.workspace = true
 madb-rules.workspace = true
 madb-protocol.workspace = true
 serde_json.workspace = true

@@ -15,9 +15,10 @@ ALLOWED = {
     "madb-plan": {"madb-model"},
     "madb-protocol": set(),
     "madb-app": {"madb-model", "madb-rules", "madb-plan"},
-    "madb-cli": {"madb-app", "madb-contracts", "madb-host"},
-    "madb-contracts": {"madb-app", "madb-model", "madb-rules", "madb-protocol"},
+    "madb-cli": {"madb-app", "madb-contracts", "madb-host", "madb-templates"},
+    "madb-contracts": {"madb-app", "madb-model", "madb-plan", "madb-rules", "madb-protocol"},
     "madb-host": {"madb-app"},
+    "madb-templates": {"madb-model", "madb-plan", "madb-protocol"},
 }
 
 

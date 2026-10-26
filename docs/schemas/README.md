@@ -17,6 +17,8 @@
 | [coverage](coverage.schema.json) | 按 profile/target/direction 的适用性要求 | 48 项无遗漏、排除理由、案例集合；不代表通过率 |
 | [diagnostic-context](diagnostic-context.schema.json) | explain 的显式诊断与源引用、位置编码及报告精度 | 实际源字节与位置核对，不认证外来诊断来源 |
 | [explain-result](explain-result.schema.json) | 只读解释结果或明确失败 | 稳定说明目录、0/2/3/4退出及只读边界；ADR-0020 |
+| [project-template](project-template.schema.json) | 完整模板、库存、模块/目标、有限参数与 renderer | 原包字节/完整库存、跨引用、计划/配方及工具准入；ADR-0023 |
+| [init-result](init-result.schema.json) | 初始化结果、原包/证据根及初始内容计划 | 冻结请求、真实同根 CommitNew、独立必需检查与证据保存事实；不能信任外来 created |
 | [report](report.schema.json) | 固定候选的执行结果、清理、附件和资源观察 | 独立预期、六项身份、最低证据层级、资源计数 |
 | [read-request](read-request.schema.json) | reader 的已锁输入和目标 | 输入与返回 IR 的对应关系 |
 | [generate-request](generate-request.schema.json) | 固定快照与输入、任务身份 | 返回批次、源输入和 profile 一致性 |
@@ -53,7 +55,7 @@ madb-model：Symbol / Type / Policy / Capability / CaseResult
 Findings 或受检结果 → C04 应用请求与端口
 ```
 
-不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 20 类文档格式正反例（原 16 类、composition/profile-v2 及 diagnostic-context/explain-result），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
+不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 22 类文档格式正反例（原 16 类、composition/profile-v2、diagnostic-context/explain-result 及 project-template/init-result），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
 
 应用请求与 wire 文件不是一个类型：C02 固定端口 payload；C04 按用例构造纯应用请求，并通过适配器转换。C02 没有空执行器、成功占位后端或伪造的 `build/verify` 命令。
 
@@ -139,3 +141,11 @@ C07 的 `core.external-runtime-verification@1` 复用 profile.required_features 
 新格式的 [共同向量](../../tests/fixtures/contracts/composition-format-vectors.json)与原向量一并运行。结构样例含专用夹具身份，不是已安装包或正式候选。实际执行接线、生成后绑定及独立普通/增强/禁用消费仍按 E01–E03 和相关工作包交付。
 
 当前纯适配接口由宿主传入固定配方事实与独立必需责任集合，返回只读绑定观察或比较结果；它尚不从实际业务声明和 SDK 导出自动建立整套配方事实，也不提供执行、提交或认证令牌。调用方不能把同一份申请数组同时当作必需集合和已提供集合来宣称完整性。
+
+## I01 完整模板与结果
+
+[ADR-0023](../adr/0023-project-template-and-init-result.md)采用完整 `project-template/1`、`init-result/1` 及有限首分片。模板库存覆盖全部原包文件（仅排除 manifest 自身），原包摘要计算受限 USTAR 的完整原字节；解包根不随嵌套 manifest 的父目录移动。结果原包、输入根、边界原 profile/SDK、计划文件字节和证据根分别绑定。库存、跨引用、准入、真实创建和检查事实在 schema 之外验证。
+
+`DigestDomain::InitRequest` 使用 `madb.init-request/1` 域。内部投影精确为 `{template_selector,template_profile_selector,parameter_values,targets,verify,open,dry_run,offline,output_path}`；合法默认先展开，targets 为完整排序唯一 family，output_path 纯词法绝对规范化。它不是新增 InitRequest wire。摘要为空不改变真实阶段错误类别；原包/工具身份也不能由请求摘要代替。
+
+普通成功必须由同根同计划 Host 创建事实和独立配方必需检查支撑；dry-run 只保存独立证据和计划，不创建工程或运行工具。`InitResult` 的结构与语义校验不对第三方自报创建背书。首配方仅按已批准的 profile/1、macOS/aarch64 与精确工具集合准入，当前开发版本不能伪装成正式兼容版本。格式与纯规则结果不等同于工程/IDE运行。

@@ -1,0 +1,384 @@
+{
+  "schema": "madb.project-template/1",
+  "id": "org.madb.template/rust-c-sdk",
+  "version": "0.1.0",
+  "madb_compatibility": {
+    "min_inclusive": "0.1.0",
+    "max_exclusive": "0.2.0"
+  },
+  "default_profile": "macos-arm64-values",
+  "parameters": [
+    {
+      "id": "name",
+      "type": "string",
+      "required": true,
+      "default": null,
+      "min_length": 1,
+      "max_length": 48,
+      "pattern": "[A-Za-z][A-Za-z0-9_]{0,47}",
+      "choices": []
+    },
+    {
+      "id": "namespace",
+      "type": "string",
+      "required": true,
+      "default": "reading_demo",
+      "min_length": 1,
+      "max_length": 48,
+      "pattern": "[A-Za-z][A-Za-z0-9_]{0,47}",
+      "choices": []
+    }
+  ],
+  "profiles": [
+    {
+      "id": "macos-arm64-values",
+      "targets": [
+        {
+          "id": "mac-arm64",
+          "family": "macos",
+          "boundary_refs": [
+            "native-values"
+          ]
+        }
+      ],
+      "modules": [
+        "root",
+        "rust",
+        "consumer",
+        "generated"
+      ],
+      "boundary_refs": [
+        "native-values"
+      ],
+      "assets": [
+        "author",
+        "cargo",
+        "cmake",
+        "consumer",
+        "readme",
+        "settings",
+        "local-machine"
+      ],
+      "ide_entries": [],
+      "task_roots": [
+        "native"
+      ],
+      "validation": [
+        "structure",
+        "native-generate",
+        "c-link",
+        "ordinary-run"
+      ],
+      "requirements": {
+        "structure": {
+          "hosts": [
+            {
+              "os": "macos",
+              "arch": "aarch64",
+              "min_inclusive": "26.6.2",
+              "max_exclusive": "26.6.3"
+            }
+          ],
+          "tools": [],
+          "ide_entries": []
+        },
+        "build": {
+          "hosts": [
+            {
+              "os": "macos",
+              "arch": "aarch64",
+              "min_inclusive": "26.6.2",
+              "max_exclusive": "26.6.3"
+            }
+          ],
+          "tools": [],
+          "ide_entries": []
+        },
+        "run": {
+          "hosts": [
+            {
+              "os": "macos",
+              "arch": "aarch64",
+              "min_inclusive": "26.6.2",
+              "max_exclusive": "26.6.3"
+            }
+          ],
+          "tools": [],
+          "ide_entries": []
+        },
+        "open": {
+          "hosts": [
+            {
+              "os": "macos",
+              "arch": "aarch64",
+              "min_inclusive": "26.6.2",
+              "max_exclusive": "26.6.3"
+            }
+          ],
+          "tools": [],
+          "ide_entries": []
+        }
+      }
+    }
+  ],
+  "modules": [
+    {
+      "id": "root",
+      "role": "project",
+      "directory": null,
+      "dependencies": [
+        "rust",
+        "consumer"
+      ]
+    },
+    {
+      "id": "rust",
+      "role": "rust-library",
+      "directory": "rust",
+      "dependencies": []
+    },
+    {
+      "id": "consumer",
+      "role": "c-consumer",
+      "directory": "consumer",
+      "dependencies": [
+        "rust"
+      ]
+    },
+    {
+      "id": "generated",
+      "role": "generated-sdk",
+      "directory": ".madb/generated",
+      "dependencies": [
+        "rust"
+      ]
+    }
+  ],
+  "boundary_refs": [
+    {
+      "id": "native-values",
+      "profile": {
+        "path": "profile.json",
+        "sha256": "sha256:c65a81c80cff5c76733a52b8c4cc5dc9d7cf5c50c00c6343fa1e984901f35e1d",
+        "size": 3577,
+        "schema": "madb.profile/1"
+      }
+    }
+  ],
+  "assets": [
+    {
+      "id": "author",
+      "module": "rust",
+      "source": {
+        "path": "assets/author.rs",
+        "sha256": "sha256:873f89509f0608994a8b36db87e1f86c35d7896366fb6ccdcc69ab95a81a7dd1",
+        "size": 164
+      },
+      "output": "rust/src/lib.rs",
+      "ownership": "user",
+      "renderer": {
+        "id": "madb.render.copy@1"
+      }
+    },
+    {
+      "id": "cargo",
+      "module": "rust",
+      "source": {
+        "path": "assets/Cargo.toml",
+        "sha256": "sha256:56eb80c625c9a36f5bae09e9dad4728c8055d89b902588a369b25210374c603e",
+        "size": 95
+      },
+      "output": "rust/Cargo.toml",
+      "ownership": "user",
+      "renderer": {
+        "id": "madb.render.identifiers@1",
+        "language": "toml",
+        "parameters": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": "cmake",
+      "module": "root",
+      "source": {
+        "path": "assets/CMakeLists.txt",
+        "sha256": "sha256:9d474f1223d1def25f152e401487d74cbdb48dc1a4d10d4000aef90e8e252f4c",
+        "size": 565
+      },
+      "output": "CMakeLists.txt",
+      "ownership": "user",
+      "renderer": {
+        "id": "madb.render.identifiers@1",
+        "language": "cmake",
+        "parameters": [
+          "name"
+        ]
+      }
+    },
+    {
+      "id": "consumer",
+      "module": "consumer",
+      "source": {
+        "path": "assets/main.c",
+        "sha256": "sha256:0136f8e746c2763b684b43a42612bcc23b5b22d08973d89395b88ed31c33cfab",
+        "size": 492
+      },
+      "output": "consumer/main.c",
+      "ownership": "user",
+      "renderer": {
+        "id": "madb.render.identifiers@1",
+        "language": "c",
+        "parameters": [
+          "namespace"
+        ]
+      }
+    },
+    {
+      "id": "readme",
+      "module": "root",
+      "source": {
+        "path": "assets/README.md",
+        "sha256": "sha256:9b08ac4a535bcc14dba21c647b5e1b4e3557c606d4946efc38c97662045fd61b",
+        "size": 92
+      },
+      "output": "README.md",
+      "ownership": "user",
+      "renderer": {
+        "id": "madb.render.copy@1"
+      }
+    },
+    {
+      "id": "settings",
+      "module": "root",
+      "source": {
+        "path": "assets/settings.json",
+        "sha256": "sha256:518a0e18c1e4e6a87fbff58b598ad2c98ebe417fc3f7293951401470edbac055",
+        "size": 31
+      },
+      "output": ".madb/project-parameters.json",
+      "ownership": "provenance",
+      "renderer": {
+        "id": "madb.render.json-values@1",
+        "bindings": [
+          {
+            "parameter": "name",
+            "pointer": "/name"
+          },
+          {
+            "parameter": "namespace",
+            "pointer": "/name"
+          }
+        ]
+      }
+    },
+    {
+      "id": "local-machine",
+      "module": "root",
+      "source": null,
+      "output": ".madb/local-machine.json",
+      "ownership": "local-state",
+      "renderer": null
+    }
+  ],
+  "ide_entries": [],
+  "task_roots": [
+    {
+      "id": "native",
+      "module": "generated",
+      "recipe": "madb.init.rust-c-sdk.values@1",
+      "boundary_refs": [
+        "native-values"
+      ],
+      "targets": [
+        "mac-arm64"
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "id": "structure",
+      "level": "structure",
+      "target": "mac-arm64",
+      "task_root": "native",
+      "required": true,
+      "minimum_evidence": "static",
+      "prerequisites": []
+    },
+    {
+      "id": "native-generate",
+      "level": "build",
+      "target": "mac-arm64",
+      "task_root": "native",
+      "required": true,
+      "minimum_evidence": "generated",
+      "prerequisites": [
+        "structure"
+      ]
+    },
+    {
+      "id": "c-link",
+      "level": "build",
+      "target": "mac-arm64",
+      "task_root": "native",
+      "required": true,
+      "minimum_evidence": "linked",
+      "prerequisites": [
+        "native-generate"
+      ]
+    },
+    {
+      "id": "ordinary-run",
+      "level": "run",
+      "target": "mac-arm64",
+      "task_root": "native",
+      "required": true,
+      "minimum_evidence": "host-run",
+      "prerequisites": [
+        "c-link"
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "assets/CMakeLists.txt",
+      "sha256": "sha256:9d474f1223d1def25f152e401487d74cbdb48dc1a4d10d4000aef90e8e252f4c",
+      "size": 565
+    },
+    {
+      "path": "assets/Cargo.toml",
+      "sha256": "sha256:56eb80c625c9a36f5bae09e9dad4728c8055d89b902588a369b25210374c603e",
+      "size": 95
+    },
+    {
+      "path": "assets/README.md",
+      "sha256": "sha256:9b08ac4a535bcc14dba21c647b5e1b4e3557c606d4946efc38c97662045fd61b",
+      "size": 92
+    },
+    {
+      "path": "assets/author.rs",
+      "sha256": "sha256:873f89509f0608994a8b36db87e1f86c35d7896366fb6ccdcc69ab95a81a7dd1",
+      "size": 164
+    },
+    {
+      "path": "assets/main.c",
+      "sha256": "sha256:0136f8e746c2763b684b43a42612bcc23b5b22d08973d89395b88ed31c33cfab",
+      "size": 492
+    },
+    {
+      "path": "assets/settings.json",
+      "sha256": "sha256:518a0e18c1e4e6a87fbff58b598ad2c98ebe417fc3f7293951401470edbac055",
+      "size": 31
+    },
+    {
+      "path": "profile.json",
+      "sha256": "sha256:c65a81c80cff5c76733a52b8c4cc5dc9d7cf5c50c00c6343fa1e984901f35e1d",
+      "size": 3577
+    },
+    {
+      "path": "toolchain.json",
+      "sha256": "sha256:bfadfa41c59fe92e3868fa172af8b78be654c451c33f1d3a1344b5fa4c49ecd2",
+      "size": 20795
+    }
+  ]
+}
