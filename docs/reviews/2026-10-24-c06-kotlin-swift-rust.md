@@ -13,7 +13,7 @@
 | `swift-rust` | UniFFI 0.32.2 与受管补丁；Swift 源码、头文件及动态库 |
 | `swift-kotlin` | Objective-C export + SKIE 0.10.15；可分发 framework 及 Swift 并发门面 |
 
-**C06 实现与本机验收已交付；远端整包验证按用户安排留到下一轮。** 固定干净源为 `b19d48f5f6fda584a6c47f2e0dc7059f5a080d01`，Lab 为 `c53a64ef2c160fa7ca9b8e23d6365b84d882fc41`。Lab 92 项 harness 检查通过；54 个案例中，51 项是目标运行，3 项是预期编译/链接拒绝，不能写成54个运行成功。当前源码触发的基础检查和 C05 回归共四个远端作业成功。用户于 2026-10-25 决定本轮不再等待 C06 远端作业，下一工作包完成后统一验证；本轮远端作业已取消。目录登记为 `implemented / missing`：实现已交付，整包验收尚未通过。
+**C06 已完成约定范围内的本地验收并收口，目录为 `implemented / passed`。** 项目所有者确认：完整本地验证完成即代表工作包验收通过，GitHub Actions 后续单独补跑，不再阻塞本包验收。依据仍为固定干净 producer `b19d48f5f6fda584a6c47f2e0dc7059f5a080d01` 与 Lab `c53a64ef2c160fa7ca9b8e23d6365b84d882fc41`：四个正式候选、54 项必需案例和 92 项 Lab harness 检查通过；54 项包含 51 项实际运行与 3 项预期编译/链接拒绝。原始报告、摘要和配置范围保持不变，不将历史成功转用于后续源码。此前因远端待补而登记 `missing` 的解释按此次验收口径更正；取消及未执行的 Actions 仍不计通过。
 
 工作包验收只覆盖上述选定 profile。它不表示任意接口都可安全生成，也不覆盖 Android、iOS、CPF/OHOS、其他 Apple 工具组合、SKIE + NativeCoroutines、UI 便利层、`madb init` 或正式发布渠道。deployment target 14.0 是编译参数，不是最低系统实跑证明；C09/C10 全矩阵继续按各自任务收口。任务验收不自动更新全路线认证登记。
 
@@ -21,7 +21,7 @@
 
 ## 八项验收
 
-下表记录本轮已确认的本地结果。证据绑定下方四个候选及报告；远端 C06 留待下一轮统一验证，本地通过不授予整包验收通过状态。
+下表记录作为本包验收依据的完整本地结果，证据绑定下方四个候选及报告；GitHub Actions 独立补跑专项单独记录结果。
 
 | # | 要求与实际验证落点 | 本轮结果 |
 |---|---|---|
@@ -32,11 +32,11 @@
 | 5 | SKIE 可分发 framework；真实 Swift Flow/suspend/enum/sealed 调用；custom cinterop 来源和泛型 lambda 在指定编译阶段准确拒绝 | enhanced-api目标运行及missing-cinterop-origin/generic-lambda编译拒绝均通过；不含NativeCoroutines组合 |
 | 6 | DEC-08/CRIT-11：1024 载荷字节、4096 保留字节、8 events、1 state slot、32 waiters、每引擎1工作线程；满额、合并、stop/drain/ACK 和资源归零 | 四路 capacity/late-callback/shutdown 本机通过；退出限活运行时的实例owner |
 | 7 | DEC-10/CRIT-12：预期 profile 独立于库自报值；后端 checksum/bootstrap；错库/错 ABI/profile 在业务资源创建前按声明阶段拒绝；工具库存拒绝篡改与逃逸 | 四路wrong-profile及三Rust路线wrong-abi在load拒绝，SKIE wrong-abi在link拒绝；本机全部匹配预期，非超时/崩溃 |
-| 8 | DEC-11：四个最低完整 profile，精确 12+15+12+15=54；P01/P02 独立、P03/P04 按组合；C05 回归独立保留 | 本机54/54通过；当前源触发的baseline/C05四项远端成功；远端 C06 下一轮补验。P05/CPF 不借此通过 |
+| 8 | DEC-11：四个最低完整 profile，精确 12+15+12+15=54；P01/P02 独立、P03/P04 按组合；C05 回归独立保留 | 本机54/54通过；当前源触发的baseline/C05四项远端成功；远端 C06 留作独立专项补跑。P05/CPF 不借此通过 |
 
 载荷预算按 UTF-8 字符串与字节数组的逻辑字节计算，不等于堆内存或序列化峰值；每引擎一个业务 worker 不等于进程只有一个线程。同步外国回调可请求停止，但须先返回，再由独立 owner 等待排水；取消等待不保证中断同步外国代码或撤销副作用。
 
-## 当前身份与报告
+## 本地验收身份与报告
 
 | 项目 | 真实身份或结果 |
 |---|---|
@@ -46,7 +46,7 @@
 | 本机独立 Lab | `/private/tmp/madb-c06-lab-formal-b19d48f`：92项harness、54/54案例通过；4candidate/12build-evidence/4report/54case的schema及162个附件引用校验通过。汇总 `/private/tmp/madb-c06-local-b19d48f-summary.json` 的SHA为 `02931af4c01681c9590f31df354010a0285024ab7d0b17c88661aa0645e9f7c5` |
 | 远端 C06 | [本轮运行 40157655879](https://github.com/changyue1053/MadB/actions/runs/40157655879)按用户安排已取消，结果不计通过。远端 JVM、Native 两份正式候选及其公共准入通过，producer 均为实际 PR merge `e45ed94048c2898d7f6795f116eb9da5d3197fe3`，其 tree 与 b19 相同；Swift/Rust 构建时取消，SKIE 未开始，远端 Lab 未执行（0 个案例） |
 | 当前源基础检查/C05 | [baseline PR](https://github.com/changyue1053/MadB/actions/runs/40157655799)、[baseline push](https://github.com/changyue1053/MadB/actions/runs/40157650688)、[C05 PR](https://github.com/changyue1053/MadB/actions/runs/40157655823)、[C05 push](https://github.com/changyue1053/MadB/actions/runs/40157650680)均为SUCCESS；四run触发head均是b19，两个push实际checkout也是b19；两PR日志实际checkout为 `e45ed94048c2898d7f6795f116eb9da5d3197fe3`，tree `0254e1befe3397f0975d12c8f545aaaea115522a` 与b19相同；配套摘要见 `/private/tmp/madb-c06-ci-b19d48f-supporting-checks.json`，不代替C06 artifact producer核对 |
-| 文档收口提交 | 本记录所在提交仅收口说明、任务目录和派生 HTML；功能验收仍绑定 b19。142个冻结作者/schema文件与 b19 一致，集合摘要 `sha256:a5ee73f95fbc852bc0a7de47b35f1e360ae8640d9807abdf298d00ca5c370482`；完整 diff 及提交后闭包对比单独复核，不改写旧候选来源 |
+| C06 原文档收口提交 | 当时的记录提交仅收口说明、任务目录和派生 HTML；功能验收仍绑定 b19。142个冻结作者/schema文件与 b19 一致，集合摘要 `sha256:a5ee73f95fbc852bc0a7de47b35f1e360ae8640d9807abdf298d00ca5c370482`；完整 diff 及提交后闭包对比单独复核，不改写旧候选来源 |
 
 | 本机 profile | candidate digest（SHA-256） | 同名 `.report.json` 的SHA-256 | Lab 必需案例 |
 |---|---|---|---|
@@ -85,10 +85,10 @@ UniFFI 0.32.2 复用的是已有 v7 后端/探针子闭包证据：原始失败/
 
 已知限制保留两条：旧 C04 出现过5秒消费者启动超时，后续原配置68项通过仍不足以确定根因；远端0.29 metadata helper的rust-objcopy缺libLLVM造成debug-info清理warning，Cargo仍成功且helper真实字节被锁，未观察为当前功能阻断，但未证明已修复。不得据现有日志宣称全部公开provider构建均无此warning。
 
-详细本机证据保留：`/private/tmp/madb-c06-c05-regression-j8yq5lg5/summary.json`、`/private/tmp/madb-c06-skie-cancel-public-proof.json`、`/private/tmp/madb-c06-gobley/unsigned-final-probe/observations.json`、`/private/tmp/madb-c06-uniffi-v7-regressions/report.json`、`/private/tmp/madb-c06-uniffi-v7-source-integrity/report.json`、`/private/tmp/madb-c04-package-targeted-capture/report.json`、`/private/tmp/madb-native-fixed-workspace-proof/report.json`、`/private/tmp/madb-c06-swift-rust-link-probe-01/report.json`、`/private/tmp/madb-c06-rust-objcopy-assessment.md`。它们是本次审查追踪，不是公开SDK构建依赖；本机新报告已绑定上表，远端完整证据由下一轮补齐。
+详细本机证据保留：`/private/tmp/madb-c06-c05-regression-j8yq5lg5/summary.json`、`/private/tmp/madb-c06-skie-cancel-public-proof.json`、`/private/tmp/madb-c06-gobley/unsigned-final-probe/observations.json`、`/private/tmp/madb-c06-uniffi-v7-regressions/report.json`、`/private/tmp/madb-c06-uniffi-v7-source-integrity/report.json`、`/private/tmp/madb-c04-package-targeted-capture/report.json`、`/private/tmp/madb-native-fixed-workspace-proof/report.json`、`/private/tmp/madb-c06-swift-rust-link-probe-01/report.json`、`/private/tmp/madb-c06-rust-objcopy-assessment.md`。它们是本次审查追踪，不是公开SDK构建依赖；本机新报告已绑定上表，远端完整证据留作后续独立专项补齐。
 
-## 下一轮统一验证
+## GitHub Actions 独立补跑专项
 
-下一核心工作包 C07（ArkTS 四路线）完成后，统一运行适用的完整基础检查、C05 回归、C06 四路线冷构建与独立 Lab 54 项，以及 C07 的必需验收。使用届时的固定生产者和 Lab 提交，重新绑定实际候选与工具身份；本轮本机报告保留原提交，不改写成下一轮证据。C06 只有剩余必需验收完成后才将 `verification` 改为 `passed`；两份 PR 当前保持草稿、未合并。
+状态：待执行；项目完成后按[实施计划](../delivery/01-implementation-plan.md)统一补跑基础检查、C05/C06 回归与届时最终配置。C06 工作包已依据上述完整本地证据验收，后续专项不作为其收口欠项。专项使用届时实际 producer/Lab 提交和候选，历史报告保留原身份；源码变化后按影响范围重新验证，发现问题归入对应工作包修复。原远端成功、取消及未执行记录分别保留，最新取消安排见[C07 记录](2026-10-25-c07-arkts.md)。本次只同步本地文档，不触发 Actions，也不改变 PR、分支保护或发布状态。
 
 本轮文档门禁：静态链接/格式/生成一致性、21 项文档契约测试及隔离脚本逻辑测试通过。浏览器安全策略拒绝本地 `file://` 预览，未执行视觉验证；隔离 DOM 测试不作为浏览器实测。

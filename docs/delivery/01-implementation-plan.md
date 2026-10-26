@@ -136,9 +136,9 @@ C05 接入实际编译器来源 reader、语言生成器、资源/线程/取消�
 
 [C05 记录](../reviews/2026-10-24-c05-rust-c-first-route.md)保存真实双向 SDK、三份公开候选、macOS Arm64/Linux x86_64 独立消费者与身份拒绝证据。五项 acceptance 已通过；MadB #11 与 MadB-Lab #2 的合入状态由 GitHub 记录。C09/C10 已开始 S1 首链部分，全部配置/渠道的整体验收仍缺证据，不能据此标为完成。Kotlin、Swift 等后续路线按各自工作包交付和验收。
 
-## C06 交付与剩余验收
+## C06 / C07 验收与后续回归
 
-[C06 记录](../reviews/2026-10-24-c06-kotlin-swift-rust.md)保存对应修订的实现与本机验收；旧 S1/L1 的远程四路线结果保留原身份。本轮 S2/L2 的远程合跑依项目所有者最新要求取消，后续 GitHub Actions 延后到项目完成时统一执行。C06 保持 implemented / missing，不将旧修订成功转给当前修订。
+C06 已按四个固定 SampleEngine 配置的完整本地验证验收收口，状态为 implemented / passed；54 项必需案例与 92 项 Lab 检查的实际修订和结果见[C06 记录](../reviews/2026-10-24-c06-kotlin-swift-rust.md)。后续 GitHub Actions 回归作为独立专项，历史成功与取消保留原身份，不将旧证据转用于当前源码。
 
 C07 已按完整本地验证验收收口，状态为 implemented / passed，具体修订、120组验收及证据见[收口记录](../reviews/2026-10-25-c07-arkts.md)。项目所有者确认：本地完整验证完成即为工作包验收通过；GitHub Actions 另作项目完成后的独立专项，不再作为 C07 收口的未完成项。验收沿用既有任务、配置和证据，不扩大为其他目标或公开发布认证。
 

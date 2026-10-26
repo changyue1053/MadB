@@ -2,7 +2,7 @@
 
 设计基线 0.9 · 更新于 2026-10-25。MadB 为 Kotlin、Swift、ArkTS、Rust、C/C++ 提供跨端 SDK 的契约检查、代码生成、工程接入及制品验证；MadB-Lab 独立验证公开候选和开发者使用流程。
 
-C01–C05 已按各工作包范围验收，覆盖工程与契约基线、受控构建执行及 Rust ↔ C 首链；结果见[C05 记录](reviews/2026-10-24-c05-rust-c-first-route.md)和[审查索引](reviews/README.md)。C06 的固定 SampleEngine 四个 macOS Arm64 Release 配置已完成本机正式构建、54 个必需案例和 92 项 Lab harness 检查；实现与本机验收已交付；按本轮安排，远端 C06 整包验证并入下一轮，当前不计整包验收通过。具体身份与结果见[C06 记录](reviews/2026-10-24-c06-kotlin-swift-rust.md)，当前任务状态以[实施目录](catalog/implementation-plan.json)为准。
+C01–C05 已按各工作包范围验收，覆盖工程与契约基线、受控构建执行及 Rust ↔ C 首链；结果见[C05 记录](reviews/2026-10-24-c05-rust-c-first-route.md)和[审查索引](reviews/README.md)。C06 的固定 SampleEngine 四个 macOS Arm64 Release 配置已完成本机正式构建、54 个必需案例和 92 项 Lab harness 检查；已按完整本地验证验收收口；GitHub Actions 留作项目完成后的独立专项，不阻塞本包验收。具体身份与结果见[C06 记录](reviews/2026-10-24-c06-kotlin-swift-rust.md)，当前任务状态以[实施目录](catalog/implementation-plan.json)为准。
 
 C07 四路线已在既定的 8 个候选配置内完成本地验证并验收收口：120 个必需组、195 次实际 HAP 运行、16 个生成正反例均经独立复验。GitHub Actions 作为项目完成后的独立专项补跑，不阻塞本包验收；适用目标、配置与观察限制见[C07 记录](reviews/2026-10-25-c07-arkts.md)，不据此推导其他配置或公开发布已获验收。
 

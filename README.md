@@ -1,6 +1,6 @@
 # MadB
 
-跨语言 SDK 工程工具。当前提供契约检查、受控执行、输入追踪及三层输出事务；Rust ↔ C 首链已在 macOS Arm64、Linux x86_64 的实际配置通过独立 Lab 验收。C06 四个 Kotlin/Swift/Rust 配置的实现与本机验收也已交付，远端整包验证留到下一轮统一执行。支持范围与证据见[实施目录](docs/catalog/implementation-plan.json)、[C05 记录](docs/reviews/2026-10-24-c05-rust-c-first-route.md)和[C06 记录](docs/reviews/2026-10-24-c06-kotlin-swift-rust.md)。
+跨语言 SDK 工程工具。当前提供契约检查、受控执行、输入追踪及三层输出事务；Rust ↔ C 首链已在 macOS Arm64、Linux x86_64 的实际配置通过独立 Lab 验收。C06 四个 Kotlin/Swift/Rust 配置也已按完整本地验证验收收口，GitHub Actions 留作项目完成后的独立专项。支持范围与证据见[实施目录](docs/catalog/implementation-plan.json)、[C05 记录](docs/reviews/2026-10-24-c05-rust-c-first-route.md)和[C06 记录](docs/reviews/2026-10-24-c06-kotlin-swift-rust.md)。
 
 ## 开发环境
 
@@ -95,7 +95,7 @@ Lab 只使用公开头、库、包装和身份记录，在新工程与空开发�
 
 ## Kotlin / Swift / Rust 四路线候选
 
-C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-kotlin` 四配置的公开安装与构建入口。本机正式构建、独立 Lab 的 54 项必需案例和 92 项基础检查通过；按本轮安排，远端 C06 整包验证并入下一轮，当前不计整包验收通过。精确范围和证据见[任务目录](docs/catalog/implementation-plan.json)与[C06 记录](docs/reviews/2026-10-24-c06-kotlin-swift-rust.md)。
+C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-kotlin` 四配置的公开安装与构建入口。本机正式构建、独立 Lab 的 54 项必需案例和 92 项基础检查通过；按项目所有者确认，本包已验收收口；GitHub Actions 后续独立补跑，不阻塞本地验收。精确范围和证据见[任务目录](docs/catalog/implementation-plan.json)与[C06 记录](docs/reviews/2026-10-24-c06-kotlin-swift-rust.md)。
 
 按照[完整复现指南](docs/examples/managed-routes/README.md)，从固定作者检出依次安装受管编译器/绑定后端、准备离线依赖、构建四个候选，再在独立 MadB-Lab 执行 `scripts/check.py --c06`。指南包含实际命令、候选文件布局、受检 `openEngine` / Swift 门面以及取消和显式关闭责任。
 

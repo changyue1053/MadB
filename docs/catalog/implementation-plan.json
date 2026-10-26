@@ -349,7 +349,7 @@
         "C05"
       ],
       "status": "implemented",
-      "verification": "missing",
+      "verification": "passed",
       "evidence": [
         "reviews/2026-10-24-c06-kotlin-swift-rust.md"
       ],
@@ -390,7 +390,7 @@
         "P03",
         "P04"
       ],
-      "notes": "实现与对应修订的本机验收已交付；旧 S1/L1 的远程四路线及54项验收已通过，不能转用于当前修订。本轮 S2/L2 的 C06 GitHub Actions 按项目所有者最新要求取消，远程回归延后到项目完成时统一执行；继续本地开发与检查，保持 implemented/missing。具体修订、运行结果和延期安排见 C07 本地收口记录；其他目标、NativeCoroutines、便利层与公开发布仍按原任务验收。"
+      "notes": "已验收收口：按项目所有者确认，完整本地验证完成即为工作包验收通过。C06 的固定 SampleEngine 四个 macOS Arm64 Release 配置在 producer b19d48f / Lab c53a64e 完成54项必需案例（51项实际运行、3项预期编译/链接拒绝）及92项Lab检查，原报告与身份见C06记录。旧 S1/L1 远程成功保留原身份；S2/L2 的 GitHub Actions 已取消，后续回归在项目完成后独立补跑，不阻塞本包验收，也不将旧证据转用于新源码。其他目标、NativeCoroutines、便利层和公开发布按各自任务验收。"
     },
     {
       "id": "C07",
