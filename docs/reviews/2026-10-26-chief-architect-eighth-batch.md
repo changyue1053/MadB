@@ -66,3 +66,11 @@ CMake正式来源提交为2e0b3aec14fe2e3e555faac4698e281749aae4b5，Ninja为344
 本轮交付是 I01 的格式与纯规则子范围。I01 的状态仍为 in_progress / missing；尚需可信内置目录与真实Host/CLI接线、正式工具版本准入、无覆盖创建/取消/恢复、最终根生成/链接/普通C运行，以及既定IDE/Wrapper/增量成本等出口。开发版本与正式三元版本的准入差异保持显式，不能通过改写版本、降级配方或空检查绕过。
 
 下一工程分片接现有CommitNew与证据端口并验证真实根的拒绝路径，再按原准入条件执行Rust/C有限值配方；其他 I 链和 E01–E03 按已就绪接口继续，不改变整包前置。L04/L05、L03、C08/L06、C09/C10联合验收仍依catalog原出口推进。本轮没有原生生命周期/并发实现变更；C06/C07/L02对象与独立Lab保持原结论和内容。
+
+## 冻结候选完整门禁
+
+实际 clean 代码候选为 `f2e39a3a79cf7b31b23b1eb11c12edc59aa663c2`。在隔离完整检出运行仓库既有 `scripts/check.py`，退出0，运行前后 HEAD 与干净状态一致。固定环境为 macOS 26.6.2 arm64、Rust/Cargo 1.99.1、Python 3.14.4、Node 26.8.2；环境查询与真实命令/日志分别归档。
+
+完整入口包括 workspace fmt/check/clippy/all-features tests、协议双引擎与canonical、CLI干净安装、C03/C04/E02和既有SDK/原生/ArkTS/L01/L02回归、实际依赖边界、文档静态检查/29项工具测试及panorama DOM smoke。入口通过不替代本轮未执行的真实init、IDE、全平台或独立Lab候选验收，也不把仓库脚本中的不同层级汇总为目标运行数量。
+
+[机器证据索引](eighth-batch-i01-format-validation.json)绑定全门禁、分域结果、独审与实际源清单的字节摘要。全部原始材料、独审驱动及源码bundle保存在产品根外 `.local/evidence/round8-i01-formats/validation`；工具材料位于同级tools。集成采用再次核对原根后fast-forward；真实根复验与GitHub交付回执保存在归档中。阶段提交带`[skip ci]`，远程未执行不登记CI通过。

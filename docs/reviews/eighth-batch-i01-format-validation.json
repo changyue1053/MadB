@@ -1,0 +1,107 @@
+{
+  "scope": "I01 approved formats and pure rules; model Host observations only",
+  "approval_sha256": "09672664872c3d56fe1b81857692be87f4bd8222e38b012e9d5902055e207fa6",
+  "product_baseline": "e37d912a3ea650f47ba051ecbaec107236740911",
+  "implementation_candidate": "f2e39a3a79cf7b31b23b1eb11c12edc59aa663c2",
+  "lab_unchanged": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+  "repository_gate_exit_code": 0,
+  "evidence_directory": "/Users/changyue/Desktop/MadB/.local/evidence/round8-i01-formats/validation",
+  "evidence": [
+    {
+      "path": "full-gate-001.json",
+      "sha256": "3eac1b583f4c83f077c2c418519555927757b9b09e658e99fa6c13c1f1ba66c1",
+      "size": 616
+    },
+    {
+      "path": "full-gate-001.log",
+      "sha256": "591f268fae65a231a720424c13561ef9d473808ff838d265206423fcc41596d2",
+      "size": 92482
+    },
+    {
+      "path": "check-environment.json",
+      "sha256": "db677b962862afad10d606b428495fd5fe7b48847c264d8c6e5c4a3e2eea62f6",
+      "size": 2382
+    },
+    {
+      "path": "root-scope-check.json",
+      "sha256": "dafce84e52f30111f984b2fb9accb2508fd0ca5230885b7a5af8aef1252f5435",
+      "size": 185
+    },
+    {
+      "path": "implementation-source.json",
+      "sha256": "b1fc27fe9aeae2bc2b28b04d4688d418c69a11a475b2b3896f0893aaacf1e11c",
+      "size": 20277
+    },
+    {
+      "path": "review-i01-final.md",
+      "sha256": "cad39fbb045d82edd50d18821c736b2454b9fe34f94a7ff4b1ea433e9826140c",
+      "size": 7381
+    },
+    {
+      "path": "review-final-commit-binding.json",
+      "sha256": "3b08bd7d9125ef2dcee06e36fa4f87ee72b72653fe4c8358a226e66dc785a272",
+      "size": 274
+    },
+    {
+      "path": "review-formats-plan.md",
+      "sha256": "f6e8741a9eb730ecb53f467eb47e465d5b7b9f894f76c292dfbb41ce726246cd",
+      "size": 3504
+    },
+    {
+      "path": "review-assets-final-review.md",
+      "sha256": "46a0962576ba35ac765c69e654d6200ee300509b8a257b92739105411dfb0870",
+      "size": 6360
+    },
+    {
+      "path": "review-facts-execution.json",
+      "sha256": "5f01c46f86186500ce0897a0dcc741dce589bf84e2f6b2a7bb7938c10712e55c",
+      "size": 58499
+    },
+    {
+      "path": "review-diagnostic-registry.json",
+      "sha256": "84f64487b5ae67b3b4aa345a89cd06f4ee11e020f7a344b759205ef93e92cfd4",
+      "size": 225
+    },
+    {
+      "path": "formats-result.md",
+      "sha256": "fac2f0f5205dba6b9e06f5368c83f0d905f78524d5bdd8301a20acf9b2990e90",
+      "size": 2980
+    },
+    {
+      "path": "plan-result.md",
+      "sha256": "d51f0cfeae9b0cbdf9c9cfacf5ab87b9bedaa4d908dd58322103b5c94f7dd8be",
+      "size": 5048
+    },
+    {
+      "path": "assets-result.md",
+      "sha256": "8b18618214b1ff70030f5ab382059c8bd89ac3b2eed44712468ea7eacd17cd1d",
+      "size": 4058
+    },
+    {
+      "path": "app-contracts-result.md",
+      "sha256": "528f750b374898bcc97c08dedb2e1b6073f772eaade869f67eef625291aafaad",
+      "size": 6909
+    },
+    {
+      "path": "tools-archive-result.json",
+      "sha256": "1df40dddbc59a18548ba0ff66fe6d82e33a825fcae3dbdd4ad5499bcd4414bf7",
+      "size": 311
+    }
+  ],
+  "independent_assertions": {
+    "structure_identifier_version": 81,
+    "pure_rules": 37,
+    "package_renderer_vectors": 67,
+    "package_renderer_additional": 8,
+    "app_contracts_model": 70
+  },
+  "real_host_initialization_executed": false,
+  "init_cli_implemented": false,
+  "i01_whole_package_accepted": false,
+  "actions_run_as_validation": false,
+  "notes": [
+    "The final docs-only commit does not change implementation bytes.",
+    "Archive tools are stored in a separately verified tools phase.",
+    "Integrated-root rerun and GitHub delivery receipts are recorded separately in the durable evidence directory."
+  ]
+}
