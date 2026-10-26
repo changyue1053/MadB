@@ -112,7 +112,7 @@ C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-k
 
 C07 已提供 `scripts/check_arkts_environment.py`，检查显式选择的应用 SDK 元数据、工具和已连接目标。用法见[预检说明](tests/integration/c07_environment/README.md)。该命令不安装或启动设备；输出是基础环境观察，不代表四路线实现、正式工具组合或 P05/P06 验收通过。当前发现与实施要求见[C07 记录](docs/reviews/2026-10-25-c07-arkts.md)。
 
-C07 另已接入[私有原生协议宿主检查](tests/integration/c07_native_protocol/README.md)、工具输入核验和受检 HAR 归档组件；它们不表示完整 ArkTS SDK 或候选构建入口已交付。
+C07 四路线已完成既定 8 个候选配置的本地验证并验收收口，涵盖生成、状态/异步/关闭、Release/HAR 与独立消费。适用目标、配置和证据见[C07 记录](docs/reviews/2026-10-25-c07-arkts.md)；GitHub Actions 留待项目完成后的独立专项补跑。
 
 ## 依赖与缓存边界
 

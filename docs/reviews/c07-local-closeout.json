@@ -43,7 +43,7 @@
   "scope": "Read-only re-admission, existing raw parsers/coverage gates and byte closure; no target rerun.",
   "outer_process_limit": "Rust test outer monitor was interrupted; original OS exit code unobserved. All per-scene command/cleanup/report evidence was revalidated; no inferred process exit zero.",
   "environment_limit": "Kotlin main-env shutdown/Worker-first rejection is explicit applicability; actual host VM destroy and env validity remain unobserved.",
-  "interpretation": "Selected C07 local profiles passed. Overall verification remains missing while the agreed remote regressions are deferred by the project owner.",
+  "interpretation": "C07 is accepted and closed on the complete local validation evidence, as explicitly confirmed by the project owner. GitHub Actions is a separate later verification campaign and does not block this acceptance.",
   "review_audit_sha256": "2ea4f15c679a56c3da361f127d89343105148593ecd3c803a335b5d056788afb",
   "local_checks": {
     "producer_python_tests": 548,
@@ -95,7 +95,9 @@
         "revision": "a466501275bee1786d171199390f228f55eb38a0",
         "scope": "C05 independent candidates; verification not completed"
       }
-    ]
+    ],
+    "follow_up_status": "pending-independent-campaign",
+    "blocks_c07_acceptance": false
   },
   "archive_plan": {
     "sha256": "ccf033d6e4ccee119bbfc2f0e1101a060e30d1181027c305145adb1ab6746e20",
@@ -110,5 +112,11 @@
     "archive_size": 896905223,
     "delivery_manifest_sha256": "3d9873dbba15ef16faae909437a62c50ae6f22dae8156172d89067d17884a8fa",
     "scope": "Local original-byte archive; not uploaded or published. Full historical replay retains original-path dependencies."
+  },
+  "acceptance": {
+    "status": "passed",
+    "basis": "Complete local validation and independent evidence review",
+    "decision": "Project owner confirmed that local validation closeout constitutes acceptance",
+    "scope": "The eight recorded C07 candidate profiles and their recorded target/configuration limits"
   }
 }
