@@ -105,6 +105,7 @@ class Session {
   private closing: boolean = false;
   private closed: boolean = false;
   private failed: Error | undefined = undefined;
+  private abandonmentAccepted: boolean = false;
   private closePromise: Promise<void> | undefined = undefined;
   private closeResolve: (() => void) | undefined = undefined;
   private closeReject: ((reason: Error) => void) | undefined = undefined;
@@ -449,6 +450,11 @@ class Session {
         if (waiter !== undefined && !waiter.settling) { this.consume(waiter); }
       }
       if (this.failed !== undefined && this.closeResolve === undefined) { return; }
+      // A failure caught by consume has now left its finally/settling scope.
+      // Only this failed Session may hand native the remaining completions.
+      if (this.closing && this.failed !== undefined && !this.abandonmentAccepted) {
+        this.requestNativeClose();
+      }
       const frame: number[] = this.refreshClosures();
       if (this.closeResolve !== undefined && this.waiters.size === 0 && physicalRuntimeAck(frame)) {
         const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
@@ -474,6 +480,13 @@ class Session {
     }
   }
 
+  private requestNativeClose(): void {
+    const abandoning: boolean = this.failed !== undefined;
+    native.requestRuntimeClose(this.runtime, abandoning ? 1 : 0);
+    // A rejected entry has not acknowledged responsibility transfer.
+    if (abandoning) { this.abandonmentAccepted = true; }
+  }
+
   close(): Promise<void> {
     if (this.closePromise !== undefined) { return this.closePromise; }
     this.closePromise = new Promise<void>((resolve, reject) => {
@@ -482,7 +495,7 @@ class Session {
       if (this.engine !== undefined) { this.engine.closing = true; }
       this.subscriptions.forEach((record: ResourceRecord) => { record.closing = true; });
       this.operations.forEach((record: ResourceRecord) => { record.closing = true; });
-      try { native.requestRuntimeClose(this.runtime); this.arm(); }
+      try { this.requestNativeClose(); this.arm(); }
       catch (error) { this.fail(nativeError(error as Error)); this.rejectClose(); }
     });
     return this.closePromise;

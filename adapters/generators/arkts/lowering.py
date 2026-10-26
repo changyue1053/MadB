@@ -27,6 +27,28 @@ FEATURES = sorted(
 )
 
 
+FAILED_COMPLETION_HANDOFF = {
+    "allowed_integers": [0, 1],
+    "deliver_pending": 0,
+    "abandon_failed_pending": 1,
+    "abandon_is_monotonic": True,
+}
+
+
+def validate_failed_completion_handoff(policy):
+    """This fixed C07 protocol has no implicit/default completion mode policy."""
+    role = policy.get("failed_completion_handoff")
+    message = "unsupported C07 failed_completion_handoff policy"
+    if not isinstance(role, dict) or set(role) != set(FAILED_COMPLETION_HANDOFF):
+        raise ValueError(message)
+    for key, expected in FAILED_COMPLETION_HANDOFF.items():
+        actual = role[key]
+        if type(actual) is not type(expected) or actual != expected:
+            raise ValueError(message)
+        if isinstance(actual, list) and any(type(value) is not int for value in actual):
+            raise ValueError(message)
+
+
 def projection(descriptor):
     """Compiler facts excluding location/tool bytes; those remain source provenance."""
     excluded = {
@@ -80,6 +102,7 @@ def lower_public(public, policy, request, config):
     """Lower the common public roles after the selected backend checked its own declarations."""
     if policy.get("schema") != "madb.private.arkts-runtime-policy.v1":
         raise ValueError("unsupported C07 policy")
+    validate_failed_completion_handoff(policy)
     if projection(public) != policy["public_surface"]:
         raise ValueError(
             "actual declarations changed outside authored C07 policy: public_surface"
@@ -282,6 +305,7 @@ def lower_public(public, policy, request, config):
 
 def abi_projection(descriptor, contract, runtime_policy):
     """Only checked type/protocol facts; byte provenance remains in Source/build."""
+    validate_failed_completion_handoff(runtime_policy)
     logical = {
         "types": contract["types"],
         "symbols": [
@@ -347,6 +371,7 @@ def abi_projection(descriptor, contract, runtime_policy):
             "test_types",
             "execution_domain",
             "runtime_reopen",
+            "failed_completion_handoff",
         )
         if key in runtime_policy
     }

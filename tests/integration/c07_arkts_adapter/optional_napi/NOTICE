@@ -1,0 +1,9 @@
+property.cpp is copied byte-for-byte solely as a regression input from akinterop v1.1.0,
+commit 75ba50c77afda2845a3a6c51cdcddb03d4fd0ab8, path
+AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/property.cpp.
+SHA256 54c8b0cae0c635afd1bc7ff4d360db109dd510abcc9fc20d00b3b61bf5e2b60e.
+The public input is already pinned by the managed runtime source manifest.
+The akinterop project is Apache-2.0; see adapters/generators/akinterop/ATTRIBUTION.md
+and its third-party notices. The minimal include/ header files are explicit host fixtures,
+not an OHOS SDK or platform behavior simulation. They supply only NAPI type names
+and an error-return macro needed to compile the unchanged upstream property code.

@@ -3,8 +3,8 @@
   "purpose": "Authored restricted Snapshot C07 policy; actual compiler projections must match this reviewed structural allowlist. Runtime semantics are explicit policy, not inferred from TypeScript syntax.",
   "authority": {
     "path": "docs/adr/0013-arkts-runtime-and-completion.md",
-    "sha256": "sha256:3f85a6b1e103454379487422db9c836d030e24d890dd366c8041e1adaf59e340",
-    "size": 11506
+    "sha256": "sha256:8ef892436312636f7f2e368426c7f30c6949a170bf7a30e8e8b3ea59a1011a5a",
+    "size": 14159
   },
   "public_surface": {
     "records": [
@@ -2049,5 +2049,14 @@
     "requires_physical_ack": true,
     "requires_receipt_consumed": true,
     "epoch_reuse": false
+  },
+  "failed_completion_handoff": {
+    "allowed_integers": [
+      0,
+      1
+    ],
+    "deliver_pending": 0,
+    "abandon_failed_pending": 1,
+    "abandon_is_monotonic": true
   }
 }

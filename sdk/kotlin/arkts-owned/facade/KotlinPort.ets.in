@@ -76,7 +76,7 @@ class KotlinPort {
     catch (_error) { throw new PortError('DeliveryFailureConsumed'); }
   }
   deliver(subscription: string): number { return this.current().ownedDeliver(subscription); }
-  requestRuntimeClose(runtime: string): void { this.current().ownedRuntimeClose(runtime); }
+  requestRuntimeClose(runtime: string, completionMode: number): void { this.current().ownedRuntimeClose(runtime, completionMode); }
   pollRuntime(runtime: string): number[] { return bootstrap.poll(runtime); }
   consumeRuntimeReceipt(runtime: string): number[] { return bootstrap.consumeReceipt(runtime); }
   // Separate test-support consumers call these private ports, never business UI.

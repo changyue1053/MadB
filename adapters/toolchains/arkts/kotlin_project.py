@@ -256,6 +256,18 @@ def materialize(inputs, config, project, *, identity=None):
             ):
                 raise ValueError("Reviewed generated NAPI observer source drift")
 
+        shim = receipt["call_shim"]
+        property_source = project / "inputs/runtime/src" / shim["target"]
+        original = property_source.read_text()
+        marker = shim["insert_before"]
+        if hashlib.sha256(original.encode()).hexdigest() != shim["base_sha256"] or original.count(marker) != 1:
+            raise ValueError("Optional NAPI call shim input differs")
+        intercepted = original.replace(marker, '\n#include "' + shim["include"] + '"\n' + marker)
+        if hashlib.sha256(intercepted.encode()).hexdigest() != shim["result_sha256"]:
+            raise ValueError("Optional NAPI call shim result differs")
+        property_source.write_text(intercepted)
+        shutil.copyfile(observer / shim["generated_header"], property_source.parent.parent / "include" / shim["include"])
+
         def observer_ref(name):
             p = observer / name
             return dict(
@@ -272,6 +284,7 @@ def materialize(inputs, config, project, *, identity=None):
                     "observer_entry.h",
                     "observer_provider.h",
                     "observer_core.inc",
+                    "provider-call-shim.h",
                 )
             ],
             schema=observer_ref("observer-schema.json"),

@@ -73,7 +73,14 @@ class NativeCompositionTests(unittest.TestCase):
         self.assertTrue(receipt["test_companion"])
         self.assertEqual(receipt["source"]["sha256"],
                          hashlib.sha256(result.facade_template.read_bytes()).hexdigest())
-        self.assertEqual(len(receipt["cases"]), 27)
+        self.assertEqual(len(receipt["cases"]), 31)
+        names = {case["name"] for case in receipt["cases"]}
+        self.assertTrue({
+            "healthy_parent_close_preserves_accepted_result_delivery",
+            "failed_handoff_covers_all_remaining_observations_without_js_retry",
+            "accepted_resolver_reentry_upgrades_after_settlement_without_second_terminal",
+            "rejected_failed_handoff_never_claims_native_ack",
+        }.issubset(names))
         regressions = {case["name"] for case in receipt["cases"]
                        if case["name"].startswith("c3_")}
         self.assertEqual(regressions, {

@@ -14,7 +14,7 @@ declare const gateway: {
   watchClose(target: string, observationId: string): number;
   tryTake(runtime: string, observationId: string): NativeCopy | null;
   deliver(subscription: string): number;
-  requestRuntimeClose(runtime: string): void;
+  requestRuntimeClose(runtime: string, completionMode: number): void;
   pollRuntime(runtime: string): number[];
   consumeRuntimeReceipt(runtime: string): number[];
   audit(runtime: string): number[];

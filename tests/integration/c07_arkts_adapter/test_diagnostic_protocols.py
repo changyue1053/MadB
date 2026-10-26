@@ -122,7 +122,13 @@ class DiagnosticProtocols(unittest.TestCase):
         policy = {
             "value_slots": {
                 "observe.return": {"layout": "old.json", "length_elements": 110}
-            }
+            },
+            "failed_completion_handoff": {
+                "allowed_integers": [0, 1],
+                "deliver_pending": 0,
+                "abandon_failed_pending": 1,
+                "abandon_is_monotonic": True,
+            },
         }
 
         def digest(d, p):

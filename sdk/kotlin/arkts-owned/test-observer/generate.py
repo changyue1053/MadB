@@ -5,6 +5,7 @@ import argparse,hashlib,json,subprocess,shutil
 NEUTRAL={'napi_acquire_threadsafe_function','napi_call_threadsafe_function','napi_release_threadsafe_function','napi_call_threadsafe_function_with_priority'}
 REGISTRATION={'napi_module_register'}
 NOENV={'napi_remove_async_cleanup_hook'}
+ADDRESS_PROBED={'napi_create_callsite_info','napi_delete_callsite_info','napi_get_property_with_callsite_info','napi_set_property_with_callsite_info'}
 FIELDS=['Format','Role','WrappedApiCount','Capabilities','TotalAttempts','EnvArgumentAttempts','ThreadNeutralAttempts','RegistrationAttempts','CleanupHandleAttempts','NullEnvAttempts','UnboundEnvAttempts','WrongEnvAttempts','WrongThreadAttempts','UnboundCleanupHandleAttempts','BootstrapEntries','ProviderBindings','NullBindAttempts','EnvValidityUnobservedAttempts']
 def ref(path):
  p=Path(path);return {'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'size':p.stat().st_size}
@@ -44,7 +45,12 @@ def generate(imports,expected,compiler,sysroot,output):
   names=sorted(lib.get('napi_undefined',[n for n in lib.get('undefined',[]) if n.startswith('napi_')]))
   if not names or len(names)!=len(set(names)):raise ValueError('invalid import set')
   source=['// Generated from actual SDK signatures; do not hand-edit.','#include <napi/native_api.h>','#include <node_api.h>','#include <type_traits>','#include "observer.h"',f'#define MADB_KN_OBSERVER_ROLE {1 if role=="provider" else 0}',f'#define MADB_KN_OBSERVER_API_COUNT {len(names)}','#define MADB_KN_OBSERVER_COUNTER_INITIALIZERS '+', '.join('{0}' for _ in names),'#include "observer_core.inc"']
+  bindings=lib.get('napi_bindings',{})
+  if set(bindings)!=set(names) or any(b not in {'WEAK','GLOBAL'} for b in bindings.values()):raise ValueError('exact input ELF bindings required')
+  probed=ADDRESS_PROBED.intersection(names)
+  if probed and (role!='provider' or probed!=ADDRESS_PROBED or any(bindings[n]!='WEAK' for n in probed)):raise ValueError('optional address-probe input differs')
   symbols=[]
+  shim=['// Generated call-only interception; include after original weak declarations.','#pragma once']
   for index,name in enumerate(names):
    sig=declarations.get(name)
    if not sig:raise ValueError('import has no exact SDK declaration: '+name)
@@ -61,14 +67,20 @@ def generate(imports,expected,compiler,sysroot,output):
    parameters=', '.join(f'{alias} arg{i}' for i,alias in enumerate(aliases)) or 'void'
    forwarded=', '.join(f'arg{i}' for i in range(len(args)))
    result=sig['return'];env='reinterpret_cast<void *>(arg0)' if category==0 else 'nullptr'
-   source.extend([f'extern "C" decltype({name}) __real_{name};',f'extern "C" __attribute__((visibility("hidden"))) {result} __wrap_{name}({parameters}) {{',f'    recordAttempt({index}, {category}, {env});',f'    {"return " if result!="void" else ""}__real_{name}({forwarded});','}',f'static_assert(std::is_same<decltype(&__wrap_{name}), decltype(&{name})>::value, "SDK signature mismatch: {name}");'])
-   symbols.append({'index':18+index,'name':name,'category':category,**sig})
+   mode='call-shim' if name in probed else 'linker-wrap'
+   delegate=name if name in probed else '__real_'+name
+   weak=' __attribute__((weak))' if bindings[name]=='WEAK' else ''
+   source.extend([f'extern "C"{weak} decltype({name}) {delegate};',f'extern "C" __attribute__((visibility("hidden"))) {result} __wrap_{name}({parameters}) {{',f'    recordAttempt({index}, {category}, {env});',f'    {"return " if result!="void" else ""}{delegate}({forwarded});','}',f'static_assert(std::is_same<decltype(&__wrap_{name}), decltype(&{name})>::value, "SDK signature mismatch: {name}");'])
+   if name in probed:
+    shim.extend([f'extern "C" __attribute__((visibility("hidden"))) decltype({name}) __wrap_{name};',f'#define {name}(...) __wrap_{name}(__VA_ARGS__)'])
+   symbols.append({'index':18+index,'name':name,'category':category,'binding':bindings[name],'interception':mode,**sig})
   cpp=output/(role+'_observer.cpp');cpp.write_text('\n'.join(source)+'\n')
-  flags=output/(role+'-wrap.rsp');flags.write_text('\n'.join('--wrap='+n for n in names)+'\n')
-  records.append({'role':role,'input_library':library,'input_sha256':lib['sha256'],'symbols':symbols,'source':ref(cpp),'linker_response':ref(flags),'clang_flags':['-Wl,--wrap='+n for n in names]})
+  flags=output/(role+'-wrap.rsp');flags.write_text('\n'.join('--wrap='+n for n in names if n not in probed)+'\n')
+  if probed:(output/'provider-call-shim.h').write_text('\n'.join(shim)+'\n')
+  records.append({'role':role,'input_library':library,'input_sha256':lib['sha256'],'symbols':symbols,'source':ref(cpp),'linker_response':ref(flags),'clang_flags':['-Wl,--wrap='+n for n in names if n not in probed]})
  schema={'scope':'Test-only static ELF import call-attempt observation; no proof of env invalidity or transitive library internals. Zero attempts means unexercised, not a passed illegal-call predicate.','wire':'testNapiAudit String = bootstrap decimal CSV + semicolon + provider decimal CSV; provider unavailable until existing library and pure metric symbol are present. No extra dlopen.','format':70602,'fixed_fields':[{'index':i,'name':n} for i,n in enumerate(FIELDS)],'unknown':'UINT64_MAX (18446744073709551615) means unavailable/not applicable, never zero; bootstrap WrongThreadAttempts is NA. Preserve all CSV fields as decimal strings.','capabilities':{'1':'bootstrap legitimate callback entry env scope','2':'provider bound env comparison','4':'provider owner thread comparison'},'categories':{'0':'API with napi_env argument','1':'thread-neutral TSFN acquire/call/release including priority call','2':'module registration with no env','3':'async cleanup handle removal; no env argument, provider owner-thread still checked'},'validity':'EnvValidityUnobservedAttempts increments for every env-argument call. No invalidation time is inferred from logical close or cleanup-hook entry. Legal ref/TSFN/hook cleanup remains legal.','snapshot':'Read all pure metric fields before constructing the JS String. Each scalar is atomic; cross-field reads are not an atomic concurrent snapshot. Readback NAPI construction is itself recorded in subsequent snapshots.','lifetime':'Counters are DSO-lifetime cumulative; no reset API. Bind/entry functions never invoke NAPI or allocate. Observer RAII is required at each actual bootstrap callback entry.','roles':[{ 'role':r['role'],'count':18+len(r['symbols']),'per_api_fields':r['symbols']} for r in records]}
  (output/'observer-schema.json').write_text(json.dumps(schema,indent=2)+'\n')
- manifest={'imports':ref(imports),'compiler':ref(compiler),'headers':[ref(p) for p in sorted(set(dependencies)) if p!=query],'ast_command':cmd,'ast_exit_code':run.returncode,'ast':ref(output/'sdk-ast.json'),'query':ref(query),'generator':ref(Path(__file__)),'roles':records,'support_files':[ref(output/n) for n in ['observer.h','observer_provider.h','observer_entry.h','observer_core.inc']],'schema':ref(output/'observer-schema.json')}
+ manifest={'imports':ref(imports),'compiler':ref(compiler),'headers':[ref(p) for p in sorted(set(dependencies)) if p!=query],'ast_command':cmd,'ast_exit_code':run.returncode,'ast':ref(output/'sdk-ast.json'),'query':ref(query),'generator':ref(Path(__file__)),'roles':records,'support_files':[ref(output/n) for n in (['observer.h','observer_provider.h','observer_entry.h','observer_core.inc'] + (['provider-call-shim.h'] if (output/'provider-call-shim.h').exists() else []))],'schema':ref(output/'observer-schema.json')}
  (output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
  return ref(output/'manifest.json')
 if __name__=='__main__':

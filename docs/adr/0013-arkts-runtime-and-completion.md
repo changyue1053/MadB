@@ -1,6 +1,6 @@
 # ADR-0013 ArkTS Runtime 所有权与完成通知
 
-状态：采用，C07 完整 SDK 的实施契约；不是 profile 认证或发布声明。日期：2026-10-25。基线：0.9，关联 DEC-07/08/10、[ADR-0011](0011-arkts-native-protocol-owner.md)。不改变 C05/C06 行为、工具核心或公共 wire 格式。
+状态：采用，C07 完整 SDK 的实施契约；不是 profile 认证或发布声明。日期：2026-10-25。基线：0.10，关联 DEC-07/08/10、[ADR-0011](0011-arkts-native-protocol-owner.md)。不改变 C05/C06 行为、工具核心或公共 wire 格式。
 
 ## 决策依据
 
@@ -60,6 +60,20 @@ Snapshot 单条文本最多1024 UTF-8字节，值为严格 Int32；保留 NUL/Un
 
 
 Runtime.close 通过不占业务 waiter 的 request-close 停止子代，等待真实 worker join、Core 业务排水、Core waiters=0、JS settling=0 以及 entered/排队通知归零，再清理环境引用与 TSFN。Core.closed 本身不足以证明这些条件，因为其 ACK 等待者可能仍在递送。facade 对自己的 JS owner 负责；原生释放同时独立校验其原生 owner，不信任调用方传入的零计数。
+
+### 失败会话的完成责任交接
+
+C07 的实际目标验收暴露了正常失败关闭的缺口：facade 已拒绝并移除 JS 等待者，原生层仍保留已认领但未消费的结果；真实 worker 退出与 join 完成后，关闭仍不能取得物理 ACK。此次修订补齐既有“失败后合法清理”契约，不改变成功终态或取消效果。
+
+私有接线 `requestRuntimeClose(runtime, completionMode)`（Kotlin 对应 `ownedRuntimeClose`）接受严格整数：`0` 保留正常完成交付，`1` 接管失败会话不可再交付的完成责任。模式必须在任何关闭副作用前校验；其他数值拒绝。原生 owner 只允许不可逆的 `0 → 1`，已经请求关闭也必须允许升级，后续 `0` 不撤销接管。该参数不属于业务开发者的公开 Runtime API。
+
+facade 先拒绝未结算的业务等待者，并保留第一个失败；随后通过父级关闭交接清理责任。若失败发生在已开始关闭的消费过程，须退出本次 consume 的 `finally` 后、下一次原生关闭审计前完成升级，不能在重入的 `fail`/完成回调中同步清理仍 entered 的责任。交接调用成功后才记录已交接；交接、轮询或 receipt 消费失败只能报告未确认关闭，不能伪造 Closed。
+
+接管后的原生层拒绝新的结果认领和关闭观察；有界扫描既有完成记录，跳过 entered，保留尚未就绪的结果，并由真实 discard/配对释放归还责任。后续 progress 和真实 afterJoin 继续排水，不复制载荷、不创建第二份等待表。Kotlin 在其 managed owner 中执行同一协议，保留 return guard、正常生命周期通知和物理清理链；不得借用实际 env 退出路径强制清空记录或设置 acknowledged。
+
+正常模式仍须交付已受理的 Promise。失败模式的 `Runtime.close()` 仍复用原 Promise，只有业务责任、等待者、JS settling、线程 join 和环境资源满足原物理 ACK，且最终 receipt 已消费，才以原始失败拒绝。真实 env 退出仍由其独立 cleanup owner 接管，不与会话失败混用。
+
+这是 C07 私有接线及语义 ABI 的修订：普通与伴随 profile、实际生成声明、绑定和二进制须一起重建、重新计算身份；新旧接线不能混装。验收保留正常关闭交付，并新增失败前/已开始关闭后的交接、重复模式与非法模式、多个遗留等待者、entered 防重入、实际 Work 未退出时不得 ACK，以及合法 env 内失败关闭和真实 env 退出的分别验证。原失败报告作为历史证据保留，修订本身不授予候选通过状态。
 
 NativeWorker 的提交入口包含 Core 准入与唤醒。外部预留清理任务在非 env、非业务线程执行真正的 join，线程及 TLS 析构完成后才归还 Executor；不得把工作函数返回或 Kotlin Worker Future 当成物理 join。自身判断使用真实线程作用域，不能把可能复用的历史线程 ID 当作仍存活的业务线程。
 

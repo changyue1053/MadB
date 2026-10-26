@@ -10,7 +10,6 @@
 --wrap=napi_create_arraybuffer
 --wrap=napi_create_bigint_int64
 --wrap=napi_create_bigint_uint64
---wrap=napi_create_callsite_info
 --wrap=napi_create_double
 --wrap=napi_create_error
 --wrap=napi_create_external
@@ -28,7 +27,6 @@
 --wrap=napi_create_uint32
 --wrap=napi_define_class
 --wrap=napi_define_properties
---wrap=napi_delete_callsite_info
 --wrap=napi_delete_reference
 --wrap=napi_get_and_clear_last_exception
 --wrap=napi_get_array_length
@@ -41,7 +39,6 @@
 --wrap=napi_get_null
 --wrap=napi_get_property
 --wrap=napi_get_property_names
---wrap=napi_get_property_with_callsite_info
 --wrap=napi_get_reference_value
 --wrap=napi_get_typedarray_info
 --wrap=napi_get_undefined
@@ -72,7 +69,6 @@
 --wrap=napi_set_element
 --wrap=napi_set_named_property
 --wrap=napi_set_property
---wrap=napi_set_property_with_callsite_info
 --wrap=napi_strict_equals
 --wrap=napi_throw_error
 --wrap=napi_throw_range_error

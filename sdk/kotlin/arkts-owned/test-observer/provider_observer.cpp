@@ -39,7 +39,7 @@ using MadbArg_napi_add_finalizer_2 = void *;
 using MadbArg_napi_add_finalizer_3 = napi_finalize;
 using MadbArg_napi_add_finalizer_4 = void *;
 using MadbArg_napi_add_finalizer_5 = napi_ref *;
-extern "C" decltype(napi_add_finalizer) __real_napi_add_finalizer;
+extern "C" __attribute__((weak)) decltype(napi_add_finalizer) __real_napi_add_finalizer;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_add_finalizer(MadbArg_napi_add_finalizer_0 arg0, MadbArg_napi_add_finalizer_1 arg1, MadbArg_napi_add_finalizer_2 arg2, MadbArg_napi_add_finalizer_3 arg3, MadbArg_napi_add_finalizer_4 arg4, MadbArg_napi_add_finalizer_5 arg5) {
     recordAttempt(3, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_add_finalizer(arg0, arg1, arg2, arg3, arg4, arg5);
@@ -122,10 +122,10 @@ extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_create_
 static_assert(std::is_same<decltype(&__wrap_napi_create_bigint_uint64), decltype(&napi_create_bigint_uint64)>::value, "SDK signature mismatch: napi_create_bigint_uint64");
 using MadbArg_napi_create_callsite_info_0 = napi_env;
 using MadbArg_napi_create_callsite_info_1 = napi_callsite_info *;
-extern "C" decltype(napi_create_callsite_info) __real_napi_create_callsite_info;
+extern "C" __attribute__((weak)) decltype(napi_create_callsite_info) napi_create_callsite_info;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_create_callsite_info(MadbArg_napi_create_callsite_info_0 arg0, MadbArg_napi_create_callsite_info_1 arg1) {
     recordAttempt(12, 0, reinterpret_cast<void *>(arg0));
-    return __real_napi_create_callsite_info(arg0, arg1);
+    return napi_create_callsite_info(arg0, arg1);
 }
 static_assert(std::is_same<decltype(&__wrap_napi_create_callsite_info), decltype(&napi_create_callsite_info)>::value, "SDK signature mismatch: napi_create_callsite_info");
 using MadbArg_napi_create_double_0 = napi_env;
@@ -199,7 +199,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_create_object), decltype(&napi_
 using MadbArg_napi_create_promise_0 = napi_env;
 using MadbArg_napi_create_promise_1 = napi_deferred *;
 using MadbArg_napi_create_promise_2 = napi_value *;
-extern "C" decltype(napi_create_promise) __real_napi_create_promise;
+extern "C" __attribute__((weak)) decltype(napi_create_promise) __real_napi_create_promise;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_create_promise(MadbArg_napi_create_promise_0 arg0, MadbArg_napi_create_promise_1 arg1, MadbArg_napi_create_promise_2 arg2) {
     recordAttempt(20, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_create_promise(arg0, arg1, arg2);
@@ -291,7 +291,7 @@ using MadbArg_napi_define_class_4 = void *;
 using MadbArg_napi_define_class_5 = size_t;
 using MadbArg_napi_define_class_6 = const napi_property_descriptor *;
 using MadbArg_napi_define_class_7 = napi_value *;
-extern "C" decltype(napi_define_class) __real_napi_define_class;
+extern "C" __attribute__((weak)) decltype(napi_define_class) __real_napi_define_class;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_define_class(MadbArg_napi_define_class_0 arg0, MadbArg_napi_define_class_1 arg1, MadbArg_napi_define_class_2 arg2, MadbArg_napi_define_class_3 arg3, MadbArg_napi_define_class_4 arg4, MadbArg_napi_define_class_5 arg5, MadbArg_napi_define_class_6 arg6, MadbArg_napi_define_class_7 arg7) {
     recordAttempt(28, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_define_class(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7);
@@ -301,7 +301,7 @@ using MadbArg_napi_define_properties_0 = napi_env;
 using MadbArg_napi_define_properties_1 = napi_value;
 using MadbArg_napi_define_properties_2 = size_t;
 using MadbArg_napi_define_properties_3 = const napi_property_descriptor *;
-extern "C" decltype(napi_define_properties) __real_napi_define_properties;
+extern "C" __attribute__((weak)) decltype(napi_define_properties) __real_napi_define_properties;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_define_properties(MadbArg_napi_define_properties_0 arg0, MadbArg_napi_define_properties_1 arg1, MadbArg_napi_define_properties_2 arg2, MadbArg_napi_define_properties_3 arg3) {
     recordAttempt(29, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_define_properties(arg0, arg1, arg2, arg3);
@@ -309,10 +309,10 @@ extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_define_
 static_assert(std::is_same<decltype(&__wrap_napi_define_properties), decltype(&napi_define_properties)>::value, "SDK signature mismatch: napi_define_properties");
 using MadbArg_napi_delete_callsite_info_0 = napi_env;
 using MadbArg_napi_delete_callsite_info_1 = napi_callsite_info;
-extern "C" decltype(napi_delete_callsite_info) __real_napi_delete_callsite_info;
+extern "C" __attribute__((weak)) decltype(napi_delete_callsite_info) napi_delete_callsite_info;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_delete_callsite_info(MadbArg_napi_delete_callsite_info_0 arg0, MadbArg_napi_delete_callsite_info_1 arg1) {
     recordAttempt(30, 0, reinterpret_cast<void *>(arg0));
-    return __real_napi_delete_callsite_info(arg0, arg1);
+    return napi_delete_callsite_info(arg0, arg1);
 }
 static_assert(std::is_same<decltype(&__wrap_napi_delete_callsite_info), decltype(&napi_delete_callsite_info)>::value, "SDK signature mismatch: napi_delete_callsite_info");
 using MadbArg_napi_delete_reference_0 = napi_env;
@@ -432,10 +432,10 @@ using MadbArg_napi_get_property_with_callsite_info_2 = napi_value;
 using MadbArg_napi_get_property_with_callsite_info_3 = napi_callsite_info;
 using MadbArg_napi_get_property_with_callsite_info_4 = napi_value *;
 using MadbArg_napi_get_property_with_callsite_info_5 = bool *;
-extern "C" decltype(napi_get_property_with_callsite_info) __real_napi_get_property_with_callsite_info;
+extern "C" __attribute__((weak)) decltype(napi_get_property_with_callsite_info) napi_get_property_with_callsite_info;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_get_property_with_callsite_info(MadbArg_napi_get_property_with_callsite_info_0 arg0, MadbArg_napi_get_property_with_callsite_info_1 arg1, MadbArg_napi_get_property_with_callsite_info_2 arg2, MadbArg_napi_get_property_with_callsite_info_3 arg3, MadbArg_napi_get_property_with_callsite_info_4 arg4, MadbArg_napi_get_property_with_callsite_info_5 arg5) {
     recordAttempt(43, 0, reinterpret_cast<void *>(arg0));
-    return __real_napi_get_property_with_callsite_info(arg0, arg1, arg2, arg3, arg4, arg5);
+    return napi_get_property_with_callsite_info(arg0, arg1, arg2, arg3, arg4, arg5);
 }
 static_assert(std::is_same<decltype(&__wrap_napi_get_property_with_callsite_info), decltype(&napi_get_property_with_callsite_info)>::value, "SDK signature mismatch: napi_get_property_with_callsite_info");
 using MadbArg_napi_get_reference_value_0 = napi_env;
@@ -517,7 +517,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_get_value_double), decltype(&na
 using MadbArg_napi_get_value_external_0 = napi_env;
 using MadbArg_napi_get_value_external_1 = napi_value;
 using MadbArg_napi_get_value_external_2 = void **;
-extern "C" decltype(napi_get_value_external) __real_napi_get_value_external;
+extern "C" __attribute__((weak)) decltype(napi_get_value_external) __real_napi_get_value_external;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_get_value_external(MadbArg_napi_get_value_external_0 arg0, MadbArg_napi_get_value_external_1 arg1, MadbArg_napi_get_value_external_2 arg2) {
     recordAttempt(52, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_get_value_external(arg0, arg1, arg2);
@@ -591,7 +591,7 @@ extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_is_arra
 static_assert(std::is_same<decltype(&__wrap_napi_is_arraybuffer), decltype(&napi_is_arraybuffer)>::value, "SDK signature mismatch: napi_is_arraybuffer");
 using MadbArg_napi_is_exception_pending_0 = napi_env;
 using MadbArg_napi_is_exception_pending_1 = bool *;
-extern "C" decltype(napi_is_exception_pending) __real_napi_is_exception_pending;
+extern "C" __attribute__((weak)) decltype(napi_is_exception_pending) __real_napi_is_exception_pending;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_is_exception_pending(MadbArg_napi_is_exception_pending_0 arg0, MadbArg_napi_is_exception_pending_1 arg1) {
     recordAttempt(60, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_is_exception_pending(arg0, arg1);
@@ -616,7 +616,7 @@ extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_is_type
 }
 static_assert(std::is_same<decltype(&__wrap_napi_is_typedarray), decltype(&napi_is_typedarray)>::value, "SDK signature mismatch: napi_is_typedarray");
 using MadbArg_napi_module_register_0 = napi_module *;
-extern "C" decltype(napi_module_register) __real_napi_module_register;
+extern "C" __attribute__((weak)) decltype(napi_module_register) __real_napi_module_register;
 extern "C" __attribute__((visibility("hidden"))) void __wrap_napi_module_register(MadbArg_napi_module_register_0 arg0) {
     recordAttempt(63, 2, nullptr);
     __real_napi_module_register(arg0);
@@ -644,7 +644,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_open_handle_scope), decltype(&n
 using MadbArg_napi_reject_deferred_0 = napi_env;
 using MadbArg_napi_reject_deferred_1 = napi_deferred;
 using MadbArg_napi_reject_deferred_2 = napi_value;
-extern "C" decltype(napi_reject_deferred) __real_napi_reject_deferred;
+extern "C" __attribute__((weak)) decltype(napi_reject_deferred) __real_napi_reject_deferred;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_reject_deferred(MadbArg_napi_reject_deferred_0 arg0, MadbArg_napi_reject_deferred_1 arg1, MadbArg_napi_reject_deferred_2 arg2) {
     recordAttempt(66, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_reject_deferred(arg0, arg1, arg2);
@@ -668,7 +668,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_remove_async_cleanup_hook), dec
 using MadbArg_napi_remove_env_cleanup_hook_0 = napi_env;
 using MadbArg_napi_remove_env_cleanup_hook_1 = void (*)(void *);
 using MadbArg_napi_remove_env_cleanup_hook_2 = void *;
-extern "C" decltype(napi_remove_env_cleanup_hook) __real_napi_remove_env_cleanup_hook;
+extern "C" __attribute__((weak)) decltype(napi_remove_env_cleanup_hook) __real_napi_remove_env_cleanup_hook;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_remove_env_cleanup_hook(MadbArg_napi_remove_env_cleanup_hook_0 arg0, MadbArg_napi_remove_env_cleanup_hook_1 arg1, MadbArg_napi_remove_env_cleanup_hook_2 arg2) {
     recordAttempt(69, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_remove_env_cleanup_hook(arg0, arg1, arg2);
@@ -677,7 +677,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_remove_env_cleanup_hook), declt
 using MadbArg_napi_resolve_deferred_0 = napi_env;
 using MadbArg_napi_resolve_deferred_1 = napi_deferred;
 using MadbArg_napi_resolve_deferred_2 = napi_value;
-extern "C" decltype(napi_resolve_deferred) __real_napi_resolve_deferred;
+extern "C" __attribute__((weak)) decltype(napi_resolve_deferred) __real_napi_resolve_deferred;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_resolve_deferred(MadbArg_napi_resolve_deferred_0 arg0, MadbArg_napi_resolve_deferred_1 arg1, MadbArg_napi_resolve_deferred_2 arg2) {
     recordAttempt(70, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_resolve_deferred(arg0, arg1, arg2);
@@ -719,10 +719,10 @@ using MadbArg_napi_set_property_with_callsite_info_2 = napi_value;
 using MadbArg_napi_set_property_with_callsite_info_3 = napi_value;
 using MadbArg_napi_set_property_with_callsite_info_4 = napi_callsite_info;
 using MadbArg_napi_set_property_with_callsite_info_5 = bool *;
-extern "C" decltype(napi_set_property_with_callsite_info) __real_napi_set_property_with_callsite_info;
+extern "C" __attribute__((weak)) decltype(napi_set_property_with_callsite_info) napi_set_property_with_callsite_info;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_set_property_with_callsite_info(MadbArg_napi_set_property_with_callsite_info_0 arg0, MadbArg_napi_set_property_with_callsite_info_1 arg1, MadbArg_napi_set_property_with_callsite_info_2 arg2, MadbArg_napi_set_property_with_callsite_info_3 arg3, MadbArg_napi_set_property_with_callsite_info_4 arg4, MadbArg_napi_set_property_with_callsite_info_5 arg5) {
     recordAttempt(74, 0, reinterpret_cast<void *>(arg0));
-    return __real_napi_set_property_with_callsite_info(arg0, arg1, arg2, arg3, arg4, arg5);
+    return napi_set_property_with_callsite_info(arg0, arg1, arg2, arg3, arg4, arg5);
 }
 static_assert(std::is_same<decltype(&__wrap_napi_set_property_with_callsite_info), decltype(&napi_set_property_with_callsite_info)>::value, "SDK signature mismatch: napi_set_property_with_callsite_info");
 using MadbArg_napi_strict_equals_0 = napi_env;
@@ -747,7 +747,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_throw_error), decltype(&napi_th
 using MadbArg_napi_throw_range_error_0 = napi_env;
 using MadbArg_napi_throw_range_error_1 = const char *;
 using MadbArg_napi_throw_range_error_2 = const char *;
-extern "C" decltype(napi_throw_range_error) __real_napi_throw_range_error;
+extern "C" __attribute__((weak)) decltype(napi_throw_range_error) __real_napi_throw_range_error;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_throw_range_error(MadbArg_napi_throw_range_error_0 arg0, MadbArg_napi_throw_range_error_1 arg1, MadbArg_napi_throw_range_error_2 arg2) {
     recordAttempt(77, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_throw_range_error(arg0, arg1, arg2);
@@ -756,7 +756,7 @@ static_assert(std::is_same<decltype(&__wrap_napi_throw_range_error), decltype(&n
 using MadbArg_napi_throw_type_error_0 = napi_env;
 using MadbArg_napi_throw_type_error_1 = const char *;
 using MadbArg_napi_throw_type_error_2 = const char *;
-extern "C" decltype(napi_throw_type_error) __real_napi_throw_type_error;
+extern "C" __attribute__((weak)) decltype(napi_throw_type_error) __real_napi_throw_type_error;
 extern "C" __attribute__((visibility("hidden"))) napi_status __wrap_napi_throw_type_error(MadbArg_napi_throw_type_error_0 arg0, MadbArg_napi_throw_type_error_1 arg1, MadbArg_napi_throw_type_error_2 arg2) {
     recordAttempt(78, 0, reinterpret_cast<void *>(arg0));
     return __real_napi_throw_type_error(arg0, arg1, arg2);

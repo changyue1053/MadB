@@ -62,6 +62,7 @@ internal object OwnedRuntime : SynchronizedObject() {
     var lifecycle: CPointer<madb_kn_lifecycle>? = null
     private var observer: RuntimeDispatcher? = null
     private var opened = false; private var closing = false; private var envExiting = false
+    private var abandonPending = false
     private var generation = 0uL; private var engine: EngineState? = null
     private var nextObservation = 0uL
     private var dispatchDepth = 0; private var wakeLive = 0; private var wakePending = false
@@ -77,7 +78,7 @@ internal object OwnedRuntime : SynchronizedObject() {
         check(value > epoch && lifecycle == null && engine == null && observer == null &&
             wakeLive == 0 && dispatchDepth == 0 && failures == 0uL)
         val key = "kn:$value" // allocate before resetting/publication
-        epoch = value; runtimeKey = key; nextObservation = 0uL; opened = false; closing = false; envExiting = false
+        epoch = value; runtimeKey = key; nextObservation = 0uL; opened = false; closing = false; envExiting = false; abandonPending = false
         ExecutionProbe.beginEpoch()
     }
     fun rollbackAdmission() {
@@ -192,7 +193,7 @@ internal object OwnedRuntime : SynchronizedObject() {
     fun open(value: RuntimeDispatcher): String = synchronized(this) {
         if (opened || closing) fail("AlreadyInitialized")
         if (lifecycle == null) fail("InternalFailure")
-        val receipt = admissionReturn { requestRuntimeClose(runtimeKey) }
+        val receipt = admissionReturn { requestRuntimeClose(runtimeKey, 0) }
         ManagedOwnedCall.claimArgument(value)
         observer = value; opened = true; receipt.admitted = true
         runtimeKey
@@ -417,6 +418,7 @@ internal object OwnedRuntime : SynchronizedObject() {
     }
     fun claimResult(key: String, id: String) = synchronized(this) {
         val t = target(key, true); val op = operation(t)
+        if (abandonPending) fail("Closing")
         if (op.closing) fail("Closing")
         if (op.claimed) fail("AlreadyConsumed")
         validateWaitId(t.engine, id)
@@ -449,6 +451,7 @@ internal object OwnedRuntime : SynchronizedObject() {
         requestClose(key)
         return synchronized(this) {
             val t = target(key); val e = t.engine
+            if (abandonPending) fail("Closing")
             val op = if (t.kind == 'o') operation(t) else null
             val sub = if (t.kind == 's') subscription(t) else null
             if (decimal(id) <= nextObservation || e.waiters.any { it.id == id }) fail("InvalidArgument")
@@ -476,6 +479,19 @@ internal object OwnedRuntime : SynchronizedObject() {
         }
         return if (wait.op?.businessClosed() ?: wait.sub?.businessClosed() ?: e.businessClosed())
             wait.sub?.outcome ?: OK else NOT_READY
+    }
+    // Failed facade completion handoff uses the same bounded Wait owners. A
+    // running/queued result or entered encoding owner keeps its original charge.
+    private fun discardAbandonedWaiters(e: EngineState) {
+        if (!abandonPending) return
+        var index = 0
+        while (index < e.waiters.size) {
+            val wait = e.waiters[index]
+            if (wait.entered || waitStatus(e, wait) == NOT_READY) { index++; continue }
+            if (wait.result) { val op = wait.op!!; op.consumed = true; dropOp(e, op) }
+            e.waiters.removeAt(index)
+            wait.op?.let { it.waiters-- }; wait.sub?.let { it.waiters-- }
+        }
     }
     fun peek(runtime: String, id: String): Int = synchronized(this) {
         requireRuntime(runtime)
@@ -592,6 +608,7 @@ internal object OwnedRuntime : SynchronizedObject() {
             val receipt = synchronized(this) {
                 if (envExiting || dispatchDepth != 0) return
                 val e = engine ?: return
+                discardAbandonedWaiters(e)
                 val destination = observer ?: return
                 val op = e.ops.firstOrNull { !it.acked && it.businessClosed() }
                 val sub = if (op == null) e.subs.firstOrNull { !it.acked && it.businessClosed() } else null
@@ -622,10 +639,13 @@ internal object OwnedRuntime : SynchronizedObject() {
     }
     private class Receipt(val engine: EngineState, val op: Op?, val sub: Sub?, val observer: RuntimeDispatcher)
 
-    fun requestRuntimeClose(runtime: String) {
+    fun requestRuntimeClose(runtime: String, completionMode: Int) {
         val owner = synchronized(this) {
-            requireRuntime(runtime); closing = true
-            engine?.let { closeEngine(it) }
+            requireRuntime(runtime)
+            if (completionMode != 0 && completionMode != 1) fail("InvalidArgument")
+            if (completionMode == 1) abandonPending = true
+            closing = true
+            engine?.let { closeEngine(it); discardAbandonedWaiters(it) }
             if (engine?.joined == false) lifecycle else null
         }
         if (owner != null && madb_kn_lifecycle_request_join(owner) != 0) synchronized(this) { failures++ }
@@ -667,6 +687,7 @@ internal object OwnedRuntime : SynchronizedObject() {
                 if (ticket.source) { ticket.source = false; e.sources-- }
             }
             e.subs.forEach { sub -> sub.pending.forEach { it.held = false }; stopSub(e, sub) }
+            if (!actualEnvExit) discardAbandonedWaiters(e)
             if (actualEnvExit) {
                 e.heldDelivery?.let { held ->
                     held.ticket.sub.entered = null; releaseTicket(e, held.ticket); ExecutionProbe.finishDelivery(false)
@@ -775,7 +796,8 @@ internal object OwnedRuntime : SynchronizedObject() {
             ExecutionProbe.publicationDone(committed)
             e.executor
         }
-        wakeExecutor(executor); ready()
+        if (committed) wakeExecutor(executor)
+        ready()
         if (commit == 1 && !committed) fail("Closing")
     }
     fun testClone(key: String, nth: Int, mode: Int) = synchronized(this) {

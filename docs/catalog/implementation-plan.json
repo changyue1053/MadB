@@ -445,7 +445,7 @@
         "P05",
         "P06"
       ],
-      "notes": "正式CLI .851/SDK26.0.0.105输入闭包已核对，26项预检、21项工具与27项HAR归档检查通过。API23 Release模拟器已完成基础调用、Release混淆/HAR、r2引用通知、r3显式runtime关闭及P06真实Worker异步清理；范围不等于完整SDK。ADR0010公共两阶段构建已验证，ADR0011私有协议及两组20/25项宿主检查已落地；完整异步/state/event、profile、候选/Lab整包待完成。保持in_progress/missing；合跑C05/C06/C07前告知Actions。"
+      "notes": "四路线普通/伴随候选已完成首次构建，四条普通路线各5组目标验收通过；伴随矩阵发现可选 N-API 观察、失败关闭责任交接和 Kotlin 受控发布清理缺陷，按 ADR-0013 基线0.10修复后须统一重建并复验全部候选。既有提交的 producer/Lab CI、C05及C06四路线合跑均已通过，不转用于新候选。保持 in_progress/missing；L05 薄适配独立推进，不继承 C07 认证。具体版本、计数和失败依据只在 C07 review 维护；新修复先留本地，网络恢复再推送，启动新的 Actions 前告知。 同 env 顺序重开继续要求真实物理 ACK、最终 receipt 已消费和新 epoch 不复用；最终普通/伴随证据仍须绑定同一修订。"
     },
     {
       "id": "C08",

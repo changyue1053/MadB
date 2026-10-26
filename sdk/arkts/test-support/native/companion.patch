@@ -50,7 +50,7 @@
  };
  struct Slot {
      uint64_t epoch = 0;
-@@ -71,14 +78,17 @@
+@@ -73,14 +80,17 @@
      std::array<Observation, 32> observations;
      std::array<Resource, 16> resources;
      CopyTarget *copyTarget = nullptr;
@@ -69,9 +69,9 @@
          ++owner->audit.c[F::BusinessEntries];
      }
      ~Entry() {
-@@ -110,4 +120,8 @@
+@@ -112,4 +122,8 @@
  napi_value openRuntime(napi_env, napi_value, napi_value);
- void closeRuntime(const Owner &);
+ void closeRuntime(const Owner &, bool abandonPending);
  std::string identity();
 +napi_value testObserve(napi_env, const Handle &, bool foreignAllowed);
 +napi_value testLastAdmission(napi_env);
@@ -221,7 +221,7 @@
      Input input;
      if (!snapshot(env, argv[2], argv[3], input))
          return nullptr;
-@@ -417,6 +440,10 @@
+@@ -419,6 +442,10 @@
      auto s = o->engine->claim_result(h.id, claim);
      if (s != Status::Ok)
          return error(env, s);
@@ -232,7 +232,7 @@
      s = claim.commit(std::move(cb));
      if (s != Status::Ok)
          return error(env, s);
-@@ -493,6 +520,8 @@
+@@ -497,6 +524,8 @@
      auto *x = observation(*o, id);
      if (!x || x->entered)
          return error(env, "TakeBeforeGuardResidual");
@@ -241,7 +241,7 @@
      ResultDelivery result;
      Status s;
      if (x->result) {
-@@ -508,6 +537,13 @@
+@@ -512,6 +541,13 @@
          return v;
      }
      x->entered = true;
@@ -255,7 +255,7 @@
      CopyTarget target{id, nullptr, napi_ok};
      o->copyTarget = &target;
      if (x->result)
-@@ -537,10 +573,7 @@
+@@ -541,10 +577,7 @@
      if (!o)
          return nullptr;
      Entry entry(o);
@@ -267,15 +267,15 @@
      refresh(*o);
      napi_value result = nullptr;
      if (napi_create_int32(env, static_cast<int32_t>(s), &result) != napi_ok)
-@@ -554,6 +587,7 @@
+@@ -562,6 +595,7 @@
      auto o = find(env, h, 'r');
      if (!o)
          return nullptr;
 +    napi_observer::Binding binding(o->audit.napi);
-     closeRuntime(o);
-     return undefined(env);
- END
-@@ -575,11 +609,318 @@
+     // Prepare the return value before accepting the irreversible handoff.
+     napi_value accepted = undefined(env);
+     if (!accepted)
+@@ -587,11 +621,318 @@
          return nullptr;
      return pollFrame(env, h, false);
  END
@@ -594,7 +594,7 @@
  #include "exports.generated.inc"
      if (napi_define_properties(env, exports, sizeof(methods) / sizeof(methods[0]), methods) !=
          napi_ok)
-@@ -588,6 +929,7 @@
+@@ -600,6 +941,7 @@
  }
  static napi_module module{1, 0, nullptr, init, GatewayModuleName, nullptr, {0}};
  __attribute__((constructor)) static void registerModule() {
@@ -735,10 +735,10 @@
 +        Entry entry(o);
 +        testProgress(*o);
 +    }
-     if (o->envClosing)
+     if (o->envClosing || o->abandonPending)
          discardObservations(o);
      if ((o->envClosing || notify) && !closeNotifications(o))
-@@ -470,6 +508,7 @@
+@@ -471,6 +509,7 @@
              }
      }
      if (o) {
@@ -746,7 +746,7 @@
          if (advance && !o->shutting && !progress(o, true))
              return error(env, "CloseAcknowledgementFailure");
          refresh(*o);
-@@ -527,7 +566,163 @@
+@@ -528,7 +567,163 @@
      }
      return result;
  }
@@ -910,7 +910,7 @@
      std::array<char, 224> id{};
      size_t len = 0, actual = 0;
      napi_valuetype type;
-@@ -550,12 +745,19 @@
+@@ -551,12 +746,19 @@
          if (part < 2 && input[start + 64] != ':')
              return error(env, "InvalidArgument");
      }
@@ -933,7 +933,7 @@
      if (napi_typeof(env, dispatcher, &type) != napi_ok || type != napi_function)
          return error(env, "InvalidArgument");
      size_t index = LiveRuntimes;
-@@ -576,12 +778,30 @@
+@@ -577,12 +779,30 @@
          if (s.epoch) {
              auto &old = history[historyNext++ % History];
              old.epoch = s.epoch;
@@ -964,7 +964,7 @@
          s.env = env;
          s.thread = std::this_thread::get_id();
          s.retired = false;
-@@ -609,7 +829,10 @@
+@@ -610,7 +830,10 @@
          slots[index].retired = true;
          return error(env, "ResourceExhausted");
      }
@@ -975,7 +975,7 @@
      {
          std::lock_guard<std::mutex> l(registryMutex);
          slots[index].owner = o;
-@@ -643,6 +866,20 @@
+@@ -644,6 +867,20 @@
      }
      ++o->audit.c[F::TsfnOwnerLive];
      ++o->audit.c[F::TsfnCreated];

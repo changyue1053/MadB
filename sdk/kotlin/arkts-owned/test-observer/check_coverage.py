@@ -23,9 +23,18 @@ def check(manifest_path,readelf,libraries,output,ordinary=()):
    if actual['sha256']!=pinned['sha256']:errors.append(label+' '+field+' drift')
   expected={s['name'] for s in role['symbols']}
   flags=Path(role['linker_response']['path']).read_text().splitlines()
-  if set(flags)!={'--wrap='+n for n in expected} or len(flags)!=len(expected):errors.append(label+' wrap response mismatch')
+  linker_names={s['name'] for s in role['symbols'] if s['interception']=='linker-wrap'}
+  probed={s['name'] for s in role['symbols'] if s['interception']=='call-shim'}
+  if set(flags)!={'--wrap='+n for n in linker_names} or len(flags)!=len(linker_names):errors.append(label+' wrap response mismatch')
   dyn,_=symbols(readelf,library,'--dyn-syms');full,_=symbols(readelf,library,'--symbols')
   actual={r['name'] for r in dyn if r['index']=='UND' and r['name'].startswith('napi_')}
+  expected_bindings={s['name']:s['binding'] for s in role['symbols']}
+  actual_bindings={r['name']:r['bind'] for r in dyn if r['index']=='UND' and r['name'].startswith('napi_')}
+  binding_errors={n:{'expected':expected_bindings[n],'actual':actual_bindings.get(n)} for n in expected if actual_bindings.get(n)!=expected_bindings[n]}
+  if binding_errors:errors.append(label+' ELF import binding changed')
+  relocs=subprocess.run([str(readelf),'--relocations','--wide',str(library)],capture_output=True,text=True,check=True).stdout
+  address_imports={m[1] for line in relocs.splitlines() if 'R_AARCH64_GLOB_DAT' in line for m in [re.search(r'\b(napi_\w+)\b',line)] if m}
+  if address_imports!=probed:errors.append(label+' optional API address relocations changed')
   defined={r['name'] for r in full if r['index']!='UND' and r['type']=='FUNC'}
   wrapped={n.removeprefix('__wrap_') for n in defined if n.startswith('__wrap_napi_')}
   unresolved={r['name'] for r in dyn if r['index']=='UND' and r['name'].startswith(('__wrap_napi_','__real_napi_'))}
@@ -36,7 +45,7 @@ def check(manifest_path,readelf,libraries,output,ordinary=()):
   if not exported:errors.append(label+' pure metric export missing')
   wrappers_hidden=all(r['visibility']=='HIDDEN' or r['bind']=='LOCAL' for r in full if r['name'].startswith('__wrap_napi_'))
   if not wrappers_hidden:errors.append(label+' wrapper symbol preemptible')
-  records.append({'role':label,'library':ref(library),'actual_napi_imports':sorted(actual),'defined_wrappers':sorted(wrapped),'unexpected_imports':missing,'stale_imports':stale,'missing_wrappers':missing_wrappers,'extra_wrappers':extra_wrappers,'unresolved_trampolines':sorted(unresolved),'metric_exported':exported,'wrappers_hidden_or_local':wrappers_hidden})
+  records.append({'role':label,'library':ref(library),'actual_napi_imports':sorted(actual),'actual_import_bindings':actual_bindings,'binding_errors':binding_errors,'optional_address_imports':sorted(address_imports),'defined_wrappers':sorted(wrapped),'unexpected_imports':missing,'stale_imports':stale,'missing_wrappers':missing_wrappers,'extra_wrappers':extra_wrappers,'unresolved_trampolines':sorted(unresolved),'metric_exported':exported,'wrappers_hidden_or_local':wrappers_hidden})
  ordinary_records=[]
  for library in ordinary:
   full,_=symbols(readelf,library,'--symbols');bad=sorted({r['name'] for r in full if r['name'].startswith(('__wrap_napi_','__real_napi_')) or re.match(r'madb_kn_(provider|bootstrap)_napi_',r['name'])})

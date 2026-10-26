@@ -42,12 +42,12 @@ function fixture() {
   const timers = new Map();
   const resources = new Map();
   const observations = new Map();
-  const calls = {runtimeClose:0, receipt:0, request:0, claim:0, watch:0};
+  const calls = {runtimeClose:0, closeModes:[], receipt:0, request:0, claim:0, watch:0, take:0};
   let nextTimer = 0, sequence = 0, generation = 0, dispatch;
   let engine;
   const control = {timers, resources, observations, calls, failTimer:false,
     failClaim:false, holdOperationClose:false, resultReady:false,
-    physical:false, runtimeClosing:false, failTake:'', failDelivery:0, holdJoinAck:false, holdSubscriptionAck:false, failPoll:false, failReceipt:false};
+    physical:false, runtimeClosing:false, abandoned:false, nativeDrainReady:false, failCloseEntry:false, failTake:'', failDelivery:0, holdJoinAck:false, holdSubscriptionAck:false, failPoll:false, failReceipt:false};
   const lookup = key => {const r=resources.get(key); if(!r || r.retired) throw error('InvalidHandleRetired');return r;};
   const closeTarget = r => {
     r.closing = true;
@@ -69,6 +69,10 @@ function fixture() {
     for (const r of resources.values()) if(r.closing) r.closed=true;
     // Old native afterJoin can retire an unobserved Engine before a JS close retry.
     if(legacy && engine?.closing && observations.size===0) engine.retired=true;
+  };
+  control.finishNativeAbandonment = () => {
+    assert.equal(control.abandoned,true,'native cleanup must have accepted the failed-session handoff');
+    control.nativeDrainReady=true;
   };
   const native = {
     runtimeOpen(identity, fn) {assert.equal(identity,'independent-host-only');dispatch=fn;return 'r1';},
@@ -94,6 +98,7 @@ function fixture() {
     cancel(handle) {lookup(handle);},
     requestClose(handle) {calls.request++;closeTarget(lookup(handle));},
     claimResult(handle,id) {
+      if(control.abandoned)throw error('Closing');
       calls.claim++;const r=lookup(handle);
       if(control.failClaim) {control.failClaim=false;throw error('ResourceExhausted');}
       if(r.claimed) throw error('AlreadyConsumed');
@@ -101,12 +106,14 @@ function fixture() {
       r.claimed=true;observations.set(id,{record:r,result:true});
     },
     watchClose(handle,id) {
+      if(control.abandoned)throw error('Closing');
       calls.watch++;const r=lookup(handle);closeTarget(r);
       if(r.closed) return r.status;
       if(observations.size>=32) throw error('ResourceExhausted');
       observations.set(id,{record:r,result:false});return -1;
     },
     tryTake(runtime,id) {
+      calls.take++;
       const item=observations.get(id);if(!item)throw error('TakeBeforeGuardResidual');
       if(control.failTake==='before') throw error('TakeBeforeGuardResidual');
       if(item.result ? !control.resultReady : !item.record.closed) return null;
@@ -123,18 +130,22 @@ function fixture() {
       }
       return r.closed ? 4 : 7;
     },
-    requestRuntimeClose() {
-      calls.runtimeClose++;control.runtimeClosing=true;
+    requestRuntimeClose(runtime,completionMode) {
+      assert.ok(completionMode===0 || completionMode===1,'exact private completion mode is required');
+      if(control.failCloseEntry)throw error('CloseEntryRejected');
+      calls.runtimeClose++;calls.closeModes.push(completionMode);control.runtimeClosing=true;
+      control.abandoned ||= completionMode===1;
       if(engine)closeTarget(engine);
     },
     pollRuntime() {
       if(control.failPoll) throw error('PollUnavailable');
+      if(control.abandoned && control.nativeDrainReady) observations.clear();
       ackClosed();const frame=new Array(54).fill(0);frame[0]=1;
-      frame[1]=control.physical ? 3 : control.runtimeClosing ? 1 : 0;
+      frame[1]=control.physical && observations.size===0 ? 3 : control.runtimeClosing ? 1 : 0;
       return frame;
     },
     consumeRuntimeReceipt() {
-      assert.ok(control.physical,'must not consume receipt before physical ACK');
+      assert.ok(control.physical && observations.size===0,'must not consume receipt before physical ACK');
       if(control.failReceipt) throw error('ReceiptUnavailable');
       calls.receipt++;
       return native.pollRuntime();
@@ -150,6 +161,7 @@ function fixture() {
       super((resolve,reject)=>executor(value=>{
         if(control.onResolve) control.onResolve();
         resolve(value);
+        if(control.afterResolve) control.afterResolve();
       },reject));
     }
   }
@@ -312,7 +324,7 @@ const tests = {
     await f.drain();assert.equal(closed.state,'pending');assert.equal(f.calls.receipt,0);
     assert.equal(f.observations.size,1,'JS must not retry an unconsumed pre-guard token');
     // Explicit native-model cleanup, not JS consumption or target evidence.
-    f.observations.clear();f.finishBusiness();f.physical=true;await f.drain();
+    f.finishNativeAbandonment();f.finishBusiness();f.physical=true;await f.drain();
     assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
     assert.equal(f.calls.receipt,1);assert.equal(f.timers.size,0);
     assert.equal(f.runtime.close(),closing);assert.equal(f.calls.runtimeClose,1);
@@ -329,7 +341,7 @@ const tests = {
     assert.throws(()=>f.deliverLate(sub.handle),reason=>reason.code==='Closing');
     await f.drain();assert.equal(callbacks,0);assert.equal(f.failDelivery,1);
     assert.equal(closed.state,'pending');
-    f.observations.clear();f.finishBusiness();f.physical=true;await f.drain();
+    f.finishNativeAbandonment();f.finishBusiness();f.physical=true;await f.drain();
     assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
     assert.equal(callbacks,0);assert.equal(f.timers.size,0);
   },
@@ -337,7 +349,7 @@ const tests = {
     const f=fixture(),e=f.engine(),op=e.startOperation({value:5,text:'data'});
     const outcome=track(op.result());f.resultReady=true;f.failTake='before';await f.drain();
     const closing=f.runtime.close(),closed=track(closing);
-    f.observations.clear();f.finishBusiness();f.physical=true;f.failReceipt=true;await f.drain();
+    f.finishNativeAbandonment();f.finishBusiness();f.physical=true;f.failReceipt=true;await f.drain();
     assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
     assert.equal(f.calls.runtimeClose,1);assert.equal(f.calls.receipt,0);assert.equal(f.timers.size,0);
     assert.equal(f.runtime.close(),closing,'failed receipt does not start a second close owner');
@@ -347,8 +359,8 @@ const tests = {
     const outcome=track(op.result()),closed=track(f.runtime.close());
     f.resultReady=true;f.failTake='before';await f.drain();
     assert.equal(outcome.state,'rejected');assert.equal(closed.state,'pending');
-    assert.equal(f.calls.runtimeClose,1);assert.equal(f.observations.size,1);
-    f.observations.clear();f.finishBusiness();f.physical=true;await f.drain();
+    assert.equal(f.calls.runtimeClose,2);assert.deepEqual(f.calls.closeModes,[0,1]);assert.equal(f.observations.size,1);
+    f.finishNativeAbandonment();f.finishBusiness();f.physical=true;await f.drain();
     assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
     assert.equal(f.calls.receipt,1);assert.equal(f.timers.size,0);
   },
@@ -367,6 +379,53 @@ const tests = {
     assert.equal(f.calls.runtimeClose,1);assert.equal(closed.state,'rejected');
     assert.equal(closed.value,outcome.value);assert.equal(f.observations.size,1);
     assert.equal(f.calls.receipt,0);assert.equal(f.timers.size,0);
+  },
+  async healthy_parent_close_preserves_accepted_result_delivery() {
+    const f=fixture(),e=f.engine(),op=e.startOperation({value:41,text:'healthy'});
+    const outcome=track(op.result()),closed=track(f.runtime.close());
+    assert.deepEqual(f.calls.closeModes,[0]);assert.equal(f.abandoned,false);
+    await f.drain();assert.equal(outcome.state,'pending');assert.equal(f.observations.size,1);
+    f.resultReady=true;f.finishBusiness();await f.drain();
+    assert.equal(outcome.state,'resolved');assert.equal(outcome.value.value,42);
+    assert.equal(f.observations.size,0);assert.equal(closed.state,'pending');
+    f.physical=true;await f.drain();assert.equal(closed.state,'resolved');
+    assert.deepEqual(f.calls.closeModes,[0]);
+  },
+  async failed_handoff_covers_all_remaining_observations_without_js_retry() {
+    const f=fixture(),e=f.engine();
+    const pending=[1,2,3].map(value=>track(e.startOperation({value,text:'many'}).result()));
+    f.resultReady=true;f.failTake='before';await f.drain();
+    assert.ok(pending.every(p=>p.state==='rejected' && p.value===pending[0].value));
+    assert.equal(f.observations.size,3);const took=f.calls.take;
+    const closed=track(f.runtime.close());assert.deepEqual(f.calls.closeModes,[1]);
+    await f.drain();assert.equal(f.calls.take,took);assert.equal(closed.state,'pending');
+    f.finishNativeAbandonment();f.finishBusiness();await f.drain();
+    assert.equal(f.observations.size,0);assert.equal(closed.state,'pending');
+    f.physical=true;await f.drain();assert.equal(closed.state,'rejected');
+    assert.equal(closed.value,pending[0].value);assert.equal(f.calls.receipt,1);
+  },
+  async accepted_resolver_reentry_upgrades_after_settlement_without_second_terminal() {
+    const f=fixture(),e=f.engine();
+    const first=track(e.startOperation({value:41,text:'first'}).result());
+    const other=track(e.startOperation({value:5,text:'other'}).result());
+    let closed;
+    f.afterResolve=()=>{f.afterResolve=undefined;closed=track(f.runtime.close());throw error('ResolverAfterAccept');};
+    f.resultReady=true;await f.tick();
+    assert.equal(first.state,'resolved');assert.equal(first.value.value,42);
+    assert.equal(other.state,'rejected');assert.equal(other.value.code,'BridgeFailure');
+    assert.deepEqual(f.calls.closeModes,[0,1]);assert.equal(f.observations.size,1);
+    f.finishNativeAbandonment();f.finishBusiness();f.physical=true;await f.drain();
+    assert.equal(first.state,'resolved');assert.equal(closed.state,'rejected');
+    assert.equal(closed.value,other.value);assert.equal(f.calls.receipt,1);
+  },
+  async rejected_failed_handoff_never_claims_native_ack() {
+    const f=fixture(),e=f.engine();const outcome=track(e.startOperation({value:1,text:'x'}).result());
+    f.resultReady=true;f.failTake='before';await f.drain();f.failCloseEntry=true;
+    const closing=f.runtime.close(),closed=track(closing);await Promise.resolve();
+    assert.equal(closed.state,'rejected');assert.equal(closed.value,outcome.value);
+    assert.equal(f.calls.runtimeClose,0);assert.equal(f.abandoned,false);
+    assert.equal(f.observations.size,1);assert.equal(f.calls.receipt,0);
+    assert.equal(f.runtime.close(),closing);
   },
   async synchronous_native_error_uses_exported_error_type() {
     const f=fixture(),e=f.engine();f.failSync=error('InvalidArgument');

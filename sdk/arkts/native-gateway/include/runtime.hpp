@@ -65,6 +65,8 @@ struct Runtime {
     JoinJob join;
     std::atomic<bool> envClosing{false}, shutting{false}, queued{false};
     bool runtimeClosing = false, scratch = false, generationRetired = true, engineAcked = false;
+    // Once a failed facade hands off completions, delivery cannot be restored.
+    bool abandonPending = false;
     mp_provider provider{};
     std::unique_ptr<Engine> engine;
     std::unique_ptr<NativeWorker> worker;
@@ -108,6 +110,6 @@ void discardObservations(const Owner &);
 napi_value frame(napi_env, const Handle &, bool consume = false);
 napi_value pollFrame(napi_env, const Handle &, bool advance);
 napi_value openRuntime(napi_env, napi_value, napi_value);
-void closeRuntime(const Owner &);
+void closeRuntime(const Owner &, bool abandonPending);
 std::string identity();
 } // namespace gateway

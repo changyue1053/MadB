@@ -403,6 +403,8 @@ BEGIN(claimResult, 2)
     auto o = find(env, h, 'o');
     if (!o)
         return nullptr;
+    if (o->abandonPending)
+        return error(env, "Closing");
     Entry entry(o);
     if (id <= o->nextObservation)
         return error(env, "InvalidArgument");
@@ -438,6 +440,8 @@ BEGIN(watchClose, 2)
     auto o = find(env, h);
     if (!o)
         return nullptr;
+    if (o->abandonPending)
+        return error(env, "Closing");
     Entry entry(o);
     requestTarget(o, h); // close request precedes observer admission, including capacity failure
     if (id <= o->nextObservation)
@@ -547,15 +551,23 @@ BEGIN(deliver, 1)
         return error(env, "DeliveryFailureConsumed");
     return result;
 END
-BEGIN(requestRuntimeClose, 1)
+BEGIN(requestRuntimeClose, 2)
     Handle h;
+    double completionMode = 0;
     if (!handle(env, argv[0], h))
         return nullptr;
+    if (napi_get_value_double(env, argv[1], &completionMode) != napi_ok ||
+        (completionMode != 0 && completionMode != 1))
+        return error(env, "InvalidArgument");
     auto o = find(env, h, 'r');
     if (!o)
         return nullptr;
-    closeRuntime(o);
-    return undefined(env);
+    // Prepare the return value before accepting the irreversible handoff.
+    napi_value accepted = undefined(env);
+    if (!accepted)
+        return nullptr;
+    closeRuntime(o, completionMode == 1);
+    return accepted;
 END
 BEGIN(pollRuntime, 1)
     Handle h;

@@ -187,7 +187,7 @@ void afterJoin(uv_work_t *req, int status) {
     --o->audit.c[F::JoinJobLive];
     ++o->audit.c[F::JoinCompleted];
     o->audit.c[F::WorkerJoined] = 1;
-    if (o->envClosing)
+    if (o->envClosing || o->abandonPending)
         discardObservations(o);
     progress(o);
     if (!o->envClosing && !o->shutting)
@@ -440,7 +440,7 @@ bool closeNotifications(const Owner &o) {
     return true;
 }
 bool progress(const Owner &o, bool notify) {
-    if (o->envClosing)
+    if (o->envClosing || o->abandonPending)
         discardObservations(o);
     if ((o->envClosing || notify) && !closeNotifications(o))
         return false;
@@ -451,7 +451,8 @@ bool progress(const Owner &o, bool notify) {
         teardown(o);
     return true;
 }
-void closeRuntime(const Owner &o) {
+void closeRuntime(const Owner &o, bool abandonPending) {
+    o->abandonPending = o->abandonPending || abandonPending;
     o->runtimeClosing = true;
     o->audit.c[F::RuntimeCloseRequested] = 1;
     requestEngineClose(o);

@@ -105,6 +105,7 @@ class Session {
   private closing: boolean = false;
   private closed: boolean = false;
   private failed: Error | undefined = undefined;
+  private abandonmentAccepted: boolean = false;
   private closePromise: Promise<void> | undefined = undefined;
   private closeResolve: (() => void) | undefined = undefined;
   private closeReject: ((reason: Error) => void) | undefined = undefined;
@@ -372,7 +373,7 @@ class Session {
     return frame;
   }
   private arm(): void {
-    if (this.timer >= 0 || this.ticking || this.closed || this.failed !== undefined || !this.pending()) { return; }
+    if (this.timer >= 0 || this.ticking || this.closed || (this.failed !== undefined && this.closeResolve === undefined) || !this.pending()) { return; }
     this.timer = setTimeout(() => { this.timer = -1; this.tick(); }, this.delay);
   }
   private disarmIfIdle(): void {
@@ -425,7 +426,7 @@ class Session {
   }
 
   private tick(): void {
-    if (this.closed || this.failed !== undefined) { return; }
+    if (this.closed || (this.failed !== undefined && this.closeResolve === undefined)) { return; }
     this.ticking = true;
     const wasDirty: boolean = this.dirty;
     this.dirty = false;
@@ -448,7 +449,12 @@ class Session {
         const waiter: Waiter | undefined = this.waiters.get(ids[i]);
         if (waiter !== undefined && !waiter.settling) { this.consume(waiter); }
       }
-      if (this.failed !== undefined) { return; }
+      if (this.failed !== undefined && this.closeResolve === undefined) { return; }
+      // A failure caught by consume has now left its finally/settling scope.
+      // Only this failed Session may hand native the remaining completions.
+      if (this.closing && this.failed !== undefined && !this.abandonmentAccepted) {
+        this.requestNativeClose();
+      }
       const frame: number[] = this.refreshClosures();
       if (this.closeResolve !== undefined && this.waiters.size === 0 && physicalRuntimeAck(frame)) {
         const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
@@ -457,30 +463,50 @@ class Session {
         if (this.engine !== undefined) { this.retire(this.engine, 0); }
         if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
         const resolve: () => void = this.closeResolve;
+        const reject: ((reason: Error) => void) | undefined = this.closeReject;
         this.closeResolve = undefined; this.closeReject = undefined;
-        resolve();
+        // Cleanup completion does not replace the original bridge failure.
+        if (this.failed !== undefined && reject !== undefined) { reject(this.failed); }
+        else { resolve(); }
       }
-    } catch (error) { this.fail(nativeError(error as Error)); }
+    } catch (error) {
+      this.fail(nativeError(error as Error));
+      this.rejectClose();
+    }
     finally {
       this.ticking = false;
       this.delay = wasDirty || this.dirty ? 1 : Math.min(64, this.delay * 4);
-      try { this.arm(); } catch (error) { this.fail(error as Error); }
+      try { this.arm(); } catch (error) { this.fail(error as Error); this.rejectClose(); }
     }
+  }
+
+  private requestNativeClose(): void {
+    const abandoning: boolean = this.failed !== undefined;
+    native.requestRuntimeClose(this.runtime, abandoning ? 1 : 0);
+    // A rejected entry has not acknowledged responsibility transfer.
+    if (abandoning) { this.abandonmentAccepted = true; }
   }
 
   close(): Promise<void> {
     if (this.closePromise !== undefined) { return this.closePromise; }
-    if (this.failed !== undefined) { return Promise.reject(this.failed); }
     this.closePromise = new Promise<void>((resolve, reject) => {
       this.closeResolve = resolve; this.closeReject = reject;
       this.closing = true;
       if (this.engine !== undefined) { this.engine.closing = true; }
       this.subscriptions.forEach((record: ResourceRecord) => { record.closing = true; });
       this.operations.forEach((record: ResourceRecord) => { record.closing = true; });
-      try { native.requestRuntimeClose(this.runtime); this.arm(); }
-      catch (error) { this.fail(nativeError(error as Error)); }
+      try { this.requestNativeClose(); this.arm(); }
+      catch (error) { this.fail(nativeError(error as Error)); this.rejectClose(); }
     });
     return this.closePromise;
+  }
+  private rejectClose(): void {
+    if (this.closeReject === undefined || this.failed === undefined) { return; }
+    if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
+    const reject: (reason: Error) => void = this.closeReject;
+    this.closeResolve = undefined; this.closeReject = undefined;
+    // Poll/receipt/timer failure is an unconfirmed close, never a Closed ACK.
+    reject(this.failed);
   }
   private fail(reason: Error): void {
     if (this.failed !== undefined) { return; }
@@ -490,10 +516,12 @@ class Session {
       if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
     });
     this.waiters.clear();
-    if (this.closeReject !== undefined) { this.closeReject(reason); }
-    this.closeResolve = undefined; this.closeReject = undefined;
-    // Unknown pre-guard native ownership is retained truthfully. Actual env
-    // cleanup still owns those records; BridgeFailure is never a Closed ACK.
+    // Business delivery is stopped, but the existing parent close owner may
+    // still request native shutdown and observe its physical cleanup receipt.
+    // No pre-guard token is retried or falsely counted as consumed here.
+    if (this.closeResolve !== undefined) {
+      try { this.arm(); } catch (_error) { this.rejectClose(); }
+    }
   }
 }
 

@@ -1,8 +1,8 @@
 {
-  "scope": "Exact generated test NAPI wrappers from actual test ELF import closure and formal SDK AST; no target observation claim",
-  "generator_sha256": "aeb7b1a805cff1f0b559300e7b95dc944073e8e3da3ab5aa66010365bc60714d",
-  "imports_sha256": "cc17b40467e20d6cb391ac0a2420305144526abed7028deecf460f0488ebb845",
-  "sdk_ast_sha256": "b2b6ca99d98e2ac7d08c2d434f6f67cbcad0ad0101db40fa889c16773fbe8288",
+  "scope": "Generated test-only NAPI interception preserving actual unwrapped ELF binding and four real optional-address probes; target execution separately required",
+  "generator_sha256": "1f2d71a7297b848977ee834663d13d8a480ad7c47bc32c0f66cc8935b83d4976",
+  "imports_sha256": "b35e8e94bab36d9ca7846818964fd8e2c32b35b61befffbd3b3b874c81ba5080",
+  "sdk_ast_sha256": "cc41ddbf9ca84c6eda772c122d8b95db335f69525384b5def42e7a96ab81a1ce",
   "compiler": {
     "sha256": "b9a36b6a434fd245460ddfa9abedefbfafe83b1f87749fe00491ee90d039d723",
     "size": 99672832
@@ -15,6 +15,8 @@
           "index": 18,
           "name": "napi_create_array_with_length",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -27,6 +29,8 @@
           "index": 19,
           "name": "napi_create_double",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -39,6 +43,8 @@
           "index": 20,
           "name": "napi_create_object",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -50,6 +56,8 @@
           "index": 21,
           "name": "napi_create_string_utf8",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -63,6 +71,8 @@
           "index": 22,
           "name": "napi_define_properties",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -76,6 +86,8 @@
           "index": 23,
           "name": "napi_get_cb_info",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -91,6 +103,8 @@
           "index": 24,
           "name": "napi_get_value_double",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -103,6 +117,8 @@
           "index": 25,
           "name": "napi_get_value_string_utf8",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -117,6 +133,8 @@
           "index": 26,
           "name": "napi_is_exception_pending",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -128,6 +146,8 @@
           "index": 27,
           "name": "napi_module_register",
           "category": 2,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "void",
           "arguments": [
             "napi_module *"
@@ -138,6 +158,8 @@
           "index": 28,
           "name": "napi_throw_error",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -150,6 +172,8 @@
           "index": 29,
           "name": "napi_typeof",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -167,6 +191,8 @@
           "index": 18,
           "name": "napi_acquire_threadsafe_function",
           "category": 1,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_threadsafe_function"
@@ -177,6 +203,8 @@
           "index": 19,
           "name": "napi_add_async_cleanup_hook",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -190,6 +218,8 @@
           "index": 20,
           "name": "napi_add_env_cleanup_hook",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -202,6 +232,8 @@
           "index": 21,
           "name": "napi_add_finalizer",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -217,6 +249,8 @@
           "index": 22,
           "name": "napi_call_function",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -232,6 +266,8 @@
           "index": 23,
           "name": "napi_call_threadsafe_function",
           "category": 1,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_threadsafe_function",
@@ -244,6 +280,8 @@
           "index": 24,
           "name": "napi_call_threadsafe_function_with_priority",
           "category": 1,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_threadsafe_function",
@@ -257,6 +295,8 @@
           "index": 25,
           "name": "napi_close_handle_scope",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -268,6 +308,8 @@
           "index": 26,
           "name": "napi_create_array",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -279,6 +321,8 @@
           "index": 27,
           "name": "napi_create_arraybuffer",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -292,6 +336,8 @@
           "index": 28,
           "name": "napi_create_bigint_int64",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -304,6 +350,8 @@
           "index": 29,
           "name": "napi_create_bigint_uint64",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -316,6 +364,8 @@
           "index": 30,
           "name": "napi_create_callsite_info",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "call-shim",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -327,6 +377,8 @@
           "index": 31,
           "name": "napi_create_double",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -339,6 +391,8 @@
           "index": 32,
           "name": "napi_create_error",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -352,6 +406,8 @@
           "index": 33,
           "name": "napi_create_external",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -366,6 +422,8 @@
           "index": 34,
           "name": "napi_create_function",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -381,6 +439,8 @@
           "index": 35,
           "name": "napi_create_int32",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -393,6 +453,8 @@
           "index": 36,
           "name": "napi_create_int64",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -405,6 +467,8 @@
           "index": 37,
           "name": "napi_create_object",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -416,6 +480,8 @@
           "index": 38,
           "name": "napi_create_promise",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -428,6 +494,8 @@
           "index": 39,
           "name": "napi_create_reference",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -441,6 +509,8 @@
           "index": 40,
           "name": "napi_create_string_latin1",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -454,6 +524,8 @@
           "index": 41,
           "name": "napi_create_string_utf16",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -467,6 +539,8 @@
           "index": 42,
           "name": "napi_create_string_utf8",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -480,6 +554,8 @@
           "index": 43,
           "name": "napi_create_threadsafe_function",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -500,6 +576,8 @@
           "index": 44,
           "name": "napi_create_typedarray",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -515,6 +593,8 @@
           "index": 45,
           "name": "napi_create_uint32",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -527,6 +607,8 @@
           "index": 46,
           "name": "napi_define_class",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -544,6 +626,8 @@
           "index": 47,
           "name": "napi_define_properties",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -557,6 +641,8 @@
           "index": 48,
           "name": "napi_delete_callsite_info",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "call-shim",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -568,6 +654,8 @@
           "index": 49,
           "name": "napi_delete_reference",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -579,6 +667,8 @@
           "index": 50,
           "name": "napi_get_and_clear_last_exception",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -590,6 +680,8 @@
           "index": 51,
           "name": "napi_get_array_length",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -602,6 +694,8 @@
           "index": 52,
           "name": "napi_get_arraybuffer_info",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -615,6 +709,8 @@
           "index": 53,
           "name": "napi_get_boolean",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -627,6 +723,8 @@
           "index": 54,
           "name": "napi_get_cb_info",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -642,6 +740,8 @@
           "index": 55,
           "name": "napi_get_element",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -655,6 +755,8 @@
           "index": 56,
           "name": "napi_get_global",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -666,6 +768,8 @@
           "index": 57,
           "name": "napi_get_named_property",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -679,6 +783,8 @@
           "index": 58,
           "name": "napi_get_null",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -690,6 +796,8 @@
           "index": 59,
           "name": "napi_get_property",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -703,6 +811,8 @@
           "index": 60,
           "name": "napi_get_property_names",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -715,6 +825,8 @@
           "index": 61,
           "name": "napi_get_property_with_callsite_info",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "call-shim",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -730,6 +842,8 @@
           "index": 62,
           "name": "napi_get_reference_value",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -742,6 +856,8 @@
           "index": 63,
           "name": "napi_get_typedarray_info",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -758,6 +874,8 @@
           "index": 64,
           "name": "napi_get_undefined",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -769,6 +887,8 @@
           "index": 65,
           "name": "napi_get_uv_event_loop",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -780,6 +900,8 @@
           "index": 66,
           "name": "napi_get_value_bigint_int64",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -793,6 +915,8 @@
           "index": 67,
           "name": "napi_get_value_bigint_uint64",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -806,6 +930,8 @@
           "index": 68,
           "name": "napi_get_value_bool",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -818,6 +944,8 @@
           "index": 69,
           "name": "napi_get_value_double",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -830,6 +958,8 @@
           "index": 70,
           "name": "napi_get_value_external",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -842,6 +972,8 @@
           "index": 71,
           "name": "napi_get_value_int32",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -854,6 +986,8 @@
           "index": 72,
           "name": "napi_get_value_int64",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -866,6 +1000,8 @@
           "index": 73,
           "name": "napi_get_value_string_utf16",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -880,6 +1016,8 @@
           "index": 74,
           "name": "napi_get_value_uint32",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -892,6 +1030,8 @@
           "index": 75,
           "name": "napi_instanceof",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -905,6 +1045,8 @@
           "index": 76,
           "name": "napi_is_array",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -917,6 +1059,8 @@
           "index": 77,
           "name": "napi_is_arraybuffer",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -929,6 +1073,8 @@
           "index": 78,
           "name": "napi_is_exception_pending",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -940,6 +1086,8 @@
           "index": 79,
           "name": "napi_is_promise",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -952,6 +1100,8 @@
           "index": 80,
           "name": "napi_is_typedarray",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -964,6 +1114,8 @@
           "index": 81,
           "name": "napi_module_register",
           "category": 2,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "void",
           "arguments": [
             "napi_module *"
@@ -974,6 +1126,8 @@
           "index": 82,
           "name": "napi_new_instance",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -988,6 +1142,8 @@
           "index": 83,
           "name": "napi_open_handle_scope",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -999,6 +1155,8 @@
           "index": 84,
           "name": "napi_reject_deferred",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1011,6 +1169,8 @@
           "index": 85,
           "name": "napi_release_threadsafe_function",
           "category": 1,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_threadsafe_function",
@@ -1022,6 +1182,8 @@
           "index": 86,
           "name": "napi_remove_async_cleanup_hook",
           "category": 3,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_async_cleanup_hook_handle"
@@ -1032,6 +1194,8 @@
           "index": 87,
           "name": "napi_remove_env_cleanup_hook",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1044,6 +1208,8 @@
           "index": 88,
           "name": "napi_resolve_deferred",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1056,6 +1222,8 @@
           "index": 89,
           "name": "napi_set_element",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1069,6 +1237,8 @@
           "index": 90,
           "name": "napi_set_named_property",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1082,6 +1252,8 @@
           "index": 91,
           "name": "napi_set_property",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1095,6 +1267,8 @@
           "index": 92,
           "name": "napi_set_property_with_callsite_info",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "call-shim",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1110,6 +1284,8 @@
           "index": 93,
           "name": "napi_strict_equals",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1123,6 +1299,8 @@
           "index": 94,
           "name": "napi_throw_error",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1135,6 +1313,8 @@
           "index": 95,
           "name": "napi_throw_range_error",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1147,6 +1327,8 @@
           "index": 96,
           "name": "napi_throw_type_error",
           "category": 0,
+          "binding": "WEAK",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1159,6 +1341,8 @@
           "index": 97,
           "name": "napi_typeof",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1171,6 +1355,8 @@
           "index": 98,
           "name": "napi_unref_threadsafe_function",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1182,6 +1368,8 @@
           "index": 99,
           "name": "napi_unwrap",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1194,6 +1382,8 @@
           "index": 100,
           "name": "napi_wrap",
           "category": 0,
+          "binding": "GLOBAL",
+          "interception": "linker-wrap",
           "return": "napi_status",
           "arguments": [
             "napi_env",
@@ -1208,6 +1398,14 @@
       ]
     }
   ],
+  "call_shim": {
+    "target": "nativeInterop/cinterop/cpp/src/property.cpp",
+    "insert_before": "\nnapi_value getPropertyNames(napi_env env, napi_value value)",
+    "include": "madb_napi_call_shim.h",
+    "generated_header": "provider-call-shim.h",
+    "base_sha256": "54c8b0cae0c635afd1bc7ff4d360db109dd510abcc9fc20d00b3b61bf5e2b60e",
+    "result_sha256": "413691c61076aeda8eb8e7425e1baf2a6de60bfaac124fe7c1992ab7a0f364c4"
+  },
   "files": [
     {
       "path": "bootstrap-wrap.rsp",
@@ -1221,23 +1419,23 @@
     },
     {
       "path": "check_coverage.py",
-      "sha256": "4f99f12fb440a3e89328ff45999f9b71df3fe3299f64bce17e31c095257b018e",
-      "size": 4591
+      "sha256": "379a12c105c704941a9f7e718c7526cac167c2f1129ef1b2c076799bc10241d7",
+      "size": 5652
     },
     {
       "path": "generate.py",
-      "sha256": "aeb7b1a805cff1f0b559300e7b95dc944073e8e3da3ab5aa66010365bc60714d",
-      "size": 8312
+      "sha256": "1f2d71a7297b848977ee834663d13d8a480ad7c47bc32c0f66cc8935b83d4976",
+      "size": 9557
     },
     {
       "path": "imports.json",
-      "sha256": "cc17b40467e20d6cb391ac0a2420305144526abed7028deecf460f0488ebb845",
-      "size": 3579
+      "sha256": "b35e8e94bab36d9ca7846818964fd8e2c32b35b61befffbd3b3b874c81ba5080",
+      "size": 8543
     },
     {
       "path": "observer-schema.json",
-      "sha256": "135c182f75efa45964f274fc3464107b241458bd583042db7188774285a846a9",
-      "size": 37487
+      "sha256": "20e7c102cab884247c7bb3e09999953bdfc8b2382188d1b97c160c8c85274bfa",
+      "size": 44287
     },
     {
       "path": "observer.h",
@@ -1260,14 +1458,19 @@
       "size": 280
     },
     {
+      "path": "provider-call-shim.h",
+      "sha256": "0fc3d4e962d5765dbf0247eabc386dbc52634e29dac5751ac2a0bad4100ec8a1",
+      "size": 996
+    },
+    {
       "path": "provider-wrap.rsp",
-      "sha256": "dc142989dd1addff6a3d3d5d94aa4873a57345f35b847d424773085c9fc74d5b",
-      "size": 2461
+      "sha256": "daf1b12b672e0da9e918dcba42051b85d6568073d77893e9af4d75c26e9a72f0",
+      "size": 2307
     },
     {
       "path": "provider_observer.cpp",
-      "sha256": "77f09e428749a28a0fc2594d910a2569e9c7bf0f99ec9252745f896446155d03",
-      "size": 65187
+      "sha256": "ec03c20f31bb91baf94997d07fd87a2841e21c0a24e4415f0e8e05fcd1c6b2d5",
+      "size": 65483
     }
   ]
 }

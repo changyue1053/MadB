@@ -111,8 +111,12 @@ pub fn deliver(env: Env, subscription: Unknown<'_>) -> napi_value {
     ts_return_type = "unknown",
     catch_unwind
 )]
-pub fn request_runtime_close(env: Env, runtime: Unknown<'_>) -> napi_value {
-    call(env, 12, &[runtime.raw()])
+pub fn request_runtime_close(
+    env: Env,
+    runtime: Unknown<'_>,
+    completion_mode: Unknown<'_>,
+) -> napi_value {
+    call(env, 12, &[runtime.raw(), completion_mode.raw()])
 }
 
 #[napi(js_name = "pollRuntime", ts_return_type = "unknown", catch_unwind)]
