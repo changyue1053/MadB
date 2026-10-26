@@ -24,7 +24,7 @@ C07 四路线已在既定的 8 个候选配置内完成本地验证并验收收�
 | 查看 Swift 扩展选择与首片实现 | [九项扩展决定](adr/0015-swift-extension-delivery.md) · [实施与检查记录](reviews/2026-10-25-swift-extension-delivery.md) |
 | 查询后端与版本 | [后端配置](architecture/06-backend-profiles.md) · [技术栈、候选及冻结范围](architecture/16-technology-stack-and-versions.md) |
 | 使用 SDK 或创建工程 | [开发者体验](product/03-developer-experience.md) · [一键初始化](product/04-project-initialization.md) |
-| 查看交付与验收记录 | [C06 四路线](reviews/2026-10-24-c06-kotlin-swift-rust.md) · [C05 Rust/C 首链](reviews/2026-10-24-c05-rust-c-first-route.md) · [C04 整包](reviews/2026-10-24-c04-complete-package.md) · [全部审查记录](reviews/README.md) |
+| 查看交付与验收记录 | [L02 固定候选复验](reviews/2026-10-26-l02-frozen-candidate-validation.md) · [C06 四路线](reviews/2026-10-24-c06-kotlin-swift-rust.md) · [C05 Rust/C 首链](reviews/2026-10-24-c05-rust-c-first-route.md) · [C04 整包](reviews/2026-10-24-c04-complete-package.md) · [全部审查记录](reviews/README.md) |
 
 鸿蒙 Kotlin 主线为 CPF-KMP-CMP + akinterop，CMP 只在共享 UI 配置启用；KNOI 独立扩展。Kotlin/Native → Swift 主线采用 Objective-C export + SKIE，NativeCoroutines 组合按 X01 验收。候选版本、上游修复与具体支持范围以技术栈规范和实际 profile 证据为准。
 

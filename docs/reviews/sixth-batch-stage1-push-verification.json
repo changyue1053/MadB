@@ -1,0 +1,23 @@
+{
+  "observed": {
+    "current_time": "2026-10-26 12:53:39 UTC"
+  },
+  "records": [
+    {
+      "repo": "MadB",
+      "expected": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+      "remote_sha": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+      "actions_total_count": 0,
+      "workflow_runs": []
+    },
+    {
+      "repo": "MadB-Lab",
+      "expected": "a6ec8585f61fa4fc83a534b6611b38260c13661b",
+      "remote_sha": "a6ec8585f61fa4fc83a534b6611b38260c13661b",
+      "actions_total_count": 0,
+      "workflow_runs": []
+    }
+  ],
+  "note": "No Actions execution was requested; zero observed runs is not a CI pass.",
+  "preflight": "github-skip-preflight.json"
+}

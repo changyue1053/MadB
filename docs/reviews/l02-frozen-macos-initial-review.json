@@ -1,0 +1,287 @@
+{
+  "scope": "L02 macOS arm64 正式公开候选独立证据复核；同时核对本轮原 C05 19 项回归",
+  "result": "passed_for_this_fixed_candidate_and_target_scope",
+  "reviewer": "c07_reconcile",
+  "producer_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "lab_revision": "a6ec8585f61fa4fc83a534b6611b38260c13661b",
+  "candidate_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-formal-macos-001-freeze.json",
+    "sha256": "sha256:e00b3267fb2d49d684d4a5fbadca075c29d84c1f0abc38c4fd8027cd19dca574",
+    "size": 17746
+  },
+  "l02_report": {
+    "path": "/private/tmp/madb-chief-round6/l02-macos-formal-lab-001/report.json",
+    "sha256": "sha256:0d7f483c13c04dc8d0ef31f5c18d4f24b86b501cf697ff2fb93861fc137086d7",
+    "size": 924974
+  },
+  "c05_reports": [
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/c-to-rust-test.report.json",
+      "sha256": "sha256:d8e359cc20cf796afdfde5129be8f2dfb971f5a2a6f53c8b0e66c22fd5894bff",
+      "size": 11996,
+      "cases": 7
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/c-to-rust.report.json",
+      "sha256": "sha256:9139d70b27f74ce4ebc3781a4cc43bcef763327fcdc0b3367b17825f06d1c72d",
+      "size": 8838,
+      "cases": 7
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/packaging.report.json",
+      "sha256": "sha256:4377673ae6f09bb087d1bc34a0ed738b39542cb29d6c7dc7bd9d4ba571554e86",
+      "size": 2825,
+      "cases": 1
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/rust-to-c.report.json",
+      "sha256": "sha256:585911bfd05d4177cd0e5fc64448486cce821601a113630e250b48e518c5fb94",
+      "size": 5729,
+      "cases": 4
+    }
+  ],
+  "candidate_digests": {
+    "c-to-rust": "sha256:9a09515422305c2bf09a452c68d6afe373c27e277b510509f986c55395446959",
+    "c-to-rust-diagnostics": "sha256:8a35b2eaa3fea067996a5a948195183385a70a77127cf877e3aee9892eaab766",
+    "c-to-rust-diagnostics-test": "sha256:06259cae9146b314b78699d68ecf3336a0e2da2f618e23315d8fd209a816b604",
+    "c-to-rust-test": "sha256:ef293174133bed23a04c01fe5dc11229c386ad95eb62f7d80ded6716fd02114f",
+    "rust-to-c": "sha256:6fbb120b599ccf85fd0868aa54b2750283e5fcb208fefcb6c695301f1668e842"
+  },
+  "actual_checks": {
+    "clean_actual_product_and_lab": true,
+    "all_five_candidates_files_manifest_and_provenance_rehashed": true,
+    "four_installed_copies_equal_frozen_candidates": true,
+    "lab_tracked_files": 474,
+    "source_archive_members": [
+      "consumers/c/l02_diagnostics.c",
+      "consumers/c/README-l02.md",
+      "scripts/verify_l02.py",
+      "scripts/test_l02.py",
+      "harness/candidate.py"
+    ],
+    "raw_command_logs_hash_and_success": 113,
+    "compiled_executables_and_depfiles": 12,
+    "distinct_actual_compile_inputs_rehashed": 161,
+    "sdk_byte_refs_rehashed_in_four_receipts": 372,
+    "native_exports": [
+      7,
+      14,
+      9,
+      16
+    ],
+    "real_sdk_processes": 56,
+    "distinct_real_sdk_pids": 56,
+    "stub_only_processes": 24,
+    "l02_required_cases": [
+      "l02.c-to-rust-diagnostics-test.diagnostics-capacity",
+      "l02.c-to-rust-diagnostics-test.diagnostics-isolation",
+      "l02.c-to-rust-diagnostics.checked-constructor",
+      "l02.c-to-rust-diagnostics.diagnostics",
+      "l02.c-to-rust-diagnostics.disabled-protection"
+    ],
+    "actual_mismatch_pairs": [
+      [
+        "c-to-rust",
+        "c-to-rust-test",
+        3,
+        9207,
+        "logs/104.json"
+      ],
+      [
+        "c-to-rust",
+        "c-to-rust-diagnostics-test",
+        2,
+        9232,
+        "logs/107.json"
+      ],
+      [
+        "c-to-rust-diagnostics",
+        "c-to-rust-diagnostics-test",
+        3,
+        9249,
+        "logs/110.json"
+      ],
+      [
+        "c-to-rust-diagnostics",
+        "c-to-rust-test",
+        2,
+        9262,
+        "logs/113.json"
+      ]
+    ],
+    "c05_case_layers": {
+      "target_run": 17,
+      "expected_missing_bootstrap_link_rejection": 1,
+      "expected_artifact_integrity_static_rejection": 1
+    },
+    "c05_attachments_rehashed": 38,
+    "c05_resource_observation_rows_balanced": 21,
+    "process_exit": "All actual runtime command logs record exit0 and timeout=false; source runner uses communicate/wait. Supplemental ps snapshot unavailable under sandbox (EPERM); no claim of an independent OS process inventory."
+  },
+  "source_review": {
+    "path": "/private/tmp/round6/l02-lab-implementation-review.json",
+    "sha256": "ee7b99645ea93e4f6cd5a8973a98ff03b8596cda606b0f859a6214c343b44902",
+    "size": 9485
+  },
+  "sources": {
+    "consumers/c/l02_diagnostics.c": {
+      "path": "/Users/changyue/Desktop/MadB/madb_lab/consumers/c/l02_diagnostics.c",
+      "sha256": "372bc4ba62ef3858d1a57457694a5e5af13b5a58c127c8ed8420eea4fcd8d6d7",
+      "size": 28524
+    },
+    "consumers/c/README-l02.md": {
+      "path": "/Users/changyue/Desktop/MadB/madb_lab/consumers/c/README-l02.md",
+      "sha256": "a52794cd1b58d609abe3136def53ff6f7f36bb7c1d73796549023a9900ed8ce6",
+      "size": 3057
+    },
+    "scripts/verify_l02.py": {
+      "path": "/Users/changyue/Desktop/MadB/madb_lab/scripts/verify_l02.py",
+      "sha256": "0d6e3f97ced4de464404703218df67d1ccdd4270fbba62c7a0772dd76962fa85",
+      "size": 34141
+    },
+    "scripts/test_l02.py": {
+      "path": "/Users/changyue/Desktop/MadB/madb_lab/scripts/test_l02.py",
+      "sha256": "f57afbdf8266d5b80dce932c73174612c451f12a5d3166cd29500b398691784d",
+      "size": 12534
+    },
+    "harness/candidate.py": {
+      "path": "/Users/changyue/Desktop/MadB/madb_lab/harness/candidate.py",
+      "sha256": "bc3bf6ffb5357215319b6eae630622bf243e1bed7945b1f874a6dccf33932162",
+      "size": 26456
+    }
+  },
+  "findings": [],
+  "checked_semantics": [
+    "off/on/full 对照保留普通资源/回调协议；operation/source lease/self-wait/fault-isolation 在诊断 companion 上 capture 0/1/2 均有独立真实进程日志。",
+    "TIMEOUT/BUSY 只表示关闭未完成，C 消费者实际 resume/join/await 成功后才撤销 context；终态资源守恒。",
+    "精确 bootstrap/provider identity 与 dladdr 实际 loaded path 对应；四错库的 header/provider 各自与真实 depfile、可执行文件和 raw stdout 绑定，创建增量为零。",
+    "两诊断 profile 各两次独立新 PID；每次记录 ID 从 1 开始，非仅复制两个路径。",
+    "并发完成数/事件内容/最终 capture=0 按批准规则核对，不把 BUSY 或 drop 出现次数写成 scheduler 保证。",
+    "原 C05 三 profile 所需案例全部由本批独立报告绑定；missing-bootstrap 只计期望链接拒绝，完整性案例只计静态拒绝。"
+  ],
+  "audit": {
+    "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/madb-chief-round6/l02-macos-formal-independent-review.audit.py",
+    "exit_code": 0,
+    "script": {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-formal-independent-review.audit.py",
+      "sha256": "f4049479bc201733de28592ddaacd225004ab2ad6be88ebeec3b790b08709b97",
+      "size": 14402
+    },
+    "result": {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-formal-independent-review.audit.json",
+      "sha256": "8526df222bed2730ee05607ac6f6b987d8c13e7db0aa26351e6bfb4288df2fe0",
+      "size": 5683
+    },
+    "reviewer_oracle_corrections": {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-formal-independent-review.audit-oracle-notes.txt",
+      "sha256": "7b22cd424b33019adc6ff1574321f7c35bb567a69149f91766c2196dad68f5d3",
+      "size": 814
+    }
+  },
+  "performance": {
+    "scope": "Actual samples only, not realtime bound or benchmark comparison; C05 was running concurrently.",
+    "sample_groups": 8,
+    "samples_per_group": 5,
+    "iterations_per_sample": 800,
+    "raw_samples": [
+      {
+        "group": "c-to-rust",
+        "mode": "timing-off",
+        "samples_ns": [
+          12000,
+          12000,
+          11000,
+          11000,
+          12000
+        ]
+      },
+      {
+        "group": "c-to-rust-test",
+        "mode": "timing-off",
+        "samples_ns": [
+          21000,
+          21000,
+          21000,
+          22000,
+          20000
+        ]
+      },
+      {
+        "group": "c-to-rust-diagnostics",
+        "mode": "timing-off",
+        "samples_ns": [
+          13000,
+          14000,
+          12000,
+          14000,
+          14000
+        ]
+      },
+      {
+        "group": "c-to-rust-diagnostics",
+        "mode": "timing-on",
+        "samples_ns": [
+          42000,
+          41000,
+          37000,
+          39000,
+          42000
+        ]
+      },
+      {
+        "group": "c-to-rust-diagnostics",
+        "mode": "timing-full",
+        "samples_ns": [
+          40000,
+          41000,
+          40000,
+          39000,
+          39000
+        ]
+      },
+      {
+        "group": "c-to-rust-diagnostics-test",
+        "mode": "timing-off",
+        "samples_ns": [
+          21000,
+          21000,
+          22000,
+          22000,
+          22000
+        ]
+      },
+      {
+        "group": "c-to-rust-diagnostics-test",
+        "mode": "timing-on",
+        "samples_ns": [
+          47000,
+          48000,
+          48000,
+          54000,
+          47000
+        ]
+      },
+      {
+        "group": "c-to-rust-diagnostics-test",
+        "mode": "timing-full",
+        "samples_ns": [
+          46000,
+          46000,
+          46000,
+          47000,
+          47000
+        ]
+      }
+    ],
+    "no_threshold_or_percent_claim": true
+  },
+  "limits": [
+    "结论只绑定 fbb0a493 producer、a6ec8585 Lab、所列 5 新候选及实际 macOS arm64；不继承/修改旧 C05 候选结论，不外推 Linux/其它语言/平台。",
+    "本次 SDK 执行由主协调完成；审者只读重算身份、原始日志/附件与独立条件，没有重复运行消费者或操作设备。",
+    "C05 旧 runner 记录 /usr/bin/clang shim；L02 新 runner 单独记录并核验真实 Xcode Clang/nm 与完整实际依赖。两类工具证据层次保留，不冒充完全相同 receipt。",
+    "性能仅本次实际采样；同期 C05 执行，不能用于无竞争基准对比或实时上界保证。",
+    "ring poison/record-id exhaustion/atomic wrap 仍由独立 native 实现证据承担；stub-only 24 进程不计真实 SDK 行为证据。",
+    "未声明 L02 整包、发布或 GitHub Actions 通过。"
+  ],
+  "actions": "只新增本次复核脚本/JSON/审者预期修正记录；未修改产品、Lab、候选或任何原始历史报告。"
+}

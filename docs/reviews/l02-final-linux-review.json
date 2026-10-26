@@ -1,0 +1,1145 @@
+{
+  "scope": "Final Linux928 actual C05 Clang003 and L02 original002 required-case evidence, with prior GNU C05 failed002 preserved; no target rerun",
+  "created_at": "2026-10-26T15:18:57.628331+00:00",
+  "result": "passed_for_named_fixed_linux_configurations_and_required_case_scopes",
+  "findings": [],
+  "producer_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+  "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98",
+  "export_root": "/private/tmp/madb-chief-round6/l02-linux-consumer-002",
+  "export_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/freeze.json",
+    "sha256": "sha256:26cfa42a29220f4059acc9307aa6ab2220703237102e73d103d2ee5f77c65fde",
+    "size": 66817
+  },
+  "export_files_checked": 408,
+  "execution_record": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/final-execution.json",
+    "sha256": "sha256:ef6a7baaa7fef6d57075925b226878feaebc10216bb03a6af50ed5e911f802eb",
+    "size": 8270
+  },
+  "producer_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-producer-002/producer-freeze.json",
+    "sha256": "cbdd19a385816a3d880c92a5d994f74ef8bb4f25229d7754646ed8c263a80675",
+    "size": 11381
+  },
+  "environment_readiness": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-environment/readiness-final.json",
+    "sha256": "8ae8671dc5f1eb7613f2eccba1126c3c8f8f2cff4a37df9bbce9763d9805166b",
+    "size": 13027
+  },
+  "source_archive": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/lab-source.tar",
+    "sha256": "c016d6e6ac59d189feaf90d70d5b7c2abcaaf82cf27dd75c33497881a99c72e8",
+    "size": 3072000
+  },
+  "source_bundle": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/source/madb-lab-9286861.bundle",
+    "sha256": "936790fe77366a5302021c27ff3d9a36516f2637e54ccff62e3c44ff3ed50fa8",
+    "size": 801043
+  },
+  "final_state": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/final-state.json",
+    "sha256": "3b247def4cd0fc0f13b78240be583b7a3a5868398c55fe5bf063919137f06a46",
+    "size": 1536
+  },
+  "execution_order": [
+    {
+      "name": "c05 GNU cc failed002",
+      "freeze": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/consumer-freeze.json",
+        "sha256": "a8408870f0eea5b791ecc2ce1f14b6ca173da1c3140ca857299a9b6e54ab43bd",
+        "size": 12236
+      },
+      "exit_code": 1,
+      "started_at": "2026-10-26T14:47:49.248545Z",
+      "finished_at": "2026-10-26T14:48:04.630759Z"
+    },
+    {
+      "name": "l02 original configuration passed002",
+      "freeze": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/consumer-freeze.json",
+        "sha256": "01b24cfd1a44ee844b47449a63d0d900f44845f3a9923eac66608270dcda6891",
+        "size": 10305
+      },
+      "exit_code": 0,
+      "started_at": "2026-10-26T14:55:32.543121Z",
+      "finished_at": "2026-10-26T14:56:03.376935Z"
+    },
+    {
+      "name": "c05 single approved Clang-cc configuration passed003",
+      "freeze": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/consumer-freeze.json",
+        "sha256": "8f80b72eb94f485fc0cc5fe27097830baea340ab7da1a09906b2bf0e57ca59f0",
+        "size": 14779
+      },
+      "exit_code": 0,
+      "started_at": "2026-10-26T14:58:56.275176Z",
+      "finished_at": "2026-10-26T14:59:28.940232Z"
+    }
+  ],
+  "new_standard_reports": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/c-to-rust-test.report.json",
+      "sha256": "sha256:08d86ac25fe1c875a18d084ad3950f97c6d2136ab140d7191f492abe3751f9af",
+      "size": 12027,
+      "suite": "c05",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:9310d3a2a93f14d0f8c043d9fc43934cb1e9b4235a06f7ca2162e2c0aae5bd74",
+        "profile_id": "c05-c-to-rust-test-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:09209716b358ef43af7b32d5e0386e9f5c64389a0c5972f9d775e35c75b2fe00",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:9310d3a2a93f14d0f8c043d9fc43934cb1e9b4235a06f7ca2162e2c0aae5bd74",
+        "candidate_digest": "sha256:677102b8d04b2957742602dc00acdfc8739b0beebd3aea59adca5aa00e6d877e",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:59:04.261896Z",
+      "results": [
+        {
+          "case_id": "c05.c-to-rust-test.operation-close",
+          "case_digest": "sha256:c4f9e378fefac81c3df2841e71276b1850e888c86881cc8f3768e263a17c5806",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.source-lease",
+          "case_digest": "sha256:e67981807faa7bf993b7e5e11558e9670673087dd8d0353c5578b85ace858a6d",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 2,
+              "released": 2
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.registration-failure",
+          "case_digest": "sha256:0a22eb16e37873ceb11076dae48024578a54e834fe99d094689abc48ae77caa3",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.panic",
+          "case_digest": "sha256:4594c4ceeccf900f1068b3109e141ae3577151d2bc064fb120556c4e62d43ca1",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.diagnostics",
+          "case_digest": "sha256:9009930f612fe39c6d86350544126336151b47daf63582bec1858de49b7795c9",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 5,
+              "released": 5
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 2,
+              "released": 2
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 2,
+              "released": 2
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.token-exhaustion",
+          "case_digest": "sha256:002d81530653850e542fcbe4b91cae4514bc295674ed5d864dfcb6a72a4aad27",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.capacity",
+          "case_digest": "sha256:3eee4346c77adbae48e2e385d632ba5705473128f67a9a947db2fa12f9d385d2",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 65,
+              "released": 65
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 65,
+              "released": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/c-to-rust.report.json",
+      "sha256": "sha256:50cfa8aa9827e02190ae6b9c41c986c54a9ca3f42e66285e5b014511df9ebc6e",
+      "size": 8864,
+      "suite": "c05",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:4ae9c1a37a7a576ee1c709e4d52eb17cde8eda4cc0c9e4c2d906d786f0b4897a",
+        "profile_id": "c05-c-to-rust-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:2ad5e7c0078cf1c980e18fd0a36a0bfea3b94b5d10217b87f4f880aad23d2505",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:4ae9c1a37a7a576ee1c709e4d52eb17cde8eda4cc0c9e4c2d906d786f0b4897a",
+        "candidate_digest": "sha256:2be79bf205dd1613260afccb1fcad4b5895e71f259156f324a49856b4b7c6736",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:58:58.554016Z",
+      "results": [
+        {
+          "case_id": "c05.c-to-rust.data",
+          "case_digest": "sha256:43dcb8d90fb83fbab0bd29690df6e0999a89b2a036a58efb6aa92ababa4f8ed9",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.lifecycle",
+          "case_digest": "sha256:84a552534371f3b2eacfa75b5fae8b666e5e27b6fdb320a51f9970b9980d32fd",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.observe",
+          "case_digest": "sha256:963437ddfb3d6497b10563f55994ecc1f2d305b6ad8df53a2d10bc71f0f1264f",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.bootstrap",
+          "case_digest": "sha256:ce2d0411a0db249ff9c905c420c1b335f7e0e177c88219cfc775a171529b1fbe",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.abi-mismatch",
+          "case_digest": "sha256:d62558d722354ed786e527509163c12d8f90be6e6cbc2e0656596c391ad243ba",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.profile-mismatch",
+          "case_digest": "sha256:189ec7d21b17163e39f053f65c52d874df29fdbf54c39685c0a4183948a5e362",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.missing-bootstrap",
+          "case_digest": "sha256:09b2f358da2922a1855f2f7c3c08547ff0b2276f299f143a36b6352515b35361",
+          "status": "passed",
+          "evidence_level": "compiled",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/packaging.report.json",
+      "sha256": "sha256:1ef2e1f19213222598873d0e0e58bf81cc7459d79333207111b1c0db6b8568bb",
+      "size": 2854,
+      "suite": "c05",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:4ae9c1a37a7a576ee1c709e4d52eb17cde8eda4cc0c9e4c2d906d786f0b4897a",
+        "profile_id": "c05-c-to-rust-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:2ad5e7c0078cf1c980e18fd0a36a0bfea3b94b5d10217b87f4f880aad23d2505",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:4ae9c1a37a7a576ee1c709e4d52eb17cde8eda4cc0c9e4c2d906d786f0b4897a",
+        "candidate_digest": "sha256:2be79bf205dd1613260afccb1fcad4b5895e71f259156f324a49856b4b7c6736",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:59:28.827167Z",
+      "results": [
+        {
+          "case_id": "c05.packaging.integrity",
+          "case_digest": "sha256:011c40c5be4e4fab211b11420ac3332dac3e4010e17f0e7c49a31e0a545b045f",
+          "status": "passed",
+          "evidence_level": "static",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/rust-to-c.report.json",
+      "sha256": "sha256:422be7bc5ddc1d68c4abb926f9ec93ead2355fbcb1837f7649c70f90bd1a3bcd",
+      "size": 5756,
+      "suite": "c05",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:f069286a5d71f243798ca10c497c03de0df838f4bfefe7cb87a26b337d414dca",
+        "profile_id": "c05-rust-to-c-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:0b9259d3c2ce43b70d1af254387042443793a0da14e1a5d206ff0181ae210f8b",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:f069286a5d71f243798ca10c497c03de0df838f4bfefe7cb87a26b337d414dca",
+        "candidate_digest": "sha256:a22053ccfe7d1afc579c2e738aee425bae30b75922636c0bd254a55d77337dce",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:59:08.178096Z",
+      "results": [
+        {
+          "case_id": "c05.rust-to-c.data",
+          "case_digest": "sha256:a1a306c346fff9062646df9984f071f76cc9886f6fe8129dee2ffdc8c6062395",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.rust-to-c.bootstrap",
+          "case_digest": "sha256:c831943e8c3c4abc773f064cedb520ee93735a4ae0984f844f9ac354d8d0232d",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.rust-to-c.abi-mismatch",
+          "case_digest": "sha256:b70e80ae36c7005a6c5550bf54697a573e090eae531be76183035b8bbda63588",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.rust-to-c.profile-mismatch",
+          "case_digest": "sha256:45fd20cfb7a6ea41f58116895e471de795f4a33036d0535ff22a852efc4829b8",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace/c-to-rust-diagnostics-test.report.json",
+      "sha256": "sha256:3abfd31605458f19855cf82705e04dc8acac47a8698156adac16523b3495f6c0",
+      "size": 44844,
+      "suite": "l02",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:b312a17b7bbaccf52fa59dc64e6f88af77c546497a11bff3723a6da3e77d7184",
+        "profile_id": "c05-c-to-rust-diagnostics-test-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:0a9a0d6c0bde38cc6a8a1bae0356fc07170a1f869ff5332c4fb50074b81432b8",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:b312a17b7bbaccf52fa59dc64e6f88af77c546497a11bff3723a6da3e77d7184",
+        "candidate_digest": "sha256:e69793477c3320ac4f4fa87bbac83e8da93e8e62d9aefcd38ab6ac09098d6b4a",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:55:35.815594Z",
+      "results": [
+        {
+          "case_id": "l02.c-to-rust-diagnostics-test.diagnostics-isolation",
+          "case_digest": "sha256:f499dd791ab4499becca498d5a41f3c6666b8e69a93d5644fdc6722cf09b108c",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics-test.diagnostics-capacity",
+          "case_digest": "sha256:762c25a744d7220f5c6a28576c1a21de875fae5136daea5b967038b5ab743c0e",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace/c-to-rust-diagnostics.report.json",
+      "sha256": "sha256:417764e5333cde55a3b189b22b9eb296e1de0b054011fa1d9a704702e5adcac0",
+      "size": 66207,
+      "suite": "l02",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:55cf599920eb2a0e7cfc9451173dc53a2b17906a85e43a94bddf430afcfdb728",
+        "profile_id": "c05-c-to-rust-diagnostics-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:0592444609b9cf22887c514de7e01f557ddfe28edb36cdfe9a081aac79eadda6",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:55cf599920eb2a0e7cfc9451173dc53a2b17906a85e43a94bddf430afcfdb728",
+        "candidate_digest": "sha256:6caeb2dce347fe270744b62743ae5c9f514f09eea00be4ac2924106d71e2849c",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:55:35.815594Z",
+      "results": [
+        {
+          "case_id": "l02.c-to-rust-diagnostics.checked-constructor",
+          "case_digest": "sha256:7ed5be9512384bf814dfa45af5f4c6532b92a396012dc8abccae6e7c8a1e8e2f",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics.diagnostics",
+          "case_digest": "sha256:26f9b30c53b3f5ee494150b562b837b904e8990e7167a96e5a742378d7addc82",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics.disabled-protection",
+          "case_digest": "sha256:4f0fb3cbd02f9f5b880cb38f757ecf8507a0dea0835574cd351f2eed792672d5",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    }
+  ],
+  "new_l02_local_report": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace/report.json",
+    "sha256": "sha256:a8d3cefb8bfc82d83c3d88f91c099f3fa8af290d1bdb6137c989fa45ac3b84ab",
+    "size": 659655
+  },
+  "case_index": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace/case-inputs.json",
+    "sha256": "sha256:feaad1ec903627e311c874654cca7e95f93f6452868968b37e320a5126eb59c4",
+    "size": 2686
+  },
+  "checks": {
+    "schema": {
+      "successful_case_templates": 24,
+      "successful_case_instances": 24,
+      "successful_reports": 6,
+      "prior_case_instances": 19,
+      "prior_reports": 4
+    },
+    "case_digest": "24 successful and 19 prior-failure case digests independently recomputed using existing madb.case/1 LF domain and case projection",
+    "catalog": {
+      "implementation": "standalone hashlib and recursive UTF-16-key JSON; no production/Lab digest helper imported",
+      "case_domain": "madb.case/1 plus LF",
+      "case_projection": "sort problem_ids/source_ids/features and environment by id; retain remaining definition",
+      "catalog": "existing first_route sorted PurePosixPath + NUL + exact source case bytes",
+      "catalog_files": 198,
+      "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+    },
+    "identity": "Fixed producer/candidate/selector/input/tool provenance, exact clean Lab928 source and source archive agree; no provisional candidate is consumed",
+    "archives": {
+      "c05": {
+        "members": 73,
+        "files": 64,
+        "sha256": "sha256:bc2b22f52b790660b70e94490b13c646d6ce4bbef7bf33d5106b6980c98f30c0",
+        "content_modes_and_closure_match": true
+      },
+      "l02": {
+        "members": 253,
+        "files": 226,
+        "sha256": "sha256:5cb394348c0c07585d17e5f1a09b1c44b1ff2cb3c8910d0b8b639cc9204bc43a",
+        "content_modes_and_closure_match": true
+      },
+      "prior-failure-c05-002": {
+        "members": 61,
+        "files": 52,
+        "sha256": "sha256:e4ce3344bdee47fe27b4dd108ffce0f483a96776cf838f00f52af1294d31a3cf",
+        "content_modes_and_closure_match": true
+      }
+    },
+    "lab_source_files_checked": 481,
+    "l02_archive_source_members": 12,
+    "c05": {
+      "reports": [
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/c-to-rust-test.report.json",
+          "sha256": "sha256:08d86ac25fe1c875a18d084ad3950f97c6d2136ab140d7191f492abe3751f9af",
+          "size": 12027,
+          "cases": 7
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/c-to-rust.report.json",
+          "sha256": "sha256:50cfa8aa9827e02190ae6b9c41c986c54a9ca3f42e66285e5b014511df9ebc6e",
+          "size": 8864,
+          "cases": 7
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/packaging.report.json",
+          "sha256": "sha256:1ef2e1f19213222598873d0e0e58bf81cc7459d79333207111b1c0db6b8568bb",
+          "size": 2854,
+          "cases": 1
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/rust-to-c.report.json",
+          "sha256": "sha256:422be7bc5ddc1d68c4abb926f9ec93ead2355fbcb1837f7649c70f90bd1a3bcd",
+          "size": 5756,
+          "cases": 4
+        }
+      ],
+      "cases": 19,
+      "evidence_levels": {
+        "target-run": 17,
+        "compiled": 1,
+        "static": 1
+      },
+      "attachment_refs": 38,
+      "resource_balance_rows": 21,
+      "actual_nm": "GNU nm 2.42; separately bound surrounding evidence; original public report.environment contains only clang/cargo"
+    },
+    "l02": {
+      "logs_checked": 114,
+      "compilations": 12,
+      "observations": 84,
+      "sdk_processes": 56,
+      "unique_sdk_process_pids": 56,
+      "stub_only": 24,
+      "exact_export_sets": 4,
+      "actual_mismatch_pairs": [
+        [
+          "c-to-rust",
+          "c-to-rust-test",
+          3,
+          328318,
+          "logs/105.json"
+        ],
+        [
+          "c-to-rust",
+          "c-to-rust-diagnostics-test",
+          2,
+          328431,
+          "logs/108.json"
+        ],
+        [
+          "c-to-rust-diagnostics",
+          "c-to-rust-diagnostics-test",
+          3,
+          328530,
+          "logs/111.json"
+        ],
+        [
+          "c-to-rust-diagnostics",
+          "c-to-rust-test",
+          2,
+          328640,
+          "logs/114.json"
+        ]
+      ],
+      "required_cases": [
+        "l02.c-to-rust-diagnostics-test.diagnostics-capacity",
+        "l02.c-to-rust-diagnostics-test.diagnostics-isolation",
+        "l02.c-to-rust-diagnostics.checked-constructor",
+        "l02.c-to-rust-diagnostics.diagnostics",
+        "l02.c-to-rust-diagnostics.disabled-protection"
+      ]
+    },
+    "attachments": {
+      "references": {
+        "c05": 38,
+        "l02": 590,
+        "prior-failure-c05-002": 38
+      },
+      "unique_paths": {
+        "c05": 38,
+        "l02": 122,
+        "prior-failure-c05-002": 35
+      },
+      "all_exact_bytes_verified": true
+    },
+    "linux_inputs": {
+      "manifest": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/inputs/recorded-linux-input-bytes.json",
+        "sha256": "441bf82f0f8d6b5e3569548d654c51a00bad6a8acb2b38545567314d5e787637",
+        "size": 237971
+      },
+      "archive": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/inputs/recorded-linux-input-bytes.tar",
+        "sha256": "798790f1cae8d5e0425e4ef502eb8d0798c03eea2a2cce7987f4f3f18acfbe3a",
+        "size": 225105920
+      },
+      "all_paths_content_checked": 193,
+      "all_content_images": 185,
+      "semantic_reference_uses_rechecked": 1792,
+      "unique_compile_dependency_paths": 115,
+      "per_profile_public_header_receipts": {
+        "c-to-rust": {
+          "resource_headers": 15,
+          "system_headers": 22,
+          "producer_archives": 27
+        },
+        "c-to-rust-test": {
+          "resource_headers": 15,
+          "system_headers": 22,
+          "producer_archives": 27
+        },
+        "c-to-rust-diagnostics": {
+          "resource_headers": 15,
+          "system_headers": 22,
+          "producer_archives": 27
+        },
+        "c-to-rust-diagnostics-test": {
+          "resource_headers": 15,
+          "system_headers": 22,
+          "producer_archives": 27
+        }
+      },
+      "each_public_header_probe_inputs": 40,
+      "path_mapping": "Use inputs[guest absolute path].member from original Linux tar; no Mac /usr or /opt substitution"
+    },
+    "cleanup": "Actual raw C asserts plus command exit/no-timeout and each suite wrapper empty task-output/temporary process and temporary tree snapshots; not a systemwide process census",
+    "l02_numeric_resource_observations": "Empty arrays preserved; actual C close/drain/context-release/zero-create assertions referenced, no fabricated numerical counters",
+    "performance": "8 groups of 5 bounded observation samples, no runtime threshold or physical x86 performance claim"
+  },
+  "run_start_evidence": {
+    "suite_bounds": {
+      "c05": {
+        "start": "2026-10-26T14:58:56.275176Z",
+        "end": "2026-10-26T14:59:28.940232Z",
+        "exit_code": 0
+      },
+      "l02": {
+        "start": "2026-10-26T14:55:32.543121Z",
+        "end": "2026-10-26T14:56:03.376935Z",
+        "exit_code": 0
+      },
+      "prior-failure-c05-002": {
+        "start": "2026-10-26T14:47:49.248545Z",
+        "end": "2026-10-26T14:48:04.630759Z",
+        "exit_code": 1
+      }
+    },
+    "original_guest_tar_time_rows": [
+      {
+        "suite": "c05",
+        "report": "c-to-rust-test.report.json",
+        "started_at": "2026-10-26T14:59:04.261896Z",
+        "first_retained_action": "c-to-rust-test/public-symbols.json",
+        "guest_action_mtime": "1793026744.5654187",
+        "guest_report_mtime": "1793026748.1769962"
+      },
+      {
+        "suite": "c05",
+        "report": "c-to-rust.report.json",
+        "started_at": "2026-10-26T14:58:58.554016Z",
+        "first_retained_action": "c-to-rust/public-symbols.json",
+        "guest_action_mtime": "1793026738.8696492",
+        "guest_report_mtime": "1793026744.261224"
+      },
+      {
+        "suite": "c05",
+        "report": "packaging.report.json",
+        "started_at": "2026-10-26T14:59:28.827167Z",
+        "first_retained_action": "integrity.json",
+        "guest_action_mtime": "1793026768.840542",
+        "guest_report_mtime": "1793026768.897664"
+      },
+      {
+        "suite": "c05",
+        "report": "rust-to-c.report.json",
+        "started_at": "2026-10-26T14:59:08.178096Z",
+        "first_retained_action": "rust-to-c/build-lock.json",
+        "guest_action_mtime": "1793026748.890789",
+        "guest_report_mtime": "1793026768.8255098"
+      },
+      {
+        "suite": "prior-failure-c05-002",
+        "report": "c-to-rust-test.report.json",
+        "started_at": "2026-10-26T14:47:57.113148Z",
+        "first_retained_action": "c-to-rust-test/public-symbols.json",
+        "guest_action_mtime": "1793026077.4155624",
+        "guest_report_mtime": "1793026080.977696"
+      },
+      {
+        "suite": "prior-failure-c05-002",
+        "report": "c-to-rust.report.json",
+        "started_at": "2026-10-26T14:47:51.498798Z",
+        "first_retained_action": "c-to-rust/public-symbols.json",
+        "guest_action_mtime": "1793026071.8083527",
+        "guest_report_mtime": "1793026077.1115508"
+      },
+      {
+        "suite": "prior-failure-c05-002",
+        "report": "packaging.report.json",
+        "started_at": "2026-10-26T14:48:04.517997Z",
+        "first_retained_action": "integrity.json",
+        "guest_action_mtime": "1793026084.5328298",
+        "guest_report_mtime": "1793026084.588832"
+      },
+      {
+        "suite": "prior-failure-c05-002",
+        "report": "rust-to-c.report.json",
+        "started_at": "2026-10-26T14:48:00.979160Z",
+        "first_retained_action": "rust-to-c/build-lock.json",
+        "guest_action_mtime": "1793026081.719724",
+        "guest_report_mtime": "1793026084.5168293"
+      },
+      {
+        "suite": "l02",
+        "started_at": "2026-10-26T14:55:35.815594Z",
+        "index_guest_mtime": "1793026535.9176023",
+        "first_preprocess": {
+          "path": "logs/003.json",
+          "guest_mtime": "1793026536.0698528",
+          "duration_ns": 150154955
+        },
+        "first_target": {
+          "path": "logs/019.json",
+          "guest_mtime": "1793026544.4222672",
+          "duration_ns": 12802986
+        }
+      }
+    ],
+    "c05_capture_lines": {
+      "run_group": 293,
+      "integrity_case": 373
+    },
+    "three_c05_explicit_start_calls": [
+      368,
+      322,
+      396
+    ],
+    "qualification": "C05 capture order follows the identical independently clock-tested frozen runner; all report starts lie inside original surrounding execution bounds. Guest tar PAX mtime/log duration corroborates retained-record ordering and L02 definitions before preprocess/target. No host stat or guest birthtime used; mtimes are limited corroboration, not external signed action start proof."
+  },
+  "l02_prerun_instances": {
+    "selector_case_partition": "3+2 exact required set",
+    "resource_arrays": "all five empty; actual C assertion attachments, no invented numeric snapshots",
+    "source_archive_files_verified": 12
+  },
+  "consumer_link_configuration": {
+    "kind": "explicit consumer linker PATH selection; system cc unchanged",
+    "PATH": "/opt/madb-cargo/bin:/work/l02-private-clang-linker-001:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "private_directory": "/work/l02-private-clang-linker-001",
+    "entry": "cc",
+    "symlink_target": "/usr/bin/clang",
+    "resolved_cc": {
+      "path": "/work/l02-private-clang-linker-001/cc",
+      "resolved_path": "/usr/lib/llvm-18/bin/clang",
+      "sha256": "8ef402d453d1ba4902e4ee0f0f847f6cfa01400c95aa43c24e97818b9c0e3f45",
+      "size": 140592
+    },
+    "fixed_clang": {
+      "path": "/usr/lib/llvm-18/bin/clang",
+      "resolved_path": "/usr/lib/llvm-18/bin/clang",
+      "sha256": "8ef402d453d1ba4902e4ee0f0f847f6cfa01400c95aa43c24e97818b9c0e3f45",
+      "size": 140592
+    },
+    "system_gnu_cc": {
+      "path": "/usr/bin/cc",
+      "resolved_path": "/usr/bin/x86_64-linux-gnu-gcc-13",
+      "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+      "size": 1023032
+    },
+    "actual_cc_version": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /work/l02-private-clang-linker-001\n",
+    "evidence_limit": "Unchanged runner captures original Cargo argv/stdout/stderr; successful nonverbose Cargo does not emit a complete linker subprocess argv. No linker argv is invented."
+  },
+  "same_original_c05_command_except_new_output": true,
+  "wrapper_difference": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/wrapper-configuration.diff",
+    "sha256": "sha256:5009931ddbbb3979649c9180818cfe1e4f085dec5789f4718d04b32f165d3dde",
+    "size": 4962
+  },
+  "prior_gnu_failure_preserved": {
+    "details": {
+      "status_counts": {
+        "passed": 15,
+        "error": 1,
+        "blocked": 3
+      },
+      "raw_build": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/workspace/rust-to-c/build.json",
+        "sha256": "sha256:c5982b773cc2e4de0ffe70d2c2065884b391d34b6b5c77ebf17845546df9a4e8",
+        "size": 2043
+      },
+      "reports": [
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/workspace/c-to-rust-test.report.json",
+          "sha256": "sha256:c6be2570208f02a3ae5f4dff38220aa8ce26f71a5455a8d0c113a3ac1bec4f4b",
+          "size": 12027
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/workspace/c-to-rust.report.json",
+          "sha256": "sha256:64df4901705150348df11035b9c9031b10f5727e2b0fe1bcd740360caa7a064e",
+          "size": 8864
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/workspace/packaging.report.json",
+          "sha256": "sha256:40f696a83d2304d52d9e52621abe853d372984b994df072438709e6ef2424460",
+          "size": 2854
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/workspace/rust-to-c.report.json",
+          "sha256": "sha256:866fbf66759d2ea25e8ecfec64818a387eaa89b9e6e5d8df2f4a78750e1c576a",
+          "size": 6478
+        }
+      ],
+      "post_failure_tools": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/cc-post-failure-observation.json",
+        "sha256": "sha256:30fdda056d2403289a8ce9b9678da28ef3145f3794e16fbb9664d530e472029c",
+        "size": 2417
+      },
+      "finding": "Unexpected cc SIGSEGV while building madb-c-client build script, before four Rust-to-C SDK cases; GNU configuration remains failed. The record is not sufficient to diagnose the internal compiler/QEMU/linker crash root cause."
+    },
+    "case_classification": {
+      "reports": [
+        {
+          "suite": "prior-failure-c05-002",
+          "path": "c-to-rust-test.report.json",
+          "sha256": "sha256:c6be2570208f02a3ae5f4dff38220aa8ce26f71a5455a8d0c113a3ac1bec4f4b",
+          "size": 12027,
+          "case_count": 7,
+          "started_at": "2026-10-26T14:47:57.113148Z"
+        },
+        {
+          "suite": "prior-failure-c05-002",
+          "path": "c-to-rust.report.json",
+          "sha256": "sha256:64df4901705150348df11035b9c9031b10f5727e2b0fe1bcd740360caa7a064e",
+          "size": 8864,
+          "case_count": 7,
+          "started_at": "2026-10-26T14:47:51.498798Z"
+        },
+        {
+          "suite": "prior-failure-c05-002",
+          "path": "packaging.report.json",
+          "sha256": "sha256:40f696a83d2304d52d9e52621abe853d372984b994df072438709e6ef2424460",
+          "size": 2854,
+          "case_count": 1,
+          "started_at": "2026-10-26T14:48:04.517997Z"
+        },
+        {
+          "suite": "prior-failure-c05-002",
+          "path": "rust-to-c.report.json",
+          "sha256": "sha256:866fbf66759d2ea25e8ecfec64818a387eaa89b9e6e5d8df2f4a78750e1c576a",
+          "size": 6478,
+          "case_count": 4,
+          "started_at": "2026-10-26T14:48:00.979160Z"
+        }
+      ],
+      "counts": {
+        "passed": 15,
+        "error": 1,
+        "blocked": 3
+      },
+      "first_error": "c05.rust-to-c.data",
+      "blocked_by": "c05.rust-to-c.data",
+      "raw_build_log": {
+        "sha256": "sha256:c5982b773cc2e4de0ffe70d2c2065884b391d34b6b5c77ebf17845546df9a4e8",
+        "size": 2043
+      },
+      "cargo_exit": 101,
+      "timeout": false,
+      "observed_failure": "Cargo reports cc linker SIGSEGV while building madb-c-client build script; no Rust-to-C target evidence was available.",
+      "classification": "error then three blocked, never expected rejection or passed. Fifteen separately completed cases remain original passed. Clang003 success does not relabel or establish GNU recovery."
+    },
+    "not_upgraded_by_clang_success": true
+  },
+  "gnu_system_cc_post_failure_through_final_unchanged": {
+    "path": "/usr/bin/cc",
+    "resolved_path": "/usr/bin/x86_64-linux-gnu-gcc-13",
+    "sha256": "1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26",
+    "size": 1023032
+  },
+  "link_evidence_boundary": "Exact configured PATH and transparent cc symlink/canonical image are checked against original guest bytes and surrounding before/after records. Successful Cargo command/output and four Rust-to-C SDK runs are actual. Complete successful linker subprocess argv or exec trace was not captured; no such trace is inferred or fabricated. The original GNU cc internal SIGSEGV cause remains unresolved.",
+  "nm_boundary": {
+    "c05": "GNU nm 2.42, sha256:3708df3d7ce16e2c1dcdcd722784ae382d4d582276a71ab7bbe2d542f5621202",
+    "producer_and_l02": "LLVM nm 18.1.3, sha256:3f85dd567c2806f2c031e317871e7145f858072fc9595aba4dc33d2e3a671402"
+  },
+  "reused_exact_byte_reviews": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-case-report-independent-review-003.json",
+      "sha256": "sha256:746c96e941d4f61e81e2d9b0e119f88d4c08ad6369a8d7be520fb19e0735efa6",
+      "size": 11100
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-report-timing-independent-review-002.json",
+      "sha256": "sha256:5c7e78024c94e1428b92b5f9c8e0febdb1f7425f41b4457392c31886860904d6",
+      "size": 6490
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/producer-cross-review.json",
+      "sha256": "sha256:c311105332fdd31d798bce12065fcc7fd509259dbd93e6f6cdaed61fd4b97bf4",
+      "size": 8385
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-standard-independent-review-001.json",
+      "sha256": "sha256:6d6a9f6bccf1866c10d05923a1baea67b7e034020354bb3e71e4342ddd232d61",
+      "size": 21413
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "independent_raw_output_archive_and_modes",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/audit_raw_outputs.py",
+        "sha256": "sha256:e57302c9b25901351b74af94dc85425b2cffca5761708b1bf5f98dd445e67b10",
+        "size": 16700
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/raw-output-audit.log",
+        "sha256": "sha256:d842db022c0646942708062d36efdeace212927d81fb59c112878167f59a6df4",
+        "size": 212
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/raw-output-audit.json",
+        "sha256": "sha256:a814f702d83cf57622f7586db1bde52be25a38b62c10d36d4dc96bf41fe393e6",
+        "size": 6483
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_recorded_linux_original_bytes",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/audit_recorded_inputs.py",
+        "sha256": "sha256:b6ce31d2b1f6069f57c298aaf65cca4d80d07d59d3dc8c6c6fbf06be16bc922d",
+        "size": 7787
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/recorded-input-audit.log",
+        "sha256": "sha256:9997c7d94376434250199e62d34cbe517c8c17766dfdd4242908f5badea1c2e2",
+        "size": 209
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/recorded-input-audit.json",
+        "sha256": "sha256:bb1b4c32470ecafd06b4c3ceebdbfaab9b7e8d1b02876b55e37da344712404a2",
+        "size": 1915
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_linker_configuration_and_failure_boundary",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/audit_link_configuration.py",
+        "sha256": "sha256:716c1279c9bd8d4f0c15abac3e807d88c70c2378d60622370c5f45da1280df14",
+        "size": 9065
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/link-configuration-audit.log",
+        "sha256": "sha256:c2bdff72dfe4e9186b152013a0642c85262b5f09c6c79ae6dc7723558dc0b71a",
+        "size": 231
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/link-configuration-audit.json",
+        "sha256": "sha256:3ff87daf7eb60ad83593846908737337187c453d0f868289118ca6b64a08ea7b",
+        "size": 7110
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "additional_replay_of_reviewed_lab_parsers_not_independent_oracle",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/replay_parsers.py",
+        "sha256": "sha256:994fa3f8c65870f753536b7f37ce7b80931ec6beb1dd65623eda2502cf737edf",
+        "size": 1536
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/parser-replay.log",
+        "sha256": "sha256:bef35978b64a07509edc1f106b04b932a9293feb547029896b65b83f6512e9b9",
+        "size": 12
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/parser-replay.json",
+        "sha256": "sha256:a447febccd36d608a6e4b59051c02305aec67cd8c5d9ea1c41ddac2da40fe5fc",
+        "size": 9405
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_case_report_digest_and_timing",
+      "reviewer": "/root/c07_reconcile/linux_static_review",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/case_timing_cross_review.py",
+        "sha256": "sha256:f9f6c2f25c32508c8b0b0547d3c4755649258b1eb4ca345b6fdaeb8e764286c7",
+        "size": 17830
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-final-review-002/case-timing-cross-review.json",
+        "sha256": "sha256:0b23fac37ea945d3dcc44896a21825d58fca98cea7664abc0ceb8d18f1a25ad1",
+        "size": 16259
+      }
+    }
+  ],
+  "intermediate_pending_resolved": [
+    "raw-output-audit external-byte review resolved by recorded-input-audit",
+    "raw-output-audit schema/digest/timeline review resolved by case-timing-cross-review"
+  ],
+  "limits": [
+    "No SDK, compiler, container or device execution by reviewer.",
+    "QEMU7 emulated x86_64 guest on aarch64 VM/macOS arm64 physical host; not native physical x86 performance certification.",
+    "Only named fixed candidates/configurations and required-case scopes; not full L02 delivery or publication/Actions certification.",
+    "GNU C05 failed002 remains 15 passed, 1 unexpected build error and 3 blocked; Clang passed003 is a separate configuration result, not recovery of GNU cc.",
+    "C05 public report.environment stays clang/cargo. GNU nm2.42, private cc and fixed Clang are additional surrounding evidence; producer/L02 LLVM nm18 remain distinct.",
+    "193 named input paths are fully content checked, but not an exhaustive discovery of all implicit OS/tool dynamic dependencies.",
+    "Started_at is supported by exact frozen control flow and original surrounding command timestamps; guest tar mtimes are limited corroboration, no use of host copy timestamps as proof.",
+    "Resource cleanup relies on actual C assertions, reaped processes and scoped post-run snapshots; no comprehensive systemwide live process census.",
+    "Every prior f909 success, failed attempt and pending historical snapshot retains its original bytes and scope."
+  ]
+}

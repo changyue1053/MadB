@@ -1,0 +1,12 @@
+{
+  "scope": "C05 public schema and independent case-digest checks for the new Mac run",
+  "result": "passed",
+  "reports": 4,
+  "instances": 19,
+  "format_checker": "Draft202012Validator with RFC3339 FormatChecker",
+  "case_digest": "Independent implementation of public madb.case/1 projection and UTF-16-key JCS encoding for these exact integer-only inputs",
+  "archive_reports_equal": true,
+  "limits": [
+    "Schema/digest checks supplement actual runtime review; they do not prove runtime behavior or other targets."
+  ]
+}

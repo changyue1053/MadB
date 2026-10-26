@@ -1,0 +1,135 @@
+{
+  "scope": "C05 timing patch 002 final source review including required packaging fixture identity binding and full Lab repository gate",
+  "created_at": "2026-10-26T14:40:17.675599+00:00",
+  "result": "no_remaining_blocking_findings_for_frozen_002_source_scope",
+  "findings": [],
+  "freeze": {
+    "path": "/private/tmp/madb-chief-round6/c05-report-timing-inputs-002.json",
+    "sha256": "sha256:d2715c14ff77bd9dfbf8b209a09865f1eb3bbba3e58527dfe193cf0c94358a7b",
+    "size": 2321
+  },
+  "files": {
+    "harness/runners/first_route.py": {
+      "sha256": "sha256:137ad33d1e8feaaae1acc1d7b6fec8931e82e074642ed6fbdb5873e3c519b8bc",
+      "size": 30846
+    },
+    "harness/tests/test_c05_report_timing.py": {
+      "sha256": "sha256:85e4ae9f980f95f33b09040bbefb9e3b01ac1193e62459e907718b895c7a11b1",
+      "size": 7028
+    },
+    "cases/packaging/integrity.json": {
+      "sha256": "sha256:4d2dc0f287caa98fd280322735027f0b59c1762c93959ea4c0f3d8e1094ea33f",
+      "size": 1409
+    }
+  },
+  "all_three_inputs_rechecked_after_full_gate": true,
+  "change_from_001": {
+    "only_additional_file": "cases/packaging/integrity.json",
+    "only_json_fields": [
+      "fixture.sha256",
+      "fixture.size"
+    ],
+    "bound_runner_sha256": "sha256:137ad33d1e8feaaae1acc1d7b6fec8931e82e074642ed6fbdb5873e3c519b8bc",
+    "bound_size": 30846,
+    "all_other_case_values_identical": true,
+    "meaning": "Updates the existing fixture FileRef to the already approved actual runner bytes; expected rejection, steps, assertion, timeout, cleanup and acceptance semantics unchanged."
+  },
+  "prior_001_review": {
+    "path": "/private/tmp/madb-chief-round6/c05-report-timing-independent-review-001.json",
+    "sha256": "sha256:47d2de25b01d2af094965713f724be34a85b79ccb8fa554ce722ccdefd4dd7cd",
+    "size": 5758
+  },
+  "prior_integration_failure": {
+    "log": {
+      "path": "/private/tmp/madb-chief-round6/c05-timing-integrated-gate-001.log",
+      "sha256": "sha256:1ce5221b34faf030738ebcd1ef468f0607a6112a01bddea0be4fbbc6b80e79fd",
+      "size": 447
+    },
+    "diagnostic": "LAB104: changed case fixture identity: c05.packaging.integrity",
+    "interpretation": "001 focused review covered timing control flow but missed the existing packaging case fixture dependency. The root full gate exposed the real stale reference. Prior review/failure remain preserved; 002 resolves it without weakening the check."
+  },
+  "checks": [
+    {
+      "kind": "independent_fixture_binding_and_exact_metadata_diff",
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/c05-report-timing-review/fixture-binding-002.json",
+        "sha256": "sha256:2367c7e088876637c14cb9e40764f453cdc13c2f2298a0673c412d07639d211e",
+        "size": 1046
+      },
+      "vectors": 4,
+      "outcomes": "old fixture rejected LAB104; current fixture accepted; individually wrong hash and wrong size rejected LAB104"
+    },
+    {
+      "kind": "independent_case_gate",
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B harness/check_cases.py",
+      "cwd": "/private/tmp/madb-chief-round6/madb_lab",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/c05-report-timing-review/cases-002.log",
+        "sha256": "sha256:f35157c294c9f4c63fd4563cd2c790775891161ba3684f8585408aba1d8844ff",
+        "size": 80
+      }
+    },
+    {
+      "kind": "independent_full_lab_repository_gate",
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/check.py",
+      "cwd": "/private/tmp/madb-chief-round6/madb_lab",
+      "exit_code": 0,
+      "tests": 601,
+      "suite_counts": [
+        507,
+        21,
+        18,
+        6,
+        28,
+        12,
+        9
+      ],
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/c05-report-timing-review/full-gate-002.log",
+        "sha256": "sha256:5edf13f62dec1332a2c5ebf4322df31c67d763448d06d13cdda1124ef3186600",
+        "size": 2270
+      },
+      "scope": "Repository/harness checks only; no optional SDK verification flags were supplied"
+    },
+    {
+      "kind": "existing_case_catalog_change_independently_recomputed",
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/c05-report-timing-review/catalog-change-002.json",
+        "sha256": "sha256:1e459162bb57b4f9d32f24b5ba9d42e02a58f9a508d54f7133c4131e30c21c13",
+        "size": 827
+      }
+    },
+    {
+      "kind": "timing_behavior_proof_reused_with_identical_source_hash",
+      "review": {
+        "path": "/private/tmp/madb-chief-round6/c05-report-timing-independent-review-001.json",
+        "sha256": "sha256:47d2de25b01d2af094965713f724be34a85b79ccb8fa554ce722ccdefd4dd7cd",
+        "size": 5758
+      },
+      "independent_control_flow_tests": 9,
+      "baseline_expected_failures": 9,
+      "author_tests_replayed": 4,
+      "whole_module_ast_preservation": true
+    }
+  ],
+  "catalog": {
+    "scope": "Existing Path-sorted relative path+NUL+filebytes catalog rule; not a new domain",
+    "changed_cases": [
+      "cases/packaging/integrity.json"
+    ],
+    "old_f909_catalog_digest": "sha256:128c4100a950ce4ac9be89e354a108b7c6917d00a55ed1d7151a8ea4241f1c08",
+    "new_timing002_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98",
+    "templates": 198,
+    "implication": "All new standard reports must bind the new catalog; old successful C05/L02 reports keep original catalog identity and are not backfilled.",
+    "reviewer_correction": "Initial inline calculation used plain string sorting instead of the existing Path component ordering and failed its old-digest assertion before producing any output. Corrected to PurePosixPath ordering; no product or historical report was changed."
+  },
+  "l02_003_ten_source_inputs_unchanged": true,
+  "required_next_binding": "New clean Lab must produce new C05 and L02 runs on both targets with the new entire case catalog digest. Original successful f909 reports keep their original Lab/catalog identity and are not backfilled or relabeled.",
+  "limits": [
+    "No SDK/device/container execution by this reviewer. Repository gate is not SDK acceptance.",
+    "No new public schema, expected result, step, budget or acceptance condition introduced.",
+    "001 focused review and failed full gate are preserved; earlier successful Mac/Linux C05/L02 reports retain original conclusions.",
+    "Both final sources are unchanged from the already independently reviewed timing behavior; only the required fixture FileRef was added."
+  ]
+}

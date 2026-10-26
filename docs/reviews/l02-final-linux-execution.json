@@ -1,0 +1,202 @@
+{
+  "scope": "final Linux Lab928 evidence export; original GNU-cc failure retained, independent review remains separate",
+  "producer_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+  "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98",
+  "execution_order": [
+    {
+      "name": "c05 GNU cc failed002",
+      "freeze": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/consumer-freeze.json",
+        "sha256": "a8408870f0eea5b791ecc2ce1f14b6ca173da1c3140ca857299a9b6e54ab43bd",
+        "size": 12236
+      },
+      "exit_code": 1,
+      "started_at": "2026-10-26T14:47:49.248545Z",
+      "finished_at": "2026-10-26T14:48:04.630759Z"
+    },
+    {
+      "name": "l02 original configuration passed002",
+      "freeze": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/consumer-freeze.json",
+        "sha256": "01b24cfd1a44ee844b47449a63d0d900f44845f3a9923eac66608270dcda6891",
+        "size": 10305
+      },
+      "exit_code": 0,
+      "started_at": "2026-10-26T14:55:32.543121Z",
+      "finished_at": "2026-10-26T14:56:03.376935Z"
+    },
+    {
+      "name": "c05 single approved Clang-cc configuration passed003",
+      "freeze": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/consumer-freeze.json",
+        "sha256": "8f80b72eb94f485fc0cc5fe27097830baea340ab7da1a09906b2bf0e57ca59f0",
+        "size": 14779
+      },
+      "exit_code": 0,
+      "started_at": "2026-10-26T14:58:56.275176Z",
+      "finished_at": "2026-10-26T14:59:28.940232Z"
+    }
+  ],
+  "reports": [
+    {
+      "suite": "c05",
+      "ref": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/c-to-rust-test.report.json",
+        "sha256": "08d86ac25fe1c875a18d084ad3950f97c6d2136ab140d7191f492abe3751f9af",
+        "size": 12027
+      },
+      "started_at": "2026-10-26T14:59:04.261896Z",
+      "case_count": 7,
+      "statuses": [
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed"
+      ]
+    },
+    {
+      "suite": "c05",
+      "ref": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/c-to-rust.report.json",
+        "sha256": "50cfa8aa9827e02190ae6b9c41c986c54a9ca3f42e66285e5b014511df9ebc6e",
+        "size": 8864
+      },
+      "started_at": "2026-10-26T14:58:58.554016Z",
+      "case_count": 7,
+      "statuses": [
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed",
+        "passed"
+      ]
+    },
+    {
+      "suite": "c05",
+      "ref": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/packaging.report.json",
+        "sha256": "1ef2e1f19213222598873d0e0e58bf81cc7459d79333207111b1c0db6b8568bb",
+        "size": 2854
+      },
+      "started_at": "2026-10-26T14:59:28.827167Z",
+      "case_count": 1,
+      "statuses": [
+        "passed"
+      ]
+    },
+    {
+      "suite": "c05",
+      "ref": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace/rust-to-c.report.json",
+        "sha256": "422be7bc5ddc1d68c4abb926f9ec93ead2355fbcb1837f7649c70f90bd1a3bcd",
+        "size": 5756
+      },
+      "started_at": "2026-10-26T14:59:08.178096Z",
+      "case_count": 4,
+      "statuses": [
+        "passed",
+        "passed",
+        "passed",
+        "passed"
+      ]
+    },
+    {
+      "suite": "l02",
+      "ref": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace/c-to-rust-diagnostics-test.report.json",
+        "sha256": "3abfd31605458f19855cf82705e04dc8acac47a8698156adac16523b3495f6c0",
+        "size": 44844
+      },
+      "started_at": "2026-10-26T14:55:35.815594Z",
+      "case_count": 2,
+      "statuses": [
+        "passed",
+        "passed"
+      ]
+    },
+    {
+      "suite": "l02",
+      "ref": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace/c-to-rust-diagnostics.report.json",
+        "sha256": "417764e5333cde55a3b189b22b9eb296e1de0b054011fa1d9a704702e5adcac0",
+        "size": 66207
+      },
+      "started_at": "2026-10-26T14:55:35.815594Z",
+      "case_count": 3,
+      "statuses": [
+        "passed",
+        "passed",
+        "passed"
+      ]
+    }
+  ],
+  "producer_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-producer-002/producer-freeze.json",
+    "sha256": "cbdd19a385816a3d880c92a5d994f74ef8bb4f25229d7754646ed8c263a80675",
+    "size": 11381
+  },
+  "environment": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-environment/readiness-final.json",
+    "sha256": "8ae8671dc5f1eb7613f2eccba1126c3c8f8f2cff4a37df9bbce9763d9805166b",
+    "size": 13027
+  },
+  "source_bundle": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/source/madb-lab-9286861.bundle",
+    "sha256": "936790fe77366a5302021c27ff3d9a36516f2637e54ccff62e3c44ff3ed50fa8",
+    "size": 801043
+  },
+  "source_archive": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/lab-source.tar",
+    "sha256": "c016d6e6ac59d189feaf90d70d5b7c2abcaaf82cf27dd75c33497881a99c72e8",
+    "size": 3072000
+  },
+  "final_state": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/final-state.json",
+    "sha256": "3b247def4cd0fc0f13b78240be583b7a3a5868398c55fe5bf063919137f06a46",
+    "size": 1536
+  },
+  "actual_linux_input_bytes": {
+    "manifest": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/inputs/recorded-linux-input-bytes.json",
+      "sha256": "441bf82f0f8d6b5e3569548d654c51a00bad6a8acb2b38545567314d5e787637",
+      "size": 237971
+    },
+    "archive": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/inputs/recorded-linux-input-bytes.tar",
+      "sha256": "798790f1cae8d5e0425e4ef502eb8d0798c03eea2a2cce7987f4f3f18acfbe3a",
+      "size": 225105920
+    },
+    "input_count": 193,
+    "unique_image_count": 185
+  },
+  "path_mapping": {
+    "/cache": "/Users/changyue/.cache/madb-l02-round6",
+    "/work/l02-linux-c05-final-002": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/prior-failure-c05-002/workspace",
+    "/work/l02-linux-c05-final-003": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/workspace",
+    "/work/l02-linux-l02-final-002": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/l02/workspace",
+    "/work/l02-linux-formal-fbb-002": "/private/tmp/madb-chief-round6/l02-linux-producer-002/public/workspace",
+    "/work/madb-lab-9286861": {
+      "git_archive": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/c05/lab-source.tar",
+      "revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475"
+    },
+    "recorded Linux /usr /opt and other input paths": {
+      "mapping": "/private/tmp/madb-chief-round6/l02-linux-consumer-002/inputs/recorded-linux-input-bytes.json",
+      "bytes": "read inputs[absolute_linux_path].member from recorded-linux-input-bytes.tar; never substitute host /usr or /opt"
+    }
+  },
+  "configuration_boundaries": [
+    "GNU-cc C05 002 failed at build-script linking with SIGSEGV; 15 cases passed, 1 error and 3 blocked. It was not repaired or relabeled.",
+    "L02 002 passed 5 cases in 2 standard Reports plus 84 engineering observations under its original configuration.",
+    "C05 003 passed 19 cases under one explicitly approved private transparent cc -> fixed Clang PATH selection; system GNU cc remains unchanged.",
+    "Success under Clang is not a recovery claim for GNU cc. The original runner does not emit successful complete link argv; only original Cargo argv/output and exact PATH/symlink/image identities are claimed.",
+    "Actual Linux input archive covers 193 named recorded paths / 185 content images including source/header/tool aliases and post-failure tool queries; it is not a complete implicit OS dependency discovery.",
+    "Target suites are serial; physical host/VM are arm64 and x86_64 guest executes via QEMU7. Performance samples have no acceptance threshold.",
+    "Every older f909 success and new failed report is preserved. No product/Lab code, SDK candidate, budget or assertion changed during these runs."
+  ]
+}

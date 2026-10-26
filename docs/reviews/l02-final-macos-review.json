@@ -1,0 +1,1035 @@
+{
+  "scope": "New final Mac C05 timing-002 and L02 standard-004 actual evidence, fixed public candidates, clean Lab and corrected started_at; read-only review",
+  "created_at": "2026-10-26T14:58:19.567615+00:00",
+  "result": "passed_for_fixed_macos_c05_and_l02_required_case_scopes",
+  "findings": [],
+  "producer_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+  "lab_clean_before_and_after": true,
+  "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98",
+  "candidate_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-formal-macos-001-freeze.json",
+    "sha256": "sha256:e00b3267fb2d49d684d4a5fbadca075c29d84c1f0abc38c4fd8027cd19dca574",
+    "size": 17746
+  },
+  "candidate_files_checked": 90,
+  "candidate_digests": {
+    "c-to-rust": "sha256:9a09515422305c2bf09a452c68d6afe373c27e277b510509f986c55395446959",
+    "c-to-rust-diagnostics": "sha256:8a35b2eaa3fea067996a5a948195183385a70a77127cf877e3aee9892eaab766",
+    "c-to-rust-diagnostics-test": "sha256:06259cae9146b314b78699d68ecf3336a0e2da2f618e23315d8fd209a816b604",
+    "c-to-rust-test": "sha256:ef293174133bed23a04c01fe5dc11229c386ad95eb62f7d80ded6716fd02114f",
+    "rust-to-c": "sha256:6fbb120b599ccf85fd0868aa54b2750283e5fcb208fefcb6c695301f1668e842"
+  },
+  "candidate_provisional": false,
+  "source_reviews_reused_by_exact_bytes": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-case-report-independent-review-003.json",
+      "sha256": "sha256:746c96e941d4f61e81e2d9b0e119f88d4c08ad6369a8d7be520fb19e0735efa6",
+      "size": 11100
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-report-timing-independent-review-002.json",
+      "sha256": "sha256:5c7e78024c94e1428b92b5f9c8e0febdb1f7425f41b4457392c31886860904d6",
+      "size": 6490
+    }
+  ],
+  "source_freezes": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-case-report-prepared-inputs-003.json",
+      "sha256": "sha256:7705cc21b2f4d29a591b4016315742f15c63206b66e694b2e1d2311ac7b34fb4",
+      "size": 4982
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-report-timing-inputs-002.json",
+      "sha256": "sha256:d2715c14ff77bd9dfbf8b209a09865f1eb3bbba3e58527dfe193cf0c94358a7b",
+      "size": 2321
+    }
+  ],
+  "new_reports": [
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/c-to-rust-test.report.json",
+      "sha256": "sha256:f4b715da3e1c741abf6c83094b6bd9c16e08ef25d2a9078a410d4f9a77ad64ae",
+      "size": 12074,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:78f351bf604fe2cdefb819d215e36d3281eff2243a2d042d82431d870ccd14f3",
+        "profile_id": "c05-c-to-rust-test-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "target": "aarch64-apple-darwin"
+      },
+      "identity": {
+        "input_digest": "sha256:015ec1bd385cb930d87791298aa95ff545ea2eb04856366021a92e18a4b64e9c",
+        "tool_digest": "sha256:98e336b57d2fb8a8a2a7f1e41402fa187c3a8628ed2d02ee4c11928311c73de0",
+        "profile_digest": "sha256:78f351bf604fe2cdefb819d215e36d3281eff2243a2d042d82431d870ccd14f3",
+        "candidate_digest": "sha256:ef293174133bed23a04c01fe5dc11229c386ad95eb62f7d80ded6716fd02114f",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:45:22.087773Z",
+      "results": [
+        {
+          "case_id": "c05.c-to-rust-test.operation-close",
+          "case_digest": "sha256:1d815034b735083fdb85dc92b98e8a5b845e1d4893b00eb01f9e43daf48f4fd0",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.source-lease",
+          "case_digest": "sha256:96699f46db5fc6ae08d03ddab2d5f9d57fd373526f30ce7b7b3d823168e047ab",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 2,
+              "released": 2
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.registration-failure",
+          "case_digest": "sha256:12cf0c90dfc1fd5612fcb6f39da9d433ac7f14f5ab76443b58c05f65ba51e818",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.panic",
+          "case_digest": "sha256:610ee2b73d7cd11e65ded79f541bd313e42cfcf28933060b649c097d7a3e36dc",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.diagnostics",
+          "case_digest": "sha256:10ec8b01890219ebb81c3fd317ec258e7d3587f690f762b5b9422c21b5a3cff2",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 5,
+              "released": 5
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 2,
+              "released": 2
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 2,
+              "released": 2
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.token-exhaustion",
+          "case_digest": "sha256:cc60ce427cf7abf76bc422de53485baaf75b69b83af87ebc4a82624306ec3092",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 0,
+              "released": 0
+            }
+          ]
+        },
+        {
+          "case_id": "c05.c-to-rust-test.capacity",
+          "case_digest": "sha256:53f8dfb4f31352eacb4cd913c60a12271cef2912da55729922374223129228aa",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": [
+            {
+              "name": "engines",
+              "before": 0,
+              "after": 0,
+              "created": 1,
+              "released": 1
+            },
+            {
+              "name": "subscriptions",
+              "before": 0,
+              "after": 0,
+              "created": 65,
+              "released": 65
+            },
+            {
+              "name": "callbacks",
+              "before": 0,
+              "after": 0,
+              "created": 65,
+              "released": 65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/c-to-rust.report.json",
+      "sha256": "sha256:77e1416abd1f7b89fda056a4773e6a9bed3af72ac8052cdb1ae5b1397ec02019",
+      "size": 8914,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:9c0ad5e4148d5b72da86642e6dd1296eb70e0920e471f199ac27e166946afa7d",
+        "profile_id": "c05-c-to-rust-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "target": "aarch64-apple-darwin"
+      },
+      "identity": {
+        "input_digest": "sha256:7988a895df272205d29c5e0e91928f7486664ea0d4ff6e4a2d090214a08d2898",
+        "tool_digest": "sha256:98e336b57d2fb8a8a2a7f1e41402fa187c3a8628ed2d02ee4c11928311c73de0",
+        "profile_digest": "sha256:9c0ad5e4148d5b72da86642e6dd1296eb70e0920e471f199ac27e166946afa7d",
+        "candidate_digest": "sha256:9a09515422305c2bf09a452c68d6afe373c27e277b510509f986c55395446959",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:45:18.375483Z",
+      "results": [
+        {
+          "case_id": "c05.c-to-rust.data",
+          "case_digest": "sha256:cd5194fc16b3914e4f9f84ef05c8d404db4d12575c1b061d52ec35a30336dd0c",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.lifecycle",
+          "case_digest": "sha256:9d43cf3dd0f37805c740e4ef14573ed0184ed2d2a42206c61eddbcda41b72899",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.observe",
+          "case_digest": "sha256:1b95d5d757607a443b53dbb98ec59eedc36171038b3e66026cb08c274dac56b0",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.bootstrap",
+          "case_digest": "sha256:78a3b6917208cc34aaf3785d7eb7d1993f2a6626c5dcca0e42221c0e4cdcbe8f",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.abi-mismatch",
+          "case_digest": "sha256:0d4a51690f6a5ea3d66c35cd0a2f4a457250484ae99ad3ad197c23a5d6df6c0c",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.profile-mismatch",
+          "case_digest": "sha256:f40fe2abdc5400db3f0415c65af694345185e7eaece1f8fae0c88762592fe514",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.c-to-rust.missing-bootstrap",
+          "case_digest": "sha256:6dd93a549874670512e22c9722f8d042693583fdaabf19306f472532dee0623e",
+          "status": "passed",
+          "evidence_level": "compiled",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/packaging.report.json",
+      "sha256": "sha256:e2a25e107b93cc97b9b40098c0d1ecea77391ad9650c87b7308beb3682628eef",
+      "size": 2903,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:9c0ad5e4148d5b72da86642e6dd1296eb70e0920e471f199ac27e166946afa7d",
+        "profile_id": "c05-c-to-rust-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "target": "aarch64-apple-darwin"
+      },
+      "identity": {
+        "input_digest": "sha256:7988a895df272205d29c5e0e91928f7486664ea0d4ff6e4a2d090214a08d2898",
+        "tool_digest": "sha256:98e336b57d2fb8a8a2a7f1e41402fa187c3a8628ed2d02ee4c11928311c73de0",
+        "profile_digest": "sha256:9c0ad5e4148d5b72da86642e6dd1296eb70e0920e471f199ac27e166946afa7d",
+        "candidate_digest": "sha256:9a09515422305c2bf09a452c68d6afe373c27e277b510509f986c55395446959",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:45:28.010462Z",
+      "results": [
+        {
+          "case_id": "c05.packaging.integrity",
+          "case_digest": "sha256:c2188b6d0cb90309b62a23923d7a17e2fca8caa0b57c3a867f898b25b647bcc0",
+          "status": "passed",
+          "evidence_level": "static",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/rust-to-c.report.json",
+      "sha256": "sha256:bdb6a2de170b15e4e86b74f6813938a4811acaef50dc0d24eafb07fd4ac28334",
+      "size": 5807,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:57b0ae376e99e52c5c727cf9f7b751ed1f6ab9f568bc5d059ca36e67886fa179",
+        "profile_id": "c05-rust-to-c-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "target": "aarch64-apple-darwin"
+      },
+      "identity": {
+        "input_digest": "sha256:a4682dc5c159800f4365038b8f0dc95a85fd789d299baaca1dfd34966fac4181",
+        "tool_digest": "sha256:98e336b57d2fb8a8a2a7f1e41402fa187c3a8628ed2d02ee4c11928311c73de0",
+        "profile_digest": "sha256:57b0ae376e99e52c5c727cf9f7b751ed1f6ab9f568bc5d059ca36e67886fa179",
+        "candidate_digest": "sha256:6fbb120b599ccf85fd0868aa54b2750283e5fcb208fefcb6c695301f1668e842",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:45:23.350524Z",
+      "results": [
+        {
+          "case_id": "c05.rust-to-c.data",
+          "case_digest": "sha256:e880837d77c6200cc58b9c22aa6e5300e33ac1879b274f6ae7e679d1d4f40a13",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.rust-to-c.bootstrap",
+          "case_digest": "sha256:b6708707afa136abc718b61e67894779db6573570a085ead6bc391a321e47a8d",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.rust-to-c.abi-mismatch",
+          "case_digest": "sha256:9690e8f84b6c8736aec40ab64ae178c8f67bfec987525535a9b3b252a2b8fef9",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "c05.rust-to-c.profile-mismatch",
+          "case_digest": "sha256:e5c0be523018afafba8675ac956b3214c6e47e24f6d977a78557d6e82588d547",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-standard-004/c-to-rust-diagnostics-test.report.json",
+      "sha256": "sha256:a28ca9162dda2f7167c5f77102e573d94803573234d75b9bd17ba4cab3d4e2e4",
+      "size": 44838,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:846a64fffb29e9526e0126d1c7b2ecee735789c2726c4096be181aa6b55ca973",
+        "profile_id": "c05-c-to-rust-diagnostics-test-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "target": "aarch64-apple-darwin"
+      },
+      "identity": {
+        "input_digest": "sha256:54513e4b06f613d4d907a15addd4354e8ec4c3f81739487108815cfd2a973a6c",
+        "tool_digest": "sha256:98e336b57d2fb8a8a2a7f1e41402fa187c3a8628ed2d02ee4c11928311c73de0",
+        "profile_digest": "sha256:846a64fffb29e9526e0126d1c7b2ecee735789c2726c4096be181aa6b55ca973",
+        "candidate_digest": "sha256:06259cae9146b314b78699d68ecf3336a0e2da2f618e23315d8fd209a816b604",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:45:28.418025Z",
+      "results": [
+        {
+          "case_id": "l02.c-to-rust-diagnostics-test.diagnostics-isolation",
+          "case_digest": "sha256:26e2986ad9a1f08785072a3620e94c2e53ba9abb3f6104015f03c9b130d20d1c",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics-test.diagnostics-capacity",
+          "case_digest": "sha256:59208a0e811edfeb6df23186c34c120ada8bdbd8d1fea3429d1d6f6c44a26e8e",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-standard-004/c-to-rust-diagnostics.report.json",
+      "sha256": "sha256:cbbcac830673b987e3d44cda892592fb18b6ead8196ad25a0e8567a37fe36fc0",
+      "size": 66050,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:6584ea41c56472e889fb1e2b1ffdca71a9923f30882b6a88e7b72e6e33597ba5",
+        "profile_id": "c05-c-to-rust-diagnostics-aarch64-apple-darwin",
+        "route": "RUST-C-ABI",
+        "target": "aarch64-apple-darwin"
+      },
+      "identity": {
+        "input_digest": "sha256:ee773a7aed8bc35241b3e7f7f5bb0e6a654b4fbd0efccebef2407c69283db75e",
+        "tool_digest": "sha256:98e336b57d2fb8a8a2a7f1e41402fa187c3a8628ed2d02ee4c11928311c73de0",
+        "profile_digest": "sha256:6584ea41c56472e889fb1e2b1ffdca71a9923f30882b6a88e7b72e6e33597ba5",
+        "candidate_digest": "sha256:8a35b2eaa3fea067996a5a948195183385a70a77127cf877e3aee9892eaab766",
+        "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "case_catalog_digest": "sha256:5c74de3764114dc4b82a3a63a506a9de50b2bd8c5c88cd76aeb29dc143557b98"
+      },
+      "started_at": "2026-10-26T14:45:28.418025Z",
+      "results": [
+        {
+          "case_id": "l02.c-to-rust-diagnostics.checked-constructor",
+          "case_digest": "sha256:96122aa71ec643ef1a215820ea05efdea4682894644a684f4334c597e7f39ace",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics.diagnostics",
+          "case_digest": "sha256:7329d7d6447a4076af5583129fe2e0021beb9b0d47f506f53b16d0a5855effe3",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics.disabled-protection",
+          "case_digest": "sha256:fa347be32b85d14c1538aa073b58d45abf4af3ff1d4dfd46da0f999b1f96fbd6",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "resource_observations": []
+        }
+      ]
+    }
+  ],
+  "new_l02_local_report": {
+    "path": "/private/tmp/madb-chief-round6/l02-macos-standard-004/report.json",
+    "sha256": "sha256:0ad8aa24a93503860a42d225a24d23166e335fa3bd0047e4d721656f80865e30",
+    "size": 926860
+  },
+  "case_index": {
+    "path": "/private/tmp/madb-chief-round6/l02-macos-standard-004/case-inputs.json",
+    "sha256": "sha256:0dbab83edb39bb7a6be26e5bc470376d9668afa4588e9b2acd1506cdf470e24f",
+    "size": 2686
+  },
+  "checks": {
+    "public_schema": "24 templates + 24 actual instances + 6 reports match unchanged public common/case/report schemas",
+    "case_digests": "24 existing case-domain projections recomputed independently; catalog binds all 198 actual definition files using first_route raw path+NUL+bytes rule",
+    "required_sets": "C05 7+7+4+1 and L02 exactly 3+2 under their own two diagnostic selectors; no cross-header borrowed evidence",
+    "lab_source": {
+      "tracked_files": 481,
+      "l02_source_archive_members": 12,
+      "l02_ten_sources_unchanged": true,
+      "timing_three_sources_match_freeze002": true
+    },
+    "c05": {
+      "standard_reports": 4,
+      "cases": 19,
+      "target_run_cases": 17,
+      "expected_missing_bootstrap_link_rejection": 1,
+      "static_packaging_rejection": 1,
+      "raw_command_records": 40,
+      "attachments_checked": 38,
+      "raw_resource_balance_rows": 21,
+      "temporary_roots_removed": [
+        "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-lab-c05-lqneu7un",
+        "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-lab-c05-qogglitt",
+        "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-lab-c05-s9cwhdbx"
+      ]
+    },
+    "l02": {
+      "standard_reports": 2,
+      "cases": 5,
+      "observations": 84,
+      "sdk_processes": 56,
+      "unique_sdk_pids": 56,
+      "stub_only_processes": 24,
+      "export_sets": 4,
+      "raw_logs": 113,
+      "compile_records": 12,
+      "unique_actual_dependency_paths": 161,
+      "actual_sdk_byte_refs": 372,
+      "attachment_references": 585,
+      "unique_attachments": 121,
+      "actual_mismatch_pairs": [
+        [
+          "c-to-rust",
+          "c-to-rust-test",
+          3,
+          29758,
+          "logs/104.json"
+        ],
+        [
+          "c-to-rust",
+          "c-to-rust-diagnostics-test",
+          2,
+          29771,
+          "logs/107.json"
+        ],
+        [
+          "c-to-rust-diagnostics",
+          "c-to-rust-diagnostics-test",
+          3,
+          29785,
+          "logs/110.json"
+        ],
+        [
+          "c-to-rust-diagnostics",
+          "c-to-rust-test",
+          2,
+          29795,
+          "logs/113.json"
+        ]
+      ],
+      "resource_observations": "Empty numerical arrays retained; exact raw close/drain/context/zero-create assertions support cleanup, no invented counts",
+      "temporary_output_empty": true
+    },
+    "performance": "Eight groups of five observed timing samples; not a realtime bound or certified benchmark comparison"
+  },
+  "run_start_evidence": {
+    "outer": {
+      "path": "/private/tmp/madb-chief-round6/macos-final-execution-004.json",
+      "sha256": "sha256:a6bf10b97abde0301d9fe60424f3270edfab811c8d630898d6f0ca3fa33dbcb5",
+      "size": 5074
+    },
+    "all_report_starts_inside_outer_bounds": true,
+    "c05": {
+      "frozen_runner": {
+        "sha256": "sha256:137ad33d1e8feaaae1acc1d7b6fec8931e82e074642ed6fbdb5873e3c519b8bc",
+        "size": 30846
+      },
+      "frozen_clock_tests": {
+        "sha256": "sha256:85e4ae9f980f95f33b09040bbefb9e3b01ac1193e62459e907718b895c7a11b1",
+        "size": 7028
+      },
+      "single_entry_capture_lines": {
+        "run_group": 293,
+        "integrity_case": 373
+      },
+      "three_explicit_capture_propagation_calls": [
+        368,
+        322,
+        396
+      ],
+      "report_serializer_recaptures_clock": false,
+      "report_file_correlations": [
+        {
+          "report": "c-to-rust-test.report.json",
+          "started_at": "2026-10-26T14:45:22.087773Z",
+          "first_retained_action_record": "c-to-rust-test/public-symbols.json",
+          "first_action_file_time": {
+            "birthtime": "2026-10-26T14:45:22.159581+00:00",
+            "mtime": "2026-10-26T14:45:22.159636+00:00",
+            "birthtime_ns": 1793025922159581184,
+            "mtime_ns": 1793025922159636425
+          },
+          "earliest_case_file_birthtime": 1793025922.0884676,
+          "report_file_time": {
+            "birthtime": "2026-10-26T14:45:23.350433+00:00",
+            "mtime": "2026-10-26T14:45:23.350489+00:00",
+            "birthtime_ns": 1793025923350432768,
+            "mtime_ns": 1793025923350489294
+          }
+        },
+        {
+          "report": "c-to-rust.report.json",
+          "started_at": "2026-10-26T14:45:18.375483Z",
+          "first_retained_action_record": "c-to-rust/public-symbols.json",
+          "first_action_file_time": {
+            "birthtime": "2026-10-26T14:45:18.910141+00:00",
+            "mtime": "2026-10-26T14:45:18.910209+00:00",
+            "birthtime_ns": 1793025918910141440,
+            "mtime_ns": 1793025918910209120
+          },
+          "earliest_case_file_birthtime": 1793025918.376576,
+          "report_file_time": {
+            "birthtime": "2026-10-26T14:45:22.087665+00:00",
+            "mtime": "2026-10-26T14:45:22.087728+00:00",
+            "birthtime_ns": 1793025922087664896,
+            "mtime_ns": 1793025922087727793
+          }
+        },
+        {
+          "report": "packaging.report.json",
+          "started_at": "2026-10-26T14:45:28.010462Z",
+          "first_retained_action_record": "integrity.json",
+          "first_action_file_time": {
+            "birthtime": "2026-10-26T14:45:28.015563+00:00",
+            "mtime": "2026-10-26T14:45:28.015601+00:00",
+            "birthtime_ns": 1793025928015562496,
+            "mtime_ns": 1793025928015601505
+          },
+          "earliest_case_file_birthtime": 1793025928.0158226,
+          "report_file_time": {
+            "birthtime": "2026-10-26T14:45:28.022251+00:00",
+            "mtime": "2026-10-26T14:45:28.022308+00:00",
+            "birthtime_ns": 1793025928022251008,
+            "mtime_ns": 1793025928022308423
+          }
+        },
+        {
+          "report": "rust-to-c.report.json",
+          "started_at": "2026-10-26T14:45:23.350524Z",
+          "first_retained_action_record": "rust-to-c/build-lock.json",
+          "first_action_file_time": {
+            "birthtime": "2026-10-26T14:45:23.476264+00:00",
+            "mtime": "2026-10-26T14:45:23.476328+00:00",
+            "birthtime_ns": 1793025923476263936,
+            "mtime_ns": 1793025923476328191
+          },
+          "earliest_case_file_birthtime": 1793025923.350959,
+          "report_file_time": {
+            "birthtime": "2026-10-26T14:45:28.010343+00:00",
+            "mtime": "2026-10-26T14:45:28.010417+00:00",
+            "birthtime_ns": 1793025928010342656,
+            "mtime_ns": 1793025928010417388
+          }
+        }
+      ],
+      "qualification": "Frozen source captures once as the first effective entry statement before definitions/copy/compile/target, and passes that value through all report returns. The previously independently reviewed controlled-clock tests cover this exact source. Outer suite timestamps bound all four starts; local birth/mtime corroborates ordering of retained records only, not independently signed exact action start times. No timing inference relies on mtime alone."
+    },
+    "l02": {
+      "started_at": "2026-10-26T14:45:28.418025Z",
+      "case_index": {
+        "birthtime": "2026-10-26T14:45:28.424844+00:00",
+        "mtime": "2026-10-26T14:45:28.424877+00:00",
+        "birthtime_ns": 1793025928424843776,
+        "mtime_ns": 1793025928424877110
+      },
+      "first_compile": {
+        "path": "logs/007.json",
+        "duration_ns": 18270208,
+        "timestamps": {
+          "birthtime": "2026-10-26T14:45:28.447446+00:00",
+          "mtime": "2026-10-26T14:45:28.447497+00:00",
+          "birthtime_ns": 1793025928447446272,
+          "mtime_ns": 1793025928447497465
+        }
+      },
+      "first_sdk_process": {
+        "path": "logs/018.json",
+        "duration_ns": 1719350500,
+        "timestamps": {
+          "birthtime": "2026-10-26T14:45:30.620823+00:00",
+          "mtime": "2026-10-26T14:45:30.620951+00:00",
+          "birthtime_ns": 1793025930620823040,
+          "mtime_ns": 1793025930620950687
+        }
+      },
+      "control_flow": {
+        "Reports_construction_line": 588,
+        "first_compile_consumer_call_line": 606,
+        "helper": "Reports captures started_at then writes 5 exact instances and index synchronously before returning; main enters compile/target only after return"
+      },
+      "qualification": "Local filesystem birth/mtime and logged monotonic durations corroborate frozen control flow; not an external signed timestamp or independent wall-clock run-start attestation."
+    },
+    "no_report_creation_time_substitution": true
+  },
+  "sdkroot": {
+    "actual": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+    "outer_launcher": {
+      "path": "/private/tmp/madb-chief-round6/run_macos_final_004.py",
+      "sha256": "sha256:9346acd7bd5d885f167dfd4a8e8e8298c7ccaeb0b5612f4f7bbf092dad66e781",
+      "size": 4310
+    },
+    "tools_before_and_after": {
+      "clang": {
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+        "size": 124676976
+      },
+      "cargo": {
+        "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/cargo",
+        "sha256": "6d576d8058f8ca643e8fce55b64ee3c614ba64c9da2e536bae843e6a2e1f3951",
+        "size": 32182376
+      },
+      "nm": {
+        "path": "/usr/bin/nm",
+        "sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9",
+        "size": 118640
+      }
+    },
+    "analysis": "The failed run logs concretely show missing stdlib.h at four C compilation points. The successful outer launcher obtains xcrun macosx SDKROOT and passes it to subprocesses; frozen first_route preserves SDKROOT into its isolated environment. Candidate/producer/Lab/tool identities are unchanged. No retrospective unrecorded environment values are asserted."
+  },
+  "prior_failed_attempt_preserved": {
+    "outer": {
+      "path": "/private/tmp/madb-chief-round6/macos-final-execution-003.json",
+      "sha256": "sha256:66cec6cfdfef4233506dcc6dcfefd54abc1d38fb9faf16ef57975c55db0c1e87",
+      "size": 1975
+    },
+    "reports": [
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/c-to-rust-test.report.json",
+        "sha256": "sha256:c8c76d267b0a5314f450e0ab8cffa3eab9552ae238056152b37d05afb35d6598",
+        "size": 10375,
+        "status_counts": {
+          "error": 1,
+          "blocked": 6
+        },
+        "started_at": "2026-10-26T14:43:13.353384Z"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/c-to-rust.report.json",
+        "sha256": "sha256:005984c0f4cec0baf4b80a5eb9d145690f338cbca5796ec39c745f76baf3a5dc",
+        "size": 10201,
+        "status_counts": {
+          "error": 1,
+          "blocked": 6
+        },
+        "started_at": "2026-10-26T14:43:13.146955Z"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/packaging.report.json",
+        "sha256": "sha256:e84d442efae1bf3bf4ac5a2fa1fdea7cc4088119c8b6c129b60e396713041bb1",
+        "size": 2903,
+        "status_counts": {
+          "passed": 1
+        },
+        "started_at": "2026-10-26T14:43:15.096761Z"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/rust-to-c.report.json",
+        "sha256": "sha256:b54bee5526cdbb17b5611c5b43b1a577918eae45e5f13c91195300c298df38fe",
+        "size": 5733,
+        "status_counts": {
+          "passed": 2,
+          "error": 2
+        },
+        "started_at": "2026-10-26T14:43:13.454122Z"
+      }
+    ],
+    "status_counts": {
+      "error": 4,
+      "blocked": 12,
+      "passed": 3
+    },
+    "actual_compile_errors": [
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/c-to-rust/compile-normal.json",
+        "sha256": "sha256:e83bf99fc0fe461834a1ef551f809e937b805c5aaf96057e85d6e06be0a117fa",
+        "size": 1093,
+        "error": "fatal error: 'stdlib.h' file not found"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/c-to-rust-test/compile-normal.json",
+        "sha256": "sha256:09e29b02498f71edb03cd7753d5173662c36146938055105f1696fdf2b21a081",
+        "size": 1126,
+        "error": "fatal error: 'stdlib.h' file not found"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/rust-to-c/abi-mismatch-compile.json",
+        "sha256": "sha256:ca54f532e141ba90df04253dfc810fbc46cbe73a1df275cb958517a2b6aea009",
+        "size": 766,
+        "error": "fatal error: 'stdlib.h' file not found"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/c05-macos-timing-001/rust-to-c/profile-mismatch-compile.json",
+        "sha256": "sha256:ca54f532e141ba90df04253dfc810fbc46cbe73a1df275cb958517a2b6aea009",
+        "size": 766,
+        "error": "fatal error: 'stdlib.h' file not found"
+      }
+    ],
+    "l02": "not started; no suite entry",
+    "historical_bytes_preserved": true
+  },
+  "prior_successful_reports_preserved": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-standard-002/report.json",
+      "sha256": "sha256:bfade38535be0d0e79ad5d3833345100d6d53ea1ca70dc869b24382edf879997",
+      "size": 926646
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-standard-002/c-to-rust-diagnostics.report.json",
+      "sha256": "sha256:a13f44da7147b972fd5376a6207f2bfefeab0667b3ba6fc8a3b68a8e2ca6a604",
+      "size": 66050
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-standard-002/c-to-rust-diagnostics-test.report.json",
+      "sha256": "sha256:e375b42d5bd0a3960241a0b9de6473a721a1c5c099414ffb2919a8833dd86a3f",
+      "size": 44838
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-formal-lab-001/report.json",
+      "sha256": "sha256:0d7f483c13c04dc8d0ef31f5c18d4f24b86b501cf697ff2fb93861fc137086d7",
+      "size": 924974
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/c-to-rust-test.report.json",
+      "sha256": "sha256:d8e359cc20cf796afdfde5129be8f2dfb971f5a2a6f53c8b0e66c22fd5894bff",
+      "size": 11996
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/c-to-rust.report.json",
+      "sha256": "sha256:9139d70b27f74ce4ebc3781a4cc43bcef763327fcdc0b3367b17825f06d1c72d",
+      "size": 8838
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/packaging.report.json",
+      "sha256": "sha256:4377673ae6f09bb087d1bc34a0ed738b39542cb29d6c7dc7bd9d4ba571554e86",
+      "size": 2825
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/c05-macos-formal-lab-001/rust-to-c.report.json",
+      "sha256": "sha256:585911bfd05d4177cd0e5fc64448486cce821601a113630e250b48e518c5fb94",
+      "size": 5729
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "independent_actual_byte_and_runtime_semantics",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/audit_actual_bytes.py",
+        "sha256": "sha256:bf90c7ca8d392b06bca27c9a9eafe07a5b30766371c1d32e3b17c9d7da5bc7db",
+        "size": 14765
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/actual-bytes-audit.log",
+        "sha256": "sha256:a8d81fd2a0b1f7473b80dc8e4fc422e8c4d3ad047b45bd36c9b7ffdd78a0c400",
+        "size": 234
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/actual-bytes-audit.json",
+        "sha256": "sha256:600f308d49a3b5115ef79c84d07c5ba74d19a6140620dbb13d21636cc94fb284",
+        "size": 5145
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_c05_raw_and_outer_sdkroot",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/audit_c05_and_outer.py",
+        "sha256": "sha256:7061214d9362972d616bec0fb996c61e5d3f11293803acd7514944bf6db7ebca",
+        "size": 9484
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/c05-and-outer-audit.log",
+        "sha256": "sha256:26292ff70a8d95bea84b5f3646d94bf2fd97abfbb0d5dc2bac11fc508918a763",
+        "size": 216
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/c05-and-outer-audit.json",
+        "sha256": "sha256:1a521d1df2eb4241561f56d2025026230596013a4d3e89573c8b247bb5f16068",
+        "size": 6921
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "additional_replay_of_reviewed_lab_parsers_not_independent_oracle",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/replay_parsers.py",
+        "sha256": "sha256:0c3fcff14ed6d4f11a3730c8ac622ced6579b60dc8af211e010e17bc07f72386",
+        "size": 1483
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/parser-replay.log",
+        "sha256": "sha256:bef35978b64a07509edc1f106b04b932a9293feb547029896b65b83f6512e9b9",
+        "size": 12
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/parser-replay.json",
+        "sha256": "sha256:a62328d385e51e2570f1be81ee0e543731d17a1dfc9eea4e36c519833e2ebb10",
+        "size": 9405
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_case_schema_digest_timing_cross_review",
+      "reviewer": "/root/c07_reconcile/linux_static_review",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/case_timing_cross_review.py",
+        "sha256": "sha256:f5fba2797bfc3051c0fce1bac8ad8e5ee130e684ae6318e99228a5657c03db6d",
+        "size": 20838
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/case-timing-cross-review.json",
+        "sha256": "sha256:ca254aeba6f55db35d99c3268f67f9eddacdea1ce09a719006c17ff5bf6448e6",
+        "size": 20893
+      }
+    }
+  ],
+  "reviewer_only_script_corrections": {
+    "notes": {
+      "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/reviewer-notes.txt",
+      "sha256": "sha256:9f8a8c53cb2097988fb25cb49851587ae5b6ab85b06301a8f65a5da44548f655",
+      "size": 670
+    },
+    "original_attempts": [
+      {
+        "script": {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/audit_c05_and_outer-001.py",
+          "sha256": "sha256:dcc1a11c7634e492a72f0aa0aff0b671248ad14da8051be058db560fdf192dff",
+          "size": 9239
+        },
+        "log": {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/c05-and-outer-audit-001.log",
+          "sha256": "sha256:675772a0a4f8250a085d3ec7094af20c6579cb1f62b194459e7a2f4f7ca7bb74",
+          "size": 355
+        }
+      },
+      {
+        "script": {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/audit_c05_and_outer-002.py",
+          "sha256": "sha256:13e512e56241298e3214fa264e579841dcfe43c75ad907a5d7b0c61182454f7d",
+          "size": 9217
+        },
+        "log": {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/c05-and-outer-audit-002.log",
+          "sha256": "sha256:23e7b390e73c93619529bc15c04c26598277e8684a1bdb45b4f85142c26ea759",
+          "size": 408
+        }
+      },
+      {
+        "script": {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/audit_c05_and_outer-003.py",
+          "sha256": "sha256:eb012222003e625ac68d9474c6ab436dfaf9ba29d399b05d1517f7e1001b0887",
+          "size": 9456
+        },
+        "log": {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-final-review-004/c05-and-outer-audit-003.log",
+          "sha256": "sha256:cf2df25f184c39d530a5c4832ead767228d7eaacf991e737341fb544c248fc03",
+          "size": 310
+        }
+      }
+    ],
+    "scope": "Reviewer key/shape/path parsing corrections only; no input/SDK/source/report mutation"
+  },
+  "limits": [
+    "No SDK/compiler/device/container rerun by reviewer.",
+    "This proves only the named Mac candidates, target and required cases; Linux final run is reviewed separately.",
+    "No full L02 delivery, publication or GitHub Actions claim.",
+    "C05 public environment remains clang/cargo, outer nm separate; no claim of a complete implicit linker/tool dependency closure.",
+    "Started_at is proven by frozen control flow and outer run record with filesystem corroboration; no external signed timestamp or claimed personal witnessing.",
+    "C cleanup assertions, successful reaping and removed per-run temp paths are evidenced; no independent systemwide live process census.",
+    "Timing samples are observations only, not a realtime guarantee or comparative certified benchmark.",
+    "All older failed, blocked, not-started and successful reports remain unchanged with their original identity."
+  ]
+}

@@ -1,0 +1,443 @@
+{
+  "scope": "Final read-only independent audit of the actual new Linux C05 and L02 executions on the fixed emulated x86_64 guest; no reviewer target rerun",
+  "created_at": "2026-10-26T14:17:04.952413+00:00",
+  "result": "passed_for_fixed_emulated_linux_l02_and_c05_case_scopes",
+  "findings": [],
+  "producer_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "lab_revision": "f909400fef89c6fe323f2b015dd662551c058fbb",
+  "physical_execution": {
+    "host": "macOS arm64",
+    "colima_vm": "Linux aarch64",
+    "guest": "Linux x86_64 via QEMU 7.0.0 binfmt",
+    "qemu_sha256": "bb39691198d944c52c142c9cd4cb7a5b0cdcb7146a3b04c60c4b34ddee5aebe9"
+  },
+  "identity_evidence": {
+    "producer_freeze": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-producer-002/producer-freeze.json",
+      "sha256": "sha256:cbdd19a385816a3d880c92a5d994f74ef8bb4f25229d7754646ed8c263a80675",
+      "size": 11381
+    },
+    "consumer_freeze": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/consumer-freeze.json",
+      "sha256": "sha256:807f20c0b73dece1783d5ef25a7b2a2391d70c4ab81819b45636ef5ed85e380a",
+      "size": 11442
+    },
+    "host_export": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/host-export.json",
+      "sha256": "sha256:0144e873501303b38fd3be0a8230a529c3a6aacac703082732fcd88876a12214",
+      "size": 2486
+    },
+    "lab_source_archive": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/lab-source.tar",
+      "sha256": "sha256:f21b1810801379b4979183d7c0064262d81d10a1dbc9353b29af63306dd3b697",
+      "size": 3061760
+    },
+    "environment_readiness": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-environment/readiness-final.json",
+      "sha256": "sha256:8ae8671dc5f1eb7613f2eccba1126c3c8f8f2cff4a37df9bbce9763d9805166b",
+      "size": 13027
+    },
+    "source_preparation_review": {
+      "path": "/private/tmp/madb-chief-round6/l02-case-report-independent-review-003.json",
+      "sha256": "sha256:746c96e941d4f61e81e2d9b0e119f88d4c08ad6369a8d7be520fb19e0735efa6",
+      "size": 11100
+    }
+  },
+  "new_l02_reports": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/l02/workspace/c-to-rust-diagnostics.report.json",
+      "sha256": "sha256:01f6c99dc9039bb2b86a44236e73b7947aeda21e646756f9d57ffabfb1289144",
+      "size": 66207,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:55cf599920eb2a0e7cfc9451173dc53a2b17906a85e43a94bddf430afcfdb728",
+        "profile_id": "c05-c-to-rust-diagnostics-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:0592444609b9cf22887c514de7e01f557ddfe28edb36cdfe9a081aac79eadda6",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:55cf599920eb2a0e7cfc9451173dc53a2b17906a85e43a94bddf430afcfdb728",
+        "candidate_digest": "sha256:6caeb2dce347fe270744b62743ae5c9f514f09eea00be4ac2924106d71e2849c",
+        "lab_revision": "f909400fef89c6fe323f2b015dd662551c058fbb",
+        "case_catalog_digest": "sha256:128c4100a950ce4ac9be89e354a108b7c6917d00a55ed1d7151a8ea4241f1c08"
+      },
+      "started_at": "2026-10-26T13:58:13.616920Z",
+      "cases": [
+        {
+          "case_id": "l02.c-to-rust-diagnostics.checked-constructor",
+          "case_digest": "sha256:7ed5be9512384bf814dfa45af5f4c6532b92a396012dc8abccae6e7c8a1e8e2f",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "duration_ms": 86,
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics.diagnostics",
+          "case_digest": "sha256:26f9b30c53b3f5ee494150b562b837b904e8990e7167a96e5a742378d7addc82",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "duration_ms": 138,
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics.disabled-protection",
+          "case_digest": "sha256:4f0fb3cbd02f9f5b880cb38f757ecf8507a0dea0835574cd351f2eed792672d5",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "duration_ms": 48,
+          "resource_observations": []
+        }
+      ]
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/l02/workspace/c-to-rust-diagnostics-test.report.json",
+      "sha256": "sha256:a8125125b6a4941fd177a0fcb41194849cbcb7e888960785d44140ede77e9923",
+      "size": 44844,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:b312a17b7bbaccf52fa59dc64e6f88af77c546497a11bff3723a6da3e77d7184",
+        "profile_id": "c05-c-to-rust-diagnostics-test-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "identity": {
+        "input_digest": "sha256:0a9a0d6c0bde38cc6a8a1bae0356fc07170a1f869ff5332c4fb50074b81432b8",
+        "tool_digest": "sha256:c516e23bcd63c7e80b5908444ee6be2eebc8a05dce36a9d5be0ede781ed1739d",
+        "profile_digest": "sha256:b312a17b7bbaccf52fa59dc64e6f88af77c546497a11bff3723a6da3e77d7184",
+        "candidate_digest": "sha256:e69793477c3320ac4f4fa87bbac83e8da93e8e62d9aefcd38ab6ac09098d6b4a",
+        "lab_revision": "f909400fef89c6fe323f2b015dd662551c058fbb",
+        "case_catalog_digest": "sha256:128c4100a950ce4ac9be89e354a108b7c6917d00a55ed1d7151a8ea4241f1c08"
+      },
+      "started_at": "2026-10-26T13:58:13.616920Z",
+      "cases": [
+        {
+          "case_id": "l02.c-to-rust-diagnostics-test.diagnostics-isolation",
+          "case_digest": "sha256:f499dd791ab4499becca498d5a41f3c6666b8e69a93d5644fdc6722cf09b108c",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "duration_ms": 177,
+          "resource_observations": []
+        },
+        {
+          "case_id": "l02.c-to-rust-diagnostics-test.diagnostics-capacity",
+          "case_digest": "sha256:762c25a744d7220f5c6a28576c1a21de875fae5136daea5b967038b5ab743c0e",
+          "status": "passed",
+          "evidence_level": "target-run",
+          "cleanup": "complete",
+          "duration_ms": 23,
+          "resource_observations": []
+        }
+      ]
+    }
+  ],
+  "new_c05_reports": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/c05/workspace/c-to-rust-test.report.json",
+      "sha256": "sha256:75a6faf08d07f10473531fcc2be4118b0aa32a8382faf5df79ddc59b6595ea73",
+      "size": 12027,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:9310d3a2a93f14d0f8c043d9fc43934cb1e9b4235a06f7ca2162e2c0aae5bd74",
+        "profile_id": "c05-c-to-rust-test-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "cases": 7
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/c05/workspace/c-to-rust.report.json",
+      "sha256": "sha256:9d2e2909ff7e63f61befe1dcb3eb15c620e75e984f24598a530b42f45f9b72a8",
+      "size": 8864,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:4ae9c1a37a7a576ee1c709e4d52eb17cde8eda4cc0c9e4c2d906d786f0b4897a",
+        "profile_id": "c05-c-to-rust-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "cases": 7
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/c05/workspace/packaging.report.json",
+      "sha256": "sha256:774ff409b57431017b09df11ae81f1e14c4140f9a99ba07bf8d7f875f7eee854",
+      "size": 2854,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:4ae9c1a37a7a576ee1c709e4d52eb17cde8eda4cc0c9e4c2d906d786f0b4897a",
+        "profile_id": "c05-c-to-rust-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "cases": 1
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/c05/workspace/rust-to-c.report.json",
+      "sha256": "sha256:d687bcd016c37e12da8f0ff1d3d192aa2a08fe70979145d4d50d686c5874ffe7",
+      "size": 5756,
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:f069286a5d71f243798ca10c497c03de0df838f4bfefe7cb87a26b337d414dca",
+        "profile_id": "c05-rust-to-c-x86_64-unknown-linux-gnu",
+        "route": "RUST-C-ABI",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      "cases": 4
+    }
+  ],
+  "new_local_l02_report": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/l02/workspace/report.json",
+    "sha256": "sha256:f023133e7666cf51f2e004c5ae112cde7ab7f1ced748ed3de246963389cf6734",
+    "size": 659532
+  },
+  "pre_run_case_index": {
+    "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/l02/workspace/case-inputs.json",
+    "sha256": "sha256:de6cee72fc4aedf18bba723c5070c330e1e7ae85a9b21225c4081775cc37f657",
+    "size": 2686
+  },
+  "checks": {
+    "candidate": "Five independent candidate pins and manifest/lock/profile/provenance bindings agree; public tar has 90 regular files + 24 directories, matching original inventory and host mirror bytes/modes/closure; producer fbb with provisional=false",
+    "source": "Recorded Linux clean producer/Lab identities, exact f909 source archive versus git archive, 480 Lab files, 003 ten source inputs, and 12-member consumer source archive all match",
+    "l02_public_reports": {
+      "schemas": "5 templates + 5 actual instances + 2 reports pass public case/report/common schemas",
+      "case_digests": "All five independently recomputed with existing madb.case/1 LF canonical projection",
+      "catalog_digest": "sha256:128c4100a950ce4ac9be89e354a108b7c6917d00a55ed1d7151a8ea4241f1c08",
+      "catalog_rule": "existing sorted case path + NUL + bytes SHA; no new domain",
+      "required_set": "exact 3+2 cases across the two independently pinned diagnostic selectors",
+      "attachment_references": 590,
+      "unique_attachment_files": 122
+    },
+    "l02_actual_execution": {
+      "raw_logs": 114,
+      "compilations": 12,
+      "observations": 84,
+      "real_sdk_processes": 56,
+      "unique_sdk_pids": 56,
+      "helper_stub_processes": 24,
+      "exact_export_checks": 4,
+      "all_commands_exit_zero_without_timeout": true,
+      "four_real_wrong_library_pairs": [
+        [
+          "c-to-rust",
+          "c-to-rust-test",
+          3,
+          322242,
+          "logs/105.json"
+        ],
+        [
+          "c-to-rust",
+          "c-to-rust-diagnostics-test",
+          2,
+          322355,
+          "logs/108.json"
+        ],
+        [
+          "c-to-rust-diagnostics",
+          "c-to-rust-diagnostics-test",
+          3,
+          322454,
+          "logs/111.json"
+        ],
+        [
+          "c-to-rust-diagnostics",
+          "c-to-rust-test",
+          2,
+          322567,
+          "logs/114.json"
+        ]
+      ]
+    },
+    "original_linux_bytes": {
+      "named_paths": 188,
+      "independent_contents": 182,
+      "unique_recorded_compile_dependency_paths": 115,
+      "actual_public_probes": 4,
+      "public_probe_inputs_each": 40,
+      "public_receipt_per_profile": {
+        "clang_resource_headers": 15,
+        "native_system_headers": 22,
+        "producer_only_rust_archives": 27
+      },
+      "binding": "Every native system-header receipt has exactly one actual public -M dependency with matching basename/hash/size. Resource-relative paths bind exactly. Additional POSIX consumer deps are separate, recorded inputs. Actual bytes read from content-addressed Linux archive, never host /usr/opt substitutes."
+    },
+    "c05_original_case_scope": {
+      "case_count": 19,
+      "reports": 4,
+      "target_run": 17,
+      "expected_missing_bootstrap_link_rejection": 1,
+      "static_artifact_mismatch_rejection": 1,
+      "public_schema_and_independent_case_catalog_digests": "passed",
+      "attachment_references": 38,
+      "resource_balance_rows": 21
+    },
+    "cleanup": "Five L02 complete statuses are supported by exact SDK C close/release and drain/context-guard assertions, exit0/no-timeout and final source/tool/candidate closure. L02 numeric resource observations remain empty. C05 separately records 21 balanced numerical rows. Recorded post-run process snapshot shows only the environment QEMU sleep service, and all three task temporary trees are empty; snapshot supplements case evidence.",
+    "performance": "Eight groups of five actual bounded timing samples, under QEMU emulation; no timing threshold, physical x86 performance claim or cross-host benchmark comparison"
+  },
+  "tool_identity_distinction": {
+    "producer_and_l02_nm": {
+      "version": "LLVM nm 18.1.3",
+      "sha256": "sha256:3f85dd567c2806f2c031e317871e7145f858072fc9595aba4dc33d2e3a671402"
+    },
+    "c05_nm": {
+      "version": "GNU nm 2.42",
+      "sha256": "sha256:3708df3d7ce16e2c1dcdcd722784ae382d4d582276a71ab7bbe2d542f5621202",
+      "binding": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-consumer-001/c05-nm-binding.json",
+        "sha256": "sha256:2e5f8482aec417fcda14ebfc83d312e33ef5e52516e88c0e20763cf462e26fe7",
+        "size": 2024
+      },
+      "scope": "Separate surrounding before/after identity plus actual C05 symbol-command logs and archived original image; not retroactively inserted into public environment"
+    },
+    "public_environment_limit": "C05 original report.environment lists only Clang and Cargo. It is not a complete table of every runtime tool. L02 additionally stores its fixed LLVM inspector in local evidence; no existing report was rewritten."
+  },
+  "pre_run_and_legacy_time_boundaries": {
+    "l02_started_at": "2026-10-26T13:58:13.616920Z",
+    "l02_proof": "Actual cases/index stored before -M compilation and first SDK process; independently hashed unchanged. Original guest tar PAX times/raw durations and frozen synchronous control flow agree. Host mirror stat/birthtime was not used.",
+    "cross_review_timing": {
+      "started_at": "2026-10-26T13:58:13.616920Z",
+      "case_index_guest_archive_mtime_seconds": "1793023093.7162802",
+      "first_observations": {
+        "logs/003.json": {
+          "guest_archive_mtime_seconds": "1793023093.8773332",
+          "command_duration_ns": 159996850
+        },
+        "logs/008.json": {
+          "guest_archive_mtime_seconds": "1793023095.8289895",
+          "command_duration_ns": 160042806
+        },
+        "logs/019.json": {
+          "guest_archive_mtime_seconds": "1793023102.366329",
+          "command_duration_ns": 11512075
+        }
+      },
+      "source_control_flow": {
+        "Reports_construction_line": 588,
+        "first_compile_consumer_call_line": 606
+      },
+      "qualification": "Original guest tar PAX mtime plus logged monotonic durations corroborates frozen synchronous definition-before-compile/target control flow. No guest birthtime was supplied; no host stat timestamps used. This is not an external signed run-start attestation."
+    },
+    "c05_legacy": "Existing first_route started_at is report creation time. The field remains unchanged and is not reinterpreted as pre-execution evidence.",
+    "limit": "Local archived timestamps plus control flow provide finite corroboration, not an external signed time witness."
+  },
+  "evidence": [
+    {
+      "kind": "independent_producer_cross_review",
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/producer-cross-review.json",
+        "sha256": "sha256:c311105332fdd31d798bce12065fcc7fd509259dbd93e6f6cdaed61fd4b97bf4",
+        "size": 8385
+      }
+    },
+    {
+      "kind": "independent_public_case_report_cross_review",
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/case-cross-review.json",
+        "sha256": "sha256:d073088265367c5ff6caee9a2b737effd5ede2dcf12ac88330bdb912eb024c5a",
+        "size": 13927
+      }
+    },
+    {
+      "kind": "independent_actual_raw_semantics_and_archives",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/audit_raw_outputs.py",
+        "sha256": "sha256:6afdef27a48a9fe2f6503b6aa2810a983ddfa429a59f350f4cf21bd9831d0ce1",
+        "size": 16056
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/raw-output-audit.log",
+        "sha256": "sha256:b6a0d97ace4a5e9205b4ac952c1c3509ed3b9a8e209745d889b824867eb078f0",
+        "size": 215
+      },
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/raw-output-audit.json",
+        "sha256": "sha256:44c3c36914967d8809dfd451b45162ab1632bd9cb3a4610eb27ff7b62c0f5d94",
+        "size": 6260
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_original_linux_bytes",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/audit_recorded_inputs.py",
+        "sha256": "sha256:5b2a2c5d04b7df82c159f6cdfe31e7cb5931c22182c228c40a98280244ec419c",
+        "size": 6947
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/recorded-input-audit.log",
+        "sha256": "sha256:7da1f83a807f7af2eb00a75dfc84678b9281c41f5a11c1224358f546fb9a6d59",
+        "size": 212
+      },
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/recorded-input-audit.json",
+        "sha256": "sha256:0de3a6f2487c2a4919f7434a8def3652b881749af5855bced2958db01ef91e6a",
+        "size": 1901
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "additional_replay_of_previously_reviewed_lab_parsers_not_an_independent_oracle",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/replay_parsers.py",
+        "sha256": "sha256:1759338af493d47eebe08b8016139ead89b705682e6a5492ed1ddb54394b364a",
+        "size": 1539
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/parser-replay.log",
+        "sha256": "sha256:bef35978b64a07509edc1f106b04b932a9293feb547029896b65b83f6512e9b9",
+        "size": 12
+      },
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/parser-replay.json",
+        "sha256": "sha256:a447febccd36d608a6e4b59051c02305aec67cd8c5d9ea1c41ddac2da40fe5fc",
+        "size": 9405
+      },
+      "observations": 84,
+      "exit_code": 0
+    },
+    {
+      "kind": "readiness_metadata_and_referenced_evidence",
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/environment-review.json",
+        "sha256": "sha256:9ffed099cd4417cb8fdd4773064c1642cac547d35a4d319f1d4095c4c60d9b45",
+        "size": 4503
+      },
+      "receipt_files": 13
+    }
+  ],
+  "intermediate_pending_resolved": "raw-output-audit was written before the separate schema/timing and external-input-byte reviews completed. Its pending list is retained historically; both items are resolved by the final cross-review and recorded-input-audit cited here.",
+  "reviewer_corrections": [
+    {
+      "scope": "private review script only",
+      "description": "First raw audit script had a newline quoting syntax error before execution; only that script was corrected. Original private script/log preserved. No source or report changes.",
+      "note": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/reviewer-notes.txt",
+        "sha256": "sha256:1215714fde567e6d91f5f922eb8960f6d98f0b67825783f0ab7463a6583d297b",
+        "size": 199
+      },
+      "original_script": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/audit_raw_outputs-001.py",
+        "sha256": "sha256:d43a2e9900773e1bede572818b87644e337ee13b89a20c2e0e9cb98c2a9a94d5",
+        "size": 16052
+      },
+      "original_log": {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-standard-review-001/raw-output-audit-001.log",
+        "sha256": "sha256:2046f141bfc75eb4564eb7544c6713835020ea5bf333e4879e066312dd930616",
+        "size": 391
+      }
+    }
+  ],
+  "limits": [
+    "QEMU 7.0.0 emulated x86_64 guest executes on Linux aarch64 VM/macOS arm64 physical host; this is not physical x86_64 performance evidence.",
+    "No SDK, compiler, device or container command was run by this auditor; actual original suite executions were performed by the assigned environment owner.",
+    "Only the explicitly recorded Linux tool/SDK/header/Python input set was byte-audited, not every implicit OS dynamic dependency.",
+    "C05 legacy time and public tool-table limitations remain explicit; no historical schema field or old result was backfilled.",
+    "The partial/space-stopped 001 producer run, tools-ready/pending snapshots and earlier environment failures remain historical; none were converted into passed runs.",
+    "No claim of full L02 package completion, other targets, physical hardware certification, publication, or GitHub Actions success.",
+    "Original product, Lab, source candidates and all original reports remain unchanged; this review only creates temporary independent artifacts."
+  ]
+}

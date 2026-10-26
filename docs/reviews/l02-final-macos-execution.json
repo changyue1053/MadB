@@ -1,0 +1,120 @@
+{
+  "producer_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "lab_revision": "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+  "tools_before_and_after": {
+    "clang": {
+      "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+      "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+      "size": 124676976
+    },
+    "cargo": {
+      "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/cargo",
+      "sha256": "6d576d8058f8ca643e8fce55b64ee3c614ba64c9da2e536bae843e6a2e1f3951",
+      "size": 32182376
+    },
+    "nm": {
+      "path": "/usr/bin/nm",
+      "sha256": "b8763cf250e607a778bb4603cecb5b90338814d0a3dfcba0d57b1de242f610e9",
+      "size": 118640
+    }
+  },
+  "consumer_sdkroot": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+  "suites": [
+    {
+      "suite": "c05",
+      "command": [
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+        "-B",
+        "scripts/verify_first_route.py",
+        "--candidates",
+        "/private/tmp/madb-chief-round6/l02-formal-macos-001",
+        "--producer-revision",
+        "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+        "--lab-revision",
+        "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "--clang",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "--cargo",
+        "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/cargo",
+        "--output",
+        "/private/tmp/madb-chief-round6/c05-macos-timing-002"
+      ],
+      "output": "/private/tmp/madb-chief-round6/c05-macos-timing-002",
+      "started_at": "2026-10-26T14:45:18.181177Z",
+      "ended_at": "2026-10-26T14:45:28.053461Z",
+      "exit_code": 0,
+      "reports": [
+        {
+          "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/c-to-rust-test.report.json",
+          "sha256": "f4b715da3e1c741abf6c83094b6bd9c16e08ef25d2a9078a410d4f9a77ad64ae",
+          "cases": 7,
+          "started_at": "2026-10-26T14:45:22.087773Z"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/c-to-rust.report.json",
+          "sha256": "77e1416abd1f7b89fda056a4773e6a9bed3af72ac8052cdb1ae5b1397ec02019",
+          "cases": 7,
+          "started_at": "2026-10-26T14:45:18.375483Z"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/packaging.report.json",
+          "sha256": "e2a25e107b93cc97b9b40098c0d1ecea77391ad9650c87b7308beb3682628eef",
+          "cases": 1,
+          "started_at": "2026-10-26T14:45:28.010462Z"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/c05-macos-timing-002/rust-to-c.report.json",
+          "sha256": "bdb6a2de170b15e4e86b74f6813938a4811acaef50dc0d24eafb07fd4ac28334",
+          "cases": 4,
+          "started_at": "2026-10-26T14:45:23.350524Z"
+        }
+      ]
+    },
+    {
+      "suite": "l02",
+      "command": [
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+        "-B",
+        "scripts/verify_l02.py",
+        "--candidates",
+        "/private/tmp/madb-chief-round6/l02-formal-macos-001",
+        "--producer-revision",
+        "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+        "--lab-revision",
+        "9286861babe9b0f3d65a8ac7cc8f87469dc63475",
+        "--candidate-digest",
+        "c-to-rust=sha256:9a09515422305c2bf09a452c68d6afe373c27e277b510509f986c55395446959",
+        "--candidate-digest",
+        "c-to-rust-test=sha256:ef293174133bed23a04c01fe5dc11229c386ad95eb62f7d80ded6716fd02114f",
+        "--candidate-digest",
+        "c-to-rust-diagnostics=sha256:8a35b2eaa3fea067996a5a948195183385a70a77127cf877e3aee9892eaab766",
+        "--candidate-digest",
+        "c-to-rust-diagnostics-test=sha256:06259cae9146b314b78699d68ecf3336a0e2da2f618e23315d8fd209a816b604",
+        "--output",
+        "/private/tmp/madb-chief-round6/l02-macos-standard-004"
+      ],
+      "output": "/private/tmp/madb-chief-round6/l02-macos-standard-004",
+      "started_at": "2026-10-26T14:45:28.170083Z",
+      "ended_at": "2026-10-26T14:45:39.320849Z",
+      "exit_code": 0,
+      "reports": [
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-standard-004/c-to-rust-diagnostics-test.report.json",
+          "sha256": "a28ca9162dda2f7167c5f77102e573d94803573234d75b9bd17ba4cab3d4e2e4",
+          "cases": 2,
+          "started_at": "2026-10-26T14:45:28.418025Z"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/l02-macos-standard-004/c-to-rust-diagnostics.report.json",
+          "sha256": "cbbcac830673b987e3d44cda892592fb18b6ead8196ad25a0e8567a37fe36fc0",
+          "cases": 3,
+          "started_at": "2026-10-26T14:45:28.418025Z"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "nm is a separately recorded verifier tool; public C05 environment retains its existing clang/cargo fields.",
+    "These are the explicitly executed candidate/target scopes, not whole L02 acceptance or CI."
+  ]
+}

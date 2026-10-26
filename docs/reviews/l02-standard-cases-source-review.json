@@ -1,0 +1,216 @@
+{
+  "scope": "L02 case/report source preparation 003: independent Linux finite-header binding and Mac preservation review; no SDK/container execution",
+  "created_at": "2026-10-26T13:51:44.753266+00:00",
+  "result": "no_remaining_blocking_findings_for_003_source_scope",
+  "findings": [],
+  "source_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-case-report-prepared-inputs-003.json",
+    "sha256": "sha256:7705cc21b2f4d29a591b4016315742f15c63206b66e694b2e1d2311ac7b34fb4",
+    "size": 4982
+  },
+  "working_copy": "/private/tmp/madb-chief-round6/madb_lab",
+  "source_files": {
+    "consumers/c/l02_diagnostics.c": {
+      "sha256": "sha256:372bc4ba62ef3858d1a57457694a5e5af13b5a58c127c8ed8420eea4fcd8d6d7",
+      "size": 28524
+    },
+    "consumers/c/README-l02.md": {
+      "sha256": "sha256:c1ebc49df939158fd6aadee6c6c3607dee11388167a7be2effd832492452fbd9",
+      "size": 7111
+    },
+    "scripts/verify_l02.py": {
+      "sha256": "sha256:dec74e6b98288e27dc31edc3c2a1d007fbfc82f5bfe127ed3c18713a338ff811",
+      "size": 47734
+    },
+    "scripts/test_l02.py": {
+      "sha256": "sha256:d75a44385c0834c7da338f78fca92d588f247b999503a8c489965b06cea793c2",
+      "size": 35778
+    },
+    "harness/l02_reports.py": {
+      "sha256": "sha256:69ad535f61c9b44d461cc8e15ee43cc5046120d0498314bbcb9cff14b957fd57",
+      "size": 18408
+    },
+    "cases/l02/c-to-rust-diagnostics/checked-constructor.json": {
+      "sha256": "sha256:8d99cae4d962544721624c805e6cb0c7f43bf163e4a17db4b3afef10934998fa",
+      "size": 8427
+    },
+    "cases/l02/c-to-rust-diagnostics/diagnostics.json": {
+      "sha256": "sha256:924af1d7949c708148203a6bb940b64400d3c463d2cb519c00ed8768e9b5d63b",
+      "size": 11245
+    },
+    "cases/l02/c-to-rust-diagnostics/disabled-protection.json": {
+      "sha256": "sha256:dbdad39ef401acff6087a5feba73440b9f9fc1aa8af95b01695ac84f3ec97b10",
+      "size": 5820
+    },
+    "cases/l02/c-to-rust-diagnostics-test/diagnostics-capacity.json": {
+      "sha256": "sha256:611b15e1ce6db39aff5835dad6bd11a429c1e42be4d9e676421633563214395f",
+      "size": 5291
+    },
+    "cases/l02/c-to-rust-diagnostics-test/diagnostics-isolation.json": {
+      "sha256": "sha256:208c438fb0859fda4d15cdc25fc72a1cd3fc1b9260f05603bd791edcaa7da01a",
+      "size": 9595
+    }
+  },
+  "snapshot": "/private/tmp/madb-chief-round6/l02-case-report-review/source-003",
+  "source_verified_after_tests": true,
+  "only_changed_since_002": [
+    "consumers/c/README-l02.md",
+    "scripts/test_l02.py",
+    "scripts/verify_l02.py"
+  ],
+  "prior_classification_review": {
+    "path": "/private/tmp/madb-chief-round6/l02-case-report-independent-review-002.json",
+    "sha256": "sha256:8f71b442a8c7f8865cafcba46e9181fe928c85bce8a677249b9132cfc902f2c5",
+    "size": 7331
+  },
+  "evidence": [
+    {
+      "kind": "independent_output_shape_and_semantics_mutations",
+      "checks": 522,
+      "mismatches": 0,
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/madb-chief-round6/l02-case-report-review/check_output_shapes.py /private/tmp/madb-chief-round6/l02-case-report-review/shapes-independent-003.json",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/check_output_shapes.py",
+        "sha256": "sha256:f7242c64dc40c4cbe617c6afeef370e5dbf059fd8e3ef84e78bd46daba696f22",
+        "size": 3818
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/shapes-independent-003.json",
+        "sha256": "sha256:cf6e6057f0bbe84b96a29cc03e8883d1130a216ea6f8cb05c9e5c57a0dbcea4e",
+        "size": 115170
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/shapes-independent-003.log",
+        "sha256": "sha256:1559bd794681cc6c18f1dad9995d06b72ad74eb3d060ec9f75f9df7c0000c1fa",
+        "size": 33
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_case_report_contract_control_flow",
+      "tests": 16,
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/madb-chief-round6/l02-case-report-review/check_contract.py",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/check_contract.py",
+        "sha256": "sha256:8bec73d2a5035ae4a9d0f020f217c1c0a3f149a2eb23385ebb867ec350835339",
+        "size": 10288
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/contract-final-003.log",
+        "sha256": "sha256:a1a9e845c7b322b4a2fc0ecccb4b2e8811b3e46b44110a6efba9a6ce97c08b9b",
+        "size": 1901
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "author_unit_suite_independently_replayed",
+      "tests": 28,
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/test_l02.py",
+      "cwd": "/private/tmp/madb-chief-round6/madb_lab",
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/author-unit-003.log",
+        "sha256": "sha256:0b880518cf3d0c639b3cb7dd36871f12fac370dcbc2598d6935135440431f2b3",
+        "size": 127
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_linux_finite_file_and_control_flow",
+      "groups": 7,
+      "checks": 49,
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/madb-chief-round6/l02-case-report-review/check_linux_003.py",
+      "script": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/check_linux_003.py",
+        "sha256": "sha256:767f91a41278748b3689b2b4e643e39aac37395d5e8d79eefbe2c699a181f68b",
+        "size": 10955
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/linux-independent-003.json",
+        "sha256": "sha256:c3dba2c0d8a0db9eb33f86b7e76472be857bebf4c1a000a58a5360fbd6990585",
+        "size": 10590
+      },
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/linux-independent-003.log",
+        "sha256": "sha256:f6213326ce1fb44d054b2bb9fb065066d889cae213a8bb98cce548f476835766",
+        "size": 974
+      },
+      "exit_code": 0
+    },
+    {
+      "kind": "independent_static_cross_review",
+      "reviewer": "/root/c07_reconcile/linux_static_review",
+      "groups": 6,
+      "result": {
+        "path": "/private/tmp/madb-chief-round6/l02-case-report-review/linux-static/result.json",
+        "sha256": "sha256:7c60333128b30062c0f2086fed49250c1e780e3ea80acb75b068685d49a787f5",
+        "size": 2009
+      },
+      "sdk_execution": false
+    }
+  ],
+  "reviewed_invariants": [
+    {
+      "name": "Mac preservation",
+      "evidence": "sdk_binding, check_selection, inspect_output, check_output_structure, inspect_exports, run_probe and case_results AST match 002. Darwin flags remain exact isysroot/resource-dir/arm64-apple-macosx14.0; environment values retained. Compiler depfile extraction preserves old allowed paths and required source checks."
+    },
+    {
+      "name": "Linux target and tool admission",
+      "evidence": "Only actual Linux+x86_64+glibc branch; selector target and profile id fixed; deployment native-host; compiler dictionary exactly GNU target/C11/three warnings without Apple deployment option. Actual Clang and nm image hashes must equal each independently pinned candidate. Final checks retain images, source, installed/original candidate and executable identities."
+    },
+    {
+      "name": "public receipt closure",
+      "evidence": "Public probe includes both installed headers and requires both in actual -M output. Bounded resource/system roots only. Each native .h name/digest/size must match exactly one actual system dependency; only explicitly named lib*.rlib receipts are producer-only. Missing, extra, ambiguous, changed, duplicate, traversal, unknown-category and symlink-escape cases reject. Two same-basename files with distinct hashes correctly disambiguate."
+    },
+    {
+      "name": "separate POSIX consumer closure",
+      "evidence": "Consumer depfile records extra actual POSIX headers within finite roots without claiming producer receipt coverage. The compiler-observed file bytes are checked immediately after compilation and again at final closure. Public-header probe source/depfile/all dependencies are separately pinned and checked at final closure."
+    },
+    {
+      "name": "formal report semantics unchanged",
+      "evidence": "Helper, five templates and C fixture bytes unchanged from 002. Exact 3+2 selector cases remain frozen before compilation/first target; existing case/catalog digest semantics and started_at source retained. Complete typed failed postconditions remain failed; missing/wrong-shaped evidence remains error; unused cases blocked. No numeric resources invented; helper stubs and actual SDK observations remain separate."
+    }
+  ],
+  "public_linux_metadata_read": {
+    "toolchain": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-environment/public-inputs-001/toolchain.json",
+      "sha256": "sha256:4f8a106b023a6b542775dfe3d18b84cb8569938734d5944c4cd4e0c09734c9ad",
+      "size": 21764
+    },
+    "profile": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-environment/public-inputs-001/profile.json",
+      "sha256": "sha256:ef85012364de6bc1e4e298fee7014973dad0eca6168d74f26feb813783dfe88f",
+      "size": 3472
+    },
+    "headers": [
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-environment/public-inputs-001/include/madb_rust.h",
+        "sha256": "sha256:6f4b55c202400672e0dadca1374bf5b5d94434113ef07270acebca0486db1544",
+        "size": 3502
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-linux-environment/public-inputs-001/include/madb_rust_client.h",
+        "sha256": "sha256:87dd3ae5558801ba1bd66c7e810b7cf877ebea3eb7331c02ad528ba74215e37e",
+        "size": 2095
+      }
+    ],
+    "environment_readiness": {
+      "path": "/private/tmp/madb-chief-round6/l02-linux-environment/readiness-final.json",
+      "sha256": "sha256:8ae8671dc5f1eb7613f2eccba1126c3c8f8f2cff4a37df9bbce9763d9805166b",
+      "size": 13027
+    },
+    "receipt_entries": {
+      "clang_resource_headers": 15,
+      "native_system_headers": 22,
+      "producer_rust_archives": 27
+    },
+    "role": "public metadata/pin and finite mapping review only; actual Linux image/header/SDK execution remains a later target check",
+    "backend_used_by_tests_or_implementation": false
+  },
+  "limits": [
+    "No compiler, native SDK, emulator, Docker/container or device was executed for this review. Synthetic finite-file tests prove refusal/control flow only.",
+    "No final Mac or Linux standard target pass is inferred. Final clean Lab must really run all five cases against each pinned target candidate with actual tool/header bytes.",
+    "Environment readiness describes emulated x86_64 guest separately from aarch64 VM and macOS host; it is not SDK/Lab acceptance.",
+    "Old C05 reports and old L02 local observations are untouched and not upgraded; prior review records and failures remain preserved.",
+    "All reviewed product/Lab files remained unchanged; only independent temporary review artifacts were created."
+  ]
+}
