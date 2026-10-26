@@ -1,11 +1,43 @@
 --- a/Boundary.ets.in
 +++ b/Boundary.ets.in
-@@ -90,7 +90,50 @@
+@@ -90,7 +90,82 @@
    }
  }
  
 +// TEST-SUPPORT VARIANT ONLY. The ordinary facade contains no fault controls.
  class Session {
++  private testReceiptProbe: (() => void) | undefined = undefined;
++
++  testBeforeRuntimeReceipt(probe: () => void): void {
++    this.requireOpen();
++    if (this.testReceiptProbe !== undefined || typeof probe !== 'function') {
++      throw new BoundaryError('InvalidArgument');
++    }
++    this.testReceiptProbe = probe;
++  }
++  private testBeforeReceipt(): boolean {
++    const probe: (() => void) | undefined = this.testReceiptProbe;
++    // Retire the reference before external code runs. The original tick still
++    // owns the close control; no receipt or new admission has been granted.
++    this.testReceiptProbe = undefined;
++    try {
++      if (probe !== undefined && probe() !== undefined) {
++        // Void assignability does not exclude Promise/thenable returns. Never
++        // await, inspect or invoke a returned object.
++        throw new BoundaryError('InvalidArgument');
++      }
++      return true;
++    } catch (error) {
++      // User failures must not enter nativeError(), which reads native codes.
++      // In particular, undefined cannot occupy the ordinary failed sentinel.
++      let reason: Error = new BoundaryError('CallbackFailure');
++      try { if (error instanceof Error) { reason = error as Error; } }
++      catch (_classificationError) { reason = new BoundaryError('CallbackFailure'); }
++      this.fail(reason);
++      this.rejectClose();
++      return false;
++    }
++  }
 +  private testSettlementProbe: (() => void) | undefined = undefined;
 +  private testSettlementFault: boolean = false;
 +  private testAcceptedResolve: number = 0;
@@ -51,7 +83,7 @@
    private readonly runtime: string;
    private engine: ResourceRecord | undefined = undefined;
    private readonly subscriptions: Map<string, ResourceRecord> = new Map<string, ResourceRecord>();
-@@ -249,10 +292,12 @@
+@@ -249,10 +324,12 @@
              const snapshot: Snapshot = { value: copy.value, text: copy.text };
              waiter.signalled = true;
              resolve(snapshot);
@@ -64,7 +96,7 @@
            }
          }, reject);
          this.waiters.set(id, waiter);
-@@ -285,11 +330,12 @@
+@@ -285,11 +362,12 @@
        return new Promise<void>((resolve, reject) => {
          const waiter: Waiter = new Waiter(id, record, false, (copy: NativeCopy) => {
            this.retire(record, copy.status);
@@ -78,7 +110,11 @@
            }
          }, reject);
          this.waiters.set(id, waiter);
-@@ -460,6 +506,8 @@
+@@ -457,9 +535,12 @@
+       }
+       const frame: number[] = this.refreshClosures();
+       if (this.closeResolve !== undefined && this.waiters.size === 0 && physicalRuntimeAck(frame)) {
++        if (!this.testBeforeReceipt()) { return; }
          const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);
          if (!physicalRuntimeAck(receipt)) { throw new BoundaryError('BridgeFailure'); }
          this.closed = true;
@@ -87,19 +123,21 @@
          if (this.engine !== undefined) { this.retire(this.engine, 0); }
          if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
          const resolve: () => void = this.closeResolve;
-@@ -511,6 +559,8 @@
+@@ -511,6 +592,9 @@
    private fail(reason: Error): void {
      if (this.failed !== undefined) { return; }
      this.failed = reason;
++    this.testReceiptProbe = undefined;
 +    this.testSettlementProbe = undefined;
 +    this.testSettlementFault = false;
      if (this.timer >= 0) { clearTimeout(this.timer); this.timer = -1; }
      this.waiters.forEach((waiter: Waiter) => {
        if (!waiter.signalled) { waiter.signalled = true; waiter.reject(reason); }
-@@ -526,12 +576,31 @@
+@@ -526,12 +610,32 @@
  }
  
  class RuntimeHandle implements Runtime {
++  testBeforeRuntimeReceipt(probe: () => void): void { this.session.testBeforeRuntimeReceipt(probe); }
 +  testObserve(): number[] { return this.session.testObserve(); }
 +  testMemory(): number[] { return this.session.testMemory(); }
 +  testExportKey(): string { return this.session.testExportKey(); }
@@ -128,7 +166,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -545,6 +614,7 @@
+@@ -545,6 +649,7 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class OperationHandle implements Operation {
@@ -136,7 +174,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -553,6 +623,11 @@
+@@ -553,6 +658,11 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  class SubscriptionHandle implements Subscription {
@@ -148,7 +186,7 @@
    private readonly session: Session;
    private readonly record: ResourceRecord;
    constructor(session: Session, record: ResourceRecord) { this.session = session; this.record = record; }
-@@ -560,3 +635,52 @@
+@@ -560,3 +670,54 @@
    close(): Promise<void> { return this.session.closeResource(this.record); }
  }
  export function openRuntime(): Runtime { return new RuntimeHandle(new Session()); }
@@ -201,3 +239,5 @@
 +export function testSubscriptionState(subscription: Subscription): number[] {
 +  return checkedSubscription(subscription).testState();
 +}
++
++export function testBeforeRuntimeReceipt(runtime: Runtime, probe: () => void): void { checkedRuntime(runtime).testBeforeRuntimeReceipt(probe); }

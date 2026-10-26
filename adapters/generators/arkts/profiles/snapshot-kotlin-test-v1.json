@@ -900,6 +900,32 @@
             "tag": "number"
           }
         }
+      },
+      {
+        "name": "testBeforeRuntimeReceipt",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          },
+          {
+            "name": "probe",
+            "type": {
+              "tag": "callback",
+              "params": [],
+              "returns": {
+                "tag": "void"
+              }
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
       }
     ]
   },
@@ -1495,6 +1521,29 @@
         "cancellation": "none",
         "cancellation_confirmation": "not-supported"
       }
+    },
+    "testBeforeRuntimeReceipt": {
+      "kind": "sync",
+      "public_id": "madb.c09.kotlin.testBeforeRuntimeReceipt.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "slots": {
+        "parameter.probe": {
+          "ownership": "shared",
+          "synchronous_callback": true,
+          "reentrant": true,
+          "threading": "runtime-environment",
+          "context_owner": "caller",
+          "stop": "request-and-drain",
+          "keep_alive": "source-lease"
+        }
+      },
+      "lifetime": "Checked Runtime Session retains one synchronous void probe before close. At genuine physical ACK with no waiters, the slot clears before invocation and receipt consumption; failure clears it. No native gate, owner or waiter. Nonundefined return rejects InvalidArgument without awaiting/inspecting the returned object; callback throw follows the existing failed-close path with receipt unconsumed. User Error identity is preserved without property inspection; non-Error throws or Error-classification traps normalize to existing CallbackFailure. This test-only catch rejects the original close before receipt consumption and keeps the ordinary tick finally."
     }
   },
   "slots": {
@@ -1544,7 +1593,8 @@
     "SavedCalls retains actual generated JavaScript function references without allocating another native owner. Runtime remains the lifecycle owner; stale and retired calls exercise actual native gates.",
     "The one-shot settlement hook is retained by its checked Runtime until invocation or close/fail. Synchronous callback return does not imply call-scoped retention.",
     "Diagnostic CSV values preserve full integer identity strings and UINT64_MAX unknown sentinels. Observations are bounded windows, not an unbounded cumulative counter guarantee.",
-    "Native memory metrics exclude Kotlin managed heap, VM memory, allocator overhead and RSS; original retired wrapper listener state is pure JavaScript and not a GC claim."
+    "Native memory metrics exclude Kotlin managed heap, VM memory, allocator overhead and RSS; original retired wrapper listener state is pure JavaScript and not a GC claim.",
+    "C09 test-only before-receipt probe uses the existing physical ACK predicate and original close owner; open registration once, Closing/Closed/failed admission preserved. Declaration callback must return void; runtime rejects every nonundefined return, including Promise and thenable."
   ],
   "error_channel": {
     "id": "ArkTSError",

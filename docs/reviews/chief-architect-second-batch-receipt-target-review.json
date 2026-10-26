@@ -1,0 +1,428 @@
+{
+  "scope": "independent final receipt-window evidence after integration; old C07 conclusions unchanged",
+  "producer_revision": "a31ac4bb9bbb7f7270e69d3848011eaeb986e981",
+  "lab_revision": "a6e04ce3e4863edc767b8279182b5b203b30ee51",
+  "targets": [
+    {
+      "route": "c",
+      "companion": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-c-001/report.json",
+        "sha256": "sha256:87e39a32c6ab99913f2d219ac88afcccc57ec73860dbfe267555dceacf84982a",
+        "size": 342515
+      },
+      "ordinary": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-c-ordinary-001/report.json",
+        "sha256": "sha256:dcbaa88583f18c3b42599216724c16798063a43b25be1fc4ea2c224ee8dad0d7",
+        "size": 93332
+      },
+      "independent_review": {
+        "path": "/private/tmp/madb-chief-round2/final-evidence-c.json",
+        "sha256": "sha256:d351f689a3f758e6bde94426912b8a3258f696454163c127a1134793866b7578",
+        "size": 31616
+      },
+      "candidate_digest": "sha256:00085cf5f94eb42e361e1ac49d7e81c20fd8c022ce4f52b5dfaedadd47af6ee4",
+      "ordinary_digest": "sha256:97c6eafb18e211e63070dc86c20f44dcc42a40aec3afd70a7f9d794c43129ede",
+      "target": {
+        "api": "23",
+        "version": "OpenHarmony-6.1.0.115",
+        "abi": "arm64-v8a",
+        "device_type": "phone",
+        "release_type": "Release",
+        "target": "127.0.0.1:5557",
+        "target_kind": "emulator"
+      },
+      "scenarios": {
+        "normal": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throws": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-promise": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-thenable": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-code-getter": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-undefined": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-proxy": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "full-waiters": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "failed-close-before-guard": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "failed-close-after-accepted": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "settling-reentry": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "worker-env-exit": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        }
+      },
+      "ordinary_sdk_cleanup": "ordinary close API completed; no companion-only resource counter claim",
+      "lab_revision": "a6e04ce3e4863edc767b8279182b5b203b30ee51",
+      "lab_source_digest": "sha256:a29bbd6af16bbbd368cf3167f29debbe059de585f3261cc00d67a6f9af1d9e29"
+    },
+    {
+      "route": "cpp",
+      "companion": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-cpp-001/report.json",
+        "sha256": "sha256:ddbdd01878e6373ff04e5c1f5d566a9895d29de09069adc7326a5d06701faed5",
+        "size": 342871
+      },
+      "ordinary": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-cpp-ordinary-001/report.json",
+        "sha256": "sha256:f37faac2ea542f002a0219fe35f9df698bac34b70e51e626dc60ff8e5c4b1e12",
+        "size": 93424
+      },
+      "independent_review": {
+        "path": "/private/tmp/madb-chief-round2/final-evidence-cpp.json",
+        "sha256": "sha256:55c50e7a0c770a3af531fe37cc7b807a541877d6b2be2b94f7c59844a0784e62",
+        "size": 31702
+      },
+      "candidate_digest": "sha256:de241e02de3feef6a2419293317f39baa969beecf5d9cd909779d2328316557e",
+      "ordinary_digest": "sha256:c75d11256bdab804906af3b8ccacf6f8bbd1287903a719618f02f661a0e16021",
+      "target": {
+        "api": "23",
+        "version": "OpenHarmony-6.1.0.115",
+        "abi": "arm64-v8a",
+        "device_type": "phone",
+        "release_type": "Release",
+        "target": "127.0.0.1:5557",
+        "target_kind": "emulator"
+      },
+      "scenarios": {
+        "normal": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throws": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-promise": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-thenable": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-code-getter": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-undefined": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-proxy": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "full-waiters": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "failed-close-before-guard": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "failed-close-after-accepted": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "settling-reentry": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "worker-env-exit": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        }
+      },
+      "ordinary_sdk_cleanup": "ordinary close API completed; no companion-only resource counter claim",
+      "lab_revision": "a6e04ce3e4863edc767b8279182b5b203b30ee51",
+      "lab_source_digest": "sha256:a29bbd6af16bbbd368cf3167f29debbe059de585f3261cc00d67a6f9af1d9e29"
+    },
+    {
+      "route": "rust",
+      "companion": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-rust-001/report.json",
+        "sha256": "sha256:0f8cf614ed858e46c996056c10ccedc8df5adca94d586a7fd0fbc363fb7fb1d2",
+        "size": 357237
+      },
+      "ordinary": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-rust-ordinary-001/report.json",
+        "sha256": "sha256:08f660d3dddf41a40d014872f7a53a160208912555c4e92844307e5a96d088eb",
+        "size": 107509
+      },
+      "independent_review": {
+        "path": "/private/tmp/madb-chief-round2/final-evidence-rust.json",
+        "sha256": "sha256:37c1b824c4733bcc633130dc3b42ef655095757d19a7b0d8c0326a0392d22cf7",
+        "size": 31761
+      },
+      "candidate_digest": "sha256:4246ef2fcdeb70a32198de9d28ae537d2767bbb19abd9e6b73b6ff15a9712139",
+      "ordinary_digest": "sha256:869476c661f2d589ef1fc610e0140f6593a8a1bfedb3c5278e89b5b5e0ee9d19",
+      "target": {
+        "api": "23",
+        "version": "OpenHarmony-6.1.0.115",
+        "abi": "arm64-v8a",
+        "device_type": "phone",
+        "release_type": "Release",
+        "target": "127.0.0.1:5557",
+        "target_kind": "emulator"
+      },
+      "scenarios": {
+        "normal": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throws": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-promise": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-thenable": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-code-getter": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-undefined": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-proxy": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "full-waiters": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "failed-close-before-guard": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "failed-close-after-accepted": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "settling-reentry": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "worker-env-exit": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        }
+      },
+      "ordinary_sdk_cleanup": "ordinary close API completed; no companion-only resource counter claim",
+      "lab_revision": "a6e04ce3e4863edc767b8279182b5b203b30ee51",
+      "lab_source_digest": "sha256:a29bbd6af16bbbd368cf3167f29debbe059de585f3261cc00d67a6f9af1d9e29"
+    },
+    {
+      "route": "kotlin",
+      "companion": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-kotlin-001/report.json",
+        "sha256": "sha256:4b55981962842378b8f9ce30994ad763d838ab62bb57cb8208a096ae93e7e269",
+        "size": 491178
+      },
+      "ordinary": {
+        "path": "/private/tmp/madb-chief-round2/c09-final-kotlin-ordinary-001/report.json",
+        "sha256": "sha256:f975a1e479c1596d153fbf78ec5fd47259b64ed096a08a20a4a5598749d8f2c7",
+        "size": 55971
+      },
+      "independent_review": {
+        "path": "/private/tmp/madb-chief-round2/final-evidence-kotlin.json",
+        "sha256": "sha256:f5341c1bb19f05e3fdfc400cc7567ff9a8c651ffd062c843337a84b9e907dd9b",
+        "size": 31343
+      },
+      "candidate_digest": "sha256:4f3accf976b49d1fde6d50e2ba91720471b53cba572cbdaa913722e29b152ddb",
+      "ordinary_digest": "sha256:b7d7f21a21ed7c3bb1f0f3ac96ee0d52f7c83a7f8f0b04802298045db30f485f",
+      "target": {
+        "api": "23",
+        "version": "OpenHarmony-6.1.0.115",
+        "abi": "arm64-v8a",
+        "device_type": "phone",
+        "release_type": "Release",
+        "target": "127.0.0.1:5557",
+        "target_kind": "emulator"
+      },
+      "scenarios": {
+        "normal": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throws": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-promise": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-thenable": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-code-getter": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-undefined": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "callback-throw-proxy": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "not-confirmed: receipt remains unconsumed, normal close rejected",
+          "device_recovery": "passed; process recovery only"
+        },
+        "kotlin-live-threads": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "kotlin-settling-reentry": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "kotlin-fault-before-guard": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        },
+        "kotlin-fault-after-accepted": {
+          "build": "passed",
+          "execution": "passed",
+          "sdk_cleanup": "proved by scenario native/JS final frames",
+          "device_recovery": "passed; process recovery only"
+        }
+      },
+      "ordinary_sdk_cleanup": "ordinary close API completed; no companion-only resource counter claim",
+      "lab_revision": "a6e04ce3e4863edc767b8279182b5b203b30ee51",
+      "lab_source_digest": "sha256:a29bbd6af16bbbd368cf3167f29debbe059de585f3261cc00d67a6f9af1d9e29"
+    }
+  ],
+  "source_review": "chief-architect-second-batch-receipt-source-review.json",
+  "repair_review": "chief-architect-second-batch-receipt-repair-review.json",
+  "binding_review": "chief-architect-second-batch-receipt-binding-review.json"
+}

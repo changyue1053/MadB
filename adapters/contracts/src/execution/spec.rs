@@ -254,7 +254,7 @@ fn recipe_from_value(v: &Value) -> Result<ExecutionRecipe> {
     Ok(recipe)
 }
 impl ExecutionRecipe {
-    pub(super) fn projection(&self) -> Result<Value> {
+    pub(crate) fn projection(&self) -> Result<Value> {
         let inputs = self
             .inputs
             .iter()

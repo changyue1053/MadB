@@ -1,0 +1,281 @@
+{
+  "task": "C09 final frozen receipt-window review binding",
+  "producer_revision": "a31ac4bb9bbb7f7270e69d3848011eaeb986e981",
+  "conclusion": "no blocking findings in the fixed final review selection and exact inventories",
+  "producer_clean": true,
+  "lab_root_reviewed": "/private/tmp/madb-chief-round2/c09-lab-final",
+  "lab_freeze_pending": false,
+  "lab_revision": "a6e04ce3e4863edc767b8279182b5b203b30ee51",
+  "lab_clean": true,
+  "lab_tracked_files": 450,
+  "legacy_c07_unchanged": [
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c07/kotlin-source-review.json",
+      "sha256": "sha256:40d361bcfdd02946e918dd1c9b9f20e54d2616790e6e58a0003dce46e49fa3a4",
+      "size": 126358
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c07/kotlin-source-review.md",
+      "sha256": "sha256:a79d3c6aa42f4a435eaadeba97ca39d52c8faef6dceeee23a402fd2a3fb7515d",
+      "size": 10035
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c07/route-ownership-review.json",
+      "sha256": "sha256:5ab233bc160714ce871f6ef5c8a35ae04e277e419c8a40d56ada0dab26fb83bf",
+      "size": 75757
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c07/route-ownership-review.md",
+      "sha256": "sha256:8827ad87a2a292993550ac85d41c235ddf660ee96742cb532ec82cd6c514276e",
+      "size": 9391
+    }
+  ],
+  "source_review": {
+    "path": "/private/tmp/madb-chief-round2/c09-receipt-source-review-final.json",
+    "sha256": "sha256:70ae5efb8b57423a495b351a4f1bb3afb99e787b7b76504cbf7080a6515baf59",
+    "size": 9761
+  },
+  "repair_independent_review": {
+    "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-review.json",
+    "sha256": "sha256:3ee5a35bb4430001a069dc91285cdde819cb2a543ac18269f8daee344bc1cd50",
+    "size": 13238
+  },
+  "manifest": {
+    "path": "/private/tmp/madb-chief-round2/c09-producer-change-manifest-r2.json",
+    "sha256": "sha256:e4f14acde94131509a591650fad65b9046a8add22519580ee0b9e6b80b5d6d27",
+    "size": 3326
+  },
+  "all_13_sources_match_manifest_and_exact_git_revision": true,
+  "independent_patch_replay": {
+    "method": "git show exact revision then git apply --check and git apply in private temp; no producer derivation implementation executed",
+    "base_sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+    "patch_sha256": "sha256:642c7e13cfdc1555ce1c47c4d7d0d1722b21a1e8695a00aaed187d2881b0c179",
+    "derived_sha256": "sha256:74fa0386bf18a24996741dda85919388c3a75bae59c9bc6fa91432324b8ef025",
+    "derived_bytes": 34693,
+    "root_derived_bytes_match": true
+  },
+  "inventory_deltas": {
+    "native": {
+      "file": {
+        "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c09_receipt_window/route-ownership-review.json",
+        "sha256": "sha256:da06ebed90a75ba19cc3e5d7f95fa398db88d68604b395915716417629c6c33d",
+        "size": 77813
+      },
+      "changed_source_references": [
+        "sdk/arkts/test-support/contracts/PORTS.md",
+        "sdk/arkts/test-support/facade/baseline.json",
+        "sdk/arkts/test-support/facade/companion.patch"
+      ],
+      "derived_native_records": [
+        "c",
+        "cpp",
+        "rust"
+      ],
+      "all_other_inventory_fields_unchanged": true,
+      "existing_producer_source_refs_checked": 69,
+      "external_reference_paths_preserved": []
+    },
+    "kotlin": {
+      "file": {
+        "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c09_receipt_window/kotlin-source-review.json",
+        "sha256": "sha256:8fceff40f668aca7c82db45f943da149631f52b6a6076c2ec40ad91fe48a552f",
+        "size": 125799
+      },
+      "changed_source_references": [
+        "adapters/toolchains/arkts/kotlin_test_binding.py",
+        "sdk/kotlin/arkts-owned/contracts/public-helpers.json"
+      ],
+      "derived_native_records": [],
+      "all_other_inventory_fields_unchanged": true,
+      "existing_producer_source_refs_checked": 69,
+      "external_reference_paths_preserved": [
+        "kotlin-formal-headers/hilog/log.h",
+        "kotlin-formal-headers/info/application_target_sdk_version.h",
+        "kotlin-formal-headers/js_native_api.h",
+        "kotlin-formal-headers/js_native_api_types.h",
+        "kotlin-formal-headers/napi/common.h",
+        "kotlin-formal-headers/napi/native_api.h",
+        "kotlin-formal-headers/node_api.h",
+        "kotlin-formal-headers/node_api_types.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/CMakeLists.txt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/README.md",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/array.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/arraybuffer.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/cb_info.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/clazz.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/exception.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/function.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/knapi.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/logger.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/module.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/object.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/property.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/reference.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/include/type.h",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/array.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/arraybuffer.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/cb_info.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/clazz.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/exception.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/function.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/knapi.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/module.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/object.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/property.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/reference.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/cpp/src/type.cpp",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/nativeInterop/cinterop/interop.def",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFICallWrapper.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/FFIConstructorRegistry.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/NapiUtils.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/OhosFFIContext.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FFIPerfTracer.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FfiDebugDumper.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FfiDebugLogger.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/FfiRefTracker.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/debug/OhosLog.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassMethodInvokerContext.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiClassRegister.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiFunctions.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiInvokable.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiKtNapiCallbackBinder.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiRegister.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KNapiSymbolDescriptor.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/KSPTypes.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/generate/TypeConverter.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/IKNapiTsInvokerContext.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiEnvHolder.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiInvokerSyncContext.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsCallback.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsFnFunction.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsInvoker.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/KNapiTsInvokerContext.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/invoke/Sem.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Array.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/BigInt.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Boolean.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/CallbackInfo.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/CallsiteSlot.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Clazz.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Exception.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Function.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/List.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Map.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Module.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Number.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Object.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Promise.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Property.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Reference.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/SendableArray.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/SendableMap.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/String.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/napi/Undefined.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkAny.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkArray.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkBigInt.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkBoolean.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkClass.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkException.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkFunction.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkList.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkMap.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkModule.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkNumber.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkObject.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkPromise.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkProxy.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkSendableArray.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkSendableMap.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkString.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ArkValue.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/NapiRefCleaner.kt",
+        "upstream/akinterop/AKInterop/akinterop-runtime/src/ohosArm64Main/kotlin/org/cpf/kotlin/akinterop/types/ThreadSafeFunctionRegister.kt"
+      ]
+    }
+  },
+  "check_code_unchanged_from_prior_review": [
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/harness/c07_source_review.py",
+      "sha256": "sha256:ab4740cc3df7da8012239d114407e577fbf58c021400c72b9ad7f6475f83510d",
+      "size": 15361
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/harness/c07_kotlin_source_review.py",
+      "sha256": "sha256:04ae06117529185141fad4302edbf0542ff0218e7cf274699b7ea3dbb35bef5e",
+      "size": 23939
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/harness/c07_profile_pair.py",
+      "sha256": "sha256:aef951ea2300d415c5303b04f018ee01cff1f8dfd84121fb2687ca03f43a53b6",
+      "size": 2895
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/harness/c07_route_ownership.py",
+      "sha256": "sha256:a5d85e4c5a396f857fbf30de963fba62f6ab6b5fcb1729ad5b6c9e9f8b20cb36",
+      "size": 12051
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/harness/source_review_selection.py",
+      "sha256": "sha256:8813b0da12bca32133501ad81b17300f5cd9b095ffe22709106f4f98c87dee05",
+      "size": 700
+    }
+  ],
+  "selector_control": {
+    "legacy_default": "c07",
+    "receipt_constant": "c09-receipt-window",
+    "candidate_selectable": false,
+    "arbitrary_file_selectable": false
+  },
+  "focused_check_reuse": "47 checks passed in the assembly review; checked source files and expected inputs are byte-identical in this frozen Lab. The new 7-scenario oracle has separate preflight checks.",
+  "focused_checks": [
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B -m unittest discover -s harness/tests -p test_source_review_selection.py -v",
+      "passed": 3,
+      "exit_code": 0
+    },
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B -m unittest discover -s harness/tests -p test_c07_source_review.py -v",
+      "passed": 15,
+      "exit_code": 0
+    },
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B -m unittest discover -s harness/tests -p test_c07_route_ownership.py -v",
+      "passed": 8,
+      "exit_code": 0
+    },
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B -m unittest discover -s harness/tests -p test_c07_kotlin_source_review.py -v",
+      "passed": 21,
+      "exit_code": 0
+    }
+  ],
+  "review_inputs": [
+    {
+      "path": "/private/tmp/madb-chief-round2/prepare-receipt-review-final.py",
+      "sha256": "sha256:19e84f89935994ef780beb8029edc260d7db1948a12554f79f377cad0f56b3f9",
+      "size": 5105
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/review-receipt-binding-final-frozen.py",
+      "sha256": "sha256:0c9f757a3d3666732ef5e361d925ef5e47dd4dc25ea8f30d8870f79a7c7178c0",
+      "size": 10270
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c09_receipt_window/source-review.json",
+      "sha256": "sha256:70ae5efb8b57423a495b351a4f1bb3afb99e787b7b76504cbf7080a6515baf59",
+      "size": 9761
+    },
+    {
+      "path": "/private/tmp/madb-chief-round2/c09-lab-final/expected/c09_receipt_window/source-review.md",
+      "sha256": "sha256:1959bb7a9b0f097fcd27785567c3193968d932db7ab9d7796cb1a20742ae6cea",
+      "size": 1617
+    }
+  ],
+  "limitations": [
+    "Final consumer/report audit must match this exact clean Lab freeze and a31 producer; old target reports remain historical only.",
+    "Static source and source/object/link receipt binding only; no target compilation or device execution performed in this review.",
+    "Unchanged nonlocal upstream references remain fixed to prior independent inventory; no fresh upstream download or rebuild claimed.",
+    "Old 4ed inventories/reviews/reports were not edited; final a31 target results require newly produced candidates and observations."
+  ]
+}

@@ -1,0 +1,350 @@
+{
+  "kind": "i01-four-amendment-independent-design-review",
+  "status": "reviewed-for-four-amendment-decision-only",
+  "project_owner_adoption": "pending; no authorization inferred from review",
+  "recommendation": "仅裁定 A–D 四项增量；完整 envelope、包摘要/获取锁、recipe/renderer/版本比较支持表仍须定稿，不能据此实施生产 schema/decoder。",
+  "reviewer": "/root/l01_contract",
+  "second_read_only_view": "/root/l01_contract/l05_evidence",
+  "source_root": "/Users/changyue/Desktop/MadB/madb",
+  "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+  "worktree_dirty": true,
+  "status_porcelain_sha256": "a6c6f193117a16aa5ed3b9782d6c99945851595946ab1a71e71263bb5b31debb",
+  "status_entry_count": 197,
+  "proposal_inputs": [
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision.md",
+      "sha256": "105405575e121c861f81e56651a4bea76c47e95417f5e7ef032714eb45141e43",
+      "size": 19998
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision-check.py",
+      "sha256": "a88d15f0bb0fde8753de47351877e5806ba9cffda1118b60e3cfb9f5562d83a2",
+      "size": 6946
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision-vectors.json",
+      "sha256": "68cf6ceebf0cf0000b3881e12cdc5d49c5112885efcadd1f70e86939848814a9",
+      "size": 19084
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision-check-result.json",
+      "sha256": "8f0a7a1cb3d624df2daca5ef732f013c1ef12bc43872a19afc3d38a2ae0e309b",
+      "size": 1311
+    }
+  ],
+  "source_pins_verified": [
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/AGENTS.md",
+      "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+      "size": 1796
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/engineering/07-agent-development.md",
+      "sha256": "055b621b7c12bc673ed29ab902ffc7f251fff2a2dfbd421ba9d68de3732b4e8e",
+      "size": 7151
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/catalog/implementation-plan.json",
+      "sha256": "ee409c8aeacaf97269551e7e236b4cd67dc32a1da02e832793569d88b719732a",
+      "size": 109988
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/reviews/2026-10-26-project-init-format-draft.md",
+      "sha256": "e871462e3c3a8a80edcfa8d72064f4ab60df6d43d6cf063e28c74290097d7331",
+      "size": 28863
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/reviews/2026-10-26-project-init-format-review.md",
+      "sha256": "2f7ce132237c77d0110150a48a36e5f155f4d111697c9d1ac225b88f4df9aaf5",
+      "size": 6275
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/architecture/14-project-initialization.md",
+      "sha256": "e2684e5a94cb340ec290a19b90b10cac7d473092447d004c7918744874f211d6",
+      "size": 26413
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/product/04-project-initialization.md",
+      "sha256": "3cc468ed05aa1de94e220e25551feb0c93e6308a9f8cd2c1695101fc23f746a3",
+      "size": 10186
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/adr/0005-project-initialization.md",
+      "sha256": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "size": 2813
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/adr/0018-extension-composition-formats.md",
+      "sha256": "2e99240abf20a99ec456d8deecce898758698e09536068f1a8fddc931b4e1b67",
+      "size": 3067
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/schemas/common.schema.json",
+      "sha256": "df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314",
+      "size": 13073
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/schemas/profile.schema.json",
+      "sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+      "size": 5526
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/schemas/profile-v2.schema.json",
+      "sha256": "62d061513cf2d279e437522562ae56fbc826eade04eadabfa9c4f445b35f3a2e",
+      "size": 6439
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-plan/src/project/mod.rs",
+      "sha256": "3f526d07d3a8231166d4b8004af3f83e3050fbab67bc1cc0e65d7db463bca65a",
+      "size": 7696
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-plan/tests/project.rs",
+      "sha256": "18f36ea3e31d2056f09f16792a2ddd0c0f54aeb91063aca3f384db384ed050bd",
+      "size": 6911
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-app/src/lib.rs",
+      "sha256": "9be0d5e30552dc114a9966fbb4b948d9f10a231eea6a56147618007b84aadbc8",
+      "size": 1641
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-cli/src/commands.rs",
+      "sha256": "b370679fd2d8c00c8f8094e735237e6912ed923b660730796a322b94e2928353",
+      "size": 15500
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/project.py",
+      "sha256": "7e81ce4b7fd67239cc309cf8fcee0575f332eabdcb0fcdb8ba280063dc81ed76",
+      "size": 28398
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/toolchain.py",
+      "sha256": "b252fba08f5d8fb91014db541d2a0397a88903536c2d0dcced9c54e32d39abe8",
+      "size": 9087
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/tools.py",
+      "sha256": "2c312568f648dc2c15362c4f0a41a9738238efdd1ab0d7f7e7ba7d90ff4b4ddf",
+      "size": 15971
+    }
+  ],
+  "resolved_finding": {
+    "priority": "P2",
+    "location": "/private/tmp/madb-chief-round5/project-init-decision.md:117",
+    "issue": "旧第117行可被读成四项决定同时授权完整两 envelope decoder，与第7行其余字段未批准矛盾。",
+    "resolution": "最终段明确仅四增量和内部纯规则/ProjectPlan适配；生产schema/decoder/完整格式向量须剩余字段按同一流程定稿。",
+    "changed_lines": [
+      117
+    ],
+    "preserved_prior_inputs": [
+      {
+        "path": "/private/tmp/madb-chief-round5/project-init-decision-before-authorization-fix/project-init-decision.md",
+        "sha256": "eed422591e1389167e63fae3bb536086dba8802c16d3b43db450bd7b798c67f3",
+        "size": 19902
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/project-init-decision-before-authorization-fix/project-init-decision-check-result.json",
+        "sha256": "435326373007e0b2313a647b3b57bcb0fed701022980af64e55b968bdfb109d0",
+        "size": 1311
+      }
+    ]
+  },
+  "blocking_findings_for_four_amendments": [],
+  "checks": {
+    "design_cases": 58,
+    "design_groups": {
+      "selection": 13,
+      "classification": 9,
+      "success": 17,
+      "references": 12,
+      "sdk_gate": 7
+    },
+    "source_pin_count": 19,
+    "saved_result_exact_match": true,
+    "proposal_and_pins_unchanged_during_review": true,
+    "replay": {
+      "command": [
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+        "-B",
+        "-"
+      ],
+      "method": "runpy.run_path(check.py, run_name=independent_review), then main(); unittest.mock.patch(Path.write_text) captures only the expected result path in memory; exact compare to saved result. No proposal/result/source writes.",
+      "exit_code": 0
+    },
+    "independent_edge_cases": [
+      {
+        "id": "profile-and-family-reordering",
+        "actual": {
+          "profile": "mobile",
+          "targets": [
+            "android",
+            "ios"
+          ]
+        },
+        "expected": {
+          "profile": "mobile",
+          "targets": [
+            "android",
+            "ios"
+          ]
+        },
+        "passed": true
+      },
+      {
+        "id": "repeated-declared-family-is-one-family",
+        "actual": {
+          "profile": "ios-both",
+          "targets": [
+            "ios"
+          ]
+        },
+        "expected": {
+          "profile": "ios-both",
+          "targets": [
+            "ios"
+          ]
+        },
+        "passed": true
+      },
+      {
+        "id": "dry-run-records-open-without-launch",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "dry-run-cannot-record-open-passed",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      },
+      {
+        "id": "nested-manifest-retains-package-root",
+        "actual": true,
+        "expected": true,
+        "passed": true
+      },
+      {
+        "id": "nested-manifest-parent-is-not-root",
+        "actual": false,
+        "expected": false,
+        "passed": true
+      }
+    ],
+    "documented_scope_probes": [
+      {
+        "id": "caller-empty-required-set",
+        "actual": true,
+        "classification": "documented fragment limitation",
+        "meaning": "片段信任外部 required_checks；生产必须由固定 recipe 独立派生，不能把该字典当准入。"
+      },
+      {
+        "id": "no-sdk-stage-unknown-recipe",
+        "actual": true,
+        "classification": "documented fragment limitation",
+        "meaning": "SDK 专项谓词不是全部 recipe 准入；未需 SDK 时返回 true 不豁免未知配方的独立拒绝。"
+      }
+    ]
+  },
+  "assessment": [
+    {
+      "scope": "new wire",
+      "locations": [
+        7,
+        17,
+        74,
+        117
+      ],
+      "result": "候选仍是 project-template/1 与 init-result/1；本次新增必需 template.input_root、删除 requirements.*.sdks，均尚待采用。common/project/report/profile 既有格式不变。"
+    },
+    {
+      "scope": "A classification/digest",
+      "locations": [
+        22,
+        24,
+        26,
+        28,
+        38
+      ],
+      "result": "null 只表示投影未完整；ErrorKind映射与现行代码一致。已冻结后变动 Conflict 与取得时 pin 不符 InvalidInput 区分；不新增全局错误优先级。"
+    },
+    {
+      "scope": "B CommitNew/dry-run",
+      "locations": [
+        48,
+        49,
+        50,
+        51,
+        55,
+        57
+      ],
+      "result": "非dry-run的零退出须真实同根同计划无覆盖提交；独立required checks与真实open/cleanup观察；dry-run必须not-created、空checks且无下载/启动，冻结请求决定分支。"
+    },
+    {
+      "scope": "C roots/SDK",
+      "locations": [
+        69,
+        70,
+        72,
+        74,
+        76,
+        78,
+        80,
+        82,
+        84,
+        86
+      ],
+      "result": "模板输入根/报告证据根分清；外层路径加input_root，内层原字节和锁命名空间不改；不支持单根则拒绝。删除宿主SDK重复列表，保留profile.sdk和有限recipe检查；不涉及ADR0018 SDK资产/运行依赖包归属。"
+    },
+    {
+      "scope": "D defaults",
+      "locations": [
+        92,
+        96,
+        97,
+        98,
+        99,
+        101,
+        103
+      ],
+      "result": "四分支完整；显式空/重复先拒绝；只传profile用其完整family集合；不裁剪、不补ABI、不自动生成扩展组合。"
+    },
+    {
+      "scope": "profile/2 and ProjectPlan",
+      "locations": [
+        109,
+        111,
+        115
+      ],
+      "result": "不重开ADR0018；认识/2不授执行资格；复用现有纯ProjectPlan，不增第二规划器，也不把词法计划当文件提交许可。"
+    }
+  ],
+  "remaining_before_full_format_or_production_admission": [
+    "完整两 envelope 其余字段及格式决定尚未批准；本review不批准它们。",
+    "package_sha256的字节域、archive或完整file-set范围、获取锁形状/权威来源、完整包留存或可信获取观察的重验契约。已选闭包不能自行证明完整包摘要；不得擅套ADR0018 source域。",
+    "有限recipe/renderer/版本比较首批精确支持表：id/version、阶段、descriptor/validator、目标兼容、工具/SDK输入及独立required checks派生。",
+    "json-values是否明确只用现有严格JSON安全整数子集；具体renderer转义、语言源码处理仍须真实输出与负例。",
+    "实际schema/共享格式向量、完整request摘要/JCS、真实FileRef闭包/路径别名/链接/竞争、CommitNew、SDK预检与IDE/目标运行均未被58片段覆盖。",
+    "I01 acceptance仍包含模块配方、模板/SDK/手写/受管所有权、自动构建、已有工程接入/升级/禁用、恢复及Swift发行/源码协作；本次四项设计审查不是整包验收。"
+  ],
+  "not_run": [
+    "production init",
+    "production schema admission",
+    "full request digest/JCS",
+    "host filesystem confinement/CommitNew",
+    "SDK or heavy compiler execution",
+    "IDE launch/import/debug",
+    "device execution"
+  ],
+  "writes": [
+    "project-init-decision-review.md",
+    "project-init-decision-review.json"
+  ],
+  "product_catalog_history_modified_by_reviewer": false,
+  "markdown_review": {
+    "path": "/private/tmp/madb-chief-round5/project-init-decision-review.md",
+    "sha256": "6b8c90f54f5b7ac2c286ebf2a45e8c2b5d46db77af9794f855505fbb0b17bfbd",
+    "size": 4357
+  }
+}

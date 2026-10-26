@@ -2,7 +2,7 @@
 
 MadB 以稳定的边界模型组织多语言工具，以适配器承接语言和平台差异。新增语言的正常变更范围是扩展清单、适配器、必要的 SDK 组件、模板和验证资产；只有出现现有模型无法表达的公共语义时，才演进核心模型。
 
-本规范定义接入边界。进程交互见[扩展协议](12-extension-protocol.md)，公共语义变更见[模型演进](13-contract-evolution.md)，交付条件见[新增语言验收](../validation/05-language-onboarding.md)。它们属于设计基线，示例不构成可安装扩展或认证记录。
+本规范定义接入边界。跨多个组件、SDK 能力与工程资产的选择、组合、依赖和验收以[跨路线扩展组合](17-extension-composition.md)为准；本轮已授权的 Swift 与 ArkTS 扩展按该规范及对应 ADR 自主安排实施顺序，具体配置仍满足各自选择条件。进程交互见[扩展协议](12-extension-protocol.md)，公共语义变更见[模型演进](13-contract-evolution.md)，交付条件见[新增语言验收](../validation/05-language-onboarding.md)。它们属于设计基线，示例和实施授权不构成可安装扩展或认证记录。
 
 ## 1 扩展的对象
 

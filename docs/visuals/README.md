@@ -24,8 +24,9 @@
 
 ## 视图范围与阅读方法
 
-- Swift：默认 SKIE；NativeCoroutines 按声明分工并核对 stream identity。SKIE 分发配置、包含 cinterop 类型的原始 / 增强入口、反向宿主可见性均需真实消费探针。不同方向和构建系统的支持范围分别说明。
-- ArkTS：图形、默认配置和节点详情均采用 CPF + akinterop 主线。CPF 是工具链，akinterop 是调用桥，CMP 为可选 UI；KNOI 独立扩展，不串接到主线。官方与 CPF 构建根、插件、缓存、发布坐标及根元数据隔离。
+- Kotlin/Native → Swift 主线：Objective-C export + SKIE；NativeCoroutines 按声明分工并核对 stream identity。SKIE 分发配置、包含 cinterop 类型的原始 / 增强入口、反向宿主可见性均需真实消费探针。不同方向和构建系统的支持范围分别说明。
+- Kotlin/Native ↔ ArkTS 专题采用 CPF + akinterop 主线。CPF 是工具链，akinterop 是调用桥，CMP 为可选 UI；KNOI 独立扩展，不串接到主线。官方与 CPF 构建根、插件、缓存、发布坐标及根元数据隔离。C/C++ ↔ ArkTS 使用平台 Node-API，Rust ↔ ArkTS 使用 napi-ohos，各自维护候选和目标证据。
+- ArkTS 的[十二项必要能力](../adr/0016-arkts-production-baseline.md)和[十二项扩展选择](../adr/0017-arkts-extension-delivery.md)已采用并授权实施，序号仅作讨论索引，不增加工作包、profile、图节点或认证。C07 原四路线与 L05 首片并行；消费者可选 UI 不免除所选 L05 / I05 的完整交付，首片也不等于整包完成。X03 / X07 / X08 等扩展可按前提提前探针，正式验收依赖保留，不反向阻断主线或 C11。
 - 总览与计划：显式展示 Gobley 修复候选门禁、Android KMP 插件及 native 打包、双根独立发布、Swift 消费检查和 UniFFI ArkTS 实验扩展。实验配置不能继承主线认证。
 
 路线专题使用八段结构：内容依次为完整全景、构建交付、运行时序、类型错误、生命周期、模块原则、验收矩阵和依据。每个配置有实际机制节点与具名连线，默认展示完整关系；调用、反向和关闭另用时序图解释。类型路径、所有权树、失败交错和语义示例独立呈现。不同方向的箭头只表示声明范围内的调用或协议关系，不能推导任意语言对象均可互传。扩展页的工程工具链路按自身职责解释，不冒充跨语言运行时。

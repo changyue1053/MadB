@@ -18,4 +18,4 @@ Python fixture 独立计算真实配置/文件引用和任务摘要，不用生�
 
 当前查询范围仅验证已声明输入，缺少完整依赖发现时不能用于命中生成缓存。计划只处理显式任务文件，尚无自动 backend 计划；缺少真实 source-annotation reader 通道时拒绝相应策略。Unix 宿主实现有界读取，Windows 宿主实现和平台验收未完成。
 
-CRIT-05 的 `generate --check` 与完整新鲜性、CRIT-06/09 的取消/事务/恢复，以及 CRIT-10 的缓存失效仍未交付。
+本套件不覆盖 CRIT-05 的 `generate --check`、CRIT-06/09 的取消/事务/恢复及 CRIT-10 的缓存失效；这些检查由 [C04 执行、存储与缓存套件](../c04_package/README.md)承担，其证据边界以该套件说明为准。

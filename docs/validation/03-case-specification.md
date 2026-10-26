@@ -6,9 +6,9 @@
 
 | 字段 | 含义 |
 |---|---|
-| schema / id | 格式版本与稳定用例编号 |
+| schema / id / kind | 格式版本、稳定用例编号及 template/instance 类别 |
 | problem_ids / source_ids | 关联公共问题与历史研究编号；审查来源使用独立 REVIEW-20261024-* 编号，AUD-* 为审查场景索引 |
-| route / profile / direction / target | 路线、确定的边界配置、方向与运行目标；运行实例必须全部解析 |
+| selector | 路线、profile_id/profile_digest、方向与运行目标；模板为 null，运行实例必须全部解析 |
 | requires | 生成器及补丁、运行库、构建系统、分发形式、宿主/IDE、目标 SDK、设备、插桩和功能条件 |
 | fixture / setup | 初始对象、测试入口和状态 |
 | steps | 调用、barrier、取消、环境事件和清理 |
@@ -17,7 +17,7 @@
 | cleanup | 无论成功失败都执行的收尾 |
 | timeout_policy | 挂起判定和隔离恢复方式 |
 
-[样本](../examples/case.example.json)为计划定义，不是已实现用例。计划模板可将 profile 和 target 留为 null，明确等待实例化；它不是可执行实例。正式案例必须固定 profile 摘要、目标与测试入口，并提供真实断言；runner 拒绝未解析模板，不能填入 host-native 等模糊目标后生成通过报告。
+[样本](../examples/case.example.json)为计划定义，不是已实现用例。样本遵循 `case.schema.json`，使用 `kind: template` 与 `selector: null` 等待实例化；它不是可执行实例。fixture 的零摘要、planned 环境版本和示意入口均为占位，5000 毫秒只是模板预算。正式案例改为 `kind: instance`，固定完整 selector、真实 fixture 文件引用、环境、测试入口及适用预算，并提供独立断言；runner 拒绝未解析模板，不能填入 host-native 等模糊目标后生成通过报告。
 
 ## 示例场景
 

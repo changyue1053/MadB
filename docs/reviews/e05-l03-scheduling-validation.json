@@ -1,0 +1,903 @@
+{
+  "schema": "madb.plan-revision-validation/1",
+  "date": "2026-10-25",
+  "scope": "E05/L03 scheduling and acceptance inputs only; not product certification",
+  "input": {
+    "head": "82d3abda9fe3b2b58230ddb9411c6288582da1f0",
+    "dirty_status": [
+      " M README.md",
+      " M docs/README.md",
+      " M docs/architecture/02-modules-and-ports.md",
+      " M docs/architecture/04-data-and-errors.md",
+      " M docs/architecture/05-lifecycle-and-concurrency.md",
+      " M docs/architecture/06-backend-profiles.md",
+      " M docs/architecture/07-code-generation.md",
+      " M docs/architecture/08-runtime-and-idiomatic-api.md",
+      " M docs/architecture/09-build-packaging-release.md",
+      " M docs/architecture/11-language-extension.md",
+      " M docs/architecture/12-extension-protocol.md",
+      " M docs/architecture/13-contract-evolution.md",
+      " M docs/architecture/14-project-initialization.md",
+      " M docs/architecture/15-developer-ergonomics.md",
+      " M docs/architecture/16-technology-stack-and-versions.md",
+      " M docs/catalog/implementation-plan.json",
+      " M docs/catalog/route-views/arkts-c-cpp-architecture.json",
+      " M docs/catalog/route-views/arkts-rust-architecture.json",
+      " M docs/catalog/route-views/extensions-architecture.json",
+      " M docs/catalog/route-views/swift-c-cpp-architecture.json",
+      " M docs/catalog/route-views/swift-rust-architecture.json",
+      " M docs/delivery/01-implementation-plan.md",
+      " M docs/delivery/03-decisions-and-risks.md",
+      " M docs/delivery/04-design-readiness-and-first-route.md",
+      " M docs/engineering/05-review-and-quality-gates.md",
+      " M docs/engineering/06-documentation-quality.md",
+      " M docs/examples/case.example.json",
+      " M docs/examples/extensions/README.md",
+      " M docs/examples/first-route/README.md",
+      " M docs/product/01-positioning-and-requirements.md",
+      " M docs/product/02-capabilities-and-roadmap.md",
+      " M docs/product/03-developer-experience.md",
+      " M docs/product/04-project-initialization.md",
+      " M docs/references/README.md",
+      " M docs/reviews/README.md",
+      " M docs/tools/check_docs.py",
+      " M docs/tools/render_visuals.py",
+      " M docs/tools/templates/architecture-overview.html",
+      " M docs/tools/templates/implementation-progress.html",
+      " M docs/tools/templates/kotlin-arkts-architecture.html",
+      " M docs/tools/templates/kotlin-swift-architecture.html",
+      " M docs/tools/templates/route-atlas.html",
+      " M docs/tools/templates/route-panorama.html",
+      " M docs/tools/templates/route-panorama.js",
+      " M docs/tools/tests/panorama_smoke.cjs",
+      " M docs/tools/tests/test_document_contracts.py",
+      " M docs/validation/03-case-specification.md",
+      " M docs/validation/04-problem-catalog.md",
+      " M docs/validation/05-language-onboarding.md",
+      " M docs/validation/06-project-initialization.md",
+      " M docs/validation/07-developer-ergonomics.md",
+      " M docs/visuals/README.md",
+      " M docs/visuals/architecture-overview.html",
+      " M docs/visuals/arkts-c-cpp-architecture.html",
+      " M docs/visuals/arkts-rust-architecture.html",
+      " M docs/visuals/extensions-architecture.html",
+      " M docs/visuals/implementation-progress.html",
+      " M docs/visuals/kotlin-arkts-architecture.html",
+      " M docs/visuals/kotlin-c-cpp-architecture.html",
+      " M docs/visuals/kotlin-rust-architecture.html",
+      " M docs/visuals/kotlin-swift-architecture.html",
+      " M docs/visuals/route-atlas.html",
+      " M docs/visuals/rust-c-cpp-architecture.html",
+      " M docs/visuals/swift-c-cpp-architecture.html",
+      " M docs/visuals/swift-rust-architecture.html",
+      " M scripts/check.py",
+      " M sdk/kotlin/skie/README.md",
+      " M tests/integration/c04/README.md",
+      " M tests/integration/c07_native_gateway/README.md",
+      "?? adapters/generators/akinterop/managed-owned-r6-source.json",
+      "?? adapters/generators/akinterop/patches/managed-owned-r6.patch",
+      "?? adapters/generators/arkts/read_kotlin_exports.cjs",
+      "?? adapters/generators/arkts/read_kotlin_public.cjs",
+      "?? adapters/toolchains/arkts/kotlin-recipes/",
+      "?? adapters/toolchains/arkts/kotlin.py",
+      "?? adapters/toolchains/arkts/kotlin_binding.py",
+      "?? adapters/toolchains/arkts/kotlin_dependencies.py",
+      "?? adapters/toolchains/arkts/kotlin_elf.py",
+      "?? adapters/toolchains/arkts/kotlin_frame.py",
+      "?? adapters/toolchains/arkts/kotlin_metadata.py",
+      "?? adapters/toolchains/arkts/kotlin_project.py",
+      "?? adapters/toolchains/arkts/kotlin_test_binding.py",
+      "?? docs/adr/0012-extension-composition-and-delivery.md",
+      "?? docs/adr/0014-swift-production-baseline.md",
+      "?? docs/adr/0015-swift-extension-delivery.md",
+      "?? docs/adr/0016-arkts-production-baseline.md",
+      "?? docs/adr/0017-arkts-extension-delivery.md",
+      "?? docs/architecture/17-extension-composition.md",
+      "?? docs/reviews/2026-10-25-architecture-simplification.md",
+      "?? docs/reviews/2026-10-25-arkts-extension-delivery.md",
+      "?? docs/reviews/2026-10-25-current-document-audit.md",
+      "?? docs/reviews/2026-10-25-extension-composition-design.md",
+      "?? docs/reviews/2026-10-25-swift-extension-delivery.md",
+      "?? docs/reviews/2026-10-25-swift-production-baseline.md",
+      "?? docs/reviews/architecture-simplification-validation.json",
+      "?? docs/reviews/arkts-extension-validation.json",
+      "?? docs/reviews/current-document-audit-inventory.json",
+      "?? docs/reviews/current-document-audit-validation.json",
+      "?? docs/reviews/extension-composition-validation.json",
+      "?? docs/reviews/swift-extension-validation.json",
+      "?? docs/reviews/swift-production-validation.json",
+      "?? scripts/check_arkts_observation.py",
+      "?? scripts/check_swift_observation.py",
+      "?? sdk/arkts/observation/",
+      "?? sdk/kotlin/arkts-owned/README.md",
+      "?? sdk/kotlin/arkts-owned/facade/",
+      "?? sdk/kotlin/arkts-owned/frontend-policy.json",
+      "?? sdk/kotlin/arkts-owned/native/",
+      "?? sdk/kotlin/arkts-owned/record-codegen/",
+      "?? sdk/kotlin/arkts-owned/src/",
+      "?? sdk/swift/observation/",
+      "?? tests/fixtures/c07_kotlin_generation/",
+      "?? tests/integration/l04_swift_observation/",
+      "?? tests/integration/l05_arkts_observation/"
+    ],
+    "file_count": 871,
+    "catalog_sha256": "3ee9c632d20336d680b9399aec3d7ac9771dfd20a81001019834e3186c98e0e5"
+  },
+  "authorization": "Project owner explicitly approved revising stages and dependencies while retaining early sub-scope work and all promised evidence.",
+  "graph": {
+    "nodes": 41,
+    "edges": 74,
+    "acyclic": true,
+    "phase_inversions": [],
+    "added_edges": [
+      [
+        "E05",
+        "L03"
+      ],
+      [
+        "E05",
+        "L04"
+      ],
+      [
+        "E05",
+        "L05"
+      ],
+      [
+        "E05",
+        "L06"
+      ],
+      [
+        "L03",
+        "C07"
+      ]
+    ],
+    "added_transitively_redundant_edges": [],
+    "C11_mainline_closure": 29,
+    "S6_in_C11_closure": []
+  },
+  "task_changes": [
+    {
+      "task": "E05",
+      "field": "depends_on",
+      "before": [
+        "E04"
+      ],
+      "after": [
+        "E04",
+        "L03",
+        "L04",
+        "L05",
+        "L06"
+      ]
+    },
+    {
+      "task": "E05",
+      "field": "notes",
+      "before": " 本轮文档审查待裁定：S1 整包阶段与已列入的 ArkTS UI、多 env、低复制实物验收存在跨阶段冲突；阶段和依赖尚未调整，不以 S1 通用探针代替已承诺增强的证据。 依据见 delivery/03-decisions-and-risks.md 的本轮审查待裁定项。",
+      "after": "按项目所有者确认的阶段修订，从 S1 提供 E04 同步扩展与通用 EXT 检查子交付，S5 完成基础配置、已承诺主线增强及允许组合的整包符合性验收；L03–L06 是增强实现的验收输入，不把提前子范围通过计为整包通过。I05 的已选组合根/启用禁用候选切片及 C09/C10 的候选与独立验证子交付必须实际就绪；不等待这些包或 L07 的全部矩阵完成，不免除本包适用 EXT-09/10 的实际消费和交付证据。X 系列及 I07/L08 不反向成为本包前置。阶段与联合切片出口见 delivery/01-implementation-plan.md。"
+    },
+    {
+      "task": "E05",
+      "field": "phase",
+      "before": "S1",
+      "after": "S5"
+    },
+    {
+      "task": "L03",
+      "field": "depends_on",
+      "before": [
+        "C06",
+        "L01"
+      ],
+      "after": [
+        "C06",
+        "L01",
+        "C07"
+      ]
+    },
+    {
+      "task": "L03",
+      "field": "notes",
+      "before": " 本轮文档审查待裁定：S2 Kotlin 基础交付与 CPF CMP / Kotlin-ArkTS 组合验收的完成边界需要明确；允许先做子范围不等于整包具备验收资格。 依据见 delivery/03-decisions-and-risks.md 的本轮审查待裁定项。",
+      "after": "按项目所有者确认的阶段修订，从 S2 交付 C06/L01 上的 Kotlin 声明、协程、普通 API 与 Compose 基础子范围；S3 在 C07 普通 Kotlin/ArkTS 路线就绪后完成 CPF CMP 联合验收。L03 提供 Kotlin/CPF 声明与 UI 适配，L05 提供 ArkTS 侧接线，I05 提供选定组合根与工程候选；联合切片须有配套锁、唯一 owner、页面/订阅生命周期、纯逻辑无渲染依赖及 Release/HAR 独立消费证据。不要求 L05/I05 整包先完成，也不向它们添加反向整包依赖；缺联合证据仍不能通过 L03。阶段与联合切片出口见 delivery/01-implementation-plan.md。"
+    },
+    {
+      "task": "L03",
+      "field": "phase",
+      "before": "S2",
+      "after": "S3"
+    }
+  ],
+  "protected_task_fields": "All task fields other than E05/L03 phase/depends_on/notes are byte-value unchanged, including full acceptance arrays.",
+  "phase_text_changes": [
+    "S2.exit",
+    "S3.exit"
+  ],
+  "changes": [
+    {
+      "path": "docs/architecture/15-developer-ergonomics.md",
+      "before": "8976f8994b91ac30ce6a48013df90dcea85adfa07bf75d6879ebc9e001771329",
+      "after": "68f71ad97bfdad50fa305d680808944ab55db2aca4f62ffe8cb4c2fa62b431c7"
+    },
+    {
+      "path": "docs/catalog/implementation-plan.json",
+      "before": "3ee9c632d20336d680b9399aec3d7ac9771dfd20a81001019834e3186c98e0e5",
+      "after": "a9554e04913b2044e52e425038f4651bc0be299d46f7908473728ceafd145cef"
+    },
+    {
+      "path": "docs/delivery/01-implementation-plan.md",
+      "before": "b587be02baeadfdd801088c306bad0348294697e7f8d818d84293ce3ad2c4c60",
+      "after": "fc6fcb63ed96f0c000725cd0c7681d48c6d9aa08f1d35a0f1b801cf79fa342c1"
+    },
+    {
+      "path": "docs/delivery/03-decisions-and-risks.md",
+      "before": "2adf3400c037f7e4e33d10ea65ae20434cfaf76e2db3b808301375fe7ccae41a",
+      "after": "21878fd24e6b0bcf2f678cf08184d781a8137da775e223e41e61c1281b520e46"
+    },
+    {
+      "path": "docs/reviews/README.md",
+      "before": "f3cc69974a3a0459e8aca072b5084d30c171bbb10203f7a5fee86fa40b8b1f1e",
+      "after": "3172789241adcd154704d904bfd14f3680de1fccf28c1a9a059f7153b9eff444"
+    },
+    {
+      "path": "docs/validation/05-language-onboarding.md",
+      "before": "e038b8cf410824fd3d6dc5b8fa8371785b46b4c25152a937d7835a1f7799190f",
+      "after": "43e1dfb578eb5a0f9ccfb3224540986c9679781ff799160fe3e372e68eddbaf6"
+    },
+    {
+      "path": "docs/visuals/architecture-overview.html",
+      "before": "65efa6589f5c9514051befe7f7701c36f3fe17293b0b1fbc76262f94317b7757",
+      "after": "b93ca96cc5e8618830d065ff23539032e08b2f6786417cd6489c5ae14ee6fe5f"
+    },
+    {
+      "path": "docs/visuals/arkts-c-cpp-architecture.html",
+      "before": "dcbb44b4150c7fa1b85da72ffe91ab01df8bb2766ba59b6e63c9c6abf1307795",
+      "after": "60836ad175c59e03589c4e5575a3d0971bbc974cf7b429181289b91b410351db"
+    },
+    {
+      "path": "docs/visuals/arkts-rust-architecture.html",
+      "before": "a436d235561db4fc65a286ae662f3e911c385a4d1281b64f08c7181e36132530",
+      "after": "0f61c0cb76fd641d591b2f53a00f876e78346842fe9de1a5fa7db4ae1742ad3a"
+    },
+    {
+      "path": "docs/visuals/extensions-architecture.html",
+      "before": "36d0b5ed3080ba260f36b592bac469e1a0ab4dc5f79d3911fd45e51d956d03c4",
+      "after": "229cc071561c0e46680c9fb1c72039ae6cba183bcecd76c1adb52c24ea8c4bde"
+    },
+    {
+      "path": "docs/visuals/implementation-progress.html",
+      "before": "285a79ccdc9502d70509b5a2f38d0e10daa4ce695e4bd4f6ffee5f810fc5b1d4",
+      "after": "e0f268c1f8dd88bcfc98e453cbd846a48eacf3eaa5dc42df6748da119f703f5c"
+    },
+    {
+      "path": "docs/visuals/kotlin-arkts-architecture.html",
+      "before": "9b981551d4b7d8af37bf9a73e736e040efa476257febf5fea6da250befb865a3",
+      "after": "888cbc95cb6ec5149ba4e9dcb0919e5aab9a05765875572cffc420e0595c9720"
+    },
+    {
+      "path": "docs/visuals/kotlin-c-cpp-architecture.html",
+      "before": "ea1450fd097b9ebff42b778ad83687bf0c18bb5efe371c053c2a662e43e4b55e",
+      "after": "b6d409aaf0f03c5f00f3f50499b662cd463c2d7b31bf8eb62407948377ea0e24"
+    },
+    {
+      "path": "docs/visuals/kotlin-rust-architecture.html",
+      "before": "09f5a71597bd8a529fc680de6b125b39b90e3ed8e62744c07be0c59debaac744",
+      "after": "e8438d98edbbe96649e76d9f7717c75a90ef7203fe3759ec35770f8f20efaecf"
+    },
+    {
+      "path": "docs/visuals/kotlin-swift-architecture.html",
+      "before": "e3fcfb43a4f9f4303c5fe526d1544f2ee7a815cd98e4a3bdd4d58f4f3d2c8047",
+      "after": "11a39b7369590c927ab9d81e37c2bcb1fc11f70ad57d423edc752929faaae973"
+    },
+    {
+      "path": "docs/visuals/route-atlas.html",
+      "before": "c2a0d2a308ebeab1e3b3ecd01f647df49a7d206ceeee7ea186fe5078a3223a84",
+      "after": "ae371ba4b0645f18eec73e419acd0fc2ccdcf56285cb77c26d6a8ef438de44fa"
+    },
+    {
+      "path": "docs/visuals/rust-c-cpp-architecture.html",
+      "before": "083411849a6897cee26db7a2ae4c122889d8c8854d2e0cec82a7f70bda8e42d7",
+      "after": "2d3f7cc7cbc39b8ea378c84b93e88909acb473a950dedd339ca814e84b47bb04"
+    },
+    {
+      "path": "docs/visuals/swift-c-cpp-architecture.html",
+      "before": "6f7491bed84323184acddf841befa0ecc0772fc071026acb53445a8d0dc9953f",
+      "after": "cbdb686151480ea7be2221ef16ea8b3b21d76b5643d3e3f8e0ef27aeffc7b5e3"
+    },
+    {
+      "path": "docs/visuals/swift-rust-architecture.html",
+      "before": "fa33ebc640a72eef270e6ac2e3b11f1fd9287939930d76bc4e6d62d60864d7ed",
+      "after": "5623d414ab1d6254297be350f5534b465c4961c52db06972d2237751a1deda0a"
+    },
+    {
+      "path": "docs/reviews/2026-10-25-e05-l03-scheduling.md",
+      "before": null,
+      "after": "dcc41171ce204d27b5c69cc945c35f0c069fd112522fa8bed12bf89abe6e3491"
+    }
+  ],
+  "self_excluded_output": "docs/reviews/e05-l03-scheduling-validation.json",
+  "parallel_files_preserved": [
+    "adapters/generators/arkts/driver.py",
+    "adapters/generators/arkts/profiles/snapshot-test-v1.json",
+    "adapters/generators/arkts/rust_frontend.py",
+    "adapters/toolchains/arkts/README.md",
+    "adapters/toolchains/arkts/native.py",
+    "sdk/arkts/test-support/contracts/PORTS.md",
+    "sdk/arkts/test-support/contracts/support.d.ts",
+    "sdk/arkts/test-support/facade/baseline.json",
+    "sdk/arkts/test-support/facade/companion.patch",
+    "sdk/arkts/test-support/native/baseline.json",
+    "sdk/arkts/test-support/native/companion.patch",
+    "sdk/arkts/test-support/native/support.cpp",
+    "sdk/rust/arkts-bridge/README.md",
+    "sdk/rust/arkts-bridge/src/lib.rs",
+    "sdk/rust/arkts-provider/Cargo.toml",
+    "sdk/rust/arkts-provider/src/lib.rs",
+    "tests/integration/c07_arkts_adapter/test_public_entry.py",
+    "tests/integration/c07_native_gateway/run_host.py",
+    "tests/integration/c07_native_gateway/test_native.py",
+    "tests/integration/c07_native_gateway/test_registry.cpp",
+    "tests/integration/c07_rust_frontend/README.md",
+    "tests/integration/c07_rust_frontend/test_frontend.py"
+  ],
+  "historical_evidence_changed": [],
+  "checks": {
+    "static": {
+      "schema": "madb.documentation-validation/2",
+      "baseline": "0.9",
+      "status": "passed",
+      "scope": "static-documents-and-rendered-html",
+      "counts": {
+        "markdown": 117,
+        "json": 84,
+        "toml": 1,
+        "tables": 300,
+        "local_links": 1856,
+        "html": 13,
+        "scripts": 13
+      },
+      "extension_structure": {
+        "schemas": 2,
+        "frames": 4,
+        "vectors": 20
+      },
+      "catalog": {
+        "tasks": 41,
+        "routes": 16,
+        "problems": 48,
+        "case_groups": 96,
+        "historical_sources": 9,
+        "historical_mappings": 236
+      },
+      "browser": {
+        "status": "not_executed",
+        "scope": "layout, real interactions and console"
+      },
+      "product_tests_executed": false,
+      "errors": []
+    },
+    "render": {
+      "mode": "check",
+      "tasks": 41,
+      "routes": 16,
+      "nodes": 25,
+      "profiles": 29,
+      "outputs": [
+        "visuals/architecture-overview.html",
+        "visuals/implementation-progress.html",
+        "visuals/kotlin-swift-architecture.html",
+        "visuals/kotlin-arkts-architecture.html",
+        "visuals/route-atlas.html",
+        "visuals/kotlin-rust-architecture.html",
+        "visuals/swift-rust-architecture.html",
+        "visuals/arkts-rust-architecture.html",
+        "visuals/arkts-c-cpp-architecture.html",
+        "visuals/swift-c-cpp-architecture.html",
+        "visuals/kotlin-c-cpp-architecture.html",
+        "visuals/rust-c-cpp-architecture.html",
+        "visuals/extensions-architecture.html"
+      ]
+    },
+    "unit_output": ".............................\n----------------------------------------------------------------------\nRan 29 tests in 0.929s\n\nOK\n",
+    "dom": {
+      "method": "isolated DOM-shaped unit execution; not a browser",
+      "profiles": 29,
+      "graph_filters": 173,
+      "sequence_scenarios": 87,
+      "node_keyboard_selections": 3044,
+      "deep_links": "passed",
+      "extension_categories": "passed",
+      "theme": "passed",
+      "service_lifecycles": 3,
+      "work_package_status_cases": 2,
+      "network": false
+    },
+    "diff_check": "passed"
+  },
+  "browser": "not_executed; prior tool inventory reported Work browser capability disabled",
+  "product_tests": "not_executed; no product source modified",
+  "independent_dependency_analysis": {
+    "source_head": "82d3abda9fe3b2b58230ddb9411c6288582da1f0",
+    "source_path": "/Users/changyue/Desktop/MadB/madb/docs/catalog/implementation-plan.json",
+    "source_plan_sha256": "3ee9c632d20336d680b9399aec3d7ac9771dfd20a81001019834e3186c98e0e5",
+    "read_only": true,
+    "recommendation": {
+      "E05": {
+        "phase": "S5",
+        "start_phase": "S1",
+        "depends_on": [
+          "E04",
+          "L03",
+          "L04",
+          "L05",
+          "L06"
+        ]
+      },
+      "L03": {
+        "phase": "S3",
+        "start_phase": "S2",
+        "depends_on": [
+          "C06",
+          "C07",
+          "L01"
+        ]
+      }
+    },
+    "rationale": {
+      "E05_phase": "S1继续Dart/公共EXT子交付，主线承诺增强随S2-S4实际语言能力逐步验证，S5收口所有适用配置与组合；不把E05缩为ArkTS专题或仅结构探针。",
+      "E05_edges": [
+        {
+          "dependency": "E04",
+          "basis": "保留现有真实Dart扩展与公开端口/禁用机制基线；E01-E03和C05已传递覆盖。"
+        },
+        {
+          "dependency": "L03",
+          "basis": "Kotlin KSP/委托/协程/Compose及已承诺CPF CMP增强供给。E05第2条和validation05:102要求基础、承诺增强及允许组合分别验证。"
+        },
+        {
+          "dependency": "L04",
+          "basis": "Swift Observation/UI/薄便利及已承诺普通Combine/Rx适配供给；不是要求X01正式NC组合。"
+        },
+        {
+          "dependency": "L05",
+          "basis": "E05第3条具名ArkTS UI/取消/多env/低复制实物；L05包含对应普通/增强/禁用候选及CMP接线。"
+        },
+        {
+          "dependency": "L06",
+          "basis": "architecture15:44明确L03-L06为主线按需增强；C/C++资源及静态属性包装是适用EXT所需供给，S4前尚无实物。"
+        }
+      ],
+      "L03_phase": "S2保留普通Kotlin/KSP/协程/Compose子范围实施，含CPF CMP的整包在S3验收；不后移基础生命周期交付。",
+      "L03_edges": [
+        {
+          "dependency": "C06",
+          "basis": "保留官方Kotlin/Swift/Rust普通后端与消费基线。"
+        },
+        {
+          "dependency": "C07",
+          "basis": "新增；目录L03验收CPF CMP明确复用Kotlin/ArkTS普通协议，ADR0017:22要求Kotlin普通路线与真实组合；C07交付该基础路由/目标资源协议。"
+        },
+        {
+          "dependency": "L01",
+          "basis": "保留语义、普通入口、生成/手写与机制责任设计。"
+        }
+      ]
+    },
+    "joint_subdeliveries_not_whole_package_dependencies": [
+      {
+        "consumer": "L03",
+        "providers": [
+          "L05",
+          "I05"
+        ],
+        "required_material": "已选CPF CMP的ArkTS适配、组合根、唯一owner/原生装配、渲染依赖闭包及同一候选的真实页面/生命周期与Release/HAR独立消费材料；纯逻辑无渲染依赖对照。",
+        "boundary": "这些材料是L03相应验收必需输入，未就绪不得通过；提供方整包还含其他增强、模板和IDE矩阵，L03无需等待它们全部完成。双向切片协作不转换为L03↔I05/L05完成环。"
+      },
+      {
+        "consumer": "E05",
+        "providers": [
+          "I05"
+        ],
+        "required_material": "所选组合工程/装配及启用禁用切片，足以重放EXT的输出/物理owner冲突、依赖污染及真实消费者。",
+        "boundary": "不加I05整包前置；相应联合候选切片必须真实可用，不能只用任务无环或L05已通过推导组合EXT通过。"
+      },
+      {
+        "consumer": "E05/L03",
+        "providers": [
+          "C09",
+          "C10"
+        ],
+        "required_material": "适用独立oracle/harness、固定候选及包身份工具的子交付，证据绑定当前候选与目标。",
+        "boundary": "沿既有C09/C10从S1供给、S5全矩阵收口模式，不等待二者整包，以免验收工具与被验收能力互等。"
+      },
+      {
+        "consumer": "E05",
+        "providers": [
+          "L07"
+        ],
+        "required_material": "可共用既有DX/EXT实例与结果索引。",
+        "boundary": "L07是体验收口，不能用其整包状态替代E05独立EXT；无需添加L07为前置。"
+      }
+    ],
+    "not_added": {
+      "transitively_covered": [
+        "C06",
+        "C07",
+        "C08",
+        "L01",
+        "E01",
+        "E02",
+        "E03"
+      ],
+      "not_a_required_whole_package_predecessor": [
+        "I05",
+        "I06",
+        "C09",
+        "C10",
+        "L07"
+      ],
+      "S6_not_required": [
+        "X01",
+        "X02",
+        "X03",
+        "X07",
+        "X08",
+        "I07",
+        "L08"
+      ]
+    },
+    "graph_validation": {
+      "baseline": {
+        "nodes": 41,
+        "edges": 69,
+        "acyclic": true,
+        "topological_order": [
+          "C01",
+          "C02",
+          "C03",
+          "E01",
+          "E02",
+          "E03",
+          "I01",
+          "L01",
+          "C04",
+          "C05",
+          "I02",
+          "C06",
+          "C07",
+          "C08",
+          "E04",
+          "L02",
+          "I03",
+          "L03",
+          "L04",
+          "L05",
+          "C09",
+          "C10",
+          "L06",
+          "E05",
+          "I04",
+          "E06",
+          "I05",
+          "I06",
+          "I07",
+          "L07",
+          "C11",
+          "L08",
+          "X01",
+          "X02",
+          "X03",
+          "X04",
+          "X05",
+          "X06",
+          "X07",
+          "X08",
+          "X09"
+        ],
+        "later_phase_dependencies": [],
+        "start_after_completion": [],
+        "C11_mainline_ancestors": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06",
+          "I01",
+          "I02",
+          "I03",
+          "I04",
+          "I05",
+          "I06",
+          "L01",
+          "L02",
+          "L03",
+          "L04",
+          "L05",
+          "L06",
+          "L07"
+        ],
+        "C11_extension_ancestors": [],
+        "new_direct_edges_transitively_redundant": {
+          "E05": [],
+          "L03": []
+        },
+        "E05_ancestors": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "E01",
+          "E02",
+          "E03",
+          "E04"
+        ],
+        "L03_ancestors": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "L01"
+        ]
+      },
+      "proposed": {
+        "nodes": 41,
+        "edges": 74,
+        "acyclic": true,
+        "topological_order": [
+          "C01",
+          "C02",
+          "C03",
+          "E01",
+          "E02",
+          "E03",
+          "I01",
+          "L01",
+          "C04",
+          "C05",
+          "I02",
+          "C06",
+          "C07",
+          "C08",
+          "E04",
+          "L02",
+          "I03",
+          "L04",
+          "L03",
+          "L05",
+          "C09",
+          "C10",
+          "L06",
+          "I04",
+          "E05",
+          "I05",
+          "E06",
+          "I06",
+          "I07",
+          "L07",
+          "C11",
+          "L08",
+          "X01",
+          "X02",
+          "X03",
+          "X04",
+          "X05",
+          "X06",
+          "X07",
+          "X08",
+          "X09"
+        ],
+        "later_phase_dependencies": [],
+        "start_after_completion": [],
+        "C11_mainline_ancestors": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "C09",
+          "C10",
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06",
+          "I01",
+          "I02",
+          "I03",
+          "I04",
+          "I05",
+          "I06",
+          "L01",
+          "L02",
+          "L03",
+          "L04",
+          "L05",
+          "L06",
+          "L07"
+        ],
+        "C11_extension_ancestors": [],
+        "new_direct_edges_transitively_redundant": {
+          "E05": [],
+          "L03": []
+        },
+        "E05_ancestors": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08",
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "L01",
+          "L03",
+          "L04",
+          "L05",
+          "L06"
+        ],
+        "L03_ancestors": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "L01"
+        ]
+      },
+      "changed_fields_only": [
+        [
+          "E05",
+          "phase"
+        ],
+        [
+          "E05",
+          "depends_on"
+        ],
+        [
+          "L03",
+          "phase"
+        ],
+        [
+          "L03",
+          "depends_on"
+        ]
+      ],
+      "naive_joint_dependency_cycle_examples": [
+        {
+          "mistake": "将L03和I05的双向联合切片消费均解释为全包前置",
+          "cycle": [
+            "I05",
+            "L03",
+            "I05"
+          ]
+        },
+        {
+          "mistake": "将L03和L05的双向联合切片消费均解释为全包前置",
+          "cycle": [
+            "L03",
+            "L05",
+            "L03"
+          ]
+        }
+      ]
+    },
+    "document_sync_suggestions": [
+      "记录本轮用户决定，替换delivery03中仅E05/L03待裁定行；CLI/Runtime/L04事项保留。",
+      "delivery01说明S1公共EXT、S2普通Kotlin子交付与E05 S5/L03 S3整包收口；旧phase/depends_on不变表述限定为此前Swift安排或改引用新决定。",
+      "architecture15:46的E04/E05,S1表述注明是探针子范围；不将其误写为E05整包S1完成。",
+      "ADR0017保留原承诺和独立S6边界，补本轮授权后的阶段/依赖与联合切片准入说明；不改验收内容。"
+    ],
+    "non_goals": [
+      "不改actual",
+      "不新增工作包",
+      "不降低或转移现有验收",
+      "不动CLI/Runtime/L04待裁定范围",
+      "不改变任何实现/验证/证据状态"
+    ]
+  },
+  "independent_review": {
+    "review": "E05/L03 authorized scheduling revision, independent read-only review",
+    "baseline_head": "82d3abda9fe3b2b58230ddb9411c6288582da1f0",
+    "actual_comparison_hashes_match": {
+      "docs/catalog/implementation-plan.json": true,
+      "docs/delivery/01-implementation-plan.md": true,
+      "docs/delivery/03-decisions-and-risks.md": true,
+      "docs/architecture/15-developer-ergonomics.md": true,
+      "docs/validation/05-language-onboarding.md": true
+    },
+    "result": "no actionable findings",
+    "findings": [],
+    "validated": [
+      {
+        "item": "E05",
+        "result": "start S1 / final S5, formal prerequisites E04 and L03-L06. Early E04/EXT slice remains valid; promised mainline enhancements and allowed combinations remain required before complete acceptance."
+      },
+      {
+        "item": "L03",
+        "result": "start S2 / final S3, formal prerequisites C06/L01/C07. Ordinary Kotlin/Compose slice can proceed at S2; CPF CMP joint proof remains mandatory at S3."
+      },
+      {
+        "item": "Graph",
+        "result": "41 tasks traversed, no cycles, no prerequisite whose final phase is later than dependent final phase. Existing renderer catalog validator passed."
+      },
+      {
+        "item": "Textual prerequisites",
+        "result": "I05 selected composition-root candidate and L05 ArkTS wiring are fixed joint subdeliveries, not whole-package acceptance prerequisites. Their scopes have named owners and explicit locks/unique-owner/lifecycle/no-render-dependency/Release-HAR proof. No textual full-package cycle found."
+      },
+      {
+        "item": "Acceptance protection",
+        "result": "All task acceptance/status/verification/evidence/scope/start_phase fields unchanged from baseline. Only E05/L03 phase, depends_on and notes changed in catalog."
+      },
+      {
+        "item": "Scope protection",
+        "result": "CLI/Runtime/L04 decision rows remain open, L04/C07 task records unchanged. No product-code or public-protocol change found in staged baseline differences."
+      },
+      {
+        "item": "Residual current descriptions",
+        "result": "architecture/15 now explicitly labels E05 S1 as the foundational probe sub-scope; validation/05 states S5 whole-package completion without postponing applicable EXT checks. These parent clarifications preserve the approved scope. ADR-0012 records its historical unchanged-fields decision, not a prohibition against this approved revision."
+      }
+    ],
+    "baseline_files_changed_in_stage": [
+      "docs/architecture/15-developer-ergonomics.md",
+      "docs/catalog/implementation-plan.json",
+      "docs/delivery/01-implementation-plan.md",
+      "docs/delivery/03-decisions-and-risks.md",
+      "docs/reviews/README.md",
+      "docs/validation/05-language-onboarding.md",
+      "docs/visuals/architecture-overview.html",
+      "docs/visuals/arkts-c-cpp-architecture.html",
+      "docs/visuals/arkts-rust-architecture.html",
+      "docs/visuals/extensions-architecture.html",
+      "docs/visuals/implementation-progress.html",
+      "docs/visuals/kotlin-arkts-architecture.html",
+      "docs/visuals/kotlin-c-cpp-architecture.html",
+      "docs/visuals/kotlin-rust-architecture.html",
+      "docs/visuals/kotlin-swift-architecture.html",
+      "docs/visuals/route-atlas.html",
+      "docs/visuals/rust-c-cpp-architecture.html",
+      "docs/visuals/swift-c-cpp-architecture.html",
+      "docs/visuals/swift-rust-architecture.html"
+    ],
+    "boundaries": [
+      "No task marked implemented/passed and no certification generated.",
+      "The joint slice requires actual candidate and independent evidence; graph validity does not establish availability or platform success.",
+      "Generated HTML was not independently browser-tested in this pass. Parent final rendering and static checks remain necessary.",
+      "This audit does not resolve CLI ownership, Runtime reopening or L04/C08/L06 pending decisions."
+    ],
+    "resolved_during_review": [
+      {
+        "severity": "P3",
+        "path": "docs/delivery/01-implementation-plan.md",
+        "line": 134,
+        "problem": "The reference says the joint-acceptance arrangement is below, but the new section begins above at line 78.",
+        "recommendation": "Use a section anchor or neutral wording: 见本页 E05/L03 的分段交付与联合验收。",
+        "blocking": false,
+        "resolution": "Parent changed 下文 to 本页; verified current line 134."
+      }
+    ]
+  }
+}

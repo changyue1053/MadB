@@ -1,0 +1,116 @@
+{
+  "scope": "L01 independent review against 11 current catalog acceptance; not catalog status or downstream implementation certification",
+  "decision": "no blocking findings in reviewed contract scope",
+  "acceptance_review": [
+    {
+      "index": 1,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 2,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 3,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 4,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 5,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 6,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 7,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 8,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 9,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 10,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    },
+    {
+      "index": 11,
+      "result": "contract obligations and independently executable input boundaries accounted for; implementation/target evidence not inferred"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/examples/language-api/README.md",
+      "sha256": "sha256:6f3e8119c94bfde2ba850e6abd5dcc9dcc11b3f062d36c35da97ab63af1b389b"
+    },
+    {
+      "path": "docs/examples/language-api/swift-contract.md",
+      "sha256": "sha256:d1c56673a5ac16fa54e63a0e7ed8ce92fa42dd0e9cc4d7f8994e334973554952"
+    },
+    {
+      "path": "docs/examples/language-api/arkts-contract.md",
+      "sha256": "sha256:54c058ed7239d6e76b5a3cff9714f7bc4e708afd8525ba7a3cf9241211d92a2f"
+    },
+    {
+      "path": "docs/examples/language-api/acceptance.md",
+      "sha256": "sha256:3e884ef3420a26c8e87a8f0477e61713e220cf5e65051a3df899ce7b4f02eba9"
+    },
+    {
+      "path": "tests/integration/l01_contract/README.md",
+      "sha256": "sha256:cfa832f033ac6c7bbe535eb5dcb233c508d64ed5e4a02657c101492505a57f5b"
+    },
+    {
+      "path": "tests/integration/l01_contract/check_arkts.cjs",
+      "sha256": "sha256:71f03817748864d124bd0490598c9b7da7602e25cadc380ae1d6697a29364e06"
+    },
+    {
+      "path": "tests/integration/l01_contract/check_swift.py",
+      "sha256": "sha256:b79082368f492d21a6d8147866bd0424ba4a6a9544fb8e7ed0c6d086d41e9eb2"
+    },
+    {
+      "path": "tests/integration/l01_contract/fixtures/OrdinaryObservation.swift",
+      "sha256": "sha256:deb655f135808180e70946f747ecce82605637c6de0749648ee234ed60f25c10"
+    },
+    {
+      "path": "tests/integration/l01_contract/fixtures/RejectMutableSnapshot.swift",
+      "sha256": "sha256:6ff36e4026f4898dfad8135020cd1dacdf47d309df99937646c98f09da7b39d7"
+    },
+    {
+      "path": "tests/integration/l01_contract/fixtures/RejectUnsynchronizedActor.swift",
+      "sha256": "sha256:4aa617bacd5fab7466e8a923d6d07975f08ee17423d712ae232f4acff995b655"
+    }
+  ],
+  "swift_report": {
+    "path": "/private/tmp/madb-l01-round2-swift-final/result.json",
+    "sha256": "sha256:aa224b1a7c24dc51f3dfc113303f091167ed52f95b355593693b0c35b32fa108",
+    "result": "passed",
+    "input_hashes_match": true,
+    "exit_codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1
+    ]
+  },
+  "fixed_finding": "new Swift check stopped overriding HOME and final report binds updated script",
+  "limits": [
+    "No independent rerun of full native/UI or publication; compile/macro expansion only",
+    "Second-business generation, C06 explicit expectedProfile wiring, selected convenience runtime/configuration and clean package/target/IDE acceptance remain implementation obligations",
+    "Contract tables are not new wire fields/certification/status; current catalog phases/dependencies remain authoritative"
+  ]
+}

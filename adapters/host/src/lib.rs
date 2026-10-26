@@ -4,6 +4,7 @@ pub mod cache;
 pub mod cancellation;
 pub mod dag;
 pub mod dependencies;
+pub mod extension_files;
 pub mod inputs;
 pub mod locations;
 mod observation;

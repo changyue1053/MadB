@@ -1,0 +1,364 @@
+{
+  "schema": "madb.documentation-validation/2",
+  "baseline": "0.9",
+  "status": "passed",
+  "scope": "documentation-consistency-semantics-and-rendered-views",
+  "counts": {
+    "markdown": 108,
+    "json": 73,
+    "toml": 1,
+    "tables": 273,
+    "local_links": 1609,
+    "html": 13,
+    "scripts": 13
+  },
+  "extension_structure": {
+    "schemas": 2,
+    "frames": 4,
+    "vectors": 20
+  },
+  "catalog": {
+    "tasks": 41,
+    "routes": 16,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_mappings": 236
+  },
+  "browser": {
+    "status": "passed",
+    "method": "headless Google Chrome via Playwright, isolated temporary context",
+    "browser": "155.0.8059.86",
+    "pages": [
+      {
+        "name": "architecture-overview.html",
+        "title": "MadB · 架构全景",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "4db874db4fc96118fb3a108f25622dea15960ee943725a68e19914fa2ff6c9e5"
+      },
+      {
+        "name": "arkts-c-cpp-architecture.html",
+        "title": "ArkTS ↔ C / C++ 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "33532ab63b6573801018af981d0557da65890b24256b772744cadf8b155e71ce"
+      },
+      {
+        "name": "arkts-rust-architecture.html",
+        "title": "ArkTS ↔ Rust 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "88b030610f0d449e1c33a1e97b9a0a9fd5ccf101c8c606f87059ba3e0aa84d9b"
+      },
+      {
+        "name": "extensions-architecture.html",
+        "title": "扩展路线与工程增强全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "855acf21f9842deb7d3e6c7809be183286db17fb6a720bc161096f1f982e91b2"
+      },
+      {
+        "name": "implementation-progress.html",
+        "title": "MadB · 实施计划与进度",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "6aa4394e180a3bee469918347ba2531c1b48bb1d66900df5114913eb938ea803"
+      },
+      {
+        "name": "kotlin-arkts-architecture.html",
+        "title": "MadB · Kotlin/Native ↔ ArkTS 架构全景",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "592a72446374e2cf5aa409391193f81347cbbf30c4ec179e8b4fb340b2a8a440"
+      },
+      {
+        "name": "kotlin-c-cpp-architecture.html",
+        "title": "Kotlin ↔ C / C++ 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "b5bde8cc11200313baaa5c088d737aa29febfbf733c060f5f6e32e81d196af81"
+      },
+      {
+        "name": "kotlin-rust-architecture.html",
+        "title": "Kotlin ↔ Rust 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "c36bd6f8c5bf7c6005c187d8ddc135218db687c2f4b6748eb944e761770767e3"
+      },
+      {
+        "name": "kotlin-swift-architecture.html",
+        "title": "MadB · Kotlin/Native ↔ Swift 架构全景",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "5401b34bfa4ed56a499fe491b3749a33e4b0bf2b5c609b40ae9e696283b9dad8"
+      },
+      {
+        "name": "route-atlas.html",
+        "title": "MadB · 跨语言架构图谱",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "16327f23458d03a0cb6f465c648fdaa11312e255016b3f78d6cade23a971a320"
+      },
+      {
+        "name": "rust-c-cpp-architecture.html",
+        "title": "Rust ↔ C / C++ 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "3f941032a667564ade168cfe3a16cf32fb70519ab90e54d919b42b1ff335a842"
+      },
+      {
+        "name": "swift-c-cpp-architecture.html",
+        "title": "Swift ↔ C / C++ 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "6996031b8f75137f3ca403d38539f5e63ecf98e8b42384092e9e945f82ee7229"
+      },
+      {
+        "name": "swift-rust-architecture.html",
+        "title": "Swift ↔ Rust 架构全景 · MadB",
+        "viewports": [
+          {
+            "width": 1440,
+            "scroll": 1440
+          },
+          {
+            "width": 390,
+            "scroll": 390
+          }
+        ],
+        "sha256": "e134557c2ee705259e23631d3416865a9be5e3e152f7f1c1a71e1968650893a2"
+      }
+    ],
+    "profiles": 29,
+    "scenarioClicks": 87,
+    "filterClicks": 173,
+    "disabledFilters": 1,
+    "keyboardChecks": 29,
+    "progress": {
+      "deepLink": "passed",
+      "search": "passed",
+      "draftRoundTrip": "passed",
+      "catalogDate": "passed"
+    },
+    "consoleErrors": [],
+    "productTestsExecuted": false,
+    "visual_review": {
+      "status": "passed",
+      "screenshots": [
+        "architecture-overview-narrow",
+        "implementation-progress-desktop",
+        "implementation-progress-narrow",
+        "acceptance-detail"
+      ],
+      "scope": "main changed pages and task acceptance text; all 13 pages also checked for document overflow at 1440 and 390 pixels"
+    },
+    "harness_corrections": [
+      "Skip clicks on intentionally disabled route filters after checking their explanation.",
+      "Match task identifier within its displayed identifier-and-track label."
+    ]
+  },
+  "product_tests_executed": false,
+  "errors": [],
+  "review": "2026-10-25-architecture-simplification.md",
+  "review_date": "2026-10-25",
+  "source_head_at_start": "b9f1e1bce5fdde3b45232b06ac59b7dd6ff90030",
+  "checks": [
+    {
+      "command": ".venv/bin/python docs/tools/render_visuals.py --check",
+      "status": "passed",
+      "scope": "13 derived views"
+    },
+    {
+      "command": ".venv/bin/python -m unittest discover -s docs/tools/tests",
+      "status": "passed",
+      "tests": 21
+    },
+    {
+      "command": "node docs/tools/tests/panorama_smoke.cjs",
+      "status": "passed",
+      "method": "isolated DOM-shaped unit execution; not a browser",
+      "profiles": 29,
+      "graph_filters": 173,
+      "sequence_scenarios": 87,
+      "node_keyboard_selections": 3044
+    },
+    {
+      "command": "MadB-Lab: python harness/check_repository.py",
+      "status": "passed",
+      "scope": "repository independence and pinned specification hashes; no SDK tests"
+    }
+  ],
+  "preserved": {
+    "tasks": 41,
+    "mainline_routes": 16,
+    "boundary_groups": 9,
+    "task_state_phase_scope_dependencies_owner_dates_evidence": "unchanged",
+    "public_schemas_and_examples": "unchanged",
+    "historical_reports_and_research": "not edited by this review",
+    "lab_pinned_reference": "unchanged and checksummed",
+    "product_code": "not edited by this review"
+  },
+  "changed_task_acceptance": [
+    "C09",
+    "C10",
+    "E01",
+    "E02",
+    "E06",
+    "I01",
+    "I02",
+    "I03",
+    "I04",
+    "I05",
+    "I06",
+    "L01",
+    "L07"
+  ],
+  "parallel_work_preserved": [
+    "reviews/2026-10-25-c07-arkts.md",
+    "reviews/c07-facade-observation.json"
+  ],
+  "denoising": {
+    "implementation_plan_before_chars": 8766,
+    "implementation_plan_after_chars": 6864,
+    "method": "historical detail replaced with current handoff and evidence links; acceptance and current safety constraints preserved"
+  },
+  "limitations": [
+    "No native SDK, device, remote CI, release or performance tests executed.",
+    "Static links cover local files; not every external URL was revalidated.",
+    "Future API, project-update and extension support remain requirements, not implemented features."
+  ],
+  "changed_files": {
+    "README.md": "73750ec9fc44226cd0cb6de73328148d86c6ef8f39a994538ed139687d9dd2a6",
+    "adr/0012-extension-composition-and-delivery.md": "39d10ab57683a5e67f17a9157797649c09c7e55f9530c0dfa6c7bde9ad3fc44c",
+    "architecture/02-modules-and-ports.md": "120b17afd13e9613e008203703906e5db2b9c450c692fba939f0a5165d97b607",
+    "architecture/07-code-generation.md": "d7375daa70b932e8a868a85b5c76bfd124bb00dad101e3019a86a946ee75fd3a",
+    "architecture/12-extension-protocol.md": "10a8ecdc84011519d090c9ccef02b0f8a0397298500ead1c2cab54cd92444785",
+    "architecture/14-project-initialization.md": "b1b59510d3fa539c0dd204ed40a64d45b326f659555a1857ac8a2fe027b5c034",
+    "architecture/15-developer-ergonomics.md": "74bff070fd1ecf758c79b2f203e47c9b2d08ea63e7634cce65ff32119495cf8c",
+    "architecture/17-extension-composition.md": "c4a3adaf02f5ec8103c11eda46328858648eb8eacc309ca5dd22c55ff2784051",
+    "catalog/implementation-plan.json": "021c0393a5732cfe110defd12c72c57c8190afa7385267e01e96aed9a32d5934",
+    "delivery/01-implementation-plan.md": "f538aeb40f1b7021756cf41b315396b92b4562ca6e7a71e49545afe854f79784",
+    "delivery/03-decisions-and-risks.md": "c3f109c0eeb14e9045041d26de5208ff73f236f8f58ad069006b5ea98d0de5c1",
+    "product/01-positioning-and-requirements.md": "8d6fe782cde64dd3249e1d44dad496538a6ecb20ba70c340582d165bda5a08fb",
+    "product/03-developer-experience.md": "dfa9a226adae714ff0716db9bd669e0e4b9732a16962072ccad905f22b41b4d6",
+    "product/04-project-initialization.md": "4e7ddfb093ad2d53b7613383abe7b939aee40c7993a71ad0921ad3b35387c4c0",
+    "reviews/2026-10-25-architecture-simplification.md": "1a781ba89c90adbc62b35ab1b8e8b7fb00faa8244f2f4a83bd04dab7e5c687a4",
+    "reviews/README.md": "f53de5f2f9780a46252895732ddbff720e7c05e7b55c3dafa6ee227bb6fb7212",
+    "tools/templates/architecture-overview.html": "949e47efd7c9cdd5dfe44179472036b5a6e519892751b7e716cfd8b9cb92d409",
+    "tools/templates/implementation-progress.html": "53ab5c6c628306252645571f1e98f33bf95beeba1758576618dd8af6ce763074",
+    "validation/05-language-onboarding.md": "1963f30a352238f7868b9894e7a2408d0eeea523735a20f437c13a20110aba85",
+    "validation/06-project-initialization.md": "8ed7705ce50b243a776888ffc986f634bfbb5382967c49d61648374deedfa591",
+    "validation/07-developer-ergonomics.md": "387798bb6a30aee30ad48082c01ffe6fe456001e1e0ca4ba30a90be988bf616a",
+    "visuals/architecture-overview.html": "4db874db4fc96118fb3a108f25622dea15960ee943725a68e19914fa2ff6c9e5",
+    "visuals/arkts-c-cpp-architecture.html": "33532ab63b6573801018af981d0557da65890b24256b772744cadf8b155e71ce",
+    "visuals/arkts-rust-architecture.html": "88b030610f0d449e1c33a1e97b9a0a9fd5ccf101c8c606f87059ba3e0aa84d9b",
+    "visuals/extensions-architecture.html": "855acf21f9842deb7d3e6c7809be183286db17fb6a720bc161096f1f982e91b2",
+    "visuals/implementation-progress.html": "6aa4394e180a3bee469918347ba2531c1b48bb1d66900df5114913eb938ea803",
+    "visuals/kotlin-arkts-architecture.html": "592a72446374e2cf5aa409391193f81347cbbf30c4ec179e8b4fb340b2a8a440",
+    "visuals/kotlin-c-cpp-architecture.html": "b5bde8cc11200313baaa5c088d737aa29febfbf733c060f5f6e32e81d196af81",
+    "visuals/kotlin-rust-architecture.html": "c36bd6f8c5bf7c6005c187d8ddc135218db687c2f4b6748eb944e761770767e3",
+    "visuals/kotlin-swift-architecture.html": "5401b34bfa4ed56a499fe491b3749a33e4b0bf2b5c609b40ae9e696283b9dad8",
+    "visuals/route-atlas.html": "16327f23458d03a0cb6f465c648fdaa11312e255016b3f78d6cade23a971a320",
+    "visuals/rust-c-cpp-architecture.html": "3f941032a667564ade168cfe3a16cf32fb70519ab90e54d919b42b1ff335a842",
+    "visuals/swift-c-cpp-architecture.html": "6996031b8f75137f3ca403d38539f5e63ecf98e8b42384092e9e945f82ee7229",
+    "visuals/swift-rust-architecture.html": "e134557c2ee705259e23631d3416865a9be5e3e152f7f1c1a71e1968650893a2"
+  },
+  "digest_scope": "changed_files records the reviewed source and generated bytes, excluding this receipt to avoid self-reference"
+}

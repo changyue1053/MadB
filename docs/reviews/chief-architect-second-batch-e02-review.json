@@ -1,0 +1,62 @@
+{
+  "reviewer": "i01_plan",
+  "workspace": "/private/tmp/madb-chief-round2/madb",
+  "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+  "dirty_input_preserved": true,
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "python": "3.14.4",
+    "rustc": "1.99.1 (58cf8f9c3 2026-10-13)"
+  },
+  "source_hashes": {
+    "crates/madb-app/src/extension.rs": "d48ae074047251b7d095a12244a99752e1a074243668d42d5457fa8353c0b52a",
+    "crates/madb-app/src/inputs.rs": "ed04ccf83a0ebb8bb6c7381e2d39fcede669ddc981b87a9b9312446733f8f9c5",
+    "crates/madb-app/src/process.rs": "2a130ff201072498f4c615ea1ec38eeb8145dad3d2a709b4930780b760fe2c7b",
+    "adapters/host/src/process/session.rs": "4cfbf49f1a795b97c29da84824cd8d728b87c5ef35bb630c94dad6a2ec8d7299",
+    "adapters/contracts/src/extension_session.rs": "7ac77d478a4964de3903e54dc924696e91b7dd7be74adeb27ac0b8b4283314cc",
+    "crates/madb-protocol/src/extension_author.rs": "c096fa3b2b656f05295d85d226623a7c99ea9e268c66c704d7850baa169b00e3",
+    "adapters/contracts/src/extension_files.rs": "abe69d161ed738234246c103da5caa0e1099471a4df3f4b871ca5793a6750837",
+    "adapters/host/src/extension_files.rs": "4cd8ea9732a44394aaf919f61e02e8bfd5c0ed679d47ba0053bee5fff8b68777",
+    "adapters/contracts/tests/extension_files.rs": "adafa1227d7f3e8d64d83e837f579addd57ae8001a416d4b61d77a6ffdcbe3fc",
+    "adapters/host/tests/extension_files.rs": "dbcd818088b6a0e8caf8cbe99dadecab545897a5d6931f77443be69e812baa43",
+    "crates/madb-cli/examples/extension_session_probe.rs": "dea546e4b2313f3cec73b665b41a81900af01ebeb459f50f09bcdf780d4f101b",
+    "crates/madb-cli/examples/extension_session_probe/session.rs": "720eda3b459408be138fd56692f2de6bd6746a14dd738c0412a625b67e23d0f1",
+    "crates/madb-cli/examples/extension_chain_probe.rs": "5cef829faa6e6e08e4f3e07573fad7a20aff2810179795215fa2d16adf3f8857",
+    "crates/madb-protocol/examples/extension_peer.rs": "800980e3547d618abfe492f17d3b52b3269ad8467c4fb0f9cba2659c15b7b1ff",
+    "tests/integration/e02_session/test_session.py": "c2c6a55f428e709bb2566c31206d346e493b3f771329dd046c2c3783f6010d23"
+  },
+  "checks": {
+    "locked_offline_examples_build": true,
+    "contracts_extension_tests": 12,
+    "contracts_extension_files_tests": 16,
+    "host_extension_files_tests": 5,
+    "protocol_extension_tests": 7,
+    "protocol_extension_author_tests": 6,
+    "independent_artifact_identity_vectors": 18,
+    "real_process_test_groups": 11,
+    "real_process_reports": 44,
+    "real_process_seconds": 62.154,
+    "evidence_directory": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-e02-sessions-0fxe17tw",
+    "source_hashes_unchanged_after_checks": true
+  },
+  "test_budgets": {
+    "ordinary_handshake_seconds": 10,
+    "ordinary_task_seconds": 10,
+    "ordinary_global_seconds": 30,
+    "timeout_negative_phase_ms": 200,
+    "slow_global_seconds": 3
+  },
+  "prior_observations": [
+    "Old 8-group process run was superseded by file-domain changes.",
+    "Parallel write intermediate cargo checks failed due not-yet-defined capture_closure/FrozenWorkspace and later artifact_process; not final-candidate results.",
+    "Previous permissive 11-group run had outside-output, undeclared and late-write cases stop by early ToolTimeout; those three did not prove intended rejection. Exact diagnostics and terminal-frame assertions now passed."
+  ],
+  "limitations": [
+    "Only Darwin arm64 was run here.",
+    "Synchronous host file IO/callbacks are not preempted; elapsed deadlines are checked after return and before admission.",
+    "Double observations do not prove absence of same-byte or pre-observation writes.",
+    "Process groups are not an OS sandbox and do not prove arbitrary escaped/external work stopped.",
+    "BuildEvidence and two-component transaction data are controlled protocol fixtures, not real compiler/SDK/route/public-package acceptance."
+  ]
+}

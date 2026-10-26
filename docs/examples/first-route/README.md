@@ -1,6 +1,6 @@
 # 首链 ABI v1 的可执行设计
 
-本目录是 C02 的审查基线：固定两条直接路径需要的声明、状态值、缓冲、句柄和停止协议。`expected.h`、`expected.rs` 都是手写的**预期形状**，不冒充 cbindgen/bindgen 输出。`consumer.c` 只做签名与布局编译检查；C03 固定上游工具和两个目标的真实生成形状，C05 交付实现及独立消费者。当前没有可安装或运行的 SDK。
+本目录是 C02 的审查基线：固定两条直接路径需要的声明、状态值、缓冲、句柄和停止协议。`expected.h`、`expected.rs` 都是手写的**预期形状**，不冒充 cbindgen/bindgen 输出。`consumer.c` 只做签名与布局编译检查；C03 固定上游工具和两个目标的真实生成形状，C05 交付实现及独立消费者。本目录不直接提供 SDK；当前 C05 候选的构建与独立消费入口见[根 README](../../../README.md)，尚无生产发布包。
 
 ## 资产与责任
 
@@ -38,7 +38,7 @@ C ABI 是“状态返回 + 输出参数”；IR 的 `result: engine/u64/unit` �
 - subscription 的 `request_close` 停止接纳新回调；已获取的回调许可可完成，`await_closed` 等待排水。回调内对本订阅或等待该回调的 engine 调用 `await_closed` 返回 WouldDeadlock。
 - engine 关闭也关闭其订阅并排水；成功后 context 可清理。subscription 的登记令牌仍由其调用者 release，避免引擎替消费者消费令牌；源端 owner 负责保持所需记录直到排水完成。
 
-上述是待 C05 验证的协议，不是 C02 的并发正确性证据。首链要求的错句柄、重复关闭、关闭超时、迟到回调、注册失败和同步反调见 [CRIT-03/08/11](../../validation/08-critical-scenarios.md)。
+上述是 C05 的运行协议依据，不是 C02 的并发正确性证据；固定候选的实际验收范围见 [C05 记录](../../reviews/2026-10-24-c05-rust-c-first-route.md)。首链要求的错句柄、重复关闭、关闭超时、迟到回调、注册失败和同步反调见 [CRIT-03/08/11](../../validation/08-critical-scenarios.md)。
 
 ## 来源诊断与拒绝基线
 
@@ -46,7 +46,7 @@ C ABI 是“状态返回 + 输出参数”；IR 的 `result: engine/u64/unit` �
 
 缺释放器、错 release 签名、未知强制语义、缺 C record 布局、来源为 heuristic 都在生成前阻断。schema 正例只能证明可解码；冻结输入、策略来源、类型能力、真实字节摘要和执行证据分别检查。
 
-本目录不包含 ABI 兼容承诺；第一份对外版本前仍须完成 C03/C05 并审查实际生成差异。改变本设计要同步声明、样本、测试与对应决定，不只修改一个语言的镜像。
+本目录不单独授予 ABI 兼容承诺；对外发布仍须结合 C03/C05 的实际生成差异、候选证据和[发布门禁](../../architecture/09-build-packaging-release.md)审查。改变本设计要同步声明、样本、测试与对应决定，不只修改一个语言的镜像。
 
 ## C03 生成验证补充
 

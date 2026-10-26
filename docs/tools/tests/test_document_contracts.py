@@ -2,10 +2,12 @@
 import copy
 import importlib.util
 import json
+import shutil
 from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 TOOLS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(TOOLS))
@@ -109,5 +111,78 @@ class DocumentationContracts(unittest.TestCase):
             errors = self.source_errors(coverage, resolve)
             self.assertTrue(any('snapshot digest mismatch' in e for e in errors))
             self.assertTrue(any('snapshot invalid' in e for e in errors))
+
+class ExampleContracts(unittest.TestCase):
+    def setUp(self):
+        self.case = check_docs.load(TOOLS.parent/'examples/case.example.json')
+        self.manifest = check_docs.load(TOOLS.parent/'examples/extensions/dart-ffi.extension.example.json')
+        self.frames = check_docs.load(TOOLS.parent/'examples/extensions/protocol-session.example.json')['frames']
+
+    def test_planned_case_matches_current_wire_schema(self):
+        self.assertEqual(check_docs.case_example_errors(self.case), [])
+        self.assertEqual(self.case['kind'], 'template')
+        self.assertIsNone(self.case['selector'])
+
+    def test_case_instance_requires_resolved_selector(self):
+        self.case['kind'] = 'instance'
+        self.assertTrue(check_docs.case_example_errors(self.case))
+
+    def test_legacy_case_fields_fail_the_static_entry(self):
+        self.case.pop('kind')
+        self.case['profile'] = None
+        original = check_docs.load
+        path = TOOLS.parent/'examples/case.example.json'
+        def altered_load(requested):
+            return self.case if requested == path else original(requested)
+        with mock.patch.object(check_docs, 'load', side_effect=altered_load), mock.patch.object(render, 'render'):
+            result = check_docs.validate(shutil.which('node'))
+        self.assertEqual(result['status'], 'failed')
+        self.assertTrue(any(error.startswith('Case example') for error in result['errors']))
+
+    def test_normal_extension_transcript_agrees(self):
+        self.assertEqual(check_docs.extension_transcript_errors(self.manifest, self.frames), [])
+
+    def test_structurally_valid_transcript_mismatches_are_rejected(self):
+        from jsonschema import Draft202012Validator
+        validator = Draft202012Validator(check_docs.load(TOOLS.parent/'schemas/extension-wire.schema.json'))
+        changes = [
+            (1, 'session_id', 'other-session', 'session identity'),
+            (1, 'extension_version', '0.2.0', 'extension identity'),
+            (1, 'component_id', 'verifier', 'handshake component'),
+            (1, 'protocol', '9.0', 'highest explicitly common version'),
+            (1, 'features', [], 'ack features'),
+            (1, 'features', ['other.feature@1'], 'ack features'),
+            (2, 'component', 'example.dart-ffi/verifier', 'invoke component'),
+            (2, 'operation', 'verify', 'operation differs'),
+            (3, 'ir', '9.0', 'differs after negotiation'),
+            (3, 'request_id', 'other-request', 'request identity'),
+        ]
+        for index, key, value, message in changes:
+            with self.subTest(index=index, key=key, value=value):
+                frames = copy.deepcopy(self.frames)
+                frames[index][key] = value
+                self.assertTrue(all(validator.is_valid(frame) for frame in frames))
+                errors = check_docs.extension_transcript_errors(self.manifest, frames)
+                self.assertTrue(any(message in error for error in errors), errors)
+
+    def test_component_must_implement_required_feature(self):
+        self.manifest['components'][0]['supported_features'].pop()
+        errors = check_docs.extension_transcript_errors(self.manifest, self.frames)
+        self.assertTrue(any('component lacks required features' in error for error in errors))
+
+    def test_version_order_is_numeric_and_explicit(self):
+        for field in ('protocol', 'ir'):
+            self.manifest['compatibility'][field] = ['1.9', '1.10']
+            self.frames[0][field + '_versions'] = ['1.9', '1.10', '2.0']
+            for frame in self.frames[1:]:
+                frame[field] = '1.10'
+        self.assertEqual(check_docs.extension_transcript_errors(self.manifest, self.frames), [])
+        self.frames[1]['protocol'] = '1.9'
+        self.assertTrue(check_docs.extension_transcript_errors(self.manifest, self.frames))
+
+    def test_duplicate_terminal_is_not_a_normal_example(self):
+        self.frames.append(copy.deepcopy(self.frames[-1]))
+        self.assertTrue(check_docs.extension_transcript_errors(self.manifest, self.frames))
+
 
 if __name__=='__main__': unittest.main()

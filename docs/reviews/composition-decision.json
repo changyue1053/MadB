@@ -1,0 +1,1347 @@
+{
+  "revision": 3,
+  "previous_report": "composition-decision-r2/composition-decision.json",
+  "original_report": "composition-decision-r1/composition-decision.json",
+  "purpose": "proposal-only; finite design vectors, NOT production parser/registration or full E01/E03/C07/L05 acceptance",
+  "source_snapshot": {
+    "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+    "inventory": {
+      "path": "madb-input.json",
+      "sha256": "sha256:a00d73ed671ed15696636eca08cf9fa306afb6f1beadc11d0da48045391e424f",
+      "size": 130577
+    },
+    "repository": "/Users/changyue/Desktop/MadB/madb"
+  },
+  "source_pins": {
+    "adapters/generators/arkts/profiles/snapshot-v1.json": {
+      "path": "adapters/generators/arkts/profiles/snapshot-v1.json",
+      "sha256": "sha256:88729ffd4878a7aa991ce3a94f0edd3b3ec156751fbe5b12bca7cf050b2ced75",
+      "size": 30996
+    },
+    "sdk/arkts/facade/Boundary.ets.in": {
+      "path": "sdk/arkts/facade/Boundary.ets.in",
+      "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+      "size": 25310
+    },
+    "sdk/arkts/observation/StateObservation.ets": {
+      "path": "sdk/arkts/observation/StateObservation.ets",
+      "sha256": "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+      "size": 5662
+    },
+    "sdk/arkts/observation/ArkUIStateModel.ets": {
+      "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+      "sha256": "sha256:7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+      "size": 1184
+    },
+    "adapters/generators/arkts/driver.py": {
+      "path": "adapters/generators/arkts/driver.py",
+      "sha256": "sha256:3447d7fa1bc9a820ee6ed5360495d57390abcb44cda09819e0377484721b6361",
+      "size": 27096
+    },
+    "sdk/arkts/facade/RuntimeFrame.ets": {
+      "path": "sdk/arkts/facade/RuntimeFrame.ets",
+      "sha256": "sha256:a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492",
+      "size": 1583
+    },
+    "sdk/arkts/native-runtime/src/protocol.cpp": {
+      "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+      "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+      "size": 38825
+    },
+    "sdk/arkts/native-gateway/src/runtime.cpp": {
+      "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+      "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+      "size": 23041
+    },
+    "sdk/arkts/native-gateway/src/api.cpp": {
+      "path": "sdk/arkts/native-gateway/src/api.cpp",
+      "sha256": "sha256:523a6a9966d0de617a245ac07b2a7190558bb7d5d757fb6f01a007fe33b53d7d",
+      "size": 20352
+    },
+    "sdk/c/arkts-provider/src/provider.c": {
+      "path": "sdk/c/arkts-provider/src/provider.c",
+      "sha256": "sha256:136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+      "size": 3721
+    },
+    "adapters/toolchains/arkts/native.py": {
+      "path": "adapters/toolchains/arkts/native.py",
+      "sha256": "sha256:89a0881e70cab335b0bc4b024152dc503a32f9adba7e4c99fdf0a786f3372976",
+      "size": 13361
+    },
+    "adapters/toolchains/arkts/project.py": {
+      "path": "adapters/toolchains/arkts/project.py",
+      "sha256": "sha256:2289a845114507884fe52f58174ac715e7d9859b08831d469f6e930a689edd8c",
+      "size": 28338
+    },
+    "adapters/contracts/src/projections.rs": {
+      "path": "adapters/contracts/src/projections.rs",
+      "sha256": "sha256:30d0817913146cc2b96970cf4ef47f3b84112145f51b2035f7a1c1ef06bf19ba",
+      "size": 12068
+    },
+    "docs/adr/0013-arkts-runtime-and-completion.md": {
+      "path": "docs/adr/0013-arkts-runtime-and-completion.md",
+      "sha256": "sha256:8ef892436312636f7f2e368426c7f30c6949a170bf7a30e8e8b3ea59a1011a5a",
+      "size": 14159
+    },
+    "docs/adr/0017-arkts-extension-delivery.md": {
+      "path": "docs/adr/0017-arkts-extension-delivery.md",
+      "sha256": "sha256:ceaa60746c59c6d67a7c5f85604d5c08efc1f191c70757cc62e1c81f0d83c338",
+      "size": 10424
+    },
+    "crates/madb-model/src/contract.rs": {
+      "path": "crates/madb-model/src/contract.rs",
+      "sha256": "sha256:2b4de862ffac5fd06fbc4a3067f6aa38c57a4261b49d6a23a8a81b8281123dc2",
+      "size": 5145
+    },
+    "docs/schemas/extension-manifest.schema.json": {
+      "path": "docs/schemas/extension-manifest.schema.json",
+      "sha256": "sha256:c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+      "size": 9734
+    }
+  },
+  "virtual_proposal_manifests": {
+    "extensions/arkts-native/extension.design.json": {
+      "schema": "madb.extension/1",
+      "example": true,
+      "id": "madb.arkts-native",
+      "version": "0.1.0-design",
+      "compatibility": {
+        "protocol": [
+          "1.0"
+        ],
+        "ir": [
+          "1.0"
+        ]
+      },
+      "languages": [],
+      "components": [
+        {
+          "id": "reader",
+          "port": "contract-reader",
+          "supported_features": [
+            "core.extension-composition@1"
+          ],
+          "entrypoint": {
+            "kind": "process",
+            "path": "adapters/generators/arkts/driver.py",
+            "args": [
+              "metadata"
+            ]
+          }
+        },
+        {
+          "id": "generator",
+          "port": "generator",
+          "supported_features": [
+            "core.extension-composition@1"
+          ],
+          "entrypoint": {
+            "kind": "process",
+            "path": "adapters/generators/arkts/driver.py",
+            "args": [
+              "generate"
+            ]
+          }
+        }
+      ],
+      "dependencies": [],
+      "routes": [],
+      "assets": [
+        {
+          "kind": "sdk",
+          "path": "sdk/arkts/facade"
+        },
+        {
+          "kind": "sdk",
+          "path": "sdk/arkts/native-runtime"
+        },
+        {
+          "kind": "sdk",
+          "path": "sdk/arkts/native-gateway"
+        },
+        {
+          "kind": "sdk",
+          "path": "sdk/c/arkts-provider"
+        },
+        {
+          "kind": "sdk",
+          "path": "sdk/arkts/observation"
+        }
+      ],
+      "execution": {
+        "transport": "stdio-jsonl",
+        "network": "none",
+        "env": []
+      }
+    }
+  },
+  "manifest_warning": "example:true is intentional: driver is current private CLI, not a completed E02 package entrypoint; registration must reject this specimen",
+  "examples": {
+    "ordinary": {
+      "schema": "madb.composition/1",
+      "id": "c07-c-arkts-ordinary",
+      "recipe": "madb.c07-c-arkts/ordinary@1",
+      "selection": {
+        "profile_id": "proposal-c07-c-arkts-ordinary",
+        "route": "madb.arkts-c-napi",
+        "direction": "consumer-to-provider",
+        "target": "aarch64-linux-ohos"
+      },
+      "packages": [
+        {
+          "id": "madb.arkts-native",
+          "version": "0.1.0-design",
+          "manifest": {
+            "path": "extensions/arkts-native/extension.design.json",
+            "sha256": "sha256:e0503963f5599c6f756464513427b21db58bc5f5a15d7aebdfa28d5acde44b8e",
+            "size": 893,
+            "schema": "madb.extension/1"
+          },
+          "source": {
+            "kind": "file-set",
+            "files": [
+              {
+                "path": "adapters/generators/arkts/driver.py",
+                "sha256": "sha256:3447d7fa1bc9a820ee6ed5360495d57390abcb44cda09819e0377484721b6361",
+                "size": 27096
+              },
+              {
+                "path": "adapters/generators/arkts/profiles/snapshot-v1.json",
+                "sha256": "sha256:88729ffd4878a7aa991ce3a94f0edd3b3ec156751fbe5b12bca7cf050b2ced75",
+                "size": 30996
+              },
+              {
+                "path": "extensions/arkts-native/extension.design.json",
+                "sha256": "sha256:e0503963f5599c6f756464513427b21db58bc5f5a15d7aebdfa28d5acde44b8e",
+                "size": 893
+              },
+              {
+                "path": "sdk/arkts/facade/Boundary.ets.in",
+                "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+                "size": 25310
+              },
+              {
+                "path": "sdk/arkts/facade/RuntimeFrame.ets",
+                "sha256": "sha256:a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492",
+                "size": 1583
+              },
+              {
+                "path": "sdk/arkts/native-gateway/src/api.cpp",
+                "sha256": "sha256:523a6a9966d0de617a245ac07b2a7190558bb7d5d757fb6f01a007fe33b53d7d",
+                "size": 20352
+              },
+              {
+                "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+                "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+                "size": 23041
+              },
+              {
+                "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+                "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+                "size": 38825
+              },
+              {
+                "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+                "sha256": "sha256:7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+                "size": 1184
+              },
+              {
+                "path": "sdk/arkts/observation/StateObservation.ets",
+                "sha256": "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+                "size": 5662
+              },
+              {
+                "path": "sdk/c/arkts-provider/src/provider.c",
+                "sha256": "sha256:136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+                "size": 3721
+              }
+            ]
+          },
+          "source_digest": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        }
+      ],
+      "components": [
+        {
+          "id": "madb.arkts-native/reader",
+          "version": "0.1.0-design",
+          "sha256": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        },
+        {
+          "id": "madb.arkts-native/generator",
+          "version": "0.1.0-design",
+          "sha256": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        }
+      ],
+      "assets": [
+        {
+          "id": "facade-template",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/facade/Boundary.ets.in",
+                "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+                "size": 25310
+              }
+            ]
+          }
+        },
+        {
+          "id": "native-protocol",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+                "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+                "size": 38825
+              }
+            ]
+          }
+        },
+        {
+          "id": "native-gateway",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+                "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+                "size": 23041
+              }
+            ]
+          }
+        },
+        {
+          "id": "facade",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "generated",
+            "producer": "madb.arkts-native/generator",
+            "output_slot": "ordinary-facade",
+            "paths": [
+              "generated/facade/Boundary.ets"
+            ]
+          }
+        }
+      ],
+      "dependencies": [],
+      "responsibilities": [
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Engine.roundtrip.v1"
+          },
+          "stage": "projection",
+          "scope": {
+            "kind": "call",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.roundtrip.v1"
+            },
+            "layer": "facade"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "facade"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Engine.observeState.v1"
+          },
+          "stage": "subscription",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.requestStop.v1"
+          },
+          "stage": "stop",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.close.v1"
+          },
+          "stage": "drain",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.close.v1"
+          },
+          "stage": "release",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "facade"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "facade"
+          }
+        }
+      ]
+    },
+    "enhanced": {
+      "schema": "madb.composition/1",
+      "id": "c07-c-arkts-enhanced",
+      "recipe": "madb.c07-c-arkts/arkui-v2@1",
+      "selection": {
+        "profile_id": "proposal-c07-c-arkts-enhanced",
+        "route": "madb.arkts-c-napi",
+        "direction": "consumer-to-provider",
+        "target": "aarch64-linux-ohos"
+      },
+      "packages": [
+        {
+          "id": "madb.arkts-native",
+          "version": "0.1.0-design",
+          "manifest": {
+            "path": "extensions/arkts-native/extension.design.json",
+            "sha256": "sha256:e0503963f5599c6f756464513427b21db58bc5f5a15d7aebdfa28d5acde44b8e",
+            "size": 893,
+            "schema": "madb.extension/1"
+          },
+          "source": {
+            "kind": "file-set",
+            "files": [
+              {
+                "path": "adapters/generators/arkts/driver.py",
+                "sha256": "sha256:3447d7fa1bc9a820ee6ed5360495d57390abcb44cda09819e0377484721b6361",
+                "size": 27096
+              },
+              {
+                "path": "adapters/generators/arkts/profiles/snapshot-v1.json",
+                "sha256": "sha256:88729ffd4878a7aa991ce3a94f0edd3b3ec156751fbe5b12bca7cf050b2ced75",
+                "size": 30996
+              },
+              {
+                "path": "extensions/arkts-native/extension.design.json",
+                "sha256": "sha256:e0503963f5599c6f756464513427b21db58bc5f5a15d7aebdfa28d5acde44b8e",
+                "size": 893
+              },
+              {
+                "path": "sdk/arkts/facade/Boundary.ets.in",
+                "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+                "size": 25310
+              },
+              {
+                "path": "sdk/arkts/facade/RuntimeFrame.ets",
+                "sha256": "sha256:a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492",
+                "size": 1583
+              },
+              {
+                "path": "sdk/arkts/native-gateway/src/api.cpp",
+                "sha256": "sha256:523a6a9966d0de617a245ac07b2a7190558bb7d5d757fb6f01a007fe33b53d7d",
+                "size": 20352
+              },
+              {
+                "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+                "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+                "size": 23041
+              },
+              {
+                "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+                "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+                "size": 38825
+              },
+              {
+                "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+                "sha256": "sha256:7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+                "size": 1184
+              },
+              {
+                "path": "sdk/arkts/observation/StateObservation.ets",
+                "sha256": "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+                "size": 5662
+              },
+              {
+                "path": "sdk/c/arkts-provider/src/provider.c",
+                "sha256": "sha256:136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+                "size": 3721
+              }
+            ]
+          },
+          "source_digest": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        }
+      ],
+      "components": [
+        {
+          "id": "madb.arkts-native/reader",
+          "version": "0.1.0-design",
+          "sha256": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        },
+        {
+          "id": "madb.arkts-native/generator",
+          "version": "0.1.0-design",
+          "sha256": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        }
+      ],
+      "assets": [
+        {
+          "id": "facade-template",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/facade/Boundary.ets.in",
+                "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+                "size": 25310
+              }
+            ]
+          }
+        },
+        {
+          "id": "native-protocol",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+                "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+                "size": 38825
+              }
+            ]
+          }
+        },
+        {
+          "id": "native-gateway",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+                "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+                "size": 23041
+              }
+            ]
+          }
+        },
+        {
+          "id": "facade",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "generated",
+            "producer": "madb.arkts-native/generator",
+            "output_slot": "ordinary-facade",
+            "paths": [
+              "generated/facade/Boundary.ets"
+            ]
+          }
+        },
+        {
+          "id": "state-observation",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/observation/StateObservation.ets",
+                "sha256": "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+                "size": 5662
+              }
+            ]
+          }
+        },
+        {
+          "id": "arkui-state",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+                "sha256": "sha256:7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+                "size": 1184
+              }
+            ]
+          }
+        }
+      ],
+      "dependencies": [
+        {
+          "from": "state-observation",
+          "to": "facade",
+          "scope": "consumer-compile"
+        },
+        {
+          "from": "arkui-state",
+          "to": "state-observation",
+          "scope": "optional-integration"
+        }
+      ],
+      "responsibilities": [
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Engine.roundtrip.v1"
+          },
+          "stage": "projection",
+          "scope": {
+            "kind": "call",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.roundtrip.v1"
+            },
+            "layer": "facade"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "facade"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Engine.observeState.v1"
+          },
+          "stage": "subscription",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.requestStop.v1"
+          },
+          "stage": "stop",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.close.v1"
+          },
+          "stage": "drain",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.close.v1"
+          },
+          "stage": "release",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "facade"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "facade"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "sdk-export",
+            "asset": "state-observation",
+            "name": "StateObservation.requestStop"
+          },
+          "stage": "stop",
+          "scope": {
+            "kind": "receiver",
+            "anchor": {
+              "kind": "sdk-export",
+              "asset": "state-observation",
+              "name": "StateObservation.attach"
+            },
+            "layer": "receiver"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "state-observation"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "sdk-export",
+            "asset": "state-observation",
+            "name": "StateObservation.close"
+          },
+          "stage": "async-bridge",
+          "scope": {
+            "kind": "receiver",
+            "anchor": {
+              "kind": "sdk-export",
+              "asset": "state-observation",
+              "name": "StateObservation.attach"
+            },
+            "layer": "receiver"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "state-observation"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "sdk-export",
+            "asset": "arkui-state",
+            "name": "ArkUIStateModel.attach"
+          },
+          "stage": "projection",
+          "scope": {
+            "kind": "receiver",
+            "anchor": {
+              "kind": "sdk-export",
+              "asset": "arkui-state",
+              "name": "ArkUIStateModel.attach"
+            },
+            "layer": "view-model"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "arkui-state"
+          }
+        }
+      ]
+    },
+    "disabled": {
+      "schema": "madb.composition/1",
+      "id": "c07-c-arkts-ordinary",
+      "recipe": "madb.c07-c-arkts/ordinary@1",
+      "selection": {
+        "profile_id": "proposal-c07-c-arkts-ordinary",
+        "route": "madb.arkts-c-napi",
+        "direction": "consumer-to-provider",
+        "target": "aarch64-linux-ohos"
+      },
+      "packages": [
+        {
+          "id": "madb.arkts-native",
+          "version": "0.1.0-design",
+          "manifest": {
+            "path": "extensions/arkts-native/extension.design.json",
+            "sha256": "sha256:e0503963f5599c6f756464513427b21db58bc5f5a15d7aebdfa28d5acde44b8e",
+            "size": 893,
+            "schema": "madb.extension/1"
+          },
+          "source": {
+            "kind": "file-set",
+            "files": [
+              {
+                "path": "adapters/generators/arkts/driver.py",
+                "sha256": "sha256:3447d7fa1bc9a820ee6ed5360495d57390abcb44cda09819e0377484721b6361",
+                "size": 27096
+              },
+              {
+                "path": "adapters/generators/arkts/profiles/snapshot-v1.json",
+                "sha256": "sha256:88729ffd4878a7aa991ce3a94f0edd3b3ec156751fbe5b12bca7cf050b2ced75",
+                "size": 30996
+              },
+              {
+                "path": "extensions/arkts-native/extension.design.json",
+                "sha256": "sha256:e0503963f5599c6f756464513427b21db58bc5f5a15d7aebdfa28d5acde44b8e",
+                "size": 893
+              },
+              {
+                "path": "sdk/arkts/facade/Boundary.ets.in",
+                "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+                "size": 25310
+              },
+              {
+                "path": "sdk/arkts/facade/RuntimeFrame.ets",
+                "sha256": "sha256:a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492",
+                "size": 1583
+              },
+              {
+                "path": "sdk/arkts/native-gateway/src/api.cpp",
+                "sha256": "sha256:523a6a9966d0de617a245ac07b2a7190558bb7d5d757fb6f01a007fe33b53d7d",
+                "size": 20352
+              },
+              {
+                "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+                "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+                "size": 23041
+              },
+              {
+                "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+                "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+                "size": 38825
+              },
+              {
+                "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+                "sha256": "sha256:7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+                "size": 1184
+              },
+              {
+                "path": "sdk/arkts/observation/StateObservation.ets",
+                "sha256": "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+                "size": 5662
+              },
+              {
+                "path": "sdk/c/arkts-provider/src/provider.c",
+                "sha256": "sha256:136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+                "size": 3721
+              }
+            ]
+          },
+          "source_digest": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        }
+      ],
+      "components": [
+        {
+          "id": "madb.arkts-native/reader",
+          "version": "0.1.0-design",
+          "sha256": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        },
+        {
+          "id": "madb.arkts-native/generator",
+          "version": "0.1.0-design",
+          "sha256": "sha256:7f0d18fb2a51a50e1e059c646502bad3760ceb4801edf4ed0318a08f21768036"
+        }
+      ],
+      "assets": [
+        {
+          "id": "facade-template",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/facade/Boundary.ets.in",
+                "sha256": "sha256:dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15",
+                "size": 25310
+              }
+            ]
+          }
+        },
+        {
+          "id": "native-protocol",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/native-runtime/src/protocol.cpp",
+                "sha256": "sha256:eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+                "size": 38825
+              }
+            ]
+          }
+        },
+        {
+          "id": "native-gateway",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "source",
+            "files": [
+              {
+                "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+                "sha256": "sha256:2ef9479949934dd8e5d8f9f447f7983f9191162ba7f1e0ec5b782b53363dc87b",
+                "size": 23041
+              }
+            ]
+          }
+        },
+        {
+          "id": "facade",
+          "package": "madb.arkts-native",
+          "source": {
+            "kind": "generated",
+            "producer": "madb.arkts-native/generator",
+            "output_slot": "ordinary-facade",
+            "paths": [
+              "generated/facade/Boundary.ets"
+            ]
+          }
+        }
+      ],
+      "dependencies": [],
+      "responsibilities": [
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Engine.roundtrip.v1"
+          },
+          "stage": "projection",
+          "scope": {
+            "kind": "call",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.roundtrip.v1"
+            },
+            "layer": "facade"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "facade"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Engine.observeState.v1"
+          },
+          "stage": "subscription",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.requestStop.v1"
+          },
+          "stage": "stop",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.close.v1"
+          },
+          "stage": "drain",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "source"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "native-protocol"
+          }
+        },
+        {
+          "boundary": "c-arkts",
+          "subject": {
+            "kind": "public-symbol",
+            "public_id": "madb.c07.Subscription.close.v1"
+          },
+          "stage": "release",
+          "scope": {
+            "kind": "subscription",
+            "anchor": {
+              "kind": "public-symbol",
+              "public_id": "madb.c07.Engine.observeState.v1"
+            },
+            "layer": "facade"
+          },
+          "owner": {
+            "kind": "sdk-asset",
+            "package": "madb.arkts-native",
+            "asset": "facade"
+          }
+        }
+      ]
+    }
+  },
+  "digests": {
+    "ordinary": "sha256:9ddf46667496edb84216830cbe371fe47c831ea68d1ed42ec3ac3c0e785e193c",
+    "enhanced": "sha256:3b44a94b4f8f06a57ccd3e11ff7d2da826944da87c97c98de0c27362ed88b2eb",
+    "disabled": "sha256:9ddf46667496edb84216830cbe371fe47c831ea68d1ed42ec3ac3c0e785e193c"
+  },
+  "profile2_composition_projection": {
+    "id": "c07-c-arkts-ordinary",
+    "semantic_digest": "sha256:9ddf46667496edb84216830cbe371fe47c831ea68d1ed42ec3ac3c0e785e193c"
+  },
+  "generated_example": {
+    "phase": "design-render-only",
+    "producer": "madb.arkts-native/generator",
+    "composition_digest": "sha256:9ddf46667496edb84216830cbe371fe47c831ea68d1ed42ec3ac3c0e785e193c",
+    "output_slot": "ordinary-facade",
+    "file": {
+      "path": "generated/facade/Boundary.ets",
+      "sha256": "sha256:95b2b0d5cd735fa2a5e37034e0f209724b7bce581013b051fde29a1c2f93b469",
+      "size": 25318
+    },
+    "production_requires": [
+      "checked OutputSet",
+      "exact task/profile/input identity",
+      "frozen bytes",
+      "no failed/cancelled commit"
+    ]
+  },
+  "checks": [
+    {
+      "name": "ordinary",
+      "result": "passed"
+    },
+    {
+      "name": "enhanced",
+      "result": "passed"
+    },
+    {
+      "name": "disabled",
+      "result": "passed"
+    },
+    {
+      "name": "enhanced-different-identity",
+      "result": "passed"
+    },
+    {
+      "name": "disabled-identical-ordinary",
+      "result": "passed"
+    },
+    {
+      "name": "set-order-invariant",
+      "result": "passed"
+    },
+    {
+      "name": "unknown-version",
+      "result": "rejected",
+      "code": "UnknownCompositionVersion"
+    },
+    {
+      "name": "unknown-field",
+      "result": "rejected",
+      "code": "UnknownCompositionField"
+    },
+    {
+      "name": "old-aggregate-component-as-new-port",
+      "result": "rejected",
+      "code": "ComponentClosureMismatch"
+    },
+    {
+      "name": "manifest-hash-as-component-hash",
+      "result": "rejected",
+      "code": "ComponentDigestMismatch"
+    },
+    {
+      "name": "wrong-package-byte",
+      "result": "rejected",
+      "code": "SourceBytesMismatch"
+    },
+    {
+      "name": "profile-byte-cycle",
+      "result": "rejected",
+      "code": "UnboundSourceOrCycle"
+    },
+    {
+      "name": "generated-precomputed-outputset",
+      "result": "rejected",
+      "code": "GeneratedAssetHasPrematureHash"
+    },
+    {
+      "name": "wrong-producer",
+      "result": "rejected",
+      "code": "WrongProducer"
+    },
+    {
+      "name": "generator-not-selected-empty-components",
+      "result": "rejected",
+      "code": "ComponentClosureMismatch"
+    },
+    {
+      "name": "generator-not-selected-one-component",
+      "result": "rejected",
+      "code": "ComponentClosureMismatch"
+    },
+    {
+      "name": "repinned-generator-declares-toolchain-port",
+      "result": "rejected",
+      "code": "ComponentPortMismatch"
+    },
+    {
+      "name": "repinned-reader-declares-toolchain-port",
+      "result": "rejected",
+      "code": "ComponentPortMismatch"
+    },
+    {
+      "name": "repinned-generator-drops-composition-feature",
+      "result": "rejected",
+      "code": "ComponentMissingRequiredFeature"
+    },
+    {
+      "name": "repinned-reader-drops-composition-feature",
+      "result": "rejected",
+      "code": "ComponentMissingRequiredFeature"
+    },
+    {
+      "name": "fixed-recipe-wrong-direction",
+      "result": "rejected",
+      "code": "SelectionMismatch"
+    },
+    {
+      "name": "fixed-recipe-unrelated-profile",
+      "result": "rejected",
+      "code": "SelectionMismatch"
+    },
+    {
+      "name": "unknown-asset-field",
+      "result": "rejected",
+      "code": "UnknownAssetField"
+    },
+    {
+      "name": "unknown-package-field",
+      "result": "rejected",
+      "code": "UnknownPackageField"
+    },
+    {
+      "name": "unknown-component-field",
+      "result": "rejected",
+      "code": "UnknownComponentField"
+    },
+    {
+      "name": "unknown-selection-field",
+      "result": "rejected",
+      "code": "UnknownSelectionField"
+    },
+    {
+      "name": "two-asset-ids-one-origin",
+      "result": "rejected",
+      "code": "DuplicateAssetOrigin"
+    },
+    {
+      "name": "missing-enhanced-dependency",
+      "result": "rejected",
+      "code": "DependencyClosureMismatch"
+    },
+    {
+      "name": "runtime-ref-falsely-assigned-to-subscription",
+      "result": "rejected",
+      "code": "RequiredResponsibilityMismatch"
+    },
+    {
+      "name": "missing-drain",
+      "result": "rejected",
+      "code": "RequiredResponsibilityMismatch"
+    },
+    {
+      "name": "scope-rename-hides-double-owner",
+      "result": "rejected",
+      "code": "RequiredResponsibilityMismatch"
+    },
+    {
+      "name": "sdk-takes-native-drain",
+      "result": "rejected",
+      "code": "RequiredResponsibilityMismatch"
+    },
+    {
+      "name": "sync-call-gets-async-owner",
+      "result": "rejected",
+      "code": "RequiredResponsibilityMismatch"
+    },
+    {
+      "name": "disabled-with-hidden-ui",
+      "result": "rejected",
+      "code": "SelectedAssetClosure"
+    },
+    {
+      "name": "package-relative-paths-have-distinct-lock-keys",
+      "result": "passed"
+    },
+    {
+      "name": "identity-before-full-semantic-admission-dag",
+      "result": "passed"
+    },
+    {
+      "name": "composition-backref-output",
+      "result": "rejected",
+      "code": "IdentityCycle"
+    },
+    {
+      "name": "profile-sdk-backref-output",
+      "result": "rejected",
+      "code": "IdentityCycle"
+    },
+    {
+      "name": "source-lock-backref",
+      "result": "rejected",
+      "code": "IdentityCycle"
+    },
+    {
+      "name": "generated-identity-bound-after-input",
+      "result": "passed"
+    },
+    {
+      "name": "generated-wrong-producer",
+      "result": "rejected",
+      "code": "MaterializationProducer"
+    },
+    {
+      "name": "generated-wrong-composition_digest",
+      "result": "rejected",
+      "code": "MaterializationComposition"
+    },
+    {
+      "name": "new-host",
+      "result": "passed"
+    },
+    {
+      "name": "old-host",
+      "result": "rejected",
+      "code": "UnknownMandatoryFeature"
+    },
+    {
+      "name": "peer-omits-feature",
+      "result": "rejected",
+      "code": "MissingMandatoryFeature"
+    },
+    {
+      "name": "plain-builder-no-profile-interpretation",
+      "result": "passed"
+    },
+    {
+      "name": "proposed-example-manifest-current-schema",
+      "result": "passed"
+    },
+    {
+      "name": "example-manifest-remains-nonregistrable",
+      "result": "passed"
+    },
+    {
+      "name": "format-only-byte-change-semantic-stable",
+      "result": "passed"
+    }
+  ],
+  "lock_path_examples": [
+    {
+      "path": "packages/madb.arkts-native/0.1.0-design/src/lib.rs",
+      "sha256": "sha256:50d858e0985ecc7f60418aaf0cc5ab587f42c2570a884095a9e8ccacd0f6545c",
+      "size": 7
+    },
+    {
+      "path": "packages/example.other/0.1.0-design/src/lib.rs",
+      "sha256": "sha256:50d858e0985ecc7f60418aaf0cc5ab587f42c2570a884095a9e8ccacd0f6545c",
+      "size": 7
+    }
+  ],
+  "limits": [
+    "Representative responsibility subset only",
+    "No compiler / target / source-package installation test",
+    "No claim that this selected source slice is full executable transitive closure",
+    "Production JCS and schemas still require shared vectors",
+    "No profile/1 implementation changed"
+  ]
+}

@@ -19,6 +19,8 @@ pub enum DocumentKind {
     ContractIr,
     Lock,
     Profile,
+    ProfileV2,
+    Composition,
     Case,
     Coverage,
     Report,
@@ -33,11 +35,13 @@ pub enum DocumentKind {
     Execution,
 }
 impl DocumentKind {
-    pub const ALL: [Self; 16] = [
+    pub const ALL: [Self; 18] = [
         Self::Project,
         Self::ContractIr,
         Self::Lock,
         Self::Profile,
+        Self::ProfileV2,
+        Self::Composition,
         Self::Case,
         Self::Coverage,
         Self::Report,
@@ -57,6 +61,8 @@ impl DocumentKind {
             Self::ContractIr => "contract-ir",
             Self::Lock => "lock",
             Self::Profile => "profile",
+            Self::ProfileV2 => "profile-v2",
+            Self::Composition => "composition",
             Self::Case => "case",
             Self::Coverage => "coverage",
             Self::Report => "report",
@@ -77,6 +83,8 @@ impl DocumentKind {
             Self::ContractIr => schema!("contract-ir"),
             Self::Lock => schema!("lock"),
             Self::Profile => schema!("profile"),
+            Self::ProfileV2 => schema!("profile-v2"),
+            Self::Composition => schema!("composition"),
             Self::Case => schema!("case"),
             Self::Coverage => schema!("coverage"),
             Self::Report => schema!("report"),
@@ -92,7 +100,10 @@ impl DocumentKind {
         }
     }
     pub fn schema_id(self) -> String {
-        format!("madb.{}/1", self.name())
+        match self {
+            Self::ProfileV2 => "madb.profile/2".into(),
+            _ => format!("madb.{}/1", self.name()),
+        }
     }
 }
 

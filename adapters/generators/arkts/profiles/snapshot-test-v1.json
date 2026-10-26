@@ -686,6 +686,32 @@
             "tag": "number"
           }
         }
+      },
+      {
+        "name": "testBeforeRuntimeReceipt",
+        "owner": null,
+        "params": [
+          {
+            "name": "runtime",
+            "type": {
+              "tag": "reference",
+              "name": "Runtime"
+            }
+          },
+          {
+            "name": "probe",
+            "type": {
+              "tag": "callback",
+              "params": [],
+              "returns": {
+                "tag": "void"
+              }
+            }
+          }
+        ],
+        "returns": {
+          "tag": "void"
+        }
       }
     ]
   },
@@ -2117,6 +2143,29 @@
         "cancellation_confirmation": "not-supported"
       },
       "lifetime": "Read-only copy of the original held Subscription wrapper record, including after close; no new native reference or observer owner; not GC evidence."
+    },
+    "testBeforeRuntimeReceipt": {
+      "kind": "sync",
+      "public_id": "madb.c09.testBeforeRuntimeReceipt.v1",
+      "policy": {
+        "threading": "runtime-environment",
+        "blocking": "bounded",
+        "delivery": "registered",
+        "cancellation": "none",
+        "cancellation_confirmation": "not-supported"
+      },
+      "slots": {
+        "parameter.probe": {
+          "ownership": "shared",
+          "synchronous_callback": true,
+          "reentrant": true,
+          "threading": "runtime-environment",
+          "context_owner": "caller",
+          "stop": "request-and-drain",
+          "keep_alive": "source-lease"
+        }
+      },
+      "lifetime": "Checked Runtime Session retains one synchronous void probe before close. At genuine physical ACK with no waiters, the slot clears before invocation and receipt consumption; failure clears it. No native gate, owner or waiter. Nonundefined return rejects InvalidArgument without awaiting/inspecting the returned object; callback throw follows the existing failed-close path with receipt unconsumed. User Error identity is preserved without property inspection; non-Error throws or Error-classification traps normalize to existing CallbackFailure. This test-only catch rejects the original close before receipt consumption and keeps the ordinary tick finally."
     }
   },
   "slots": {
@@ -2164,7 +2213,8 @@
     "Shared resource self/return slots are backend reference handles whose explicit close belongs to the public owner. The erased ArkTSError channel is owned by ArkTS and is not a closable SDK resource.",
     "Each call carries an authored stable public_id. SourceKey and API shape remain independently compiler-derived; retaining an ID across an explicit rename does not assert shape compatibility.",
     "Test diagnostic number[] is a logical backend array, represented by existing buffer(elements,none,copy) without asserting contiguous C storage. Each element is an exact JS-safe integer; field units/ranges and temporal consistency are frozen separately.",
-    "Runtime-owned one-shot settlement hooks are distinct from subscription listeners and remain retained after registration returns. Test-only role policy never broadens ordinary reader acceptance."
+    "Runtime-owned one-shot settlement hooks are distinct from subscription listeners and remain retained after registration returns. Test-only role policy never broadens ordinary reader acceptance.",
+    "C09 test-only before-receipt probe uses the existing physical ACK predicate and original close owner; open registration once, Closing/Closed/failed admission preserved. Declaration callback must return void; runtime rejects every nonundefined return, including Promise and thenable."
   ],
   "error_channel": {
     "id": "ArkTSError",

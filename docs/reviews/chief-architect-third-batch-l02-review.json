@@ -1,0 +1,74 @@
+{
+  "scope": "Independent L02 source review and compiler-position oracle; no target execution or public explain CLI",
+  "position_cases": 30,
+  "source_mismatch_rejections": 90,
+  "status": "passed",
+  "source_sha256": {
+    "adapters/generators/arkts/declaration_diagnostics.py": "d7a8ea479953004279b081495611bef1b2949ea5552f542db83fb033ef526c69",
+    "adapters/generators/arkts/driver.py": "0efa31b95e2249355d3e4a05d6ae00319561d5db952c3cf48570962713912982",
+    "adapters/generators/arkts/read_facade.cjs": "6a5e2bcca564c7c771309b6633e6eabf26f2a114eba7977ba300e182a66c9b4a",
+    "adapters/toolchains/arkts/project.py": "7e81ce4b7fd67239cc309cf8fcee0575f332eabdcb0fcdb8ba280063dc81ed76",
+    "tests/integration/l02_diagnostics/test_declaration_diagnostics.py": "731a3bb6d1f96b5ec81b123593a46342282d13da4f28d6adaee783a56834622f"
+  },
+  "tools": {
+    "node": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+      "sha256": "sha256:35d4bc736bbe4161f0c074aa140ddb74586e46969bc2ad63d32c838bec4463ff",
+      "size": 119168512,
+      "id": "c07-node",
+      "version": "24.14.1",
+      "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+    },
+    "typescript": {
+      "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+      "sha256": "sha256:9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1",
+      "size": 8031399,
+      "id": "c07-typescript",
+      "version": "4.9.5-r4",
+      "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+    }
+  },
+  "command": [
+    "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+    "-e",
+    "const fs=require('fs'),ts=require(process.argv[1]),r=require(process.argv[2]);const data=JSON.parse(fs.readFileSync(0,'utf8'));process.stdout.write(JSON.stringify(data.map(text=>{const decoded=new TextDecoder('utf-8',{fatal:true}).decode(Buffer.from(text));const sf=ts.createSourceFile('review.ets',decoded,ts.ScriptTarget.Latest,true,ts.ScriptKind.TS);const n=sf.statements.find(ts.isFunctionDeclaration);if(!n)throw Error('oracle missing declaration');let error;try{r.readFacade(ts,Buffer.from(text),'review.ets')}catch(e){error=e.message}if(!error)throw Error('negative accepted');return {error,start:n.getStart(sf),byte:Buffer.from(text).indexOf('export')};})));",
+    "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+    "/private/tmp/madb-chief-round3/madb/adapters/generators/arkts/read_facade.cjs"
+  ],
+  "notes": [
+    "Reader logical UTF-16 offsets use TextDecoder BOM handling; raw-byte oracle finds the unique export token independently",
+    "Original RuntimeError text and identity retained; only a separate human stderr note is added",
+    "Production input inventory includes new helper",
+    "Exact point on captured compiler input only; no original template range or runtime protection claim"
+  ],
+  "reviewer_scope": "Chief coordinator reviewed the separate declaration helper and exercised an independent compiler-position oracle; integration driver edits were by the coordinator.",
+  "retained_failure": {
+    "path": "/private/tmp/madb-chief-round3/l02-independent-review-failures.json",
+    "sha256": "cd5e1164b4a94e5164173b1160e8d090ef55f82f9ae3e2bad41d9a70ae908e2e",
+    "result": "Initial UTF-8 BOM case exposed a raw-byte source-location error. The final oracle follows the existing reader TextDecoder behavior for logical UTF-16 offsets and independently finds the raw-byte export token; old evidence is retained."
+  },
+  "actual_reader_validation": {
+    "path": "/private/tmp/madb-chief-round3/l02-diagnostics-reader-bom-fix.json",
+    "sha256": "393a974f2dc2a614ae3d14c22b4298e31835a1515ff0eed6eb8198a64731a6b1",
+    "tests_run": 10,
+    "successful": true,
+    "tools": {
+      "node": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+        "sha256": "sha256:35d4bc736bbe4161f0c074aa140ddb74586e46969bc2ad63d32c838bec4463ff",
+        "size": 119168512,
+        "id": "c07-node",
+        "version": "24.14.1",
+        "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+      },
+      "typescript": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+        "sha256": "sha256:9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1",
+        "size": 8031399,
+        "id": "c07-typescript",
+        "version": "4.9.5-r4",
+        "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+      }
+    }
+  }
+}

@@ -474,4 +474,4 @@ Swift 相关依据：[SKIE 分发](https://skie.touchlab.co/configuration/swift-
 
 ## 基线 0.9 的具体场景
 
-48 个正例组已分别描述输入、动作或独立观察，不再全部使用“合法输入及正常生命周期”。复杂时序按[CRIT-01 至 CRIT-06](08-critical-scenarios.md)展开，`case-groups.json` 的 `scenario_refs` 保存对应关系。主线、扩展和不支持能力分别实例化；这些仍是待实施规范，没有增加运行通过数。
+48 个正例组已分别描述输入、动作或独立观察，不再全部使用“合法输入及正常生命周期”。复杂时序按[CRIT-01 至 CRIT-12](08-critical-scenarios.md)展开，`case-groups.json` 的 `scenario_refs` 保存对应关系。主线、扩展和不支持能力分别实例化；这些仍是待实施规范，没有增加运行通过数。

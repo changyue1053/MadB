@@ -1,0 +1,219 @@
+{
+  "scope": "Independent final source and in-memory OutputSet byte/lineage binding review; no execution authority or whole package acceptance",
+  "result": "passed_with_stated_scope",
+  "findings": [],
+  "source_refs": [
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/src/composition/outputs.rs",
+      "sha256": "0903d67ccb11dfe3e43924e85ac26639ccd6aacd623d0e50c8f50f8ac07542f4",
+      "size": 20507
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/src/composition/pins.rs",
+      "sha256": "f33efb05ac15c6f2303cf56f03c09849a977740f943ca262d3bffc8bd5cd9437",
+      "size": 22766
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/tests/composition_outputs.rs",
+      "sha256": "bf9ed137432d584f98c1ab6dfc06ce07e086b54c8c151d1b33766c1013f2f169",
+      "size": 32959
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/src/composition.rs",
+      "sha256": "0fbabbf42725884910a182f1bf6c4af5f1e315532a055abec0afa2518f175ea7",
+      "size": 4301
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/src/execution/spec.rs",
+      "sha256": "28eebc8153b21cf13e430eff15f61e073098016b2ab728bf6178438b0060a8b3",
+      "size": 12580
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/src/execution/artifact.rs",
+      "sha256": "a1a5c230eb718a923e16154197904cd66853a90138d7f3a7ba7d813faaeb19eb",
+      "size": 11645
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/adapters/contracts/src/execution/mod.rs",
+      "sha256": "342f9e42fa7aea6eabf36b34a23a432e674ab7aa1b1d42bc20cb94884e145855",
+      "size": 3094
+    }
+  ],
+  "author_evidence": {
+    "path": "/private/tmp/madb-chief-round5/composition-output-validation.json",
+    "sha256": "c2a7656e4f833639826d153eb18b95f1aa2ce417d4321c836593cb01e6181e47",
+    "size": 5445
+  },
+  "independent_harness": {
+    "derivation": "Fourth-batch reviewer-authored package fixture reused with new independent output fixture and mutations; no production test fixture builder imported. Shared public IR/request/profile wire fixtures are explicitly bound below. Existing production projection functions are exercised, not claimed as an independent digest oracle.",
+    "source": {
+      "path": "/private/tmp/madb-chief-round5/composition-output-review/src/main.rs",
+      "sha256": "e357ca9b8957ea50cb19650a9e0282d4a45efadf9d186d16e0a072abf68daf97",
+      "size": 23214
+    },
+    "cargo": {
+      "path": "/private/tmp/madb-chief-round5/composition-output-review/Cargo.toml",
+      "sha256": "278c96af7626e2c05ce020d6d92540f7bca038204b383c2c3b97272e64e8f8dd",
+      "size": 348
+    },
+    "lock": {
+      "path": "/private/tmp/madb-chief-round5/composition-output-review/Cargo.lock",
+      "sha256": "e3db648559114e48e77475852a60b951fb0232ee02513d0186fa1a1da1833cbb",
+      "size": 22826
+    },
+    "registry_dependencies_exact_product_lock": 94,
+    "fixtures": [
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/tests/fixtures/contracts/profile.json",
+        "sha256": "d1cca6225738f82ef0c822ba7867e6faed4d7545ac1bf8fc99048c11f6f0ac22",
+        "size": 1616
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/tests/fixtures/contracts/project.json",
+        "sha256": "71d5227d78609df0f7b899d47e4078e1951cde4e894d3547fc1a1e31b6cd0cb9",
+        "size": 7391
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/tests/fixtures/contracts/lock.json",
+        "sha256": "9d4e760444d6ceaa9f53669671c001c6fe9dc7fdd853db53ca37747cc6fb3ddc",
+        "size": 1391
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/tests/fixtures/contracts/contract-ir.json",
+        "sha256": "2df5fb39020bd8f69bc6690904d7fb8df4a674c1c01507dba01fd50f766a4b3c",
+        "size": 28909
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/tests/fixtures/contracts/generate-request.json",
+        "sha256": "1db76a42f6ba60422391834ff6517f59533333e455c4a2131f531c65e037bb41",
+        "size": 1681
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/common.schema.json",
+        "sha256": "df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314",
+        "size": 13073
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/project.schema.json",
+        "sha256": "104256153131effea12260ddcb70c3b98258c946149de0d45049bd792123c498",
+        "size": 5647
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/lock.schema.json",
+        "sha256": "f056caec970dd1e6f5a400255df52e6194282a010dc5e8775586322372bcca3c",
+        "size": 2898
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/profile-v2.schema.json",
+        "sha256": "62d061513cf2d279e437522562ae56fbc826eade04eadabfa9c4f445b35f3a2e",
+        "size": 6439
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/composition.schema.json",
+        "sha256": "6759f5fd75d43a0ab69bf466f3e5c3d659d434538f938387cf10ab825c806c9a",
+        "size": 10439
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/extension-manifest.schema.json",
+        "sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+        "size": 9734
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/contract-ir.schema.json",
+        "sha256": "e348cb256bfec8e279f455c69b457ecf7d052046f96d74df3808e8182244c8bf",
+        "size": 19265
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/generate-request.schema.json",
+        "sha256": "62ffa389fe8240dd9f0bb6b5fa683abd606bebae97405660c4d0bcfabd69139a",
+        "size": 1615
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/schemas/output-set.schema.json",
+        "sha256": "2b8184b8849d65ab3414943d9aa67e8105899fd15551f81bf4296b562e025e55",
+        "size": 1700
+      }
+    ],
+    "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round5/composition-output-review/target CARGO_NET_OFFLINE=true cargo +1.99.1 run --manifest-path /private/tmp/madb-chief-round5/composition-output-review/Cargo.toml --offline --locked",
+    "exit_code": 0,
+    "passed": 29,
+    "acceptances": 4,
+    "exact_rejections": 25,
+    "result": {
+      "path": "/private/tmp/madb-chief-round5/composition-output-review/output-cases.json",
+      "sha256": "7344a6a0739872d96c9fd6bfcaa3548b6c93b0244520e989dcd8af121656c0d3",
+      "size": 5672
+    },
+    "log": {
+      "path": "/private/tmp/madb-chief-round5/composition-output-review/output-cases.log",
+      "sha256": "048013649025de0bb3b66db9abc7d484964b2bf1e7d6e5e4b01a278f64be2ad0",
+      "size": 687
+    }
+  },
+  "focused_regression": {
+    "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round5/composition-output-review/target CARGO_NET_OFFLINE=true cargo +1.99.1 test -p madb-contracts --test composition_outputs --test composition --test identities --test extension_files --test execution_binding --offline --locked",
+    "exit_code": 0,
+    "suites": {
+      "composition": 15,
+      "composition_outputs": 13,
+      "execution_binding": 14,
+      "extension_files": 17,
+      "identities": 5
+    },
+    "total_passed": 64,
+    "log": {
+      "path": "/private/tmp/madb-chief-round5/composition-output-review/focused-tests.log",
+      "sha256": "2403cc6903b877127b2ff82e76dacd5e996781e1669ac912641add89e73bf3d7",
+      "size": 6908
+    }
+  },
+  "reviewed_guarantees": [
+    "Public untrusted observations do not hold or replace required host ExecutionRecipe; step identity and full slot mapping compared before accepting any result",
+    "Captured non-JSON ArtifactResult-style manifest rejected; output inventory must be exact complete OutputSet plus declared files",
+    "Actual request/IR/profile/lock/tool bytes and semantic source/task/profile/generation lineage crosschecked; selfconsistent wrong producer/source/policy/selector still rejected",
+    "Actual structure/policy/shape digests recomputed; presence or matching claims not enough",
+    "Bundled schema bytes fixed, component package source identity not confused with installed image bytes",
+    "Future slots bind exact returned byte sets; unknown/missing/multiply assigned slots or observations rejected",
+    "Input/request/manifest/generated path conflicts checked, including existing FrozenInputs structural ancestor rejection",
+    "Per-step original OutputSet retained separately; no synthetic combined OutputSet, no composition/profile/source-lock writeback",
+    "Immutable accepted bytes survive subsequent mutation of caller memory",
+    "Private output fields and readonly accessors; no ArtifactRecipe implementation, accepted flag, host process receipt, Source/Candidate commit or publication authority",
+    "Shared execution changes only crate visibility; legacy profile/1 admission and its profile/2 refusal remain separate"
+  ],
+  "limitations": [
+    "Required step recipes are trusted host facts; binder is not a policy for choosing arbitrary recipes",
+    "Does not prove a real process produced bytes, installed image execution, EOF/exit/cleanup/cancellation, filesystem confinement, environment or permissions",
+    "IR identity recomputation does not replace full domain rules/type/policy capability checking or actual compiled exports",
+    "Slot sources reject absent public IDs but do not prove every claimed implementation or public export exists",
+    "Current synthetic bytes do not certify C07 profile/2 generation; real C07 v1 probes retain original identities",
+    "Opaque SDK/dependency closure, full combination transaction, downstream physical assembly and independent target consumer acceptance remain separate"
+  ],
+  "reviewer_harness_failures_preserved": [
+    {
+      "file": {
+        "path": "/private/tmp/madb-chief-round5/composition-output-review/output-cases-initial-build-failure.log",
+        "sha256": "3328ce16354c03c3c3a4ae48881354acafff0de1a4fe702888f010e661d58e69",
+        "size": 13612
+      },
+      "reason": "Reviewer map key type inferred as str; explicit String annotation fixed independent harness."
+    },
+    {
+      "file": {
+        "path": "/private/tmp/madb-chief-round5/composition-output-review/output-cases-initial-fixture-failure.log",
+        "sha256": "15198a3804e089776a12c6d2c496f5508495b2db3fcbd1774c6bd34ac25cb646",
+        "size": 1022
+      },
+      "reason": "Reviewer used unsupported direction provider-to-consumer; changed mutation to valid host-callback to reach selector binding."
+    },
+    {
+      "file": {
+        "path": "/private/tmp/madb-chief-round5/composition-output-review/output-cases-input-capture-failure.log",
+        "sha256": "0b7a0eebaa35a514804270e801892943ba383ef969aedcac5e580cd711fd6a25",
+        "size": 4082
+      },
+      "reason": "Ancestor output conflict correctly rejected by FrozenInputs before binder; harness changed to report exact INPUT001 rather than unwrap panic. Product unchanged."
+    }
+  ],
+  "product_edits_by_reviewer": false,
+  "device_operations": false
+}

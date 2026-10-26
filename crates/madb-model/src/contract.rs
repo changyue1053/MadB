@@ -180,6 +180,10 @@ pub struct Capability {
     pub producers: Vec<Producer>,
 }
 
+/// Recognized only by explicit profile/2 composition admission. It is not a
+/// legacy ContractIR/runtime capability and must not enable old profile paths.
+pub const EXTENSION_COMPOSITION: &str = "core.extension-composition@1";
+
 pub const CORE_FEATURES: &[&str] = &[
     crate::build::EXTERNAL_RUNTIME_VERIFICATION,
     "core.errors@1",

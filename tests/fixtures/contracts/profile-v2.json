@@ -1,0 +1,83 @@
+{
+  "schema": "madb.profile/2",
+  "id": "fixture-composed-profile",
+  "route": "madb.arkts-c-napi",
+  "provider": {
+    "language": "c",
+    "runtime": "native"
+  },
+  "consumer": {
+    "language": "arkts",
+    "runtime": "harmonyos"
+  },
+  "direction": "consumer-to-provider",
+  "target": "aarch64-linux-ohos",
+  "abi": "c11",
+  "artifact_kind": "static-library",
+  "build_system": "cargo-cmake",
+  "deployment_target": "14.0",
+  "tools": [
+    {
+      "id": "fixture-clang",
+      "version": "fixture-1",
+      "sha256": "sha256:c3a9dacf1e6fe0033c64e83db13445a8828e993ccce8aaf0dcc66957ad053af6",
+      "host": "aarch64-apple-darwin",
+      "target": "aarch64-apple-darwin",
+      "source": "fixture://toolchain",
+      "arguments": [
+        "-std=c11"
+      ]
+    }
+  ],
+  "sdk": {
+    "path": "sdk/fixture.json",
+    "sha256": "sha256:f16d05ec6b29248d2c61adb1e9263f78e4f7bace1b955014a2d17872cfe4064d",
+    "size": 7,
+    "schema": "madb.fixture-sdk/1"
+  },
+  "macros": [],
+  "required_features": [
+    "core.values@1",
+    "core.resources@1",
+    "core.explicit-close@1",
+    "core.exact-numbers@1",
+    "core.extension-composition@1"
+  ],
+  "supported_features": [
+    "core.values@1",
+    "core.resources@1",
+    "core.callbacks@1",
+    "core.async@1",
+    "core.streams@1",
+    "core.explicit-close@1",
+    "core.exact-numbers@1",
+    "core.variants@1",
+    "core.extension-composition@1"
+  ],
+  "restrictions": [],
+  "defaults": {
+    "values": {
+      "ownership": "copy"
+    },
+    "origin": {
+      "authority": "profile-default",
+      "location": {
+        "path": "profile.json",
+        "line": 1,
+        "column": 1
+      },
+      "id": "profile.copy"
+    }
+  },
+  "backend_config": null,
+  "composition": {
+    "id": "fixture-composition",
+    "semantic_digest": "sha256:65b4106fa98c2190e1be008a920fe0e5e75b5b4b7bbc0dde21e35f8b137fe480",
+    "file": {
+      "path": "composition.json",
+      "sha256": "sha256:021f65dd41cf04240b43caa4ac2e61b1f91773deb6b26533e7579cce22ab27d4",
+      "size": 2576,
+      "schema": "madb.composition/1"
+    }
+  }
+}

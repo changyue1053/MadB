@@ -1,0 +1,167 @@
+{
+  "scope": "E01/E03 approved revision3 schema/decoder registration and shared format vectors only; not composition execution or package acceptance",
+  "workspace": "/private/tmp/madb-chief-round4/madb",
+  "environment": {
+    "python": "3.14.4",
+    "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "1.99.1 (5f94df478 2026-08-27)",
+    "cargo_target_dir": "/private/tmp/madb-chief-round4/madb/target",
+    "offline": true
+  },
+  "file_sha256": {
+    "docs/schemas/composition.schema.json": "6759f5fd75d43a0ab69bf466f3e5c3d659d434538f938387cf10ab825c806c9a",
+    "docs/schemas/profile-v2.schema.json": "62d061513cf2d279e437522562ae56fbc826eade04eadabfa9c4f445b35f3a2e",
+    "crates/madb-protocol/src/schema.rs": "84ee601a0f36fc7ae70f81eb960b3fb7709a3f9f612e2fd3fbb502ae6143bd65",
+    "crates/madb-protocol/src/canonical.rs": "6b1e569a08b09aa1c55805144285ecd906d031dfc58e0f802ba7bf3a5d86ce3f",
+    "crates/madb-protocol/tests/formats.rs": "6b76412ac75cac8715132d640d7d3f2a785360c33f9046e664085005ce93b2de",
+    "tests/contract/test_formats.py": "747af237b70192a42af7a03912a92947ec8d00c592e89e36fdaacd4a1ed50abe",
+    "tests/fixtures/contracts/composition.json": "021f65dd41cf04240b43caa4ac2e61b1f91773deb6b26533e7579cce22ab27d4",
+    "tests/fixtures/contracts/profile-v2.json": "345bf38f536216b0b808387a1bbb340f971c6161c2f68709d659ab2fd79f84ff",
+    "tests/fixtures/contracts/composition-format-vectors.json": "5952ef3a2c41ba27df3311980cda94741f03e3e4ff6db3673abcf3844d48e335"
+  },
+  "shared_vectors": {
+    "new": 52,
+    "document_kinds": 18,
+    "old_expectations_modified": false
+  },
+  "checks": [
+    {
+      "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round4/madb/target CARGO_NET_OFFLINE=true cargo test -p madb-protocol --test formats --locked --offline",
+      "result": "passed",
+      "tests": 6
+    },
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B tests/contract/test_formats.py",
+      "result": "passed",
+      "tests": 3
+    },
+    {
+      "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round4/madb/target CARGO_NET_OFFLINE=true cargo clippy -p madb-protocol --test formats --locked --offline -- -D warnings",
+      "result": "passed"
+    },
+    {
+      "command": "rustfmt --check --edition 2024 crates/madb-protocol/src/schema.rs crates/madb-protocol/src/canonical.rs crates/madb-protocol/tests/formats.rs",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- crates/madb-protocol/src/schema.rs crates/madb-protocol/src/canonical.rs crates/madb-protocol/tests/formats.rs tests/contract/test_formats.py",
+      "result": "passed"
+    }
+  ],
+  "independent_review": {
+    "reviewer": "composition_identity_audit",
+    "mode": "read-only",
+    "scope": [
+      "docs/schemas/composition.schema.json",
+      "docs/schemas/profile-v2.schema.json",
+      "crates/madb-protocol/src/schema.rs",
+      "crates/madb-protocol/src/canonical.rs",
+      "crates/madb-protocol/tests/formats.rs",
+      "tests/contract/test_formats.py",
+      "tests/fixtures/contracts/composition.json",
+      "tests/fixtures/contracts/profile-v2.json",
+      "tests/fixtures/contracts/composition-format-vectors.json"
+    ],
+    "conclusion": "no blocking findings within format scope",
+    "repeated_checks": [
+      "Python reference format suite: 3 passed",
+      "52 new vectors confirmed",
+      "new fixture FileRef SHA/size matches actual bytes"
+    ],
+    "not_repeated": [
+      "Rust tests"
+    ],
+    "notes": [
+      "Closed object/union branches and generated asset no result hashes",
+      "Profile v1 schema/domain/canonical implementation preserved",
+      "scope kind/layer remain ids constrained by semantic recipe admission"
+    ]
+  },
+  "old_inputs_unchanged": [
+    {
+      "path": "docs/schemas/profile.schema.json",
+      "baseline": "/private/tmp/madb-chief-round3/madb/docs/schemas/profile.schema.json",
+      "baseline_sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+      "current_sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+      "byte_equal": true
+    },
+    {
+      "path": "tests/fixtures/contracts/profile.json",
+      "baseline": "/private/tmp/madb-chief-round3/madb/tests/fixtures/contracts/profile.json",
+      "baseline_sha256": "d1cca6225738f82ef0c822ba7867e6faed4d7545ac1bf8fc99048c11f6f0ac22",
+      "current_sha256": "d1cca6225738f82ef0c822ba7867e6faed4d7545ac1bf8fc99048c11f6f0ac22",
+      "byte_equal": true
+    },
+    {
+      "path": "tests/fixtures/contracts/format-vectors.json",
+      "baseline": "/private/tmp/madb-chief-round3/madb/tests/fixtures/contracts/format-vectors.json",
+      "baseline_sha256": "caeeb1dbd4d66c8e9d2e435612b9bc1c11bb58e71d11d2d19623eba532855ea3",
+      "current_sha256": "caeeb1dbd4d66c8e9d2e435612b9bc1c11bb58e71d11d2d19623eba532855ea3",
+      "byte_equal": true
+    },
+    {
+      "path": "tests/fixtures/contracts/canonical-vectors.json",
+      "baseline": "/private/tmp/madb-chief-round3/madb/tests/fixtures/contracts/canonical-vectors.json",
+      "baseline_sha256": "2c4cbdf7507915192cc38c7033f431add4c88287429b1487949f6072f0ae8411",
+      "current_sha256": "2c4cbdf7507915192cc38c7033f431add4c88287429b1487949f6072f0ae8411",
+      "byte_equal": true
+    }
+  ],
+  "not_claimed": [
+    "full product suite",
+    "new semantic/recipe acceptance",
+    "host execution of composition/profile v2",
+    "native or target runtime tests",
+    "independent Lab package acceptance",
+    "publication"
+  ],
+  "legacy_integration_review": {
+    "mode": "read-only",
+    "scope": [
+      "adapters/contracts/src/projections.rs",
+      "crates/madb-model/src/contract.rs",
+      "adapters/contracts/src/extension_files.rs",
+      "adapters/contracts/tests/extension_files.rs"
+    ],
+    "confirmed": [
+      "profile_projection is the prior projection body; old profile_digest keeps Wire::root(Profile) and DigestDomain::Profile",
+      "EXTENSION_COMPOSITION is a separate constant and is absent from CORE_FEATURES; legacy capability checks still reject it as required semantics",
+      "DocumentKind::ALL consumers are schema registry, format tests and extension_files document_kind; no additional automatic execution dispatch found",
+      "Known Composition/ProfileV2 references reach declared_references and explicitly fail in both input and output capture_closure",
+      "Legacy read/generate and execution profile references still select Profile v1 explicitly"
+    ],
+    "runtime_checks": [
+      {
+        "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round4/madb/target CARGO_NET_OFFLINE=true cargo test -p madb-contracts --test identities --locked --offline",
+        "result": "passed",
+        "tests": 5
+      },
+      {
+        "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round4/madb/target CARGO_NET_OFFLINE=true cargo test -p madb-contracts --test extension_files --locked --offline legacy_package_admission_rejects_new_composition_documents_in_dependencies -- --exact",
+        "result": "passed",
+        "tests": 1,
+        "filtered_out": 16
+      }
+    ],
+    "limits": [
+      "Known declared schema route reviewed; arbitrary artifact byte content is not scanned as a new format",
+      "No new-format host execution or package acceptance claimed"
+    ],
+    "reviewed_file_sha256": {
+      "adapters/contracts/src/projections.rs": "f7298b9ce20cc402998d6a0a767f3fa030023e5c4e8e85a32fb1f1a6adbb89e4",
+      "crates/madb-model/src/contract.rs": "6928430f849562c9eab574cb09685ad791e6d99302f7ab1339d0c118d82e8472",
+      "adapters/contracts/src/extension_files.rs": "d2260763b88820860c193381a3ddad4ae54e67ac99b8159096de90501ef8a780",
+      "adapters/contracts/tests/extension_files.rs": "6e673a2c15b4479694abe5987af5ef29cb13d85dd1f0eaf759d60a020f2b57df"
+    },
+    "resolved_findings": [
+      {
+        "path": "adapters/contracts/tests/extension_files.rs",
+        "test": "legacy_package_admission_rejects_new_composition_documents_in_dependencies",
+        "resolution": "Coordinator changed only new test expectation to existing InputInvalid wrapper, CapabilityUnsupported message and /schema; production diagnostic contract unchanged",
+        "verified": true
+      }
+    ],
+    "conclusion": "No remaining blocker in reviewed legacy compatibility boundary; new formats explicitly rejected by legacy file admission, and profile v1 identity tests pass."
+  },
+  "frozen_format_files_rechecked_unchanged": true
+}

@@ -1,0 +1,324 @@
+{
+  "scope": "E01/E03 approved format, pure input-binding observation and responsibility comparison only",
+  "date": "2026-10-26",
+  "source_inputs": {
+    "product": {
+      "root": "/Users/changyue/Desktop/MadB/madb",
+      "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+      "branch": "codex/c07-arkts",
+      "captured_files": 1036,
+      "capture": {
+        "path": "/private/tmp/madb-chief-round4/madb-input.json",
+        "sha256": "35a8f7008fa9095c86c17d1cd68e4c5b26e2bce984dd94282e344864ef6b59f2"
+      }
+    },
+    "lab": {
+      "root": "/Users/changyue/Desktop/MadB/madb_lab",
+      "head": "a466501275bee1786d171199390f228f55eb38a0",
+      "branch": "codex/c07-arkts",
+      "captured_files": 450,
+      "capture": {
+        "path": "/private/tmp/madb-chief-round4/madb_lab-input.json",
+        "sha256": "1ab110f613c62c16a8b9abd2c295d040a02186b5433a62e632d9aedf6636e04c"
+      },
+      "writes": false
+    }
+  },
+  "environment": {
+    "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.14.4",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "node": "v26.8.2",
+    "offline_cargo": true
+  },
+  "checks": {
+    "full_local_gate": {
+      "command": "env CARGO_TARGET_DIR=/private/tmp/madb-chief-round4/madb/target CARGO_NET_OFFLINE=true /Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/check.py",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round4/product-full-check.log",
+        "sha256": "7d5c2e782a5773b6e63ee82f6840f4c795a025a01ab1b451485839a822c5c86d"
+      },
+      "inputs": {
+        "path": "/private/tmp/madb-chief-round4/full-check-input.json",
+        "sha256": "24838cfb2907715ee920c4674667342b1d1d34ed47d079f3d755c0da8d3eb9df"
+      },
+      "commands": [
+        "cargo fmt --all -- --check",
+        "cargo check --workspace --locked",
+        "cargo clippy --workspace --all-targets --all-features --locked -- -D warnings",
+        "cargo test --workspace --all-features --locked",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/contract",
+        "/opt/homebrew/bin/node tests/contract/canonical_vectors.cjs",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c03",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python tests/integration/c03/cli_install.py",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04_process",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/e02_session",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04_inputs",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04_tasks",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04_dag",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04_observations",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c04_package",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c05_pipeline",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c06_tools",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c06_project",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c06_reader",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/l01_contract",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/l02_diagnostics",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_environment",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_tools",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_har",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_pipeline",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_native_gateway",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_arkts_adapter",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/integration/c07_rust_frontend",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python scripts/check_native_sdk.py",
+        "cargo fmt --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/engine/Cargo.toml -- --check",
+        "cargo fmt --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/boundary-core/Cargo.toml -- --check",
+        "cargo fmt --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/uniffi/Cargo.toml -- --check",
+        "cargo fmt --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/gobley/Cargo.toml -- --check",
+        "cargo fmt --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/arkts-provider/Cargo.toml -- --check",
+        "cargo fmt --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/arkts-bridge/Cargo.toml -- --check",
+        "cargo clippy --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/engine/Cargo.toml --all-targets --locked --offline -- -D warnings",
+        "cargo test --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/engine/Cargo.toml --release --locked --offline",
+        "cargo clippy --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/engine/Cargo.toml --all-targets --features test-support --locked --offline -- -D warnings",
+        "cargo test --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/engine/Cargo.toml --release --features test-support --locked --offline",
+        "cargo clippy --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/boundary-core/Cargo.toml --all-targets --locked --offline -- -D warnings",
+        "cargo test --manifest-path /private/tmp/madb-chief-round4/madb/sdk/rust/boundary-core/Cargo.toml --release --locked --offline",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python tests/integration/c07_native_protocol/check.py",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python tests/integration/c07_native_providers/check.py",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python tests/integration/c07_native_worker/check.py",
+        "/opt/homebrew/bin/node tests/integration/c07_arkts_facade/check.cjs",
+        "/opt/homebrew/bin/node tests/integration/l05_arkts_observation/check.cjs",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python tests/architecture/check_dependencies.py",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s tests/architecture",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python docs/tools/check_docs.py --node /opt/homebrew/bin/node",
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -m unittest discover -s docs/tools/tests",
+        "/opt/homebrew/bin/node docs/tools/tests/panorama_smoke.cjs"
+      ],
+      "qualification": "Rust checks here used the initial frozen composition. Only pins.rs and its tests changed afterwards; unaffected route/SDK sources retain these exact checked bytes."
+    },
+    "final_rust_workspace": {
+      "exit_code": 0,
+      "commands": [
+        "cargo fmt --all -- --check",
+        "cargo check --workspace --locked --offline",
+        "cargo clippy --workspace --all-targets --all-features --locked --offline -- -D warnings",
+        "cargo test --workspace --all-features --locked --offline"
+      ],
+      "log": {
+        "path": "/private/tmp/madb-chief-round4/final-rust-check.log",
+        "sha256": "af98f4572aa1e33768616aa5ca0813a0573bc8259dcbb7a11f0beb4b855f9b9a"
+      },
+      "inputs": {
+        "path": "/private/tmp/madb-chief-round4/final-code-input.json",
+        "sha256": "cfb8e6bd2d10291544dbaf8c3e01b0bcd134af19e9caef7e34ba2a67d6dfe9e8"
+      },
+      "code_source_count": 776
+    },
+    "new_shared_format_vectors": 52,
+    "final_composition_test_groups": 15,
+    "independent": {
+      "input_and_responsibility_cases": {
+        "total": 27,
+        "accepted": 3,
+        "rejected_as_expected": 24
+      },
+      "independent_digest_comparisons": {
+        "total": 11,
+        "passed": 11,
+        "oracle": "Independent Python projection and domain calculation; integer/ASCII-key canonical subset with explicit UTF-16 set sorting; no production digest import"
+      },
+      "covered": [
+        "Seven actual bundled schema bytes with coherently repinned locks; missing schema rejection",
+        "Package manifest original bytes, package-qualified source inventory and package source digest binding",
+        "SDK frozen input membership and future output/input path alias separation",
+        "Canonical source asset alias rejection and exact generated producer/slot/path expectations",
+        "Cross-package generated owner rejection after two complete package closures are repinned",
+        "Fixed host component and profile/route/target/direction facts; target/direction coherent repinning rejection",
+        "Independent required/provided owner and scope comparison; applicant cannot shrink the fixed component set",
+        "Reader/generator mandatory composition feature versus ordinary toolchain helper exemption",
+        "Legacy mandatory feature and profile-v1 digest entry reject v2 semantics",
+        "Composition/P2 fixed digests, set reordering, content mutation, raw FileRef versus semantic identity and domain separation"
+      ]
+    },
+    "format_review": {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/reviews/chief-architect-fourth-batch-format-review.json",
+      "sha256": "bd47fea76c67751313f78b99bfd9dae21ba6890bdd35cb16c532fcb1c61a933f"
+    },
+    "composition_checks": {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/reviews/chief-architect-fourth-batch-composition-final-checks.json",
+      "sha256": "87af2c4961da6e243f664fe7b911f6c8ef097a5f6a8f75a07ddaf3514e2588a7"
+    },
+    "independent_review": {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/reviews/chief-architect-fourth-batch-independent-review.json",
+      "sha256": "8bed5592ba29433d5c1b1db72cd9082a22b3e73739b179932929908ee74929ef"
+    },
+    "final_docs": {
+      "check_docs_errors": [],
+      "unittest_passed": 29,
+      "log": {
+        "path": "/private/tmp/madb-chief-round4/final-docs-check.log",
+        "sha256": "d774b4744f0b2f7a2b5952222fa755068e41923ae2347f380e4604d5cf53b7f0"
+      },
+      "actual_root_commands": [
+        {
+          "command": [
+            "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+            "-B",
+            "docs/tools/check_docs.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+            "-B",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "docs/tools/tests"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "git",
+            "diff",
+            "--check"
+          ],
+          "exit_code": 0
+        }
+      ]
+    }
+  },
+  "catalog_preservation": {
+    "tasks": 41,
+    "all_status_verification_phase_dependencies_acceptance_unchanged": true,
+    "C06_C07_full_objects_unchanged": true,
+    "E01_E03_notes_and_evidence_only": true
+  },
+  "final_changed_code_and_formats": {
+    "docs/schemas/composition.schema.json": "6759f5fd75d43a0ab69bf466f3e5c3d659d434538f938387cf10ab825c806c9a",
+    "docs/schemas/profile-v2.schema.json": "62d061513cf2d279e437522562ae56fbc826eade04eadabfa9c4f445b35f3a2e",
+    "crates/madb-protocol/src/schema.rs": "84ee601a0f36fc7ae70f81eb960b3fb7709a3f9f612e2fd3fbb502ae6143bd65",
+    "crates/madb-protocol/src/canonical.rs": "6b1e569a08b09aa1c55805144285ecd906d031dfc58e0f802ba7bf3a5d86ce3f",
+    "crates/madb-protocol/tests/formats.rs": "6b76412ac75cac8715132d640d7d3f2a785360c33f9046e664085005ce93b2de",
+    "tests/contract/test_formats.py": "747af237b70192a42af7a03912a92947ec8d00c592e89e36fdaacd4a1ed50abe",
+    "tests/fixtures/contracts/composition.json": "021f65dd41cf04240b43caa4ac2e61b1f91773deb6b26533e7579cce22ab27d4",
+    "tests/fixtures/contracts/profile-v2.json": "345bf38f536216b0b808387a1bbb340f971c6161c2f68709d659ab2fd79f84ff",
+    "tests/fixtures/contracts/composition-format-vectors.json": "5952ef3a2c41ba27df3311980cda94741f03e3e4ff6db3673abcf3844d48e335",
+    "adapters/contracts/src/composition.rs": "4bdd459fe320b55b87495013f12929234a42a4f11db9b0c5f6bec838f4fd484c",
+    "adapters/contracts/src/composition/pins.rs": "bdfa6fe71effef0f73976a8885b25fc77297a50cd65225bcff9c7f73985f03b1",
+    "adapters/contracts/src/composition/ownership.rs": "84ce8cf78c2aa0c2f7a61c30ac92dfd79069bccd0032fcfd937fd129ad126f26",
+    "adapters/contracts/tests/composition.rs": "ebb66fedd859896d98e287f61fb4df9173535aff1166454f0b3317ff6b78e1b7",
+    "adapters/contracts/src/lib.rs": "09d8f157e0863c20f4dc8b7fa392ac27ac24c5871ae85a137b2eecc3d6822ccf",
+    "adapters/contracts/src/projections.rs": "f7298b9ce20cc402998d6a0a767f3fa030023e5c4e8e85a32fb1f1a6adbb89e4",
+    "adapters/contracts/src/extension_files.rs": "d2260763b88820860c193381a3ddad4ae54e67ac99b8159096de90501ef8a780",
+    "adapters/contracts/tests/extension_files.rs": "6e673a2c15b4479694abe5987af5ef29cb13d85dd1f0eaf759d60a020f2b57df",
+    "crates/madb-model/src/contract.rs": "6928430f849562c9eab574cb09685ad791e6d99302f7ab1339d0c118d82e8472"
+  },
+  "limits": [
+    "The fixture source bytes are controlled test inputs, not executable or installable extension packages.",
+    "BoundCompositionInputs gives no process, grant, commit, runtime or certification authority. Installed executable image binding remains separate.",
+    "Independent recipe facts in this review are explicit fixture facts. Real required sets derived from checked IR, SDK exports and wiring remain unimplemented integration work.",
+    "Generated asset declarations are future slot/path intent only. No actual OutputSet file/lineage binding, transaction or materialized asset was proved.",
+    "Opaque SDK metadata and arbitrary cross-package re-exports/physical instance aliasing require dedicated adapters and are not inferred from source hashes.",
+    "The legacy shared format vectors and full product gate are outside these independent counts; root records their actual runs separately.",
+    "No target compilation/execution, independent Lab consumer acceptance, publication or full E01/E03 completion is claimed."
+  ],
+  "integration": {
+    "state": "applied_and_revalidated",
+    "initial_guarded_copy": {
+      "path": "/private/tmp/madb-chief-round4/madb-integration-manifest.json",
+      "sha256": "fa3bad0aa0295aa71320f46eef22fb3e3d5d630d6b40f0e4202eb052a9ab4a32"
+    },
+    "changed_files": 43,
+    "source_files": 1052,
+    "initial_whole_source_audit": {
+      "path": "/private/tmp/madb-chief-round4/post-integration-audit.json",
+      "sha256": "060d78995ea58f6f57dae35e9f83fb330ef7853754c965ed466f3e3a2e9bd574"
+    },
+    "actual_root_checks": {
+      "root": "/Users/changyue/Desktop/MadB/madb",
+      "commands": [
+        {
+          "command": [
+            "cargo",
+            "test",
+            "-p",
+            "madb-protocol",
+            "--test",
+            "formats",
+            "--locked",
+            "--offline"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "cargo",
+            "test",
+            "-p",
+            "madb-contracts",
+            "--test",
+            "composition",
+            "--test",
+            "identities",
+            "--test",
+            "extension_files",
+            "--locked",
+            "--offline"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+            "-B",
+            "tests/contract/test_formats.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+            "-B",
+            "docs/tools/check_docs.py"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+            "-B",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "docs/tools/tests"
+          ],
+          "exit_code": 0
+        },
+        {
+          "command": [
+            "git",
+            "diff",
+            "--check"
+          ],
+          "exit_code": 0
+        }
+      ]
+    },
+    "actual_root_log": {
+      "path": "/private/tmp/madb-chief-round4/post-integration-check.log",
+      "sha256": "110a7014c7d664a8d531d32602a1e08f37530d89ace26ecc55da7888608c9098"
+    },
+    "lab_sources_unchanged": 450,
+    "heads_and_branches_unchanged": true,
+    "metadata_finalization": "Only this audit record is finalized after the actual-root checks; its copy is guarded by the previous byte hash and followed by a whole-tree equality audit.",
+    "final_whole_source_audit_path": "/private/tmp/madb-chief-round4/final-integration-audit.json"
+  }
+}

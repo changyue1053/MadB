@@ -77,6 +77,13 @@ impl FrozenInputs {
     }
 }
 
+/// Check an inventory without IO using the same budgets and path/alias rules
+/// as capture_inputs. Incremental reference discovery must pass this preflight
+/// before retaining or reading each enlarged inventory; it does not freeze bytes.
+pub fn check_input_inventory(references: &[FileReference]) -> Result<()> {
+    validate_inventory(references).map(|_| ())
+}
+
 /// Validate the complete inventory before reading, capture bounded bytes, then
 /// recheck the workspace before returning. No partial snapshot escapes on error.
 ///

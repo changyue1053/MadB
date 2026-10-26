@@ -1,0 +1,75 @@
+{
+  "scope": "E01/E03 finite C07 source observations; actual AST and production declaration projection, independently derived five/eight roles, fresh disabled closure",
+  "workspace": "/private/tmp/madb-chief-round5/madb",
+  "paths_sha256": {
+    "adapters/generators/arkts/composition_recipe.py": "fbddca7c810464c9fc142c5635fba80f68028a14bbe8aa1f72f823562d3b4218",
+    "adapters/generators/arkts/read_observation.cjs": "2ee23a51c2f1676c5b473e87c0c380ea857d790e009d2ff071120a23b534f7f5",
+    "tests/integration/arkts_composition_recipe/check.py": "603f6e2e5cb00541c0cffc39b13c5d891f62b5f1ea2349be888afd99f1220a46",
+    "tests/integration/arkts_composition_recipe/README.md": "bceb2e0041b3134f61c24163da0a0a94c0a2e1fc6261af210b6163aba384114f"
+  },
+  "checks": [
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B tests/integration/arkts_composition_recipe/check.py --node /opt/homebrew/Cellar/node/26.8.2/bin/node --node-sha256 902b6a6984d5d825829ea9064ab73b734548df37bc0683990dca31c8dc2a9253 --typescript /Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js --typescript-sha256 9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1 --output /private/tmp/madb-chief-round5/recipe-check-004",
+      "result": "passed",
+      "checks": 29,
+      "receipt": "/private/tmp/madb-chief-round5/recipe-check-004/observations.json",
+      "receipt_sha256": "789e378f317305360811569d6b845016fb621d784514df4b031003d3f0dc77c4"
+    },
+    {
+      "command": "node --check adapters/generators/arkts/read_observation.cjs",
+      "result": "passed"
+    },
+    {
+      "command": "Python ast.parse of composition_recipe.py and check.py without writing bytecode",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- adapters/generators/arkts/composition_recipe.py adapters/generators/arkts/read_observation.cjs tests/integration/arkts_composition_recipe",
+      "result": "passed"
+    }
+  ],
+  "earlier_checks_preserved": [
+    "recipe-check-001/observations.json (20 checks, before stricter tool/root and authority pins)",
+    "recipe-check-002/observations.json (22 checks, before authority input pin)",
+    "recipe-check-003/observations.json (22 checks; independent review later found source/output alias escape)"
+  ],
+  "independent_review": {
+    "reviewer": "composition_identity_audit via independent read-only recipe reviewer",
+    "finding": "initial path-domain alias bypass fixed",
+    "final_result": "no blocking findings within the finite source-observation scope",
+    "repeated_checks": [
+      "parent-component output escape rejected without source write",
+      "source ancestor symlink rejected",
+      "output ancestor symlink rejected",
+      "ordinary real generation and reverify: 5 roles, 2 files",
+      "two changed-file hashes stable before and after review"
+    ],
+    "reproduction": "/private/tmp/madb-recipe-review-fixed-jsernc9d",
+    "production_files_modified_by_reviewer": false,
+    "not_repeated": [
+      "full 29-case suite",
+      "SDK compilation",
+      "Native/UI execution"
+    ]
+  },
+  "not_claimed": [
+    "registered package or E02 session",
+    "full driver.generate or profile/2 finalizer",
+    "profile/2 OutputSet or output binder acceptance",
+    "C04 source transaction or candidate commit",
+    "whole C07 responsibility coverage",
+    "SDK compilation or Native/UI runtime",
+    "independent installed-candidate consumer",
+    "E01/E03/L05 full-package acceptance"
+  ],
+  "review_findings": [
+    {
+      "issue": "Lexical output containment allowed spacer/../source/generated-domain, and source/output ancestor symlinks escaped root-only checks",
+      "old_reproduction": "/private/tmp/madb-recipe-review-infzl3ie",
+      "fix": "Shared absolute domain validation rejects .. and every symlink ancestor, resolves actual roots and checks source/output separation with samefile ancestors; generation/read/tool/reverify reuse checks",
+      "regression_checks": 7,
+      "result": "29 final checks passed; independent original 3 attack vectors now rejected, ordinary generation/reverify passed"
+    }
+  ],
+  "frozen_hashes_rechecked": true
+}

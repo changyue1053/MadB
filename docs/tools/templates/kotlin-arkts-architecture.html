@@ -20,8 +20,8 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}main{max-width:1530px}.hero{
 <body id="top">
 <header class="topbar"><a class="brand" href="architecture-overview.html"><em>M</em>MadB <small>ARKTS ROUTE / DETAIL</small></a><div class="toplinks"><a href="route-atlas.html">全部路线</a><a href="kotlin-swift-architecture.html">Swift 专题</a><a href="implementation-progress.html">实施计划</a><button id="theme" aria-label="切换深色主题">深色</button><button id="print">打印 / PDF</button></div></header>
 <main>
- <aside class="note" role="note"><strong>主线已明确：CPF 工具链 + akinterop。</strong> CPF 提供鸿蒙 Kotlin 编译与配套生态，akinterop 提供调用桥，CMP 为可选 UI 层。KNOI 单独扩展，不叠加到主线调用链。版本、方向与可用能力仍须通过<a href="../architecture/16-technology-stack-and-versions.md">技术栈候选验证</a>；图中配置均为设计，认证以目录数据为准。</aside>
- <section class="hero"><div><span class="preview">设计预览 · 主线与扩展分别验证</span><div class="eyebrow">KN-ARKTS-NAPI · BRIDGE / PAYLOAD / ENVIRONMENT</div><h1>Kotlin/Native ↔ ArkTS<br>线路与扩展增强</h1><p>CPF-KMP-CMP 工具链构建鸿蒙 Kotlin；akinterop 生成受支持的互调接线。MadB 补齐载荷、异步、资源、环境与发布协议，业务使用普通 ArkTS SDK。</p></div><div class="hero-stamp"><strong>调用桥、载荷与异步<br>三个独立设计维度</strong><p>主线：S3 · C07 / I05 / L05<br>KNOI：S6 · X08 / P14；ANI：X03<br>设计基线：<span data-plan-baseline>读取目录</span><br>资料核对：2026-10-24</p></div></section>
+ <aside class="note" role="note"><strong>主线已明确：CPF 工具链 + akinterop。</strong> CPF 提供鸿蒙 Kotlin 编译与配套生态，akinterop 提供调用桥，CMP 为可选 UI 层。KNOI 单独扩展，不叠加到主线调用链。版本、方向与可用能力仍须通过<a href="../architecture/16-technology-stack-and-versions.md">技术栈候选验证</a>；<a href="../adr/0016-arkts-production-baseline.md">生产基线</a>与<a href="../adr/0017-arkts-extension-delivery.md">扩展选择</a>已采用并授权实施，完成状态与认证以目录数据为准。</aside>
+ <section class="hero"><div><span class="preview">设计预览 · 主线与扩展分别验证</span><div class="eyebrow">KN-ARKTS-NAPI · BRIDGE / PAYLOAD / ENVIRONMENT</div><h1>Kotlin/Native ↔ ArkTS<br>线路与扩展增强</h1><p>CPF-KMP-CMP 工具链构建鸿蒙 Kotlin；akinterop 生成受支持的互调接线。MadB 补齐载荷、异步、资源、环境与发布协议，业务使用普通 ArkTS SDK。</p></div><div class="hero-stamp"><strong>调用桥、载荷与异步<br>三个独立设计维度</strong><p>主线：S3 · C07 / I05 / L05<br>KNOI：X08 / P14；ANI：X03<br>S6 正式验收，允许提前独立探针<br>设计基线：<span data-plan-baseline>读取目录</span><br>决定同步：2026-10-25</p></div></section>
  <nav class="subnav" aria-label="本页目录"><a href="#overview">01 全景</a><a href="#routes">02 线路与扩展</a><a href="#payload">03 数据路径</a><a href="#runtime">04 双向时序</a><a href="#environment">05 内存与环境</a><a href="#delivery">06 工程与模块</a><a href="#gates">07 案例与验收</a><a href="#sources">08 依据</a></nav>
  <section class="panel profile-panel" aria-label="架构配置预览"><div class="profile-row"><div><span class="choice-label">调用后端 · 每个边界配置选择一个</span><div class="profile-choices"><button class="profile-choice" data-mode="akinterop" aria-pressed="true"><b>CPF + akinterop 主线</b><span>S3 · C07 / I05 / L05 真实消费验证</span></button><button class="profile-choice" data-mode="knoi" aria-pressed="false"><b>KNOI 独立扩展</b><span>不同后端配置 · 不继承主线认证</span></button></div></div><label><span class="choice-label">接口载荷策略预览</span><select id="payload-mode"><option value="typed">类型化参数 / 受限 DTO</option><option value="json">受检 JSON 消息</option><option value="binary">字节缓冲 / 二进制</option></select></label></div><p id="profile-description" class="profile-description" aria-live="polite"></p></section>
  <div class="trinity"><article class="panel"><small>PLATFORM MECHANISM</small><h3>Node-API：互操作底座</h3><p>目标平台提供调用、值、引用和调度设施。能力由精确 SDK / API Level 确认；桌面 Node.js 测试不能替代 ArkTS 目标验证。</p></article><article class="panel"><small>BACKEND ADAPTER</small><h3 id="bridge-owner">akinterop：调用桥</h3><p id="bridge-description"></p></article><article class="panel"><small>SEMANTICS / DEVELOPER EXPERIENCE</small><h3>MadB：可组合的增强</h3><p>类型与载荷校验、Promise / 订阅、显式关闭、env 隔离、ArkUI 状态、初始化、诊断与真实消费验证。</p></article></div>
@@ -33,12 +33,12 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}main{max-width:1530px}.hero{
  <section class="section" id="routes"><div class="section-head"><div><h2><b>02</b>主线、替代后端与扩展增强</h2><p>“增强普通 API”与“换一条运行时路线”有不同的验证范围。</p></div></div>
  <div class="panel table-scroll"><table><thead><tr><th>位置</th><th>组成与用途</th><th>需要独立确认</th><th>计划关系</th></tr></thead><tbody>
  <tr><td>CPF 工具链 + akinterop 主线</td><td>CPF Kotlin / KSP / 配套依赖构建 OHOS；akinterop 注解、处理器、插件、runtime 生成互调。CMP 按需启用。</td><td>完整工具链组合、方向与类型位置、装载注册、线程与 env；生成声明须经过真实 ArkTS 编译。</td><td>P05 探针；C07 / I05 / L05 收口，状态见本页目录数据</td></tr>
- <tr><td>KNOI 独立扩展</td><td>另一个调用桥适配器；复用其公开插件、KSP、运行库与注册机制，不与 akinterop 串接。</td><td>工具链配套、接口能力、依赖预载与总注册入口；单独 HAP 消费与证据。</td><td>扩展登记；P05 可提前比较，不因此增加主线认证</td></tr>
+ <tr><td>KNOI 独立扩展</td><td>另一个调用桥适配器；复用其公开插件、KSP、运行库与注册机制，不与 akinterop 串接。</td><td>工具链配套、接口能力、依赖预载与总注册入口；单独 HAP 消费与证据。</td><td>X08 / P14 可提前探针；正式验收保留 C11 前置，不反向阻断主线</td></tr>
  <tr><td>受检数据与状态增强</td><td>声明式导出、受限 DTO、JSON codec、缓冲包装、状态 class、Promise / 订阅门面。</td><td>按接口能力选择；字段和行为有单一权威源。UI 模型与线上载荷分离。</td><td>C07 / L05，S3</td></tr>
  <tr><td>工程与工具增强</td><td>madb init、DevEco 原生工程、版本锁、生成漂移检查、性能钩子、真实 HAP 消费。</td><td>CLI / IDE 构建一致，修改源码后重建，Release 裁剪与混淆，证据与候选对应。</td><td>I05 / C09 / C10；后续 I07 为可选 IDE 向导</td></tr>
  <tr><td>ANI 独立后端</td><td>采用不同的运行时接口与环境模型；保留进入 MadB 扩展协议的接入点。</td><td>ANI ABI、引用、线程与目标 SDK。接入 Kotlin/Native 还需额外的调用桥或 C ABI 适配探针。</td><td>X03，S6；目前没有登记 Kotlin/Native ↔ ANI 具体路线</td></tr>
  </tbody></table></div>
- <div class="split"><article class="panel padded"><h3>增强层的组合关系</h3><div class="owner-tree"><div><b>普通 ArkTS SDK</b><span>类型化方法、显式操作 / 订阅对象</span></div><div class="child"><b>可选便利层</b><span>ArkUI V1 / V2 状态接入、受支持装饰器、访问器</span></div><div class="child"><b>公共运行协议</b><span>一次完成、停止确认、引用与队列、错误映射</span></div><div class="grandchild"><b>选定调用后端＋载荷策略</b><span>主线 akinterop / 扩展 KNOI；按接口选择值 / JSON / 字节</span></div></div><p>便利入口复用普通 API。状态 getter 读取已同步数据，不能暗中执行阻塞调用或创建订阅。</p></article>
+ <div class="split"><article class="panel padded"><h3>增强层的组合关系</h3><div class="owner-tree"><div><b>普通 ArkTS SDK</b><span>类型化方法、显式操作 / 订阅对象</span></div><div class="child"><b>可选便利层</b><span>ArkUI V2 状态接入；V1 按兼容范围；选定声明语法</span></div><div class="child"><b>公共运行协议</b><span>一次完成、停止确认、引用与队列、错误映射</span></div><div class="grandchild"><b>选定调用后端＋载荷策略</b><span>主线 akinterop / 扩展 KNOI；按接口选择值 / JSON / 字节</span></div></div><p>便利入口复用普通 API。消费者按需启用，已选 L05 / I05 配置仍须完整交付。状态 getter 读取已同步数据，不创建隐式订阅；页面只停止自身订阅，不关闭共享 Engine。</p></article>
  <article class="panel padded"><h3>ANI 候选接入路径 · 设计假设</h3><div class="model-path"><div>采用 ANI 的 ArkTS 目标运行时</div><div class="arrow">↓</div><div>独立 ANI 适配器 / 显式 C ABI 门面</div><div class="arrow">↓</div><div>经过目标工具链验证的 Kotlin/Native 导出</div></div><p>这条候选链尚需验证。可复用 MadB 契约、诊断格式与测试组织；Node-API 的 napi_env、TSFN、引用规则和通过记录不能直接搬过去。<a href="#ref-ani">[ANI 原生接口依据]</a></p></article></div>
  </section>
  <section class="section" id="payload"><div class="section-head"><div><h2><b>03</b>三种数据路径，独立于调用桥选择</h2><p>同一 SDK 可以按接口混合使用。下方策略切换展示职责变化，不执行真实传输。</p></div><span class="badge" id="payload-badge"></span></div>
@@ -95,7 +95,7 @@ await observation.awaitStopped();
  </tbody></table></div>
  <div class="patterns"><article class="panel"><h3>单一职责</h3><p>调用桥、编解码、订阅、UI 与发布按变化原因分开。</p></article><article class="panel"><h3>依赖倒置</h3><p>核心依赖稳定契约，后端差异留在适配器与目标配置。</p></article><article class="panel"><h3>组合与状态机</h3><p>能力按需组合；注册、关闭、取消和结果交接有明确状态。</p></article><article class="panel"><h3>显式能力失败</h3><p>不支持的类型或环境给出来源诊断；不静默改用 JSON 或减弱协议。</p></article></div>
  </section>
- <section class="section" id="gates"><div class="section-head"><div><h2><b>07</b>真实案例沉淀为验收项</h2><p>历史经验形成测试输入，不自动证明新后端或新版本已通过。</p></div><span class="badge draft">所有 MadB 产品配置仍待实现与验证</span></div>
+ <section class="section" id="gates"><div class="section-head"><div><h2><b>07</b>真实案例沉淀为验收项</h2><p>历史经验形成测试输入，不自动证明新后端或新版本已通过。</p></div><span class="badge draft">本专题配置仍须完整验收；实施进度见工作包</span></div>
  <div class="panel table-scroll"><table><thead><tr><th>案例 / 风险</th><th>工具应提供的控制</th><th>必需验证</th></tr></thead><tbody>
  <tr><td>toString 充当变体协议</td><td>生成显式标签、字段与版本规则。</td><td>带数据 sealed 分支、未知标签、字段不一致；对应历史 ADR-028。</td></tr>
  <tr><td>Long 在不同路径映射不同</td><td>接口级数值契约；safe-int53、bigint 或字符串分开。</td><td>边界值、精度、负值、整数写法与拒收策略。</td></tr>
@@ -107,7 +107,7 @@ await observation.awaitStopped();
  <tr><td>初始化及公开分发</td><td>锁版本、生成来源、候选清单、独立消费与符号配对。</td><td>干净环境、DevEco 导入、改源码重建、真实设备 / HAP / Release、性能基线。</td></tr>
  </tbody></table></div>
  <div class="note"><strong>历史依据：</strong><a href="../catalog/source-coverage.json">Kotlin/ArkTS 架构总结</a>与<a href="../validation/04-problem-catalog.md">工程问题清单</a>。MadDemo 的 akinterop 1.1.0 / KSP1 适配和 JSON 会话路径是特定案例；不能推广为所有版本永久限制，也不能把旧项目的手动生成流程当作 MadB 的默认交付方式。</div>
- <div class="note"><strong id="plan-state"></strong> 主线按 CPF + akinterop 实施，KNOI 保留独立扩展。X03 是 ANI 后端扩展，不自动产生 Kotlin/Native ↔ ANI 支持。实验 UniFFI ArkTS 属于 Rust → ArkTS 另一条路线，不是本图的 Kotlin 调用桥。</div>
+ <div class="note"><strong id="plan-state"></strong> 主线按 CPF + akinterop 实施，C07 四路线与 L05 状态/页面首片并行；首片不代替完整生成、工程、目标与发布验收。KNOI 保留独立扩展。X03 不自动产生 Kotlin/Native ↔ ANI 支持；实验 UniFFI ArkTS 属于 Rust → ArkTS。十二项必要能力与十二项扩展仅作 ADR 索引，不新增任务或图节点。</div>
  </section>
  <section class="section" id="sources"><div class="section-head"><div><h2><b>08</b>机制依据与本地设计</h2><p>上游资料用于确认机制和限制；MadB API、模块、状态机和验证要求属于设计预览。未使用 archify。</p></div><span class="fact-stamp">核对 2026-10-24</span></div>
  <div class="panel padded"><ol class="references">
@@ -123,7 +123,9 @@ await observation.awaitStopped();
  <li><b>09</b><a href="../architecture/06-backend-profiles.md">MadB · 后端接入方案</a><small>主线与替代路线的选择和降级边界。</small></li>
  <li><b>10</b><a href="../architecture/05-lifecycle-and-concurrency.md">MadB · 生命周期与并发</a><small>单一 owner、准入、停止、排水与结果交接。</small></li>
  <li><b>11</b><a href="../architecture/15-developer-ergonomics.md">MadB · 语言特性与开发体验</a><small>普通 API、装饰器与 ArkUI 适配。</small></li>
- <li><b>12</b><a href="../delivery/01-implementation-plan.md">MadB · 实施计划</a><small>C07 / I05 / L05、P05 / P06 / P12 与扩展 X03。</small></li>
+ <li><b>12</b><a href="../delivery/01-implementation-plan.md">MadB · 实施计划</a><small>C07 / I05 / L05、P05 / P06 / P12 与 X03、X08 / P14；工作包状态的唯一目录入口。</small></li>
+ <li><b>13</b><a href="../adr/0016-arkts-production-baseline.md">MadB · ArkTS 生产基线</a><small>十二项必要责任按声明和 profile 适用；不要求所有 API 引入 Runtime / Engine。</small></li>
+ <li><b>14</b><a href="../adr/0017-arkts-extension-delivery.md">MadB · ArkTS 扩展交付</a><small>十二项选择复用既有工作包；已授权推进，早期探针与正式扩展验收分开。</small></li>
  </ol></div></section>
  <section class="section note"><strong>排队项也有生命周期。</strong>原生回调返回不代表 UI/env 队列已排水；执行器内按订阅代次认领投递，env 清理后只走允许的原生清理路径。<a href="../validation/08-critical-scenarios.md">CRIT-01 / CRIT-03 的独立时序与预期</a>。KNOI 详情见<a href="extensions-architecture.html#knoi">X08 扩展配置</a>。</section>
 <footer class="footer"><span>MadB · Kotlin/Native ↔ ArkTS 专题预览 · 独立离线 HTML</span><div><a href="architecture-overview.html">整体架构</a><a href="kotlin-swift-architecture.html">Swift 专题</a><a href="#top" id="back-top">回到顶部 ↑</a></div></footer>
@@ -402,7 +404,7 @@ await observation.awaitStopped();
   document.querySelectorAll('[data-mode]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.mode===state.mode)));
   $('bridge-owner').textContent=backend()+'：调用桥';
   $('bridge-description').textContent=state.mode==='akinterop'?'CPF 工具链配套的注解、KSP、插件与 runtime 生成互调，MadB 补齐载荷、异步与 env 生命周期。CMP 按需启用，不是调用桥的前提。':'KNOI 作为另一调用桥单独适配和认证，验证其工具链、类型、装载注册与线程能力；不与 akinterop 串联。';
-  $('profile-description').textContent=(state.mode==='akinterop'?'主线设计：CPF + akinterop；P05 先探针，C07 / I05 / L05 在 S3 验证交付。':'扩展设计：KNOI 由 X08 / P14 独立探针和验收；来源、配套和能力单独验证，不继承主线认证。')+' 当前载荷预览：'+payloads[state.payload].name+'。是否支持由接口、精确工具链及真实目标证据共同决定。';
+  $('profile-description').textContent=(state.mode==='akinterop'?'主线已采用并授权实施：CPF + akinterop；C07 与 L05 首片并行，I05 / L05 仍须完整交付。':'扩展已授权按前提推进：KNOI 由 X08 / P14 独立探针；正式验收保留 C11 前置，来源、配套和能力不继承主线认证。')+' 当前载荷预览：'+payloads[state.payload].name+'。是否支持由接口、精确工具链及真实目标证据共同决定。';
   $('payload-badge').textContent='当前预览：'+payloads[state.payload].name;
   $('payload-note').textContent=payloads[state.payload].note;
   renderOverview();renderDetail();renderSequence();

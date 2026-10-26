@@ -3,6 +3,7 @@
 mod child;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 mod pipes;
+pub mod session;
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 mod supervise;
 

@@ -67,7 +67,8 @@ class ContractFormats(unittest.TestCase):
                 registry = registry.with_resource(value["$id"], Resource.from_contents(value))
                 schemas[path.name.removesuffix(".schema.json")] = value
         seen = set()
-        for vector in read("format-vectors.json")["vectors"]:
+        vectors = read("format-vectors.json")["vectors"] + read("composition-format-vectors.json")["vectors"]
+        for vector in vectors:
             with self.subTest(vector=vector["id"]):
                 value = copy.deepcopy(read(vector["file"]))
                 for patch in vector.get("patch", []):
@@ -83,7 +84,7 @@ class ContractFormats(unittest.TestCase):
                 validator = Draft202012Validator(schemas[vector["kind"]], registry=registry)
                 self.assertEqual(validator.is_valid(value), vector["expected"] == "valid")
                 seen.add(vector["kind"])
-        self.assertEqual(len(seen), 16)
+        self.assertEqual(len(seen), 18)
 
     def test_jcs_bytes_and_hashes(self):
         vectors = read("canonical-vectors.json")

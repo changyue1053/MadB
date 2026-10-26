@@ -1,0 +1,407 @@
+{
+  "scope": "L01/E01-E03/I01 narrow implementation and L04/L05 checks; not full work-package acceptance or new public SDK certification",
+  "source": {
+    "root": "/Users/changyue/Desktop/MadB/madb",
+    "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+    "branch": "codex/c07-arkts",
+    "captured_source_files": 964,
+    "captured_tree_sha256": "66245f958fd70acd609991bffb76fa639d1e591a37271585ad42bc2be1a30d3c",
+    "capture_manifest": "/private/tmp/madb-chief-takeover/input.json",
+    "isolated_working_copy": "/private/tmp/madb-chief-takeover/madb",
+    "changed_code_sha256": {
+      "adapters/contracts/src/extension.rs": "bb5344f7f0d7b9d462d99746c46b563b25ca2998aed0939bebc9bbcd9ff8ad38",
+      "adapters/contracts/src/lib.rs": "740cabfb3521ac92c9d073e784aa31f6ef2b4ea68f0c4c6ac91de7941e90741e",
+      "adapters/contracts/tests/extension.rs": "c4a1f527e78ef667ffdb0fce1df5f8957655eaf06423e69be65a3d07f1c2034d",
+      "crates/madb-plan/src/lib.rs": "451986fde2e90f929b3eacbec1215776fd29c90352ab4f08e64907e07db85219",
+      "crates/madb-plan/src/project/mod.rs": "3f526d07d3a8231166d4b8004af3f83e3050fbab67bc1cc0e65d7db463bca65a",
+      "crates/madb-plan/tests/project.rs": "18f36ea3e31d2056f09f16792a2ddd0c0f54aeb91063aca3f384db384ed050bd",
+      "crates/madb-protocol/src/extension.rs": "bae4bdca81324d657c4235a7fd8f40ee902a8b04f423d43e82cefb6bc7d0d861",
+      "crates/madb-protocol/src/lib.rs": "2c4bdc7c6e052731b954e60eb1a818f0b02270818d96a8596951e9b173512592",
+      "crates/madb-protocol/tests/extension.rs": "84c7ef8f026c686d8abb29ea993d388fb1ead6fda6309a3b881c59cd3b6e6724",
+      "scripts/check.py": "cbf4a86de39e058ea1218c80f3dffeff7d76cff83167f080680ff0a4539e5d50",
+      "tests/integration/l01_contract/check_arkts.cjs": "39d04efa60150b2fe5b263650b639b15bee4cafedf73771683a71adcfd014f81",
+      "tests/integration/l01_contract/test_declaration_contracts.py": "e23f0dad3cd7642bc48ad4792a64f7dbc5f670171068dd00e3a72abcb9509290",
+      "docs/examples/language-api/second-business.ets": "6f7365a54de18cc71261bbf7c7dd57664b234b171ca645be270cbdfb1fa677f5",
+      "tests/integration/l04_swift_observation/SkieConsumer.swift": "3bd77a56b5c3391977a22900e476c94713e2d9de6d5aa1e62be9960543dd342e"
+    }
+  },
+  "environment": {
+    "python": "3.14.4",
+    "node": "26.8.2",
+    "rust": "1.99.1",
+    "native": {
+      "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx26.0",
+      "xcode": "Xcode 27.0\nBuild version 27A266a",
+      "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+      "sdk_version": "27.0",
+      "sdk_build": "26A425"
+    }
+  },
+  "results": [
+    {
+      "command": "CARGO_NET_OFFLINE=true /Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/check.py",
+      "cwd": "/private/tmp/madb-chief-takeover/madb",
+      "exit_code": 0,
+      "scope": "complete repository check entry, including Rust workspace, CLI installation, host process/transaction regressions, reader, native invariants, architecture and documentation checks",
+      "log": "/private/tmp/madb-chief-takeover/integrated-check.log",
+      "log_sha256": "8ee22576e23a13fc2ad088027042d6a1fe6196bc3c0314f50907c1ab74e4064c"
+    },
+    {
+      "command": "cargo test -p madb-contracts --test extension --locked --offline",
+      "tests": 12,
+      "result": "passed",
+      "scope": "manifest/registration/known mandatory semantics"
+    },
+    {
+      "command": "cargo test -p madb-protocol --test extension --offline",
+      "tests": 7,
+      "result": "passed",
+      "scope": "frame codec, 14 existing wire vectors and required fields; no protocol session"
+    },
+    {
+      "command": "cargo test --locked --offline -p madb-plan",
+      "new_tests": 9,
+      "total_tests": 13,
+      "result": "passed",
+      "scope": "pure module and file plan; no template rendering or IDE"
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/integration/l01_contract",
+      "tests": 5,
+      "result": "passed",
+      "scope": "recorded descriptors through real reader/policy code; no compiler rerun"
+    },
+    {
+      "command": "node tests/integration/l01_contract/check_arkts.cjs <SDK typescript.js> <reviewed sha256>",
+      "result": "passed",
+      "record": {
+        "scope": "L01 host AST reader; no target compilation, native execution or SDK acceptance",
+        "node": "v26.8.2",
+        "compilerApiVersion": "4.9.5",
+        "compilerModule": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+          "sha256": "9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1"
+        },
+        "reader": {
+          "path": "adapters/generators/arkts/read_facade.cjs",
+          "sha256": "aeb3a29478edcad30bf975a94d1241c8fd2997dc609478d575c8b4e10e13a38d"
+        },
+        "inputs": [
+          {
+            "path": "sdk/arkts/facade/Boundary.ets.in",
+            "sha256": "dd3775ec075333a79efaeb236b6dc8da46622fea22b43a6e021cf4cfe19faa15"
+          },
+          {
+            "path": "tests/fixtures/c07_arkts_generation/rename-record/Boundary.ets.in",
+            "sha256": "05f5f5a15d783c755cffa04869e8b434cec609fc247cbaffe33fa2f875911729"
+          },
+          {
+            "path": "tests/fixtures/c07_arkts_generation/reject-async/Boundary.ets.in",
+            "sha256": "7d2ae5a5e90ba33b6ad66aa07eb177e524e5b41881095480aa886d2cd80d6ae0"
+          },
+          {
+            "path": "tests/fixtures/c07_arkts_generation/reject-async-listener/Boundary.ets.in",
+            "sha256": "8a5cd139393ee62d04ae7f3b24b11114b93f534ce62339f192cfc7a56b18ab18"
+          },
+          {
+            "path": "tests/fixtures/c07_arkts_generation/reject-callback-result/Boundary.ets.in",
+            "sha256": "a3ccb799f4fefc452cd651a87fea3bb3f573e19664044e6139b2ea5786f3fc70"
+          },
+          {
+            "path": "docs/examples/language-api/second-business.ets",
+            "sha256": "6f7365a54de18cc71261bbf7c7dd57664b234b171ca645be270cbdfb1fa677f5"
+          }
+        ],
+        "passed": 6,
+        "cases": [
+          "ordinary authored surface retains scalar record and synchronous void listener",
+          "real rename changes record and method source names",
+          "reject-async rejects at its actual source node with required classification",
+          "reject-async-listener rejects at its actual source node with required classification",
+          "reject-callback-result rejects at its actual source node with required classification",
+          "independent value-only business remains rejected by the fixed C07 profile"
+        ]
+      }
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/integration/l04_swift_observation",
+      "tests": 8,
+      "result": "passed",
+      "scope": "candidate admission checks"
+    },
+    {
+      "scope": "L04 local Swift Release tests / external SwiftPM consumer / actual frozen SKIE native composition",
+      "result": "passed",
+      "report": "/private/tmp/madb-chief-takeover/l04-shared-owner-unrestricted/report.json",
+      "report_sha256": "9fce9f2794dfc299fff5e6c86bfc7a8b9e61b60f70137b87ae5207fb7a5d08bb",
+      "base_candidate": {
+        "candidate_digest": "sha256:872d0cbd49bee21d442f24be6536334a7cc8dff3a525839f2a889a7776ac908c",
+        "identity": {
+          "bootstrap_version": 1,
+          "interface_digest": "sha256:339ac91482ef3eacdb077ae89857a406ae7e6f74ced08c956ece4c55c25eeb2d",
+          "profile_digest": "sha256:ce30af78d0d01274ed121f93763a66c21562fa4b96a06d69ab1de720a1539a5c",
+          "schema": "madb.native-identity/1"
+        },
+        "selector": {
+          "direction": "consumer-to-provider",
+          "profile_digest": "sha256:ce30af78d0d01274ed121f93763a66c21562fa4b96a06d69ab1de720a1539a5c",
+          "profile_id": "c06-swift-kotlin-aarch64-apple-darwin",
+          "route": "KN-SWIFT-OBJC",
+          "target": "aarch64-apple-darwin"
+        },
+        "verified_files": 58
+      },
+      "source_inputs": [
+        {
+          "path": "sdk/swift/observation/.gitignore",
+          "sha256": "sha256:acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+          "size": 18
+        },
+        {
+          "path": "sdk/swift/observation/Integration/SKIE/MadBSkieStateSource.swift",
+          "sha256": "sha256:e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+          "size": 1526
+        },
+        {
+          "path": "sdk/swift/observation/LICENSE",
+          "sha256": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "size": 11358
+        },
+        {
+          "path": "sdk/swift/observation/NOTICE",
+          "sha256": "sha256:f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+          "size": 223
+        },
+        {
+          "path": "sdk/swift/observation/Package.swift",
+          "sha256": "sha256:43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46",
+          "size": 411
+        },
+        {
+          "path": "sdk/swift/observation/README.md",
+          "sha256": "sha256:d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329",
+          "size": 6092
+        },
+        {
+          "path": "sdk/swift/observation/Sources/MadBObservation/MadBStateModel.swift",
+          "sha256": "sha256:425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7",
+          "size": 6338
+        },
+        {
+          "path": "sdk/swift/observation/Sources/MadBObservation/MadBStateSource.swift",
+          "sha256": "sha256:6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83",
+          "size": 1122
+        },
+        {
+          "path": "sdk/swift/observation/Tests/MadBObservationTests/ControlledSource.swift",
+          "sha256": "sha256:90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179",
+          "size": 4808
+        },
+        {
+          "path": "sdk/swift/observation/Tests/MadBObservationTests/MadBStateModelTests.swift",
+          "sha256": "sha256:e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6",
+          "size": 8894
+        },
+        {
+          "path": "tests/integration/l04_swift_observation/PackageConsumer.swift",
+          "sha256": "sha256:032c6c6c205416e8516d1a8d073492577e0b4bc8dfe0c35c150f938ff2d9572c",
+          "size": 2322
+        },
+        {
+          "path": "tests/integration/l04_swift_observation/SkieConsumer.swift",
+          "sha256": "sha256:3bd77a56b5c3391977a22900e476c94713e2d9de6d5aa1e62be9960543dd342e",
+          "size": 6914
+        }
+      ],
+      "checker_sha256": "sha256:e7576f4fee6fe05c52704eacd155d2d5f6155db489568e35e70289f003abb2ff",
+      "release_tests": 14
+    },
+    {
+      "command": "node tests/integration/l05_arkts_observation/check.cjs",
+      "checks": 15,
+      "result": "passed",
+      "scope": "host lifecycle model; no new ArkTS target run"
+    }
+  ],
+  "retained_failures": [
+    {
+      "scope": "first L04 sandbox attempt",
+      "report": "/private/tmp/madb-chief-takeover/l04-shared-owner/report.json",
+      "report_sha256": "7c87b7952c5e656ef86ada9edaf25d48adf5df9d786977d96bfe5b57b7a56c2f",
+      "result": "failed",
+      "reason": "dsymutil Operation not permitted; subsequent authorized run in a new output directory completed all checks"
+    },
+    {
+      "scope": "E01 early parallel compile attempts",
+      "result": "failed",
+      "reason": "E02/I01 module export existed before corresponding new source file; after all files were present targeted and integrated checks passed"
+    }
+  ],
+  "independent_review": {
+    "scope": "new code vs captured baseline, L01 boundary checks and L04 source/report identity; no inherited dirty-diff attribution",
+    "result": "no-blocking-findings",
+    "native_runtime_changes": false,
+    "approved_decision_review": "8 package acceptance additions match both explicit approvals; original acceptance retained; all phases/dependencies/verification unchanged; C06/C07 catalog objects unchanged"
+  },
+  "decisions": {
+    "swift_responsibility": "explicit user approval applied",
+    "cli_ownership_and_acceptance": "explicit user approval applied",
+    "new_wire_fields": "not introduced; future format review required",
+    "existing_dependencies_and_phases": "unchanged"
+  },
+  "integration": {
+    "status": "completed",
+    "root": "/Users/changyue/Desktop/MadB/madb",
+    "copied_files": 37,
+    "untouched_captured_files": 941,
+    "all_initial_copy_hashes_matched": true,
+    "original_head_unchanged": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+    "lab_head_unchanged": "a466501275bee1786d171199390f228f55eb38a0",
+    "lab_worktree_clean": true,
+    "post_integration_checks": [
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "docs/tools/check_docs.py"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-0.log",
+        "log_sha256": "0ec7539431646eddb781e6e335b2f6eabc8af323b43d2e1f1b17010b3afddc45",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "docs/tools/render_visuals.py",
+          "--check"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-1.log",
+        "log_sha256": "fb63df5513d051261905f52edb4060283ce8bb0616483fa494cd4b7cf2daa6d4",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "docs/tools/tests"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-2.log",
+        "log_sha256": "d313ffe1a681b66f14dbd103367164f8db6c80c0e97471a8c3c6f04a61754050",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": [
+          "node",
+          "docs/tools/tests/panorama_smoke.cjs"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-3.log",
+        "log_sha256": "d297c46c4f64e546b38ba30d9720da32b0a2532bc277eb4c9661ad89f7f699c9",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/integration/l01_contract"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-4.log",
+        "log_sha256": "3872f5a85da677f909ec5c55a5821758c34e2394460567a29f8043b480cc1105",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": [
+          "node",
+          "tests/integration/l01_contract/check_arkts.cjs",
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+          "9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-5.log",
+        "log_sha256": "44c0d0f5aa472fb2dd5b0a3772e2861f203ebc845f1769a2ebe9016b0cdc1b74",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": [
+          "node",
+          "tests/integration/l05_arkts_observation/check.cjs"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-check-6.log",
+        "log_sha256": "48df97bc6406eb2b8ec94f8379fc0ff9e9f4a78136b8697b643cdd9d86a28565",
+        "cwd": "/Users/changyue/Desktop/MadB/madb"
+      },
+      {
+        "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-takeover/target CARGO_NET_OFFLINE=true cargo test --locked --offline -p madb-contracts -p madb-protocol -p madb-plan",
+        "cwd": "/Users/changyue/Desktop/MadB/madb",
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-takeover/authoritative-rust.log",
+        "log_sha256": "3096482a67086a11519e3395205df5d4b5412911e93c57ec881e1d4d626ca0df"
+      }
+    ],
+    "final_changed_file_sha256": {
+      "adapters/contracts/src/extension.rs": "bb5344f7f0d7b9d462d99746c46b563b25ca2998aed0939bebc9bbcd9ff8ad38",
+      "adapters/contracts/src/lib.rs": "740cabfb3521ac92c9d073e784aa31f6ef2b4ea68f0c4c6ac91de7941e90741e",
+      "adapters/contracts/tests/extension.rs": "c4a1f527e78ef667ffdb0fce1df5f8957655eaf06423e69be65a3d07f1c2034d",
+      "crates/madb-plan/src/lib.rs": "451986fde2e90f929b3eacbec1215776fd29c90352ab4f08e64907e07db85219",
+      "crates/madb-plan/src/project/mod.rs": "3f526d07d3a8231166d4b8004af3f83e3050fbab67bc1cc0e65d7db463bca65a",
+      "crates/madb-plan/tests/project.rs": "18f36ea3e31d2056f09f16792a2ddd0c0f54aeb91063aca3f384db384ed050bd",
+      "crates/madb-protocol/src/extension.rs": "bae4bdca81324d657c4235a7fd8f40ee902a8b04f423d43e82cefb6bc7d0d861",
+      "crates/madb-protocol/src/lib.rs": "2c4bdc7c6e052731b954e60eb1a818f0b02270818d96a8596951e9b173512592",
+      "crates/madb-protocol/tests/extension.rs": "84c7ef8f026c686d8abb29ea993d388fb1ead6fda6309a3b881c59cd3b6e6724",
+      "docs/architecture/15-developer-ergonomics.md": "ae3399cc0c5532561b7b4ef5163484ba627595b155f4c572fea149ee0f278476",
+      "docs/catalog/implementation-plan.json": "a319cde5dab5ab8b22eabfb5380fbdcf5c1d02c9b8c12e2361c2e3b1f25574aa",
+      "docs/delivery/03-decisions-and-risks.md": "650385634274cdfe8a10b9a6c12d4cbd0c7ddb2e7741c2eb690e29428625f979",
+      "docs/examples/language-api/README.md": "159c055698d59eefab69e5783012067da399d981ec53a721917a7964809d1739",
+      "docs/examples/language-api/second-business.ets": "6f7365a54de18cc71261bbf7c7dd57664b234b171ca645be270cbdfb1fa677f5",
+      "docs/reviews/2026-10-25-chief-architect-first-batch.md": "bfd839e832b965170dd7f5aa2f1094bafcce7f2870fb008db26e147ee52041f8",
+      "docs/reviews/README.md": "c5326762559c5bc947075d4a62c4ecf5e0731f96767b7ce173fd9f386df609bd",
+      "docs/reviews/chief-architect-c07-reconciliation.json": "095920cf0f7e200062fa82ec0a3b85bf30ebee6d950383d48962cb6f7232a254",
+      "docs/visuals/architecture-overview.html": "5b58f802bbf0c1433ebfd9df82f8b1a5ce6a25beef95d4aa55f25ef005a7b182",
+      "docs/visuals/arkts-c-cpp-architecture.html": "69e5d224acda1f4410d0cf0e23fb595159df05b29d4b889d2e0ab03a442789f5",
+      "docs/visuals/arkts-rust-architecture.html": "c7021496e547ea4b996c9bd55a6190e8566d44b3449685dacf2365bd7f8297c9",
+      "docs/visuals/extensions-architecture.html": "52e9a8cd951b02286aec4eac819416be01a69d60b9c2188d4cbe8f53036e2fb8",
+      "docs/visuals/implementation-progress.html": "ee638acd8c6b2ca729e1f9671dcbf61f94c3d8fde6fe63026cb2fd2734ff98c6",
+      "docs/visuals/kotlin-arkts-architecture.html": "e07603f382a8e458954a19656fbb5a2be6793500d3762c9c0c91fdb61b4a42ff",
+      "docs/visuals/kotlin-c-cpp-architecture.html": "50c4bec593c3ff5b57ed84a31c61b2ac41f9505952298688a742e57c14f9b6dd",
+      "docs/visuals/kotlin-rust-architecture.html": "a267ee02d43758a13f3db753827252488aced8c6bafcec50eeb2423de6566064",
+      "docs/visuals/kotlin-swift-architecture.html": "75450f8fa964d2b1dd642b5c79513d39ac74a36899bd99c37561c44b64f9eef3",
+      "docs/visuals/route-atlas.html": "10f20baca4d5747146b2c3775355019aaf95cc8a450045434c2a1aaad32edd40",
+      "docs/visuals/rust-c-cpp-architecture.html": "5d7b3ff8427faa4074a08532b46afcf3a782e445d7da16281394592e98effaee",
+      "docs/visuals/swift-c-cpp-architecture.html": "029b38b486fb2055c95c42f7766982035db5b29156d9554ca65f2ab44e12b941",
+      "docs/visuals/swift-rust-architecture.html": "d8434dd0af25fda98acadc9d081834158ccf8cc457f6dc9b4513e37bf9337c25",
+      "scripts/check.py": "cbf4a86de39e058ea1218c80f3dffeff7d76cff83167f080680ff0a4539e5d50",
+      "tests/integration/l01_contract/README.md": "0f765c3b010def5ddc2844e9c2b00c022d6c2c1298d2ddf2461ae3964e11da21",
+      "tests/integration/l01_contract/check_arkts.cjs": "39d04efa60150b2fe5b263650b639b15bee4cafedf73771683a71adcfd014f81",
+      "tests/integration/l01_contract/test_declaration_contracts.py": "e23f0dad3cd7642bc48ad4792a64f7dbc5f670171068dd00e3a72abcb9509290",
+      "tests/integration/l04_swift_observation/README.md": "52bec14639c6169c0af668ad8cee879a033f6dc807ee3764fd622b23560c1fcf",
+      "tests/integration/l04_swift_observation/SkieConsumer.swift": "3bd77a56b5c3391977a22900e476c94713e2d9de6d5aa1e62be9960543dd342e"
+    },
+    "hash_exclusion": "this validation record excludes its own bytes to avoid self-reference"
+  },
+  "not_executed": [
+    "new C10 public candidate construction/certification",
+    "second independent business SDK generation",
+    "interactive extension process session",
+    "template wire/rendering/IDE Run and incremental performance baseline",
+    "new ArkTS Native/HAP/UI target execution",
+    "iOS/SwiftUI/UIKit target verification",
+    "real browser rendering and interaction",
+    "remote CI / GitHub Actions",
+    "publication"
+  ],
+  "result": "passed-with-explicit-scope"
+}

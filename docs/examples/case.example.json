@@ -1,8 +1,7 @@
 {
   "schema": "madb.case/1",
-  "example": true,
-  "readiness": "planned",
   "id": "CASE-LIFE-004-stop-race",
+  "kind": "template",
   "problem_ids": [
     "LIFE-004",
     "THR-004"
@@ -10,53 +9,133 @@
   "source_ids": [
     "Rust_C_CPP:13"
   ],
-  "profile": null,
-  "direction": "provider-to-host-callback",
-  "target": null,
-  "requires": [
-    "controllable-callback-barrier",
-    "resource-counter"
-  ],
-  "fixture": "SampleEngine.Subscription",
+  "selector": null,
+  "requires": {
+    "features": [],
+    "environment": [
+      {
+        "id": "controllable-callback-barrier",
+        "version": "planned"
+      },
+      {
+        "id": "resource-counter",
+        "version": "planned"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "fixtures/planned-subscription.json",
+    "schema": "madb.fixture/1",
+    "sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "size": 0
+  },
   "setup": [
-    "open-engine",
-    "register-observer"
+    {
+      "id": "open",
+      "action": "call",
+      "entrypoint": "SampleEngine.open",
+      "arguments": []
+    },
+    {
+      "id": "register",
+      "action": "call",
+      "entrypoint": "SampleEngine.registerObserver",
+      "arguments": []
+    }
   ],
   "steps": [
     {
-      "action": "pause",
-      "at": "callback-entered"
+      "id": "pause-entered",
+      "action": "barrier",
+      "entrypoint": "Subscription.pauseEnteredCallback",
+      "arguments": []
     },
     {
-      "action": "request-stop"
+      "id": "request-stop",
+      "action": "call",
+      "entrypoint": "Subscription.requestStop",
+      "arguments": []
     },
     {
-      "action": "assert-stop-pending"
+      "id": "observe-pending",
+      "action": "call",
+      "entrypoint": "Subscription.recordStopPending",
+      "arguments": []
     },
     {
-      "action": "resume",
-      "at": "callback-entered"
+      "id": "resume-entered",
+      "action": "barrier",
+      "entrypoint": "Subscription.resumeEnteredCallback",
+      "arguments": []
     },
     {
-      "action": "await-stopped"
+      "id": "await-stopped",
+      "action": "call",
+      "entrypoint": "Subscription.awaitStopped",
+      "arguments": []
     },
     {
-      "action": "emit-source-event"
+      "id": "emit-after-stop",
+      "action": "call",
+      "entrypoint": "SampleEngine.emitSourceEvent",
+      "arguments": []
     }
   ],
   "assertions": [
-    "no-consumer-callback-after-stop-completed",
-    "context-release-count-equals-one"
+    {
+      "observation": "stop-pending-while-callback-paused",
+      "operator": "equals",
+      "expected": [
+        {
+          "kind": "integer",
+          "type": "u64",
+          "decimal": "1"
+        }
+      ]
+    },
+    {
+      "observation": "consumer-callbacks-after-stop-completed",
+      "operator": "equals",
+      "expected": [
+        {
+          "kind": "integer",
+          "type": "u64",
+          "decimal": "0"
+        }
+      ]
+    },
+    {
+      "observation": "context-release-count",
+      "operator": "exactly-once",
+      "expected": [
+        {
+          "kind": "integer",
+          "type": "u64",
+          "decimal": "1"
+        }
+      ]
+    }
   ],
-  "expected_result": "passed",
+  "expected_result": {
+    "kind": "success"
+  },
   "cleanup": [
-    "close-engine",
-    "verify-no-live-resources"
+    {
+      "id": "close-engine",
+      "action": "cleanup",
+      "entrypoint": "SampleEngine.close",
+      "arguments": []
+    },
+    {
+      "id": "verify-no-live-resources",
+      "action": "cleanup",
+      "entrypoint": "SampleEngine.verifyNoLiveResources",
+      "arguments": []
+    }
   ],
   "timeout_policy": {
-    "kind": "isolated-process-watchdog",
-    "duration_source": "profile-budget",
-    "on_timeout": "error-with-trace"
-  },
-  "route": "RUST-C-ABI"
+    "timeout_ms": 5000,
+    "on_timeout": "error",
+    "recovery": "isolate"
+  }
 }

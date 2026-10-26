@@ -24,6 +24,7 @@ HELPERS = (
     "adapters/generators/arkts/read_c_seam.py",
     "adapters/generators/arkts/lowering.py",
     "adapters/generators/arkts/diagnostics.py",
+    "adapters/generators/arkts/declaration_diagnostics.py",
     "adapters/toolchains/arkts/toolchain.py",
     "adapters/toolchains/arkts/worker.py",
     "adapters/artifacts/arkts/pack.py",

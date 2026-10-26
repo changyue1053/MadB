@@ -42,13 +42,13 @@ cargo run --locked -p madb-cli -- plan --root /path/to/workspace --project madb.
 C04 提供受检执行基础设施。每个命令消费一份 `madb.execution/1` 文件，引用精确的配置、工具和请求；它不自动猜测后端或生成语言绑定。
 
 ```sh
-madb build --root /path/to/workspace --task metadata --execution metadata.execution.json --frozen
+cargo run --locked -p madb-cli -- build --root /path/to/workspace --task metadata --execution metadata.execution.json --frozen
 # 按需显式准备受限原生依赖；工具可用 --tool-root 指向固定安装根
-madb build --root /path/to/workspace --task dependencies --execution generate.execution.json --frozen
-madb generate --root /path/to/workspace --execution generate.execution.json --frozen
-madb generate --root /path/to/workspace --execution generate.execution.json --frozen --check
-madb build --root /path/to/workspace --execution build.execution.json --frozen
-madb package --root /path/to/workspace --execution package.execution.json --frozen
+cargo run --locked -p madb-cli -- build --root /path/to/workspace --task dependencies --execution generate.execution.json --frozen
+cargo run --locked -p madb-cli -- generate --root /path/to/workspace --execution generate.execution.json --frozen
+cargo run --locked -p madb-cli -- generate --root /path/to/workspace --execution generate.execution.json --frozen --check
+cargo run --locked -p madb-cli -- build --root /path/to/workspace --execution build.execution.json --frozen
+cargo run --locked -p madb-cli -- package --root /path/to/workspace --execution package.execution.json --frozen
 ```
 
 metadata 在缺少 IR 时执行真实读取配方，返回固定 IR 路径；生成执行 `GenerateRequest→OutputSet` 并提交源码批次；构建固定该批次，只消费受检依赖输出；打包只接受固定源码和构建批次中的真实证据。未知输出身份先计算、再显式绑定下一阶段，不能在执行中改写任务摘要。
@@ -107,6 +107,16 @@ C06 已提供 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-k
 | 冻结读取、生成、构建与候选打包 | `scripts/build_managed_routes.py` |
 
 当前范围为锁定工具链的 macOS Arm64 Release；deployment target 14.0 不代表已在 macOS 14 实跑，桌面 JVM 也不代表 Android。消费方从独立、已验证的候选 `identity.json` 取得 `expectedProfile`，不能用已加载库自报的 profile 代替预期身份。
+
+## Swift 可选观察适配
+
+L04 已启动独立的 [MadBObservation 源码包](sdk/swift/observation/README.md)，将普通订阅的拥有型状态快照投递到 MainActor 本地模型，提供显式启动、请求停止和排水等待。当前是 macOS 开发子范围；真实 SKIE 组合检查使用固定 C06 公开候选，不改变该候选身份，也不代表 SwiftUI/UIKit、iOS 或正式发布包已经验收。九项扩展的完整范围与安排见[实施计划](docs/delivery/01-implementation-plan.md)。
+
+在具备所述 Apple 工具链的开发机运行 `.venv/bin/python scripts/check_swift_observation.py --output /absolute/path/to/new-check-output`；真实 native 组合需要显式指定候选和独立预期摘要，命令见[检查说明](tests/integration/l04_swift_observation/README.md)。通用仓库检查与这一 Apple 目标检查分别执行，不把缺少候选或工具计为通过。
+
+## ArkTS 可选观察适配
+
+L05 已启动 [StateObservation 与 ArkUIStateModel](sdk/arkts/observation/README.md)：复用 C07 状态订阅，提供显式接入、本地停止和可重试异步关闭，页面只管理自己的观察。首片包含独立普通/ArkUI 源码及生命周期检查；正式 SDK 编译与目标运行、完整 native HAR 认证分开记录。十二项必要能力和十二项扩展的选型、交付次序及剩余验收见[实施计划](docs/delivery/01-implementation-plan.md)和[本次记录](docs/reviews/2026-10-25-arkts-extension-delivery.md)。
 
 ## ArkTS 环境预检
 

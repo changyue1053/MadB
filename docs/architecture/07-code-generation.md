@@ -25,6 +25,10 @@ lowering 保留 source map 和语义责任链。优先调用成熟生成器；Ma
 
 语言层采用 KSP、后端宏或构建期生成时，薄层只提取声明、传递元数据或生成对普通 API 的调用。KSP 不读取/改写函数体，语法宏不被当成线程安全证明。错误要追踪到作者声明，重复导出与冲突语义在生成前阻断。工具选择、依赖与普通 API 回退见[语言特性设计](15-developer-ergonomics.md)。
 
+Swift 的通用运行原语允许手写维护；业务方法、必要模型投影、错误和资源接线中随导出声明变化的部分必须由受支持声明及显式策略生成。复用后端元数据，不额外要求作者重复维护同一接口 IDL。当前 C06 的固定 semantic surface 和适配源码复制只证明选定样例；产品化须按[Swift 生产基线](../adr/0014-swift-production-baseline.md)与[DX 验收](../validation/07-developer-ergonomics.md)验证第二个独立业务模块的增删改和重新消费。
+
+ArkTS 采用相同分工：复用所选后端的真实声明与元数据，生成随业务变化的公开类型、方法和必要接线，通用状态机及 ArkUI 薄适配可以手写维护。CPF 的 Kotlin 导出 KSP 与 ArkTS 宿主接口代理生成是不同方向的输入流程；声明能编译不等于线程、取消和生命周期已成立。固定样例、受限字段探针和复制出的声明各自只证明对应范围，第二个独立业务模块的重生成与准确拒绝要求见 [ADR-0016](../adr/0016-arkts-production-baseline.md)。
+
 ## 后端生成配方
 
 | 场景与权威输入 | 生成产物 | 必须保留的边界 |
@@ -33,11 +37,22 @@ lowering 保留 source map 和语义责任链。优先调用成熟生成器；Ma
 | 大量既有 C++ API 需要 Java/JNI 接入 | 可选 SWIG Java/JNI 后端及受限接口描述 | 独立声明支持的类型、重载、director 回调和打包条件；不承诺任意头文件自动得到安全 API |
 | 已有 C ABI 或多语言共享的 C 可见面 | bindgen 导入、cbindgen 头文件或目标语言包装，按提供方分别选择 | 头文件与导出实现的权威关系明确；不能用新生成声明掩盖实际布局或符号漂移 |
 | Rust/C++ 双方可控制且采用 CXX 支持的桥接面 | CXX 绑定与编译接入 | CXX 是此配置的实现，不自动替换已有 C ABI |
+| CPF Kotlin 导出声明及明确的 ArkTS 宿主接口 | akinterop 导出绑定、ArkTS 声明及所选反向代理，MadB 补受限 Facade 与协议接线 | 各方向使用实际支持的生成入口；KSP、插件、runtime 与 native helper 成套锁定，不能从 Promise 外观推定取消或 Flow 支持 |
 | 既有 UniFFI Rust 接口增加 ArkTS 消费者 | 实验性的 UniFFI-ArkTS 绑定、序列化辅助代码与 OHOS Node-API adapter | 复用已声明接口，独立锁定兼容版本；不与直接 napi-ohos 导出或其他 UniFFI 版本任意混用 |
 
 JNI 默认生成受限接线，不另造通用 C++ 解析器。`JNI_OnLoad` 中注册失败应尽早报错，导出符号、类加载器与线程规则由对应 profile 管理。[Android JNI 指南](https://developer.android.com/ndk/guides/jni-tips)、[SWIG Java/JNI](https://www.swig.org/Doc4.4/Java.html)
 
 后端模板也是需审查和锁定的代码。Gobley/UniFFI 的 foreign future 重复完成修复必须落到实际生成模板，并验证成功完成路径抛异常时不会再走第二次完成；只升级 Rust runtime 不足以证明修复生效。补丁身份、生成代码摘要及对应回归证据一起进入发布记录。[上游修复](https://github.com/mozilla/uniffi-rs/pull/2733)
+
+## 构建开销与职责边界
+
+MadB 管理跨工具的输入身份、语义检查、依赖编排及批次提交；Gradle、Cargo、Xcode、Hvigor 等继续负责各自工程内部的编译与增量机制。适配器明确输入输出、环境及变更触发条件，避免重复维护原生构建器，也避免应用与边界任务相互递归。[Gradle 增量构建](https://docs.gradle.org/current/userguide/incremental_build.html)、[Cargo 构建脚本](https://doc.rust-lang.org/cargo/reference/build-scripts.html)提供可复用机制，但原生缓存命中不自动满足 MadB 完整输入与候选身份要求。
+
+当前部分原生配方先准备实际输出身份，再在固定静态图下重放编译/链接/运行。它有确定性核对用途，也可能增加构建成本；没有测量结果前，不称其为已确认的性能瓶颈。
+
+优化前记录冷构建、无改动重建、仅实现变化、公开声明变化四类基线：实际工具启动次数、阶段耗时、缓存命中/失效原因、输入和候选身份。由 I01 的构建接入及 C09/P09 的测量协作完成，不追溯改变 C04 已验收结论。
+
+可评估沿现有阶段绑定“执行并核验结果 → 冻结实际输出 → 绑定下一阶段”，减少没有额外证明价值的重复工作。采用前必须证明输入完整性、取消、并发更新、恢复与最终提交等价；现行静态图不能表达时先完成契约兼容评审。不能修改已经绑定的任务摘要、复用未经核验的预览结果，或以删除验收换取加速。本节是调查和决策要求，不宣称已实现该优化。
 
 ## 受控进程与结果准入
 

@@ -16,12 +16,12 @@ class Element {
  querySelector(selector){return this.children.find(c=>c.localName===selector)||new Element(selector);}
 }
 function harness(dataset,script,hash=''){
- const ids=new Map();const document={getElementById(id){if(!ids.has(id))ids.set(id,new Element());return ids.get(id);},createElementNS(ns,tag){return new Element(tag);},documentElement:new Element('html'),title:''};
+ const ids=new Map();const document={getElementById(id){if(!ids.has(id))ids.set(id,new Element());return ids.get(id);},createElementNS(ns,tag){return new Element(tag);},createElement(tag){return new Element(tag);},querySelectorAll(){return [];},documentElement:new Element('html'),title:''};
  document.getElementById('catalog').textContent=JSON.stringify(dataset);
  const window=new Element('window');window.print=()=>{};
  const location={hash};const history={replaceState(_a,_b,newHash){location.hash=newHash;}};
  const storage=new Map();const localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v)};
- const context={document,window,location,history,localStorage,console};vm.runInNewContext(script,context,{timeout:4000});return {ids,document,window,location,storage};
+ const context={document,window,location,history,localStorage,console,matchMedia:()=>({matches:false})};vm.runInNewContext(script,context,{timeout:4000});return {ids,document,window,location,storage};
 }
 const plan=JSON.parse(fs.readFileSync(path.join(root,'catalog/implementation-plan.json'))),routes=JSON.parse(fs.readFileSync(path.join(root,'catalog/routes.json')));
 const views=fs.readdirSync(path.join(root,'catalog/route-views')).filter(x=>x.endsWith('.json')).map(x=>JSON.parse(fs.readFileSync(path.join(root,'catalog/route-views',x))));
@@ -50,4 +50,25 @@ for(const view of views){
  }
  $('theme').dispatch('click');assert.equal(h.document.documentElement.dataset.theme,'dark');$('theme').dispatch('click');assert.equal(h.document.documentElement.dataset.theme,'light');
 }
-console.log(JSON.stringify({method:'isolated DOM-shaped unit execution; not a browser',profiles,graph_filters:graphs,sequence_scenarios:scenarios,node_keyboard_selections:nodes,deep_links:'passed',extension_categories:'passed',theme:'passed',network:false}));
+// A service profile's visible lifecycle must not inherit the resource-close diagram.
+const panoramaTemplate=fs.readFileSync(path.join(root,'tools/templates/route-panorama.html'),'utf8');
+const ownershipTemplate=panoramaTemplate.match(/<section class="section" id="ownership">([\s\S]*?)<\/section>/)[1];
+const extensionView=views.find(v=>v.slug==='extensions-architecture');
+for(const id of ['remote-artifacts','ide-wizard','deep-instrumentation']){
+ const h=harness({view:extensionView,plan,routes},script,'#'+id),profile=extensionView.profiles.find(p=>p.id===id);
+ const visibleStateText=ownershipTemplate.replace(/<[^>]*>/g,' ')+' '+h.document.getElementById('states').innerHTML.replace(/<[^>]*>/g,' ');
+ for(const state of profile.detail.states)assert(visibleStateText.includes(state.name));
+ assert(!/\b(Open|Closing|Closed|Invalid)\b/.test(visibleStateText),id+' must display its own lifecycle, not resource-close states');
+}
+// Descriptive route planning must not overwrite the implemented/in-progress work-package state.
+const swiftTemplate=fs.readFileSync(path.join(root,'tools/templates/kotlin-swift-architecture.html'),'utf8');
+const swiftScript=swiftTemplate.match(/<script>\s*([\s\S]*?)<\/script>/)[1];
+const descriptiveRoutes=structuredClone(routes);for(const route of descriptiveRoutes.routes){route.implementation='planned';route.verification='missing';route.certified_profiles=[];}
+for(const [status,label] of [['implemented','已实现'],['in_progress','进行中']]){
+ const changedPlan=structuredClone(plan),task=changedPlan.tasks.find(t=>t.id==='C06');task.status=status;task.verification='missing';
+ const h=harness({plan:changedPlan,routes:descriptiveRoutes},swiftScript),stamp=h.document.getElementById('catalog-stamp').textContent,routeState=h.document.getElementById('route-state').textContent;
+ assert(routeState.includes('C06')&&routeState.includes(label)&&routeState.includes('缺少证据'));
+ assert(!stamp.includes('规划中')&&!routeState.includes('规划中'));
+ assert(routeState.includes('登记')&&routeState.includes('0'));
+}
+console.log(JSON.stringify({method:'isolated DOM-shaped unit execution; not a browser',profiles,graph_filters:graphs,sequence_scenarios:scenarios,node_keyboard_selections:nodes,deep_links:'passed',extension_categories:'passed',theme:'passed',service_lifecycles:3,work_package_status_cases:2,network:false}));

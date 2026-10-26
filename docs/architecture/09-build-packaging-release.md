@@ -22,7 +22,7 @@
 |---|---|---|
 | Android/JVM | 语言 jar/AAR、ABI 对应 native 库、必要规则 | 实际装载、Release/R8、反向调用、最低系统 |
 | Kotlin/Native | 对应目标的 klib/框架与原生依赖 | 目标链接、运行时重复、导出边界 |
-| Swift | SwiftPM 源码包装或 XCFramework 及 module 配置 | 真机/模拟器、Release、声明支持的 Xcode 组合 |
+| Swift | 推荐 SwiftPM 源码包装与 native XCFramework 的混合包，配套 module、公开头和资源 | 独立安装、真机/模拟器、Release、声明支持的 Xcode/Swift 与最低系统组合 |
 | ArkTS | 类型声明、HAR/原生库和构建配置 | 实际 HAP 消费、注册、装载与运行环境 |
 | Rust/C/C++ | crate、头文件、静态或动态库、CMake/package 信息 | 编译参数、符号、运行库和真实反向消费者 |
 
@@ -47,9 +47,29 @@ SDK 发布必须把原生库及其必需运行依赖交付给消费应用，不�
 
 公共 API 和兼容源码可以共享，生成 SDK 的身份与二进制仍按工具链区分。若未来提供统一坐标，须由单一发布编排汇总根 metadata、目标引用和完整性检查，并作为新的发布配置验收，不能依靠两个发布任务先后覆盖。Lab 使用普通 commonMain 依赖入口验证目标解析，不能只直接引用单个 OHOS klib。[KMP 发布结构](https://kotlinlang.org/docs/multiplatform/multiplatform-publish-lib-setup.html)
 
-### Swift 的分发与 C++ 接入
+### ArkTS 的公开包与普通消费
+
+按 [ADR-0016](../adr/0016-arkts-production-baseline.md)交付匹配的公开声明、HAR、native 库及必要运行依赖。SDK 作者侧固定生成器、CPF/官方 Kotlin 构建根、Cargo/CMake 和目标 SDK；普通 ArkTS 消费者通过声明的包入口构建 HAP，不重跑作者侧生成与编译工具，也不手工从示例工程补库。两端分别记录 DevEco、Hvigor、ohpm、ArkTS/ArkUI、SDK 和 ABI 的实际组合。
+
+ArkUI、CMP、响应式或替代后端按 [ADR-0017](../adr/0017-arkts-extension-delivery.md)显式选择，并验证未选择时基础包的依赖与装载闭包。独立消费、Release、实际目标运行、混版本拒绝及公开渠道下载属于发布验收；本地 Demo、HAR/HAP 构建或固定提交存在均不提供这些证据。调试符号、许可、来源与候选摘要沿用本规范的统一发布流程，不另建 ArkTS 发布状态。
+
+### Swift 的正式交付与 C++ 接入
+
+按 [ADR-0014](../adr/0014-swift-production-baseline.md)，公开 SDK 的基础交付采用 SwiftPM：必要的 Swift 外层包装及适用的便利层以源码 target 交付，跨语言 native 核心以配套 XCFramework binary target 交付；后端已随 framework 生成的 Swift 模块保持原有装配，不为分包而重复生成。包声明其真实模块、依赖、资源与支持目标；消费者通过普通包依赖安装，不重跑作者侧 MadB、Cargo、Gradle 或 SKIE 编译插件。可选宏的编译依赖单独声明，不成为普通入口的前提。[SwiftPM 混合包](https://developer.apple.com/documentation/xcode/distributing-binary-frameworks-as-swift-packages)
+
+纯 Swift 且可由 SwiftPM 完整构建的产品可以源码分发；确有需要的纯 Swift 二进制产品单独声明和验收，不由混合包推导兼容性。module stability、ABI stability 与 library evolution 分别处理模块接口读取、二进制约定和库独立演进；不等于任意版本或行为变更兼容。源码随消费者共同编译不强制开启 library evolution；独立分发的 Swift 二进制显式采用相应分发设置。[Swift library evolution](https://www.swift.org/blog/library-evolution/)
 
 包含 SKIE 的二进制 SDK 发布模板显式配置 `produceDistributableFramework()`，检查 Swift library evolution、module 信息、静态 framework 调试引用及源码路径；不依赖 XCFramework 构建时的隐含默认行为。独立消费工程必须在另一目录或机器实际调用承诺的公开 API。[SKIE 分发配置](https://skie.touchlab.co/configuration/swift-compiler)
+
+生产与消费工具链分别登记编译器版本、Swift 语言模式、SwiftPM tools-version、SDK、目标切片及最低系统。最低系统由实际使用的语言和运行能力、依赖及可用性检查确定，不在通用模板中冻结未经验证的 iOS 或 Swift 下限，也不由可选 UI 产品抬高基础产品要求。公开承诺须同时匹配 Package.swift、二进制部署信息和独立消费结果；缺少的切片或运行证据保持缺失。
+
+Swift 可选产品的交付按 [ADR-0015](../adr/0015-swift-extension-delivery.md)管理。普通 API、Observation/UI、Combine、RxSwift 与宏声明使用明确的 target/product 依赖；RxSwift 只由选用的响应式产品依赖。`Package.swift` 的 `platforms` 是包级声明，增加 target/product 不会自动获得独立最低系统；较新 API 可以通过可用性隔离并实测保留基础承诺，无法隔离时再拆独立 package。逻辑模块拆分不要求每项新建仓库。不能用“未 import”证明解析、下载、宿主构建或最终链接成本已隔离；这些分别由干净普通消费者核对。[SwiftPM 平台声明](https://docs.swift.org/package-manager/PackageDescription/PackageDescription.html#supportedplatform)
+
+消费者主动使用的宏作为宿主编译工具交付，固定 Swift/SwiftSyntax 与所需宿主架构；其运行代码与展开后 SDK 的目标代码分开登记。基础产品不依赖宏声明/实现 target；若 SwiftPM 解析仍引入未选择的工具或依赖冲突，采用独立 package 或明确配方消除该前置，不能只改产品名称。预先生成普通 Swift 源码的消费配置无需运行宏。[SwiftPM 宏分发](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0394-swiftpm-expression-macros.md)
+
+NativeCoroutines 组合同时改变 Kotlin 生成与 Swift 运行依赖，必须在提供方生成时按符号确定唯一协程桥，再打包与验证完整候选；只在 App 增加 Swift 包不能修复重复桥接。L04 的普通 API 与直接复用它的 UI/响应式产品可独立验证；选择 NativeCoroutines 后，组合证据由 X01 承接，不令 L04 整包反向依赖 X01。更换桥或升级组件使相应组合证据失效，不能沿用单工具结果。
+
+打包同时检查公开头/module map、必要 native 依赖、资源 bundle 与声明的产品是否完整。隐私 manifest 按实际 required-reason API、数据收集/跟踪及 Apple 指定或重新打包 SDK 的条件处理；适用时进入正确的资源包，并在消费者归档中验证。不能把构建期工具等同于进入 App 的 SDK，也不为所有包机械添加空 manifest。[隐私 manifest 条件](https://developer.apple.com/documentation/bundleresources/privacy-manifest-files)
 
 Swift/C++ 源码共同构建且工具链受控时可采用 direct interop。面向希望隐藏 C++ 构建条件的 Swift SDK，C/ObjC++ 包装是正式发布配置。公开 C++ 类型及 interop 构建要求会影响消费者兼容性，不能仅靠增加一层 Swift 类型别名消除。SwiftPM 配置不得默认承诺 C++ 消费 Swift API；该方向使用已验证的 Xcode/自定义构建或明确 C 回调配置。[Swift C++ 工程支持](https://www.swift.org/documentation/cxx-interop/project-build-setup/)
 
@@ -58,6 +78,8 @@ Swift/C++ 源码共同构建且工具链受控时可采用 direct interop。面�
 manifest 至少记录 package_id/version、schema_version、contract_digest、policy_digest、profile、运行时和调用方向、交付形态、构建系统、tool/runtime/backend/toolchain 标识、targets、文件摘要、依赖、构建来源和适用的 evidence 引用。Maven 等包管理系统的坐标与平台变体单独记录，不从展示名称推断。
 
 工具、运行时、后端插件、SDK 包独立版本化，并声明兼容范围。API、ABI、行为和 wire 协议分别评估兼容性；改回调线程、取消效果或成功阶段也属于兼容审查。新产品从首次公开发布起承担自己的版本契约。
+
+Swift 升级检查比较实际公开产品的接口基线，并由旧消费者源码编译、运行新候选；承诺二进制替换兼容的配置另做对应验证。API diff 只覆盖工具能够比较的接口，不替代取消、生命周期、执行器、资源或目标运行验收。工具链与目标差异须记录，不能把一次宿主 API 比较推广到全部切片。
 
 使用扩展时，锁和构建身份还包含扩展包/清单摘要、组件绑定、协商后的 protocol/IR 与必需功能。扩展清单是安装和能力声明，SDK 制品 manifest 是交付内容记录，两者分别管理。ArtifactPackager 只形成候选，宿主校验后提交；认证不得由扩展清单自报。
 
@@ -70,13 +92,15 @@ manifest 至少记录 package_id/version、schema_version、contract_digest、po
 5. 发布已验证候选的相同内容；不重新生成或重编译后直接沿用原证据。
 6. 从公共发布通道下载并校验一次，运行安装冒烟测试；失败时停止推荐该版本并发布明确状态。
 
+GitHub 发布准备完整资产后再发布 immutable release，版本标签及资产不复用为另一份内容。远程 SwiftPM binary target 的 checksum 来自最终归档；checksum 验证字节一致性，release attestation 关联标签、提交与发布资产，build provenance 记录构建来源，均不代替 Lab 认证。正式发布按选定渠道生成并验证适用的来源证明。[GitHub immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases)、[build provenance](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)
+
 工具发布与被生成的用户 SDK 发布是两个流程。MadB 自身版本通过通用 Lab 验证；用户 SDK 仍需其领域测试与目标验收，通用工具不替用户决定发布权限。
 
 ## 完整性和可复现性
 
 文本生成要求相同输入逐字节一致；二进制可复现性按工具链测试能力记录。无法做到字节一致时仍须固定输入、记录构建来源和差异原因，不能宣称 reproducible。
 
-打包禁止包含开发机路径、凭证或未声明依赖。下载和外部命令只使用锁中来源。最终分发包包含许可和必要第三方通知，调试符号作为可关联的独立产物保存。
+打包禁止包含开发机路径、凭证或未声明依赖。下载和外部命令只使用锁中来源。最终分发包包含许可和必要第三方通知，范围覆盖实际交付的生成代码及传递依赖。调试符号保存为同次构建、可关联候选的独立产物；Apple 二进制与 dSYM 的 UUID 必须匹配，不能重编译后配给旧候选。符号公开或受控保存由发布配置声明。[Apple 符号匹配](https://developer.apple.com/documentation/xcode/locating-a-missing-debug-symbol-file)
 
 ## 模板和 IDE 工程交付
 

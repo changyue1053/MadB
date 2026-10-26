@@ -30,6 +30,8 @@
 
 鸿蒙 Kotlin 默认采用 CPF-KMP-CMP + akinterop；官方 Kotlin 与 CPF 分开构建，CMP 是共享 UI 的可选组合。具体候选、公开制品与平台 SDK 验证条件见[技术栈选型](../architecture/16-technology-stack-and-versions.md)和 [ADR-0007](../adr/0007-technology-stack-and-cpf.md)。KNOI 保留为独立扩展。选型失败必须留下探针结果并更新 ADR，不静默更换后端。首版 SDK 的官方/CPF 构建采用独立 Maven GAV 及根 metadata，模板显式选择；独立编译本身不能证明同一坐标可以同时发布。
 
+ArkTS 普通 SDK 以 [ADR-0016](../adr/0016-arkts-production-baseline.md)规定的 HAR 配方交付；必要能力与扩展的选型、替代方案及归属集中在该 ADR 和 [ADR-0017](../adr/0017-arkts-extension-delivery.md)，不在本页维护另一份清单。消费者未选 UI、装饰器或其他便利入口时，基础 API 仍可用；L05 对其产品承诺仍需提供相应实现、等价普通用法及验收。替代后端沿既有 S6 工作包独立准入，不继承 Node-API 主线证据。
+
 ## 场景与准入约束
 
 - Android 共享模块采用 AGP 新 KMP 插件，app 独立；已有 native 库按 `jniLibs` 配方打包，需要 `externalNativeBuild` 或多 variant 时使用独立 Android library。发布 SDK 的消费端不应临时复制库。
@@ -63,3 +65,5 @@
 语言特性有明确的[范围与启用方式](../architecture/15-developer-ergonomics.md)：普通 API 和必要协议随主线交付；主线中的自定义宏/属性封装等由 profile 按需启用；S6 深度工具独立验收；Dart 只承担 E04/E05 的扩展机制探针。能力类别已有架构设计，不等于具体展开和 API 已冻结。详细设计按[阶段准入](../delivery/04-design-readiness-and-first-route.md)收敛。
 
 路线目录的 `extension_work_packages` 将扩展方向映射到稳定工作包。KNOI 为 X08，远程制品为 X09，IDE 向导为 I07，深度插桩为 L08。扩展机制本身的 S0/S1 工作包与具体后端的 S6 验收分别统计；一项主线通过不自动完成这些扩展。
+
+C11 按上述 ADR 和任务目录核对 ArkTS 产品承诺及验收前置；可先实施不依赖完整目标链的 L05 子范围，但不能以局部状态/页面订阅适配代替 C07、HAP/ArkUI、推荐模板或全部 L05 验收。实施先后与正式完成前置分开，不增加主线与扩展之间的完成依赖环。

@@ -1,0 +1,43 @@
+{
+  "kind": "i01-design-check-result",
+  "status": "passed-design-subsets-only",
+  "command": [
+    "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+    "-B",
+    "/private/tmp/madb-chief-round5/project-init-decision-check.py"
+  ],
+  "source_root": "/Users/changyue/Desktop/MadB/madb",
+  "source_pin_count": 19,
+  "case_count": 58,
+  "groups": {
+    "selection": 13,
+    "classification": 9,
+    "success": 17,
+    "references": 12,
+    "sdk_gate": 7
+  },
+  "artifacts": [
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision-check.py",
+      "sha256": "a88d15f0bb0fde8753de47351877e5806ba9cffda1118b60e3cfb9f5562d83a2",
+      "size": 6946
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision-vectors.json",
+      "sha256": "68cf6ceebf0cf0000b3881e12cdc5d49c5112885efcadd1f70e86939848814a9",
+      "size": 19084
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision.md",
+      "sha256": "105405575e121c861f81e56651a4bea76c47e95417f5e7ef032714eb45141e43",
+      "size": 19998
+    }
+  ],
+  "limits": [
+    "not full schema admission",
+    "not full request digest or JCS",
+    "not ProjectPlan implementation or test",
+    "not real CommitNew or host path isolation",
+    "not SDK execution, IDE, device or I01 certification"
+  ]
+}

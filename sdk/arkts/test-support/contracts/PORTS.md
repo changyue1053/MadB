@@ -95,3 +95,39 @@ of the actual SDK wrapper's existing closing/closed/listener flags. Its versione
 `subscription-state-layout.json` is distributed with the test candidate. It does
 not invoke Node-API, advance cleanup, or infer native physical ACK. Only the same
 SDK's checked Subscription wrapper is accepted; no private token is exposed.
+
+
+## C09 synchronous before-receipt probe
+
+`testBeforeRuntimeReceipt(runtime, probe)` is a test-companion-only public facade
+helper, common to C, C++, Rust and Kotlin. It accepts this SDK's branded Runtime
+and one function while that Session is open. Wrong wrapper, nonfunction or a
+second registration is `InvalidArgument`; registration while closing is `Closing`,
+after close is `Closed`, and a failed Session preserves its original failure.
+
+The Session retains the one-shot callback across registration return. Only the
+original tick's actual physical ACK with an empty waiter map invokes it, directly
+before `consumeRuntimeReceipt`. The slot clears before external code runs. No
+native owner, gate, thread, timer or waiter is added. Returning normally continues
+the original receipt consumption and the same close Promise. Reentrant close
+returns that Promise; registration from the callback is rejected as `Closing`.
+
+The declaration reader requires a synchronous void callback. Since void callback
+assignability can admit a value-returning function, the actual invocation also
+rejects **every non-undefined return**, including Promise and thenable, with
+`InvalidArgument`. It never awaits, reads `then` or invokes a returned object.
+This is return validation after invocation, not prevention of user code side
+effects. A thrown callback is caught at this test-only user-code boundary before any native
+error conversion. A real Error retains its exact object without reading `code`,
+`message`, `then` or other user properties. Non-Error throws (including undefined,
+null and primitives), or a trap while testing Error identity, become the existing
+`CallbackFailure`. The original failure/rejectClose methods reject the same close
+Promise, the tick still executes its finally block without restarting a timer,
+and the receipt remains unconsumed. This case is not successful cleanup. The
+callback slot also clears on any Session failure. Consumers should catch their
+own assertion failure inside the probe, return, await the original close, then
+rethrow the saved assertion, so an assertion does not obstruct normal cleanup.
+
+The native method counts and observation layouts are unchanged. A new test HAR,
+profile/build identity and independent candidate evidence are required; existing
+C07 candidates and historical results do not acquire this capability.

@@ -178,7 +178,11 @@ pub(super) fn run(
     }
 }
 
-fn abort_setup(mut owner: OwnedChild, policy: &ProcessPolicy, error: ProcessError) -> ProcessRun {
+pub(super) fn abort_setup(
+    mut owner: OwnedChild,
+    policy: &ProcessPolicy,
+    error: ProcessError,
+) -> ProcessRun {
     let signal_failed = owner.signal(Signal::KILL).is_err();
     let start = Instant::now();
     let exit = loop {

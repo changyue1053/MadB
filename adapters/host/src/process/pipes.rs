@@ -7,7 +7,7 @@ use std::{
     os::fd::AsFd,
 };
 
-fn nonblocking(pipe: &impl AsFd) -> ProcessResult<()> {
+pub(super) fn nonblocking(pipe: &impl AsFd) -> ProcessResult<()> {
     let flags = fcntl_getfl(pipe).map_err(|e| io_error("pipe", e.into()))?;
     fcntl_setfl(pipe, flags | OFlags::NONBLOCK).map_err(|e| io_error("pipe", e.into()))
 }
@@ -19,7 +19,7 @@ pub(super) struct Capture<R> {
     limit: usize,
 }
 impl<R: Read> Capture<R> {
-    fn new(stream: R, limit: usize) -> Self {
+    pub(super) fn new(stream: R, limit: usize) -> Self {
         Self {
             stream: Some(stream),
             output: CapturedOutput::default(),
@@ -27,7 +27,7 @@ impl<R: Read> Capture<R> {
             limit,
         }
     }
-    fn pump(&mut self) -> ProcessResult<()> {
+    pub(super) fn pump(&mut self) -> ProcessResult<()> {
         let Some(stream) = self.stream.as_mut() else {
             return Ok(());
         };

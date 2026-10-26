@@ -15,9 +15,15 @@ fn fixture(name: &str) -> Value {
 
 #[test]
 fn shared_format_vectors_cover_every_payload() {
-    let vectors = fixture("format-vectors.json");
+    let original = fixture("format-vectors.json");
+    let composition = fixture("composition-format-vectors.json");
     let mut covered = std::collections::BTreeSet::new();
-    for vector in vectors["vectors"].as_array().unwrap() {
+    for vector in original["vectors"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .chain(composition["vectors"].as_array().unwrap())
+    {
         let kind = DocumentKind::ALL
             .into_iter()
             .find(|k| k.name() == vector["kind"].as_str().unwrap())
@@ -141,5 +147,21 @@ fn toml_uses_the_same_schema_and_rejects_duplicate_keys() {
         registry()
             .decode_project_toml("schema='madb.project/2'")
             .is_err()
+    );
+}
+
+#[test]
+fn profile_versions_and_domains_are_explicit() {
+    assert_eq!(DocumentKind::Profile.schema_id(), "madb.profile/1");
+    assert_eq!(DocumentKind::ProfileV2.schema_id(), "madb.profile/2");
+    assert_eq!(DocumentKind::Composition.schema_id(), "madb.composition/1");
+    let value = fixture("composition.json");
+    assert_ne!(
+        semantic_digest(DigestDomain::Profile, &value).unwrap(),
+        semantic_digest(DigestDomain::ProfileV2, &value).unwrap()
+    );
+    assert_ne!(
+        semantic_digest(DigestDomain::ProfileV2, &value).unwrap(),
+        semantic_digest(DigestDomain::Composition, &value).unwrap()
     );
 }

@@ -18,6 +18,8 @@ MadB 的交付单位是一套可消费的跨端 SDK：类型化接口、必要�
 
 边界能力覆盖类型与错误、内存、线程、异步、订阅、UI 生命周期、构建打包、兼容与故障定位。UI 集成提供观察和状态适配，不决定导航、认证、同步、重试和业务事务。
 
+ArkTS 的必要生产能力与十二项扩展分别以 [ADR-0016](../adr/0016-arkts-production-baseline.md)和 [ADR-0017](../adr/0017-arkts-extension-delivery.md)为范围依据。消费者可以只选普通 API；这不免除 L05 对已承诺状态、订阅、资源及便利适配的产品交付责任。HarmonyOS/OpenHarmony、源码共同构建与预编译 HAR、ArkUI 状态版本和替代后端分别声明支持范围，不能由一次样例成功推导全部可用。
+
 工程初始化同时交付最小应用或 SDK 外壳、共享模块、边界绑定、原生构建接线和 IDE 入口。示例界面用于验证真实调用，业务架构由使用者继续演进，详见[一键初始化](04-project-initialization.md)。
 
 ## 可追踪的产品要求
@@ -55,4 +57,4 @@ MadB 内置单元测试并发布工具、后端接入包与运行时。MadB-Lab 
 
 完整范围按阶段实现；预览发布必须标明具体能力组合。正式主线版本的资格由[实施计划](../delivery/01-implementation-plan.md)和[发布门禁](../architecture/09-build-packaging-release.md)共同确定。
 
-实现门禁与风险验证分别追踪，见[决策与风险](../delivery/03-decisions-and-risks.md)。UniFFI ArkTS beta 为实验候选，不改变十六条主线或当前未实现、未认证状态。
+实现门禁与风险验证分别追踪，见[决策与风险](../delivery/03-decisions-and-risks.md)。UniFFI ArkTS beta 为实验候选，不改变十六条主线范围；各工作包的实现及验收状态以[任务目录](../catalog/implementation-plan.json)为准，不从候选选型推导通过。

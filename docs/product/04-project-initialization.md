@@ -2,7 +2,7 @@
 
 MadB 增加工程初始化能力：开发者选择模板和目标平台，一次操作得到带示例功能、跨语言绑定、构建接线和 IDE 入口的完整工程。初始化后，开发者修改共享代码，再在对应 IDE 中构建或运行即可看到结果。
 
-本功能扩展现有 `madb init`，属于待实施产品规范。当前文档没有交付可执行 CLI 或可安装 IDE 插件。实现边界见[架构设计](../architecture/14-project-initialization.md)，完成条件见[独立验收](../validation/06-project-initialization.md)。
+本页定义目标 `madb init` 能力，属于待实施产品规范。尚未交付该初始化入口或专用 IDE 插件。实现边界见[架构设计](../architecture/14-project-initialization.md)，完成条件见[独立验收](../validation/06-project-initialization.md)。
 
 ## 1 用户体验
 
@@ -55,6 +55,8 @@ madb init --template kmp-rust-app --out ./MyApp \
 只生成模板需要的模块。Kotlin 共享层调用 Rust 时，Swift 可以通过 Kotlin SDK 使用该能力，不默认再生成一套 Swift→Rust 入口。选择原生 UI 或 Compose Multiplatform 由模板配置决定；支持 KMP 不自动意味着所选目标支持共享 Compose UI。
 
 Android 配方区分 KMP 共享模块、应用模块和按需的原生构建模块，原生库随任务和依赖自动打包。官方 Kotlin 与 CPF 配方分别构建和发布，依赖坐标映射由模板处理。SDK 消费者使用普通包依赖，不需要手工修 Maven metadata 或复制原生库。
+
+ArkTS 模板区分 SDK 作者的源码构建工程和普通 HAR 消费工程，按 [ADR-0016](../adr/0016-arkts-production-baseline.md)登记 SDK 类型、ABI、最低系统及 DevEco/CLI 配套。CLI 与 IDE 的 Sync、构建和 Run 使用相同任务依赖；应用签名由应用所有者提供，不随 SDK 分发。UI、便利语法和特殊包形态按 [ADR-0017](../adr/0017-arkts-extension-delivery.md)选择，专用向导不成为标准 DevEco 工程可用的前置条件。
 
 MadB 仍是工具工程，MadB-Lab 仍是独立验证工程。初始化出来的是使用者自己的应用或 SDK，不是要求维护的第三个 MadB 产品仓库。
 
@@ -111,3 +113,5 @@ MadB 仍是工具工程，MadB-Lab 仍是独立验证工程。初始化出来的
 SDK 模板还要从发布包创建独立消费者，验证公开接口真正可调用、native 依赖完整、平台变体解析正确；“在示例应用中能运行”不足以证明别人安装包后可用。源码/二进制交付与正向/反向调用分别声明，不能用某一方向通过代替整个语言对通过。
 
 版本化的是 MadB、模板、模块配方、边界后端、原生构建工具和 IDE 验证组合。版本升级只改变用户明确更新的项目；不会因模板服务端变化使已有工程悄悄改写。
+
+已有工程的接入、升级与禁用由[工程持续使用契约](../architecture/14-project-initialization.md)统一定义：先给出差异和受管范围，保护手写文件，失败保留旧锁及有效批次。它们复用现有工程计划，不扩张 init 的新目录语义，具体入口随 I 系列实现收敛。

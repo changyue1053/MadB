@@ -2,7 +2,7 @@
   "slug": "extensions-architecture",
   "title": "扩展路线与工程增强全景",
   "eyebrow": "EXTENSIONS · CAPABILITY · DELIVERY",
-  "summary": "按独立配置组织语言后端、消费机制与工程增强。扩展复用 ContractReader、Generator、Toolchain、Verifier、ArtifactPackager；宿主掌管身份、能力协商、受管输出和提交。图中为设计，不代表已实现或认证。",
+  "summary": "按独立配置组织语言后端、消费机制与工程增强。扩展设计复用 ContractReader、Generator、Toolchain、Verifier、ArtifactPackager；宿主掌管身份、能力协商、受管输出和提交。E 基础与所选扩展的进度以目录为准，授权不等于实现或认证。",
   "route_ids": [],
   "extension_task_ids": [
     "E01",
@@ -2121,7 +2121,7 @@
       "id": "knoi",
       "name": "KNOI 独立互通后端",
       "kind": "可选配置",
-      "summary": "在 CPF 工具链基础上单独选择 KNOI。它与 akinterop 是替代的互通配置，不是主线隐含的下一层。",
+      "summary": "独立选择并锁定 KNOI 的 Kotlin/ArkTS 编译器、插件和运行库配套。它与 akinterop 是替代的互通配置，不是主线隐含的下一层。",
       "route_ids": [
         "KN-ARKTS-NAPI"
       ],
@@ -2135,7 +2135,7 @@
           "id": "build",
           "label": "声明与生成",
           "steps": [
-            "选择 CPF 工具链与 KNOI 后端身份。",
+            "选择 KNOI 实际编译器配套与后端身份。",
             "MadB 验证能力，调用 KNOI 配方生成桥并生成语义 facade。",
             "落实依赖预载、sharedLib 注册和初始化顺序。",
             "构建 HAR/原生库及独立 ArkTS 消费端。"
@@ -2147,7 +2147,7 @@
           "steps": [
             "应用完成受检初始化后调用 facade。",
             "校验参数、载荷形状和资源准入。",
-            "经 KNOI 调用 CPF Kotlin 实现。",
+            "经 KNOI 调用匹配配套的 Kotlin 实现。",
             "保留业务失败、取消和桥初始化错误的区别。"
           ]
         },
@@ -2186,7 +2186,7 @@
         "后端专属注册和初始化接线。",
         "ArkTS 参数校验与类型 facade。",
         "订阅 token、异步适配和 env 清理接线。",
-        "CPF 工程、HAR 打包与设备验证配方。"
+        "匹配工具链的工程、HAR 打包与设备验证配方。"
       ],
       "handwritten": [
         "业务载荷选择及状态/事件语义。",
@@ -2253,7 +2253,7 @@
         }
       ],
       "delivery": [
-        "CPF 与官方 Kotlin 构建根和发布坐标隔离。",
+        "所选 Kotlin 配套独立构建与发布，不覆盖官方或 akinterop 主线产物。",
         "KNOI、正式 SDK 与 sysroot 分别记录。",
         "独立 HAR 消费端与设备测试产生证据。"
       ],
@@ -2266,7 +2266,8 @@
       "choices": [
         "现有 Kotlin–ArkTS 专题提供 KNOI 与 akinterop 切换视图。",
         "仅当接口能力与平台组合适合时选用。",
-        "KNOI 是后端选择，不替换 CPF 工具链职责。"
+        "KNOI 是后端选择，实际编译器配套须独立核实，不继承 akinterop 主线版本锁。",
+        "ADR-0017 已授权按前提推进 P14；正式 X08 验收保留 C11 前置，不反向阻断主线。"
       ],
       "detail": {
         "family": "napi",
@@ -2275,7 +2276,7 @@
           {
             "kind": "upstream",
             "title": "上游机制",
-            "body": "CPF + KNOI 配方；KNOI 注册与桥生成。负责其明确支持的导入、生成或平台机制。"
+            "body": "KNOI 工具链与配方；KNOI 注册与桥生成。负责其明确支持的导入、生成或平台机制。"
           },
           {
             "kind": "madb",
@@ -2340,11 +2341,11 @@
               "id": "plan",
               "title": "能力检查与计划",
               "kind": "madb",
-              "summary": "在 CPF 工具链基础上单独选择 KNOI。它与 akinterop 是替代的互通配置，不是主线隐含的下一层。",
+              "summary": "独立选择并锁定 KNOI 的 Kotlin/ArkTS 编译器、插件和运行库配套。它与 akinterop 是替代的互通配置，不是主线隐含的下一层。",
               "does": [
                 "现有 Kotlin–ArkTS 专题提供 KNOI 与 akinterop 切换视图。",
                 "仅当接口能力与平台组合适合时选用。",
-                "KNOI 是后端选择，不替换 CPF 工具链职责。"
+                "KNOI 是后端选择，实际编译器配套须独立核实，不继承 akinterop 主线版本锁。"
               ],
               "constraints": [
                 "支持范围与真实版本配置绑定。",
@@ -2383,7 +2384,7 @@
             },
             {
               "id": "tool0",
-              "title": "CPF + KNOI 配方",
+              "title": "KNOI 工具链与配方",
               "kind": "upstream",
               "summary": "MadB 检查受支持接口，分别生成类型 facade 和初始化接线，不叠加 akinterop 生成。",
               "does": [
@@ -2472,9 +2473,9 @@
               "id": "compiler",
               "title": "目标构建与链接",
               "kind": "upstream",
-              "summary": "CPF 工具链、KNOI、SDK 及 sysroot 独立锁定；生成可被新应用消费的包。",
+              "summary": "KNOI 编译器配套、SDK 及 sysroot 独立锁定；生成可被新应用消费的包。",
               "does": [
-                "CPF 与官方 Kotlin 构建根和发布坐标隔离。",
+                "所选 Kotlin 配套独立构建与发布，不覆盖官方或 akinterop 主线产物。",
                 "KNOI、正式 SDK 与 sysroot 分别记录。"
               ],
               "constraints": [
@@ -2492,9 +2493,9 @@
             },
             {
               "id": "package",
-              "title": "CPF 与 HAR 构建",
+              "title": "KNOI 配套与 HAR 构建",
               "kind": "madb",
-              "summary": "CPF 工具链、KNOI、SDK 及 sysroot 独立锁定；生成可被新应用消费的包。",
+              "summary": "KNOI 编译器配套、SDK 及 sysroot 独立锁定；生成可被新应用消费的包。",
               "does": [
                 "共享库 + HAR/类型声明",
                 "负责方：平台维护者"
@@ -2605,7 +2606,7 @@
               "id": "provider",
               "title": "Kotlin 共享实现",
               "kind": "domain",
-              "summary": "在 CPF 构建的 Kotlin 运行时执行业务；不能直接替换为官方 Kotlin 的 KLIB 或发布根。",
+              "summary": "在 KNOI 配套的 Kotlin 运行时执行业务；不能直接替换为官方或 akinterop 主线的 KLIB 或发布根。",
               "does": [
                 "共享领域逻辑",
                 "负责方：业务实现"
@@ -3135,7 +3136,7 @@
           {
             "title": "native 对象、缓冲与持久引用",
             "depth": 2,
-            "detail": "在 CPF 构建的 Kotlin 运行时执行业务；不能直接替换为官方 Kotlin 的 KLIB 或发布根。"
+            "detail": "在 KNOI 配套的 Kotlin 运行时执行业务；不能直接替换为官方或 akinterop 主线的 KLIB 或发布根。"
           }
         ],
         "thread_rules": [
@@ -3160,7 +3161,7 @@
           {
             "module": "adapters/generators",
             "io": "后端专属生成计划",
-            "pattern": "Adapter / Mapper：复用 CPF + KNOI 配方、KNOI 注册与桥生成",
+            "pattern": "Adapter / Mapper：复用 KNOI 工具链与配方、KNOI 注册与桥生成",
             "boundary": "不复制上游完整绑定系统，不静默改变取消或数据协议。"
           },
           {
@@ -3204,12 +3205,13 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
           "title": "步骤 01",
-          "text": "选择 CPF 工具链与 KNOI 后端身份。"
+          "text": "选择 KNOI 实际编译器配套与后端身份。"
         },
         {
           "title": "步骤 02",
@@ -3372,7 +3374,8 @@
       "choices": [
         "用于有明确 ANI 运行环境需求的实验。",
         "不以平台方向变化直接宣布 N-API 主线失效。",
-        "能力不足时选择另一明确 profile，不静默替换底层桥。"
+        "能力不足时选择另一明确 profile，不静默替换底层桥。",
+        "ADR-0017 已授权隔离原型按 SDK 前提推进；正式 X03 验收保留 C11 前置，不反向阻断主线。"
       ],
       "detail": {
         "family": "napi",
@@ -4279,7 +4282,8 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -7609,7 +7613,7 @@
       ],
       "choices": [
         "复用既有 UniFFI Rust SDK 时值得实验。",
-        "S0 可提前 P13，S6 正式验收前置不阻止实验。",
+        "ADR-0017 已授权按前提提前 P13；正式 X07 验收保留 C11 前置，不反向阻断主线。",
         "不替换 napi-ohos 主线，不创造已认证的新路线。"
       ],
       "detail": {
@@ -8584,7 +8588,8 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -10899,7 +10904,8 @@
       "choices": [
         "先使用已知边界的生成钩子；深度改写只在必要时启用。",
         "Sanitizer 支持与相互组合限制按 profile 验证。",
-        "L08 不承担基础资源保护，也不改变 S5 主线退出条件。"
+        "L08 不承担基础资源保护，也不改变 S5 主线退出条件。",
+        "ArkTS 基础度量归 C09；L08 的选定深度诊断保留 L07 前置，不默认上传遥测，不启动未选定的编译器深度改写。"
       ],
       "detail": {
         "family": "service",
@@ -11788,7 +11794,8 @@
       "spec_refs": [
         "architecture/10-diagnostics-and-performance.md",
         "architecture/15-developer-ergonomics.md",
-        "engineering/06-documentation-quality.md"
+        "engineering/06-documentation-quality.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -11858,6 +11865,14 @@
     {
       "label": "Kotlin/ArkTS 主线与 KNOI 图",
       "path": "visuals/kotlin-arkts-architecture.html"
+    },
+    {
+      "label": "ArkTS 生产能力与交付基线",
+      "path": "adr/0016-arkts-production-baseline.md"
+    },
+    {
+      "label": "ArkTS 扩展选择与完整交付",
+      "path": "adr/0017-arkts-extension-delivery.md"
     }
   ],
   "view_schema": "madb.route-detail-view/3"

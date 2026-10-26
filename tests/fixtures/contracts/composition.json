@@ -1,0 +1,104 @@
+{
+  "schema": "madb.composition/1",
+  "id": "fixture-composition",
+  "recipe": "fixture.arkts/ordinary@1",
+  "selection": {
+    "profile_id": "fixture-composed-profile",
+    "route": "madb.arkts-c-napi",
+    "direction": "consumer-to-provider",
+    "target": "aarch64-linux-ohos"
+  },
+  "packages": [
+    {
+      "id": "fixture.arkts",
+      "version": "0.1.0",
+      "manifest": {
+        "path": "extension.json",
+        "sha256": "sha256:35c53b7986dfb2897e7e2e9cdf56c69a49d2c1bcccaea7c310d60b11b59c9397",
+        "size": 16,
+        "schema": "madb.extension/1"
+      },
+      "source": {
+        "kind": "file-set",
+        "files": [
+          {
+            "path": "extension.json",
+            "sha256": "sha256:35c53b7986dfb2897e7e2e9cdf56c69a49d2c1bcccaea7c310d60b11b59c9397",
+            "size": 16
+          },
+          {
+            "path": "sdk/Runtime.ets",
+            "sha256": "sha256:8ca1dbdf9a94a5bec8cddda37f8dcce6ad179da7e25e899cc80226a44672f047",
+            "size": 15
+          }
+        ]
+      },
+      "source_digest": "sha256:cee7ebf97c861d62bda15fd780ab7d0026050669b2f032cdae52b89c23cfbcb0"
+    }
+  ],
+  "components": [
+    {
+      "id": "fixture.arkts/generator",
+      "version": "0.1.0",
+      "sha256": "sha256:cee7ebf97c861d62bda15fd780ab7d0026050669b2f032cdae52b89c23cfbcb0"
+    }
+  ],
+  "assets": [
+    {
+      "id": "facade",
+      "package": "fixture.arkts",
+      "source": {
+        "kind": "generated",
+        "producer": "fixture.arkts/generator",
+        "output_slot": "ordinary-facade",
+        "paths": [
+          "generated/Boundary.ets"
+        ]
+      }
+    },
+    {
+      "id": "runtime",
+      "package": "fixture.arkts",
+      "source": {
+        "kind": "source",
+        "files": [
+          {
+            "path": "sdk/Runtime.ets",
+            "sha256": "sha256:8ca1dbdf9a94a5bec8cddda37f8dcce6ad179da7e25e899cc80226a44672f047",
+            "size": 15
+          }
+        ]
+      }
+    }
+  ],
+  "dependencies": [
+    {
+      "from": "facade",
+      "to": "runtime",
+      "scope": "target-runtime"
+    }
+  ],
+  "responsibilities": [
+    {
+      "boundary": "fixture-boundary",
+      "subject": {
+        "kind": "public-symbol",
+        "public_id": "fixture.call.v1"
+      },
+      "stage": "projection",
+      "scope": {
+        "kind": "call",
+        "anchor": {
+          "kind": "public-symbol",
+          "public_id": "fixture.call.v1"
+        },
+        "layer": "facade"
+      },
+      "owner": {
+        "kind": "sdk-asset",
+        "package": "fixture.arkts",
+        "asset": "facade"
+      }
+    }
+  ]
+}

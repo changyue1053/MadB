@@ -1,0 +1,4303 @@
+{
+  "schema": "madb.document-audit-inventory/1",
+  "date": "2026-10-25",
+  "scope": "point-in-time audit inputs and modifications; not product certification",
+  "input": {
+    "root": "/Users/changyue/Desktop/MadB/madb",
+    "head": "1f36aa203745054d83297c26976235e08b720496",
+    "status": [
+      " M README.md",
+      " M docs/README.md",
+      " M docs/architecture/02-modules-and-ports.md",
+      " M docs/architecture/04-data-and-errors.md",
+      " M docs/architecture/05-lifecycle-and-concurrency.md",
+      " M docs/architecture/06-backend-profiles.md",
+      " M docs/architecture/07-code-generation.md",
+      " M docs/architecture/08-runtime-and-idiomatic-api.md",
+      " M docs/architecture/09-build-packaging-release.md",
+      " M docs/architecture/11-language-extension.md",
+      " M docs/architecture/12-extension-protocol.md",
+      " M docs/architecture/13-contract-evolution.md",
+      " M docs/architecture/14-project-initialization.md",
+      " M docs/architecture/15-developer-ergonomics.md",
+      " M docs/architecture/16-technology-stack-and-versions.md",
+      " M docs/catalog/implementation-plan.json",
+      " M docs/catalog/route-views/arkts-c-cpp-architecture.json",
+      " M docs/catalog/route-views/arkts-rust-architecture.json",
+      " M docs/catalog/route-views/extensions-architecture.json",
+      " M docs/catalog/route-views/swift-c-cpp-architecture.json",
+      " M docs/catalog/route-views/swift-rust-architecture.json",
+      " M docs/delivery/01-implementation-plan.md",
+      " M docs/delivery/03-decisions-and-risks.md",
+      " M docs/product/01-positioning-and-requirements.md",
+      " M docs/product/02-capabilities-and-roadmap.md",
+      " M docs/product/03-developer-experience.md",
+      " M docs/product/04-project-initialization.md",
+      " M docs/references/README.md",
+      " M docs/reviews/README.md",
+      " M docs/tools/render_visuals.py",
+      " M docs/tools/templates/architecture-overview.html",
+      " M docs/tools/templates/implementation-progress.html",
+      " M docs/tools/templates/kotlin-arkts-architecture.html",
+      " M docs/tools/templates/kotlin-swift-architecture.html",
+      " M docs/validation/05-language-onboarding.md",
+      " M docs/validation/06-project-initialization.md",
+      " M docs/validation/07-developer-ergonomics.md",
+      " M docs/visuals/README.md",
+      " M docs/visuals/architecture-overview.html",
+      " M docs/visuals/arkts-c-cpp-architecture.html",
+      " M docs/visuals/arkts-rust-architecture.html",
+      " M docs/visuals/extensions-architecture.html",
+      " M docs/visuals/implementation-progress.html",
+      " M docs/visuals/kotlin-arkts-architecture.html",
+      " M docs/visuals/kotlin-c-cpp-architecture.html",
+      " M docs/visuals/kotlin-rust-architecture.html",
+      " M docs/visuals/kotlin-swift-architecture.html",
+      " M docs/visuals/route-atlas.html",
+      " M docs/visuals/rust-c-cpp-architecture.html",
+      " M docs/visuals/swift-c-cpp-architecture.html",
+      " M docs/visuals/swift-rust-architecture.html",
+      " M scripts/check.py",
+      "?? adapters/generators/akinterop/managed-owned-r6-source.json",
+      "?? adapters/generators/akinterop/patches/managed-owned-r6.patch",
+      "?? adapters/generators/arkts/read_kotlin_exports.cjs",
+      "?? adapters/generators/arkts/read_kotlin_public.cjs",
+      "?? adapters/toolchains/arkts/kotlin-recipes/",
+      "?? adapters/toolchains/arkts/kotlin.py",
+      "?? adapters/toolchains/arkts/kotlin_binding.py",
+      "?? adapters/toolchains/arkts/kotlin_dependencies.py",
+      "?? adapters/toolchains/arkts/kotlin_elf.py",
+      "?? adapters/toolchains/arkts/kotlin_frame.py",
+      "?? adapters/toolchains/arkts/kotlin_metadata.py",
+      "?? adapters/toolchains/arkts/kotlin_project.py",
+      "?? adapters/toolchains/arkts/kotlin_test_binding.py",
+      "?? docs/adr/0012-extension-composition-and-delivery.md",
+      "?? docs/adr/0014-swift-production-baseline.md",
+      "?? docs/adr/0015-swift-extension-delivery.md",
+      "?? docs/adr/0016-arkts-production-baseline.md",
+      "?? docs/adr/0017-arkts-extension-delivery.md",
+      "?? docs/architecture/17-extension-composition.md",
+      "?? docs/reviews/2026-10-25-architecture-simplification.md",
+      "?? docs/reviews/2026-10-25-arkts-extension-delivery.md",
+      "?? docs/reviews/2026-10-25-extension-composition-design.md",
+      "?? docs/reviews/2026-10-25-swift-extension-delivery.md",
+      "?? docs/reviews/2026-10-25-swift-production-baseline.md",
+      "?? docs/reviews/architecture-simplification-validation.json",
+      "?? docs/reviews/arkts-extension-validation.json",
+      "?? docs/reviews/extension-composition-validation.json",
+      "?? docs/reviews/swift-extension-validation.json",
+      "?? docs/reviews/swift-production-validation.json",
+      "?? scripts/check_arkts_observation.py",
+      "?? scripts/check_swift_observation.py",
+      "?? sdk/arkts/observation/",
+      "?? sdk/kotlin/arkts-owned/",
+      "?? sdk/swift/observation/",
+      "?? tests/integration/l04_swift_observation/",
+      "?? tests/integration/l05_arkts_observation/",
+      ""
+    ],
+    "files": {
+      ".gitattributes": {
+        "sha256": "040a7edca01196ca81281f592d94bcdbaaaf6096032c639a21f49580e6d1dcc9",
+        "size": 836
+      },
+      ".github/CODEOWNERS": {
+        "sha256": "43deb408cfb6dac80b0383472fd822ad8c60828d764814ffab84e59b3784f4c8",
+        "size": 16
+      },
+      ".github/branch-protection.json": {
+        "sha256": "1ae4eb07e5f2c6d3ef1876d80cf9b148d8632c436869dfc313dca979fb0e21bd",
+        "size": 376
+      },
+      ".github/c06-lab-revision": {
+        "sha256": "93f0834f64f1e023ea5c3edf1ce8dbbc3177264d88a3259b0b60d4ee5fdf12eb",
+        "size": 41
+      },
+      ".github/pull_request_template.md": {
+        "sha256": "a08ad795c5af25324778c0f89098e695b6d617878cb52d0ad26cda3d7bdb4e70",
+        "size": 242
+      },
+      ".github/workflows/ci.yml": {
+        "sha256": "568a900c99018e7b43a1ff8619441f5857b76908f8d03289b7980f872b0f38a3",
+        "size": 1073
+      },
+      ".github/workflows/managed.yml": {
+        "sha256": "14fbc2244120183336ed75deab230e3b6853951973980bab8858d6ac8a4cbb60",
+        "size": 14161
+      },
+      ".github/workflows/native.yml": {
+        "sha256": "00bf87ef311c3a9021b18eaedbaf91f99bd77a00abbb76090c896033f81f096c",
+        "size": 1456
+      },
+      ".gitignore": {
+        "sha256": "6bbe77483fc19240d90f488e6ad5b060edac6e986323f77a978a72a4fd67962b",
+        "size": 115
+      },
+      ".node-version": {
+        "sha256": "8f8e373d500f414f7435fdc1d2fe9dd697e60cfb03b69657cecb873ac31b84df",
+        "size": 7
+      },
+      ".python-version": {
+        "sha256": "bb90877c5ee8c4703cfd03421e92ef2a17a10b67ecc822524baeea4c8da3dc9f",
+        "size": 7
+      },
+      "AGENTS.md": {
+        "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+        "size": 1796
+      },
+      "CONTRIBUTING.md": {
+        "sha256": "b0c83a528a36883eeea425e5dbe49711375b9705feb3dbbafa16eaed31912b56",
+        "size": 2459
+      },
+      "Cargo.lock": {
+        "sha256": "1abe88ef0ff6606f28d18309f705a5b5492e129fc3a18f5f41a6368bef781cf2",
+        "size": 31392
+      },
+      "Cargo.toml": {
+        "sha256": "4fcf6bb4580c24fee8d3df3beb0b7d3ce8701de00d640a8fe121a57043ed465d",
+        "size": 1179
+      },
+      "LICENSE": {
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "size": 11358
+      },
+      "NOTICE": {
+        "sha256": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+        "size": 223
+      },
+      "README.md": {
+        "sha256": "858e470d5958e314b2cfa6b04fe3d1a357c32b63377a99bf2baa3ff80a31cace",
+        "size": 15053
+      },
+      "SECURITY.md": {
+        "sha256": "7ea54f4ab5a291fa78c617707c61c5b316c4f6754e0921e02fc5763e7c2bfa91",
+        "size": 505
+      },
+      "THIRD_PARTY.md": {
+        "sha256": "81515ae315c1f9b58c736935ecc0f0ae157bdc85ddaea0b706515ecd1ab765a4",
+        "size": 7683
+      },
+      "adapters/artifacts/arkts/README.md": {
+        "sha256": "2044152558a7ff143e96f0c2bcf0bce39fe48296bdc824fca0882f8a272a3f19",
+        "size": 1313
+      },
+      "adapters/artifacts/arkts/har.py": {
+        "sha256": "7f12b8cf95cce62432bd1c31cf39a554d69ac6ab0dd43972b78a34f76b090f38",
+        "size": 5733
+      },
+      "adapters/artifacts/arkts/har_inputs.py": {
+        "sha256": "403296dfb527bc1ddcd64a59ddd331a94a363c86eefb54843fc7eb5804d46521",
+        "size": 5004
+      },
+      "adapters/artifacts/arkts/har_public.py": {
+        "sha256": "d8015d628fce913bb491132efbb2d959d848dedd391875f982ac90f11312c95e",
+        "size": 3398
+      },
+      "adapters/artifacts/arkts/pack.py": {
+        "sha256": "c2bc621bfd50cff6bf2942887b949cb308fed54027599a4183f96d50dc2a0d40",
+        "size": 18700
+      },
+      "adapters/artifacts/rust_c/pack.py": {
+        "sha256": "49cd552b011c529723e8c5ddb468e1b3c6b65038993dbca966a856d7fe5a1108",
+        "size": 2524
+      },
+      "adapters/contracts/Cargo.toml": {
+        "sha256": "a1e1ceeb9f9e35ecae990700c1a6caf24dc1d0ad4b80c0d4ef92a1f0f4b6097e",
+        "size": 452
+      },
+      "adapters/contracts/examples/check_probe_lock.rs": {
+        "sha256": "885226df823c8aabb33a931fb12f78b2498b5713cbba03ef2e073310e32da855",
+        "size": 3529
+      },
+      "adapters/contracts/src/artifacts.rs": {
+        "sha256": "f378295641e5d2b3e9e7cb70e88d8adad5106498358dd6bff2ba2cefa18d73b8",
+        "size": 9071
+      },
+      "adapters/contracts/src/convert.rs": {
+        "sha256": "7b86f3ea31db151c3e97794d0bda3a7cc609f1586190a9be0032bf5c5f1ede7a",
+        "size": 23980
+      },
+      "adapters/contracts/src/dependencies.rs": {
+        "sha256": "af28c25d2fca78cf7a11718af290d1381edd71e2d8035e9fd1d75466ccec8f30",
+        "size": 7957
+      },
+      "adapters/contracts/src/execution/artifact.rs": {
+        "sha256": "30a0874fd8b40ba777106f52d5aa303922d73d702484bbae1ea2c82620a0e5d2",
+        "size": 11645
+      },
+      "adapters/contracts/src/execution/build.rs": {
+        "sha256": "0dad29bfa351673b191882ea9625bcd2fd6389c4e310d7a2b832f64e2c2124c7",
+        "size": 8507
+      },
+      "adapters/contracts/src/execution/dependencies.rs": {
+        "sha256": "e83ead8915b404849db9cff554bb1465b2a65e94f641fe95c1279cca49c00283",
+        "size": 3877
+      },
+      "adapters/contracts/src/execution/files.rs": {
+        "sha256": "61982312cfa3f8fed4d5e15cabb89b218c8a4e13f89f7e706447e46377f184d8",
+        "size": 4852
+      },
+      "adapters/contracts/src/execution/mod.rs": {
+        "sha256": "0619a2596aefdd83224f117c467786766a8e262a445c6fa51faf7c5a92aea313",
+        "size": 3051
+      },
+      "adapters/contracts/src/execution/package.rs": {
+        "sha256": "8e88d3254e2a4b904724f663bd100d4cdcb1ac59058fcda8b4748d198fd18708",
+        "size": 7652
+      },
+      "adapters/contracts/src/execution/spec.rs": {
+        "sha256": "6c48d96a6d1cfbdfb10ee54726b029adc5fd630f815e90a8d8ce61acebae1125",
+        "size": 12580
+      },
+      "adapters/contracts/src/lib.rs": {
+        "sha256": "3c02559d7376d47278f9fe8e126dc990a3d3be5a7fafe0e335ec752d7b1ed17a",
+        "size": 4539
+      },
+      "adapters/contracts/src/native.rs": {
+        "sha256": "15233ef97a7c76213122fe57fe73ae0ea33ed54183c1c41d4446693afa9312d3",
+        "size": 7250
+      },
+      "adapters/contracts/src/projections.rs": {
+        "sha256": "30d0817913146cc2b96970cf4ef47f3b84112145f51b2035f7a1c1ef06bf19ba",
+        "size": 12068
+      },
+      "adapters/contracts/src/query.rs": {
+        "sha256": "2f47be8bea80315d443ac5aee5f90dfc01aff07ca4df13bd0280dfea7706a7c9",
+        "size": 11263
+      },
+      "adapters/contracts/src/resolution.rs": {
+        "sha256": "9bae3ebd14a9f2271dae9af8eca5b83de60225293fe8002aa50f5506958f2b3f",
+        "size": 4086
+      },
+      "adapters/contracts/src/task.rs": {
+        "sha256": "0b533e80eb543b65771d91334c4142e8a11fc27fdf02b78592c29bbe975c0259",
+        "size": 12577
+      },
+      "adapters/contracts/src/wire.rs": {
+        "sha256": "4b47948c3cb074cd469aff7f409c73b9ee48496f7e9e1fdc9b2394428bb15b75",
+        "size": 4008
+      },
+      "adapters/contracts/tests/build_completion.rs": {
+        "sha256": "2c40bb37ec85b22a3db4babb46ebe37230d3822e5d46b04fd73eefb4ab04f5ef",
+        "size": 2373
+      },
+      "adapters/contracts/tests/common/mod.rs": {
+        "sha256": "5c08a976e33219db43e797fd0b34e841f61f88643060e738a8e9cfee1ada2769",
+        "size": 1272
+      },
+      "adapters/contracts/tests/evidence_and_ports.rs": {
+        "sha256": "4cb5ec00406048d0f5e3cc0c383761146cbd13543c659b99facc39b3e142868c",
+        "size": 11236
+      },
+      "adapters/contracts/tests/execution_binding.rs": {
+        "sha256": "e1b0aa6d25aaf6c383ff8938642f437c957b5aee138c32cbfa733abb2330824d",
+        "size": 31036
+      },
+      "adapters/contracts/tests/identities.rs": {
+        "sha256": "3f7d8d7c5d884b16a490fdea824dc191f0cee77cf8b309af220b8d02a7fe3c4d",
+        "size": 7512
+      },
+      "adapters/contracts/tests/managed_semantics.rs": {
+        "sha256": "83806d5fe865962d7221268452f84f074f8ec7afda6b5013d6626b018e96ba4c",
+        "size": 5481
+      },
+      "adapters/contracts/tests/native_metadata.rs": {
+        "sha256": "7073c63ed8cad15bce40083f62e05af2ce49e0763770b1f4dc1268b148051bb7",
+        "size": 12078
+      },
+      "adapters/contracts/tests/query_races.rs": {
+        "sha256": "dd4131d4956f7ef05913d04773e4511d88e35f9415a6a04e593d4ec64e52bd39",
+        "size": 4922
+      },
+      "adapters/contracts/tests/semantics.rs": {
+        "sha256": "4d348b3e9b17f66cd29b65c0c8a528e692fce5aa85e000d846fcbbaa9712f9ea",
+        "size": 8970
+      },
+      "adapters/contracts/tests/task_binding.rs": {
+        "sha256": "2503bc53a082c617a14fc995c7072b3be5741ea2b73a0804d83d343184183b83",
+        "size": 18524
+      },
+      "adapters/generators/akinterop/ATTRIBUTION.md": {
+        "sha256": "dd2b6a792e018ff857f111565cfdf671e11ed2035d6a7364373c70b911faa8ae",
+        "size": 2337
+      },
+      "adapters/generators/akinterop/README.md": {
+        "sha256": "b580d282c7d975af476b55e8a40594a2ef12f8cf4b9bbf8bc4e96c797e7e9ddc",
+        "size": 7546
+      },
+      "adapters/generators/akinterop/managed-owned-r6-source.json": {
+        "sha256": "336df4f5d3e6e55bd2adbdecd5166b64f26d9a1df07d26500787992cbbb86933",
+        "size": 27107
+      },
+      "adapters/generators/akinterop/managed-source-r3.json": {
+        "sha256": "c0b316e6db20db7ebf463975de649995a0b1c3992346b12f2ad562deef24790c",
+        "size": 5156
+      },
+      "adapters/generators/akinterop/managed-source-r4.json": {
+        "sha256": "98be145d1903b34eb0201de5f0cdeba75182f9a11cb6cf8e204df4a3b2e49a81",
+        "size": 6390
+      },
+      "adapters/generators/akinterop/managed-source.json": {
+        "sha256": "34b96b5bca7fae6fabfc4583e145853b734ce0704d8b2cf16d6cc77d3a4ebc00",
+        "size": 4201
+      },
+      "adapters/generators/akinterop/patches/LICENSE-Apache-2.0": {
+        "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+        "size": 11357
+      },
+      "adapters/generators/akinterop/patches/NOTICE-upstream": {
+        "sha256": "963d998b6c8530b724a50451e4d2840b289d871ee893e2ec1d08a7f52865e733",
+        "size": 604
+      },
+      "adapters/generators/akinterop/patches/managed-mainenv-1.1.0-r2.patch": {
+        "sha256": "a45a6ffdde21322de392f8b71884182e99648a401b9ceb56d0a610e48bbb5864",
+        "size": 53896
+      },
+      "adapters/generators/akinterop/patches/managed-mainenv-1.1.0-r3.patch": {
+        "sha256": "046e06e55bb9dde641e5be76c40b94e13310084b9571800c5ee738201f7054eb",
+        "size": 75401
+      },
+      "adapters/generators/akinterop/patches/managed-mainenv-1.1.0-r4.patch": {
+        "sha256": "c8dd03563b05c71193140c819047b840cc5c736884ac12729dae75f9f8e2f6db",
+        "size": 87782
+      },
+      "adapters/generators/akinterop/patches/managed-owned-r6.patch": {
+        "sha256": "1587a8251813251537b59328c0e3abba462c86ed7a94ec3654c810452f5081d4",
+        "size": 109739
+      },
+      "adapters/generators/arkts/driver.py": {
+        "sha256": "4b5228e56681335b879e7375521decda66743db2073d3b78590d4574405e4467",
+        "size": 22840
+      },
+      "adapters/generators/arkts/lowering.py": {
+        "sha256": "4a1a8ead616b6efec58944202a727bf2fec1b82c54c88f6e51c871b1a2572c2d",
+        "size": 10106
+      },
+      "adapters/generators/arkts/profiles/snapshot-test-v1.json": {
+        "sha256": "e546e19fde0cb1f5350d2371f5512da7510636b0daf27ab0615152bd3fcc7744",
+        "size": 59034
+      },
+      "adapters/generators/arkts/profiles/snapshot-v1.json": {
+        "sha256": "5606f04a8da75ec781616d6a46f4c3a3101a192cead586fe3a04aa2297514321",
+        "size": 30539
+      },
+      "adapters/generators/arkts/read_arkts.cjs": {
+        "sha256": "74b862e898f547f188b65ceb8f06731a1bd4ae670f47a9ebc701168a167ca249",
+        "size": 11086
+      },
+      "adapters/generators/arkts/read_c_seam.py": {
+        "sha256": "077c2163894b67ed2b445d4913889905d37046c49709b153b6ea277dfa9a45c1",
+        "size": 12192
+      },
+      "adapters/generators/arkts/read_facade.cjs": {
+        "sha256": "d2a04fdd900942c4ae8d2b41dfe882d64539db79fb502df549bf6998a527a502",
+        "size": 9623
+      },
+      "adapters/generators/arkts/read_har_exports.cjs": {
+        "sha256": "73e97d97b73b28b41e5bdb3c5767dd1437a3213a72fe2bff08e59dbed6b4376a",
+        "size": 1556
+      },
+      "adapters/generators/arkts/read_kotlin_exports.cjs": {
+        "sha256": "82d1e1ad82c08d05582f478dd5b5c689c2b34859d22dab8dd720eec501fff6aa",
+        "size": 3956
+      },
+      "adapters/generators/arkts/read_kotlin_public.cjs": {
+        "sha256": "80d82e36bc9aca206a4b78a919bfdfc250eaa48e7f2caceb86eddc64b129a6df",
+        "size": 984
+      },
+      "adapters/generators/arkts/read_rust_exports.cjs": {
+        "sha256": "320183d1b0fcf30b2827d27a1f1aed94c48f1e517281580ea2db0aa8b4b5b749",
+        "size": 2107
+      },
+      "adapters/generators/arkts/rust_frontend.py": {
+        "sha256": "8a82f341b78843ced980afbad41fd7a9e10da755ababeb4d478290f9a782bd02",
+        "size": 5855
+      },
+      "adapters/generators/arkts/support.py": {
+        "sha256": "ae8123b6b832bf9ceee20016bc9f50b2932a2a870b11d607ad030a7e7a3f3ba4",
+        "size": 7137
+      },
+      "adapters/generators/gobley/ATTRIBUTION.md": {
+        "sha256": "29d69c9653bde4b2e02a64e0b637accc225a4bcf60143dd990e0ade16d82a0d0",
+        "size": 3057
+      },
+      "adapters/generators/gobley/README.md": {
+        "sha256": "3407472e3b624e74ed4f34f44dac7b165467f3570862245c04bce8f33037bf93",
+        "size": 6789
+      },
+      "adapters/generators/gobley/driver.py": {
+        "sha256": "54bb0c82c5c930baa914a5f4e7490006a368c92f4ef8334bc0986fce23b502a5",
+        "size": 10847
+      },
+      "adapters/generators/gobley/fixtures/ForeignFutureProbe.kt": {
+        "sha256": "906876145928a8c5bb28466f1981372845e14390a12f8da15a63cd81d8b9dab7",
+        "size": 4913
+      },
+      "adapters/generators/gobley/fixtures/foreign_future_allocations.rs": {
+        "sha256": "17dbb3265992eca812c9578a1d18578bc39433657fb644da04227b1da536d27f",
+        "size": 3543
+      },
+      "adapters/generators/gobley/fixtures/native_ready_allocations.rs": {
+        "sha256": "18cc01b568876ccdd0ff68f874a7cc03611ca6b1a79781b08da6e5f9f9b3f265",
+        "size": 3277
+      },
+      "adapters/generators/gobley/generator.Cargo.lock": {
+        "sha256": "83322de7b2ffcf4a92aaba21a513fee626fb768fbf35f8872fd63053cef3192b",
+        "size": 18872
+      },
+      "adapters/generators/gobley/native.py": {
+        "sha256": "9e5e4e5a767d7c389762537c84dfaf357af05a844e9b92a822bcd4a2c8e09718",
+        "size": 2905
+      },
+      "adapters/generators/gobley/patches/LICENSE-MPL-2.0": {
+        "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+        "size": 16725
+      },
+      "adapters/generators/gobley/patches/gobley-0.3.7-native-abi.patch": {
+        "sha256": "fbb7f6228773658d8c283ed5056e4974cc12e15144a694f7e052cb0c6de1800a",
+        "size": 15038
+      },
+      "adapters/generators/gobley/patches/gobley-0.3.7-once-completion.patch": {
+        "sha256": "6f63388666df2b7d1a32f58d926e30effab4a53cf6af160f10cf471bc827eae2",
+        "size": 8430
+      },
+      "adapters/generators/gobley/patches/uniffi_core-0.29.4-native-ready.patch": {
+        "sha256": "e2d2099aa70aee63d4e1b8b1a429d22ea59cf2796ee7ce7e7e8a20a63dc11244",
+        "size": 7162
+      },
+      "adapters/generators/gobley/patches/uniffi_core-0.29.4-owned-result.patch": {
+        "sha256": "5200e85977a334e368c7d7d53ec9b1b67aeafe71b7597a4669877780c792c23f",
+        "size": 3012
+      },
+      "adapters/generators/gobley/probe.py": {
+        "sha256": "18b5ad4f29fd9063472f99ee107c505d35cb8a6d76dc710f048aea949a96992a",
+        "size": 4672
+      },
+      "adapters/generators/gobley/toolchain.json": {
+        "sha256": "441eed728c7de0774e1b93bcc290aa653c49c62af292884434f5e71f8c4d8e80",
+        "size": 1529
+      },
+      "adapters/generators/kotlin_rust/README.md": {
+        "sha256": "893ec4438dc96608a23413445c4f3e08adb941527bb87d196577f174e239baf9",
+        "size": 4712
+      },
+      "adapters/generators/kotlin_rust/driver.py": {
+        "sha256": "718fb14ec1b85541425c73d861888015bc408b99a81e7f139e563588abc13683",
+        "size": 20779
+      },
+      "adapters/generators/kotlin_rust/lowering.py": {
+        "sha256": "49d90e92628155b9dc5bcb9da26084d396b54b33153e6da38d1dbf25b3e2317b",
+        "size": 11588
+      },
+      "adapters/generators/kotlin_rust/semantic-surface.json": {
+        "sha256": "d40f32a56b50eea7c2ce40b885799fe082e161d8e3ea794f9a70fd5b2158055a",
+        "size": 43795
+      },
+      "adapters/generators/kotlin_rust/skie_lowering.py": {
+        "sha256": "5c135ddc8a32ec8dbc7067c07f2deed9f27d2c9a4102b05eaec3a5bf0503f6d4",
+        "size": 12758
+      },
+      "adapters/generators/rust_c/README.md": {
+        "sha256": "ded3147fe7e12922c1824b22071aa69540f328ca1c0873cfaf98fb7411e1f0fe",
+        "size": 8497
+      },
+      "adapters/generators/rust_c/driver.py": {
+        "sha256": "069ac2ae63ceb7cdba738ba4478b5938d9676a33ff6d1cbbfda3a2a768711dce",
+        "size": 15958
+      },
+      "adapters/generators/rust_c/lowering.py": {
+        "sha256": "7b478f012996b5cc8c9f8e64d7d9137a82ccd402cc007f76403adf3114116485",
+        "size": 9068
+      },
+      "adapters/generators/rust_c/native_ast.py": {
+        "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c",
+        "size": 9409
+      },
+      "adapters/generators/rust_c/support.py": {
+        "sha256": "f0719d2b1dd61fbea9346b0a6d43b05dff75c2eeceaa1071baca4bcd4d7a9b9d",
+        "size": 3822
+      },
+      "adapters/generators/skie/build.py": {
+        "sha256": "664aa7dbd46e43dac19cb029a02e0d88c9e50023a9e824d44f025bd5640e3eab",
+        "size": 9689
+      },
+      "adapters/generators/skie/probes/build.gradle.kts": {
+        "sha256": "7b618e35264724cea1a5702f87b61c1fa0c61521225ecffa3f86a52b97e72ad1",
+        "size": 866
+      },
+      "adapters/generators/skie/probes/gradle.properties": {
+        "sha256": "069b59059e84e6581351a39bb5fb5f8bc7b6e3051da05e6e209ce7e78d847281",
+        "size": 180
+      },
+      "adapters/generators/skie/probes/native/Custom.framework/Headers/Custom.h": {
+        "sha256": "f91380027e7a32b118261af2e8cea435b2d52694e23d1238aa8f3bf13540c759",
+        "size": 73
+      },
+      "adapters/generators/skie/probes/native/Custom.framework/Modules/module.modulemap": {
+        "sha256": "bd11cafa200c74360aa8d6732a8458e5c546c2834e5cabf14e924dc1b22af9bd",
+        "size": 64
+      },
+      "adapters/generators/skie/probes/native/Custom.m": {
+        "sha256": "fb646f15e7469ba28db9e8c02494e284ab63d6c486e578465df86ad3404a21b3",
+        "size": 77
+      },
+      "adapters/generators/skie/probes/settings.gradle.kts": {
+        "sha256": "717030a93c41d8a0f7f2af4d536bf157c8ad34346853b4e7249edfed1276597d",
+        "size": 590
+      },
+      "adapters/generators/skie/probes/src/commonMain/kotlin/Gaps.kt": {
+        "sha256": "f76c2b474d107d4a607728a9c2a653d125d8d8ddd7de73f4f87071ca178f5951",
+        "size": 286
+      },
+      "adapters/generators/skie/probes/src/nativeInterop/cinterop/custom.def": {
+        "sha256": "573949d774c9933160db0b1befabee73520404fd5f078ff18e3e9c286bca122f",
+        "size": 62
+      },
+      "adapters/generators/skie/read_api.py": {
+        "sha256": "c9d6c554ce9ed8191d22c165769b7c9c9e05c20262fe986163799601e8ae220f",
+        "size": 5501
+      },
+      "adapters/generators/skie/workspace.py": {
+        "sha256": "41acaaf129d4175adc57cc6db17b5e1e9292aa1eacd4f6a2329e9901dc09c0a7",
+        "size": 958
+      },
+      "adapters/generators/uniffi/ATTRIBUTION.md": {
+        "sha256": "e850142bb0b19c660b24e6dec1bad21ff71064001f6d6c68790186c573c71536",
+        "size": 2651
+      },
+      "adapters/generators/uniffi/driver.py": {
+        "sha256": "73b8579c4af34ebc24ec9883d27ece3c851e8fbe0560dc7139ad2a065738d78b",
+        "size": 14025
+      },
+      "adapters/generators/uniffi/patches/LICENSE-MPL-2.0": {
+        "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+        "size": 16725
+      },
+      "adapters/generators/uniffi/patches/README.md": {
+        "sha256": "a6ee30410a5e134b0585d626a5e9404d83729f29a3107fbacd628e18ad036fae",
+        "size": 5655
+      },
+      "adapters/generators/uniffi/patches/native-ready-result-0.32.2.json": {
+        "sha256": "fed0712eda2505900fd4cd21efbe1800e25ab2e650d490a23aa55973f3266b85",
+        "size": 385
+      },
+      "adapters/generators/uniffi/patches/native-ready-result-0.32.2.patch": {
+        "sha256": "f72e6fedbb44fa508a1b6d142ea2563019278a8f2cf2d7de41ad619f95c44e2b",
+        "size": 5767
+      },
+      "adapters/generators/uniffi/patches/owned-foreign-result-0.32.2.json": {
+        "sha256": "dfba9b126c09e66008e0c55a77809c5f1d3f3fa2b67968d857bc9ebe9d6550dc",
+        "size": 468
+      },
+      "adapters/generators/uniffi/patches/owned-foreign-result-0.32.2.patch": {
+        "sha256": "170ff03c669e5d8393c0ebf6846219d43668c125a02a31a0ab6f2aeec70cb3d0",
+        "size": 2987
+      },
+      "adapters/generators/uniffi/patches/swift-cancellation-0.32.2.json": {
+        "sha256": "b1e6fe0d07457012b93e97f37dff297738d0290881e6832977e45e928b67cbbc",
+        "size": 270
+      },
+      "adapters/generators/uniffi/patches/swift-cancellation-0.32.2.patch": {
+        "sha256": "b6b8e82d405b4c4cced2cfe7f8fe5fdcd5bcf0508d0e2adb0d62f0ff984df6c8",
+        "size": 5761
+      },
+      "adapters/generators/uniffi/patches/swift-checked-initialization-0.32.2.json": {
+        "sha256": "269812d2f3b768cc178ef75f19110ffa2abd8df060e173fe47f399b07f04e909",
+        "size": 270
+      },
+      "adapters/generators/uniffi/patches/swift-checked-initialization-0.32.2.patch": {
+        "sha256": "069144c4042bbf9c2bacb3fc7d8849e4c9e3c20ba38ce1c1ef2969ad68612e2a",
+        "size": 770
+      },
+      "adapters/generators/uniffi/patches/swift-foreign-sendable-0.32.2.json": {
+        "sha256": "359164d5acdd0bcf69b798c3fede6ccf9ba6e4f8b2cebdaea37e3936d998ce82",
+        "size": 270
+      },
+      "adapters/generators/uniffi/patches/swift-foreign-sendable-0.32.2.patch": {
+        "sha256": "a43ac0282bb91780027c620f98afa52ea180ad551d6489fcdb6ac03a36d7ec89",
+        "size": 4174
+      },
+      "adapters/generators/uniffi/run_regressions.py": {
+        "sha256": "46c46cf81707a6ad61aec23189f5fbf40550c66bae0c02f48362a67418800b52",
+        "size": 10095
+      },
+      "adapters/generators/uniffi/tests/P03Jvm.kt": {
+        "sha256": "3bd1888045bce216f899453416efd0a164effc4f413b15facf1e8ba01be83fa7",
+        "size": 4417
+      },
+      "adapters/generators/uniffi/tests/P03Swift.swift": {
+        "sha256": "6911b100bc020e2fe929811b96e2f1aa863eb0e8102bdf4bd2d4a8fe7f9eb122",
+        "size": 2616
+      },
+      "adapters/generators/uniffi/tests/native_ready_result.rs": {
+        "sha256": "bfbf7b3eedecf622dbcc1baaf1cc079dd4a4aad8ef15b1d67df831239342f047",
+        "size": 3317
+      },
+      "adapters/generators/uniffi/tests/owned_result.rs": {
+        "sha256": "78ae53d31ba3249c8bdfd67db9aebf877fc2c2f67841beb046b8cbbe11d93bc3",
+        "size": 4390
+      },
+      "adapters/generators/uniffi/tests/swift_cancellation.swift": {
+        "sha256": "acc238165c0245615790e5b03894c320f37d36a9df9c524498cfd03cb3e1a057",
+        "size": 2915
+      },
+      "adapters/host/Cargo.toml": {
+        "sha256": "2a7ba19fd85d1853c14883c25b3a6c9d43a7cc0579e9791ad56aeedec97d0ffc",
+        "size": 647
+      },
+      "adapters/host/examples/frozen_probe.rs": {
+        "sha256": "ca459205b5753ac4ea116d1f5a73aebd0fb92af96863711f0748822dbc62448f",
+        "size": 7960
+      },
+      "adapters/host/examples/process_probe.rs": {
+        "sha256": "04b2168495741a290a364f59254fa984a1a03b8ef84776362fd6615a22ff4a36",
+        "size": 5806
+      },
+      "adapters/host/src/artifact.rs": {
+        "sha256": "22e99a087755e2ade437e6904cdefff97952c33595011db61f08f8020855f812",
+        "size": 5416
+      },
+      "adapters/host/src/cache.rs": {
+        "sha256": "c1c30e54ee42fccf0df7dc0e86455e5634c4e369396467b12b519b22724add01",
+        "size": 15633
+      },
+      "adapters/host/src/cancellation.rs": {
+        "sha256": "e46bd45e9948772fdf1132a5823e95fe3ffe06c5b13e97264319a463856d7671",
+        "size": 1890
+      },
+      "adapters/host/src/dag.rs": {
+        "sha256": "a75f7ab1b77a54f63fa956ff34e519751e9b5cca70c7be986aae60501ba97f4b",
+        "size": 5086
+      },
+      "adapters/host/src/dependencies.rs": {
+        "sha256": "8640721c4aade8b3b09b102ef513550824ec0559ba4db5d4f2eb68d129ceaa50",
+        "size": 12823
+      },
+      "adapters/host/src/dependencies/depfile.rs": {
+        "sha256": "3f90c8a2ffad801a4aae942c12a687d6cd4f992b2128fabe87b348f64b3e0482",
+        "size": 3166
+      },
+      "adapters/host/src/dependencies/preparation.rs": {
+        "sha256": "419c7275d433d49c83772a6b11cbe0aafe2c853408a732e77bb41e6b098a641a",
+        "size": 7934
+      },
+      "adapters/host/src/dependencies/profile.rs": {
+        "sha256": "0118eb0ccfdd20d1fbe68869bd8c30238e36f7a2fe3befa799af5bfb57c7c886",
+        "size": 9064
+      },
+      "adapters/host/src/dependencies/search.rs": {
+        "sha256": "181d37508cfb3c7ebae06577575fef7b844d919de6673d4e502d22299ab651b7",
+        "size": 3693
+      },
+      "adapters/host/src/dependencies/tests.rs": {
+        "sha256": "b5d9668a89e2723255c43995e8b79aa29f06c03150f5bbfe69369c4edec71a19",
+        "size": 4948
+      },
+      "adapters/host/src/inputs/mod.rs": {
+        "sha256": "f47ae50b2741c4be977ea1e8af4455e03402d2fa85a3ca4eb6e0201275cd29bd",
+        "size": 10649
+      },
+      "adapters/host/src/inputs/tree.rs": {
+        "sha256": "966cfb997acd0b0fce6bb7792f270632ee4a379d66f8f52225d2affb6f0a1679",
+        "size": 5041
+      },
+      "adapters/host/src/lib.rs": {
+        "sha256": "763a60468cd26edafe232d95aa8f04a4eb3ee1effed66c531c8d62798420ed8b",
+        "size": 4590
+      },
+      "adapters/host/src/locations.rs": {
+        "sha256": "55be4f86771674e157dbbeece4250b8666ead277b5781acc5b49b90240128940",
+        "size": 3049
+      },
+      "adapters/host/src/observation.rs": {
+        "sha256": "c2e96ccffc357742b87e22bbfb3746363c1b29bcda8c807e28079aa29b53f49e",
+        "size": 5647
+      },
+      "adapters/host/src/process/child.rs": {
+        "sha256": "f5302cb2caa1f866e429fa25ba8f29139e7c9bd43ee4f87a95325da5c84b1594",
+        "size": 5076
+      },
+      "adapters/host/src/process/mod.rs": {
+        "sha256": "f7d373c93f9f5c8d91a2498a2bd5311b22476d8fad0c7c412b4b242e8f367a80",
+        "size": 6828
+      },
+      "adapters/host/src/process/pipes.rs": {
+        "sha256": "fd3460c8bcf8d0238b7d41b2c8ed43450c011fefa857433c1348836fa43006a9",
+        "size": 4365
+      },
+      "adapters/host/src/process/supervise.rs": {
+        "sha256": "172633247c5393e7a411279dd29a8234449791c542417a7af787895c670f6040",
+        "size": 7120
+      },
+      "adapters/host/src/task.rs": {
+        "sha256": "dd2d8852660b2fd2b4541fbca58b578f314aabbfd73257992839fe72502f950c",
+        "size": 4835
+      },
+      "adapters/host/src/transaction/codec.rs": {
+        "sha256": "99815fef5c6de6dcbe5ccd9e7ddf86ecb43d942143e80ba8a7817596bd4f3e3d",
+        "size": 6336
+      },
+      "adapters/host/src/transaction/commit.rs": {
+        "sha256": "eef90c1613a79371c734400f2777447d09fe3c46fb4803e47dbee2bc1be51d10",
+        "size": 6698
+      },
+      "adapters/host/src/transaction/fs.rs": {
+        "sha256": "137c3ebbef3f7221d0783234d2a8a5730756818b174f3ebfce4e4ebbda904716",
+        "size": 5002
+      },
+      "adapters/host/src/transaction/mod.rs": {
+        "sha256": "b54e5f9482ca38f5bf51da73bc75519ca76619e7544d5d83c012bad20d7156c8",
+        "size": 13945
+      },
+      "adapters/host/src/transaction/ownership.rs": {
+        "sha256": "e0e46cb9316bd7f275bef6c8cf486b56d2eeaf21576c15799987b8ffa89ad597",
+        "size": 3580
+      },
+      "adapters/host/src/transaction/recovery.rs": {
+        "sha256": "fa51f7c763b55294ced35a095c93462630d77e24f8bbd617c7fdb171e82df0a5",
+        "size": 2916
+      },
+      "adapters/host/src/transaction/staging.rs": {
+        "sha256": "674bedc8b8d90f29cdadfde98dae823ec581942e7b1a38830e7b6d1ff4337050",
+        "size": 3966
+      },
+      "adapters/host/tests/artifact_execution.rs": {
+        "sha256": "72213d2f2112d49dbfac0edac4fc0151f1102f866ef8154d7c8db7734522986d",
+        "size": 9109
+      },
+      "adapters/host/tests/input_observation.rs": {
+        "sha256": "91f0a4af2b29a0810101d07431f2c78d854774931dcdec2a900d0bf38fe830fc",
+        "size": 8912
+      },
+      "adapters/host/tests/managed_locations.rs": {
+        "sha256": "cd49431535d80e15f1f74f9c769983e71a0f7f0ff0f2ad53e55a650d39579cff",
+        "size": 1989
+      },
+      "adapters/host/tests/prepared_inputs.rs": {
+        "sha256": "9cb64af6995b2fbf52105266b3dae50f45eb1c6733b38d6716d7d8b847e59f49",
+        "size": 14347
+      },
+      "adapters/host/tests/transactions.rs": {
+        "sha256": "8cb028c0bf514c087d7e0d2664b8992eb8aedeab4661ef97c8cbfa36bc6c07f9",
+        "size": 19879
+      },
+      "adapters/toolchains/arkts/README.md": {
+        "sha256": "f6e67faca8b0981c86d1bcaa427a1d000b6ae5f320c9251be3da577e94444025",
+        "size": 8808
+      },
+      "adapters/toolchains/arkts/inventory-format.json": {
+        "sha256": "b10ae3bc8f7a9ed7220e62f827a1fa19df1a1bab4f7c58d4df29dbd7ae54716c",
+        "size": 2231
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/build.gradle.kts.in": {
+        "sha256": "298d2396864e8ebea3d3a8109b8445276b25d410fcd63d2ddbf61b04276d3512",
+        "size": 343
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/gradle.properties.in": {
+        "sha256": "ad06ee25150683d60b5732a615e8a46db5b4f41f1720502c6ff459d8e4e5037d",
+        "size": 557
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/link-shared.py.in": {
+        "sha256": "da0898315d89467c5c03b268fe040ec5be22ea4dbdcbb58f33befe72485fd9ef",
+        "size": 653
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/probe/build.gradle.kts.in": {
+        "sha256": "6bb56e8da36338b986a04cb760d8ee9fe778dfef7cf9dfe182ff16fd3c6cd45e",
+        "size": 2325
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/record-codegen/build.gradle.kts.in": {
+        "sha256": "c149b888891d84ce0db9cf12ca14bb24c4197f0ef74e601bd72d2316c0f1e858",
+        "size": 401
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/runtime/build.gradle.kts.in": {
+        "sha256": "5dcd9aa526757f89518f79607a11007445fe51fc751995fa9f081eefb47ddb18",
+        "size": 1340
+      },
+      "adapters/toolchains/arkts/kotlin-recipes/settings.gradle.kts.in": {
+        "sha256": "ab57242aa2b8076e5ec3cb246f01025f8eee4ed2b3d7e860adedeec0c5d0a7ec",
+        "size": 200
+      },
+      "adapters/toolchains/arkts/kotlin.py": {
+        "sha256": "45d972759b5d6b3ddca09cbeb1000a52ff43a7976d2a06a63377b9b939224cc0",
+        "size": 16219
+      },
+      "adapters/toolchains/arkts/kotlin_binding.py": {
+        "sha256": "0c64e311bf6327cf2cf6bcd71ba987ad7e8b119c911d903b39a37d7b36d45739",
+        "size": 5565
+      },
+      "adapters/toolchains/arkts/kotlin_dependencies.py": {
+        "sha256": "27697fb6f32888189259f93eab72b34fb527b4ab9e1732030bd907ae4da8ed6a",
+        "size": 7211
+      },
+      "adapters/toolchains/arkts/kotlin_elf.py": {
+        "sha256": "0e82a4312319fc3bfaa92e47a540a1efaf148f06f2d1c339aba0cabaecae9d50",
+        "size": 4473
+      },
+      "adapters/toolchains/arkts/kotlin_frame.py": {
+        "sha256": "9836f0bbb03b78ee6f449b83ddab5a26cf2b1ff4bc8c540354121b335656b9e6",
+        "size": 6639
+      },
+      "adapters/toolchains/arkts/kotlin_metadata.py": {
+        "sha256": "6ed4baacf7262bdd268cc93064ec6cc67fd5698c81609d52d0961cdc97ef85d8",
+        "size": 6632
+      },
+      "adapters/toolchains/arkts/kotlin_project.py": {
+        "sha256": "352fb9c1c666740474e60ac2a6b78afde47da0122b3c1ec8d90403a3893072a1",
+        "size": 13166
+      },
+      "adapters/toolchains/arkts/kotlin_test_binding.py": {
+        "sha256": "e45471432f2900c810ba510f21b46be853f2f98c6a1511ea4c098a24ed94151f",
+        "size": 4672
+      },
+      "adapters/toolchains/arkts/licenses/napi-ohos-MIT-LICENSE": {
+        "sha256": "0c0e9a8f1b2914d3e31cec973eaf5d04760b2d68272f3abec676a3ada331b0a6",
+        "size": 3212
+      },
+      "adapters/toolchains/arkts/licenses/napi-ohos-license-source.json": {
+        "sha256": "e0574881610f980d27d32638366e8c6d41ddb4559057d8aa3181126e3a589d06",
+        "size": 508
+      },
+      "adapters/toolchains/arkts/native.py": {
+        "sha256": "a29dab110f756486eb0ab136bf5e1d5f04973d899ed093f153655a64518ac272",
+        "size": 11500
+      },
+      "adapters/toolchains/arkts/pipeline.py": {
+        "sha256": "b51b39567f0b14f5b3bf1adab1c48b9ba5453b2b46cf0bd1dd730ec6106df6da",
+        "size": 3302
+      },
+      "adapters/toolchains/arkts/preflight.py": {
+        "sha256": "ca8b53d7a791c891cac035ddc3059c88867caa9b80c2e67d8944fc64aa1462c3",
+        "size": 17672
+      },
+      "adapters/toolchains/arkts/project.py": {
+        "sha256": "611a16494cc59cf94cdd1851c6ec5ca14fb23bfb3d681f22cbc6e7ccbeec8403",
+        "size": 21863
+      },
+      "adapters/toolchains/arkts/requirements.py": {
+        "sha256": "e10b51ae7118bc2cbf9a776410273908c90e1a5c9f5ef663f822337dec68aa3a",
+        "size": 2575
+      },
+      "adapters/toolchains/arkts/rust.py": {
+        "sha256": "8ce45b24774ce0be978aa70304344eb0028456555b09ef55405f960b280dc2cc",
+        "size": 19537
+      },
+      "adapters/toolchains/arkts/rust_dependencies.py": {
+        "sha256": "9d6d2301a2810d418f1de8dff3612df5f9256858e0a4b14829461716540d6a37",
+        "size": 10807
+      },
+      "adapters/toolchains/arkts/rust_host.py": {
+        "sha256": "9d5b11b5032b619eb1273605db8673b95f8fcbd651b2f85c10615737d0293cb0",
+        "size": 4017
+      },
+      "adapters/toolchains/arkts/rust_inventory.py": {
+        "sha256": "a37eeff51afc0993f445034150dd2b756a6b06abd86072394998494d57432038",
+        "size": 5088
+      },
+      "adapters/toolchains/arkts/rust_metadata.py": {
+        "sha256": "e5d0959c9ba9a592c55515981cd2961b99f577757046c8b657f8885146058134",
+        "size": 8634
+      },
+      "adapters/toolchains/arkts/rust_observer.py": {
+        "sha256": "d1550411fd14d8d0964bcdaaeced9a051fbd436f975773e49c0cbf550d4065f7",
+        "size": 4132
+      },
+      "adapters/toolchains/arkts/rust_tools.py": {
+        "sha256": "8168be278b9b9d9829c65a2155852f4b6178e9f1b2fa4d77984c3d24b9dce61e",
+        "size": 7983
+      },
+      "adapters/toolchains/arkts/toolchain.py": {
+        "sha256": "b252fba08f5d8fb91014db541d2a0397a88903536c2d0dcced9c54e32d39abe8",
+        "size": 9087
+      },
+      "adapters/toolchains/arkts/tools.py": {
+        "sha256": "2c312568f648dc2c15362c4f0a41a9738238efdd1ab0d7f7e7ba7d90ff4b4ddf",
+        "size": 15971
+      },
+      "adapters/toolchains/arkts/worker.py": {
+        "sha256": "5e5fd6b58ea70e3f4a47714d4a02e9f8f9cf4699cdbc5501ffbed4d26bbaf4e7",
+        "size": 16795
+      },
+      "adapters/toolchains/common/compiler_workspace.py": {
+        "sha256": "fcbbee9cf62288c44596cd7c94feabea10011197fa3c516092fcc07467e703a6",
+        "size": 12741
+      },
+      "adapters/toolchains/common/documents.py": {
+        "sha256": "948d928ebe53f509390c354f3bf8934f1f6040c7c7400857903192f8df13433c",
+        "size": 3790
+      },
+      "adapters/toolchains/common/pipeline.py": {
+        "sha256": "0127331c6a7629c81e8591fecd758c34e79a4e93aa1190f977eeec16da230e6f",
+        "size": 19929
+      },
+      "adapters/toolchains/kotlin_rust/README.md": {
+        "sha256": "45c3e6d425a0d0ad890c9e1a3e7438f22fb286a6a348c19e0f99cc4f6c427a6c",
+        "size": 6264
+      },
+      "adapters/toolchains/kotlin_rust/install_tools.py": {
+        "sha256": "e37670caf6cf9f71e3b3179f08e37be13ede8940119ce2acaa795f677819a9f6",
+        "size": 9772
+      },
+      "adapters/toolchains/kotlin_rust/language_build.py": {
+        "sha256": "8af799b09bb6f898acd39d756d8966996397d627ec941a5e04842e4a6f3fd7ec",
+        "size": 12102
+      },
+      "adapters/toolchains/kotlin_rust/pipeline.py": {
+        "sha256": "dd77e7c751e6f293823e80824c4b0b95ae2e8e505c06d32382f9cd8cced20473",
+        "size": 756
+      },
+      "adapters/toolchains/kotlin_rust/project.py": {
+        "sha256": "7f5326482c0969defc7f7ab71b1b716b6a5dbb89ea1b9e4d7265c4f4caaf0e30",
+        "size": 19033
+      },
+      "adapters/toolchains/kotlin_rust/python_runtime.py": {
+        "sha256": "998d1bb6c0fe8dace951c57a8395d1fc2240a862fc90c1bafc22a1b7a4bf1383",
+        "size": 5167
+      },
+      "adapters/toolchains/kotlin_rust/runtime-dependencies.json": {
+        "sha256": "cdb5f292a861579bfe158218d9a9dac7786994e6e3f74b026243eee8dbe1fe41",
+        "size": 4913
+      },
+      "adapters/toolchains/kotlin_rust/rust_build.py": {
+        "sha256": "37aa29d6dd392467d6bad1f0cbe1cf413e6b124744fc3d10d54039c7ef9b9500",
+        "size": 5237
+      },
+      "adapters/toolchains/kotlin_rust/skie-dependencies.json": {
+        "sha256": "7aecb5df4802e1298938ff1aa1366cf41f7a206dae8a066c5bd220a55f767004",
+        "size": 65109
+      },
+      "adapters/toolchains/kotlin_rust/skie_build.py": {
+        "sha256": "3857b5f302173bde9e101a6ef6c73db7e6693d71e0063f3df8ab69ea95f17946",
+        "size": 6169
+      },
+      "adapters/toolchains/kotlin_rust/smoke.kt": {
+        "sha256": "72b1f975e6165dd489cbfedf19472132e0c6b6fc87d19eb0ed84e171840e099b",
+        "size": 449
+      },
+      "adapters/toolchains/kotlin_rust/smoke.swift": {
+        "sha256": "3b9d0584fbd2becaea49967fd67034dc729ca5459deeb80638b2bc62f164e819",
+        "size": 589
+      },
+      "adapters/toolchains/kotlin_rust/smoke_workspace.py": {
+        "sha256": "8f2a3e3aa2cd3c024f4be16eb6146a15a05aebe3055c7c548384a213c429029b",
+        "size": 4310
+      },
+      "adapters/toolchains/kotlin_rust/toolchain.json": {
+        "sha256": "92d7b0d1e5577bae44202c97cf9b9f65b3edb061540f65b7254c057fe0e868e7",
+        "size": 3134
+      },
+      "adapters/toolchains/kotlin_rust/tools.py": {
+        "sha256": "0508fa1fba0943f06ec9c3aa77e49cd47d36069e1cb7a9219bbf3b694e284e9b",
+        "size": 11193
+      },
+      "adapters/toolchains/kotlin_rust/worker.py": {
+        "sha256": "02359f12795c4c800d5e205b26b231c2f75d8f3a83d7b92deb5bef5b28a824c7",
+        "size": 4770
+      },
+      "adapters/toolchains/kotlin_rust/worker_support.py": {
+        "sha256": "beafcd7ffff027e3c2393fbfd938f200a2a01e2d09353c58f663e2cc3db86906",
+        "size": 4820
+      },
+      "adapters/toolchains/rust_c/README.md": {
+        "sha256": "928a57f4f0e83981c877d3f19f23345c81fb6a3d35e27f34d837debbd3bc2a82",
+        "size": 3221
+      },
+      "adapters/toolchains/rust_c/common.py": {
+        "sha256": "842e225718133dd4e844226d5e787711464b29bb0cd234ee80bb505feb5c5c21",
+        "size": 343
+      },
+      "adapters/toolchains/rust_c/install_tools.py": {
+        "sha256": "24d9adc60cb999e77be9f3da027555740a5b469c8de9dba9fadbf8a24537a96d",
+        "size": 2908
+      },
+      "adapters/toolchains/rust_c/pipeline.py": {
+        "sha256": "c8070565e60b9df485abc0c7fef554e226bdce94fd5d6638606024ed3adfb799",
+        "size": 685
+      },
+      "adapters/toolchains/rust_c/project.py": {
+        "sha256": "5fc24e9bf8101d63f2faf84afd79104dcf3bc42cb44a4df5f8de373b692f3efc",
+        "size": 15060
+      },
+      "adapters/toolchains/rust_c/smoke.c": {
+        "sha256": "9b2f165eac7a93d8180dc8a0bda14d45f4ea9eb4d7028f6d09921f8b4add604e",
+        "size": 2754
+      },
+      "adapters/toolchains/rust_c/toolchain.json": {
+        "sha256": "0f6cc6f99ba7a91f089642da35b10443fe2e425b9e8238fd04158161e0865381",
+        "size": 1209
+      },
+      "adapters/toolchains/rust_c/tools.py": {
+        "sha256": "3a1205844f1726af5de2a65f9dc51b0a3145862eb4c52676dbd2ac562359ff5a",
+        "size": 5147
+      },
+      "adapters/toolchains/rust_c/worker.py": {
+        "sha256": "40b871b9989fb5b0492c7f56ab5113a8b76a0e2beb6a773c9dc98a8c488f5f83",
+        "size": 20310
+      },
+      "crates/madb-app/Cargo.toml": {
+        "sha256": "59cec0c484f3937179ddabf4f0b5c8029332b740cdb722a17108409cb5cf4b40",
+        "size": 378
+      },
+      "crates/madb-app/src/dag.rs": {
+        "sha256": "2df8eb8f755512edb911b96b30a5e47aa6b157ca35e7032b8fa7486b11b32305",
+        "size": 16918
+      },
+      "crates/madb-app/src/dag_control.rs": {
+        "sha256": "3deae438d39fae7b5d895a8a7d45a3ac066492ccb4a6eddbdccefd5e43061843",
+        "size": 5297
+      },
+      "crates/madb-app/src/dependencies.rs": {
+        "sha256": "250222fccaf2f69e9e89692125136fbfefe1f9c73b646cb78988e3c639372721",
+        "size": 17771
+      },
+      "crates/madb-app/src/input_observation.rs": {
+        "sha256": "e683402d693efdaff74dd40b0e85ce982c377a3e69267f1724271e3620857130",
+        "size": 13614
+      },
+      "crates/madb-app/src/inputs.rs": {
+        "sha256": "07b1c28fc07ea68b6af093361499ad2060a3fe35e41c4cf084330f20005d8569",
+        "size": 9255
+      },
+      "crates/madb-app/src/lib.rs": {
+        "sha256": "68c50a8f9249e808e9e1732023bd4bab8b0e01cbe4fea354615c06b462325a08",
+        "size": 1622
+      },
+      "crates/madb-app/src/pipeline.rs": {
+        "sha256": "b198c46cd3e5b729874710eecf49ee52a31b3ec36eeb9b3d22771521278fe411",
+        "size": 24340
+      },
+      "crates/madb-app/src/ports.rs": {
+        "sha256": "60c2d0e9946b537a6d0a8f944ff8174ee36c6b01b52065bb0ff452ae77397447",
+        "size": 1984
+      },
+      "crates/madb-app/src/process.rs": {
+        "sha256": "2a130ff201072498f4c615ea1ec38eeb8145dad3d2a709b4930780b760fe2c7b",
+        "size": 12560
+      },
+      "crates/madb-app/src/query.rs": {
+        "sha256": "637b3296878870a5118fdea71c08535d5477d4203b76d4bdc1be9812ea0b2d47",
+        "size": 7816
+      },
+      "crates/madb-app/src/task.rs": {
+        "sha256": "9d8881d645c85811698530561ea93c316703d9e56f052635e3fb317638322528",
+        "size": 5391
+      },
+      "crates/madb-app/src/transaction.rs": {
+        "sha256": "581b1466f5a2a6f165403266fe313d1cb9c3c1c496d0ad3685c31e8251186258",
+        "size": 7967
+      },
+      "crates/madb-app/tests/dag_execution.rs": {
+        "sha256": "aa95a9a4494e249b902d579fbd7200a128594ba093d7e07de57971cbd67926ec",
+        "size": 46598
+      },
+      "crates/madb-app/tests/frozen_inputs.rs": {
+        "sha256": "18342b1c0320ed8a538300b0a72937e8aecd4e41256d59c7edd5b9fd14d1dd58",
+        "size": 10747
+      },
+      "crates/madb-app/tests/input_observation.rs": {
+        "sha256": "c471099dfcf7558d98e120830c5bd8074297e996e56cf3e812f3befe2ca7ec6a",
+        "size": 15721
+      },
+      "crates/madb-app/tests/pipeline_domains.rs": {
+        "sha256": "fe58dd71c9c954db583f6ddf5bd031f772e2b656c4d386576a633a4f680667c6",
+        "size": 1066
+      },
+      "crates/madb-app/tests/pipeline_execution.rs": {
+        "sha256": "4a3077d9db3d38da6f608deda1e52872be43245bf87eaefb71e48d77a4e5b066",
+        "size": 15780
+      },
+      "crates/madb-app/tests/process_admission.rs": {
+        "sha256": "52bd60ef31c1b1aff64dd712d936fc84bad89541847f4e3d48b7d4cdebbaa30e",
+        "size": 7293
+      },
+      "crates/madb-app/tests/task_admission.rs": {
+        "sha256": "50518d310caa06bad4870b37049157bfb2f666cab1c00367aa3f4df9e7033df7",
+        "size": 8957
+      },
+      "crates/madb-app/tests/task_results.rs": {
+        "sha256": "ce165d1a47dfb4924673675d25fd0825bbcf6bfb90dc6558db9b2b545b73dc26",
+        "size": 9183
+      },
+      "crates/madb-app/tests/transaction.rs": {
+        "sha256": "ef5192143467eb152582b01681167747a167867185f8c4e3519ae8bb7e28fc0f",
+        "size": 2944
+      },
+      "crates/madb-cli/Cargo.toml": {
+        "sha256": "0aae4376ee1103922868f7f16240b8452e737b0cb48d4adde6de821ca5b38cbc",
+        "size": 529
+      },
+      "crates/madb-cli/README.md": {
+        "sha256": "5b33ffe22a8ad262d6f5dbf79cb990631482039e608d84a27c9fbcf136295868",
+        "size": 1901
+      },
+      "crates/madb-cli/examples/dag_probe.rs": {
+        "sha256": "ec16183e3b49c81ac5c9dbfebde8962d91cd182af9d41fa66aa3bc739b35d0b9",
+        "size": 14487
+      },
+      "crates/madb-cli/examples/dependency_probe.rs": {
+        "sha256": "bde7c1d26bce39514f3f93899373dd5d5457bbf025218b25b7da3a5a46a5d32f",
+        "size": 10775
+      },
+      "crates/madb-cli/examples/package_probe.rs": {
+        "sha256": "82bc03080009f5bebc62d2b5c23835e045d84887bb31d0236ed1a3594690a7f8",
+        "size": 9427
+      },
+      "crates/madb-cli/examples/task_probe.rs": {
+        "sha256": "968722746f5b8341f77ac12d83be1bb796591330a2e878dfa6cce410e27fb489",
+        "size": 9021
+      },
+      "crates/madb-cli/src/bin/madb-native-finalize.rs": {
+        "sha256": "e29cad7bd82cf254c7a0da17d2dce0903f4e70cee4bcf351e5638762e2ab24bf",
+        "size": 1474
+      },
+      "crates/madb-cli/src/bootstrap.rs": {
+        "sha256": "6fc5b3f656bc2c9512973e31ea72a37ec5b32e3476fb9c567eb1fe8eba507786",
+        "size": 496
+      },
+      "crates/madb-cli/src/bootstrap/execution.rs": {
+        "sha256": "7a1b2b530bb5af4a925499a1161a5b1d0a644eea53cafb07284395f26928d436",
+        "size": 26976
+      },
+      "crates/madb-cli/src/bootstrap/execution/dependencies.rs": {
+        "sha256": "f3ec75dc983f2eaf3a3bd177838f0f9fa02cc03d76975aef9a95382cc54cb23d",
+        "size": 6973
+      },
+      "crates/madb-cli/src/bootstrap/execution_grace_tests.rs": {
+        "sha256": "b385c67988a05c06bfa660931732cb582aec83904e099ba8e03da2da1520476e",
+        "size": 6817
+      },
+      "crates/madb-cli/src/commands.rs": {
+        "sha256": "b370679fd2d8c00c8f8094e735237e6912ed923b660730796a322b94e2928353",
+        "size": 15500
+      },
+      "crates/madb-cli/src/main.rs": {
+        "sha256": "517e233f2e9818e2e3f6a0e4eca771b5d131ac576ddca3ee67a9016648d46630",
+        "size": 97
+      },
+      "crates/madb-cli/tests/entrypoint.rs": {
+        "sha256": "304de02dffed4124f895e2f9fe49efa1c500272a2a52b628475c5a399f7d8e45",
+        "size": 5411
+      },
+      "crates/madb-model/Cargo.toml": {
+        "sha256": "3d38e70f0c919081d8e1eb550292c3778d976879787198a6549992f124ced55c",
+        "size": 350
+      },
+      "crates/madb-model/src/build.rs": {
+        "sha256": "8a34a559061054959e58125faa4d2c509384ba55b54722933563df6d72efeb87",
+        "size": 3167
+      },
+      "crates/madb-model/src/contract.rs": {
+        "sha256": "2b4de862ffac5fd06fbc4a3067f6aa38c57a4261b49d6a23a8a81b8281123dc2",
+        "size": 5145
+      },
+      "crates/madb-model/src/evidence.rs": {
+        "sha256": "3a91c7b4494aef8d79aa9d7f9269a78a59aaec73de92a2eae80ff729cc22bfee",
+        "size": 2270
+      },
+      "crates/madb-model/src/identity.rs": {
+        "sha256": "4a94582aa56b7938576950ed1dc4b6a196c40ff30e8471bb11b132f04763a290",
+        "size": 4651
+      },
+      "crates/madb-model/src/lib.rs": {
+        "sha256": "ecd220cefff092969311b76f48f13f61f8ec5a228964db872fb114c226b90473",
+        "size": 917
+      },
+      "crates/madb-model/src/policy.rs": {
+        "sha256": "24876647c2e0455f69b00ca7b3b3f26a6c614222f619c25465d645f9d8dc0ca9",
+        "size": 5731
+      },
+      "crates/madb-plan/Cargo.toml": {
+        "sha256": "bb9efbbfa74fe31374cddb768705460aa86c21f0e234519c4f0c8cc8a168622d",
+        "size": 347
+      },
+      "crates/madb-plan/src/lib.rs": {
+        "sha256": "4ef64663d9dad3c6a336cc8d08bc327e84398b4b1441a23d93ded11f44f09c15",
+        "size": 7627
+      },
+      "crates/madb-protocol/Cargo.toml": {
+        "sha256": "92daff7b3067b38f23c39f8fe056560993d5c1e257c025253ddd9e296a9c11ad",
+        "size": 448
+      },
+      "crates/madb-protocol/src/canonical.rs": {
+        "sha256": "984c97f2b4f60a6fee34310ead4528a0265f130ad4ab5a1f7b3c3ac7b40eeb7c",
+        "size": 3765
+      },
+      "crates/madb-protocol/src/decode.rs": {
+        "sha256": "337e0a180394dbec449b8c7ce06b2fadcecff73f58944a620ee5faf99b827c6e",
+        "size": 4022
+      },
+      "crates/madb-protocol/src/lib.rs": {
+        "sha256": "68d0f29bb964e1861bffd3aaf1f4592c19d83e3b511873b3b730200895e27332",
+        "size": 1063
+      },
+      "crates/madb-protocol/src/schema.rs": {
+        "sha256": "bb4c5b2167ba3116c7ed31b06146a999900ab9690cb3871f3c91d51007b98d46",
+        "size": 7487
+      },
+      "crates/madb-protocol/tests/formats.rs": {
+        "sha256": "058ed4dafecfa49eb280d15d79b3b319da846fca787b0b7fc30a49f962c97b77",
+        "size": 4718
+      },
+      "crates/madb-rules/Cargo.toml": {
+        "sha256": "afab686a1969553252832629ce546f63ae4f63f862c3510f69c622b8afcf9de3",
+        "size": 362
+      },
+      "crates/madb-rules/src/contract.rs": {
+        "sha256": "09cc399da5d078a54b69a4e316d6f09202d757ea8987e6bbf41ed5a877001cf4",
+        "size": 26406
+      },
+      "crates/madb-rules/src/evidence.rs": {
+        "sha256": "d071b58ce096e2c566639d3e5e0ea8fdc03582e0e48ccb4c297631ee9a990f9b",
+        "size": 7070
+      },
+      "crates/madb-rules/src/identity.rs": {
+        "sha256": "1445b26733ad809fb9839e72ca5899712a981ec9ab88f48778d82fd038e40079",
+        "size": 2109
+      },
+      "crates/madb-rules/src/lib.rs": {
+        "sha256": "556a81fb3d7525b0717ca5f0dde2ca78b99c3a5997663d84cb748675aea4f644",
+        "size": 388
+      },
+      "crates/madb-rules/src/observations.rs": {
+        "sha256": "ae2d2d75fe3377603a99e1810d8d406dc57ef55b8c2450d61435a24db3c25374",
+        "size": 3221
+      },
+      "crates/madb-rules/src/policies.rs": {
+        "sha256": "38d12cadcd81b7c3f1373ef6986528c6998a4a0481f4a2be7ce9e8fd9e98f026",
+        "size": 8301
+      },
+      "docs/README.md": {
+        "sha256": "af5c34297e1e8a94b649d608689eb9ebae0d013ab841dd2a2cdf5d690e8c984f",
+        "size": 9322
+      },
+      "docs/adr/0001-product-and-authority.md": {
+        "sha256": "a08afbd1b104e390ff6ca839d253524e3fd20079a86ad41705dea47e8285e608",
+        "size": 1448
+      },
+      "docs/adr/0002-core-and-adapters.md": {
+        "sha256": "135d64a32d2cb1ab39d9591417e3491e9001781fb7df4a8ec0eb39c7fe4a543a",
+        "size": 1562
+      },
+      "docs/adr/0003-lab-and-release.md": {
+        "sha256": "15d559089aa1fda5558196f76c9c952dcc225ba0090801934a73de54ae12e5ca",
+        "size": 1323
+      },
+      "docs/adr/0004-language-extension.md": {
+        "sha256": "746e35f37f91148dbf7c60028c161dd8609514ec51e82983a51c1ac46f30ba4e",
+        "size": 2270
+      },
+      "docs/adr/0005-project-initialization.md": {
+        "sha256": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+        "size": 2813
+      },
+      "docs/adr/0006-developer-ergonomics.md": {
+        "sha256": "396f17d94f32e2cf8ccf6d29e2f193a9ed5ac0ceb337623e10e9b87248027e8f",
+        "size": 2417
+      },
+      "docs/adr/0007-technology-stack-and-cpf.md": {
+        "sha256": "ed7eb34c5ea22d1f821448ebe74657549c6c24e0ec24973d3b8fa68363ba625c",
+        "size": 5889
+      },
+      "docs/adr/0008-route-selection-and-distribution.md": {
+        "sha256": "a18d21edc796a7a7c1619251c23089b777a8387935ec4fcdf9f0bb494618f588",
+        "size": 3968
+      },
+      "docs/adr/0009-implementation-contracts-and-gates.md": {
+        "sha256": "321797048aeb56ba6a8bfe222e9ff6c5bbca55ecf2f9fec2244578bcebd9c00e",
+        "size": 3762
+      },
+      "docs/adr/0010-external-runtime-verification.md": {
+        "sha256": "f0cb6455ef3b8171ef721f74548be1907485e8744d189363b93c6eaab092a4ae",
+        "size": 3885
+      },
+      "docs/adr/0011-arkts-native-protocol-owner.md": {
+        "sha256": "5fca45429d42eff0a59d43d901d990a1ad33a7eed237ba04cb5cf570c3f8d60e",
+        "size": 4147
+      },
+      "docs/adr/0012-extension-composition-and-delivery.md": {
+        "sha256": "39d10ab57683a5e67f17a9157797649c09c7e55f9530c0dfa6c7bde9ad3fc44c",
+        "size": 3973
+      },
+      "docs/adr/0013-arkts-runtime-and-completion.md": {
+        "sha256": "8280c27c0fd7c2d439cfa2c75c78837060ab01035553a74257a0d868466341ad",
+        "size": 10679
+      },
+      "docs/adr/0014-swift-production-baseline.md": {
+        "sha256": "67b232d6ace0628a55cd4f6ecdaf68f13659d117979e6ad190b2ae67eefaddbb",
+        "size": 10256
+      },
+      "docs/adr/0015-swift-extension-delivery.md": {
+        "sha256": "2e68575715cfc446ce058c90e5d240b885b4f0ce22585ddcd3b4810b728f7e05",
+        "size": 8025
+      },
+      "docs/adr/0016-arkts-production-baseline.md": {
+        "sha256": "893a1bc3aae8500ac6daa6c6dbcba6c3636d2fd032aa59ea452a94eac24304a2",
+        "size": 7642
+      },
+      "docs/adr/0017-arkts-extension-delivery.md": {
+        "sha256": "ceaa60746c59c6d67a7c5f85604d5c08efc1f191c70757cc62e1c81f0d83c338",
+        "size": 10424
+      },
+      "docs/architecture/01-system-architecture.md": {
+        "sha256": "3f11592a1dcf9bd4201d5b8ad802b4a9ae38bd5e76f2dc12415c379956b1c43d",
+        "size": 6043
+      },
+      "docs/architecture/02-modules-and-ports.md": {
+        "sha256": "71587101ff533bde73da38c6b8534302d1a76e29f2d9fbb8d0da1ce2e0b7ed09",
+        "size": 28376
+      },
+      "docs/architecture/03-contract-and-ir.md": {
+        "sha256": "507429839f569ead5665b66ef8388831337d71e50f8c5347cdbe74179fd697c8",
+        "size": 16828
+      },
+      "docs/architecture/04-data-and-errors.md": {
+        "sha256": "49326d67fb51c78832f058f68b5d0037dfaf201a3e6730e77a2b9afd31b2f148",
+        "size": 6442
+      },
+      "docs/architecture/05-lifecycle-and-concurrency.md": {
+        "sha256": "1efa73ad727ca178b96acb0d1baf1a11db2d2bd98d0e3f28a5ca6d74e49cc24e",
+        "size": 12164
+      },
+      "docs/architecture/06-backend-profiles.md": {
+        "sha256": "0b976d6bff10ee881178d48e0b6d5cf1d99d3d5be119b78cec208f87935b9616",
+        "size": 17757
+      },
+      "docs/architecture/07-code-generation.md": {
+        "sha256": "68a0221db31761613a892e0f81563b9b59ab9b9109eebda7b159894cac8ba586",
+        "size": 34785
+      },
+      "docs/architecture/08-runtime-and-idiomatic-api.md": {
+        "sha256": "965404407ae073392b47ed672018f28b1652f260170a29149c72472c6e47daaf",
+        "size": 12150
+      },
+      "docs/architecture/09-build-packaging-release.md": {
+        "sha256": "1539a8c286c3a8e29d0a7f6978b69278b1e0c7d7aae777cca552a8d5f4694f5a",
+        "size": 18865
+      },
+      "docs/architecture/10-diagnostics-and-performance.md": {
+        "sha256": "480d82429902679df2187499c4c8c73139080888f369dd72bd4b79bffb0d2302",
+        "size": 4113
+      },
+      "docs/architecture/11-language-extension.md": {
+        "sha256": "a88585f73831bea2e6054faaec7d106e3dde8201356274a47c58ea30cf41596c",
+        "size": 11469
+      },
+      "docs/architecture/12-extension-protocol.md": {
+        "sha256": "10a8ecdc84011519d090c9ccef02b0f8a0397298500ead1c2cab54cd92444785",
+        "size": 11151
+      },
+      "docs/architecture/13-contract-evolution.md": {
+        "sha256": "31ff53cd0caf0799db8106f800b56d60709e415e4a2db8b2416cfa943358e0a7",
+        "size": 7894
+      },
+      "docs/architecture/14-project-initialization.md": {
+        "sha256": "e2684e5a94cb340ec290a19b90b10cac7d473092447d004c7918744874f211d6",
+        "size": 26413
+      },
+      "docs/architecture/15-developer-ergonomics.md": {
+        "sha256": "8976f8994b91ac30ce6a48013df90dcea85adfa07bf75d6879ebc9e001771329",
+        "size": 38129
+      },
+      "docs/architecture/16-technology-stack-and-versions.md": {
+        "sha256": "41b57af2f5fb210422edc4e8338db8d06988a557255caa24412aa819d2654447",
+        "size": 38008
+      },
+      "docs/architecture/17-extension-composition.md": {
+        "sha256": "baf00ce8093dfce390225808cf0e992a32c0da776f4114b0f2206cd3567eb7a3",
+        "size": 26950
+      },
+      "docs/catalog/architecture-map.json": {
+        "sha256": "babf10f1175200d6a106df3ee195c0a3efd5e4bc7bed6a0ad056b1d4446dd0e8",
+        "size": 20425
+      },
+      "docs/catalog/case-groups.json": {
+        "sha256": "afa1f8cb42e310f418cce9dc9605b179110bc9f52991f9e70b61e916ab108075",
+        "size": 87737
+      },
+      "docs/catalog/implementation-plan.json": {
+        "sha256": "ef25d35d61f7f11e22a6e6b4a3c09c584b9e0e87a01d9260d94617520938ab77",
+        "size": 97792
+      },
+      "docs/catalog/problems.json": {
+        "sha256": "c7f261fb4413b16b9becaf8b504cccd3a1b1287eabbb2a897d6d14cb3725869f",
+        "size": 32575
+      },
+      "docs/catalog/route-views/arkts-c-cpp-architecture.json": {
+        "sha256": "a9f95810953f5ec3b885c585adb0428d3cfb6106584f05811979cde2221d7ea7",
+        "size": 87845
+      },
+      "docs/catalog/route-views/arkts-rust-architecture.json": {
+        "sha256": "e5c7222ed49dbb512a81ae0fe006450796454bc2cd3981992f5ceac1303b8e34",
+        "size": 90345
+      },
+      "docs/catalog/route-views/extensions-architecture.json": {
+        "sha256": "7b4356b2616495580bde8f60805b76871d28057a494e28efdcaeedceac53c44e",
+        "size": 422428
+      },
+      "docs/catalog/route-views/kotlin-c-cpp-architecture.json": {
+        "sha256": "ab9b8722266f66e823c84967175b7f43148ea8468738bbc8919c37ea405e72c3",
+        "size": 89419
+      },
+      "docs/catalog/route-views/kotlin-rust-architecture.json": {
+        "sha256": "b6e373d1ca44c44a46b83fb721beda1ba4ca00d03a58c006885a580badf49324",
+        "size": 131717
+      },
+      "docs/catalog/route-views/rust-c-cpp-architecture.json": {
+        "sha256": "3357fea938e393d465d2b70bdbce1fc4049d1cb7563631ec12a6e1f4b275ef6b",
+        "size": 127574
+      },
+      "docs/catalog/route-views/swift-c-cpp-architecture.json": {
+        "sha256": "67ec67d1f3bb73f77f127ad75e6bff60366c4023b4dce7ea6fb26dbc41ddd07b",
+        "size": 166114
+      },
+      "docs/catalog/route-views/swift-rust-architecture.json": {
+        "sha256": "d235f9d70668bd99fdb4e46e7a5720949e1f25032dc472b95b7f190ba224b050",
+        "size": 88734
+      },
+      "docs/catalog/routes.json": {
+        "sha256": "e0579f98b9aff00d30022e5b329566e0208c2e2b89cdea26d7db4d0beef7b0fa",
+        "size": 12400
+      },
+      "docs/catalog/source-coverage.json": {
+        "sha256": "88d5e32523302516359521990ca8239f3843ff03e22cdd2e7135d44b7f87518c",
+        "size": 100553
+      },
+      "docs/delivery/01-implementation-plan.md": {
+        "sha256": "ea4677acd78af050b25449004efb1967f9f759dfae4d189a8a160f9b84e4ef12",
+        "size": 25095
+      },
+      "docs/delivery/02-open-source-and-contributing.md": {
+        "sha256": "2336cd804523bc0802cefe7aa7737aa9c15a980903e74d06c1dab7a124b0819b",
+        "size": 6979
+      },
+      "docs/delivery/03-decisions-and-risks.md": {
+        "sha256": "fb0dd9297d679245e80057df23074955559b34e871e8ffc80b26d6e9a5b6137a",
+        "size": 19345
+      },
+      "docs/delivery/04-design-readiness-and-first-route.md": {
+        "sha256": "eff7e42ef18183471b38ae4a8e1dc378d1ab55e137fa7d8d6c6736eec9a732a3",
+        "size": 12288
+      },
+      "docs/engineering/01-architecture-principles.md": {
+        "sha256": "898960f908f8a6f4f6d7a10aaeecd6cfa32769c447b01f8a2c5dd8d61a87daa0",
+        "size": 3811
+      },
+      "docs/engineering/02-clean-code.md": {
+        "sha256": "a2b1c17cbd3c056584951932ee518b6385ceb409d9d0889ab05e822ae0190a66",
+        "size": 4858
+      },
+      "docs/engineering/03-design-patterns.md": {
+        "sha256": "360157421cda891fd4aa8a9b3c20b57b833556fda9702115e29ab6d8d20ab112",
+        "size": 4607
+      },
+      "docs/engineering/04-language-guidelines.md": {
+        "sha256": "a7499a578187d2f721e9d6a797414a38a1989d63ba92c2af546a7f4c6a16e833",
+        "size": 5530
+      },
+      "docs/engineering/05-review-and-quality-gates.md": {
+        "sha256": "48d5ef594064421370646e27cc872ea12cc43307b3648552efdf5ba9f00256b6",
+        "size": 9221
+      },
+      "docs/engineering/06-documentation-quality.md": {
+        "sha256": "f7e6f1d62c251e8f84b610db3552a7675c43c77ff3e53524dfd8434c0b40e21c",
+        "size": 6021
+      },
+      "docs/engineering/07-agent-development.md": {
+        "sha256": "055b621b7c12bc673ed29ab902ffc7f251fff2a2dfbd421ba9d68de3732b4e8e",
+        "size": 7151
+      },
+      "docs/examples/case.example.json": {
+        "sha256": "b476391e6c98a9ef635e0a063955000ac920e673a225fd38b307afa8434ff21e",
+        "size": 1201
+      },
+      "docs/examples/extensions/README.md": {
+        "sha256": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+        "size": 1742
+      },
+      "docs/examples/extensions/dart-ffi.extension.example.json": {
+        "sha256": "e7816afa82982c0317ca8892bf1e62a8dab7062d95615421d56db8d2b2aa2b39",
+        "size": 3535
+      },
+      "docs/examples/extensions/protocol-session.example.json": {
+        "sha256": "b8f579a4d05dc4405397a5d96ede32c9d8ee05e64e451b778d26b5931fbc35b6",
+        "size": 2312
+      },
+      "docs/examples/extensions/schema-vectors.json": {
+        "sha256": "cd9a7cb78530d1ddbfe4910c069a40a0d8cc754ab8ddca17089a92a0c0a13172",
+        "size": 37276
+      },
+      "docs/examples/first-route/README.md": {
+        "sha256": "43f127f200a2fc17808336228c91bfd2ad72f44e08fa5f0d41545f219cb3a8bc",
+        "size": 9633
+      },
+      "docs/examples/first-route/consumer.c": {
+        "sha256": "a50b273d4799960b3241d3658a3f3371489feed7f147b05ce2b208e67afa71e3",
+        "size": 1601
+      },
+      "docs/examples/first-route/expected.h": {
+        "sha256": "23f478a9525825e566f79f2506cc13af81849b97f7ddeddb27d260d62de88dc2",
+        "size": 2266
+      },
+      "docs/examples/first-route/expected.rs": {
+        "sha256": "c33a1bbde56c2164d8cbb9f9ae320cf03306de878820a70cb88c767e78c82580",
+        "size": 2019
+      },
+      "docs/examples/madb.example.toml": {
+        "sha256": "6e2926d3c09d0c5961a2c7b6a4796a17aec194db316899d7fac00f0440bc023b",
+        "size": 1086
+      },
+      "docs/examples/managed-routes/README.md": {
+        "sha256": "d2f927329c346e6a417bda88a2e12c6bf7bff2e1941ece7b0db48619b04e78cd",
+        "size": 13716
+      },
+      "docs/product/01-positioning-and-requirements.md": {
+        "sha256": "668ee603dc7d9919850ab16c799b06dd75ee640e6d5baaa66c274fbd17631260",
+        "size": 6624
+      },
+      "docs/product/02-capabilities-and-roadmap.md": {
+        "sha256": "2a2be46f5972411f427883d1d9d626eacd757943dc83b96b06793b14c0748ffe",
+        "size": 7540
+      },
+      "docs/product/03-developer-experience.md": {
+        "sha256": "b896d26b20b51042533e3738af228dcc04ea512474d1d4139803ecf3bfbbc110",
+        "size": 13318
+      },
+      "docs/product/04-project-initialization.md": {
+        "sha256": "3cc468ed05aa1de94e220e25551feb0c93e6308a9f8cd2c1695101fc23f746a3",
+        "size": 10186
+      },
+      "docs/references/README.md": {
+        "sha256": "429a2fb440c49dc6fbbfa381b5d8469c1c65e5b3599fcb28e79c9b6c2002d627",
+        "size": 10865
+      },
+      "docs/references/glossary.md": {
+        "sha256": "88e3279d3f6307892be15e30cb5f39db73692f85e22ecd23e517d4eb42aa1773",
+        "size": 2974
+      },
+      "docs/references/history.md": {
+        "sha256": "391c6f205556f6142ee818c0390973603593305680ddf4bdf926e9ca5c83ae4e",
+        "size": 3337
+      },
+      "docs/references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "ae35bdd991ba8c7c5b2674f75d3d594dc24dd6684cee16361d0c3fdc4c365ee9",
+        "size": 5584
+      },
+      "docs/references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md": {
+        "sha256": "d5abffffde842555b6c1494488f1de6b53f8f05362ef7896bd1aa2f869c11664",
+        "size": 18783
+      },
+      "docs/references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "c4f081f7dbd74405c3b7a8f08726eef74def4591c9b26ec16d7d9883ef4a2753",
+        "size": 5586
+      },
+      "docs/references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md": {
+        "sha256": "4663cae42a1eb0745072e1e10a6dba3e7c6ef2f603519d089269d5b73d879410",
+        "size": 17887
+      },
+      "docs/references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "dae595fccaa0a02064b453d1262e386593d1e0119a8d501a82e86b1d147bc6fd",
+        "size": 5812
+      },
+      "docs/references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md": {
+        "sha256": "d0398d53c35c8a699b8835b044448b7e5e65f8b877fec1fb0cb0e09288d93001",
+        "size": 20225
+      },
+      "docs/references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "4f0e7b7b38b0eef13c37989654b35bd8539742b754bee9140020d1a067d0f2f6",
+        "size": 5820
+      },
+      "docs/references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md": {
+        "sha256": "00b883449e2e1045c56ed5693500cef30583fddcc4f80f492267618e07af7dc5",
+        "size": 15414
+      },
+      "docs/references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "1f3a8950ba3aa8d027bc7a9b11f72a9abe899dc1095b8d326f777853350c958f",
+        "size": 5572
+      },
+      "docs/references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md": {
+        "sha256": "bbc324560c0aac662b0c3e6f60a57a6d567d645ae4ca4def8c639802ac25a576",
+        "size": 14824
+      },
+      "docs/references/legacy-boundaries/Kotlin_Swift/Kotlin_Native_Swift_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "b533ef9a73e8002b9309ff04c0e14919d2daa0660337155915365cd08becba14",
+        "size": 5907
+      },
+      "docs/references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md": {
+        "sha256": "078fbbd0d4bb2ced7b75b0d0815c1dfe819547ef7f55c85c592e61efafad6229",
+        "size": 14660
+      },
+      "docs/references/legacy-boundaries/README.md": {
+        "sha256": "f55b9c2948937035fd1deccfdc146b340418ddc42b9d8c74097a394d52cc532c",
+        "size": 3086
+      },
+      "docs/references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "17ffe67ea971903b295bc5d71ce1fe0955d6c9f2e2b912984467f4650eca40c3",
+        "size": 5942
+      },
+      "docs/references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md": {
+        "sha256": "012d929e2f8ef010725a20d3d196a77094dd5827b64caecc03fd36027e1aa2c4",
+        "size": 13462
+      },
+      "docs/references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "5f97d87124f8990e23fda8c4b705d639fbc4ccc33e37944b04937b9975a18193",
+        "size": 5659
+      },
+      "docs/references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md": {
+        "sha256": "881f4c23e933cb74609c486c012c911da702654015e886a48253ee58f3812892",
+        "size": 15645
+      },
+      "docs/references/legacy-boundaries/Swift_Rust/Swift_Rust_架构总结与新版_mad-boundary_设计输入.md": {
+        "sha256": "61d103a0d00b9daff554542e9a39a6491ac6c4ea0014f292cafbad72b1d6acf2",
+        "size": 5767
+      },
+      "docs/references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md": {
+        "sha256": "f9abc6d5f472fc9dfab811dc9015754b08112ba051e7c800bfe69fe8513dec5a",
+        "size": 16395
+      },
+      "docs/references/legacy-boundaries/snapshots/2026-10-24-before-refresh.zip": {
+        "sha256": "0d1f75fd3a7854ae24168e9306ca601d31488ffa9dd47ffe36c45d5a501163be",
+        "size": 189280
+      },
+      "docs/reviews/2026-10-24-agent-development.md": {
+        "sha256": "f929ea22464d68100fb0b814a38750829a4bf8ec2e45a3c1a0a12b70deaf5f9f",
+        "size": 6978
+      },
+      "docs/reviews/2026-10-24-atlas-depth-revision.md": {
+        "sha256": "7642ac5e1974e3cdf136912f7ee9bb6971458c4ea2647380f6a2382696d772e8",
+        "size": 4185
+      },
+      "docs/reviews/2026-10-24-boundary-archive.md": {
+        "sha256": "965fe72a91226a59463cd268a9ac7852d9a37fcb1199c2ae5199097d13efab5e",
+        "size": 13821
+      },
+      "docs/reviews/2026-10-24-c01-baseline.md": {
+        "sha256": "71b81b99e3066eaa089af2af4ea52bda586339f652d43b21aff03ce27d5623bd",
+        "size": 6434
+      },
+      "docs/reviews/2026-10-24-c01-public-repositories.md": {
+        "sha256": "3c5f0c326a14ffdc2bd1210af4a6b333a38b6a4facf087c8713fb8c3ae7bba26",
+        "size": 4798
+      },
+      "docs/reviews/2026-10-24-c02-contract-formats.md": {
+        "sha256": "c2430c2dce64617591dacac382f1778e2afdd3b86c976efddc4e9e3b4186231a",
+        "size": 6122
+      },
+      "docs/reviews/2026-10-24-c03-native-probes.md": {
+        "sha256": "de3d99703776fb53ec36837e0054bb5107825c789344ba3181bf3b88821367f7",
+        "size": 7735
+      },
+      "docs/reviews/2026-10-24-c04-complete-package.md": {
+        "sha256": "0065ec77dfe09d540e4bb0a9f91cb9dc4351f05b87e0a73b8a59089d9d784434",
+        "size": 5748
+      },
+      "docs/reviews/2026-10-24-c04-dag-execution.md": {
+        "sha256": "f1837e0a0287efa8ce713414a7f6c3b6eb2a83ececddcf404a562c71d54af8aa",
+        "size": 6665
+      },
+      "docs/reviews/2026-10-24-c04-frozen-inputs.md": {
+        "sha256": "41be337d01793ee0f3fe5e7dac5e296f608ff0a255387adbc627a0a420b19547",
+        "size": 5231
+      },
+      "docs/reviews/2026-10-24-c04-input-observations.md": {
+        "sha256": "5758f0c99e5cb03280b6ea39673d5b512d18143645ec554462c43b49333f7a2d",
+        "size": 6167
+      },
+      "docs/reviews/2026-10-24-c04-process-execution.md": {
+        "sha256": "f9bcd02f6e42bfea830260c528fd81086838fe1d72f1b80cf5323470812d4e32",
+        "size": 5395
+      },
+      "docs/reviews/2026-10-24-c04-readonly-queries.md": {
+        "sha256": "87094e1a67ec230596da3bb6b284fab9e066bc84faeeeec911f7ce65e81b31f8",
+        "size": 3182
+      },
+      "docs/reviews/2026-10-24-c04-task-results.md": {
+        "sha256": "5c3ccf8440bfddf2796a83512cf5ad0458b46e4e677ed1b6ab42392ca1113235",
+        "size": 5830
+      },
+      "docs/reviews/2026-10-24-c05-rust-c-first-route.md": {
+        "sha256": "7190092314ff8ef730dd85ba3b0c5f8a73bb0d029bb10c18c1afb4b059fe4b87",
+        "size": 7625
+      },
+      "docs/reviews/2026-10-24-c06-kotlin-swift-rust.md": {
+        "sha256": "3882ccbb4f33b3729596eff25b9424a1a81c63ee6a9c67035479340178c47333",
+        "size": 15040
+      },
+      "docs/reviews/2026-10-24-design-readiness-update.md": {
+        "sha256": "dcc889c6901323c3a93800f57d061c8ecb187cebdc4d4b9496ff4453c59d93fd",
+        "size": 7109
+      },
+      "docs/reviews/2026-10-24-document-quality-audit.md": {
+        "sha256": "7b37fe87eeb8bdbed50a6fb737f20f402030a1b41fa2f7d1ed2a4e9bb28f1ac2",
+        "size": 28812
+      },
+      "docs/reviews/2026-10-24-final-audit.md": {
+        "sha256": "7138a6a1a8c35f1a1ed02bd0a4547a94d0d9fa617fda00b8217d9c079241b398",
+        "size": 11793
+      },
+      "docs/reviews/2026-10-24-implementation-contracts-cleanup.md": {
+        "sha256": "5c238daa974e74374abaf0fe73edcfb0b62ff7ab1011205c1379ef2038ec97e0",
+        "size": 17787
+      },
+      "docs/reviews/2026-10-24-project-skeleton.md": {
+        "sha256": "ade55576d5eb247343ec50a48d852d16a1b08fb656295aeb15d179d24f90dfea",
+        "size": 9829
+      },
+      "docs/reviews/2026-10-24-route-atlas.md": {
+        "sha256": "9c300ab50221882b7244a05e9bad3d769000cdc33afa8b870415af22aa7feaf7",
+        "size": 7587
+      },
+      "docs/reviews/2026-10-24-route-reconciliation.md": {
+        "sha256": "3fc1e7fcfdfb9bdb9c177e1c44122ab42b4d4e103b90ddd58eb92d9a46101312",
+        "size": 16046
+      },
+      "docs/reviews/2026-10-25-architecture-simplification.md": {
+        "sha256": "1a781ba89c90adbc62b35ab1b8e8b7fb00faa8244f2f4a83bd04dab7e5c687a4",
+        "size": 10567
+      },
+      "docs/reviews/2026-10-25-arkts-extension-delivery.md": {
+        "sha256": "21a6113c4dcdc50f0a251c71ee5c33c7196ca41b291450784f5423b75deceecb",
+        "size": 7503
+      },
+      "docs/reviews/2026-10-25-c07-arkts.md": {
+        "sha256": "defff4e13e9ef2c60d519f86d3f0bcf4cce0368fffcbc441506f1773d4d44f54",
+        "size": 44633
+      },
+      "docs/reviews/2026-10-25-extension-composition-design.md": {
+        "sha256": "005e6d12c5c08c7f40bfade12973d06b5bcd4616b5acc59b2211538a47758cc4",
+        "size": 4091
+      },
+      "docs/reviews/2026-10-25-swift-extension-delivery.md": {
+        "sha256": "721f4cab0e17ebdcabad690b9fe95f1772187fed547d06722d99f6d7ba44205f",
+        "size": 7378
+      },
+      "docs/reviews/2026-10-25-swift-production-baseline.md": {
+        "sha256": "15d905ecc7317b9370f201a6c8c9d4fdd7a15e2f12b9e03949fbcab559db3078",
+        "size": 6207
+      },
+      "docs/reviews/README.md": {
+        "sha256": "49232b79316d76c93ef98489679423af16a330fde7fe4f4c1e1f08fc0efc0563",
+        "size": 4990
+      },
+      "docs/reviews/agent-development-validation.json": {
+        "sha256": "b81e839a9a7548bb767748610fdd26bfc5cdfc2e402301c95e4202ce7dbcaf95",
+        "size": 1856
+      },
+      "docs/reviews/architecture-simplification-validation.json": {
+        "sha256": "ce37b5f839679258f1484dcdd7b0e4669ae0da419f4563f9cf9b257b33b76cd7",
+        "size": 12953
+      },
+      "docs/reviews/arkts-extension-validation.json": {
+        "sha256": "af01abcd85580a1640ca43ffd48072e403a9aa48ea9c25fcbab6ab872782b0b2",
+        "size": 40399
+      },
+      "docs/reviews/boundary-archive-validation.json": {
+        "sha256": "7dbfbd95032f759563c6279ecc9e587d72e3f80d3a3546bba16271c61df2a312",
+        "size": 1981
+      },
+      "docs/reviews/c02-dependency-licenses.json": {
+        "sha256": "7539d620a107339b539269f73cb50cdef80cf32eb824c85b992feb25faf5ba72",
+        "size": 26068
+      },
+      "docs/reviews/c03-native-evidence.json": {
+        "sha256": "5a084dc6a362372f7d1ec982d20bc76618d27493314e0a12f7d9bbe5cab957f3",
+        "size": 119362
+      },
+      "docs/reviews/c04-dependency-licenses.json": {
+        "sha256": "9e6f27e8d273eb681729b0e73d5ab0e0a9725020900336a3b7bf98fb866c7a17",
+        "size": 3959
+      },
+      "docs/reviews/c04-process-dependency-licenses.json": {
+        "sha256": "99483fbe4b64b3878ac24269efa114f5fab18e747ba2712e0f2cae275cdef355",
+        "size": 4293
+      },
+      "docs/reviews/c07-controlled-c-observation.json": {
+        "sha256": "b98149bd44c6d2ee1e2a060af7202242454a214bf7c70c33113c437188f86fa3",
+        "size": 17866
+      },
+      "docs/reviews/c07-environment-observation.json": {
+        "sha256": "e80a618eaecf6e8f289518bd2ba43e44ccee6a927dc78fa926c966d641249383",
+        "size": 8864
+      },
+      "docs/reviews/c07-external-build-observation.json": {
+        "sha256": "1fe412f6919b86ed68584c859dd2815df9beb28e72eb994c8fbc294672c9fdba",
+        "size": 3358
+      },
+      "docs/reviews/c07-facade-observation.json": {
+        "sha256": "2f48093de63edc04ffbfaff5d86e2626696b12d06d41b63d5b399be841b6efba",
+        "size": 3019
+      },
+      "docs/reviews/c07-formal-basic-probe-observation.json": {
+        "sha256": "faa6b4a2a7818429277d754851925de1c3187e88ba03292fb3040aae863c8807",
+        "size": 2703
+      },
+      "docs/reviews/c07-formal-environment-observation.json": {
+        "sha256": "1fdb8d239c945c2c43ff825be945dea89935057a039806580a5c4d80930d093e",
+        "size": 9895
+      },
+      "docs/reviews/c07-formal-packaging-observation.json": {
+        "sha256": "ae54a9427bceb3d8282ccd7a3946ebc50550969f5cabd4564390219e50489a52",
+        "size": 20781
+      },
+      "docs/reviews/c07-formal-tool-input-observation.json": {
+        "sha256": "9ab97784fe9776f076d54361797371cdc288042b0c12ca3c8daebdac0d3b28c9",
+        "size": 8020
+      },
+      "docs/reviews/c07-formal-toolchain-observation.json": {
+        "sha256": "b36d1b4145a86a2620b9e277e791d28b5992b101c0c93bc11257207219ed453a",
+        "size": 2223
+      },
+      "docs/reviews/c07-gateway-observation.json": {
+        "sha256": "44c4c4aaa048dd13d7ff4390f0ad8f64f904f06c25c9e90a70e3ce62c185f754",
+        "size": 12192
+      },
+      "docs/reviews/c07-har-replay-observation.json": {
+        "sha256": "0b5acc819bf01948428d81496b34c4282ae5a54737c46f500b0fc6fc35d1374b",
+        "size": 5372
+      },
+      "docs/reviews/c07-integration-observation.json": {
+        "sha256": "71a03bf411926ed17b41e07cb035a64563861b29af84653926632730599736c7",
+        "size": 3359
+      },
+      "docs/reviews/c07-native-protocol-observation.json": {
+        "sha256": "149ce1b730a8c4b22a3dfc4112827633c0eac12f4f8654d77448f93f1f92f662",
+        "size": 10305
+      },
+      "docs/reviews/c07-native-runtime-observation.json": {
+        "sha256": "4cee3ee55f0894fde010930646e5a5a36e4c5e899c9d4949539438cb2436e6ca",
+        "size": 16200
+      },
+      "docs/reviews/c07-ordinary-c-observation.json": {
+        "sha256": "de77b1554c5d94a0a630ca2eae64a6a0f9025b1c4a2a237e0a4a79b319535abc",
+        "size": 7460
+      },
+      "docs/reviews/c07-ordinary-cpp-observation.json": {
+        "sha256": "25a05efac9073579cb0287cd6846c01e8c163d43a1625a7d9ffc6563a4223fbf",
+        "size": 3376
+      },
+      "docs/reviews/c07-ordinary-rust-observation.json": {
+        "sha256": "57bdf29ad60e3962ed19abdbd4b62775e83998abc124adc12bba3f085ce541a9",
+        "size": 3390
+      },
+      "docs/reviews/c07-p05-r2-observation.json": {
+        "sha256": "f66c9ba38107dec603c2e9443ea9aa96ee646b10a6f0a9ed41b76e4b71c56391",
+        "size": 17458
+      },
+      "docs/reviews/c07-r3-p06-shutdown-observation.json": {
+        "sha256": "99670a70c106e60681a34eb74a4d5b56ba3b41c07bee1b240efbc70674afec10",
+        "size": 17224
+      },
+      "docs/reviews/c07-r4-record-observation.json": {
+        "sha256": "4423c2583bfc0243c315c377bbe83caac92069d39441216ac2d3c32fe2e19bfb",
+        "size": 8509
+      },
+      "docs/reviews/document-quality-validation.json": {
+        "sha256": "19b06830e244d3a2930a8d75d52b7e3c5d9e88d53f9983f99bbcc278b7be6736",
+        "size": 1504
+      },
+      "docs/reviews/extension-composition-validation.json": {
+        "sha256": "a623b56a7c8d1ebe0b88128b1115a68a379fb08f9064a4e0123096cc8244606a",
+        "size": 688
+      },
+      "docs/reviews/implementation-contracts-validation.json": {
+        "sha256": "3a9245657a97f88e39c8adca2f1f0bf4ec9f494f7f495fc84db4f3ae48ae8149",
+        "size": 1575
+      },
+      "docs/reviews/inventory-0.4.json": {
+        "sha256": "0f361ed3f764fb6b6e91fd15e2e72d79641dda88182abc38a520c7ff93383b6d",
+        "size": 18697
+      },
+      "docs/reviews/inventory-0.7.json": {
+        "sha256": "561f156fdd3b6169962160bc20e661f11d82a92b0ddf8cc40ca19dd5c30913b9",
+        "size": 30121
+      },
+      "docs/reviews/inventory-0.8.json": {
+        "sha256": "a45b4876ec0dbe5658c17d4660b04d89c2e466dcba89c297c39c661f810f904c",
+        "size": 44941
+      },
+      "docs/reviews/project-skeleton-validation.json": {
+        "sha256": "3f6720c357618e306e11d2320b4ed47cac1dd297cde00de5f7f248e0b346440e",
+        "size": 1546
+      },
+      "docs/reviews/route-atlas-validation.json": {
+        "sha256": "ba3fb6c1ad5b89c41bd85298e7db941ad85c8cf6da6cfabde717a1279efe13ad",
+        "size": 872
+      },
+      "docs/reviews/route-depth-validation.json": {
+        "sha256": "1f9c5430027731cbf8e01dfd45fbc5f6ff7249762a005bd4ff694f69468d8035",
+        "size": 989
+      },
+      "docs/reviews/swift-extension-validation.json": {
+        "sha256": "1e25c94bbd6c66b2c664e7471d1453924cbf91d3004e5dfa006677c4d4f6b2e6",
+        "size": 19357
+      },
+      "docs/reviews/swift-production-validation.json": {
+        "sha256": "3e43bdd9b27e5350bb49eea80149ac0afaee3b1e85cbb50252d36ed46087839f",
+        "size": 11523
+      },
+      "docs/reviews/validation-result-0.5.json": {
+        "sha256": "76a74576089797c89bff562ffc687e42c842ed6a977a79522a4b4a03c2aed2bd",
+        "size": 2052
+      },
+      "docs/reviews/validation-result.json": {
+        "sha256": "27577b0a94ffec9dde981fca6d04ba0fd38f7d46ae8140a84774b9db037227ea",
+        "size": 1728
+      },
+      "docs/schemas/README.md": {
+        "sha256": "858278ac65e8918c7483235a0d247229716fd6d0ea89a11ddef69e0450d27507",
+        "size": 15346
+      },
+      "docs/schemas/build-evidence.schema.json": {
+        "sha256": "0d95e54eb4869a1ce7c4bcbd0f4414c142224ce71c1b51b7037ccde3600d1e52",
+        "size": 1761
+      },
+      "docs/schemas/build-task.schema.json": {
+        "sha256": "f8e8ae7e56a2db7e25ab4e680a2e5e8e74b279852929fc8ec079a6e5f0fdc12a",
+        "size": 2446
+      },
+      "docs/schemas/cache-entry.schema.json": {
+        "sha256": "e99407ab4cf7687136c40b379f61651fbca43551f45849424a18f6eadedaf83c",
+        "size": 705
+      },
+      "docs/schemas/candidate.schema.json": {
+        "sha256": "5e1511214b55064fba9f12fe406f72ff94728b5582a8d8bebbe01f17705e8797",
+        "size": 2081
+      },
+      "docs/schemas/case.schema.json": {
+        "sha256": "c43cf381a7de76da5e7e793d66479512105cc20d00720ec71a714d05efed825a",
+        "size": 8445
+      },
+      "docs/schemas/common.schema.json": {
+        "sha256": "df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314",
+        "size": 13073
+      },
+      "docs/schemas/contract-ir.schema.json": {
+        "sha256": "e348cb256bfec8e279f455c69b457ecf7d052046f96d74df3808e8182244c8bf",
+        "size": 19265
+      },
+      "docs/schemas/coverage.schema.json": {
+        "sha256": "6bf73f708c17198afe306e73eb9f2c42c3c5695ae8c4b95ed392b38800f86465",
+        "size": 1534
+      },
+      "docs/schemas/dependency-manifest.schema.json": {
+        "sha256": "dc6077632fa1502b3a70511962bfe2f5dbec51789572825203abfc8feb95fd85",
+        "size": 3198
+      },
+      "docs/schemas/dependency-request.schema.json": {
+        "sha256": "aa2735928b458bafe917407c444e82c54f864871060424dc6981d2ce706f2685",
+        "size": 1583
+      },
+      "docs/schemas/execution.schema.json": {
+        "sha256": "9add646a3a6aa14cb012f6d6c4c00a770c398cb8976efe6746198a929f0fe729",
+        "size": 6769
+      },
+      "docs/schemas/extension-manifest.schema.json": {
+        "sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9",
+        "size": 9734
+      },
+      "docs/schemas/extension-wire.schema.json": {
+        "sha256": "f44395e2ece7702b4809d39650dba670b3f51b17e8f0ddaf3d4c9b415ff053b4",
+        "size": 11241
+      },
+      "docs/schemas/generate-request.schema.json": {
+        "sha256": "62ffa389fe8240dd9f0bb6b5fa683abd606bebae97405660c4d0bcfabd69139a",
+        "size": 1615
+      },
+      "docs/schemas/lock.schema.json": {
+        "sha256": "f056caec970dd1e6f5a400255df52e6194282a010dc5e8775586322372bcca3c",
+        "size": 2898
+      },
+      "docs/schemas/output-set.schema.json": {
+        "sha256": "2b8184b8849d65ab3414943d9aa67e8105899fd15551f81bf4296b562e025e55",
+        "size": 1700
+      },
+      "docs/schemas/package-request.schema.json": {
+        "sha256": "492af9ce2066125e6160627263d5878c0945709f234bf696307ed5d6359e804a",
+        "size": 1890
+      },
+      "docs/schemas/profile.schema.json": {
+        "sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+        "size": 5526
+      },
+      "docs/schemas/project.schema.json": {
+        "sha256": "104256153131effea12260ddcb70c3b98258c946149de0d45049bd792123c498",
+        "size": 5647
+      },
+      "docs/schemas/read-request.schema.json": {
+        "sha256": "ec1a3411d83cf0465330404fa4b66527103034268efbda5ce79d36f0f56eee2d",
+        "size": 1083
+      },
+      "docs/schemas/report.schema.json": {
+        "sha256": "14d334bf65c325d45ece20ea0ced970b1f4bf74c692a93d079adc3b33d0c355c",
+        "size": 12442
+      },
+      "docs/schemas/verify-request.schema.json": {
+        "sha256": "6f133e9ba186119eede8808de39ae94f308fde93cca27396ef0a94b54e6a670c",
+        "size": 1007
+      },
+      "docs/tools/check_docs.py": {
+        "sha256": "dbc366696e8a35168f05776dbb75f903b02cb43c33b88cf19251373c4aaaa600",
+        "size": 15827
+      },
+      "docs/tools/render_visuals.py": {
+        "sha256": "f444ab0d0d77cd60f6bfecc586f223e89d623dbc895aa08434d57face34fa5de",
+        "size": 18836
+      },
+      "docs/tools/templates/architecture-overview.html": {
+        "sha256": "1b74ab3f2a46b3e7a977cd4900b2b2a175110276912d96cd8902a615e63e9039",
+        "size": 24266
+      },
+      "docs/tools/templates/implementation-progress.html": {
+        "sha256": "85b7faf4b3eb9312ee14d48d99673f39e4520454b94e28261e8161b4e6d1ec66",
+        "size": 33467
+      },
+      "docs/tools/templates/kotlin-arkts-architecture.html": {
+        "sha256": "f2239ba25e3bdd767c709100339e056731314a837089418058579fdb029bdda7",
+        "size": 74245
+      },
+      "docs/tools/templates/kotlin-swift-architecture.html": {
+        "sha256": "d400d98f01b390df783ad5dc3b7723b93938477553b092c8ea1967018b958c3b",
+        "size": 74174
+      },
+      "docs/tools/templates/route-atlas.html": {
+        "sha256": "6f7a68418cfb6d0a936e7b45d33242862d86f7a8e7b7ca126979fcc6b937f17a",
+        "size": 13323
+      },
+      "docs/tools/templates/route-panorama.css": {
+        "sha256": "7f1db03604fedd893c545e489b281ee2e1d47be51af7b9e2e543873522fc4326",
+        "size": 16705
+      },
+      "docs/tools/templates/route-panorama.html": {
+        "sha256": "5fee1fa86d5f8a116679dd144c1f78d37deb9b015d9cfc531ece32741d2c7e3a",
+        "size": 9260
+      },
+      "docs/tools/templates/route-panorama.js": {
+        "sha256": "00d6566896a46b6dd9f42c8fe2dd78c893e6a6a3ce025a60c854214f1a81736d",
+        "size": 15830
+      },
+      "docs/tools/templates/shared.css": {
+        "sha256": "1f19a817a5a1d50ba902e1c9d63845bdf8791240e608f597d67392e2fd3f669a",
+        "size": 9305
+      },
+      "docs/tools/tests/panorama_smoke.cjs": {
+        "sha256": "84177436a808ec357284b05c89d69c8e89f691b50bb8a8536460e95c00daf74a",
+        "size": 5893
+      },
+      "docs/tools/tests/test_document_contracts.py": {
+        "sha256": "7e1fde5620df7da914311ad994ffa8d6e6939642f001ca0afcccb109715cb2cc",
+        "size": 6515
+      },
+      "docs/validation/01-testing-strategy.md": {
+        "sha256": "5f59a519d8f2657f09fa95f3faed6a65a6ef90d0c72af554ff9b121a60070e6a",
+        "size": 6414
+      },
+      "docs/validation/02-lab-architecture.md": {
+        "sha256": "816b6215129fbe6bd61861336594f86b6279a6237f086372d43722ce94b61da6",
+        "size": 10150
+      },
+      "docs/validation/03-case-specification.md": {
+        "sha256": "981210327e7235da6283a4c5bd6634046af1c0cafeccc055f6a7054f4db45478",
+        "size": 5038
+      },
+      "docs/validation/04-problem-catalog.md": {
+        "sha256": "b49370388876f6047900b3dabb4dae41d284fd310557ccb91e7e603e033aa00a",
+        "size": 33113
+      },
+      "docs/validation/05-language-onboarding.md": {
+        "sha256": "e038b8cf410824fd3d6dc5b8fa8371785b46b4c25152a937d7835a1f7799190f",
+        "size": 10951
+      },
+      "docs/validation/06-project-initialization.md": {
+        "sha256": "923b7b60d0ee5e3a75b3e9eb7e10768562d193ac1cb4d32867a78e5262803ee9",
+        "size": 11530
+      },
+      "docs/validation/07-developer-ergonomics.md": {
+        "sha256": "b5bfac6c0a7be17efecde6eb6b2b71c77e63fa186b9c763141a5a08f6838daa3",
+        "size": 13738
+      },
+      "docs/validation/08-critical-scenarios.md": {
+        "sha256": "0fb03749a314af5ed2080818775ed2c673acf9ddb03681f4bb4ff000144580e1",
+        "size": 13382
+      },
+      "docs/visuals/README.md": {
+        "sha256": "60d9554694469569bfd5c6c65a87a77638529a243f38130a5c26fa6b53c90664",
+        "size": 10257
+      },
+      "docs/visuals/architecture-overview.html": {
+        "sha256": "af9c2094c17cd3239f2dfb5d354de94349819e67dd8897983a6fb6b0ceb32c90",
+        "size": 155238
+      },
+      "docs/visuals/arkts-c-cpp-architecture.html": {
+        "sha256": "1a6fa488d17d343023d3df7c19117e6b23f2173d6d392c01b1039221e43a975f",
+        "size": 219237
+      },
+      "docs/visuals/arkts-rust-architecture.html": {
+        "sha256": "5c6ed4d6cdfaa42c9fc5aaf321499fd1c4c27a781edac87270cde1c3711d14ce",
+        "size": 221333
+      },
+      "docs/visuals/extensions-architecture.html": {
+        "sha256": "f0006ec581e69af5b0532702abf12134f88ac6fb46bef868d7802453fec56035",
+        "size": 415017
+      },
+      "docs/visuals/implementation-progress.html": {
+        "sha256": "12b5509182dbf8ef6bded452b3788c1e2946dbd74bcd612762a6a6ffde42498a",
+        "size": 163090
+      },
+      "docs/visuals/kotlin-arkts-architecture.html": {
+        "sha256": "4a56701aaac7cea2464f148fcedf8fc6e2dfde9bdc9f4f8a2012c3f8a2fc84ca",
+        "size": 197198
+      },
+      "docs/visuals/kotlin-c-cpp-architecture.html": {
+        "sha256": "d89dfb060a8123e650de85db328e375b4233c3b9d2685277a43efad95d64fc5c",
+        "size": 220597
+      },
+      "docs/visuals/kotlin-rust-architecture.html": {
+        "sha256": "54c469034153634e62da3a66dcd20e6bdee7c4673b53ef27d72f2a7de1843960",
+        "size": 246855
+      },
+      "docs/visuals/kotlin-swift-architecture.html": {
+        "sha256": "54c877d18de24dab8a9dc4f2187cb351d08fe73af8a535561bf68e3a8766364c",
+        "size": 197127
+      },
+      "docs/visuals/route-atlas.html": {
+        "sha256": "3f042949a3b1d53f04d461dff251c4381a6ae7df1b74e67d9545cabf9315a21b",
+        "size": 136276
+      },
+      "docs/visuals/rust-c-cpp-architecture.html": {
+        "sha256": "40f1b6284eaff4b6fd6db21ad6e4b6c033813a60fbad6b5f45689e0de465a2c1",
+        "size": 243563
+      },
+      "docs/visuals/swift-c-cpp-architecture.html": {
+        "sha256": "7e4de6d027e2d8efbb755fb642907bc606b5108818b849c2de3a8ada76dc274d",
+        "size": 265840
+      },
+      "docs/visuals/swift-rust-architecture.html": {
+        "sha256": "b03ccfecf104fc6be5221e64c9760696aa45509fe68b1a4964cd947b0afb3026",
+        "size": 220386
+      },
+      "requirements-dev.lock": {
+        "sha256": "4304599ee88f31c1537aa2f0a69d9e7708d7b4f50eac6b567be96289dd5c35d5",
+        "size": 11412
+      },
+      "rust-toolchain.toml": {
+        "sha256": "d13306be0ecda81ce779baa290ffb417380d525928477f16200884b5169cca33",
+        "size": 86
+      },
+      "scripts/build_arkts_routes.py": {
+        "sha256": "f92ff3fce52dfbeef3fd86da1074985e924a02fd5fc5bf5cfc10561487887941",
+        "size": 11861
+      },
+      "scripts/build_first_route.py": {
+        "sha256": "54bf7d54889ba7fdcb54f4e183f049ad981d132b57b03147ebe9beca9bd83092",
+        "size": 4545
+      },
+      "scripts/build_managed_routes.py": {
+        "sha256": "0cb9494661b127e784569f9ffe349f80b78d584eb1a4661e8b87e7a077632e07",
+        "size": 12217
+      },
+      "scripts/check.py": {
+        "sha256": "9d897956a26a92e6b8af3ccac1ab72c97eec944180c0d1312dbb41f838e1436c",
+        "size": 5401
+      },
+      "scripts/check_arkts_environment.py": {
+        "sha256": "aa4145f791e144a2668a8fe4079db1645c629ad815e232c1d7f32a74bb084729",
+        "size": 2653
+      },
+      "scripts/check_arkts_observation.py": {
+        "sha256": "8318a4846450b1d993786ba487775cc6d75eb1eb00fbac53167e4489977b70ae",
+        "size": 20518
+      },
+      "scripts/check_native_sdk.py": {
+        "sha256": "2f6296d130e63fb5d547e611d174b5d0a02f58f8e46cb1263c680c683444a686",
+        "size": 9655
+      },
+      "scripts/check_swift_observation.py": {
+        "sha256": "e7576f4fee6fe05c52704eacd155d2d5f6155db489568e35e70289f003abb2ff",
+        "size": 16585
+      },
+      "scripts/install_managed_backends.py": {
+        "sha256": "54458c26c9f4aaac9924e04677c8a6859417b48b72e045b262e8515d506acb6d",
+        "size": 3571
+      },
+      "scripts/install_managed_tools.py": {
+        "sha256": "d272f53a9dc7a579cc7e13fdaa4d6d95493ff9e8b04fa5508370bdf54d72495b",
+        "size": 292
+      },
+      "scripts/install_native_tools.py": {
+        "sha256": "7940813a4f742044840ed8d01828baaeba0957d8ce5ff459eef18405e3bf31ab",
+        "size": 296
+      },
+      "scripts/prepare_managed_dependencies.py": {
+        "sha256": "2073ad50bc18a3c20c368f4065263e7259a8600f2a538d2f02006fe8d6f7e07c",
+        "size": 13593
+      },
+      "sdk/arkts/facade/Boundary.ets.in": {
+        "sha256": "1e186d30914e60ed8921760abf93b73224208072aaec8ba6489ec1b711c97705",
+        "size": 23862
+      },
+      "sdk/arkts/facade/README.md": {
+        "sha256": "88a4f49f27a8c3a43651fcf879ac290d206fabd998bbce2c1abbbfd5c006bd07",
+        "size": 2123
+      },
+      "sdk/arkts/facade/RuntimeFrame.ets": {
+        "sha256": "a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492",
+        "size": 1583
+      },
+      "sdk/arkts/facade/frame-layout.json": {
+        "sha256": "ea14c35161fe8eb6e977a5f9a7a7f63956917a10a4ae1c07e9562718dc30be69",
+        "size": 1298
+      },
+      "sdk/arkts/native-gateway/.clang-format": {
+        "sha256": "c07e7e7a86f0c5094f4f464c321d58da8ce8430fb8a755636c0c3a58d8c11125",
+        "size": 248
+      },
+      "sdk/arkts/native-gateway/Index.d.ts": {
+        "sha256": "82dea1d77e3c5ed42554ed5a496e2cf4daadc6ae24cce71df420469d01eb11e2",
+        "size": 1163
+      },
+      "sdk/arkts/native-gateway/README.md": {
+        "sha256": "3e2d6242377547810379c4ae5237f421cbead907ed5743ce1063f519af9707f9",
+        "size": 1906
+      },
+      "sdk/arkts/native-gateway/include/codec.hpp": {
+        "sha256": "5ef359714bc88fa67cc3e9facde832c23709689f22c7574b3dcdd7d7782781cf",
+        "size": 5972
+      },
+      "sdk/arkts/native-gateway/include/handle.hpp": {
+        "sha256": "dd31c74e72c28b9d7f3472f8e9a412c1f3d3fa8ce22675e720a0a8cbbd9c8aa4",
+        "size": 2118
+      },
+      "sdk/arkts/native-gateway/include/runtime.hpp": {
+        "sha256": "88e4b119b86a084ad9cae092a82892de1a2ff2d660d316a39021a778f92894d9",
+        "size": 3482
+      },
+      "sdk/arkts/native-gateway/src/api.cpp": {
+        "sha256": "080f1103a118f987778be6586ba9ac75ecea7c0b4aab3e3ab5bd0dbd2b59a0af",
+        "size": 19841
+      },
+      "sdk/arkts/native-gateway/src/runtime.cpp": {
+        "sha256": "6204bafcbf8ad4019f63a37a074c23818478ec83aae91a6953af076368eb1bef",
+        "size": 22917
+      },
+      "sdk/arkts/native-runtime/CMakeLists.txt": {
+        "sha256": "16db110b0fa730f244a98e4419de24248af91cd7e3a430a633c53ca4ac85f7c8",
+        "size": 906
+      },
+      "sdk/arkts/native-runtime/README.md": {
+        "sha256": "64a05d48efbfc282593b87393d1e314fb5d2245c1cf2435a3d910d700db70588",
+        "size": 11602
+      },
+      "sdk/arkts/native-runtime/include/protocol.hpp": {
+        "sha256": "2cbd2e55884f5078f0c4fcdde18f6a26a1a308846581b88ad4db8726e12a4f8f",
+        "size": 8580
+      },
+      "sdk/arkts/native-runtime/include/provider_abi.h": {
+        "sha256": "39828fb09200a11e92d4ce3118f285cd5342afb2b01d49a3bc4e2a6ca44ec41d",
+        "size": 2237
+      },
+      "sdk/arkts/native-runtime/include/provider_port.hpp": {
+        "sha256": "b35a99585b30559b5b2261f2d5925badf69b531686a38123b6936f9195112e08",
+        "size": 1958
+      },
+      "sdk/arkts/native-runtime/include/validate_snapshot.h": {
+        "sha256": "62f29e469fab77b80b2eb015e9a66d65830c25e49bc3453d9ee91950be22cde7",
+        "size": 1178
+      },
+      "sdk/arkts/native-runtime/include/worker.hpp": {
+        "sha256": "7d3cf854c5ff94eb03b985602bc274a777c77d348623e12e9cdc2985746ef9a1",
+        "size": 1638
+      },
+      "sdk/arkts/native-runtime/src/protocol.cpp": {
+        "sha256": "eb3978d2dda0e2ac1c67c485a4b74d66bf9b4a3155934ab895245fb23a0bcc25",
+        "size": 38825
+      },
+      "sdk/arkts/native-runtime/src/worker.cpp": {
+        "sha256": "65c5d66f096688c808c9bdd041382227107afb94e29a1f74fcb3b7728cf6fd22",
+        "size": 5023
+      },
+      "sdk/arkts/observation/ArkUIStateModel.ets": {
+        "sha256": "7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+        "size": 1184
+      },
+      "sdk/arkts/observation/README.md": {
+        "sha256": "43b860eaeadc1ba4ff31be18d07447f474571fdfbae77be7ea117db22faf50a7",
+        "size": 8560
+      },
+      "sdk/arkts/observation/StateObservation.ets": {
+        "sha256": "1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+        "size": 5662
+      },
+      "sdk/arkts/test-support/README.md": {
+        "sha256": "2276e436e7d4cf5932465b286cbbced678cdb5ce6792d97bc10a354334b39a97",
+        "size": 3968
+      },
+      "sdk/arkts/test-support/build_identity_fixtures.py": {
+        "sha256": "efd4d56fb456342a8091575b7e2540502b3af21c619de92a8676655e966c7875",
+        "size": 13130
+      },
+      "sdk/arkts/test-support/contracts/PORTS.md": {
+        "sha256": "d63f7c3a0ae93c7f957282af565cd6cad376de30c64c883ba82a42c6b13db995",
+        "size": 7739
+      },
+      "sdk/arkts/test-support/contracts/bootstrap-totals-layout.json": {
+        "sha256": "d02b603cb6921c7dbd8561f7998598975c59a11ebe45937ba3fcf950905bcc68",
+        "size": 1620
+      },
+      "sdk/arkts/test-support/contracts/diagnostic-units-v1.json": {
+        "sha256": "0cb1053696fe4fffdf5f9d62aebe0f8651d3a8b41c3eb5bbdc3c960f3f8a980d",
+        "size": 2137
+      },
+      "sdk/arkts/test-support/contracts/facade-frame-layout.json": {
+        "sha256": "08f962959584269144477f7c23363925fa9764099901dd60752e3a9c0eca672a",
+        "size": 628
+      },
+      "sdk/arkts/test-support/contracts/observer-layout.json": {
+        "sha256": "5b966ed88affc1f09c7e6a488ba4aee58899c2ac91d41c39cd0e0fa9169d8a4f",
+        "size": 1273
+      },
+      "sdk/arkts/test-support/contracts/ports-layout.json": {
+        "sha256": "688f497e5503e12fb457ad2db36aca6a513a2b9afa604d3e8c758d6ba3951026",
+        "size": 1872
+      },
+      "sdk/arkts/test-support/contracts/support.d.ts": {
+        "sha256": "3a524cf255ba74cf3643af52302532010e900c45062457a9b752e2b01b44c4db",
+        "size": 943
+      },
+      "sdk/arkts/test-support/contracts/test-frame-layout.json": {
+        "sha256": "f978c3ace6e4c441fa7fb454fe8873fe4cd97bb819aff875b2433c63021c8efa",
+        "size": 2254
+      },
+      "sdk/arkts/test-support/facade/FacadeFrame.ets": {
+        "sha256": "f16ad7ffea907b4d053d803d1e46598f0c2a628102c6f105c14e3dadccaa1c46",
+        "size": 403
+      },
+      "sdk/arkts/test-support/facade/TestFrame.ets": {
+        "sha256": "513468bc8e5727d6de97bdc235bb80d4a39023dda8839c160ceb2924de95a31e",
+        "size": 1313
+      },
+      "sdk/arkts/test-support/facade/baseline.json": {
+        "sha256": "3b64a7b63f2941d3c517095d8f693c318d7105b30cc64cd30d1e4716e1b30115",
+        "size": 234
+      },
+      "sdk/arkts/test-support/facade/companion.patch": {
+        "sha256": "e1657ffcb02bd41794e2ac1bf3ca56dcae445a87c5c02880ed81795581e69adc",
+        "size": 10644
+      },
+      "sdk/arkts/test-support/native/baseline.json": {
+        "sha256": "5239247cdbdb9e98da9bf8515d39997fe5599e0a1fc0339597de048dbbf237b6",
+        "size": 1158
+      },
+      "sdk/arkts/test-support/native/companion.patch": {
+        "sha256": "d065bdf4118c426207ab5b3d4224905cb9198388d23060894567b09a432a76ec",
+        "size": 34050
+      },
+      "sdk/arkts/test-support/native/observer.cpp": {
+        "sha256": "db715cc103d9279a36c6118e862f3f884d90c25214e63c7393d8cf3dc8810453",
+        "size": 8289
+      },
+      "sdk/arkts/test-support/native/observer.hpp": {
+        "sha256": "9c6de7b24689756ad2ce3af9c16cf7e414f8ef64c1a812a462e1e70c601b6f2f",
+        "size": 7196
+      },
+      "sdk/arkts/test-support/native/observer_inventory.py": {
+        "sha256": "bf887cc03d97c6b4708bba7446b9a14e97446439a9070f617d47d364b32f0c3e",
+        "size": 7620
+      },
+      "sdk/arkts/test-support/native/support.cpp": {
+        "sha256": "ac6e77d2728de75567a60c3ee0d71f323be59aeefe4c7d18d829c723811c5e5c",
+        "size": 7787
+      },
+      "sdk/arkts/test-support/native/support.hpp": {
+        "sha256": "595f2e0f17be0197faa8783b1079abca78e53d80f6f6e4fee3aa7f5c30d09ac1",
+        "size": 2761
+      },
+      "sdk/arkts/test-support/native/support_state.hpp": {
+        "sha256": "e79294202ff3132d22da2ffcdbba8b93d51213b2741e99aaf92513b7a31da3ff",
+        "size": 1270
+      },
+      "sdk/c/arkts-provider/README.md": {
+        "sha256": "61b04656cfac61ed77fb093845ca6a7cdd71dc87102cd258cf2a71f349a92c66",
+        "size": 1396
+      },
+      "sdk/c/arkts-provider/src/provider.c": {
+        "sha256": "136969a8e0b8376ca4089dd0d2795b2a54681bf7f97f841a78bfcc8de28d322e",
+        "size": 3721
+      },
+      "sdk/c/first-route/README.md": {
+        "sha256": "4c31558125729e614c8011c85778ef7f0f6314fe6f8a420b3d8919ac7edf9658",
+        "size": 1247
+      },
+      "sdk/c/first-route/madb_c.c": {
+        "sha256": "5a3bc56df978f23d2c1337ef0207f3a60270acd96828417a41592789c4213b07",
+        "size": 2088
+      },
+      "sdk/c/first-route/madb_c.h": {
+        "sha256": "baf897beabeb243cab6eb8c94d0540d6f210f32df798f4d366b517d34c6fcb0a",
+        "size": 1883
+      },
+      "sdk/c/first-route/runtime-protocol.json": {
+        "sha256": "091867378b98b7d14c18cffe0488451d5c2d315d0f02350e910e59d5b9ffc85e",
+        "size": 4722
+      },
+      "sdk/cpp/arkts-provider/README.md": {
+        "sha256": "3dae206b72726969b93be261e76b05303a852fd8974c3279195fb7a4bc2052fb",
+        "size": 1447
+      },
+      "sdk/cpp/arkts-provider/src/provider.cpp": {
+        "sha256": "304ecbfb5ac3523cd98ba472aad365a967f8cc00de9ac4b511c8da49230b85de",
+        "size": 4470
+      },
+      "sdk/kotlin/arkts-owned/README.md": {
+        "sha256": "48bdfe0ca5ba877d2a10674d6ad36625c4033d6b720ff20de2e8287f133abcf0",
+        "size": 2050
+      },
+      "sdk/kotlin/arkts-owned/facade/KotlinPort.ets.in": {
+        "sha256": "07c35c495fc4b93521a2d21844de7ec84ccff6410773627d66767ac3be97717a",
+        "size": 4544
+      },
+      "sdk/kotlin/arkts-owned/frontend-policy.json": {
+        "sha256": "a7b8887e4d148cb3122fb77b447eb7cb0f22a6979bd070cdcc8d1c524290c83a",
+        "size": 1427
+      },
+      "sdk/kotlin/arkts-owned/native/Bootstrap.d.ts.in": {
+        "sha256": "acb54cddff4ec60585eea620b2d7a065f78829d70e710040ad7667c8cf95f54f",
+        "size": 664
+      },
+      "sdk/kotlin/arkts-owned/native/bootstrap.cpp.in": {
+        "sha256": "141116eee4962bf489f45f630eb1f3ef87ff0a3686e74c68ec930934215314c6",
+        "size": 16419
+      },
+      "sdk/kotlin/arkts-owned/native/executor.cpp": {
+        "sha256": "54da98c997b92145d5592650b08880b4d589634caea0e7540b6aeaf963f0e104",
+        "size": 5215
+      },
+      "sdk/kotlin/arkts-owned/native/executor.def": {
+        "sha256": "e521e25328778964d276f51128df585dbc2aa0401174eb14f16dc91e0c0e3c45",
+        "size": 117
+      },
+      "sdk/kotlin/arkts-owned/native/executor.h": {
+        "sha256": "779b0e9dd0458d497e0f7a2f946201f3d82d5a990a6d6f1065d2700f904a685f",
+        "size": 910
+      },
+      "sdk/kotlin/arkts-owned/native/lifecycle.cpp": {
+        "sha256": "0aeb22e4abca497f528fa8956e728757f7b736915b1501ae7fd687ba0ed9b9a6",
+        "size": 9685
+      },
+      "sdk/kotlin/arkts-owned/native/lifecycle.h": {
+        "sha256": "df58c0b226174d66461a2bd6c161c1e92abacf7f84f0d985b45bfa10cc98f076",
+        "size": 3876
+      },
+      "sdk/kotlin/arkts-owned/native/main_gate.cpp": {
+        "sha256": "b399c72fed6d7926d3dadc9b8b6cc00b318cc3a99b8df608aeb2f6d57bf71854",
+        "size": 385
+      },
+      "sdk/kotlin/arkts-owned/native/main_gate.h": {
+        "sha256": "180a9b0ce01ed5095da0b12d370d9c4e9b28995361d85025e143b3c4d9af92c4",
+        "size": 243
+      },
+      "sdk/kotlin/arkts-owned/record-codegen/src/main/java/com/madb/record/RecordProvider.java": {
+        "sha256": "aff9dcbd09f2934703a0f2eb08f76422f69633f94699291bd6baa107ad8cdbf2",
+        "size": 13892
+      },
+      "sdk/kotlin/arkts-owned/record-codegen/src/main/resources/META-INF/services/com.google.devtools.ksp.processing.SymbolProcessorProvider": {
+        "sha256": "addace3d8e48f506acd7ecefde188b2d0c906af2a41bdc376bf951d39b6e06da",
+        "size": 31
+      },
+      "sdk/kotlin/arkts-owned/src/common/AkInteropModule.kt": {
+        "sha256": "d69274021c2435fd01a3c566b5f5a5991b0d502489a04c19d8b2f440deaf1216",
+        "size": 4744
+      },
+      "sdk/kotlin/arkts-owned/src/common/BoundaryTypes.kt": {
+        "sha256": "f3ca35ca4cc51264174f606776bb09b196bf6b9030d00e485fc6f967cb7ac879",
+        "size": 659
+      },
+      "sdk/kotlin/arkts-owned/src/common/OwnedCore.kt": {
+        "sha256": "3b4a2504454f8852232557a23e37082490d7f85c4898c2f5df56ad2bdb8aa9f6",
+        "size": 32325
+      },
+      "sdk/kotlin/arkts-owned/src/common/OwnedExports.kt": {
+        "sha256": "51f08f484ad13d18f06df221842051126781037dbc1b123e44443772ec386c77",
+        "size": 2629
+      },
+      "sdk/kotlin/arkts-owned/src/common/OwnedModel.kt": {
+        "sha256": "6b959a44bd7702651457a61fa15dafbc067f5e527563b81b0635dfeb49b1e70e",
+        "size": 1601
+      },
+      "sdk/kotlin/arkts-owned/src/ordinary/ExecutionProbe.kt": {
+        "sha256": "5d8007cad76f84f9b617e0f93551ef9b0af22e9c259f3d10e0a61ceddd8abfd0",
+        "size": 340
+      },
+      "sdk/kotlin/arkts-owned/src/test/ExecutionProbe.kt": {
+        "sha256": "28b1723e940e2dbb099342ee7c1e6fa74ab889431b90f8c482e981dfa79d6e5c",
+        "size": 1352
+      },
+      "sdk/kotlin/gobley/MadbBoundaryClient.kt": {
+        "sha256": "db79d0f684275a665d243bef266e43a61cb79ee3284f612de971ce0234129489",
+        "size": 234
+      },
+      "sdk/kotlin/gobley/README.md": {
+        "sha256": "e5db5ceb8c086bfb25767b786c1cfe43a869cc88e75b34aa21f5e99271e9f871",
+        "size": 2339
+      },
+      "sdk/kotlin/skie/README.md": {
+        "sha256": "7132cf63a6861d6ff061a375c60adec35bb33485b528892d95a71dcb36da2df4",
+        "size": 7842
+      },
+      "sdk/kotlin/skie/build.gradle.kts": {
+        "sha256": "722b970a9aab0e0291e5174c237b66862a3d76d4b2f7f9573364ba66e12e4f1e",
+        "size": 2103
+      },
+      "sdk/kotlin/skie/gradle.lockfile": {
+        "sha256": "6709cd1bc9adf5d29eb1e7fa77525c00b09a4fcd1079a666492f7077f0f6d91e",
+        "size": 10832
+      },
+      "sdk/kotlin/skie/gradle.properties": {
+        "sha256": "069b59059e84e6581351a39bb5fb5f8bc7b6e3051da05e6e209ce7e78d847281",
+        "size": 180
+      },
+      "sdk/kotlin/skie/gradle/verification-metadata.xml": {
+        "sha256": "8f8c86fd8c119593fb5a38c2a88fc8dde5a76ccf0780578b4c466bce3922e7b1",
+        "size": 48931
+      },
+      "sdk/kotlin/skie/gradle/wrapper/gradle-wrapper.jar": {
+        "sha256": "7a9ce74cff467ca1bf60a4fcd9f05185acceda4d0f382434d393e17864262c5d",
+        "size": 47505
+      },
+      "sdk/kotlin/skie/gradle/wrapper/gradle-wrapper.properties": {
+        "sha256": "d0bebe8133babb74ab29a31ee6616c56ef8985fc801e1fd16c61b5ed2189e907",
+        "size": 368
+      },
+      "sdk/kotlin/skie/gradlew": {
+        "sha256": "a5a5c199ba02189ae8c46a334223371a20599d9c298ef65e7540ede4a3f72d59",
+        "size": 8656
+      },
+      "sdk/kotlin/skie/gradlew.bat": {
+        "sha256": "d539676c48b596afda64c963ec8f7ee56c7b3fe7e3b81d1dbe2d1a1e3dd9e9f8",
+        "size": 2848
+      },
+      "sdk/kotlin/skie/runtime-protocol.json": {
+        "sha256": "8bec386435bc4c9872e194dcd79a739dccb5f56af96058ce3692db984230deec",
+        "size": 5484
+      },
+      "sdk/kotlin/skie/settings.gradle.kts": {
+        "sha256": "717030a93c41d8a0f7f2af4d536bf157c8ad34346853b4e7249edfed1276597d",
+        "size": 590
+      },
+      "sdk/kotlin/skie/src/macosArm64Main/kotlin/madb/skie/Boundary.kt": {
+        "sha256": "a238a7208e4e4d7ea3af60b6bf53ee060dd4b3e7b4513b093ef77300d6306dd5",
+        "size": 14151
+      },
+      "sdk/kotlin/skie/src/macosArm64Main/kotlin/madb/skie/TestSupport.kt": {
+        "sha256": "6ff64b692cd6b3cdfc928d83e1ebcb823338c4083131639ffe101c2fad44b5ab",
+        "size": 2015
+      },
+      "sdk/kotlin/uniffi-jvm/MadbBoundaryClient.kt": {
+        "sha256": "8c5b997b96d8d6be55ebd5602ac9be2b75b6c0ed756dddc6eeddcea3f9bef802",
+        "size": 385
+      },
+      "sdk/rust/arkts-bridge/Cargo.lock": {
+        "sha256": "89ec1e24b5298fb93afc888d25a992244de1578aead695542dd86b3bfbcaf4f9",
+        "size": 7658
+      },
+      "sdk/rust/arkts-bridge/Cargo.toml": {
+        "sha256": "f5e3b69e0b2056168faf2db10c2a1c8fba566afbcd715f4b60cf352244fc9976",
+        "size": 554
+      },
+      "sdk/rust/arkts-bridge/README.md": {
+        "sha256": "c160856c924d1bb72c71253609ae73644648c3f8ad8a7b4f6833638d631b16c7",
+        "size": 3164
+      },
+      "sdk/rust/arkts-bridge/build.rs": {
+        "sha256": "831696e257170e9a58400f9c54278b62c41747ca2aecd9e7f1e9424d2a0e8b4b",
+        "size": 1752
+      },
+      "sdk/rust/arkts-bridge/frontend-features.json": {
+        "sha256": "b8211680968892c4c6f2b979025efc18ebfadf48edde63cc4066b21247327073",
+        "size": 975
+      },
+      "sdk/rust/arkts-bridge/src/lib.rs": {
+        "sha256": "0cf286bc2706fb84b0d652d930f5cff2a6f5a0e9a9e2400aa37a4bac9139837a",
+        "size": 8659
+      },
+      "sdk/rust/arkts-provider/Cargo.lock": {
+        "sha256": "0805851d40b89612a606e3edd44b0ae842bedf6e48729092d1d083285bb5c41b",
+        "size": 169
+      },
+      "sdk/rust/arkts-provider/Cargo.toml": {
+        "sha256": "a4933c9c0947cec18f33454859cb437c15ac2849446d006bc2eb2da0314d5337",
+        "size": 341
+      },
+      "sdk/rust/arkts-provider/README.md": {
+        "sha256": "012aba83ad3c8b7e811b25b30e8ed86f8ec9a8f6d8f0786a50dd9d4ba9d50f71",
+        "size": 2133
+      },
+      "sdk/rust/arkts-provider/src/lib.rs": {
+        "sha256": "4b07345b80f35c4f1f08301fdb831d0e42f3e4859d9871ee8bf8b6aa5fc73c7f",
+        "size": 9583
+      },
+      "sdk/rust/boundary-core/Cargo.lock": {
+        "sha256": "785db1872a62b0d94a364f3345f4c908934dafbd42fd53ca2f831e8066ee4a06",
+        "size": 162
+      },
+      "sdk/rust/boundary-core/Cargo.toml": {
+        "sha256": "bbb068aa2f794913a4c2e85e30c1dcd87b7016bad10b86add428c06da9b8c01a",
+        "size": 108
+      },
+      "sdk/rust/boundary-core/src/engine.rs": {
+        "sha256": "3016026811970af3a82a3783657690b33acb37f0413b673afcc6631a6b53121f",
+        "size": 20066
+      },
+      "sdk/rust/boundary-core/src/future.rs": {
+        "sha256": "04e3d4535bf64f2f8073211921dca5967134fdc9cf96207a2beec4c7eaac5f07",
+        "size": 2168
+      },
+      "sdk/rust/boundary-core/src/lib.rs": {
+        "sha256": "3717389450670a59a59f98612f096c4379be2712e9312bec7d46688d6272b9b7",
+        "size": 260
+      },
+      "sdk/rust/boundary-core/src/model.rs": {
+        "sha256": "077333e291684a2b54e96e6cb271df1dd4b0fca51655b25292e73ab9d6e7df22",
+        "size": 1876
+      },
+      "sdk/rust/boundary-core/tests/protocol.rs": {
+        "sha256": "5a02406dc934cbdf009b72773d7d29953f2737d89cceb70333f16d9d16ee468c",
+        "size": 17123
+      },
+      "sdk/rust/c-client/Cargo.toml": {
+        "sha256": "7b0b9df5c8d076fb0b1caf7bbdd7ff9250ff09c21558d07e2e6a19cdfb8b5ea0",
+        "size": 263
+      },
+      "sdk/rust/c-client/README.md": {
+        "sha256": "42a250687a135b8544a08e76fbedbde4dd78099c72015d015af01728ba4da213",
+        "size": 1815
+      },
+      "sdk/rust/c-client/build.rs": {
+        "sha256": "91da1e6fdd55ae19207530e71b68cf14b312fe57c9db5282042acaa50f9089a9",
+        "size": 1024
+      },
+      "sdk/rust/c-client/src/lib.rs": {
+        "sha256": "21408df287ea0b6d3c0aa6cfa94d2c9321ab8e4d68dcb66c962624622df90e00",
+        "size": 4831
+      },
+      "sdk/rust/engine/.gitignore": {
+        "sha256": "306fd52e74fca6746e12acc750f232de15e71da917756a1270d74c91f5eb7368",
+        "size": 9
+      },
+      "sdk/rust/engine/Cargo.lock": {
+        "sha256": "8bdcba14f944541d583e7eb45733be7d9ffcba2366d14dde3d29f550e943900c",
+        "size": 167
+      },
+      "sdk/rust/engine/Cargo.toml": {
+        "sha256": "78f4df40382aa6111b0a2365ba104ead954084b7ab546b5c9432f4b75b4f0d17",
+        "size": 295
+      },
+      "sdk/rust/engine/README.md": {
+        "sha256": "9fd4624670b680251bd0a44ec038389e02f7d41cc94a48d2bde56041657ca64b",
+        "size": 4250
+      },
+      "sdk/rust/engine/build.rs": {
+        "sha256": "5f46d736eb1341dfea10ce20fb965df8e82a5b9fcfa54a1af149dde797410072",
+        "size": 898
+      },
+      "sdk/rust/engine/cbindgen.toml": {
+        "sha256": "e8ea94bfe539a622eb9b44d377a32e6e6fc4f66b7ee1c6e6b823936ed3a4fe43",
+        "size": 486
+      },
+      "sdk/rust/engine/runtime-protocol.json": {
+        "sha256": "09c1bcdfc9e9b61821ffde9609d8707e43a01eea23bdcc260e1148641041ea5e",
+        "size": 7662
+      },
+      "sdk/rust/engine/src/lib.rs": {
+        "sha256": "c2c46a652932025e1b25edc528e5d52c65d8ef05a3d024d9238b7c9eb2c6b879",
+        "size": 8585
+      },
+      "sdk/rust/engine/src/runtime.rs": {
+        "sha256": "78461a98abe716c0b3c38a2f276d8b417e550aa1b3df79f4ae99491098becfa8",
+        "size": 16142
+      },
+      "sdk/rust/engine/src/test_support.rs": {
+        "sha256": "e1d4b1f5e91deb29afdb318c7a67481264241211d5894d1660805950296e4263",
+        "size": 8450
+      },
+      "sdk/rust/engine/src/tests.rs": {
+        "sha256": "e1659efd0762c5fea8aef2ec6beeef333ec09e9698d2431fe02784d7931b7888",
+        "size": 20672
+      },
+      "sdk/rust/engine/test-support.h": {
+        "sha256": "013fff4d24fd0e4e26bf3f1c4a2e62149689a30bf2d6e264787df38131299a26",
+        "size": 2047
+      },
+      "sdk/rust/gobley/Cargo.lock": {
+        "sha256": "35f533e61ed74b45e0606728573060e34b2f1413800b9a0cb84b3e8416d40621",
+        "size": 16903
+      },
+      "sdk/rust/gobley/Cargo.toml": {
+        "sha256": "e4f711b2486bd17374520be8a962f8351b7aad1fa193dd98ede2a2041789bfc3",
+        "size": 616
+      },
+      "sdk/rust/gobley/build.rs": {
+        "sha256": "ca0cb7290f7412d76d9adcb757f68c203d45619e4c879729194c5cbaa8725621",
+        "size": 388
+      },
+      "sdk/rust/gobley/runtime-protocol.json": {
+        "sha256": "c27f2169bc4b4e579d0920a62d95026a75b0c1854d586cc107c31ab55ca6b529",
+        "size": 4838
+      },
+      "sdk/rust/gobley/src/unsigned_fixture.rs": {
+        "sha256": "8f5d21557b9b20cb9d1dcfb06d050d2ea1cdb7ec8a7ffc3e00efaedba7891aa8",
+        "size": 1109
+      },
+      "sdk/rust/gobley/uniffi.toml": {
+        "sha256": "279109a3dee3f2f3d9302b8c728d95336c285b1d92d8684565aba882e73fa1bf",
+        "size": 158
+      },
+      "sdk/rust/uniffi/Cargo.lock": {
+        "sha256": "bf777551eb04244e183055a68c8f7493753ddec9bde59312066b01c7ab94f3c1",
+        "size": 19575
+      },
+      "sdk/rust/uniffi/Cargo.toml": {
+        "sha256": "740cc0da81fb54a7651c1ed9c1dd281189c28c4db09fcecd8e1c9557ec22b0a8",
+        "size": 519
+      },
+      "sdk/rust/uniffi/README.md": {
+        "sha256": "3e79da4cd7380cf3423096292d47223a82441d2cb3a32f30757256a4233d51d9",
+        "size": 4452
+      },
+      "sdk/rust/uniffi/bindgen.toml": {
+        "sha256": "4e432bb9b1cd64968a82671f5290c1872dcfa69cf568d9d6448a1871d97c7798",
+        "size": 186
+      },
+      "sdk/rust/uniffi/build.rs": {
+        "sha256": "37a915d4002607767af84b6db77b0293140bd8b8091bdf884e0e828b1aba8c4a",
+        "size": 428
+      },
+      "sdk/rust/uniffi/runtime-protocol.json": {
+        "sha256": "e1955e1785bc80ca6ca63d5c5ea37046dfbfee3c41de08eb94d8382274716440",
+        "size": 4279
+      },
+      "sdk/rust/uniffi/src/bin/madb-uniffi-metadata.rs": {
+        "sha256": "adb48a1398fb34bf7d48d24b0fefefd6a6304bd24c52eab15790692906b83f33",
+        "size": 5918
+      },
+      "sdk/rust/uniffi/src/bin/uniffi-bindgen.rs": {
+        "sha256": "f7a2dd11fb370e9595bdfa6c32fc41a9b67a60bbab06ec711cb7a03eb873ffa6",
+        "size": 49
+      },
+      "sdk/rust/uniffi/src/boundary.udl": {
+        "sha256": "ef34811136390540c1bc06d1e5a1241bdd018b5343869b2f761d08b0bf3de222",
+        "size": 1813
+      },
+      "sdk/rust/uniffi/src/lib.rs": {
+        "sha256": "4e47505fd66beb93e0ddfeeef662be9c2c079a14a4397a967285808873c8dd7d",
+        "size": 8286
+      },
+      "sdk/rust/uniffi/src/test_support.rs": {
+        "sha256": "5eae48ae21e1b96d35a67726af72a26b585f3d2692c662d07944fc852c147782",
+        "size": 2026
+      },
+      "sdk/rust/uniffi/uniffi.toml": {
+        "sha256": "a5db3e2f9b62c3f8514ffbd7483cb137d6bbc682735d4b5208a94c04ec034dd4",
+        "size": 168
+      },
+      "sdk/swift/observation/.gitignore": {
+        "sha256": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+        "size": 18
+      },
+      "sdk/swift/observation/Integration/SKIE/MadBSkieStateSource.swift": {
+        "sha256": "e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+        "size": 1526
+      },
+      "sdk/swift/observation/LICENSE": {
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "size": 11358
+      },
+      "sdk/swift/observation/NOTICE": {
+        "sha256": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+        "size": 223
+      },
+      "sdk/swift/observation/Package.swift": {
+        "sha256": "43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46",
+        "size": 411
+      },
+      "sdk/swift/observation/README.md": {
+        "sha256": "d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329",
+        "size": 6092
+      },
+      "sdk/swift/observation/Sources/MadBObservation/MadBStateModel.swift": {
+        "sha256": "425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7",
+        "size": 6338
+      },
+      "sdk/swift/observation/Sources/MadBObservation/MadBStateSource.swift": {
+        "sha256": "6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83",
+        "size": 1122
+      },
+      "sdk/swift/observation/Tests/MadBObservationTests/ControlledSource.swift": {
+        "sha256": "90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179",
+        "size": 4808
+      },
+      "sdk/swift/observation/Tests/MadBObservationTests/MadBStateModelTests.swift": {
+        "sha256": "e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6",
+        "size": 8894
+      },
+      "sdk/swift/skie/MadBSkieConcurrency.swift": {
+        "sha256": "24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+        "size": 8590
+      },
+      "sdk/swift/skie/Smoke.swift": {
+        "sha256": "c62bd13564d7eee5554f3ec4f8a8ecc3118a329f0259c1edecefab895db1c7f7",
+        "size": 2360
+      },
+      "sdk/swift/uniffi/MadbBoundaryClient.swift": {
+        "sha256": "caf09a5e9b689c2b01a5a2c2396974afaddaa8352755b0e19fcae75e58fd9326",
+        "size": 403
+      },
+      "tests/architecture/check_dependencies.py": {
+        "sha256": "3713adbf117621c3aff62520f58dcfa65bc554222b8714ae2aa25d3502e189dc",
+        "size": 6276
+      },
+      "tests/architecture/test_dependencies.py": {
+        "sha256": "092c36c809ee44768122e41a47eeb869af3065cadfa7c9b6ee7ddfcf5897b7f7",
+        "size": 4390
+      },
+      "tests/architecture/test_native_boundaries.py": {
+        "sha256": "c6605b90c905062f9b67344cf1fbddd3f80a3f17cdb8d7a8298c2fb9fa543825",
+        "size": 6368
+      },
+      "tests/contract/canonical_vectors.cjs": {
+        "sha256": "f2f28f11bcfdabd008a92b696503d39d4a4ac4be7e1414e3de9ea006bfc2822b",
+        "size": 1146
+      },
+      "tests/contract/test_abi_shape.py": {
+        "sha256": "3642f1ae102f8437bcc3ccffce6463557cc8871e04bfca919d56209c015453cc",
+        "size": 1074
+      },
+      "tests/contract/test_formats.py": {
+        "sha256": "79e88a57ada860af8d629c095ccf87ab8e8b9c668a79b8b734c1dc85afaab63b",
+        "size": 4227
+      },
+      "tests/fixtures/c07_arkts_generation/README.md": {
+        "sha256": "ff47bd9206c7f00cf56e65aebcf9d9fa1b00d37ff754d4de2d7db61106485f7d",
+        "size": 3993
+      },
+      "tests/fixtures/c07_arkts_generation/reject-async-listener/Boundary.ets.in": {
+        "sha256": "9ffd4ece1b7f5c7759f48c342f17340da64138dccb1cf160e813f084c2eaf052",
+        "size": 22748
+      },
+      "tests/fixtures/c07_arkts_generation/reject-async-listener/runtime-policy.json": {
+        "sha256": "5606f04a8da75ec781616d6a46f4c3a3101a192cead586fe3a04aa2297514321",
+        "size": 30539
+      },
+      "tests/fixtures/c07_arkts_generation/reject-async/Boundary.ets.in": {
+        "sha256": "cabb670db4f24b62d176e7fb1302642ce5d529a79b8d5ee0c7577482ed60bad9",
+        "size": 22754
+      },
+      "tests/fixtures/c07_arkts_generation/reject-async/runtime-policy.json": {
+        "sha256": "5606f04a8da75ec781616d6a46f4c3a3101a192cead586fe3a04aa2297514321",
+        "size": 30539
+      },
+      "tests/fixtures/c07_arkts_generation/reject-callback-result/Boundary.ets.in": {
+        "sha256": "46b15c9dc6219b6259435f66352b1876000beecb8f91663433f354d223d87262",
+        "size": 22741
+      },
+      "tests/fixtures/c07_arkts_generation/reject-callback-result/runtime-policy.json": {
+        "sha256": "5606f04a8da75ec781616d6a46f4c3a3101a192cead586fe3a04aa2297514321",
+        "size": 30539
+      },
+      "tests/fixtures/c07_arkts_generation/rename-record/Boundary.ets.in": {
+        "sha256": "6b931c363ab382ce8c39b571f2d9926320e34e62916be171c0e2104fe16ec8fb",
+        "size": 22687
+      },
+      "tests/fixtures/c07_arkts_generation/rename-record/runtime-policy.json": {
+        "sha256": "7bac19b3eb041df264206d4efe1f9f93357f0872656ef1b3c3d93698a0a6c06e",
+        "size": 30515
+      },
+      "tests/fixtures/contracts/README.md": {
+        "sha256": "19c3ce74b84496c84511b4dcbd05b3ad8da6f4bbf45e53aa77d9cceeb04bdf56",
+        "size": 1708
+      },
+      "tests/fixtures/contracts/build-evidence.json": {
+        "sha256": "fb193a85be8645b6c9dd089a6046163176d3b966fc6d42d5ca42994df3e03786",
+        "size": 1044
+      },
+      "tests/fixtures/contracts/build-task.json": {
+        "sha256": "91979e9351597efeafb056eb636e1401da7ecfb8062f2b6402570a0cb5d214e9",
+        "size": 1148
+      },
+      "tests/fixtures/contracts/candidate.json": {
+        "sha256": "c8dc73867ba4db533b9e68a57ccc9d6d698ecbdc515a4f872e6259d669de3af0",
+        "size": 1455
+      },
+      "tests/fixtures/contracts/canonical-vectors.json": {
+        "sha256": "2c4cbdf7507915192cc38c7033f431add4c88287429b1487949f6072f0ae8411",
+        "size": 2053
+      },
+      "tests/fixtures/contracts/case.json": {
+        "sha256": "e549e32963a9f3756ddbd684b2271e5c747950dca4260be2a69ea830b2ae0ed4",
+        "size": 1542
+      },
+      "tests/fixtures/contracts/contract-ir.json": {
+        "sha256": "2df5fb39020bd8f69bc6690904d7fb8df4a674c1c01507dba01fd50f766a4b3c",
+        "size": 28909
+      },
+      "tests/fixtures/contracts/coverage.json": {
+        "sha256": "a0cc2c257c1b5354845fd2faa133ee3637923742831b8b4936445022c4404929",
+        "size": 607
+      },
+      "tests/fixtures/contracts/execution.json": {
+        "sha256": "804c68ccad46963521c9936dba71bf0859e31baf5343c718d9718a2a2e7d47a9",
+        "size": 2014
+      },
+      "tests/fixtures/contracts/format-vectors.json": {
+        "sha256": "caeeb1dbd4d66c8e9d2e435612b9bc1c11bb58e71d11d2d19623eba532855ea3",
+        "size": 19979
+      },
+      "tests/fixtures/contracts/generate-request.json": {
+        "sha256": "1db76a42f6ba60422391834ff6517f59533333e455c4a2131f531c65e037bb41",
+        "size": 1681
+      },
+      "tests/fixtures/contracts/lock.json": {
+        "sha256": "9d4e760444d6ceaa9f53669671c001c6fe9dc7fdd853db53ca37747cc6fb3ddc",
+        "size": 1391
+      },
+      "tests/fixtures/contracts/output-set.json": {
+        "sha256": "647e35403e480a98516e4482af959e5b5c54b086f5aed6f75953aed13a0d4303",
+        "size": 813
+      },
+      "tests/fixtures/contracts/package-request.json": {
+        "sha256": "7988cbafd3e4dd88514dba1ec6978cce4e4ac88ed43c4dd71b42b79caaeb6b74",
+        "size": 1461
+      },
+      "tests/fixtures/contracts/parse-vectors.json": {
+        "sha256": "7a5a953699926fdbb46eb17783cff9a793f2cc6066f8cd7f44856f5ed7f26c71",
+        "size": 799
+      },
+      "tests/fixtures/contracts/profile.json": {
+        "sha256": "d1cca6225738f82ef0c822ba7867e6faed4d7545ac1bf8fc99048c11f6f0ac22",
+        "size": 1616
+      },
+      "tests/fixtures/contracts/project.json": {
+        "sha256": "71d5227d78609df0f7b899d47e4078e1951cde4e894d3547fc1a1e31b6cd0cb9",
+        "size": 7391
+      },
+      "tests/fixtures/contracts/read-request.json": {
+        "sha256": "b3c45e29ae70612cd4803e5256af27d6d5472cc4dfc17a43259eb0d73b99c484",
+        "size": 1109
+      },
+      "tests/fixtures/contracts/report.json": {
+        "sha256": "cc72c007d022d079d000a6fe240f780abb53b8f5386676b07a732a36cfa7ec7e",
+        "size": 2215
+      },
+      "tests/fixtures/contracts/verify-request.json": {
+        "sha256": "2ccc72b86d1a77961daa2fb56724ae93ec5b4f52705978029ec922c87ecc2da6",
+        "size": 1482
+      },
+      "tests/fixtures/native-probe/c_consumer.c": {
+        "sha256": "3ecd54aafc0cd5c6601c252522380d8bd5d79e10616652cdcc6cd3ad94422ad1",
+        "size": 2064
+      },
+      "tests/fixtures/native-probe/c_provider.c": {
+        "sha256": "685041cc44224ac343604ef90db0dea90b24405f86fd7dc6dbedcaa11cdd9c65",
+        "size": 910
+      },
+      "tests/fixtures/native-probe/c_provider.h": {
+        "sha256": "d035f637e3bbac403014e0ffc1bc4cce3870324c5518483a4def9b0b5026d8a5",
+        "size": 732
+      },
+      "tests/fixtures/native-probe/cbindgen.toml": {
+        "sha256": "7951995d6205ebcbc355822147d32857f9376ce410295d7184368f40b90d106a",
+        "size": 200
+      },
+      "tests/fixtures/native-probe/rust_consumer.rs": {
+        "sha256": "2d6d9b91383be61cd3f026f9205f0cc07ec3d79ee21307224579f35098ad058e",
+        "size": 2887
+      },
+      "tests/fixtures/native-probe/rust_provider.rs": {
+        "sha256": "6f9fd491da3c03f68463e3ec19ff10e949b9fc0de9fc5736e050c71980af7cfc",
+        "size": 2464
+      },
+      "tests/fixtures/native-probe/shape_consumer.rs": {
+        "sha256": "bc7d418dffcbd832e55d29025e646db7d300a873fbc6fe9e632bc11d63c307ca",
+        "size": 1377
+      },
+      "tests/fixtures/native-probe/wrong_signature.c": {
+        "sha256": "d80550aa27a049e711fd482c5376d380d60fd0fab2a4424056c571bb378ff956",
+        "size": 206
+      },
+      "tests/fixtures/native-probe/wrong_signature.rs": {
+        "sha256": "a7a01ade9780d27016f82a626d858679cb83e6cabbf2677908b80a9307a3c881",
+        "size": 308
+      },
+      "tests/golden/c03/aarch64-apple-darwin/c_provider.rs": {
+        "sha256": "243fabf8f986de79e5da99b6df561e95593ce593a535b2d1d83990191e14d85f",
+        "size": 1879
+      },
+      "tests/golden/c03/aarch64-apple-darwin/expected.rs": {
+        "sha256": "be10bb4d5fc5508f0e2150bb56bdadf8dae025903210e20f1624bb74d42a6207",
+        "size": 2533
+      },
+      "tests/golden/c03/expected.h": {
+        "sha256": "272c709ceecc1eec1125b81baaf8200bd7843dc17d13b4972e9392829a18eb9a",
+        "size": 2098
+      },
+      "tests/golden/c03/rust_provider.h": {
+        "sha256": "cb5eb8e2ec01d242323d637f9075abf2d484cac8e2e1b9a0d85cb01711161f6e",
+        "size": 1352
+      },
+      "tests/golden/c03/x86_64-apple-darwin/c_provider.rs": {
+        "sha256": "243fabf8f986de79e5da99b6df561e95593ce593a535b2d1d83990191e14d85f",
+        "size": 1879
+      },
+      "tests/golden/c03/x86_64-apple-darwin/expected.rs": {
+        "sha256": "be10bb4d5fc5508f0e2150bb56bdadf8dae025903210e20f1624bb74d42a6207",
+        "size": 2533
+      },
+      "tests/integration/c03/README.md": {
+        "sha256": "489ddb866d0c3cf764baeed1f9c20cce7c6ad5d0212e61967f664fd45a4cb1a9",
+        "size": 5357
+      },
+      "tests/integration/c03/cli_install.py": {
+        "sha256": "3a017d2de90863e4af475c80a8cfdc482f6e4040d25725a993277a8be14cb07b",
+        "size": 1990
+      },
+      "tests/integration/c03/common.py": {
+        "sha256": "91d686ef54685611faa4882dd294d073fb27e2124beb606158bed9da8f944a6b",
+        "size": 2093
+      },
+      "tests/integration/c03/freeze.py": {
+        "sha256": "e9c832f14a9ab7f5fb8ad29995831237a7aeee9a3506dd9f005938d304ac86fe",
+        "size": 7116
+      },
+      "tests/integration/c03/helper.py": {
+        "sha256": "877be4a40d9ae03c851e8d50b2989e49a0f2974fe69e11f76ebfa18044b66b44",
+        "size": 2152
+      },
+      "tests/integration/c03/install_tools.py": {
+        "sha256": "d3fa790de01ee2231cfd921d160295885de664a01d5bb04f8fc0dff8e6986521",
+        "size": 293
+      },
+      "tests/integration/c03/native.py": {
+        "sha256": "12be731719eeaacfe6734b069b40e147c034d5997fb6d3cced8393233daf86ad",
+        "size": 12603
+      },
+      "tests/integration/c03/test_handshake.py": {
+        "sha256": "ecab30bda4e7cf4229dfc3d687fdd493b041ad1c022e596ee380a28fc27148f9",
+        "size": 4199
+      },
+      "tests/integration/c03/toolchain.json": {
+        "sha256": "0f6cc6f99ba7a91f089642da35b10443fe2e425b9e8238fd04158161e0865381",
+        "size": 1209
+      },
+      "tests/integration/c04/README.md": {
+        "sha256": "cdd0950f49bc4582bc5c374062e0b4e7f7b1d8e8388f20689bddb463042d16f2",
+        "size": 2125
+      },
+      "tests/integration/c04/fixture.py": {
+        "sha256": "12a661311c763bec16ede1a64ef74c641720231d02abba7cd74179312aaaabd9",
+        "size": 3381
+      },
+      "tests/integration/c04/test_queries.py": {
+        "sha256": "7d46dd60f82ac02ddfad23743a28d953e9461a9738a1f5ef5308b666b79b6e56",
+        "size": 8998
+      },
+      "tests/integration/c04_dag/README.md": {
+        "sha256": "739181ef70afe11dac37423f86e935e22b243ea2596b06f8db810cc06b4698c7",
+        "size": 1091
+      },
+      "tests/integration/c04_dag/fixture.py": {
+        "sha256": "2ebd52fb41f07f7483326c49f6da46f1078c65d60fa1a7079cc6921b7912a6e0",
+        "size": 2516
+      },
+      "tests/integration/c04_dag/helper.py": {
+        "sha256": "a5a7bae32bdc00a698fcd961a0555fb405f6e74fb5938aa1cd6d5ec848c8dbc2",
+        "size": 2112
+      },
+      "tests/integration/c04_dag/test_dag.py": {
+        "sha256": "22b94f42266f4f869006522a45e5144fecf49306a07c053c982eef57d944de27",
+        "size": 13088
+      },
+      "tests/integration/c04_inputs/README.md": {
+        "sha256": "a9416b245b8bc2e7768c6116cb3d8db93730623280da49bb957ecd7582452bec",
+        "size": 5768
+      },
+      "tests/integration/c04_inputs/helper.py": {
+        "sha256": "7a3ed63d4bd9239c8dd1f6f884f23626243f40cf624672a40422c966a7d5da3c",
+        "size": 2599
+      },
+      "tests/integration/c04_inputs/test_frozen_inputs.py": {
+        "sha256": "db64162ad004d2c2f4f0eb8b987d32a8709c2582db8627b2f9bb622e455966b5",
+        "size": 12799
+      },
+      "tests/integration/c04_observations/README.md": {
+        "sha256": "c0b33f8989ea2a74971cf2d7013ab553b5fa99bab7fecc08a1096606d89e0944",
+        "size": 1289
+      },
+      "tests/integration/c04_observations/test_observations.py": {
+        "sha256": "578d55fb3b25a998ce05369402b183e829ebbff02f286e219806158de4a3ea62",
+        "size": 11884
+      },
+      "tests/integration/c04_package/README.md": {
+        "sha256": "95fd966a206543c87b1b28047baecf179148607508800f94cf65f1edfc0cca2d",
+        "size": 4575
+      },
+      "tests/integration/c04_package/cli_fixture.py": {
+        "sha256": "f7b035be4d77c201804d53c123b3a01c95e2afa23c95324d38cbef0acca41f04",
+        "size": 14003
+      },
+      "tests/integration/c04_package/dependency_fixture.py": {
+        "sha256": "0fbfc1844a1af92ff0b0dba7b4b41932cece4f66d84cf9e048724feda7d27734",
+        "size": 4221
+      },
+      "tests/integration/c04_package/protocol_helper.py": {
+        "sha256": "2b32eec4870429c7ee472bd909e51f28a994352481be69a94c7e53bcefb7c4ef",
+        "size": 6921
+      },
+      "tests/integration/c04_package/support.py": {
+        "sha256": "bc02606f2a3918ccb979105b632ead7e68e6ae91716141df56081ba7e885791a",
+        "size": 3857
+      },
+      "tests/integration/c04_package/test_cli.py": {
+        "sha256": "610362bb7bdf5b8cf51c32b40fd3aff820580673b31afc1097c749509935e3d2",
+        "size": 23182
+      },
+      "tests/integration/c04_package/test_cli_dependencies.py": {
+        "sha256": "3ae1be72a82fa9bfda3ca71d7be14a0bb2f6c7643beaaff6f4b4e97000a62506",
+        "size": 9029
+      },
+      "tests/integration/c04_package/test_dependencies.py": {
+        "sha256": "df506207136b6d552a2886854d4e91ca5e469fe7cfbfc8fb0c28d8b28bf7366b",
+        "size": 11760
+      },
+      "tests/integration/c04_package/test_transactions.py": {
+        "sha256": "6aef5199ac7b865ed2ae060185ba2dee7f8dfd1cfc5577808f5ab567e0a151b2",
+        "size": 19530
+      },
+      "tests/integration/c04_process/README.md": {
+        "sha256": "9a3f857b2194e4710aca05c5101b401433e853c5ade55512c3164c96df412ca5",
+        "size": 1585
+      },
+      "tests/integration/c04_process/helper.py": {
+        "sha256": "1549168aaca11fec823eca56d9c3670b6449a56a9b1d8989b70c95dca68c34cd",
+        "size": 2706
+      },
+      "tests/integration/c04_process/test_process.py": {
+        "sha256": "85ace25034be8ead74008be89461a8fb568c97c4b12ffbc24772300c30779031",
+        "size": 11930
+      },
+      "tests/integration/c04_tasks/README.md": {
+        "sha256": "a5ae4c319e846b0c4acad64b8cd5d18ed9f52de13c9c132bb23f14957293142f",
+        "size": 6747
+      },
+      "tests/integration/c04_tasks/fixture.py": {
+        "sha256": "134aefb1e025a452bc38cd8f0892b22cd12514dc2f9c29e0d783e411e58ea75a",
+        "size": 3202
+      },
+      "tests/integration/c04_tasks/helper.py": {
+        "sha256": "d3a4db5fe628f6196fcfb0bbe2bf0d5cf1fcd2bd44713785c85359911af97b96",
+        "size": 3635
+      },
+      "tests/integration/c04_tasks/test_tasks.py": {
+        "sha256": "631407e9660a719bd2dd7dde80f2468d40b46c3b6c91593311535fc29ca3ecb9",
+        "size": 14815
+      },
+      "tests/integration/c05_pipeline/test_safety.py": {
+        "sha256": "65080bad175c48e5c1e6dd18c9a2b60a72f6322f779f8d35fb8d59d69e1f56c1",
+        "size": 14821
+      },
+      "tests/integration/c05_reader/test_project.py": {
+        "sha256": "523c659551b17745ddaaa8caaf1b4f6fe1d03da5492ab91a71e4d3d266799ba3",
+        "size": 2690
+      },
+      "tests/integration/c05_reader/test_reader.py": {
+        "sha256": "a5d7cc17aa41789075620616856a770911e12368fc426d7fa79335a87fb94f56",
+        "size": 22181
+      },
+      "tests/integration/c06_project/test_backend_installer.py": {
+        "sha256": "20d60842b7ffc4da0119397f5c3782dea5abd45659bddc66474e84d621d227a2",
+        "size": 3094
+      },
+      "tests/integration/c06_project/test_preparation.py": {
+        "sha256": "77aabeeef318ed4ccdca0e6d0965ef54d75ce1797631aea7b6ebdb64dacc478a",
+        "size": 12194
+      },
+      "tests/integration/c06_project/test_vendor.py": {
+        "sha256": "af4380e839fed3e87c48d46ae8fd32d5e0577564c7c9dfd82910d4ad500b1358",
+        "size": 3100
+      },
+      "tests/integration/c06_reader/fixtures/skie-api.json": {
+        "sha256": "3f4ca6ef01e156bcad4e109185ebfdade0b2cbcc48367b4a462a4cdb4fef7ceb",
+        "size": 122775
+      },
+      "tests/integration/c06_reader/fixtures/uniffi-api.json": {
+        "sha256": "0c71055fb47d6ef7573b749334158336fe5bc8ec7d84fadc1ab3b9c3a4e503e7",
+        "size": 13235
+      },
+      "tests/integration/c06_reader/test_declarations.py": {
+        "sha256": "a69455a463af4ec81ae360e28c0f7c72087d32684daf70e79a9aab6078e575b3",
+        "size": 10978
+      },
+      "tests/integration/c06_tools/test_gobley_sources.py": {
+        "sha256": "b98e6df186da013f7247c3b538bd71f861a273f297052eb31a86e98e4924d571",
+        "size": 3247
+      },
+      "tests/integration/c06_tools/test_managed_install.py": {
+        "sha256": "d9f979602fe1d391ad1577af2cc0c6b5c570e68431d1f3763c7414b7769dd91f",
+        "size": 11424
+      },
+      "tests/integration/c06_tools/test_python_runtime.py": {
+        "sha256": "1931503330c4120993b20b62e053957d383cebf359e54987669e7e4f87af7b6c",
+        "size": 3444
+      },
+      "tests/integration/c06_tools/test_skie_workspace.py": {
+        "sha256": "768a5717ddc5d0c7042875e04bfa605641498578f9c0ee6837825fcc2d38a97c",
+        "size": 7943
+      },
+      "tests/integration/c07_arkts_adapter/README.md": {
+        "sha256": "5031e1819fc82279599b297323e44729a4c35985748fa3d75d0fb54fde128d77",
+        "size": 574
+      },
+      "tests/integration/c07_arkts_adapter/test_compile_inputs.py": {
+        "sha256": "eee41508293255303e5f2a1602d3644478c7148166a939c2718edce3c1ef95b9",
+        "size": 1985
+      },
+      "tests/integration/c07_arkts_adapter/test_environment.py": {
+        "sha256": "2762903ab2df848bdc20221ab06d77e5afcba882d62f95d83ff9e702cefac7ad",
+        "size": 5041
+      },
+      "tests/integration/c07_arkts_adapter/test_har_inputs.py": {
+        "sha256": "fe977595dd05baf1f4e90a762e6629baf9fbb6aba24329ef43c13955f5a5af38",
+        "size": 6490
+      },
+      "tests/integration/c07_arkts_adapter/test_identity_fixtures.py": {
+        "sha256": "771b4d63f32069638006a9b78cadcd786ae671071d1eeb7c72d08a54b51e5f65",
+        "size": 7953
+      },
+      "tests/integration/c07_arkts_adapter/test_package_evidence.py": {
+        "sha256": "5fe42c7ed8e1df5efeb1de5b8d1e2dc910ecfbcb560c374d33683a853a75c7b0",
+        "size": 5240
+      },
+      "tests/integration/c07_arkts_adapter/test_public_entry.py": {
+        "sha256": "fdb45fdb150ccc8acf01314cc718c6a35a9571a52bdf3d47c2119634d87b8db6",
+        "size": 11459
+      },
+      "tests/integration/c07_arkts_adapter/test_rust_entry.py": {
+        "sha256": "cf0aaf232d8d4630d2cb8231f790270ffc041abe64bb43b9166a2ddf0618e4cf",
+        "size": 2490
+      },
+      "tests/integration/c07_arkts_facade/README.md": {
+        "sha256": "82ffe2634d3f998ec989652efa883742b555c8d8031fdd3992cfb7129b9eb826",
+        "size": 1349
+      },
+      "tests/integration/c07_arkts_facade/check.cjs": {
+        "sha256": "fb519494bebd8c381d1ec69d93fef8f62b4ce2cbb8a8e0d26d8b4204dd629598",
+        "size": 18596
+      },
+      "tests/integration/c07_environment/README.md": {
+        "sha256": "6c5c7bef170df1f839470835ae9b3c31733d442cbcdd1ed2f8c5f1dfdccdce71",
+        "size": 3412
+      },
+      "tests/integration/c07_environment/test_preflight.py": {
+        "sha256": "05ed50056c854d24fc81e1b0fc9f5e8c3e8ff7ca595a6b224c33ae1a92bc5fb3",
+        "size": 20772
+      },
+      "tests/integration/c07_har/README.md": {
+        "sha256": "a03aefcc43ea9c27c7e1fae97260b9bb37a6707da4e6cf9b13ef2ce2f9f98090",
+        "size": 535
+      },
+      "tests/integration/c07_har/test_har.py": {
+        "sha256": "205f1953efb3ece1a4f0f8666ea024ef2b9b2fe63def9aaca50cbc47476f453a",
+        "size": 7543
+      },
+      "tests/integration/c07_native_gateway/README.md": {
+        "sha256": "bf60a1d00819952006835ceb62881bb52758a0059136152e63d7ea77eab05b81",
+        "size": 1397
+      },
+      "tests/integration/c07_native_gateway/host-platform.hpp": {
+        "sha256": "c9c3077e1548933285ded46c6873bd23b0ad2e6cd9521b7946d6f457961edd81",
+        "size": 230
+      },
+      "tests/integration/c07_native_gateway/run_host.py": {
+        "sha256": "c203d8f7582c4d5e41893cd89c4f19226ebff7a0ba81f9521dae57aeb62b5a1b",
+        "size": 6932
+      },
+      "tests/integration/c07_native_gateway/test_inventory.py": {
+        "sha256": "1dcbaa8eb1b317d28ee56ecdaee471a6c60b85b322bc86f10a1c04018590ecf9",
+        "size": 4215
+      },
+      "tests/integration/c07_native_gateway/test_native.cpp": {
+        "sha256": "8e17604044861276b6dc6c21d73e812e51df1e8671a54b64df938ae0810ba616",
+        "size": 12148
+      },
+      "tests/integration/c07_native_gateway/test_native.py": {
+        "sha256": "1bbe57195f736ac6729e889d54b39735c6a9cd6b44cf0064b1f5795bad3b0d90",
+        "size": 10746
+      },
+      "tests/integration/c07_native_gateway/test_observer.cpp": {
+        "sha256": "8ac3462929b99fefec3853d9a6880110b19c52370cffb6991f8516a3fda7fcc1",
+        "size": 10700
+      },
+      "tests/integration/c07_native_gateway/test_registry.cpp": {
+        "sha256": "d3cf674ffa6be7e92025861a1f1c935198eef89bee424702b4d292181c1e47db",
+        "size": 8338
+      },
+      "tests/integration/c07_native_protocol/README.md": {
+        "sha256": "d0755e2e450f133e5d135bbc32e4719b3a9df751e2f13ec70d495fde1f5b261c",
+        "size": 1775
+      },
+      "tests/integration/c07_native_protocol/author/c_provider.c": {
+        "sha256": "ef4deb57c4ad5699250c48a532efa606f61e6788748bc01de93cb80a6f0fa5bb",
+        "size": 2625
+      },
+      "tests/integration/c07_native_protocol/author/c_provider.h": {
+        "sha256": "9d6ebc8c5ac8d57c82f07551ee32c2d42b8fef9e06ebbe73cadbb85b51ac3b32",
+        "size": 941
+      },
+      "tests/integration/c07_native_protocol/author/protocol_tests.cpp": {
+        "sha256": "4c319b4c300b5c25289b00b570a4c99c899790958e92f2281bd645ddf88e5daf",
+        "size": 25900
+      },
+      "tests/integration/c07_native_protocol/check.py": {
+        "sha256": "9782e8b93b25a8cd39be123994223d8e280c0a2f7f0426829d5cd679e3f65828",
+        "size": 5487
+      },
+      "tests/integration/c07_native_protocol/independent/c_provider.c": {
+        "sha256": "e6595d28e944c04ce2349e736b6b73adcdf14a562fbd4ec6ac8e38b556ca3293",
+        "size": 3531
+      },
+      "tests/integration/c07_native_protocol/independent/c_provider.h": {
+        "sha256": "525c97fe6651295411056c35617a1d7af6410df31c6e329efdac922b595cde35",
+        "size": 935
+      },
+      "tests/integration/c07_native_protocol/independent/protocol_tests.cpp": {
+        "sha256": "2b8d2716b077c6463cb951c480782f70b182a2ba4ba3266c70345fa650ed1480",
+        "size": 30099
+      },
+      "tests/integration/c07_native_protocol/typed/typed_clone_tests.cpp": {
+        "sha256": "e16a2d53c3e857ccdc3e21587d7514dc4dc8ca47dc06d81dac81b583d871db47",
+        "size": 5721
+      },
+      "tests/integration/c07_native_providers/README.md": {
+        "sha256": "cce0a3e2ce16e6cf83747b93eff5837399a8f7245be5cb9f1c2732b0b4e787ff",
+        "size": 1576
+      },
+      "tests/integration/c07_native_providers/check.py": {
+        "sha256": "f549d772e713c7133a840aa1e0c8d94edc7d352c76a010edba6e29179a49474d",
+        "size": 5322
+      },
+      "tests/integration/c07_native_providers/provider_tests.cpp": {
+        "sha256": "a2240171073222ca66e4ba06ea0766958d917ce27357fb1832c34580d3ae04cf",
+        "size": 9901
+      },
+      "tests/integration/c07_native_worker/README.md": {
+        "sha256": "bba59112747228280552597e6a556bc2078d6efb820f9b81a75581a11db47c09",
+        "size": 2051
+      },
+      "tests/integration/c07_native_worker/check.py": {
+        "sha256": "ec02bbcce80b860695e87d1f5aa847cc4eae5b41f2b899a507170e3950c27752",
+        "size": 4454
+      },
+      "tests/integration/c07_native_worker/fail_pthread_create.c": {
+        "sha256": "ff7e7732469d49f83fe42e245fdf8ab5fd591a20a5ebe06e5b503c270fbdd5d9",
+        "size": 1117
+      },
+      "tests/integration/c07_native_worker/failed_thread_creation.cpp": {
+        "sha256": "25df0d8dc0294012da637e99436f6a7558b4dce0a956c2c79cf1577baf6d0f63",
+        "size": 1384
+      },
+      "tests/integration/c07_native_worker/stale_thread_id.cpp": {
+        "sha256": "9373e077081103023939ddb730b5eb889aae11b79cbc8f94d37b3de148f5d80e",
+        "size": 3132
+      },
+      "tests/integration/c07_native_worker/tls_destructor_self_join.cpp": {
+        "sha256": "3b9ddd11e14cba6c3c7e73591f84334d2244ef83be1814bc96abdcc4100fa634",
+        "size": 3326
+      },
+      "tests/integration/c07_native_worker/worker_tests.cpp": {
+        "sha256": "5e3fb5b6cecfaafa9124e577e73424358c9ed59bce03bd91bc51d4cb43ce6db9",
+        "size": 12054
+      },
+      "tests/integration/c07_pipeline/README.md": {
+        "sha256": "4a02aeb3af73fddd6da7a666240ade648c48eba217280de990b6e3d6c6380740",
+        "size": 1826
+      },
+      "tests/integration/c07_pipeline/test_pipeline.py": {
+        "sha256": "925a38a6919a422387c9d9ad22dfda3ee69fa2024f629b745b39cafa3b6ede98",
+        "size": 16394
+      },
+      "tests/integration/c07_rust_frontend/README.md": {
+        "sha256": "8167a76a63905776f0042203692b7fa380beeed5958642dbac11955282a3f3c2",
+        "size": 811
+      },
+      "tests/integration/c07_rust_frontend/test_artifact.py": {
+        "sha256": "704c6b302c5ca429b6953ab6fa6d19f47f9dcd032b6784cd78d24e732d1f7580",
+        "size": 2236
+      },
+      "tests/integration/c07_rust_frontend/test_frontend.py": {
+        "sha256": "93ccf5be8d5d92cc8e87b3a77143acc5503a0b2ba4f1db44f2f8dbf2cb0dc238",
+        "size": 5269
+      },
+      "tests/integration/c07_tools/README.md": {
+        "sha256": "7750205ea36cd91ae6be995efe63af0a1d5d0645bbaffb37b2456036b1b051b0",
+        "size": 3229
+      },
+      "tests/integration/c07_tools/test_tools.py": {
+        "sha256": "b209d185436412d4cb0915559df00300232d6a4a06e78aff979515b496dc0f65",
+        "size": 15456
+      },
+      "tests/integration/l04_swift_observation/PackageConsumer.swift": {
+        "sha256": "032c6c6c205416e8516d1a8d073492577e0b4bc8dfe0c35c150f938ff2d9572c",
+        "size": 2322
+      },
+      "tests/integration/l04_swift_observation/README.md": {
+        "sha256": "184bcd0b94899f0571189989d4c2acbb04a53e35b9045b64a8d6a8b86488d835",
+        "size": 2522
+      },
+      "tests/integration/l04_swift_observation/SkieConsumer.swift": {
+        "sha256": "8be349d468df26ee28a7a900d8ef83586e22c05fb48b3c0a09ad05ff2ec620a6",
+        "size": 4786
+      },
+      "tests/integration/l04_swift_observation/test_candidate_admission.py": {
+        "sha256": "2bec469585e7133291316019966b503210f5e60d4b3d8db01b230072e0472763",
+        "size": 4654
+      },
+      "tests/integration/l05_arkts_observation/README.md": {
+        "sha256": "07c074b3fe8bafc4e10e7eafa0af9c9545c99b1b0be8f33286002adeaa69f84b",
+        "size": 1840
+      },
+      "tests/integration/l05_arkts_observation/SDK_README.md": {
+        "sha256": "fa2bcd022845445d18627ed78bb0c8a4b79fec60def88e73f19243f2dac094ab",
+        "size": 3036
+      },
+      "tests/integration/l05_arkts_observation/check.cjs": {
+        "sha256": "9ab544193a3ed712d9c774c4474dc3bb304def2949b9a8be32b8246a3152fb25",
+        "size": 15961
+      },
+      "third_party/c06-source-attribution.json": {
+        "sha256": "14ac4857a30abf3a511920ccc426c7ef6a6e832a6b158d388dcee327a461c219",
+        "size": 8082
+      },
+      "third_party/gradle-wrapper-9.7.1/ATTRIBUTION.md": {
+        "sha256": "40e340094213e99c3aaccbc6b83d9c158baad62a5ab1d038ff8998d2f7dd80f4",
+        "size": 1044
+      },
+      "third_party/gradle-wrapper-9.7.1/LICENSE": {
+        "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594",
+        "size": 10174
+      },
+      "third_party/gradle-wrapper-9.7.1/NOTICE": {
+        "sha256": "c2de5fd9adc7ccc4e1382a0e1f38ec6e14f8ca6e28d3c20289fe80353b019aa1",
+        "size": 868
+      }
+    },
+    "changed_during_capture": []
+  },
+  "classified_markdown": {
+    "implementation_and_repository_guides": [
+      ".github/pull_request_template.md",
+      "AGENTS.md",
+      "CONTRIBUTING.md",
+      "README.md",
+      "SECURITY.md",
+      "THIRD_PARTY.md",
+      "adapters/artifacts/arkts/README.md",
+      "adapters/generators/akinterop/ATTRIBUTION.md",
+      "adapters/generators/akinterop/README.md",
+      "adapters/generators/gobley/ATTRIBUTION.md",
+      "adapters/generators/gobley/README.md",
+      "adapters/generators/kotlin_rust/README.md",
+      "adapters/generators/rust_c/README.md",
+      "adapters/generators/uniffi/ATTRIBUTION.md",
+      "adapters/generators/uniffi/patches/README.md",
+      "adapters/toolchains/arkts/README.md",
+      "adapters/toolchains/kotlin_rust/README.md",
+      "adapters/toolchains/rust_c/README.md",
+      "crates/madb-cli/README.md",
+      "sdk/arkts/facade/README.md",
+      "sdk/arkts/native-gateway/README.md",
+      "sdk/arkts/native-runtime/README.md",
+      "sdk/arkts/observation/README.md",
+      "sdk/arkts/test-support/README.md",
+      "sdk/arkts/test-support/contracts/PORTS.md",
+      "sdk/c/arkts-provider/README.md",
+      "sdk/c/first-route/README.md",
+      "sdk/cpp/arkts-provider/README.md",
+      "sdk/kotlin/arkts-owned/README.md",
+      "sdk/kotlin/gobley/README.md",
+      "sdk/kotlin/skie/README.md",
+      "sdk/rust/arkts-bridge/README.md",
+      "sdk/rust/arkts-provider/README.md",
+      "sdk/rust/c-client/README.md",
+      "sdk/rust/engine/README.md",
+      "sdk/rust/uniffi/README.md",
+      "sdk/swift/observation/README.md",
+      "tests/fixtures/c07_arkts_generation/README.md",
+      "tests/fixtures/contracts/README.md",
+      "tests/integration/c03/README.md",
+      "tests/integration/c04/README.md",
+      "tests/integration/c04_dag/README.md",
+      "tests/integration/c04_inputs/README.md",
+      "tests/integration/c04_observations/README.md",
+      "tests/integration/c04_package/README.md",
+      "tests/integration/c04_process/README.md",
+      "tests/integration/c04_tasks/README.md",
+      "tests/integration/c07_arkts_adapter/README.md",
+      "tests/integration/c07_arkts_facade/README.md",
+      "tests/integration/c07_environment/README.md",
+      "tests/integration/c07_har/README.md",
+      "tests/integration/c07_native_gateway/README.md",
+      "tests/integration/c07_native_protocol/README.md",
+      "tests/integration/c07_native_providers/README.md",
+      "tests/integration/c07_native_worker/README.md",
+      "tests/integration/c07_pipeline/README.md",
+      "tests/integration/c07_rust_frontend/README.md",
+      "tests/integration/c07_tools/README.md",
+      "tests/integration/l04_swift_observation/README.md",
+      "tests/integration/l05_arkts_observation/README.md",
+      "tests/integration/l05_arkts_observation/SDK_README.md",
+      "third_party/gradle-wrapper-9.7.1/ATTRIBUTION.md"
+    ],
+    "current_docs_and_navigation": [
+      "docs/README.md",
+      "docs/adr/0001-product-and-authority.md",
+      "docs/adr/0002-core-and-adapters.md",
+      "docs/adr/0003-lab-and-release.md",
+      "docs/adr/0004-language-extension.md",
+      "docs/adr/0005-project-initialization.md",
+      "docs/adr/0006-developer-ergonomics.md",
+      "docs/adr/0007-technology-stack-and-cpf.md",
+      "docs/adr/0008-route-selection-and-distribution.md",
+      "docs/adr/0009-implementation-contracts-and-gates.md",
+      "docs/adr/0010-external-runtime-verification.md",
+      "docs/adr/0011-arkts-native-protocol-owner.md",
+      "docs/adr/0012-extension-composition-and-delivery.md",
+      "docs/adr/0013-arkts-runtime-and-completion.md",
+      "docs/adr/0014-swift-production-baseline.md",
+      "docs/adr/0015-swift-extension-delivery.md",
+      "docs/adr/0016-arkts-production-baseline.md",
+      "docs/adr/0017-arkts-extension-delivery.md",
+      "docs/architecture/01-system-architecture.md",
+      "docs/architecture/02-modules-and-ports.md",
+      "docs/architecture/03-contract-and-ir.md",
+      "docs/architecture/04-data-and-errors.md",
+      "docs/architecture/05-lifecycle-and-concurrency.md",
+      "docs/architecture/06-backend-profiles.md",
+      "docs/architecture/07-code-generation.md",
+      "docs/architecture/08-runtime-and-idiomatic-api.md",
+      "docs/architecture/09-build-packaging-release.md",
+      "docs/architecture/10-diagnostics-and-performance.md",
+      "docs/architecture/11-language-extension.md",
+      "docs/architecture/12-extension-protocol.md",
+      "docs/architecture/13-contract-evolution.md",
+      "docs/architecture/14-project-initialization.md",
+      "docs/architecture/15-developer-ergonomics.md",
+      "docs/architecture/16-technology-stack-and-versions.md",
+      "docs/architecture/17-extension-composition.md",
+      "docs/delivery/01-implementation-plan.md",
+      "docs/delivery/02-open-source-and-contributing.md",
+      "docs/delivery/03-decisions-and-risks.md",
+      "docs/delivery/04-design-readiness-and-first-route.md",
+      "docs/engineering/01-architecture-principles.md",
+      "docs/engineering/02-clean-code.md",
+      "docs/engineering/03-design-patterns.md",
+      "docs/engineering/04-language-guidelines.md",
+      "docs/engineering/05-review-and-quality-gates.md",
+      "docs/engineering/06-documentation-quality.md",
+      "docs/engineering/07-agent-development.md",
+      "docs/examples/extensions/README.md",
+      "docs/examples/first-route/README.md",
+      "docs/examples/managed-routes/README.md",
+      "docs/product/01-positioning-and-requirements.md",
+      "docs/product/02-capabilities-and-roadmap.md",
+      "docs/product/03-developer-experience.md",
+      "docs/product/04-project-initialization.md",
+      "docs/references/README.md",
+      "docs/references/glossary.md",
+      "docs/references/history.md",
+      "docs/references/legacy-boundaries/README.md",
+      "docs/reviews/README.md",
+      "docs/schemas/README.md",
+      "docs/validation/01-testing-strategy.md",
+      "docs/validation/02-lab-architecture.md",
+      "docs/validation/03-case-specification.md",
+      "docs/validation/04-problem-catalog.md",
+      "docs/validation/05-language-onboarding.md",
+      "docs/validation/06-project-initialization.md",
+      "docs/validation/07-developer-ergonomics.md",
+      "docs/validation/08-critical-scenarios.md",
+      "docs/visuals/README.md"
+    ],
+    "historical_research": [
+      "docs/references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/ArkTS_C_CPP/ArkTS_C_CPP_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/ArkTS_Rust/ArkTS_Rust_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Kotlin_ArkTS/Kotlin_ArkTS_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Kotlin_C_CPP/Kotlin_C_CPP_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Kotlin_Rust/Kotlin_Rust_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Kotlin_Swift/Kotlin_Native_Swift_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Kotlin_Swift/Kotlin_Swift_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Rust_C_CPP/Rust_C_CPP_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Swift_C_CPP/Swift_C_CPP_跨语言边界工程清单.md",
+      "docs/references/legacy-boundaries/Swift_Rust/Swift_Rust_架构总结与新版_mad-boundary_设计输入.md",
+      "docs/references/legacy-boundaries/Swift_Rust/Swift_Rust_跨语言边界工程清单.md"
+    ],
+    "scoped_historical_evidence": [
+      "docs/reviews/2026-10-24-agent-development.md",
+      "docs/reviews/2026-10-24-atlas-depth-revision.md",
+      "docs/reviews/2026-10-24-boundary-archive.md",
+      "docs/reviews/2026-10-24-c01-baseline.md",
+      "docs/reviews/2026-10-24-c01-public-repositories.md",
+      "docs/reviews/2026-10-24-c02-contract-formats.md",
+      "docs/reviews/2026-10-24-c03-native-probes.md",
+      "docs/reviews/2026-10-24-c04-complete-package.md",
+      "docs/reviews/2026-10-24-c04-dag-execution.md",
+      "docs/reviews/2026-10-24-c04-frozen-inputs.md",
+      "docs/reviews/2026-10-24-c04-input-observations.md",
+      "docs/reviews/2026-10-24-c04-process-execution.md",
+      "docs/reviews/2026-10-24-c04-readonly-queries.md",
+      "docs/reviews/2026-10-24-c04-task-results.md",
+      "docs/reviews/2026-10-24-c05-rust-c-first-route.md",
+      "docs/reviews/2026-10-24-c06-kotlin-swift-rust.md",
+      "docs/reviews/2026-10-24-design-readiness-update.md",
+      "docs/reviews/2026-10-24-document-quality-audit.md",
+      "docs/reviews/2026-10-24-final-audit.md",
+      "docs/reviews/2026-10-24-implementation-contracts-cleanup.md",
+      "docs/reviews/2026-10-24-project-skeleton.md",
+      "docs/reviews/2026-10-24-route-atlas.md",
+      "docs/reviews/2026-10-24-route-reconciliation.md",
+      "docs/reviews/2026-10-25-architecture-simplification.md",
+      "docs/reviews/2026-10-25-arkts-extension-delivery.md",
+      "docs/reviews/2026-10-25-c07-arkts.md",
+      "docs/reviews/2026-10-25-extension-composition-design.md",
+      "docs/reviews/2026-10-25-swift-extension-delivery.md",
+      "docs/reviews/2026-10-25-swift-production-baseline.md"
+    ]
+  },
+  "review_coverage": {
+    "architecture": {
+      "normative_documents_read_completely": [
+        "docs/architecture/01-system-architecture.md",
+        "docs/architecture/02-modules-and-ports.md",
+        "docs/architecture/03-contract-and-ir.md",
+        "docs/architecture/04-data-and-errors.md",
+        "docs/architecture/05-lifecycle-and-concurrency.md",
+        "docs/architecture/06-backend-profiles.md",
+        "docs/architecture/07-code-generation.md",
+        "docs/architecture/08-runtime-and-idiomatic-api.md",
+        "docs/architecture/09-build-packaging-release.md",
+        "docs/architecture/10-diagnostics-and-performance.md",
+        "docs/adr/0001-product-and-authority.md",
+        "docs/adr/0002-core-and-adapters.md",
+        "docs/adr/0003-lab-and-release.md",
+        "docs/adr/0008-route-selection-and-distribution.md",
+        "docs/adr/0009-implementation-contracts-and-gates.md",
+        "docs/adr/0010-external-runtime-verification.md",
+        "docs/adr/0011-arkts-native-protocol-owner.md",
+        "docs/adr/0013-arkts-runtime-and-completion.md"
+      ],
+      "instructions_read": [
+        "AGENTS.md",
+        "docs/engineering/01-architecture-principles.md",
+        "docs/engineering/02-clean-code.md",
+        "docs/engineering/05-review-and-quality-gates.md",
+        "docs/engineering/06-documentation-quality.md",
+        "docs/engineering/07-agent-development.md"
+      ],
+      "code_read_completely": [
+        "sdk/arkts/facade/Boundary.ets.in",
+        "sdk/arkts/facade/RuntimeFrame.ets",
+        "sdk/arkts/native-runtime/src/worker.cpp",
+        "sdk/arkts/native-gateway/include/runtime.hpp",
+        "crates/madb-app/src/ports.rs",
+        "crates/madb-app/src/lib.rs",
+        "crates/madb-cli/src/bootstrap.rs",
+        "adapters/host/src/transaction/commit.rs",
+        "tests/integration/c07_native_gateway/test_registry.cpp"
+      ],
+      "implementation_selected_sections": [
+        {
+          "path": "crates/madb-app/src/process.rs",
+          "lines": "1-230",
+          "focus": "bounded process request/observation and pending cleanup ownership"
+        },
+        {
+          "path": "crates/madb-model/src/build.rs",
+          "lines": "1-59",
+          "focus": "external verification capability selected from required features; shared phase completion policy"
+        },
+        {
+          "path": "sdk/arkts/native-gateway/src/runtime.cpp",
+          "lines": "1-210,345-655",
+          "focus": "physical ACK, refs/TSFN/hook cleanup, retirement, close notifications, registry admission"
+        },
+        {
+          "path": "sdk/arkts/native-gateway/src/api.cpp",
+          "lines": "202-324",
+          "focus": "bootstrap, generation connect, synchronous scratch and submit admission"
+        },
+        {
+          "path": "sdk/arkts/native-runtime/include/protocol.hpp",
+          "lines": "1-220",
+          "focus": "move-only owners, borrowed result delivery, shared waiter contracts"
+        },
+        {
+          "path": "adapters/generators/arkts/profiles/snapshot-v1.json",
+          "lines": "998-1041,1200-1258",
+          "focus": "public open/close policies, declared budgets and ownership notes"
+        }
+      ],
+      "manifests_read": [
+        "crates/madb-model/Cargo.toml",
+        "crates/madb-rules/Cargo.toml",
+        "crates/madb-plan/Cargo.toml",
+        "crates/madb-protocol/Cargo.toml",
+        "crates/madb-app/Cargo.toml",
+        "crates/madb-cli/Cargo.toml",
+        "adapters/contracts/Cargo.toml",
+        "adapters/host/Cargo.toml"
+      ],
+      "readme_read": [
+        "sdk/arkts/facade/README.md",
+        "sdk/arkts/native-runtime/README.md",
+        "sdk/arkts/native-gateway/README.md",
+        "tests/integration/c07_arkts_facade/README.md",
+        "tests/integration/c07_native_gateway/README.md"
+      ],
+      "catalog_and_history_consulted": [
+        "docs/catalog/implementation-plan.json C01/C04/C07 and DEC07 entries",
+        "docs/reviews/2026-10-25-c07-arkts.md selected runtime/ownership paragraphs",
+        "docs/reviews/c07-gateway-observation.json reopen mechanism record",
+        "docs/reviews/2026-10-24-c06-kotlin-swift-rust.md selected acceptance/ownership rows"
+      ],
+      "searched_not_deeply_reviewed": [
+        "crates/madb-model/rules/plan/app dependency and IO imports",
+        "adapters/contracts build completion use sites",
+        "C07 profile/test README references and reopen vocabulary",
+        "SDK protocol.cpp implementation",
+        "C05/C06 SDK implementation",
+        "Kotlin managed C07 implementation",
+        "host full process supervision, filesystem recovery, dependency discovery and pipeline implementations"
+      ],
+      "not_run": [
+        "full build",
+        "host tests",
+        "target SDK build/runtime tests",
+        "independent upstream version/API verification"
+      ],
+      "valid_design_not_to_downgrade": [
+        "DEC07 per-symbol mechanism responsibility table remains a normative L-task acceptance; current absence of a general representation is not grounds to remove it.",
+        "C07 catalog remains in_progress/missing; restricted Snapshot facade and historical mechanism probes are not complete four-route certification.",
+        "Three-layer commits and external runtime verification are consistent at sampled implementation seams; host commit is not route certification."
+      ]
+    },
+    "delivery": {
+      "deep_read_markdown": [
+        ".github/pull_request_template.md",
+        "AGENTS.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "SECURITY.md",
+        "THIRD_PARTY.md",
+        "adapters/artifacts/arkts/README.md",
+        "adapters/generators/akinterop/ATTRIBUTION.md",
+        "adapters/generators/akinterop/README.md",
+        "adapters/generators/gobley/ATTRIBUTION.md",
+        "adapters/generators/gobley/README.md",
+        "adapters/generators/kotlin_rust/README.md",
+        "adapters/generators/rust_c/README.md",
+        "adapters/generators/uniffi/ATTRIBUTION.md",
+        "adapters/generators/uniffi/patches/README.md",
+        "adapters/toolchains/arkts/README.md",
+        "adapters/toolchains/kotlin_rust/README.md",
+        "adapters/toolchains/rust_c/README.md",
+        "crates/madb-cli/README.md",
+        "sdk/arkts/facade/README.md",
+        "sdk/arkts/native-gateway/README.md",
+        "sdk/arkts/native-runtime/README.md",
+        "sdk/arkts/observation/README.md",
+        "sdk/arkts/test-support/README.md",
+        "sdk/arkts/test-support/contracts/PORTS.md",
+        "sdk/c/arkts-provider/README.md",
+        "sdk/c/first-route/README.md",
+        "sdk/cpp/arkts-provider/README.md",
+        "sdk/kotlin/arkts-owned/README.md",
+        "sdk/kotlin/gobley/README.md",
+        "sdk/kotlin/skie/README.md",
+        "sdk/rust/arkts-bridge/README.md",
+        "sdk/rust/arkts-provider/README.md",
+        "sdk/rust/c-client/README.md",
+        "sdk/rust/engine/README.md",
+        "sdk/rust/uniffi/README.md",
+        "sdk/swift/observation/README.md",
+        "third_party/gradle-wrapper-9.7.1/ATTRIBUTION.md",
+        "docs/architecture/14-project-initialization.md",
+        "docs/architecture/15-developer-ergonomics.md",
+        "docs/architecture/16-technology-stack-and-versions.md",
+        "docs/architecture/17-extension-composition.md",
+        "docs/delivery/02-open-source-and-contributing.md",
+        "docs/delivery/03-decisions-and-risks.md",
+        "docs/examples/extensions/README.md",
+        "docs/examples/first-route/README.md",
+        "docs/examples/managed-routes/README.md",
+        "docs/product/01-positioning-and-requirements.md",
+        "docs/product/02-capabilities-and-roadmap.md",
+        "docs/product/03-developer-experience.md",
+        "docs/product/04-project-initialization.md",
+        "docs/engineering/07-agent-development.md"
+      ],
+      "count": 52,
+      "not_deep_read": [
+        "tests/** READMEs delegated to validation reviewer",
+        "historical reviews and source evidence delegated to evidence reviewer",
+        "architecture01-13 and delivery01/04 outside primary assigned scope"
+      ],
+      "missing_optional_release_file": "Root CHANGELOG absent; treated as a release prerequisite under delivery02, not a currently released-product defect."
+    },
+    "validation": [
+      "docs/validation/*.md",
+      "docs/engineering/*.md",
+      "docs/architecture/11-language-extension.md",
+      "docs/architecture/12-extension-protocol.md",
+      "docs/architecture/13-contract-evolution.md",
+      "docs/schemas/README.md + case/report/coverage/common schemas and Rust registration/evidence rules",
+      "docs/catalog/problems.json",
+      "docs/catalog/case-groups.json",
+      "docs/catalog/source-coverage.json",
+      "docs/examples/**",
+      "docs/tools/check_docs.py + documentation tests",
+      "tests/**/README.md",
+      "tests/integration/l05_arkts_observation/SDK_README.md",
+      "sdk/arkts/test-support/contracts/PORTS.md"
+    ],
+    "plan": {
+      "full": [
+        "AGENTS.md",
+        "docs/engineering/07-agent-development.md",
+        "docs/engineering/05-review-and-quality-gates.md",
+        "docs/engineering/06-documentation-quality.md",
+        "docs/catalog/implementation-plan.json",
+        "docs/product/01-positioning-and-requirements.md",
+        "docs/product/02-capabilities-and-roadmap.md",
+        "docs/product/03-developer-experience.md",
+        "docs/product/04-project-initialization.md",
+        "docs/delivery/01-implementation-plan.md",
+        "docs/delivery/04-design-readiness-and-first-route.md",
+        "docs/adr/0009-implementation-contracts-and-gates.md",
+        "docs/adr/0012-extension-composition-and-delivery.md",
+        "docs/adr/0014-swift-production-baseline.md",
+        "docs/adr/0015-swift-extension-delivery.md",
+        "docs/adr/0016-arkts-production-baseline.md",
+        "docs/adr/0017-arkts-extension-delivery.md",
+        "docs/architecture/17-extension-composition.md",
+        "docs/validation/07-developer-ergonomics.md",
+        "docs/reviews/2026-10-25-swift-extension-delivery.md",
+        "docs/reviews/2026-10-25-arkts-extension-delivery.md"
+      ],
+      "focused_search_or_sections": [
+        "docs/architecture/02-modules-and-ports.md",
+        "docs/architecture/07-code-generation.md",
+        "docs/architecture/09-build-packaging-release.md",
+        "docs/architecture/14-project-initialization.md",
+        "docs/delivery/02-open-source-and-contributing.md",
+        "docs/validation/06-project-initialization.md",
+        "docs/catalog/routes.json",
+        "crates/madb-cli/src/commands.rs"
+      ]
+    },
+    "visuals": {
+      "generated_html": [
+        "docs/visuals/architecture-overview.html",
+        "docs/visuals/arkts-c-cpp-architecture.html",
+        "docs/visuals/arkts-rust-architecture.html",
+        "docs/visuals/extensions-architecture.html",
+        "docs/visuals/implementation-progress.html",
+        "docs/visuals/kotlin-arkts-architecture.html",
+        "docs/visuals/kotlin-c-cpp-architecture.html",
+        "docs/visuals/kotlin-rust-architecture.html",
+        "docs/visuals/kotlin-swift-architecture.html",
+        "docs/visuals/route-atlas.html",
+        "docs/visuals/rust-c-cpp-architecture.html",
+        "docs/visuals/swift-c-cpp-architecture.html",
+        "docs/visuals/swift-rust-architecture.html"
+      ],
+      "templates": [
+        "docs/tools/templates/architecture-overview.html",
+        "docs/tools/templates/implementation-progress.html",
+        "docs/tools/templates/kotlin-arkts-architecture.html",
+        "docs/tools/templates/kotlin-swift-architecture.html",
+        "docs/tools/templates/route-atlas.html",
+        "docs/tools/templates/route-panorama.css",
+        "docs/tools/templates/route-panorama.html",
+        "docs/tools/templates/route-panorama.js",
+        "docs/tools/templates/shared.css"
+      ],
+      "generator": "docs/tools/render_visuals.py",
+      "catalogs": [
+        "docs/catalog/architecture-map.json",
+        "docs/catalog/routes.json",
+        "docs/catalog/implementation-plan.json",
+        "docs/catalog/route-views/arkts-c-cpp-architecture.json",
+        "docs/catalog/route-views/arkts-rust-architecture.json",
+        "docs/catalog/route-views/extensions-architecture.json",
+        "docs/catalog/route-views/kotlin-c-cpp-architecture.json",
+        "docs/catalog/route-views/kotlin-rust-architecture.json",
+        "docs/catalog/route-views/rust-c-cpp-architecture.json",
+        "docs/catalog/route-views/swift-c-cpp-architecture.json",
+        "docs/catalog/route-views/swift-rust-architecture.json"
+      ],
+      "profiles": 29,
+      "overview_nodes": 25,
+      "routes": 16,
+      "tasks": 41
+    },
+    "architecture_supplement": {
+      "previous_round_report": "architecture-review.json",
+      "supplemental_normative_full_read_by_this_agent": [
+        "docs/architecture/15-developer-ergonomics.md",
+        "docs/architecture/16-technology-stack-and-versions.md",
+        "docs/architecture/17-extension-composition.md",
+        "docs/adr/0012-extension-composition-and-delivery.md",
+        "docs/adr/0014-swift-production-baseline.md",
+        "docs/adr/0015-swift-extension-delivery.md",
+        "docs/adr/0016-arkts-production-baseline.md",
+        "docs/adr/0017-arkts-extension-delivery.md"
+      ],
+      "additional_implementation_full_read": [
+        "sdk/swift/observation/Package.swift",
+        "sdk/swift/observation/Sources/MadBObservation/MadBStateSource.swift",
+        "sdk/swift/observation/Sources/MadBObservation/MadBStateModel.swift",
+        "sdk/swift/observation/Integration/SKIE/MadBSkieStateSource.swift",
+        "sdk/arkts/observation/StateObservation.ets",
+        "sdk/arkts/observation/ArkUIStateModel.ets",
+        "sdk/swift/observation/README.md",
+        "sdk/arkts/observation/README.md"
+      ],
+      "additional_selected_reads": [
+        {
+          "path": "docs/schemas/extension-manifest.schema.json",
+          "lines": "1–260",
+          "focus": "依赖 id/kind 与不允许运行策略的 extensions"
+        },
+        {
+          "path": "docs/catalog/implementation-plan.json",
+          "lines": "C06/C07/L01 全条；E01–E06/I01–I06/C08–C11/L03–L07 状态、验收、依赖及 notes相关段",
+          "focus": "当前实施/验收缺口和跨阶段边界"
+        },
+        {
+          "path": "docs/delivery/01-implementation-plan.md",
+          "lines": "阶段、start_phase、部分交付、语言扩展相关段",
+          "focus": "第二轮跨阶段挑战"
+        },
+        {
+          "path": "adapters/generators/arkts/profiles/snapshot-v1.json",
+          "lines": "1006–1037",
+          "focus": "普通 Runtime open/close 能力"
+        },
+        {
+          "path": "docs/reviews/c07-gateway-observation.json",
+          "lines": "same-env-reopen-refusal/reopen记录和scope/certifies_c07",
+          "focus": "反证 Runtime 初步结论，保持历史不改"
+        }
+      ],
+      "not_deeply_reviewed": [
+        "C05/C06 业务生成器与全部 SDK 后端实现",
+        "Kotlin 受管 C07 完整注册器",
+        "native-runtime protocol.cpp 全部状态转换",
+        "host 全部 process/discovery/cache/recovery/pipeline 路径",
+        "Swift/ArkTS observation 测试实现及真实平台 UI 调度",
+        "全部公开包渠道、依赖下载和安装工程",
+        "架构16所列上游当前版本/API（这里只审内部职责/资格；未联网复核）"
+      ],
+      "tests_run": [],
+      "supplemental_normative_full_read_by_delegated_reviewer": [
+        "docs/architecture/11-language-extension.md",
+        "docs/architecture/12-extension-protocol.md",
+        "docs/architecture/13-contract-evolution.md",
+        "docs/architecture/14-project-initialization.md",
+        "docs/adr/0004-language-extension.md",
+        "docs/adr/0005-project-initialization.md",
+        "docs/adr/0006-developer-ergonomics.md",
+        "docs/adr/0007-technology-stack-and-cpf.md"
+      ],
+      "normative_completion": "本代理第一轮 + 本轮补读 + extension_docs 委派补读覆盖 architecture01–17 与 ADR0001–0017 全文；实现仅以明确列出的全读/局部样本计覆盖。",
+      "delegated_reviewer_note": "extension_docs 只定向读 E/I catalog，枚举实现文件但未深入代码；未改仓库、未运行构建或测试。"
+    }
+  },
+  "auxiliary_lab": {
+    "head": "d9f0b5ee6b1de47febe7a66a5bc1a1f9ae9c637f",
+    "status": " M cases/c07/arkts-c/dropped-promise.json\n M cases/c07/arkts-c/env-exit-full.json\n M cases/c07/arkts-c/event-fifo-and-atomic.json\n M cases/c07/arkts-c/event-outstanding.json\n M cases/c07/arkts-c/fanout-allocation.json\n M cases/c07/arkts-c/generation-and-handles.json\n M cases/c07/arkts-c/generation.json\n M cases/c07/arkts-c/getters-and-reentry.json\n M cases/c07/arkts-c/identity.json\n M cases/c07/arkts-c/listener-throw-close.json\n M cases/c07/arkts-c/operations.json\n M cases/c07/arkts-c/request-before-observer.json\n M cases/c07/arkts-c/request-only-retirement.json\n M cases/c07/arkts-c/result-transfer-failures.json\n M cases/c07/arkts-c/retained-bytes-and-scratch.json\n M cases/c07/arkts-c/route-ownership.json\n M cases/c07/arkts-c/runtime-close-full.json\n M cases/c07/arkts-c/settling-reentry.json\n M cases/c07/arkts-c/shared-waiters.json\n M cases/c07/arkts-c/single-claim.json\n M cases/c07/arkts-c/source-stop.json\n M cases/c07/arkts-c/state-staging-bytes.json\n M cases/c07/arkts-c/state.json\n M cases/c07/arkts-c/subscriptions.json\n M cases/c07/arkts-c/terminal-winner.json\n M cases/c07/arkts-c/worker-and-domain.json\n M cases/c07/arkts-cpp/dropped-promise.json\n M cases/c07/arkts-cpp/env-exit-full.json\n M cases/c07/arkts-cpp/event-fifo-and-atomic.json\n M cases/c07/arkts-cpp/event-outstanding.json\n M cases/c07/arkts-cpp/fanout-allocation.json\n M cases/c07/arkts-cpp/generation-and-handles.json\n M cases/c07/arkts-cpp/getters-and-reentry.json\n M cases/c07/arkts-cpp/identity.json\n M cases/c07/arkts-cpp/listener-throw-close.json\n M cases/c07/arkts-cpp/operations.json\n M cases/c07/arkts-cpp/request-before-observer.json\n M cases/c07/arkts-cpp/request-only-retirement.json\n M cases/c07/arkts-cpp/result-transfer-failures.json\n M cases/c07/arkts-cpp/retained-bytes-and-scratch.json\n M cases/c07/arkts-cpp/route-ownership.json\n M cases/c07/arkts-cpp/runtime-close-full.json\n M cases/c07/arkts-cpp/settling-reentry.json\n M cases/c07/arkts-cpp/shared-waiters.json\n M cases/c07/arkts-cpp/single-claim.json\n M cases/c07/arkts-cpp/source-stop.json\n M cases/c07/arkts-cpp/state-staging-bytes.json\n M cases/c07/arkts-cpp/state.json\n M cases/c07/arkts-cpp/subscriptions.json\n M cases/c07/arkts-cpp/terminal-winner.json\n M cases/c07/arkts-cpp/worker-and-domain.json\n M cases/c07/arkts-rust/dropped-promise.json\n M cases/c07/arkts-rust/env-exit-full.json\n M cases/c07/arkts-rust/event-fifo-and-atomic.json\n M cases/c07/arkts-rust/event-outstanding.json\n M cases/c07/arkts-rust/fanout-allocation.json\n M cases/c07/arkts-rust/generation-and-handles.json\n M cases/c07/arkts-rust/getters-and-reentry.json\n M cases/c07/arkts-rust/identity.json\n M cases/c07/arkts-rust/listener-throw-close.json\n M cases/c07/arkts-rust/operations.json\n M cases/c07/arkts-rust/request-before-observer.json\n M cases/c07/arkts-rust/request-only-retirement.json\n M cases/c07/arkts-rust/result-transfer-failures.json\n M cases/c07/arkts-rust/retained-bytes-and-scratch.json\n M cases/c07/arkts-rust/route-ownership.json\n M cases/c07/arkts-rust/runtime-close-full.json\n M cases/c07/arkts-rust/settling-reentry.json\n M cases/c07/arkts-rust/shared-waiters.json\n M cases/c07/arkts-rust/single-claim.json\n M cases/c07/arkts-rust/source-stop.json\n M cases/c07/arkts-rust/state-staging-bytes.json\n M cases/c07/arkts-rust/state.json\n M cases/c07/arkts-rust/subscriptions.json\n M cases/c07/arkts-rust/terminal-winner.json\n M cases/c07/arkts-rust/worker-and-domain.json\n M consumers/arkts/c07/README.md\n M consumers/arkts/c07/controlled/ControlledCases.ets.in\n M consumers/arkts/c07/controlled/FaultExitCase.ets.in\n M consumers/arkts/c07/controlled/SupportChecks.ets.in\n M consumers/arkts/c07/controlled/WorkerExitCase.ets.in\n M consumers/arkts/c07/controlled/workers/FullExitWorker.ets.in\n M harness/c07_companion_cases.py\n M harness/c07_companion_observations.py\n M harness/c07_generation.py\n M harness/runners/c07.py\n M harness/tests/test_c07_companion_cases.py\n M scripts/check.py\n?? cases/c07/arkts-cpp/generation.json\n?? cases/c07/arkts-rust/generation.json\n?? consumers/arkts/c07/controlled/CompletionCases.ets.in\n?? harness/c07_completion_observations.py\n?? harness/c07_controlled_execution.py\n?? harness/tests/test_c07_completion.py\n?? harness/tests/test_c07_controlled_execution.py\n?? harness/tests/test_c07_generation_routes.py\n",
+    "read_files": [
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/AGENTS.md",
+        "sha256": "d0a66ebd522f1d2a6da4c686081ca299b4c01337f754da8248be0692509e58f5"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/docs/reference/README.md",
+        "sha256": "a3a9b22e78167146a1aef3ca30bffd660d06fdf7ff377b9b387df4da790423c1"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/docs/reference/engineering/07-agent-development.md",
+        "sha256": "7500aa8b6ae82e3fec5954ca40885d96515fa7f273401f52adb0b94ce1deb8ac"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/docs/reference/validation/02-lab-architecture.md",
+        "sha256": "e359fa2868c967d90b7e99852f610b8e3a2033ec02be09d011c78c3d82cc5c77"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/docs/reference/engineering/02-clean-code.md",
+        "sha256": "a2b1c17cbd3c056584951932ee518b6385ceb409d9d0889ab05e822ae0190a66"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/docs/reference/engineering/05-review-and-quality-gates.md",
+        "sha256": "fde78f8b191c55c3bed24b8f56937780391518a82d34bca4eee55372c3f9dfe8"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/harness/runners/c07.py",
+        "sha256": "95f62eebd628d0540d959f7dbc31e4e05a8c599ba22a4762dab165199cb2784d"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/harness/c07_candidate.py",
+        "sha256": "1352f2b5804f7b6347b02e26b7086c90f4ccc37bf48c7421040f24b1f71ba200"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb_lab/consumers/arkts/c07/README.md",
+        "sha256": "2266fcdf83c5f20aaaaafaa75b949a19d3413bc740b064d05501509fdceb8bee"
+      }
+    ]
+  },
+  "changes": [
+    {
+      "path": "README.md",
+      "before": "858e470d5958e314b2cfa6b04fe3d1a357c32b63377a99bf2baa3ff80a31cace",
+      "after": "540fd3da9bf5c2e1cb61013c676ea529bebba5ba80e5f9b0e944a026ed4b4cd2"
+    },
+    {
+      "path": "docs/README.md",
+      "before": "af5c34297e1e8a94b649d608689eb9ebae0d013ab841dd2a2cdf5d690e8c984f",
+      "after": "25b0e504d0f7f86151eb7fc609057b1f16be1ce5adb33310abf0ff2c6534344b"
+    },
+    {
+      "path": "docs/architecture/16-technology-stack-and-versions.md",
+      "before": "41b57af2f5fb210422edc4e8338db8d06988a557255caa24412aa819d2654447",
+      "after": "baf09b0de92d981cc297f1350391014e00441afd9f4034e09db201950a5930b0"
+    },
+    {
+      "path": "docs/catalog/implementation-plan.json",
+      "before": "ef25d35d61f7f11e22a6e6b4a3c09c584b9e0e87a01d9260d94617520938ab77",
+      "after": "3ee9c632d20336d680b9399aec3d7ac9771dfd20a81001019834e3186c98e0e5"
+    },
+    {
+      "path": "docs/delivery/01-implementation-plan.md",
+      "before": "ea4677acd78af050b25449004efb1967f9f759dfae4d189a8a160f9b84e4ef12",
+      "after": "b587be02baeadfdd801088c306bad0348294697e7f8d818d84293ce3ad2c4c60"
+    },
+    {
+      "path": "docs/delivery/03-decisions-and-risks.md",
+      "before": "fb0dd9297d679245e80057df23074955559b34e871e8ffc80b26d6e9a5b6137a",
+      "after": "2adf3400c037f7e4e33d10ea65ae20434cfaf76e2db3b808301375fe7ccae41a"
+    },
+    {
+      "path": "docs/delivery/04-design-readiness-and-first-route.md",
+      "before": "eff7e42ef18183471b38ae4a8e1dc378d1ab55e137fa7d8d6c6736eec9a732a3",
+      "after": "c5325b29a1697256104f7e4635a9ddf1fa2840d10d00797a0122c09d624b986f"
+    },
+    {
+      "path": "docs/engineering/05-review-and-quality-gates.md",
+      "before": "48d5ef594064421370646e27cc872ea12cc43307b3648552efdf5ba9f00256b6",
+      "after": "889c91a420a5b739fa410b45e9f072876298e48473eb5ae563677e0e80c62b1f"
+    },
+    {
+      "path": "docs/engineering/06-documentation-quality.md",
+      "before": "f7e6f1d62c251e8f84b610db3552a7675c43c77ff3e53524dfd8434c0b40e21c",
+      "after": "7ee208c99d511b7c36de47a05e85059c52b0dffa848db73baadb6b8dc976b754"
+    },
+    {
+      "path": "docs/examples/case.example.json",
+      "before": "b476391e6c98a9ef635e0a063955000ac920e673a225fd38b307afa8434ff21e",
+      "after": "11ea724a32da1ee6725054d0c02bd50488b3a595225b426cea4aba4cc1b8b5cd"
+    },
+    {
+      "path": "docs/examples/extensions/README.md",
+      "before": "6c983dccb43c5141fb094413f9f6e38871483d566ede59ec5c2b9b7f4ddd4b92",
+      "after": "4e5228bdcd55a3f5190ac39374ff38717a49c6d29f2b39f44c65ffd2ef33fc51"
+    },
+    {
+      "path": "docs/examples/first-route/README.md",
+      "before": "43f127f200a2fc17808336228c91bfd2ad72f44e08fa5f0d41545f219cb3a8bc",
+      "after": "f1643dfce1e8e6b6158882cc2e5473a2e77dc5c01de96b20f0fece5021c0988e"
+    },
+    {
+      "path": "docs/reviews/README.md",
+      "before": "49232b79316d76c93ef98489679423af16a330fde7fe4f4c1e1f08fc0efc0563",
+      "after": "f3cc69974a3a0459e8aca072b5084d30c171bbb10203f7a5fee86fa40b8b1f1e"
+    },
+    {
+      "path": "docs/tools/check_docs.py",
+      "before": "dbc366696e8a35168f05776dbb75f903b02cb43c33b88cf19251373c4aaaa600",
+      "after": "bd1a374b60bc5d558a641e48ef5a7a4afa2af789cd574e3d86fb4b1a6f4b7dbe"
+    },
+    {
+      "path": "docs/tools/templates/architecture-overview.html",
+      "before": "1b74ab3f2a46b3e7a977cd4900b2b2a175110276912d96cd8902a615e63e9039",
+      "after": "74743e803e65316a12b1bebd0ad4599c4529744581cb1a2f876c5b098ba30dc4"
+    },
+    {
+      "path": "docs/tools/templates/implementation-progress.html",
+      "before": "85b7faf4b3eb9312ee14d48d99673f39e4520454b94e28261e8161b4e6d1ec66",
+      "after": "b737f402323e68ca222f56773aee5038d056eeb0483bc99d9d0fe279145ebc0f"
+    },
+    {
+      "path": "docs/tools/templates/kotlin-arkts-architecture.html",
+      "before": "f2239ba25e3bdd767c709100339e056731314a837089418058579fdb029bdda7",
+      "after": "31900b7ebdaf1faafa7cdb6168585ad8746083e939a44641b1b57823f006529e"
+    },
+    {
+      "path": "docs/tools/templates/kotlin-swift-architecture.html",
+      "before": "d400d98f01b390df783ad5dc3b7723b93938477553b092c8ea1967018b958c3b",
+      "after": "41331f59fac817df1322f788a0c9fcbd43f1ae06bfb1f620d89def4f6becd10d"
+    },
+    {
+      "path": "docs/tools/templates/route-atlas.html",
+      "before": "6f7a68418cfb6d0a936e7b45d33242862d86f7a8e7b7ca126979fcc6b937f17a",
+      "after": "25a5532c38659c8e2e43ea078d54b38531be68e3db6f54fc4d0c03f2b96f14c9"
+    },
+    {
+      "path": "docs/tools/templates/route-panorama.html",
+      "before": "5fee1fa86d5f8a116679dd144c1f78d37deb9b015d9cfc531ece32741d2c7e3a",
+      "after": "76b9a6ab7ac795833445fc1792b4cf7e722b28771de0483b7dae8369305917d2"
+    },
+    {
+      "path": "docs/tools/templates/route-panorama.js",
+      "before": "00d6566896a46b6dd9f42c8fe2dd78c893e6a6a3ce025a60c854214f1a81736d",
+      "after": "7133796d35201f24ab87230cf04a615764862be9a92ed27751fb5b934e2cfeb0"
+    },
+    {
+      "path": "docs/tools/tests/panorama_smoke.cjs",
+      "before": "84177436a808ec357284b05c89d69c8e89f691b50bb8a8536460e95c00daf74a",
+      "after": "e8ff310c4574820abfbc96e97dee832605713cdfda2869bdc11fbff1aada0239"
+    },
+    {
+      "path": "docs/tools/tests/test_document_contracts.py",
+      "before": "7e1fde5620df7da914311ad994ffa8d6e6939642f001ca0afcccb109715cb2cc",
+      "after": "7db9c71fb07ddf03b80f64b4a30c4f2e6b7b9d755226c19f940f7fb554a76335"
+    },
+    {
+      "path": "docs/validation/03-case-specification.md",
+      "before": "981210327e7235da6283a4c5bd6634046af1c0cafeccc055f6a7054f4db45478",
+      "after": "9ec372f4e971c17f93fe9e691388f47288452fc2cb0fc7e2f4816d7269fdc0ae"
+    },
+    {
+      "path": "docs/validation/04-problem-catalog.md",
+      "before": "b49370388876f6047900b3dabb4dae41d284fd310557ccb91e7e603e033aa00a",
+      "after": "ab09cb58fb89cbffbffa5b99c778fe565815797bdab74a9bb4d26e3e04d7e20f"
+    },
+    {
+      "path": "docs/visuals/architecture-overview.html",
+      "before": "af9c2094c17cd3239f2dfb5d354de94349819e67dd8897983a6fb6b0ceb32c90",
+      "after": "65efa6589f5c9514051befe7f7701c36f3fe17293b0b1fbc76262f94317b7757"
+    },
+    {
+      "path": "docs/visuals/arkts-c-cpp-architecture.html",
+      "before": "1a6fa488d17d343023d3df7c19117e6b23f2173d6d392c01b1039221e43a975f",
+      "after": "dcbb44b4150c7fa1b85da72ffe91ab01df8bb2766ba59b6e63c9c6abf1307795"
+    },
+    {
+      "path": "docs/visuals/arkts-rust-architecture.html",
+      "before": "5c6ed4d6cdfaa42c9fc5aaf321499fd1c4c27a781edac87270cde1c3711d14ce",
+      "after": "a436d235561db4fc65a286ae662f3e911c385a4d1281b64f08c7181e36132530"
+    },
+    {
+      "path": "docs/visuals/extensions-architecture.html",
+      "before": "f0006ec581e69af5b0532702abf12134f88ac6fb46bef868d7802453fec56035",
+      "after": "36d0b5ed3080ba260f36b592bac469e1a0ab4dc5f79d3911fd45e51d956d03c4"
+    },
+    {
+      "path": "docs/visuals/implementation-progress.html",
+      "before": "12b5509182dbf8ef6bded452b3788c1e2946dbd74bcd612762a6a6ffde42498a",
+      "after": "285a79ccdc9502d70509b5a2f38d0e10daa4ce695e4bd4f6ffee5f810fc5b1d4"
+    },
+    {
+      "path": "docs/visuals/kotlin-arkts-architecture.html",
+      "before": "4a56701aaac7cea2464f148fcedf8fc6e2dfde9bdc9f4f8a2012c3f8a2fc84ca",
+      "after": "9b981551d4b7d8af37bf9a73e736e040efa476257febf5fea6da250befb865a3"
+    },
+    {
+      "path": "docs/visuals/kotlin-c-cpp-architecture.html",
+      "before": "d89dfb060a8123e650de85db328e375b4233c3b9d2685277a43efad95d64fc5c",
+      "after": "ea1450fd097b9ebff42b778ad83687bf0c18bb5efe371c053c2a662e43e4b55e"
+    },
+    {
+      "path": "docs/visuals/kotlin-rust-architecture.html",
+      "before": "54c469034153634e62da3a66dcd20e6bdee7c4673b53ef27d72f2a7de1843960",
+      "after": "09f5a71597bd8a529fc680de6b125b39b90e3ed8e62744c07be0c59debaac744"
+    },
+    {
+      "path": "docs/visuals/kotlin-swift-architecture.html",
+      "before": "54c877d18de24dab8a9dc4f2187cb351d08fe73af8a535561bf68e3a8766364c",
+      "after": "e3fcfb43a4f9f4303c5fe526d1544f2ee7a815cd98e4a3bdd4d58f4f3d2c8047"
+    },
+    {
+      "path": "docs/visuals/route-atlas.html",
+      "before": "3f042949a3b1d53f04d461dff251c4381a6ae7df1b74e67d9545cabf9315a21b",
+      "after": "c2a0d2a308ebeab1e3b3ecd01f647df49a7d206ceeee7ea186fe5078a3223a84"
+    },
+    {
+      "path": "docs/visuals/rust-c-cpp-architecture.html",
+      "before": "40f1b6284eaff4b6fd6db21ad6e4b6c033813a60fbad6b5f45689e0de465a2c1",
+      "after": "083411849a6897cee26db7a2ae4c122889d8c8854d2e0cec82a7f70bda8e42d7"
+    },
+    {
+      "path": "docs/visuals/swift-c-cpp-architecture.html",
+      "before": "7e4de6d027e2d8efbb755fb642907bc606b5108818b849c2de3a8ada76dc274d",
+      "after": "6f7491bed84323184acddf841befa0ecc0772fc071026acb53445a8d0dc9953f"
+    },
+    {
+      "path": "docs/visuals/swift-rust-architecture.html",
+      "before": "b03ccfecf104fc6be5221e64c9760696aa45509fe68b1a4964cd947b0afb3026",
+      "after": "fa33ebc640a72eef270e6ac2e3b11f1fd9287939930d76bc4e6d62d60864d7ed"
+    },
+    {
+      "path": "sdk/kotlin/skie/README.md",
+      "before": "7132cf63a6861d6ff061a375c60adec35bb33485b528892d95a71dcb36da2df4",
+      "after": "4114a212846ba02a8aa7ac3b4492d9dfd4d824482fa4464ef43efb2797480ef2"
+    },
+    {
+      "path": "tests/integration/c04/README.md",
+      "before": "cdd0950f49bc4582bc5c374062e0b4e7f7b1d8e8388f20689bddb463042d16f2",
+      "after": "f847ec3dab73f090a7a96685e7ae084477aa224339991a5ba2395af01389a5e6"
+    },
+    {
+      "path": "tests/integration/c07_native_gateway/README.md",
+      "before": "bf60a1d00819952006835ceb62881bb52758a0059136152e63d7ea77eab05b81",
+      "after": "63835fa179c90b03f7506021e66823ba17a453078a9fbd1815de27cd4519b762"
+    },
+    {
+      "path": "docs/reviews/2026-10-25-current-document-audit.md",
+      "before": null,
+      "after": "ab49b8d243ae8e4574528bd9a79951cbf7468a5348b33f51b5f3ecb833baca99"
+    }
+  ],
+  "self_excluded_outputs": [
+    "docs/reviews/current-document-audit-inventory.json",
+    "docs/reviews/current-document-audit-validation.json"
+  ],
+  "limits": [
+    "Product implementation read selectively, not all code reviewed",
+    "Historical Markdown and JSON evidence kept byte-identical",
+    "Remote GitHub state and all external reference URLs not refreshed",
+    "External Lab workspace was read-only and not a single full snapshot"
+  ],
+  "parallel_state_at_integration": [
+    "adapters/artifacts/arkts/pack.py",
+    "adapters/generators/arkts/driver.py",
+    "adapters/generators/arkts/lowering.py",
+    "adapters/toolchains/arkts/README.md",
+    "adapters/toolchains/arkts/project.py",
+    "adapters/toolchains/arkts/worker.py",
+    "scripts/build_arkts_routes.py",
+    "tests/integration/c07_arkts_adapter/test_public_entry.py",
+    "tests/integration/c07_arkts_adapter/test_rust_entry.py"
+  ]
+}

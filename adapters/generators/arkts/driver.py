@@ -17,6 +17,9 @@ _spec.loader.exec_module(support)
 lowering = support.load_module(Path(__file__).with_name("lowering.py"))
 c_reader = support.load_module(Path(__file__).with_name("read_c_seam.py"))
 diagnostics = support.load_module(Path(__file__).with_name("diagnostics.py"))
+declaration_diagnostics = support.load_module(
+    Path(__file__).with_name("declaration_diagnostics.py")
+)
 
 
 def documents(root):
@@ -272,20 +275,29 @@ def _read(request, config, root, work):
     ts = config["tools"]["typescript"]
     node = config["tools"]["node"]
     base = Path(__file__).parent
-    public = json.loads(
-        support.command(
-            config,
-            "node",
-            [
-                base / "read_facade.cjs",
-                ts["path"],
-                config["public_source"],
-                public_reader_mode(config, "source"),
-            ],
-            cwd=work,
-            stdin=support.input_path(root, config["public_source"]).read_bytes(),
+    public_bytes = support.input_path(root, config["public_source"]).read_bytes()
+    try:
+        public = json.loads(
+            support.command(
+                config,
+                "node",
+                [
+                    base / "read_facade.cjs",
+                    ts["path"],
+                    config["public_source"],
+                    public_reader_mode(config, "source"),
+                ],
+                cwd=work,
+                stdin=public_bytes,
+            )
         )
-    )
+    except RuntimeError as error:
+        note = declaration_diagnostics.note_for_command_failure(
+            error, refs[config["public_source"]], public_bytes
+        )
+        if note is not None:
+            error.add_note(note)
+        raise
     policy = support.read_json(support.input_path(root, config["policy"]))
     if managed:
         if policy.get("execution_domain") != "main-env-only":
@@ -680,4 +692,6 @@ if __name__ == "__main__":
         main()
     except (OSError, ValueError, RuntimeError, KeyError) as error:
         print("C07 declaration: " + str(error), file=sys.stderr)
+        for note in getattr(error, "__notes__", ()):
+            print(note, file=sys.stderr)
         raise SystemExit(2) from error

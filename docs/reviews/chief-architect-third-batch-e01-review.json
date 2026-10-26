@@ -1,0 +1,54 @@
+{
+  "scope": "E01 third-batch selected v1 component/image pin admission only",
+  "finding": "No blocking issue found within stated narrow scope",
+  "product_mutations_by_reviewer": [],
+  "source_sha256": {
+    "adapters/contracts/src/extension_lock.rs": "b50f95b1824d191a9d6d21ca1ffe92bb39da201c954a65140d98666a294114bb",
+    "adapters/contracts/tests/extension_lock.rs": "3bf4bb674ec6071b0dade526772c7a0f192347be7d1e8bd02b4e43f5c22f71a5",
+    "adapters/contracts/src/lib.rs": "681a34bc5d159a300a6e40df100eb91b1dc4b6d057b0f3ec4f5aea5f46144946",
+    "adapters/contracts/src/extension.rs": "bb5344f7f0d7b9d462d99746c46b563b25ca2998aed0939bebc9bbcd9ff8ad38",
+    "adapters/contracts/src/artifacts.rs": "f378295641e5d2b3e9e7cb70e88d8adad5106498358dd6bff2ba2cefa18d73b8",
+    "docs/schemas/lock.schema.json": "f056caec970dd1e6f5a400255df52e6194282a010dc5e8775586322372bcca3c",
+    "docs/schemas/profile.schema.json": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+    "docs/schemas/extension-manifest.schema.json": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9"
+  },
+  "verification": {
+    "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round3/e01-review/target cargo test --manifest-path /private/tmp/madb-chief-round3/e01-review/Cargo.toml --locked --offline",
+    "cwd": "/private/tmp/madb-chief-round3/madb",
+    "exit_code": 0,
+    "tests_passed": 16,
+    "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "1.99.1 (5f94df478 2026-08-27)",
+    "log": "/private/tmp/madb-chief-round3/e01-review/run-002.log"
+  },
+  "coverage": [
+    "DocumentKind before indexing and wrong-kind profile bytes",
+    "Profile FileRef exact path/size/schema/raw-byte identity plus semantic digest",
+    "Project selection route/direction/target after coherent project rehash",
+    "Manifest registered bytes and locked raw size/digest",
+    "Full selected tool tuple and component id/version/image mapping",
+    "Coherently repinned wrong target still rejected",
+    "Zero image/manifest digests and empty image rejected",
+    "Image entrypoint path aliases rejected; NUL args rejected even matching all pins",
+    "Manifest network request and ungranted environment refused; host policy not mutated"
+  ],
+  "limits": [
+    "No execution, installation, publisher authentication, package archive confinement or link test",
+    "Not complete lock/file inventory verification, dependency pin closure, or protocol/IR negotiation",
+    "No route/component compatibility or composition ownership certification",
+    "ProcessPolicy budget and actual environment-value validation remain mandatory at process admission",
+    "Observed host/source are trusted caller observations, not self-authenticated provenance",
+    "No E01 whole-package completion claim"
+  ],
+  "retained_failed_attempt": {
+    "log": "/private/tmp/madb-chief-round3/e01-review/run-001.log",
+    "reason": "Reviewer fixture used unsupported bidirectional direction; actual schema only accepts consumer-to-provider, host-callback, reverse-export. Changed fixture to host-callback, not product or expectation relaxation. Initial 12 pass/1 fixture failure."
+  },
+  "review_artifacts_sha256": {
+    "src/lib.rs": "406d702b374aa7c5d04faae7a25e012ea722b15e8f4d2fe9f44310b1a859ba5f",
+    "Cargo.toml": "34a30499f1e08c9369ea0f26ccc2e6193101580ab69753b3438cebe1c70085c9",
+    "Cargo.lock": "d859716a0852f383339c913eb128c16a43767ef379ecca2b4dbf33bcc6d30729",
+    "run-001.log": "e74034fab595c49df2fc848108b478573f8d831f882f9a15f17930cbda1d8b7b",
+    "run-002.log": "310a536a5673c12180a573d6425a9764bf31cfa891f4da7c4848c9fc42762c51"
+  }
+}

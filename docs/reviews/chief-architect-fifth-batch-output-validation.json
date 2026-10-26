@@ -1,0 +1,88 @@
+{
+  "scope": "E01/E03 immutable generated-slot data binding, no execution/admission/transaction authority",
+  "owned_files": {
+    "adapters/contracts/src/composition/outputs.rs": "0903d67ccb11dfe3e43924e85ac26639ccd6aacd623d0e50c8f50f8ac07542f4",
+    "adapters/contracts/src/composition/pins.rs": "f33efb05ac15c6f2303cf56f03c09849a977740f943ca262d3bffc8bd5cd9437",
+    "adapters/contracts/tests/composition_outputs.rs": "bf9ed137432d584f98c1ab6dfc06ce07e086b54c8c151d1b33766c1013f2f169"
+  },
+  "shared_root_owned_inputs": {
+    "adapters/contracts/src/composition.rs": "0fbabbf42725884910a182f1bf6c4af5f1e315532a055abec0afa2518f175ea7",
+    "adapters/contracts/src/execution/spec.rs": "28eebc8153b21cf13e430eff15f61e073098016b2ab728bf6178438b0060a8b3",
+    "adapters/contracts/src/execution/artifact.rs": "a1a5c230eb718a923e16154197904cd66853a90138d7f3a7ba7d813faaeb19eb",
+    "adapters/contracts/src/execution/mod.rs": "342f9e42fa7aea6eabf36b34a23a432e674ab7aa1b1d42bc20cb94884e145855"
+  },
+  "unchanged_composition_tests": "ebb66fedd859896d98e287f61fb4df9173535aff1166454f0b3317ff6b78e1b7",
+  "checks": [
+    {
+      "command": "cargo test -p madb-contracts --test composition_outputs --locked --offline",
+      "exit": 0,
+      "path": "/private/tmp/madb-chief-round5/composition-outputs-final-003.log",
+      "sha256": "ef477c49dc5ee32a93e860bb5052232180166fd7e092e8d5d95c4bb87dc785e6",
+      "summaries": [
+        "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.54s"
+      ]
+    },
+    {
+      "command": "cargo clippy -p madb-contracts --tests --locked --offline -- -D warnings",
+      "exit": 0,
+      "path": "/private/tmp/madb-chief-round5/composition-outputs-clippy-final-002.log",
+      "sha256": "8a2dd3c0ad163a99d23b4c57736c21a840cff3e8e16eddf96fe5ca783091ef3a",
+      "summaries": []
+    }
+  ],
+  "pre_lint_simplification_regression": {
+    "command": "cargo test -p madb-contracts --test composition_outputs --test composition --test identities --test extension_files --test execution_binding --locked --offline",
+    "exit": 0,
+    "path": "/private/tmp/madb-chief-round5/composition-outputs-final-002.log",
+    "sha256": "3a92c1c171dd6a6795c7169f23391e3b8aadab850944f4b6aeb08da650efeb44",
+    "summaries": [
+      "test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.84s",
+      "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.38s",
+      "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.66s",
+      "test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.69s",
+      "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s"
+    ]
+  },
+  "pre_lint_outputs_sha256": "2284fc68b1e8c151a2df8d3f27b9be7dad6e00c1e5d97850d6ea959e25d46921",
+  "lint_only_change": "observed.into_iter().map(|(_, observation)|...) -> observed.into_values().map(|observation|...); affected output tests rerun after change",
+  "preserved_failed_check": {
+    "command": "cargo clippy -p madb-contracts --tests --locked --offline -- -D warnings",
+    "exit": 101,
+    "path": "/private/tmp/madb-chief-round5/composition-outputs-clippy-final.log",
+    "sha256": "229818896fb6ba7a43c4b410665fda1f3a0bd487b7ddbe688b4507e80d8d1898",
+    "summaries": []
+  },
+  "positive_scope": [
+    "one producer with multiple generated slots",
+    "multiple selected producers with complete slot coverage",
+    "actual in-memory bytes with exact OutputSet inventory",
+    "identical profile already included in locked inputs",
+    "original immutable per-step OutputSets and per-slot bytes retained",
+    "active workspace mutation does not replace bound bytes"
+  ],
+  "negative_scope": [
+    "missing/wrong actual bundled request/output schemas after repin",
+    "lock/profile original bytes or IR structure/policy/shape hashes differ",
+    "wrong producer component id/version/source sha even when request/task/output repinned",
+    "wrong complete selector/output domain/input/contract/policy lineage",
+    "wrong FileRef path/hash/size/schema for lock/profile/IR after repin",
+    "wrong result task/input/profile/generation identity",
+    "missing/extra files or wrong actual size/hash",
+    "wrong manifest path or extra declared output outside slots",
+    "unknown source public_id",
+    "missing/duplicate/foreign slots or steps",
+    "wrong installed image or package source digest substituted for image digest",
+    "changed fixed recipe argv or missing/extra materialized input/schema"
+  ],
+  "not_proven": [
+    "actual generator execution, EOF/exit-zero/cancellation/cleanup receipt",
+    "host filesystem exact-tree identity or hostile process confinement",
+    "actual machine host/tool provenance or environment/network authorization",
+    "complete contract type/policy/lifecycle semantics or actual generated-language exports",
+    "real business/SDK-derived required responsibility completeness",
+    "profile/2 admission through old executor (still rejected)",
+    "Source transaction, aggregate generation identity, Build/Candidate lineage or certification/publication"
+  ],
+  "independent_review": "requested from l01_contract, pending at report creation",
+  "real_route_work": "ie_foundation separately observes real C07 /1 declarations; not used to masquerade as these /2 synthetic payload test runs"
+}

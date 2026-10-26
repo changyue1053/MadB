@@ -167,6 +167,13 @@ pub fn policy_digest(ir: &Document) -> Result<String> {
 }
 pub fn profile_digest(profile: &Document) -> Result<String> {
     let root = Wire::root(profile, DocumentKind::Profile)?;
+    semantic_digest(DigestDomain::Profile, &profile_projection(root.value)?)
+}
+
+/// The existing profile fields' projection, shared by explicit versioned
+/// entry points. Callers select and validate their own document kind and domain.
+pub(crate) fn profile_projection(value: &Value) -> Result<Value> {
+    let root = Wire::at(value, "");
     let mut v = root.value.clone();
     let object = v
         .as_object_mut()
@@ -192,7 +199,7 @@ pub fn profile_digest(profile: &Document) -> Result<String> {
             Value::Array(strings(root.field(field)?.value)?),
         );
     }
-    semantic_digest(DigestDomain::Profile, &v)
+    Ok(v)
 }
 pub fn source_digest(files: &Value) -> Result<String> {
     let mut projected = Vec::new();

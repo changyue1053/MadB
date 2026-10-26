@@ -188,7 +188,8 @@
       "choices": [
         "适合已有稳定 C ABI 或需要多语言共享同一原生库的场景。",
         "C++ 实现可以先提供受控 C ABI；不将任意 C++ 头文件直接视作此配置。",
-        "ANI 由 X03 独立评估，不替换 Node-API 的 env/引用协议，也不继承其认证。"
+        "ANI 由 X03 独立评估，不替换 Node-API 的 env/引用协议，也不继承其认证。",
+        "ADR-0016 的必要责任按声明和 profile 适用；纯函数不强制 Runtime / Engine，长期资源仍须明确 owner 与关闭后条件。"
       ],
       "detail": {
         "family": "napi",
@@ -1126,7 +1127,9 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -1324,7 +1327,8 @@
       "choices": [
         "适合受控 C++ facade 与资源对象模型，公开 API 不直接泄漏 STL 或任意模板。",
         "需要稳定的多语言 C 可见面时可选上一配置，C++ 实现保留在库内。",
-        "ANI 属于 X03 的另一个运行时后端，引用与线程规则要重新实现和验证。"
+        "ANI 属于 X03 的另一个运行时后端，引用与线程规则要重新实现和验证。",
+        "ADR-0016 的必要责任按声明和 profile 适用；纯函数不强制 Runtime / Engine，长期资源仍须明确 owner 与关闭后条件。"
       ],
       "detail": {
         "family": "napi",
@@ -2262,7 +2266,9 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -2308,6 +2314,14 @@
     {
       "label": "OpenHarmony Node-API 稳定性说明",
       "url": "https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/napi/napi-faq-about-stability.md"
+    },
+    {
+      "label": "ArkTS 生产能力与交付基线",
+      "path": "adr/0016-arkts-production-baseline.md"
+    },
+    {
+      "label": "ArkTS 扩展选择与完整交付",
+      "path": "adr/0017-arkts-extension-delivery.md"
     }
   ],
   "view_schema": "madb.route-detail-view/3"

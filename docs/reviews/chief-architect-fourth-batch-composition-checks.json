@@ -1,0 +1,61 @@
+{
+  "scope": "composition/1 and profile/2 pure input-binding observation; no execution or acceptance token",
+  "files": {
+    "adapters/contracts/src/composition.rs": "4bdd459fe320b55b87495013f12929234a42a4f11db9b0c5f6bec838f4fd484c",
+    "adapters/contracts/src/composition/pins.rs": "23f1ece4dde63f4f10a335b152ef52e0966104e2e80884fdaa8acb1a7022f301",
+    "adapters/contracts/src/composition/ownership.rs": "84ce8cf78c2aa0c2f7a61c30ac92dfd79069bccd0032fcfd937fd129ad126f26",
+    "adapters/contracts/tests/composition.rs": "0a2a0060b6cd4b77fb1402c06461de61f9795d48feeddfbe7e285b7f6f08adb2"
+  },
+  "tests": [
+    {
+      "command": "cargo test -p madb-contracts --test composition --locked --offline",
+      "passed": 12,
+      "failed": 0,
+      "log": "/private/tmp/madb-chief-round4/composition-test.log",
+      "log_sha256": "34b0b882cfc637dfbedd91a9cdd1df2d44d7fc2041ad08196de375b66dcc4db2",
+      "observed_summary": "test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.77s"
+    },
+    {
+      "command": "cargo clippy -p madb-contracts --tests --locked --offline -- -D warnings",
+      "exit": 0,
+      "observed_tool_output": "Checking madb-contracts v0.1.0-dev.0 (/private/tmp/madb-chief-round4/madb/adapters/contracts)\nFinished `dev` profile [unoptimized + debuginfo] target(s) in 0.53s"
+    }
+  ],
+  "checked": [
+    "composition semantic projection agrees with independent shared fixture",
+    "profile/2 explicit semantic domain; profile/1 entry refuses /2",
+    "byte-pinned project/profile/composition/packages and whole source inventory",
+    "fixed host recipe selection and component/slot closure",
+    "actual seven bundled decoder schemas in lock.schemas",
+    "component source identity and exact profile tool tuple",
+    "SDK/source input presence and direct profile/composition back-reference rejection",
+    "future output paths cannot alias inputs/schemas/profile",
+    "manifest SDK asset source ownership and generated producer package",
+    "selected dependency graph and normalized responsibility keys",
+    "independently supplied required/provided responsibility set equality",
+    "snapshot selector/source identity and referenced public symbols"
+  ],
+  "not_established": [
+    "filesystem confinement or dependency discovery completeness",
+    "arbitrary opaque SDK internal semantics or transitive reference graph",
+    "cross-package re-export or arbitrary physical object aliases",
+    "real SDK exports/IR type semantics/policy validation",
+    "materialized OutputSet bytes and output lineage",
+    "host/tool runtime identity, environment/network grant or process execution",
+    "end-to-end E01/E03 acceptance or publication"
+  ],
+  "independent_review": "requested from l01_contract; pending at report creation",
+  "negative_groups": [
+    "wrong profile domain",
+    "missing or repinned wrong bundled schema",
+    "missing SDK/authoritative source, SDK->composition back-reference",
+    "repinned wrong component port, missing composition feature, example package",
+    "future output same path, case alias, ancestor/descendant and profile/schema collisions",
+    "duplicate source aliases and generated slot aliases",
+    "missing/extra/duplicate responsibility key or mismatched owner",
+    "snapshot missing symbol or package-only source digest",
+    "coherent full-chain repin to another target/direction/route/profile_id",
+    "modified frozen package bytes, image digest substituted for source digest, changed full tool tuple",
+    "dependency cycle or absent endpoint, unsupported/missing required feature"
+  ]
+}

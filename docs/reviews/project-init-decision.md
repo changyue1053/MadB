@@ -1,0 +1,125 @@
+# I01 项目初始化具体格式：四项修订决定候选
+
+状态：**待项目所有者裁定，未采用，未写入生产 schema**。日期：2026-10-26。推荐一次采用下述 A–D；替代项分别列出，不把设计向量通过当作格式实现或 I01 验收。
+
+任务：I01「模板契约与 IDE 探针」的第三批格式审查收口。依据为实际工作区 `/Users/changyue/Desktop/MadB/madb`，HEAD `5468d314928f8c5d494768a9b17e3ad6b7d22fcb` 加当前相关文件字节；精确来源 pin 在同目录 `project-init-decision-vectors.json`。工作区有既有改动，HEAD 不能单独标识本次输入。
+
+范围：仅修订 [第三批候选格式](2026-10-26-project-init-format-draft.md) 与 [第三批审查](2026-10-26-project-init-format-review.md) 的失败分类、creation 成功条件、引用基准/SDK 清单、profile/targets 选择。保留候选的 `madb.project-template/1`、`madb.init-result/1` 两个独立 envelope；不改变 `project/1`、`report/1`、`profile/1`、`profile/2` 或 common FileRef。其余草案字段继续属于未批准候选，不因本提案成为已实施事实。
+
+不涉及：init 命令实现、提交/恢复实现、生产 schema、catalog 状态、历史报告、任意 update/disable 模型、通用 SDK manifest、通用依赖或版本求解器、任意模板脚本、新控制操作。只复用当前 ProjectPlan；不新建一套规划器。
+
+## 可直接裁定的四项推荐
+
+| 项 | 推荐决定 | 公共字段变化 | 兼容影响 |
+|---|---|---|---|
+| A | 摘要完整度与失败类别独立 | 不新增字段；重定义 `request` / `request_digest` 的 null 条件 | 只修正未采用 InitResult 草案；CLI 既有四类退出码不变 |
+| B | 普通成功必须真实创建；dry-run 独立 | 不新增字段；收紧 `creation/termination/exit_code` 联合约束 | 不能再以纯计划冒充创建；提交后失败仍保留 created |
+| C | 输入根明确，原字节留存；SDK 经原 profile 与有限配方解释 | `template` 非 null 对象新增必需 `input_root:Path`；删除 `requirements.*.sdks` | common FileRef 不变；未采用模板/结果草案形状变更；旧 profile 的 sdk 字段不变 |
+| D | 显式 profile 且省 targets 采用该 profile 的完整平台族集合 | 不新增字段；补齐选择规则，`request.targets` 永远记录解析后的集合 | 不隐藏裁剪、补全 ABI 或创建新组合 |
+
+### A. 请求摘要不是错误分类器
+
+保留单一候选域 `madb.init-request/1` 及第三批草案的投影键；本提案不增加原始请求摘要、不另造 request wire。仅当请求语法/参数有效、模板默认值与所选 profile/targets 已确定、输出路径等投影项均已解析时，形成既有候选投影并计算摘要。
+
+`request_digest:null` 表示「本次尚不能形成完整的请求投影」，包括请求非法，也包括合法请求在模板解析/读取阶段受阻。不得从 null 推导 ErrorKind。摘要一旦已形成，后续构建或打开失败仍保留该摘要；不得因后续失败清空。
+
+`request` 保持 `{targets,verify,open,dry_run,offline}|null`。各键只有全部确定后才填对象；未能展开模板默认 targets 等值则为 null。`request` 只是摘要投影的展示子集：它非 null 不保证全部参数、模板来源等摘要输入已确定，不能据此虚构 `request_digest`。null 必须伴有具体诊断；不增加零摘要或假默认值。
+
+失败由实际阶段产生的有类型错误决定。复用 [现行 ErrorKind（第18行）](../../crates/madb-app/src/lib.rs) 和 [CLI 映射（第104行）](../../crates/madb-cli/src/commands.rs)：
+
+| 事实 | termination / exit_code | 示例诊断含义（此处不分配新公共 code） |
+|---|---|---|
+| 请求/所选声明自身非法或不受支持 | failed / 2 InvalidInput | 重复 targets、未知 profile、显式 profile 与 targets 不符、未知必需格式/配方、已取得模板内容格式非法 |
+| 合法请求的本地前提不可用或宿主 I/O 失败 | failed / 3 Host | `--template foo --offline` 且本地无可信 foo；缺所需 SDK；读取或启动 I/O 失败 |
+| 既有输出、无覆盖提交竞争、已冻结输入之后发生变化 | failed / 4 Conflict | 另一个进程抢先创建输出；执行前发现固定来源字节变化 |
+| 实际必需检查执行后失败 | failed / 1 CheckFailed | 编译/运行断言失败；由其导致的下游 blocked 不改写主失败类别 |
+| 明确取消 | cancelled / 1 | 保留真实 creation/checks；不添加未经约定的 130 |
+
+原始输入 pin 就与取得内容不符是输入校验失败；**已经核实并冻结**后同一来源变化是 Conflict。这两个事实不可混为「所有 hash 不同都是 Host」。多个失败保留各自诊断；本次终止阶段的主错误沿现有用例传播其 ErrorKind，不根据诊断文案或最后一个 blocked 项重分类。本候选不制定新的全局错误优先级。
+
+准确反例：合法 `--template foo --offline` 未命中缓存，结果 `request:null, request_digest:null, creation:not-created, termination:failed, exit_code:3` 可成立；把它强制改为 2 错在将资源不可用判成请求非法。反之 `--targets android,android` 必须为 2，不能在集合化时吞掉重复。
+
+替代：增设一个「原始请求」摘要可在解析前关联日志，但需要第二个语义域，且不能解决错误分类问题；本次不推荐。沿用草案 null 必须 InvalidInput 会误报合法离线请求，不能保留。
+
+### B. 结果须消费实际 CommitNew 观察
+
+普通请求 `exit_code=0` 必须同时满足：
+
+1. `request` 非 null 且 `dry_run=false`；`request_digest` 非 null；`template`、`template_profile`、`output`、`plan` 已完整且身份与冻结请求/模板/受检 ProjectPlan 一致。
+2. `termination=completed`、`creation=created`；用例取得同一最终输出根、同一完整受检源码计划的 **真实无覆盖 CommitNew 成功观察**。仅相信结果 JSON 中的 `created` 字符串不够。
+3. 请求范围内的必需检查按选定模板、目标与有限配方导出的独立清单完整出现且 passed；不得由结果中的 `required/optional` 自行缩减。检查 id+target 不重复；缺项、required 的 skipped/unsupported/blocked/error/failed 均非零。执行证据及所需清理也必须合格。
+4. 未请求 open 时，`open.requested=null, open.status=skipped`；请求时 `open.requested=request.open` 且实际 launch passed。open 不能替代 import/debug 证据。未完成的自有临时资源清理使结果非零，并给诊断。
+
+`--verify structure` 仍须实际渲染、结构校验和 CommitNew，不能把「没有 build」误作 dry-run。`boundary_profiles` 允许在合法纯模板中为空，不能凭空要求每个模板至少一个语言边界；若已选组合确实需要，则必须完整。
+
+dry-run 的成功分支独立：`request.dry_run=true`、身份与计划已确定、`termination=completed, creation=not-created, exit_code=0, checks=[], open.status=skipped`，没有 CommitNew/下载/构建/启动观察。可以展示请求的 `request.open`，此时 `open.requested` 与之相同，但 status 仍为 skipped，reason 在诊断中说明是 dry-run。dry-run 不许为解析未知模板联网；依赖未来下载的条目只有已有可信身份才能列入计划。未来实际创建的宿主前提可以在计划/诊断中标出，不谎称已执行检查。
+
+不能在两分支间按结果任意切换；使用冻结请求里的 dry_run。提交前失败/取消为 not-created；提交后 build/open 失败或取消仍为 created 且非零。恢复只提示已有工程 Wrapper/明确操作，不重试 init 覆盖已存在目录。无覆盖、最终路径构建及取消处理沿 [初始化阶段（第154行）](../architecture/14-project-initialization.md) 与 [提交/取消规则（第167行）](../architecture/14-project-initialization.md)，不增补更新事务。
+
+准确反例：`dry_run=false, creation=not-created, checks=[全部通过], exit_code=0` 拒绝。`creation=created, required build=failed, exit_code=1` 是合法的失败结果，不得回写 not-created。伪造 `creation=created` 但无 CommitNew 观察同样不能作为成功证据。
+
+替代：把纯计划称作普通成功会改变 init 的用户语义；若以后要只计划，已有 dry-run 足够。本次不增加 `planned` 成功态。
+
+### C. 两层引用根与 SDK 的唯一来源
+
+不扩 [common FileRef（第343行）](../schemas/common.schema.json)：其仍为 `{path,sha256,size,schema}`。输入原字节 hash/size 与文档语义摘要分别验证；不能混用。
+
+| 引用位置 | 唯一基准 |
+|---|---|
+| project-template 的 `assets.source`、`boundary_refs.profile` 等输入文件引用 | 本次固定的模板输入包根。模板及所选配方需要的原逻辑输入树须在该根下可解析；不可搜索当前工作目录/全局缓存作兜底 |
+| InitResult 顶层 `template.manifest`、`boundary_profiles` 及 `logs` / 已有文件型 attachments | 该结果的报告证据根，通常为本地结果文件所在目录；stdout 的无文件结果若需要引用，由调用方明确提供同一个证据根，否则不填不存在的文件引用 |
+| `plan.files.path`、`ide_entries.path` | 最终工程根；它们不是输入证据 FileRef |
+| 已复制 profile/2 内部 composition/file、锁内包限定路径等 | 原有被冻结的逻辑输入根与既有命名空间；按下一段恢复，绝不当作报告顶层路径重新解释 |
+
+将 `InitResult.template` 非 null 对象精确改为 `{id,version,manifest,package_sha256,input_root}`，`input_root` 是报告证据根下的安全逻辑相对 Path，指向保存的**原模板输入根**。`manifest.path` 必须在 `input_root + "/"` 下，剥去这个前缀才是原包内入口路径；即使 manifest 本身在子目录，也不能错误地把 manifest 的父目录当包根。结果中的每个已选 `boundary_profiles[].path` 是 `input_root + "/" + 原包内 profile 路径`，其余 FileRef 字段原样复制。
+
+报告保留已选输入所需的完整已验证引用闭包和既有包限定路径布局；文件内容原字节不改，不能只保存两个外层 JSON 后声称能重验 profile/2。解析模板引用时固定根为 `evidence_root/input_root`；解析该根中的 profile/2 等文档仍沿其既有协议/锁逻辑根解释。不同扩展包的同名 manifest/profile 保持其既有包限定命名空间。报告里相同 basename 不构成可替换关系；不许按 basename 查找。模板包摘要仍指向原包，不因另存证据而重算成某个报告子集的摘要。
+
+如果某个所选模板依赖的锁/输入命名空间不能保存在上述一个明确根中，第一版应拒绝其可执行准入并给来源诊断，不能通过重写已冻结文档、搜宿主路径、伪造 package_sha256 绕过。本提案没有新建可跨任意来源的挂载/重定位模型。报告保存失败时可返回失败诊断和已真实取得的字段；尚未保存并校验的 `template` FileRef 对象保持 null，不能使用尚不存在的引用。完整成功必须有可验证的上述身份。
+
+**SDK 推荐：删除未采用草案 `profiles[].requirements.{structure,build,run,open}.sdks`。** 其宿主前提对象变为闭合的 `{hosts,tools,ide_entries}`。SDK 选择仅来自已选 boundary profile 及受检有限配方的现有固定输入，由配方对相应阶段要求的实际 SDK、工具、库存和目标兼容性执行预检/证据采集。模板不得另列一个可与 profile.sdk 漂移的「通用 SDK 清单」。没有已知 profile/recipe 支持的 SDK 描述符时，拒绝该 SDK 相关执行；不能以省略数组规避配方必需项。无语言边界但确需 SDK 的工程配方，同样必须已有固定、受检 SDK 输入约定，否则不准执行，不能临时发明 manifest。
+
+当前可用事实：ArkTS 的 [project.py:224（第224行）](../../adapters/toolchains/arkts/project.py) 生成私有 `madb.native-toolchain/1`，在 [profile.sdk:261（第261行）](../../adapters/toolchains/arkts/project.py) 引用；现有 [observe:74（第74行）](../../adapters/toolchains/arkts/toolchain.py) 实际核库存和分发元数据，[check_distribution:20（第20行）](../../adapters/toolchains/arkts/toolchain.py) 限定固定 C07 版本。这是点名的适配器实现事实，**不是**已注册通用 SDK schema 或 I01 recipe。`madb.sdk-inventory/1` 交付清单也不自动等于宿主安装 SDK 的准入描述符。I01 后续若接这条路线，必须点名并接入这些真实检查，而不能仅凭 schema 字符串接受。
+
+结构级只执行实际 renderer/结构所需的前提；仅用于编译/运行的 SDK 不因 `verify=structure` 被强制安装。build/run 则必须有配方要求的 SDK，缺失归 A 的 Host。不下载系统 SDK、不替用户接受协议、不把 native sysroot 当完整应用 SDK。
+
+准确反例：原包 `profiles/p.json` 引用 `composition.file.path="compositions/c.json"`，报告将树保存在 `inputs/template-a/`。顶层 profile FileRef.path 可变成 `inputs/template-a/profiles/p.json`；profile 内容内的 `compositions/c.json` **必须保持不变**，解析根是 `inputs/template-a/`，不是报告根，也不是 `profiles/`。另一个位置同名、不同内容的 p.json 不能满足此 FileRef；`../`、symlink 越界及 hash/size 不符必须拒绝。
+
+替代：不新增 input_root，而规定固定证据前缀，也可无歧义，但会把目录命名硬编码为协议并仍要处理嵌套入口；本次推荐显式一个根字段。保留 `sdks:FileRef[]` 则必须另列精确 descriptor/recipe/validator 支持表和与 profile.sdk 的一致性约束；当前没有通用注册格式，收益不足，故不推荐。**若所有者要求保留该字段，其准确允许列表目前不能从现有 I01 代码唯一推出，须另裁定，不得默认为任意 schema。**
+
+### D. profile 与 targets 四分支
+
+template profile 与语言边界 profile 是不同概念；[现行职责说明（第22行）](../architecture/14-project-initialization.md) 不变。以下 family 集合从所选模板 profile 的 `targets[].family` 派生；精确 target id/ABI/SDK 仍来自完整目标项及其 boundary refs。
+
+| 显式 template profile | 显式 targets | 选择规则 |
+|---|---|---|
+| 无 | 无 | 使用存在且唯一的 `default_profile`；采用其完整 family 集合 |
+| 有 | 无 | 使用指定 profile；采用**该 profile** 的完整 family 集合，不先套默认 profile 的 targets |
+| 无 | 有 | 拒绝重复后按完整 family 集合精确匹配。唯一匹配即选；多项匹配且 default_profile 在其中则选该明示默认，否则要求显式 profile；零匹配拒绝 |
+| 有 | 有 | 指定 profile 必须存在，其完整 family 集合与请求相等，否则拒绝；不裁剪或偷偷加目标 |
+
+用户显式 `targets=[]` 与省略不同，拒绝空列表；重复项先拒绝，再排序。`request.targets` 和请求摘要投影记录解析后的、有序、唯一 family 集合。原始 profile selector 仍按草案保留在内部请求摘要投影；省略和显式选择可能得到相同工程计划但不同请求摘要，这是既有候选投影的可解释结果，不要求人为合并。
+
+准确反例：默认 `mobile={android,ios}`，另有 `mobile-ohos={android,ios,ohos}`。仅 `--profile mobile-ohos` 成功选择完整三族；同时 `--targets android,ios` 必须拒绝。`ios` 不能推出 simulator+device 两份 ABI，二者是否存在只读明确 profile.targets 项。ordinary/enhanced/disabled 若已是三个公开 template profile，则完整选其中一个，不能靠隐式开关删改 /2 责任集合。
+
+替代：显式 profile 也套 default targets 会让合法完整 profile 莫名不匹配；自动裁剪会创造未审查组合；均不推荐。若不想默认消歧，可要求多匹配一律显式 profile，但这会改变第三批草案的已明示默认行为，收益不大。
+
+## 已采用 profile/2 的边界
+
+[ADR-0018（第5行）](../adr/0018-extension-composition-formats.md) 已采用 composition/1、profile/2 和 `core.extension-composition@1`。因此将第三批草案第64行「首片仅 /1，/2 待决定」更正为：候选 boundary_refs 明确允许当前解码器支持的 `madb.profile/1` 或 `madb.profile/2`，未知版本拒绝；本格式决定不得重新悬置已采用 /2，也不自动宣告 I01 能执行它。
+
+对 /2 的可执行准入还必须由实际有限配方验证 composition 输入身份、引用闭包、相关参与者的必需 feature、真实声明/SDK/接线产生的责任集合以及所需生成后绑定。模板只选择完整固定输入，不自行生成「所需责任」去为自身证明；不能把 /2 降成 /1、移除 feature、让旧入口忽略 composition，或把尚未产出的输出填上未来摘要。新格式 decoder 通过、某一局部配方通过与整个 I01 工程可创建/构建是不同事实。既有 /1 摘要域、投影与拒绝规则保持。
+
+## 复用 ProjectPlan 与后续准入
+
+[ProjectPlan（第54行）](../../crates/madb-plan/src/project/mod.rs) 是纯结构计划，既非 wire，也非文件系统提交许可。模板适配器解析选定闭包后调用现有 `ProjectPlan::new`，结果再供真实宿主阶段使用。继续接受嵌套模块和根 owner 的显式文件所有权；不增加「最深模块目录自动独占」规则。[现有规则（第68行）](../../crates/madb-plan/src/project/mod.rs) 负责非空模块、唯一 id/目录、依赖闭包/重复/环、已知 owner、非根 owner 路径前缀、所有路径前缀的大小写和文件/目录碰撞及 ASCII 逻辑路径。非 ASCII 最终输出根等平台支持仍须实际验证，不借此永久缩减产品承诺。
+
+A–D 被采用仅批准这四项增量决定，可据此实施内部纯规则和到现有 ProjectPlan 的纯适配，不构成完整两种 envelope 的批准。`madb.project-template/1` 与 `madb.init-result/1` 的生产 schema、decoder 及完整格式向量，须待其余字段在同一格式决策流程中定稿后实施；尤其须明确模板包摘要/获取锁的精确原字节协议、有限 recipe/renderer/版本比较的首批支持表。本次不暗定任意 file-set 或跨厂商 solver，也不因四项增量获批而宣告可执行模板已闭合。CommitNew、构建、IDE、真实阶段观察消费和完整平台模板认证仍按现有 I01/I02 范围及其准入推进，不能用本轮设计脚本替代。
+
+## 本轮验证与交付限制
+
+同目录 `project-init-decision-vectors.json` 和 `project-init-decision-check.py` 是**设计片段**：检验 A 的类别/null 独立性、B 的两种成功谓词、C 的逻辑根/原字节及 recipe SDK 门禁、D 的有限选择，并对输入文件 SHA-256/size 做校验。不是完整模板/InitResult 实例，不是 JSON Schema，不实现完整请求摘要/JCS、平台文件系统防逃逸、真实 CommitNew 或 SDK 预检，不复制 ProjectPlan 算法，也不把任意扩展名视作支持格式。
+
+运行命令：`/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/madb-chief-round5/project-init-decision-check.py`。输出通过数量以同目录 `project-init-decision-check-result.json` 为准；该结果记录本次实际来源与脚本/向量字节。没有运行生产 init、重型编译、IDE 或设备认证，没有改产品、catalog 或历史报告。
+
+归档说明：本页仅将本机定位链接转换为仓库相对链接，保留原提案结论。审查绑定的原字节见 [source](project-init-decision.source.txt)；项目所有者后续采用四项修订，现行决定见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)。

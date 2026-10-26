@@ -1,10 +1,13 @@
 //! Schema-governed, bounded wire decoding. A valid document is not a certified SDK.
 mod canonical;
 mod decode;
+mod extension;
+pub mod extension_author;
 mod schema;
 
 pub use canonical::{DigestDomain, byte_digest, canonical_json, semantic_digest};
 pub use decode::{MAX_DOCUMENT_BYTES, MAX_DOCUMENT_DEPTH, strict_json};
+pub use extension::{ExtensionFrame, MAX_EXTENSION_FRAME_BYTES, MAX_EXTENSION_FRAME_DEPTH};
 pub use schema::{Document, DocumentKind, SchemaRegistry};
 pub use serde_json::Value;
 

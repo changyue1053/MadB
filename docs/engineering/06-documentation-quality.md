@@ -33,11 +33,11 @@
 | 独立文档工具测试 | 非法引用被拒绝、精简拓扑可接受、草稿/证据不混用等指定逻辑 | 真实浏览器交互或产品后端行为 |
 | 真实浏览器复核 | 桌面/窄屏布局、滚动、主题、键盘、图形标签、配置切换、深链接与控制台 | 目标 SDK、设备、编译或资源协议已通过 |
 
-`python3 tools/check_docs.py` 是统一静态入口；扩展 JSON Schema 验证需要 Python jsonschema 包，缺依赖明确报告不具备该检查，不静默跳过。`python3 -m unittest discover -s tools/tests` 验证文档工具。HTML 通过 `tools/render_visuals.py` 生成，不手改输出。
+统一静态入口是在仓库根、锁定开发环境中运行 `.venv/bin/python docs/tools/check_docs.py`；扩展 JSON Schema 验证需要 Python jsonschema 包，缺依赖明确报告不具备该检查，不静默跳过。`.venv/bin/python -m unittest discover -s docs/tools/tests` 验证文档工具。HTML 通过 `.venv/bin/python docs/tools/render_visuals.py` 生成，不手改输出。
 
 人工语义审查继续必需。节点不相交不保证文字和连线可读，使用 DOM 替身验证脚本不等于浏览器渲染；未执行项在报告中保持未执行。
 
-`node tools/tests/panorama_smoke.cjs` 使用隔离的 DOM 替身检查专题脚本的配置切换、任务映射、构建步骤、时序、节点键盘选择、主题和深链接。它不启动浏览器、不访问页面，也不测量字体与布局。
+在仓库根使用项目固定 Node 运行 `node docs/tools/tests/panorama_smoke.cjs`；该脚本使用隔离的 DOM 替身检查专题脚本的配置切换、任务映射、构建步骤、时序、节点键盘选择、主题和深链接。它不启动浏览器、不访问页面，也不测量字体与布局。
 
 ## 变更与公开发布
 

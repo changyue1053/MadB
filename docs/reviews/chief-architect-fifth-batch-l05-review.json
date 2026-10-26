@@ -1,0 +1,97 @@
+{
+  "scope": "Final L05 C ordinary HAR + public observation source development slice: three actual page replacements and post-drain publication; independent source and retained target-evidence review",
+  "status": "passed_for_recorded_slice",
+  "blocking_findings": [],
+  "source_review": {
+    "path": "/private/tmp/madb-chief-round5/l05-page-source-review.json",
+    "sha256": "7b0dbc46b029894cd20113442869a06196d2d7977aec5d14ded364cbee29f5bd",
+    "size": 7263
+  },
+  "final004_evidence_review": {
+    "path": "/private/tmp/madb-chief-round5/l05-review/l05-page-evidence-review-004.json",
+    "sha256": "a859aa38db285ec09a18291e5ae6c9ca1a0a02d946eb0beb8b421fdf30e8fa6d",
+    "size": 78421
+  },
+  "final004_source_freeze": {
+    "path": "/private/tmp/madb-chief-round5/l05-page-final-inputs-004.json",
+    "sha256": "a916924eaa60409ea6a343725424d7265d35faffaef178b9be3dee8148362a7f",
+    "size": 3057
+  },
+  "report": {
+    "path": "/private/tmp/madb-chief-round5/l05-page-lifecycle-004/report.json",
+    "sha256": "68b9bc3a7fff0728b2b31b3155c6ac0df31541279ae1cc90b50566e1f8b2cb7e",
+    "size": 12783
+  },
+  "source_review_matches_final004_all_ten_files": true,
+  "counts": {
+    "host_oracle_tests": 18,
+    "independent_consumer_control_flow_cases": 6,
+    "frozen_new_sources": 10,
+    "bound_lab_inputs": 46,
+    "raw_lifecycle_frames": 19,
+    "raw_completion_markers": 1,
+    "raw_log_snapshots": 40,
+    "actual_ui_assertions": 39,
+    "clicks_with_raw_bounds": 12,
+    "actual_ui_layouts": 39,
+    "source_archive_files": 25,
+    "rendered_consumer_sources": 5,
+    "hap_members": 10,
+    "native_libraries": 2,
+    "successful_recorded_commands": 233,
+    "tool_input_refs": 12
+  },
+  "candidate": {
+    "digest": "sha256:7fce7dc8b8befbb985694ca08dfecff0b769fef5d0443608b61cc79edf1d921a",
+    "root": "/private/tmp/madb-c07-final-18256fc/c-ordinary/candidate",
+    "producer": {
+      "input_digest": "sha256:d16069ffd33593015f64b17c25483c707462e5aad037c949a709223faf507274",
+      "producer_revision": "18256fcc4b26cf3cd1e2e79c39b86c2512e012d9",
+      "provisional": false,
+      "schema": "madb.native-provenance/1",
+      "tool_digest": "sha256:2c347eab8ce33a7bafd8db54e0fdc4f9472658c145814018c07020b28686db8f"
+    }
+  },
+  "target": {
+    "api": "23",
+    "version": "OpenHarmony-6.1.0.115",
+    "abi": "arm64-v8a",
+    "device_type": "phone",
+    "release_type": "Release",
+    "target": "127.0.0.1:5557",
+    "target_kind": "emulator"
+  },
+  "hap": {
+    "path": "/private/tmp/madb-chief-round5/l05-page-lifecycle-004/l05-life-eee31bb9a41f4c60a36b3981e0bfa87d.hap",
+    "sha256": "aa676dcca3759bd6a52983cadf2393812c492d8e591b5e70f95a8c2b4161db77",
+    "size": 2113518
+  },
+  "source_archive": {
+    "path": "/private/tmp/madb-chief-round5/l05-page-lifecycle-004/l05-life-eee31bb9a41f4c60a36b3981e0bfa87d-sources.tar",
+    "sha256": "4730b57d7e76683d0f20c2cb98b5af2f0c6594582d1b47fba8a2bb8a12368e09",
+    "size": 71680
+  },
+  "resolved_issues": [
+    "003 independent rule/reference input inventory gap fixed before004 admission and after-target verification, actual46inputs match;003 unchanged",
+    "002 compiler failure phase misclassification retained as historical record and separately reconciled;004 uses tested explicit stage states"
+  ],
+  "historical_reconciliation": {
+    "path": "/private/tmp/madb-chief-round5/l05-page-preliminary-reconciliation.json",
+    "sha256": "f010abbf38d71537f05af9034c7218453a03fb1cabbe9ace2df7cd113654aa0c",
+    "size": 1723
+  },
+  "no_product_or_lab_edits_by_reviewers": true,
+  "no_device_operations_by_reviewers": true,
+  "limitations": [
+    "C ordinary route only",
+    "API23 Arm64 emulator when selected; not physical-device evidence",
+    "community signing is not production signing",
+    "source extension delivery is not a C10 candidate or published package",
+    "three real page replacements/destruction callbacks; retained old models are witnesses, not proof of GC reclamation",
+    "background/rotation/concurrent pages and all platform matrices remain outside this slice",
+    "publication after confirmed drain does not force an already queued native late-callback/close interleaving",
+    "native close failure/retry injection and strict resource counters are not provided by the ordinary candidate",
+    "Reviewer did not connect to device or rerun compilation; conclusions cover consistency and independent interpretation of retained final004 evidence",
+    "Tool tree before/after evidence was recomputed from saved inventories; actual selected tool FileRefs reread, full installed tool tree not re-enumerated by reviewer"
+  ]
+}

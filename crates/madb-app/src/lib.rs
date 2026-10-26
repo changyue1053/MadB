@@ -2,6 +2,7 @@
 pub mod dag;
 mod dag_control;
 pub mod dependencies;
+pub mod extension;
 pub mod input_observation;
 pub mod inputs;
 pub mod pipeline;

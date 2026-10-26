@@ -2,7 +2,7 @@
 
 设计基线：0.9。后端复用互操作机制，MadB 补充契约、工程封装与真实消费验证。以下均为设计路线，未因此取得认证；版本与能力必须由探针和真实目标结果共同写入配置锁。
 
-候选版本集中在[技术栈与版本选型](16-technology-stack-and-versions.md)。根据 [ADR-0007](../adr/0007-technology-stack-and-cpf.md)，鸿蒙 Kotlin 默认采用 CPF-KMP-CMP + akinterop，KNOI 为独立扩展；CMP 只在共享 UI 配置中启用。
+候选版本集中在[技术栈与版本选型](16-technology-stack-and-versions.md)。根据 [ADR-0007](../adr/0007-technology-stack-and-cpf.md)，鸿蒙 Kotlin 默认采用 CPF-KMP-CMP + akinterop，KNOI 为独立扩展；CMP 只在共享 UI 配置中启用。Swift 的普通 API、目标与公开交付要求见 [ADR-0014](../adr/0014-swift-production-baseline.md)；当前 C06 固定 SampleEngine 的 macOS 验证不代表该生产基线已完成。
 
 ## 主线路线
 
@@ -42,6 +42,8 @@
 
 默认验证 Objective-C export + SKIE。需要 Combine/RxSwift 的接口可以选择 KMP-NativeCoroutines；每个接口的协程桥只有一个生成责任方，不重叠的类型增强可以保留。分别检查公开名字、订阅启动、取消、共享和 Swift 6 并发约束。SKIE 已有 Combine 预览适配，不能以“没有 Combine”作为引入另一套生成器的理由。[SKIE Flow](https://skie.touchlab.co/features/flows)、[SKIE Combine](https://skie.touchlab.co/features/combine)、[NativeCoroutines](https://github.com/rickclephas/KMP-NativeCoroutines)
 
+SKIE 0.10.15 配置须保留已知边界：Flow 中自定义异常不能直接传播到 Swift，导出前应按契约表达预期失败；Combine 预览的 `Future(async:)` 会立即启动且不支持取消。两者都不能替代 MadB 的错误分类、停止和排水协议；固定样例通过不证明任意业务 Flow 已处理这些边界。升级后按新配置重新验证，不能从网页 latest 追认能力。
+
 分发配置与源码共同构建配置分开：对外分发 Framework/XCFramework 时显式配置 `produceDistributableFramework()`，由独立消费者验证 Swift 模块、链接与调试信息。自定义 cinterop 类型配置 `ClassInterop.CInteropFrameworkName`；缺少配置可能产生不可调用的增强占位声明。门禁必须编译并调用实际公开 API，也覆盖泛型 lambda 等已知不可调用形态。[SKIE 分发](https://skie.touchlab.co/configuration/swift-compiler)、[cinterop](https://skie.touchlab.co/known-issues/cinterop)、[泛型 lambda](https://skie.touchlab.co/known-issues/lambda-types-in-type-argument)
 
 官方 Swift export 仍作为独立 Alpha 配置，按当前文档核对 suspend、Flow、enum/sealed 等支持，不能沿用旧版限制，也不能替代 Objective-C 路线的既有认证条件。[Swift export](https://kotlinlang.org/docs/native-swift-export.html)
@@ -52,11 +54,15 @@
 
 KNOI 单独配置并验证，不串联为 akinterop 的隐式下一层。Node-API 是运行机制，JSON 是载荷格式，Flow 是上层异步接口，三者相互独立；类型化 API、回调或二进制载荷仍按契约选择。[KNOI](https://github.com/Tencent-TDS/KuiklyBase-components/tree/master/knoi)
 
+akinterop 的 Kotlin 导出采用其注解、KSP、Gradle 插件与运行库；ArkTS 宿主声明到 Kotlin 代理的生成另按该方向配置。上游具备 suspend/Promise 转换，不等于 MadB 已完成取消、Flow 订阅或 env 退出排水；当前受管探针的导出子集及排除项仍以实际生成器和目标证据为准。CPF 主线的必要能力、KNOI 等替代配置的选择条件分别见 [ADR-0016](../adr/0016-arkts-production-baseline.md)和 [ADR-0017](../adr/0017-arkts-extension-delivery.md)。[akinterop](https://gitcode.com/CPF-KMP-CMP/akinterop)、[当前受管探针](../../adapters/generators/akinterop/README.md)
+
 ### Rust ↔ Kotlin/Swift
 
 UniFFI 负责 Rust 导出和目标绑定；Kotlin/Native 使用 Gobley 适配，但不冻结“一套版本覆盖全部后端”的假设。已发布 Gobley 0.3.7 / UniFFI 0.29.4 保留作复现基线，撤回其完整能力默认候选：异步模板中成功回调后异常可能进入错误回调，必须核对并回补单次完成逻辑，再验证对象、异步、取消与释放。**仅升级 Rust runtime 不能修复生成模板。**[UniFFI 修复](https://github.com/mozilla/uniffi-rs/pull/2733)、[Gobley 0.3.7 模板](https://github.com/gobley/gobley/blob/v0.3.7/crates/gobley-uniffi-bindgen/src/templates/ffi/Async.kt#L54)
 
 Kotlin/JVM 与 Swift 的 UniFFI 0.32.2 独立候选、修复后的 Gobley 配套及任何修改版后端，各自具有生成器、scaffolding、二进制、补丁与能力身份。Gobley 官网出现的 0.3.8 不能作为已发布稳定版使用；固定 commit 的组合必须明确其来源和验证范围。[Gobley 发布](https://github.com/gobley/gobley/releases)、[版本对应说明](https://gobley.dev/docs/bindgen/)
+
+当前 C06 Swift/Rust 使用 UniFFI 0.32.2 加受管补丁，已包含 Swift 取消与 cancel/free 同步接线；不能把未修改的上游模板局限记作当前候选故障。生成器、runtime、补丁与回归证据必须随候选绑定，Task 取消仍不自动等于业务工作停止、回调排水或副作用撤销。当前交付是固定 macOS SampleEngine 的 Swift 源码、头文件与动态库，公开 SwiftPM/XCFramework 产品配方另按生产基线验收。[C06 证据](../reviews/2026-10-24-c06-kotlin-swift-rust.md)、[公开消费说明](../examples/managed-routes/README.md)
 
 Gobley CLI 可以单独调用，但上游 0.3.7 Gradle/Cargo 插件的 target 映射没有 OHOS。MadB 负责的 CPF 构建适配要单独验证；生成 `nativeMain` 不能替代真实 CPF 编译、cinterop、链接和运行。MadDemo 修改版的 async/Object 限制不能转为 MadB 的完整能力保证。[上游 target 映射](https://github.com/gobley/gobley/blob/v0.3.7/build-logic/gobley-gradle/src/main/kotlin/rust/targets/RustTarget.kt#L55)
 
@@ -83,7 +89,7 @@ Swift ↔ C 使用 Clang importer 和明确的 C 可见导出面。Swift ↔ C++
 | C ABI 分发 | 面向独立消费者的 SDK，希望收敛公开 ABI | 不透明句柄、错误/所有权协议、平台布局与版本兼容 |
 | Objective-C++ 适配 | Apple 对象模型、Cocoa 协议或既有 Objective-C 接口 | Objective-C 可见 API、ARC/RAII 生命周期和异常截断 |
 
-三类都是正式设计配置，均需认证；不把 C/ObjC++ 仅当直接互操作失败后的临时兜底。SwiftPM 对 Swift 调用 C++ 的支持不自动包含 C++ 调用 Swift；反向选择支持生成 Swift 导出头的 Xcode 或经验证的编译流程。开启 C++ interop 对下游配置及公开 API 的影响进入兼容检查。[Swift 构建系统说明](https://www.swift.org/documentation/cxx-interop/project-build-setup/)、[支持范围](https://www.swift.org/documentation/cxx-interop/status/)
+三类都是正式设计配置，均需认证；面向独立 SDK 优先按 ABI 或 Apple 对象需求选择 C ABI/ObjC++，不把它们仅当直接互操作失败后的临时兜底。SwiftPM 对 Swift 调用 C++ 的支持不自动包含 C++ 调用 Swift；反向选择支持生成 Swift 导出头的 Xcode 或经验证的编译流程，所选工具链不能导出的 async/throws 等形状采用显式完成/错误适配。开启 C++ interop 对下游配置及公开 API 的影响进入兼容检查。[Swift 构建系统说明](https://www.swift.org/documentation/cxx-interop/project-build-setup/)、[支持范围](https://www.swift.org/documentation/cxx-interop/status/)
 
 ### Kotlin 与 ArkTS ↔ C/C++
 

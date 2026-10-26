@@ -1,0 +1,270 @@
+{
+  "task": "C09 approved receipt callback exception-boundary repair; independent read-only review",
+  "producer_root": "/private/tmp/madb-chief-round2/c09-producer-final",
+  "producer_revision": "a31ac4bb9bbb7f7270e69d3848011eaeb986e981",
+  "prior_revision": "4edc8c7863659b825ba8168092494966ee9aa34f",
+  "clean_head_before_and_after": true,
+  "tracked_file_count": 1012,
+  "conclusion": "no blocking finding in the repaired test-only exception boundary on the inspected frozen sources and host execution models",
+  "findings": [],
+  "source_binding": {
+    "manifest": {
+      "path": "/private/tmp/madb-chief-round2/c09-producer-change-manifest-r2.json",
+      "sha256": "sha256:e4f14acde94131509a591650fad65b9046a8add22519580ee0b9e6b80b5d6d27",
+      "size": 3326
+    },
+    "all_13_manifest_entries_match_bytes_size_and_git_show": true,
+    "files": [
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/adapters/generators/arkts/profiles/snapshot-test-v1.json",
+        "sha256": "sha256:f77b75f545291547abbcd6619f5fa5b86713d8d4c9357659c301d624d9cce8de",
+        "size": 65222
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/adapters/generators/arkts/profiles/snapshot-kotlin-test-v1.json",
+        "sha256": "sha256:67e29555177de178d50e728abd3ad00bfb8d2a9bc44869b61c6c5c90b57fd2c3",
+        "size": 57682
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/adapters/toolchains/arkts/kotlin_test_binding.py",
+        "sha256": "sha256:a3874859b067d1bdaba45e9330b5657aad069690ca9f4360cde64c317fe71384",
+        "size": 17767
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/sdk/arkts/test-support/README.md",
+        "sha256": "sha256:a9d1bc0aea877f7ba3163859c3c517d07fea60e60025f7aa37a4874629221048",
+        "size": 5920
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/sdk/arkts/test-support/contracts/PORTS.md",
+        "sha256": "sha256:62e80d933420550317fe99362f083d2cc874234538aae7fb1d939381a20bfbcb",
+        "size": 12613
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/sdk/arkts/test-support/facade/baseline.json",
+        "sha256": "sha256:c2cb51887cf042baf3fa49a2b94b1e01bce5ee4a80c71905563811a038de42b0",
+        "size": 234
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/sdk/arkts/test-support/facade/companion.patch",
+        "sha256": "sha256:642c7e13cfdc1555ce1c47c4d7d0d1722b21a1e8695a00aaed187d2881b0c179",
+        "size": 13127
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/sdk/kotlin/arkts-owned/contracts/public-helpers.json",
+        "sha256": "sha256:f006d44924648b6f015d0099a23fbab4e5406938810dcc9c864ff5aa6b1d9fbb",
+        "size": 5468
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/tests/integration/c09_receipt_hook/check.py",
+        "sha256": "sha256:d1a330ffb885b1440126edf30c98125e73ed3b9f6690524fdb74951cf8392b59",
+        "size": 2000
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/tests/integration/c09_receipt_hook/check.cjs",
+        "sha256": "sha256:a935f788d6db87b3dc6fdb9f5d00969288debdfddcaaa491ef96391636e17b2b",
+        "size": 11310
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/tests/integration/c09_receipt_hook/README.md",
+        "sha256": "sha256:0fc6c3f4a7327e7d64fc4697711f8b85492620d5ae64ce42f25fc716e4adafdb",
+        "size": 1663
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/tests/integration/c07_arkts_adapter/test_public_entry.py",
+        "sha256": "sha256:6f903bd5130e947b9f2caf258e5abca63d70368170e5929e241b5a742b001054",
+        "size": 13943
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-producer-final/tests/integration/c07_arkts_adapter/test_diagnostic_protocols.py",
+        "sha256": "sha256:15a655c6ced45e0c406388af2c1a4df9b5265d04613fcc5f509aea7b9687e2a8",
+        "size": 12044
+      }
+    ]
+  },
+  "scope_preservation": {
+    "sdk_files_compared_to_prior_snapshot": 208,
+    "sdk_changes_exactly": [
+      "sdk/arkts/test-support/contracts/PORTS.md",
+      "sdk/arkts/test-support/facade/baseline.json",
+      "sdk/arkts/test-support/facade/companion.patch",
+      "sdk/kotlin/arkts-owned/contracts/public-helpers.json"
+    ],
+    "unchanged_scopes": {
+      "sdk/arkts/facade": {
+        "files_checked": 4,
+        "identical_to_prior_revision": true
+      },
+      "sdk/arkts/native-gateway": {
+        "files_checked": 8,
+        "identical_to_prior_revision": true
+      },
+      "sdk/arkts/native-runtime": {
+        "files_checked": 9,
+        "identical_to_prior_revision": true
+      },
+      "sdk/kotlin/arkts-owned/src": {
+        "files_checked": 7,
+        "identical_to_prior_revision": true
+      },
+      "sdk/kotlin/arkts-owned/native": {
+        "files_checked": 10,
+        "identical_to_prior_revision": true
+      }
+    },
+    "test_profile_delta": "Both test profiles differ from prior JSON only in calls.testBeforeRuntimeReceipt.lifetime text, describing the approved error-boundary repair; no public signature/native port addition.",
+    "broader_snapshot": "The final 1012-file snapshot contains other coordinated integration changes outside this repair; this review does not certify those unrelated changes."
+  },
+  "reasoning": [
+    {
+      "path": "sdk/arkts/test-support/facade/companion.patch",
+      "lines": [
+        18,
+        39
+      ],
+      "finding": "Probe reference clears before invocation. Local catch preserves same-realm Error identity without reading code/message/then. Non-Error and a throwing Error classification become the existing CallbackFailure; no undefined failure sentinel collision."
+    },
+    {
+      "path": "adapters/toolchains/arkts/kotlin_test_binding.py",
+      "lines": [
+        254,
+        306
+      ],
+      "finding": "Managed Kotlin derivation installs the same guarded boolean cutpoint; public callback return remains void. Every nonundefined return is rejected with InvalidArgument using identity comparison only, without then assimilation."
+    },
+    {
+      "path": "sdk/arkts/facade/Boundary.ets.in",
+      "lines": [
+        428,
+        525
+      ],
+      "finding": "Existing fail/rejectClose only retain/reject the supplied Error at this drained cutpoint, clear timer and close resolvers. false returns before consumeRuntimeReceipt while tick finally still resets ticking. arm sees failed plus absent closeResolve and cannot restart a timer. Native shutdown predicates and ordinary source remain unchanged."
+    }
+  ],
+  "checks": {
+    "environment": {
+      "python": "Python 3.14.4",
+      "node": "v26.8.2",
+      "typescript_version": "4.9.5",
+      "typescript_file": {
+        "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+        "sha256": "sha256:9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1",
+        "size": 8031399
+      }
+    },
+    "existing_derived_host_cases": {
+      "command": [
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+        "-B",
+        "tests/integration/c09_receipt_hook/check.py",
+        "--typescript",
+        "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js"
+      ],
+      "cwd": "/private/tmp/madb-chief-round2/c09-producer-final",
+      "passed": 18,
+      "log": {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-host-independent.log",
+        "sha256": "sha256:2f5b2cea89161b890decb597009a668c4dbf6c06acd0a7fa968c4f10078406e3",
+        "size": 1530
+      }
+    },
+    "additional_independent_host_cases": {
+      "driver": {
+        "path": "/private/tmp/madb-chief-round2/review-receipt-repair-host.py",
+        "sha256": "sha256:bfd0081b565aa5009a3078d690c77d46beec87ba994b264dd59d38e3ba6f7bca",
+        "size": 6222
+      },
+      "harness": {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/independent.cjs",
+        "sha256": "sha256:e4daec4e43fa5fd0f8ba59e28db494ea26b7be9fcee2c01bbea8145a5e5c7790",
+        "size": 7012
+      },
+      "passed": 10,
+      "commands": {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/commands.json",
+        "sha256": "sha256:c7a1e8b24b075af070fe33997e140d1b0d441bf3fbe2bdb62f0ad1fd47dc0da8",
+        "size": 1181
+      },
+      "logs": [
+        {
+          "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/native.log",
+          "sha256": "sha256:412e7ee3f5ecce096c10eb772892b7cb1e16b265663970c7fc2c868f2979c8b0",
+          "size": 551
+        },
+        {
+          "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/kotlin.log",
+          "sha256": "sha256:ffacf82cdc4341f0f8ac5143da27aa4fd4a2b8f46305010c3f88c21db7d8f5a9",
+          "size": 551
+        }
+      ],
+      "cases_per_derived_facade": [
+        "original Error with code/message/then/name/stack/constructor poison getters: zero reads and same rejection identity",
+        "Proxy around Error: no property gets, one bounded prototype classification, exact proxy identity retained",
+        "revoked thrown Proxy and callback Proxy apply throwing undefined: same close rejects CallbackFailure",
+        "returned revoked Proxy, get/getPrototypeOf poison Proxy and thenable: InvalidArgument with zero gets/prototype traps",
+        "Error Symbol.hasInstance classification throws: contained CallbackFailure, no escaped tick/timer"
+      ],
+      "shared_assertions": "same close Promise rejects; callback reference clears; receipt remains zero/slot occupied; timer empty; ticking false; close resolvers cleared; failed retains error; follow-up tick never reinvokes"
+    },
+    "old_source_negative_controls": {
+      "prior_revision": "4edc8c7863659b825ba8168092494966ee9aa34f",
+      "expected_nonzero_runs": 2,
+      "commands": {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/old-negative-control-commands.json",
+        "sha256": "sha256:a4619c90a51728d92226706b61c600b08c8b0f47b61891b9fc5a57471707755c",
+        "size": 1371
+      },
+      "logs": [
+        {
+          "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/old-native.log",
+          "sha256": "sha256:8456d8253e118d179fcc821b8baf230d894bcf2aa660b6ac1b4c5ea5c419bf4a",
+          "size": 1129
+        },
+        {
+          "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/old-kotlin.log",
+          "sha256": "sha256:8c1310b5139b9b613855d6c128631ff1d962ee055afd7b2611e574af6ac06cc2",
+          "size": 1130
+        }
+      ],
+      "result": "the same new independent getter test rejects both actual old derived facades via escaped getter secondary failure; old reports remain unchanged"
+    },
+    "derived_sources": [
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/native.ets",
+        "sha256": "sha256:54e38cb5e367da39169995dc8f58bd79949fc42bb8c25be7e19ce44b0e875b0f",
+        "size": 34683
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/native-frame.ets",
+        "sha256": "sha256:a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492",
+        "size": 1583
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/kotlin.ets",
+        "sha256": "sha256:98c6c385a6ffd2b9dad612e71d642d96ce11a994b584591623ebc02da2d2ad9d",
+        "size": 36448
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/kotlin-frame.ets",
+        "sha256": "sha256:56304f8826d52cc2651ff688862ec5f19b80a353c98f9b3ebd3338e8d4ad00ea",
+        "size": 5478
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/old-native.ets",
+        "sha256": "sha256:2a697cff41b3b875611584f354cd9f7447e831b88cd2d19b110efd822218ce92",
+        "size": 34163
+      },
+      {
+        "path": "/private/tmp/madb-chief-round2/c09-receipt-repair-independent-checks/old-kotlin.ets",
+        "sha256": "sha256:ba750ee2514335ead9f64bdb1353ea6cc83416f449ad23888192979f7ec2d20a",
+        "size": 35928
+      }
+    ]
+  },
+  "limits": [
+    "Host models supply explicit native frames/scheduling; they do not prove actual physical cleanup, HAR compilation, target execution, or C07/C09 acceptance.",
+    "Final a31 candidate builds, fixed Lab source reviews and raw target reports must be newly bound; prior 4ed target results do not certify this repaired revision.",
+    "Old independent review JSONs and target reports were not edited or relabeled. This separate review covers the error-boundary repair only.",
+    "No producer/Lab source changes, compiler/HAR build, target operation, push or publication were performed by this reviewer."
+  ]
+}

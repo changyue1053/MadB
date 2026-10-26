@@ -1,0 +1,465 @@
+{
+  "schema": "madb.documentation-validation/2",
+  "baseline": "0.9",
+  "status": "passed",
+  "scope": "static-documents-and-rendered-html",
+  "counts": {
+    "markdown": 112,
+    "json": 79,
+    "toml": 1,
+    "tables": 286,
+    "local_links": 1727,
+    "html": 13,
+    "scripts": 13
+  },
+  "extension_structure": {
+    "schemas": 2,
+    "frames": 4,
+    "vectors": 20
+  },
+  "catalog": {
+    "tasks": 41,
+    "routes": 16,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_mappings": 236
+  },
+  "browser": {
+    "status": "not_executed",
+    "scope": "layout, real interactions and console",
+    "reason": "Local file URL access was denied previously; no workaround attempted; no live browser review this revision"
+  },
+  "product_tests_executed": true,
+  "errors": [],
+  "review": "2026-10-25-swift-extension-delivery.md",
+  "review_date": "2026-10-25",
+  "source_head_at_start": "0fd4594092a2c6646e8dc01a505d189340e93d91",
+  "overall_result": "swift_slice_passed_repository_gate_not_green",
+  "swift_development_slice": {
+    "scope": "L04 Observation local development composition; not a new C10 candidate",
+    "result": "passed",
+    "package_release": "passed",
+    "external_package_consumer": "passed",
+    "native_composition": "passed",
+    "toolchain": {
+      "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx26.0",
+      "xcode": "Xcode 27.0\nBuild version 27A266a",
+      "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+      "sdk_version": "27.0",
+      "sdk_build": "26A425"
+    },
+    "base_candidate": {
+      "candidate_digest": "sha256:872d0cbd49bee21d442f24be6536334a7cc8dff3a525839f2a889a7776ac908c",
+      "identity": {
+        "bootstrap_version": 1,
+        "interface_digest": "sha256:339ac91482ef3eacdb077ae89857a406ae7e6f74ced08c956ece4c55c25eeb2d",
+        "profile_digest": "sha256:ce30af78d0d01274ed121f93763a66c21562fa4b96a06d69ab1de720a1539a5c",
+        "schema": "madb.native-identity/1"
+      },
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:ce30af78d0d01274ed121f93763a66c21562fa4b96a06d69ab1de720a1539a5c",
+        "profile_id": "c06-swift-kotlin-aarch64-apple-darwin",
+        "route": "KN-SWIFT-OBJC",
+        "target": "aarch64-apple-darwin"
+      },
+      "verified_files": 58
+    },
+    "source_inputs": [
+      {
+        "path": "sdk/swift/observation/.gitignore",
+        "sha256": "sha256:acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+        "size": 18
+      },
+      {
+        "path": "sdk/swift/observation/Integration/SKIE/MadBSkieStateSource.swift",
+        "sha256": "sha256:e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+        "size": 1526
+      },
+      {
+        "path": "sdk/swift/observation/LICENSE",
+        "sha256": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "size": 11358
+      },
+      {
+        "path": "sdk/swift/observation/NOTICE",
+        "sha256": "sha256:f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+        "size": 223
+      },
+      {
+        "path": "sdk/swift/observation/Package.swift",
+        "sha256": "sha256:43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46",
+        "size": 411
+      },
+      {
+        "path": "sdk/swift/observation/README.md",
+        "sha256": "sha256:d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329",
+        "size": 6092
+      },
+      {
+        "path": "sdk/swift/observation/Sources/MadBObservation/MadBStateModel.swift",
+        "sha256": "sha256:425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7",
+        "size": 6338
+      },
+      {
+        "path": "sdk/swift/observation/Sources/MadBObservation/MadBStateSource.swift",
+        "sha256": "sha256:6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83",
+        "size": 1122
+      },
+      {
+        "path": "sdk/swift/observation/Tests/MadBObservationTests/ControlledSource.swift",
+        "sha256": "sha256:90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179",
+        "size": 4808
+      },
+      {
+        "path": "sdk/swift/observation/Tests/MadBObservationTests/MadBStateModelTests.swift",
+        "sha256": "sha256:e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6",
+        "size": 8894
+      },
+      {
+        "path": "tests/integration/l04_swift_observation/PackageConsumer.swift",
+        "sha256": "sha256:032c6c6c205416e8516d1a8d073492577e0b4bc8dfe0c35c150f938ff2d9572c",
+        "size": 2322
+      },
+      {
+        "path": "tests/integration/l04_swift_observation/SkieConsumer.swift",
+        "sha256": "sha256:8be349d468df26ee28a7a900d8ef83586e22c05fb48b3c0a09ad05ff2ec620a6",
+        "size": 4786
+      }
+    ],
+    "checker_sha256": "sha256:e7576f4fee6fe05c52704eacd155d2d5f6155db489568e35e70289f003abb2ff",
+    "swift_testing_cases": 14,
+    "candidate_admission_cases": 8,
+    "reverted_fix_regression_failures": 3,
+    "successful_command_count": 12,
+    "raw_report_sha256": "sha256:6d35e0a43278f83a714a0cd9305087972a929136caa07c2f56191fae346cdd84",
+    "raw_report_local_path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-swift-extensions-h1nv8jj6/work/target/l04-observation-native-final/report.json"
+  },
+  "document_tests": {
+    "unittest": 21,
+    "dom_profiles": 29,
+    "dom_filters": 173,
+    "dom_sequences": 87,
+    "dom_keyboard_selections": 3044,
+    "real_browser": false
+  },
+  "repository_checks": {
+    "result": "failed_at_preexisting_C07_gate",
+    "command": "python scripts/check.py",
+    "rust_tests_passed_before_stop": 285,
+    "python_tests_passed_before_stop": 373,
+    "failure": "NATIVE001: baseline already includes sdk/rust/arkts-bridge but its checker allowlist does not",
+    "baseline_reproduction": true,
+    "current_C07_boundary_only": "passed",
+    "supplemental_updated_checker": "boundary passes; isolated bridge/provider Rust edition formatting fails; native units not reached",
+    "remaining_checks": [
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "tests/integration/c07_native_protocol/check.py"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-swift-extension-remaining-0.log"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "tests/integration/c07_native_providers/check.py"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-swift-extension-remaining-1.log"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "tests/integration/c07_native_worker/check.py"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-swift-extension-remaining-2.log"
+      },
+      {
+        "command": [
+          "node",
+          "tests/integration/c07_arkts_facade/check.cjs"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-swift-extension-remaining-3.log"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "tests/architecture/check_dependencies.py"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-swift-extension-remaining-4.log"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/architecture"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-swift-extension-remaining-5.log"
+      }
+    ],
+    "logs": [
+      {
+        "path": "/private/tmp/madb-swift-extension-repository-check-unrestricted.log",
+        "sha256": "sha256:2f7fda6e3625c85482e41a03a643ce1e2299584fcf193f55007d15d40738595b"
+      },
+      {
+        "path": "/private/tmp/madb-swift-extension-native-updated-gate.log",
+        "sha256": "sha256:a1e2188a0606ae5e2d726d3a57d2a86f212841705284cce29055517fc712cc37"
+      }
+    ]
+  },
+  "governance": {
+    "task_count": 41,
+    "status_changes": {
+      "L01": "in_progress",
+      "L04": "in_progress"
+    },
+    "verification_changes": {},
+    "phases_dependencies_dates_evidence_preserved": true,
+    "historical_records_and_catalogs_preserved": 112,
+    "new_work_packages": 0,
+    "ArkTS_new_requirements": "not_started"
+  },
+  "changed_files": [
+    {
+      "path": "README.md",
+      "reason": "统一当前导航、实施授权和复现入口",
+      "sha256": "2137f473cd19040167d1102788a7a3baff9b83e4bed38f5d57b5a3463f069e78"
+    },
+    {
+      "path": "docs/README.md",
+      "reason": "统一当前导航、实施授权和复现入口",
+      "sha256": "48354541409ce00745b546bcfe6899e5f1ea313ac68633463ad5207d77553b10"
+    },
+    {
+      "path": "docs/adr/0014-swift-production-baseline.md",
+      "reason": "九项 Swift 选择、授权、实施出口与既有决定衔接",
+      "sha256": "09d39a85c7500a807bf2cde56a2172cbef43f472159f837d9eed5138f262aaba"
+    },
+    {
+      "path": "docs/adr/0015-swift-extension-delivery.md",
+      "reason": "九项 Swift 选择、授权、实施出口与既有决定衔接",
+      "sha256": "1dc39b2b1d00f60c7217e80930ce69b03da417b5abfc56aedf2b1d54671aecd8"
+    },
+    {
+      "path": "docs/architecture/09-build-packaging-release.md",
+      "reason": "在原职责文档补充接口、依赖隔离及交付要求",
+      "sha256": "b6ac1fc04c27f737f369a3d4db2f17b7937357c67209f8ad52ad77ca9a521ee3"
+    },
+    {
+      "path": "docs/architecture/14-project-initialization.md",
+      "reason": "在原职责文档补充接口、依赖隔离及交付要求",
+      "sha256": "779e08858195399c5b72e2078f3a6f4c2cf7812a932d1b7084563cf2045c8506"
+    },
+    {
+      "path": "docs/architecture/15-developer-ergonomics.md",
+      "reason": "在原职责文档补充接口、依赖隔离及交付要求",
+      "sha256": "5b2bceed03e2e8782c3e44dd7f101b0e421cbc088544455a23745516bd563937"
+    },
+    {
+      "path": "docs/architecture/16-technology-stack-and-versions.md",
+      "reason": "在原职责文档补充接口、依赖隔离及交付要求",
+      "sha256": "7de185462e4794383d47d025b7e11cb8e3c36eb1cce2e76746472b293553ebc0"
+    },
+    {
+      "path": "docs/architecture/17-extension-composition.md",
+      "reason": "在原职责文档补充接口、依赖隔离及交付要求",
+      "sha256": "9f91c176f31dd962c35488b73ea00ff1761314674eecc87046be302205791d24"
+    },
+    {
+      "path": "docs/catalog/implementation-plan.json",
+      "reason": "既有工作包的完整实施与验收安排，L01/L04 实际开工",
+      "sha256": "b85ace3777ba30b367a63a4cea1690034b976d2edf187c0e3baf7176bdfd4869"
+    },
+    {
+      "path": "docs/delivery/01-implementation-plan.md",
+      "reason": "既有工作包的完整实施与验收安排，L01/L04 实际开工",
+      "sha256": "4afa4e9484d661d27865ddfab2c97a689acc1a684e941a8fed2759a9664668af"
+    },
+    {
+      "path": "docs/delivery/03-decisions-and-risks.md",
+      "reason": "既有工作包的完整实施与验收安排，L01/L04 实际开工",
+      "sha256": "7c4e5dcbafecbdff9373c705f9ac4ce1294d625b2e5d650721f34b44fa5dccaa"
+    },
+    {
+      "path": "docs/references/README.md",
+      "reason": "统一当前导航、实施授权和复现入口",
+      "sha256": "b0d329b348ca492709f8d1729c2a105a16ea79c075288bbe9404aa9bf83b49c8"
+    },
+    {
+      "path": "docs/reviews/2026-10-25-swift-extension-delivery.md",
+      "reason": "本次范围、检查结果和历史入口分离",
+      "sha256": "721f4cab0e17ebdcabad690b9fe95f1772187fed547d06722d99f6d7ba44205f"
+    },
+    {
+      "path": "docs/reviews/README.md",
+      "reason": "本次范围、检查结果和历史入口分离",
+      "sha256": "748c1a6b8536bf447a91fcdea1b690ac06c9f53137e1ea3fdcd1fa62942704af"
+    },
+    {
+      "path": "docs/tools/templates/implementation-progress.html",
+      "reason": "统一当前导航、实施授权和复现入口",
+      "sha256": "cf142861eb29134d3b1c2089ce77bf355d7c67b6466b0c7c7638fa4cc376223a"
+    },
+    {
+      "path": "docs/validation/06-project-initialization.md",
+      "reason": "复用既有 INIT/DX，补充完整扩展正反验收",
+      "sha256": "84ca8e715d45d15d2dabe71003dfd0c4781974eeabcf150e58b828b17902b284"
+    },
+    {
+      "path": "docs/validation/07-developer-ergonomics.md",
+      "reason": "复用既有 INIT/DX，补充完整扩展正反验收",
+      "sha256": "878c8c622d19065a0af88f911b7a0bf6be2811a12566e25f632eb16641f70324"
+    },
+    {
+      "path": "docs/visuals/architecture-overview.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "76367946a70507f611250779cd97221cee4785c127439b157c1381afc1bedeed"
+    },
+    {
+      "path": "docs/visuals/arkts-c-cpp-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "a4f6f1635a1d2597ac8ef208a595779f2d09a04cf16382768dc3819547693bb3"
+    },
+    {
+      "path": "docs/visuals/arkts-rust-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "426915706f8b7413267ad7304e5b6edc6b0ccd84c68cf4d89a93be375aabcfa5"
+    },
+    {
+      "path": "docs/visuals/extensions-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "2d7efdf7690c1642831cbffc5d45f77daac557672d99eb671eb47a75e716ea51"
+    },
+    {
+      "path": "docs/visuals/implementation-progress.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "1800160a813c2e0c6d2968e6d977fcccfe9801e0dbe85df22d8f618df87320b0"
+    },
+    {
+      "path": "docs/visuals/kotlin-arkts-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "e4c0c844f3a44a3b8384ca3c60307d21f49c6ec5d0e4e5015c9b913c034eb780"
+    },
+    {
+      "path": "docs/visuals/kotlin-c-cpp-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "173f6a8b4a0cd79472dcdf78def6bc672da6e4d02a99da024f037df1b4d77d64"
+    },
+    {
+      "path": "docs/visuals/kotlin-rust-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "14b9df73c1fd2b04f2b4f3c36fa0dfaf977bdbba474834cbe83653badc4806c2"
+    },
+    {
+      "path": "docs/visuals/kotlin-swift-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "02117a0ce3c812cde391b1a3c256f766cb8d1e55f5feded8f96717b3521ede02"
+    },
+    {
+      "path": "docs/visuals/route-atlas.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "52b2dd67f104d762a109d4f39ee9eaf3cde9fa45a7b3d1cbf67c32fffffdf050"
+    },
+    {
+      "path": "docs/visuals/rust-c-cpp-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "b436f2c18be0badfda82bab4d336cb763236eaa7fe94544bf329a834546831fe"
+    },
+    {
+      "path": "docs/visuals/swift-c-cpp-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "73522569617a131fec8cbd4e6bd112cad29646984162f9410135d196d7255d60"
+    },
+    {
+      "path": "docs/visuals/swift-rust-architecture.html",
+      "reason": "从现行目录与模板再生，不手改生成页",
+      "sha256": "9b0891b4a246e06fe002b1087c66f2e82d02577ae4d2ef0d5859a83c82a223f4"
+    },
+    {
+      "path": "scripts/check_swift_observation.py",
+      "reason": "独立包消费与固定公开候选开发组合验证",
+      "sha256": "e7576f4fee6fe05c52704eacd155d2d5f6155db489568e35e70289f003abb2ff"
+    },
+    {
+      "path": "sdk/swift/observation/.gitignore",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0"
+    },
+    {
+      "path": "sdk/swift/observation/Integration/SKIE/MadBSkieStateSource.swift",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf"
+    },
+    {
+      "path": "sdk/swift/observation/LICENSE",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "sdk/swift/observation/NOTICE",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab"
+    },
+    {
+      "path": "sdk/swift/observation/Package.swift",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46"
+    },
+    {
+      "path": "sdk/swift/observation/README.md",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329"
+    },
+    {
+      "path": "sdk/swift/observation/Sources/MadBObservation/MadBStateModel.swift",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7"
+    },
+    {
+      "path": "sdk/swift/observation/Sources/MadBObservation/MadBStateSource.swift",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83"
+    },
+    {
+      "path": "sdk/swift/observation/Tests/MadBObservationTests/ControlledSource.swift",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179"
+    },
+    {
+      "path": "sdk/swift/observation/Tests/MadBObservationTests/MadBStateModelTests.swift",
+      "reason": "L04 可选 Observation 源码包、SKIE 薄适配及受控生命周期验证",
+      "sha256": "e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6"
+    },
+    {
+      "path": "tests/integration/l04_swift_observation/PackageConsumer.swift",
+      "reason": "独立包消费与固定公开候选开发组合验证",
+      "sha256": "032c6c6c205416e8516d1a8d073492577e0b4bc8dfe0c35c150f938ff2d9572c"
+    },
+    {
+      "path": "tests/integration/l04_swift_observation/README.md",
+      "reason": "独立包消费与固定公开候选开发组合验证",
+      "sha256": "184bcd0b94899f0571189989d4c2acbb04a53e35b9045b64a8d6a8b86488d835"
+    },
+    {
+      "path": "tests/integration/l04_swift_observation/SkieConsumer.swift",
+      "reason": "独立包消费与固定公开候选开发组合验证",
+      "sha256": "8be349d468df26ee28a7a900d8ef83586e22c05fb48b3c0a09ad05ff2ec620a6"
+    },
+    {
+      "path": "tests/integration/l04_swift_observation/test_candidate_admission.py",
+      "reason": "独立包消费与固定公开候选开发组合验证",
+      "sha256": "2bec469585e7133291316019966b503210f5e60d4b3d8db01b230072e0472763"
+    }
+  ]
+}

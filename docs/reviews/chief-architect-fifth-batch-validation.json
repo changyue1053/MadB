@@ -1,0 +1,244 @@
+{
+  "scope": "chief architect fifth batch local implementation and evidence; whole-package statuses unchanged",
+  "baseline": {
+    "madb": {
+      "source": "/Users/changyue/Desktop/MadB/madb",
+      "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+      "branch": "codex/c07-arkts"
+    },
+    "madb_lab": {
+      "source": "/Users/changyue/Desktop/MadB/madb_lab",
+      "head": "a466501275bee1786d171199390f228f55eb38a0",
+      "branch": "codex/c07-arkts"
+    }
+  },
+  "checks": [
+    {
+      "name": "product full local gate initial",
+      "exit_code": 1,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/product-full-check.log",
+        "sha256": "a63d245526c00d14781ac3dfe10788b4dfb29c925066a1dc83bd592a291465c9",
+        "size": 48393
+      },
+      "scope": "stopped at E02 cancel-ok; later steps not executed; initial full source manifest was not captured"
+    },
+    {
+      "name": "product full local gate final",
+      "exit_code": 0,
+      "command": "env CARGO_TARGET_DIR=/private/tmp/madb-chief-round5/madb/target CARGO_NET_OFFLINE=true /Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/check.py",
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/product-full-check-final.log",
+        "sha256": "0858298b9714b4415fdb2ac5880835b16e07a04f295fcaa5473e2447384fbc69",
+        "size": 61722
+      },
+      "input_manifest": {
+        "path": "/private/tmp/madb-chief-round5/product-full-check-final-input.json",
+        "sha256": "1e073c9a93f388ce3afa739095663d75a2cdc3b982600063d5e419952b934b80",
+        "size": 129255
+      },
+      "source_scope": "all implementation bytes remained unchanged from manifest; later approved-decision/report-only changes receive final documentation checks"
+    },
+    {
+      "name": "Lab full local gate frozen copy",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/lab-full-check.log",
+        "sha256": "059cf554a7eb4efd928b80f01e95d92d69e8f9176fa3e4152466b948a3c2b473",
+        "size": 1886
+      }
+    },
+    {
+      "name": "Lab actual-root post integration gate",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/lab-post-integration-check.log",
+        "sha256": "0de8f4f9de22d81a15bc006b412d019b47b1fee2d7ea471d340430cd15dd71bc",
+        "size": 1886
+      }
+    },
+    {
+      "name": "I01 archival local link check initial",
+      "exit_code": 1,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/docs-pre-integration-check.log",
+        "sha256": "06a3fad78bfe9c483e56a3b3fe8880b060d1c6a06a73366211941d061e4bc15a",
+        "size": 2421
+      },
+      "cause": "absolute editor-style :line links were not repository file links; exact original proposal retained separately"
+    },
+    {
+      "name": "I01 repository link correction check",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/docs-pre-integration-check-final.log",
+        "sha256": "c3dc6364f0da247d4a0522a0f18175ea14603d03c390d18d13e5d355dbf8cf35",
+        "size": 689
+      }
+    }
+  ],
+  "source_review": {
+    "path": "/private/tmp/madb-chief-round5/commit-scope-review.json",
+    "sha256": "4c090d572bec1df71df0818b3fd7e17b5b48be52b2d23ce01890cb119cb63e05",
+    "size": 186101
+  },
+  "final_reviews": [
+    {
+      "path": "/private/tmp/madb-chief-round5/composition-output-independent-review.json",
+      "sha256": "d84d1879fb3b84f3bc29db53e3ed428dee2c39ea1b8c162ec21079e93d3539da",
+      "size": 11158
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/recipe-validation.json",
+      "sha256": "e5e6f4716eaad86e19598b6da6a561c50134e68d5bd6f5c8a99cd4c6f523cd26",
+      "size": 4267
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/l05-page-independent-review.json",
+      "sha256": "8454f9f7268adb96aced65da0bd72bf0fb548507bb00fd917af7dd1d47c694d1",
+      "size": 4607
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/e02-independent-review.json",
+      "sha256": "d062af821db0682f88670a24f15edd02b830d8d1a171350e84271f66122fb675",
+      "size": 6748
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/project-init-decision-review.json",
+      "sha256": "12db30f8186e7d941569888a4bd0ef86744baf17541f17fc9a4268ef56897b3f",
+      "size": 13013
+    }
+  ],
+  "decisions": {
+    "I01_A_to_D": "project owner approved; ADR-0019; no complete production schema/decoder approval",
+    "push": "owner permits completed stage push without Actions; no PR, tag or SDK publication",
+    "adoption_review": "chief-architect-fifth-batch-i01-adoption-review.json"
+  },
+  "integration": {
+    "lab": "11 guarded files applied; actual-root full local gate passed",
+    "product": "48 guarded files applied; complete integrated source equals validated copy; actual-root focused revalidation passed",
+    "post_checks": [
+      {
+        "command": [
+          "cargo",
+          "test",
+          "-p",
+          "madb-contracts",
+          "--locked",
+          "--test",
+          "composition",
+          "--test",
+          "composition_outputs"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-round5/post-integration-1.log",
+        "log_sha256": "3bd9efd693fab11e7291750edec64074fc76acf1bf0b0ed997697cc33799f930"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/integration/e02_session",
+          "-k",
+          "cancellation_precedes"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-round5/post-integration-2.log",
+        "log_sha256": "4b9336ad8dfb704fe3e09ac40b8d71f6a7c4425399c52f750961a52d5cef80f0"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tests/integration/e02_session",
+          "-k",
+          "peer_exit_before_marker"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-round5/post-integration-3.log",
+        "log_sha256": "b431f8214e25b14821692b1d6577e9f3cd0a66c9997271933ef0bb33e7a1d51c"
+      },
+      {
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "tests/integration/arkts_composition_recipe/check.py",
+          "--node",
+          "/opt/homebrew/Cellar/node/26.8.2/bin/node",
+          "--node-sha256",
+          "902b6a6984d5d825829ea9064ab73b734548df37bc0683990dca31c8dc2a9253",
+          "--typescript",
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+          "--typescript-sha256",
+          "9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1",
+          "--output",
+          "/private/tmp/madb-chief-round5/recipe-post-integration"
+        ],
+        "exit_code": 0,
+        "log": "/private/tmp/madb-chief-round5/post-integration-4.log",
+        "log_sha256": "07382949da42eae473ec1ccbfd663ad89406944a64912c8b89222afc11526fe0"
+      }
+    ],
+    "source_unchanged_during_post_checks": true
+  },
+  "remote_at_record": {
+    "lab_commit": "341088a122cb36f468367f49b0f3d45d01d86a24",
+    "lab_push": "completed",
+    "lab_actions_for_new_commit": 0,
+    "lab_observed_utc": "2026-10-26 09:09:11 UTC",
+    "product_push": "not yet executed",
+    "actions_validation": "not executed; zero runs is not a passing CI result"
+  },
+  "limits": [
+    "finite source observations are not profile/2 execution or registered packages",
+    "L05 final004 only ordinary C candidate, API23 Arm64 emulator and community signing",
+    "retained models do not prove GC; drained publication does not force queued-late callback races",
+    "original E02 underlying early failure cannot be recovered from overwritten old report",
+    "no new whole-package implemented/passed status; C06/C07 exact task objects preserved",
+    "no GitHub Actions dispatch, PR, tag or SDK publication"
+  ],
+  "precommit_format_check": {
+    "initial": "failed on five inherited untracked markdown files with extra trailing newlines",
+    "repair": [
+      {
+        "path": "docs/adr/0012-extension-composition-and-delivery.md",
+        "before_sha256": "39d10ab57683a5e67f17a9157797649c09c7e55f9530c0dfa6c7bde9ad3fc44c",
+        "after_sha256": "d8f5bcd679d4ef776ce012279e564757bb7e85e11aef99b83ab4e20ccdcb5be9",
+        "change": "extra trailing newline only; original full bytes retained in round5 baseline"
+      },
+      {
+        "path": "docs/architecture/17-extension-composition.md",
+        "before_sha256": "29a284aa8efc5a6de13a67257297f0dab43c9cad506d1b6658700d2ecb85cbfd",
+        "after_sha256": "83024c757f52686c04ddaab462348f5462a0644eedc65d0b316ff92c28b8541c",
+        "change": "extra trailing newline only; original full bytes retained in round5 baseline"
+      },
+      {
+        "path": "docs/reviews/2026-10-25-chief-architect-prompt.md",
+        "before_sha256": "072ac954298ba7d5641f1b4704190184fdff11f273f9b35ac387ca0816299e29",
+        "after_sha256": "e3781f08456f8c4987f804fc81d7151460f03231c7e5c95e9d596455e6961342",
+        "change": "extra trailing newline only; original full bytes retained in round5 baseline"
+      },
+      {
+        "path": "docs/reviews/2026-10-25-extension-composition-design.md",
+        "before_sha256": "005e6d12c5c08c7f40bfade12973d06b5bcd4616b5acc59b2211538a47758cc4",
+        "after_sha256": "24b50bfb2d5670481ec2d117361039ae86e898c01af8e157c06fe4f86f3cba74",
+        "change": "extra trailing newline only; original full bytes retained in round5 baseline"
+      },
+      {
+        "path": "docs/reviews/2026-10-26-project-init-format-draft.md",
+        "before_sha256": "e871462e3c3a8a80edcfa8d72064f4ab60df6d43d6cf063e28c74290097d7331",
+        "after_sha256": "431acd6d4869693b97300b36acf090271f1a02d500c3e859b4838711d265ff66",
+        "change": "extra trailing newline only; original full bytes retained in round5 baseline"
+      }
+    ],
+    "scope": "no text, conclusions, code or acceptance conditions changed"
+  }
+}

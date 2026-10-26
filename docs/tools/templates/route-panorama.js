@@ -94,7 +94,7 @@
  }
  function selectProfile(next,update=true){profile=next;nodeId='plan';if(graphFlow!=='all'&&!profile.detail.graph.edges.some(e=>e.group===graphFlow))graphFlow='all';renderGraphFilters();renderProfiles();renderContent();renderGraph();renderSequence();if(update){try{history.replaceState(null,'','#'+encodeURIComponent(profile.id));}catch(_){}}}
  $('page-title').textContent=view.title;$('summary').textContent=view.summary;$('eyebrow').textContent=view.eyebrow;document.title=view.title+' · MadB';
- $('catalog-stamp').textContent=`设计基线 ${data.plan.baseline} · ${view.profiles.length} 种配置 · 实施与认证状态来自共享目录`;
+ $('catalog-stamp').textContent=`设计基线 ${data.plan.baseline} · ${view.profiles.length} 种配置 · 工作包进度与路线认证登记来自共享目录`;
  const sources=[...view.sources];for(const [label,path] of [['模块与端口','architecture/02-modules-and-ports.md'],['生命周期与并发','architecture/05-lifecycle-and-concurrency.md'],['代码整洁与维护','engineering/02-clean-code.md']])if(!sources.some(s=>s.path===path))sources.push({label,path});
  $('source-links').innerHTML=sources.map(s=>`<a href="${esc(s.url||'../'+s.path)}"${s.url?' target="_blank" rel="noopener noreferrer"':''}>${esc(s.label)} ↗</a>`).join('');
  $('footer-note').textContent='MadB · 路线专题 · 图形解释不替代精确配置认证';

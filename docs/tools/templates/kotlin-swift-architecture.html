@@ -25,8 +25,8 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}main{max-width:1530px}.hero{
 </header>
 <main>
  <section class="hero">
-  <div><span class="preview">专题设计预览 · 尚未完成组合认证</span><div class="eyebrow">KN-SWIFT-OBJC · BUILD / RUNTIME / OWNERSHIP</div><h1>Kotlin/Native ↔ Swift<br>SKIE 主线 ＋ NC 可选扩展</h1><p>默认由 SKIE 提供类型与协程增强；选择 NativeCoroutines 扩展时，明确交接异步声明的生成责任。MadB 统一选择、契约、工程接线和验证，把复杂边界收敛为可理解的 SDK。</p></div>
-  <div class="hero-stamp"><strong>一个类型增强层<br>一个异步桥接责任方</strong><p id="catalog-stamp">设计基线、路线状态与计划阶段<br>统一读取共享 catalog。</p></div>
+  <div><span class="preview">专题设计预览 · 配置认证以登记记录为准</span><div class="eyebrow">KN-SWIFT-OBJC · BUILD / RUNTIME / OWNERSHIP</div><h1>Kotlin/Native ↔ Swift<br>SKIE 主线 ＋ NC 可选扩展</h1><p>默认由 SKIE 提供类型与协程增强；选择 NativeCoroutines 扩展时，明确交接异步声明的生成责任。MadB 统一选择、契约、工程接线和验证，把复杂边界收敛为可理解的 SDK。</p></div>
+  <div class="hero-stamp"><strong>一个类型增强层<br>一个异步桥接责任方</strong><p id="catalog-stamp">设计基线、工作包进度与认证登记<br>统一读取共享 catalog。</p></div>
  </section>
  <nav class="subnav" aria-label="本页目录"><a href="#overview">01 全景</a><a href="#build">02 构建与交付</a><a href="#runtime">03 运行与反向调用</a><a href="#models">04 类型与错误</a><a href="#ownership">05 生命周期</a><a href="#modules">06 模块与原则</a><a href="#gates">07 验收矩阵</a><a href="#sources">08 依据</a></nav>
  <section class="panel profile-panel" aria-label="配置预览">
@@ -34,6 +34,7 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}main{max-width:1530px}.hero{
   <label><span class="choice-label">组合配置的 Swift 异步外观</span><select id="async-api"><option value="async">Swift Concurrency · Async</option><option value="combine">Combine · Publisher</option><option value="rx">RxSwift · Observable / Single</option></select></label></div>
   <p class="profile-description" id="profile-description" aria-live="polite"></p>
  </section>
+ <div class="note">当前 C06 已交付固定 SampleEngine 的 macOS Arm64 选定配置与本机消费证据；任意业务声明、iOS、UI 增强和普通公开 Swift SDK 仍按 <a href="../adr/0014-swift-production-baseline.md">Swift 生产基线</a>分别验收，本页不新增认证。</div>
  <div class="trinity">
   <article class="panel"><small>TYPE / API ENHANCEMENT</small><h3>SKIE：类型增强</h3><p>enum、sealed 层次的 Swift 外观；按受支持范围改善接口体验。sealed 外壳仍可持有 Kotlin 对象。<a class="source-ref" href="#ref-skie-types">[类型依据]</a></p></article>
   <article class="panel"><small>ASYNC BRIDGE OWNER</small><h3 id="bridge-owner"></h3><p id="bridge-description"></p></article>
@@ -125,7 +126,7 @@ func observePage() async {
   <div class="note"><strong>SKIE 的 sealed enum 包装不是独立数据快照。</strong>其关联值可继续引用 Kotlin 子类对象；NC 的泛型异步容器也不能保证每种 enum 替换自动生效。MadB 必须验证实际导出类型，必要时生成明确映射。<a href="https://skie.touchlab.co/features/sealed" target="_blank" rel="noreferrer">sealed 机制</a> · <a href="https://skie.touchlab.co/features/enums#limitations" target="_blank" rel="noreferrer">enum 限制</a></div>
   <div class="panel table-scroll" style="margin-top:18px"><table><thead><tr><th>边界情况</th><th>主线与组合的机制差异</th><th>MadB 的明确处理</th></tr></thead><tbody>
    <tr><td>普通方法 / suspend 失败</td><td>Objective-C 导出受异常映射规则约束；工具提供的异步外观不覆盖所有业务失败。</td><td>设计可导出的业务结果与错误；按需要配置 @Throws；取消保留独立分类，不吞成成功。<a href="https://kotlinlang.org/docs/native-objc-interop.html#errors-and-exceptions" target="_blank" rel="noreferrer">官方规则</a></td></tr>
-   <tr><td>SKIE Flow 的异常</td><td>官方列出自定义 Flow 异常不能直接传播到 Swift、可能导致崩溃的限制。</td><td>在 Kotlin 导出边界处理预期失败，转为受检状态 / 错误值；保留取消，不把所有 Throwable 伪装成业务失败。<a href="https://skie.touchlab.co/features/flows#limitations" target="_blank" rel="noreferrer">Flow 限制</a></td></tr>
+   <tr><td>SKIE Flow 的异常</td><td>SKIE 0.10.15 配置须处理自定义 Flow 异常不能直接传播到 Swift、可能导致崩溃的限制；升级后按新锁重新验证。</td><td>在 Kotlin 导出边界处理预期失败，转为受检状态 / 错误值；保留取消，不把所有 Throwable 伪装成业务失败。<a href="https://skie.touchlab.co/features/flows#limitations" target="_blank" rel="noreferrer">Flow 限制</a></td></tr>
    <tr><td>NC 异步错误通道</td><td>Async、Combine、RxSwift 可呈现对应的失败通道。</td><td>分别验证取消与失败表现、NSError 信息和一次完成；不能直接沿用 SKIE 的所有流行为。<a href="#ref-nc">NC 依据</a></td></tr>
    <tr><td>StateFlow 上游失败</td><td>共享上游异常发生在其 scope；不会自动以终态错误通知每位状态订阅者。</td><td>在共享之前设计错误状态 / 恢复策略，测试冻结状态和重订阅。更换 Swift 桥不能替代此协议。<a href="https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/state-in.html" target="_blank" rel="noreferrer">stateIn 语义</a></td></tr>
    <tr><td>反向调用与流</td><td>本路线通过 ObjC 可见协议 / 回调调用 Swift；SKIE 不支持把任意 AsyncSequence 自动转为 Flow。</td><td>为反向宿主能力定义类型、完成、取消和线程协议；复杂异步实现走显式适配。<a href="#ref-objc">互操作范围</a> · <a href="#ref-skie-flow">Flow 限制</a></td></tr>
@@ -158,7 +159,7 @@ func observePage() async {
   <div class="patterns"><article class="panel"><h3>单一职责</h3><p>类型映射、异步、生命周期、UI 接入各自变化；一个模块只拥有明确责任。</p></article><article class="panel"><h3>依赖倒置</h3><p>核心依赖稳定契约；SKIE 与 NC 的版本差异留在后端适配层。</p></article><article class="panel"><h3>组合优于继承</h3><p>通过配置组合类型增强与一种异步桥；便利 API 委托给同一协议实现。</p></article><article class="panel"><h3>显式失败</h3><p>无法映射或不兼容时定位到源声明；不静默换成 JSON 或降低取消保证。</p></article></div>
  </section>
  <section class="section" id="gates">
-  <div class="section-head"><div><h2><b>07</b>验收矩阵与计划归属</h2><p>每条用例绑定具体 Kotlin / SKIE / NC / Xcode / Swift / OS / 架构和候选摘要。</p></div><span class="check-count" id="route-state">路线与认证状态读取 catalog</span></div>
+  <div class="section-head"><div><h2><b>07</b>验收矩阵与计划归属</h2><p>每条用例绑定具体 Kotlin / SKIE / NC / Xcode / Swift / OS / 架构和候选摘要。</p></div><span class="check-count"><span id="route-state">工作包进度与认证登记读取 catalog</span> · <a href="implementation-progress.html#task-C06">C06 工作包 ↗</a></span></div>
   <div class="panel table-scroll"><table id="gate-table"><thead><tr><th>验收分类</th><th>必须覆盖的样例与反例</th><th>对应计划</th><th>当前证据</th></tr></thead><tbody>
    <tr><td>配置与工具链</td><td>版本交集、逐声明生成归属、禁用重叠协程桥、原始入口可见性、重复符号</td><td>C03 / C06 / X01</td><td class="gate-status">待验证</td></tr>
    <tr><td>类型与模型</td><td>enum、sealed、隐藏子类、泛型载荷、nullable、ID、集合、缓冲与快照</td><td>C06 / L03 / L04 / X01</td><td class="gate-status">待验证</td></tr>
@@ -171,10 +172,10 @@ func observePage() async {
    <tr><td>工程 / ABI / 分发</td><td>SKIE 显式分发配置、独立消费者、cinterop 原始 / 增强入口、真机 / 模拟器、Release 与跨 Xcode</td><td>I04 / I06 / C10 / C11</td><td class="gate-status">待验证</td></tr>
    <tr><td>诊断与性能</td><td>跨界次数、集合复制、内存峰值、队列上限、符号配对、关闭追踪后的行为一致</td><td>C09 / C10 / L07</td><td class="gate-status">待验证</td></tr>
   </tbody></table></div>
-  <div class="note"><strong id="plan-state"></strong> 本页显示共享计划，不因图中存在某模块而认定已实现；逐项证据由 catalog 任务状态决定。SKIE 的 Combine 预览能力仍存在；它与 NC 的订阅启动和取消语义分别验证，不因都叫 Publisher / Future 就互换。<a href="https://skie.touchlab.co/features/combine" target="_blank" rel="noreferrer">SKIE Combine 说明</a></div>
+  <div class="note"><strong id="plan-state"></strong> 本页显示共享计划，不因图中存在某模块而认定已实现；逐项证据由 catalog 任务状态决定。SKIE 0.10.15 的 Combine 预览中，Future(async:) 立即启动且不支持取消；它与 NC 的订阅启动和取消语义分别验证，不因都叫 Publisher / Future 就互换。<a href="https://skie.touchlab.co/features/combine" target="_blank" rel="noreferrer">SKIE Combine 说明</a></div>
  </section>
  <section class="section" id="sources">
-  <div class="section-head"><div><h2><b>08</b>设计依据与阅读入口</h2><p>外部链接是上游机制依据；MadB 的模块、关闭协议和验收要求来自本地设计。未使用 archify。</p></div><span class="fact-stamp" id="fact-stamp">核对日期来自 catalog</span></div>
+  <div class="section-head"><div><h2><b>08</b>设计依据与阅读入口</h2><p>外部链接是上游机制依据；MadB 的模块、关闭协议和验收要求来自本地设计。未使用 archify。</p></div><span class="fact-stamp" id="fact-stamp">计划目录更新日期来自 catalog</span></div>
   <div class="panel padded"><ol class="references">
    <li id="ref-skie-types"><b>01</b><a href="https://skie.touchlab.co/features/sealed" target="_blank" rel="noreferrer">SKIE · sealed 包装</a><small>关联值保留 Kotlin 对象；另见 <a href="https://skie.touchlab.co/features/enums" target="_blank" rel="noreferrer">enum 映射与限制</a>。</small></li>
    <li id="ref-skie-async"><b>02</b><a href="https://skie.touchlab.co/features/suspend" target="_blank" rel="noreferrer">SKIE · suspend 适配</a><small>Swift 异步桥接与 <a href="https://skie.touchlab.co/configuration/coroutines" target="_blank" rel="noreferrer">协程功能开关</a>。</small></li>
@@ -190,6 +191,7 @@ func observePage() async {
    <li><b>12</b><a href="../delivery/01-implementation-plan.md">MadB · 实施计划</a><small>C06 / L03 / L04 / I04 主线；X01 组合扩展。</small></li>
    <li><b>13</b><a href="https://skie.touchlab.co/configuration/swift-compiler" target="_blank" rel="noreferrer">SKIE · 分发与 Swift 编译配置</a><small>显式分发配置与独立消费者验证。</small></li>
    <li><b>14</b><a href="https://skie.touchlab.co/known-issues/cinterop" target="_blank" rel="noreferrer">SKIE · 自定义 cinterop 类型限制</a><small>Framework 名称映射与增强入口实际可调用性。</small></li>
+   <li><b>15</b><a href="https://kotlinlang.org/docs/native-swift-export.html" target="_blank" rel="noreferrer">Kotlin · Swift export 独立配置</a><small>当前 Alpha，已有 suspend / Flow 映射，仅支持 Xcode direct integration；不继承本页 SKIE 或二进制分发证据。</small></li>
   </ol></div>
  </section>
  <section class="section note"><strong>完成通知与结果接收是两个交接点。</strong>resume 之后、调用方实际恢复之前仍可能取消；排入 MainActor 的状态也要在执行时检查观察代次。<a href="../validation/08-critical-scenarios.md">CRIT-01 / CRIT-02</a>分别验证迟到投递与未交付资源，不能仅靠 Task.cancel() 或一次终态标记证明安全。</section>
@@ -431,13 +433,12 @@ func observePage() async {
  const x01=catalog.plan.tasks.find(t=>t.id==='X01'),c06=catalog.plan.tasks.find(t=>t.id==='C06');
  const names={not_started:'未开始',in_progress:'进行中',blocked:'阻塞',implemented:'已实现'};
  const route=catalog.routes.routes.find(r=>r.id==='KN-SWIFT-OBJC');
- const routeNames={planned:'规划中',implemented:'已实现'};
  const verificationNames={missing:'缺少证据',running:'验证中',failed:'验证失败',passed:'验证通过',stale:'证据过期'};
- const total=catalog.routes.routes.length,planned=catalog.routes.routes.filter(r=>r.implementation==='planned').length;
+ const total=catalog.routes.routes.length;
  const certified=catalog.routes.routes.reduce((sum,r)=>sum+r.certified_profiles.length,0);
- $('catalog-stamp').textContent='主线：'+c06.phase+' / SKIE · 扩展：'+x01.phase+' / X01 · 设计基线 '+catalog.plan.baseline+' · '+planned+'/'+total+' 条路线规划中 · 认证配置 '+certified+' · '+catalog.plan.as_of;
- $('route-state').textContent='本路线：'+(routeNames[route.implementation]||route.implementation)+' · '+(verificationNames[route.verification]||route.verification)+' · 认证配置 '+route.certified_profiles.length;
- $('fact-stamp').textContent='核对日期 '+catalog.plan.as_of;
+ $('catalog-stamp').textContent='主线：'+c06.phase+' / SKIE · 扩展：'+x01.phase+' / X01 · 设计基线 '+catalog.plan.baseline+' · '+total+' 条设计主线 · 已登记认证配置 '+certified+' · '+catalog.plan.as_of;
+ $('route-state').textContent='C06 '+names[c06.status]+' · '+verificationNames[c06.verification]+'；本路线已登记认证配置 '+route.certified_profiles.length;
+ $('fact-stamp').textContent='计划目录更新 '+catalog.plan.as_of;
  $('plan-state').textContent='计划数据：C06 '+c06.phase+' / '+names[c06.status]+'；X01 '+x01.phase+' / '+names[x01.status]+'。';
  const tasks=new Map(catalog.plan.tasks.map(task=>[task.id,task]));
  document.querySelectorAll('#gate-table tbody tr').forEach(row=>{

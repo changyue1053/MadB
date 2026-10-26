@@ -5,6 +5,13 @@ const fs = require('node:fs');
 const crypto = require('node:crypto');
 const {TextDecoder} = require('node:util');
 function readFacade(ts, bytes, logical, mode = 'source') {
+  return readPublic(ts, bytes, logical, mode, false);
+}
+function readValueDeclarations(ts, bytes, logical, mode = 'source') {
+  if (!['source', 'declaration'].includes(mode)) throw new Error('unknown value declaration mode');
+  return readPublic(ts, bytes, logical, mode, true);
+}
+function readPublic(ts, bytes, logical, mode, valueOnly) {
   const kotlinTest=mode.endsWith('-kotlin-test');
   const testProfile=kotlinTest||mode.endsWith('-test');
   if(kotlinTest) mode=mode.slice(0,-12);
@@ -57,6 +64,7 @@ function readFacade(ts, bytes, logical, mode = 'source') {
   }
   const records=[],resources=[],errors=[],functions=[],imports=[];
   for(const n of sf.statements){
+    if(valueOnly&&ts.isImportEqualsDeclaration(n))fail(n,'value declaration projection does not support imports');
     if(ts.isImportDeclaration(n)){
       if(!ts.isStringLiteral(n.moduleSpecifier))fail(n,'import module must be literal');
       imports.push({module:n.moduleSpecifier.text,location:loc(n)});continue;
@@ -83,9 +91,11 @@ function readFacade(ts, bytes, logical, mode = 'source') {
       }
       unique([...fields,...methods],n);
       if(fields.length&&methods.length)fail(n,'mixed record/resource interface unsupported');
+      if(valueOnly&&methods.length)fail(n,'value declaration projection does not support resources');
       if(fields.length)records.push({name,fields,location:loc(n)});
       else resources.push({name,methods,location:loc(n)});
     }else if(ts.isClassDeclaration(n)){
+      if(valueOnly)fail(n,'value declaration projection does not support exported classes');
       if(n.typeParameters?.length)fail(n,'generic error class unsupported');
       const heritage=Array.from(n.heritageClauses||[]);
       if(heritage.length!==2||heritage[0].token!==ts.SyntaxKind.ExtendsKeyword||heritage[1].token!==ts.SyntaxKind.ImplementsKeyword
@@ -110,10 +120,14 @@ function readFacade(ts, bytes, logical, mode = 'source') {
     }else fail(n,'unsupported exported declaration: '+ts.SyntaxKind[n.kind]);
   }
   unique([...records,...resources,...errors,...functions],sf);
-  if(!records.length||!resources.length||errors.length!==1||!functions.length||records.length+resources.length+functions.length>64)fail(sf,'public declaration counts outside restricted profile');
+  if(valueOnly){
+    if(!records.length||!functions.length||resources.length||errors.length||records.length+functions.length>64)fail(sf,'value declaration counts outside projection subset');
+    if(imports.length)fail(sf,'value declaration projection does not support imports');
+  }else if(!records.length||!resources.length||errors.length!==1||!functions.length||records.length+resources.length+functions.length>64)fail(sf,'public declaration counts outside restricted profile');
   const types=new Map([...records.map(r=>[r.name,'record']),...resources.map(r=>[r.name,'resource'])]);
   function check(t,location,where){
     const bad=message=>{throw new Error(`${logical}:${location.line}:${location.column}: ${message}`);};
+    if(valueOnly&&!['number','string','void','reference'].includes(t.tag))bad('value declaration projection supports only synchronous scalar/record values');
     if(t.tag==='reference'&&!types.has(t.name))bad('unknown public type reference '+t.name);
     if(t.tag==='promise'){if(where!=='return')bad('Promise only supported as callable return');check(t.item,location,'result');}
     if(t.tag==='callback'){
@@ -135,4 +149,4 @@ if(require.main===module){
     process.stdout.write(JSON.stringify(readFacade(ts,data,process.argv[3],process.argv[4]||'source'),null,2)+'\n');
   }catch(e){process.stderr.write(String(e.message||e)+'\n');process.exitCode=1;}
 }
-module.exports={readFacade};
+module.exports={readFacade,readValueDeclarations};

@@ -1,0 +1,306 @@
+{
+  "schema": "madb.documentation-validation/2",
+  "baseline": "0.9",
+  "status": "passed",
+  "scope": "static-documents-and-rendered-html",
+  "counts": {
+    "markdown": 110,
+    "json": 77,
+    "toml": 1,
+    "tables": 280,
+    "local_links": 1691,
+    "html": 13,
+    "scripts": 13
+  },
+  "extension_structure": {
+    "schemas": 2,
+    "frames": 4,
+    "vectors": 20
+  },
+  "catalog": {
+    "tasks": 41,
+    "routes": 16,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_mappings": 236
+  },
+  "browser": {
+    "status": "not_executed",
+    "reason": "Browser URL policy rejected file:// local page; no workaround attempted",
+    "scope": "layout, real interactions and console"
+  },
+  "product_tests_executed": false,
+  "errors": [],
+  "review": "2026-10-25-swift-production-baseline.md",
+  "review_date": "2026-10-25",
+  "source_head_at_start": "22ab5726d7bb001f1cb39d66a43377bb6be64abf",
+  "changed_task_acceptance": [
+    "C09",
+    "C10",
+    "I01",
+    "I04",
+    "L01",
+    "L04",
+    "L07",
+    "L08",
+    "X01",
+    "X02"
+  ],
+  "changed_files": [
+    {
+      "path": "docs/README.md",
+      "reason": "新增生产基线入口，限定 SKIE 默认路线范围",
+      "sha256": "236d1826a1cea97f256aefa89924a0c46200daab06b77ca3a79e0a1968b80090"
+    },
+    {
+      "path": "docs/adr/0014-swift-production-baseline.md",
+      "reason": "记录十二项必要能力、取舍、证据边界与既有任务映射",
+      "sha256": "5fa18c19859c204b9326cc8b2186dc1e7cc23c2cedbdf3d2da3b23886a0d905e"
+    },
+    {
+      "path": "docs/architecture/04-data-and-errors.md",
+      "reason": "明确后端类型复用、快照和可恢复错误边界",
+      "sha256": "c9dfa4dd03749bc2b591dbdfe21c271133f7e15e21a042d4f889383a8e36e398"
+    },
+    {
+      "path": "docs/architecture/05-lifecycle-and-concurrency.md",
+      "reason": "补齐等待取消保活、唯一终态及 actor/固定线程区别",
+      "sha256": "5601d982ec293e63126c2f73949f041bc64f4a429181b4a22d2246d81be14c41"
+    },
+    {
+      "path": "docs/architecture/06-backend-profiles.md",
+      "reason": "后端限制、受管补丁和 C++ 公开 SDK 配方",
+      "sha256": "4e613e354c9a27a74a2b08833beef3efc858bae46b5a775e7d8c17255f2d12c6"
+    },
+    {
+      "path": "docs/architecture/07-code-generation.md",
+      "reason": "区分固定样例复制和真实声明驱动的业务生成",
+      "sha256": "e210a03a3d52a8b5373f80fbb4ee25eea5acd6d15fe3982e90cfb1f89dbf4a60"
+    },
+    {
+      "path": "docs/architecture/08-runtime-and-idiomatic-api.md",
+      "reason": "状态事件、背压、宿主回调与机制委派",
+      "sha256": "359dfc3e24f0108b4c7e82dd0afcaec5b885c10177c1d152f108cca7f87b34c5"
+    },
+    {
+      "path": "docs/architecture/09-build-packaging-release.md",
+      "reason": "混合 SwiftPM、兼容与正式发布条件",
+      "sha256": "877017fbf810570aabe715db8999da173bea0a93eb475e5231788e0d24933f46"
+    },
+    {
+      "path": "docs/architecture/14-project-initialization.md",
+      "reason": "作者/消费者分责、根解析锁、完整增量输入",
+      "sha256": "1cb633d493858490183ecaba2b6903b3bb59c7e10166f226c12871b936e4bce6"
+    },
+    {
+      "path": "docs/architecture/15-developer-ergonomics.md",
+      "reason": "普通 API、声明泛化与按配置 UI/薄宏",
+      "sha256": "ff1f71983198263c057060c12accc29420977ca4edf58db9390e0e77f3c2ebbd"
+    },
+    {
+      "path": "docs/architecture/16-technology-stack-and-versions.md",
+      "reason": "候选/受管版本/已证实范围分开，链接统一限制来源",
+      "sha256": "21a719f738c56e32584284020a075f890ca32c01f6d70daecb9ed59b71fd27f7"
+    },
+    {
+      "path": "docs/architecture/17-extension-composition.md",
+      "reason": "衔接 Swift 生产基线，明确组件责任",
+      "sha256": "c27adc635e40bdf1a3a681375cb81f04bcd6fe7ed2099c12f441465c9b81dfcb"
+    },
+    {
+      "path": "docs/catalog/implementation-plan.json",
+      "reason": "仅细化10个既有任务的 acceptance/documents/notes",
+      "sha256": "5c816af0af9bf5599822486cb408b0339fed4d4f8ceb29480dd4a6767ebdcfb8"
+    },
+    {
+      "path": "docs/catalog/route-views/swift-c-cpp-architecture.json",
+      "reason": "同步 Swift 公开配方、版本及实际证据范围",
+      "sha256": "67ec67d1f3bb73f77f127ad75e6bff60366c4023b4dce7ea6fb26dbc41ddd07b"
+    },
+    {
+      "path": "docs/catalog/route-views/swift-rust-architecture.json",
+      "reason": "同步 Swift 公开配方、版本及实际证据范围",
+      "sha256": "d235f9d70668bd99fdb4e46e7a5720949e1f25032dc472b95b7f190ba224b050"
+    },
+    {
+      "path": "docs/delivery/01-implementation-plan.md",
+      "reason": "明确 L01 首个接续包与 Swift 分包交付点",
+      "sha256": "e24543003998acdee185d8d04b0fa4ae4c1e0838c8f9e0dc3f3edc559a897ac2"
+    },
+    {
+      "path": "docs/delivery/03-decisions-and-risks.md",
+      "reason": "将 Swift 生产缺口纳入已有实施风险",
+      "sha256": "9e32c73a4d0c6fab04e1de509d48b10bc6e66168ea76c5b7f0ac57f6e0d8e0b4"
+    },
+    {
+      "path": "docs/product/03-developer-experience.md",
+      "reason": "消费端普通 API 与混合包阅读入口",
+      "sha256": "6ca27d80d16fa44c4063666b48acf8b852d58583c8575f26ad81d3675757e537"
+    },
+    {
+      "path": "docs/product/04-project-initialization.md",
+      "reason": "消除 init 已交付的措辞歧义",
+      "sha256": "ee73f5ec4dab3d01a8c2370f344efd87ef55cea0b179bdfc1c79ef67fd97890f"
+    },
+    {
+      "path": "docs/references/README.md",
+      "reason": "补充官方及受管补丁来源与证据界限",
+      "sha256": "9eb92d13d6f68ec07d66f7aae77b719f69018777b65637e3988fe9e27f08df02"
+    },
+    {
+      "path": "docs/reviews/2026-10-25-swift-production-baseline.md",
+      "reason": "本次范围、总结、计划、质量检查与限制",
+      "sha256": "15d905ecc7317b9370f201a6c8c9d4fdd7a15e2f12b9e03949fbcab559db3078"
+    },
+    {
+      "path": "docs/reviews/README.md",
+      "reason": "新增当前审查记录入口",
+      "sha256": "4bf17ced9552e9232b215736e0c108f026b799ceef6050cdd3291ea2ede7f712"
+    },
+    {
+      "path": "docs/tools/templates/kotlin-swift-architecture.html",
+      "reason": "同步路线能力和固定样例证据边界，脚本不变",
+      "sha256": "d400d98f01b390df783ad5dc3b7723b93938477553b092c8ea1967018b958c3b"
+    },
+    {
+      "path": "docs/validation/06-project-initialization.md",
+      "reason": "复用 INIT 编号补齐 Swift 作者与消费者场景",
+      "sha256": "f938c0f1cec22a8b1abd0c3682d9be93005c2a01cc729692cdfce57c0d6044e0"
+    },
+    {
+      "path": "docs/validation/07-developer-ergonomics.md",
+      "reason": "复用 DX 编号补齐第二业务模块与公开消费兼容",
+      "sha256": "23b38be3039f47ceb928afb266fd3b3a1909a5d0ea10ef82b962fe86166cc0f8"
+    },
+    {
+      "path": "docs/visuals/README.md",
+      "reason": "限定默认 SKIE 的提供方范围",
+      "sha256": "0a3187403b26047c3f08bc8ac4aea789f75787d36d78d12176f3d2091e41f43c"
+    },
+    {
+      "path": "docs/visuals/architecture-overview.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "da10a166847c1553198550c5122c7b0892e7e60a18a62919a27318d886e5c55a"
+    },
+    {
+      "path": "docs/visuals/arkts-c-cpp-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "7c5714d0ddb54a5b6cb33dbf9e5a7bd2dde1bd4133ecf3f52ea748f18a40d347"
+    },
+    {
+      "path": "docs/visuals/arkts-rust-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "ae31a240cddea583f6e1d86971264093f7312697478306732a76ee89611c0700"
+    },
+    {
+      "path": "docs/visuals/extensions-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "cd985c6b466bb7156d1159c42e955047fb084f0a4e26e91678ba6bd27e5f8bef"
+    },
+    {
+      "path": "docs/visuals/implementation-progress.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "0c8dfc509c5b6276d0f776baa2569c0874ad4da34e4f6690aa99ef8325b99623"
+    },
+    {
+      "path": "docs/visuals/kotlin-arkts-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "f8cba83eaa686de7de12458998a53c6a47d7f138a8a57660f4d4f35f43dc67dd"
+    },
+    {
+      "path": "docs/visuals/kotlin-c-cpp-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "d397c455b3df66daf7cd33046add3a2c3081b80d390559930256b9a9ae59d99a"
+    },
+    {
+      "path": "docs/visuals/kotlin-rust-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "ecc68a381707f9f3bbe710c8477e2208313042b5bbaa0ce73a890c1edf75539d"
+    },
+    {
+      "path": "docs/visuals/kotlin-swift-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "dff10be0afaa1c010a14e76292b86254b8ece662fa979bb766081fd495ba12a4"
+    },
+    {
+      "path": "docs/visuals/route-atlas.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "4c6cedda3a9f1b7a0c627d7c1209ca9b00afe2346be2dcc7cd5af0a80f8730b0"
+    },
+    {
+      "path": "docs/visuals/rust-c-cpp-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "b4b9a736ddac306d59b6f773b58bb70363cd4fc0d586aa79f9c583c232b8e485"
+    },
+    {
+      "path": "docs/visuals/swift-c-cpp-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "a30afc44d2e8299098d6e70bcb5f081957bf957ebd818427e3d6b47348a50598"
+    },
+    {
+      "path": "docs/visuals/swift-rust-architecture.html",
+      "reason": "从权威目录与模板重新生成",
+      "sha256": "f47f64c8cf0808f7e2693d4f5c29da498d4a4f9cdf9c465644a4f6c2136480bf"
+    }
+  ],
+  "digest_scope": "changed_files records reviewed source and generated bytes, excluding this receipt to avoid self-reference",
+  "checks": {
+    "python": "3.14.4",
+    "node": "26.8.2",
+    "unit_tests": {
+      "passed": 21
+    },
+    "dom_smoke": {
+      "method": "isolated DOM-shaped unit execution; not a browser",
+      "profiles": 29,
+      "graph_filters": 173,
+      "sequence_scenarios": 87,
+      "node_keyboard_selections": 3044,
+      "deep_links": "passed",
+      "extension_categories": "passed",
+      "theme": "passed"
+    },
+    "task_governance": {
+      "tasks": 41,
+      "protected_fields": "unchanged",
+      "allowed_fields": [
+        "acceptance",
+        "documents",
+        "notes"
+      ]
+    }
+  },
+  "preserved": [
+    "pre-existing workspace changes",
+    "implementation files and tool locks",
+    "routes/problems/case-groups and public formats",
+    "C07 scope/status and ADR-0011/0013",
+    "historical reviews/validation/source snapshots",
+    "Lab fixed reference snapshots",
+    "extension implementation timing remains owner decision"
+  ],
+  "limitations": [
+    "No real browser validation due file URL security policy",
+    "No SDK/native/device/remote CI/release tests",
+    "No build performance claim or complete external link crawl"
+  ],
+  "post_write_check": {
+    "status": "passed",
+    "scope": "actual repository static documents and generated views",
+    "counts": {
+      "markdown": 110,
+      "json": 78,
+      "toml": 1,
+      "tables": 280,
+      "local_links": 1692,
+      "html": 13,
+      "scripts": 13
+    },
+    "reviewed_writeback_files_verified": 40,
+    "parallel_changes_preserved": [
+      "docs/reviews/2026-10-25-c07-arkts.md",
+      "docs/reviews/c07-controlled-c-observation.json"
+    ]
+  }
+}

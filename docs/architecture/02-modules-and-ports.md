@@ -4,6 +4,12 @@
 
 模块按变化原因划分。核心处理值、规则和计划，外层处理文件、进程、编译器与设备。工具宿主的任务调度与应用中 SDK 的资源/线程协议分别实现，不合并成跨语言万能运行时。
 
+## 控制实现复杂度
+
+保持现有六个核心 crate 的依赖边界；目录中的职责不自动对应新 crate、独立进程或发布包。只有实际依赖隔离、复用或分发需求才增加物理单元，先用模块和纯函数承接变化。扩展也无需重新实现全部五个端口。
+
+ContractIR 承担边界语义，ProjectPlan 承担工程结构，TaskGraph 承担执行依赖；组合根完成具体实现装配。三种模型分别有可检验的职责，不合并成万能配置对象。生成、编译和候选提交继续复用宿主机制，SDK 不加载工具核心。普通使用者不需要理解这些内部模型，角色入口见[开发者流程](../product/03-developer-experience.md)。
+
 ## 仓库落点与文档权威
 
 本工作区的 madb 是工具 Git 根，madb_lab 是独立 Lab Git 根；上级仅为工作区容器，不建立第三个嵌套仓库。现有资料统一放入工具仓库 docs。旧工作区 docs 路径只允许作为指向该目录的兼容链接，不维护另一份规范。
@@ -101,6 +107,8 @@ MadB/
 六个 `madb-*` 核心 crate 是工具 workspace 的初始构建边界。各自的 Cargo.toml、lib.rs 和测试随建仓建立；目录树省略这些重复文件。其他目录是职责分组，不能据此推导必须增加同名 crate。Rust 适配器按依赖隔离和复用需要成为实际 workspace 成员，同一后端的紧密协作实现可以放在一个包内，通过公开端口暴露。
 
 帮助程序和 SDK 使用所在语言的原生构建与发布单元；不强制纳入宿主 Cargo workspace。Kotlin 官方线与 CPF 使用独立构建根、插件 classpath、缓存和发布坐标，共享兼容的源码。具体工具版本与目标组合由[技术栈规范](16-technology-stack-and-versions.md)及 profile 锁确定。
+
+ArkTS 的声明读取与绑定生成属于 helpers/generators，env、操作和订阅协议属于相应后端与 SDK 运行时，ArkUI 页面状态适配属于可选 UI 集成，HAR 装配与独立消费属于 artifacts/templates。必要能力与扩展的逐项选择分别以 [ADR-0016](../adr/0016-arkts-production-baseline.md)和 [ADR-0017](../adr/0017-arkts-extension-delivery.md)为准；本目录分工不要求每项能力另建一个包，也不把作者侧编译工具带入普通 SDK 消费流程。
 
 C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：只做 schema 文档到领域值的显式转换、语义投影与校验编排，向内依赖 model、rules 和 protocol。它不读取编译器源码、不执行后端，不向核心反向暴露 DTO；C05 的实际来源读取与生成位于外部语言适配器。这一编译边界让格式检查、领域规则和转换各有单一维护位置，架构门禁同时拒绝核心导入该包及该包导入 CLI。
 
@@ -256,3 +264,9 @@ ContractSnapshot 保留输入摘要、符号、位置和精度；OutputSet 保�
 `madb-app/src/use_cases/initialize` 编排模板解析、ProjectPlan、纯渲染、Workspace 无覆盖提交、既有构建验证及可选 IdeLauncher。ProjectPlan 与 ContractIR 分离，初始化复用既有 Generator/Toolchain；文件与 IDE 规则见[初始化架构](14-project-initialization.md)。
 
 新增语言通常只增加适配器、清单、必要 SDK、模板和 Lab 消费资产；核心出现新公共语义时按版本演进。扩展清单、握手与接入门禁见[扩展规范](11-language-extension.md)。语言辅助进程崩溃或非法消息转换为明确工具错误，保留受限原始日志、身份与摘要，不能变成“无操作成功”。
+
+## 扩展组合的归属
+
+[组合契约](17-extension-composition.md)细化已有模块职责：组合根解析显式扩展选择，contracts 将受检 wire 转为领域值，rules/plan 检查能力、阶段责任及依赖，app/host 沿既有执行与三层事务提交。语言适配器只承担自己的端口或 SDK 机制，不取得最终提交权。多生成步骤的文件 owner、基础 API 与增强模块的依赖、升级与禁用沿同一契约检查。
+
+该细化不增加平行插件内核、全局服务定位器或运行时对工具核心的依赖。文档中的目标端口名称不表示现行代码已完成同名公开 API；实际交付由 E/I/L 及对应路线验收。

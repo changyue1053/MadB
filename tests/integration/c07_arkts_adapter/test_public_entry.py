@@ -142,7 +142,7 @@ class ExplicitPolicy(unittest.TestCase):
             (ROOT / "adapters/generators/arkts/profiles/snapshot-test-v1.json").read_text()
         )
         contract, bindings = self.lower()
-        self.assertEqual(len(contract["symbols"]), 36)
+        self.assertEqual(len(contract["symbols"]), 37)
         types = {item["id"]: item["definition"] for item in contract["types"]}
         self.assertEqual(types["test.array.178"]["max_bytes"], 1424)
         self.assertEqual(types["test.array.178"]["length_unit"], "elements")
@@ -169,6 +169,14 @@ class ExplicitPolicy(unittest.TestCase):
         self.assertEqual(hook["values"]["stop"], "request-and-drain")
         self.assertNotEqual(hook["values"]["keep_alive"], "call-frame")
         self.assertIn("Runtime", self.policy["calls"]["testAfterSettlement"]["lifetime"])
+        receipt = next(
+            b for b in bindings
+            if b["selector"]["id"] == "madb.c09.testBeforeRuntimeReceipt.v1"
+            and b["slot"] == {"kind": "parameter", "name": "probe"}
+        )
+        self.assertEqual(receipt["values"]["context_owner"], "caller")
+        self.assertTrue(receipt["values"]["synchronous_callback"])
+        self.assertEqual(receipt["values"]["keep_alive"], "source-lease")
 
     def test_companion_value_slot_is_not_inferred_from_number(self):
         self.policy = json.loads(

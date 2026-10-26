@@ -1,8 +1,13 @@
 //! Pure schema adapter. It converts wire data and calls inward-facing rules;
 //! it does not read source files, run a backend or commit generated artifacts.
+pub mod composition;
 mod convert;
 pub mod dependencies;
 pub mod execution;
+pub mod extension;
+pub mod extension_files;
+pub mod extension_lock;
+pub mod extension_session;
 pub mod native;
 mod projections;
 mod resolution;

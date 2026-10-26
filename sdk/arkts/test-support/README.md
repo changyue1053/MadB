@@ -81,3 +81,12 @@ with matching module and `test_support` flags. It changes the compiled identity
 input while keeping the original facade; each `fixtures.json` records the variant.
 The ordinary fixture has no counter claim. Companion observations independently
 prove zero new owners through the shared admission gate source.
+
+
+The C09 companion adds one pure ArkTS public `testBeforeRuntimeReceipt` helper
+(the native C/C++/Rust inventory stays at 32 methods; public test helpers become
+21). Kotlin derives the same cutpoint through `kotlin_test_binding.py`; its KSP
+function inventory is unchanged. See [the exact registration, return and failure
+contract](contracts/PORTS.md#c09-synchronous-before-receipt-probe). Host checks in
+`tests/integration/c09_receipt_hook` execute both actual derived facades with a
+controlled native model; they are not target or physical-cleanup evidence.

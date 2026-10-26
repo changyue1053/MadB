@@ -12,11 +12,11 @@
 
 schema-vectors 的 valid 只表示对应 JSON 应通过结构校验。example=true 的清单即使结构有效，正式安装仍应拒绝；未知必需功能、同名 ID、未声明组件和状态机违规需要独立语义测试。
 
-文档校验应完成：
+仓库根的 `.venv/bin/python docs/tools/check_docs.py` 对本正常会话样本执行以下静态检查：
 
 1. 使用[扩展 schema](../../schemas/README.md)验证清单与每个会话帧。
 2. 按 expected_schema 验证结构正反例，不把任意异常视为负例成功。
-3. 核对会话双方身份、组件、摘要、版本和请求 ID 一致。
+3. 核对会话顺序、双方身份、组件/端口、摘要、最高共同版本和请求 ID 一致。
 4. 核对选定组件满足 hello 的必需功能，ack 不超过该组件声明。
 
 运行时还需要[接入验收规范](../../validation/05-language-onboarding.md)中的真实进程、竞态、编译、消费与制品测试；它们不能由这些静态样例代替。

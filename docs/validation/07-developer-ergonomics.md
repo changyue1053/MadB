@@ -33,6 +33,53 @@ MadB 验证元数据提取、展开形状、来源映射、确定性和编译失
 
 DX 编号是开发体验验收组，不替换现有 48 个公共边界问题或 96 个边界案例组。与[INIT 验收](06-project-initialization.md)共用实际工程，但结果分别记录：工程能打开不能代替生命周期和语义验证。
 
+### 独立业务与普通使用实例
+
+DX-01/02/11 至少增加第二个独立业务模块，使用对应 profile 声明支持的类型和资源。通过公开导出声明与必要策略完成生成；新增方法、修改模型字段、重命名及删除导出后重新构建，由候选 SDK 消费。不能编辑 MadB 私有映射允许清单、固定 SampleEngine Facade 或生成文件来完成这个测试。新语义不在承诺子集内时应准确拒绝。
+
+DX-01 的普通消费者不手填内部身份、不手包每个操作句柄、不安装 MadB CLI、不手工补 native 库。预期身份由生成/装配提供，故意混入错误 profile/版本仍被拒绝；高级互操作的存在不允许普通入口绕过必要保护。DX-05/08 继续验证页面停止与业务 owner 关闭分别完成。
+
+这些实例由对应 L02–L06 随平台交付，L07 汇总，不等待最终收口才开始普通 API 验证。实际手工接线数、恢复步骤和独立作者可完成程度作为体验证据；不以生成代码行数或接口数量代替。
+
+### Swift 正式包与兼容实例
+
+依据 [ADR-0014](../adr/0014-swift-production-baseline.md)及[发布规范](../architecture/09-build-packaging-release.md)，在既有案例中补齐下列实例；不增加 Swift 专属验收编号或另一个完成状态。
+
+| 既有验收组 | 独立消费要求 |
+|---|---|
+| DX-01/11 | 从冻结候选的 SwiftPM 安装入口消费源码包装与 native XCFramework，实际调用承诺 API；无工具私有源码、作者工具链、手工补库或开发缓存仍可用。第二个业务模块沿上一节变更序列产生新候选并消费，不只验证固定样例 |
+| DX-02/11 | 比较升级前后实际公开产品的 API/适用 ABI 基线，并用旧消费者源码编译、运行新候选；错误、取消、隔离和资源语义按原有 DX 场景继续验证。工具不能覆盖的目标/生成接口如实标记，不把无 diff 等同于兼容 |
+| DX-01/12 | 在所声明工具链、最低系统和各目标切片上运行独立普通 Release 消费；包、资源、native 依赖、许可、符号及适用隐私 manifest 与候选对应。故意替换包/库或破坏 checksum 应被既有身份/匹配检查拒绝，关联 CRIT-12 |
+
+初始化与 IDE 的实际工程证据复用[INIT 验收](06-project-initialization.md)，正式发布复用 C09/C10 的冻结候选、公共下载及安装验收。局部 Swift 测试、第二业务模块或接口比较通过，不单独赋予全平台发布资格。
+
+Swift 扩展按 [ADR-0015](../adr/0015-swift-extension-delivery.md)复用以下对照，不新增案例编号：
+
+- DX-01/04/05/06/09：基础 API 与 Observation/选用 UI 配置分别消费；读取与视图重建不重复注册，状态快照与事件通道分别验证，共享源的一个观察者停止不影响另一观察者，停止确认后无迟到 UI 更新。
+- DX-01/03/04/11：薄宏及属性封装具有等价普通调用，展开名称、可用性与 actor 隔离一致；选用宏时在真实宿主编译，未选用时核对基础产品的依赖图与实际构建。宏快照通过不能替代目标编译、生命周期或 IDE 证据。
+- DX-01/06/07/08：Combine/Rx 的订阅启动、独立订阅与共享、取消/Dispose、终态和有界交付按声明验证；基于普通 API 的适配独立留证。NativeCoroutines 配方另在 X01 验证 Kotlin/Swift 两侧及每符号唯一桥，复用这些案例而不建立 L04 ↔ X01 完成依赖循环。
+- DX-10/11/12：深度诊断启用/关闭、工具或扩展升级均保持已承诺的基础保护；Swift export 替代配置、宏宿主及新工具链各用自己的生成与候选身份，不能继承 SKIE 或旧组合证据。
+
+L04 可按目标与能力提交子范围，例如 macOS 上的 Observation 适配；其报告只覆盖实际 API 与目标，不据此标记 iOS/SwiftUI/UIKit、正式分发或 L04 整包通过。已承诺扩展的完整交付仍需对应 INIT/DX 和独立候选消费。
+
+Swift Testing 可用于新单元与集成场景，XCTest 保留 UI、性能及已有测试；选择框架不改变案例预期，也不要求全面迁移。API diff 可使用锁定工具链支持的 `diagnose-api-breaking-changes` 或实际产物接口比较，必须先确认目标与产品覆盖。[Apple 测试分工](https://developer.apple.com/documentation/xcode/adding-tests-to-your-xcode-project)、[SwiftPM API 比较支持](https://github.com/swiftlang/swift-package-manager/pull/8857)
+
+DX-12 的 ASan、TSan、UBSan 等按语言、目标和工具链能力选择；记录实际插桩范围，未插桩的预编译 native 库不能算已检查。TSan 在 iOS 等移动平台使用受支持模拟器，UBSan 不用于证明 Swift 代码本身安全；诊断构建不替代未插桩 Release，检测无报告也不证明全部资源时序。[Apple 诊断边界](https://developer.apple.com/documentation/xcode/diagnosing-memory-thread-and-crash-issues-early)
+
+### ArkTS 正式包、状态与扩展实例
+
+依据 [ADR-0016](../adr/0016-arkts-production-baseline.md)和 [ADR-0017](../adr/0017-arkts-extension-delivery.md)，复用既有 DX、INIT、CRIT 与 EXT 实例，不复制必要能力/扩展清单或增加案例计数。消费者按需启用便利能力，不免除 L05 已承诺适配的产品验收；替代后端使用自己的 profile、候选与 S6 证据。
+
+| 既有验收组 | ArkTS 独立消费与对照要求 |
+|---|---|
+| DX-01/02/11 | 从候选 HAR 消费普通方法、声明和准确错误；第二业务模块改变声明后正常生成并消费。预编译 Native 配方没有 MadB/Cargo/Gradle、作者工作区或手工补库仍可用；比较公开 API 与适用 ABI，源码/字节码 HAR 分别验证 |
+| DX-03/04/09 | 普通 API、装饰器/访问器、选用 ArkUI 状态版本分别消费；真实构造类型化状态实例，不用 DTO 断言替代。属性读取和 UI 重建不新增订阅，SDK 不支持的语法或状态模型准确拒绝 |
+| DX-05/06/08/09 | 重复进入、隐藏、销毁及并发页面按 profile 启停；一个页面停止不关闭共享业务 owner，也不影响另一订阅。停止完成后没有迟到 UI 更新，关联 CRIT-01/08；真实 ArkUI UIContext/执行器与 env 分别验证 |
+| DX-06/07/08 | 状态快照与事件通道、等待取消与停止工作、业务错误与装载/协议错误分开验证；Promise/流等便利入口不虚构取消能力。迟到资源一次交接或回收，满队列及 env 退出关联 CRIT-02/03/11 |
+| DX-01/10/12 | 在承诺 ABI、最低系统及工具链上消费未插桩 Release HAP，检查混淆保留、Native 装载和错库拒绝，关联 CRIT-12。诊断开关、sink 失败与专项插桩不改变必要保护，符号/namecache 与同次候选关联 |
+
+HAP 消费、IDE 与渠道验证复用 [INIT 配方](06-project-initialization.md)，组合隔离及替代后端复用 [EXT 门禁](05-language-onboarding.md)。普通测试可使用 @ohos/hypium；UI/性能工具按目标选择，框架名称不替代独立预期和实际执行。宿主状态/页面订阅模型测试只证明该模型；L05 子范围报告不得据此标记真实 HAP、ArkUI 页面、env 退出、全部扩展或整个 L05 通过。
+
 ## 3 关键反例
 
 - 给同一接口配置两份冲突的释放责任：应在作者声明处阻断，不能生成后随机选择。

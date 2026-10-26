@@ -1,0 +1,186 @@
+{
+  "purpose": "Fixed handoff input and document validation record; not a new progress or product acceptance authority",
+  "captured_at": "2026-10-26T02:31:01.729398+00:00",
+  "date_timezone": "America/New_York",
+  "producer": {
+    "root": "/Users/changyue/Desktop/MadB/madb",
+    "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+    "branch": "codex/c07-arkts",
+    "status": "M README.md\n M docs/README.md\n M docs/architecture/02-modules-and-ports.md\n M docs/architecture/04-data-and-errors.md\n M docs/architecture/05-lifecycle-and-concurrency.md\n M docs/architecture/06-backend-profiles.md\n M docs/architecture/07-code-generation.md\n M docs/architecture/08-runtime-and-idiomatic-api.md\n M docs/architecture/09-build-packaging-release.md\n M docs/architecture/11-language-extension.md\n M docs/architecture/12-extension-protocol.md\n M docs/architecture/13-contract-evolution.md\n M docs/architecture/14-project-initialization.md\n M docs/architecture/15-developer-ergonomics.md\n M docs/architecture/16-technology-stack-and-versions.md\n M docs/catalog/implementation-plan.json\n M docs/catalog/route-views/arkts-c-cpp-architecture.json\n M docs/catalog/route-views/arkts-rust-architecture.json\n M docs/catalog/route-views/extensions-architecture.json\n M docs/catalog/route-views/swift-c-cpp-architecture.json\n M docs/catalog/route-views/swift-rust-architecture.json\n M docs/delivery/01-implementation-plan.md\n M docs/delivery/03-decisions-and-risks.md\n M docs/delivery/04-design-readiness-and-first-route.md\n M docs/engineering/05-review-and-quality-gates.md\n M docs/engineering/06-documentation-quality.md\n M docs/examples/case.example.json\n M docs/examples/extensions/README.md\n M docs/examples/first-route/README.md\n M docs/product/01-positioning-and-requirements.md\n M docs/product/02-capabilities-and-roadmap.md\n M docs/product/03-developer-experience.md\n M docs/product/04-project-initialization.md\n M docs/references/README.md\n M docs/reviews/README.md\n M docs/tools/check_docs.py\n M docs/tools/render_visuals.py\n M docs/tools/templates/architecture-overview.html\n M docs/tools/templates/implementation-progress.html\n M docs/tools/templates/kotlin-arkts-architecture.html\n M docs/tools/templates/kotlin-swift-architecture.html\n M docs/tools/templates/route-atlas.html\n M docs/tools/templates/route-panorama.html\n M docs/tools/templates/route-panorama.js\n M docs/tools/tests/panorama_smoke.cjs\n M docs/tools/tests/test_document_contracts.py\n M docs/validation/03-case-specification.md\n M docs/validation/04-problem-catalog.md\n M docs/validation/05-language-onboarding.md\n M docs/validation/06-project-initialization.md\n M docs/validation/07-developer-ergonomics.md\n M docs/visuals/README.md\n M docs/visuals/architecture-overview.html\n M docs/visuals/arkts-c-cpp-architecture.html\n M docs/visuals/arkts-rust-architecture.html\n M docs/visuals/extensions-architecture.html\n M docs/visuals/implementation-progress.html\n M docs/visuals/kotlin-arkts-architecture.html\n M docs/visuals/kotlin-c-cpp-architecture.html\n M docs/visuals/kotlin-rust-architecture.html\n M docs/visuals/kotlin-swift-architecture.html\n M docs/visuals/route-atlas.html\n M docs/visuals/rust-c-cpp-architecture.html\n M docs/visuals/swift-c-cpp-architecture.html\n M docs/visuals/swift-rust-architecture.html\n M scripts/check.py\n M sdk/kotlin/skie/README.md\n M tests/integration/c04/README.md\n M tests/integration/c07_native_gateway/README.md\n?? docs/adr/0012-extension-composition-and-delivery.md\n?? docs/adr/0014-swift-production-baseline.md\n?? docs/adr/0015-swift-extension-delivery.md\n?? docs/adr/0016-arkts-production-baseline.md\n?? docs/adr/0017-arkts-extension-delivery.md\n?? docs/architecture/17-extension-composition.md\n?? docs/reviews/2026-10-25-architecture-simplification.md\n?? docs/reviews/2026-10-25-arkts-extension-delivery.md\n?? docs/reviews/2026-10-25-current-document-audit.md\n?? docs/reviews/2026-10-25-e05-l03-scheduling.md\n?? docs/reviews/2026-10-25-extension-composition-design.md\n?? docs/reviews/2026-10-25-swift-extension-delivery.md\n?? docs/reviews/2026-10-25-swift-production-baseline.md\n?? docs/reviews/architecture-simplification-validation.json\n?? docs/reviews/arkts-extension-validation.json\n?? docs/reviews/current-document-audit-inventory.json\n?? docs/reviews/current-document-audit-validation.json\n?? docs/reviews/e05-l03-scheduling-validation.json\n?? docs/reviews/extension-composition-validation.json\n?? docs/reviews/swift-extension-validation.json\n?? docs/reviews/swift-production-validation.json\n?? scripts/check_arkts_observation.py\n?? scripts/check_swift_observation.py\n?? sdk/arkts/observation/\n?? sdk/swift/observation/\n?? tests/integration/l04_swift_observation/\n?? tests/integration/l05_arkts_observation/"
+  },
+  "lab": {
+    "root": "/Users/changyue/Desktop/MadB/madb_lab",
+    "head": "a466501275bee1786d171199390f228f55eb38a0",
+    "branch": "codex/c07-arkts",
+    "status": ""
+  },
+  "capture_consistency": "Git file list, file bytes, HEAD, branch and status unchanged before/after capture for both repositories",
+  "producer_source_sha256": {
+    ".node-version": "8f8e373d500f414f7435fdc1d2fe9dd697e60cfb03b69657cecb873ac31b84df",
+    ".python-version": "bb90877c5ee8c4703cfd03421e92ef2a17a10b67ecc822524baeea4c8da3dc9f",
+    "AGENTS.md": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+    "docs/adr/0010-external-runtime-verification.md": "9011b3994f871e0ec43b2abb58320612cd71cbe797437f3a3c48ce5a76cfe822",
+    "docs/adr/0011-arkts-native-protocol-owner.md": "5fca45429d42eff0a59d43d901d990a1ad33a7eed237ba04cb5cf570c3f8d60e",
+    "docs/adr/0012-extension-composition-and-delivery.md": "39d10ab57683a5e67f17a9157797649c09c7e55f9530c0dfa6c7bde9ad3fc44c",
+    "docs/adr/0013-arkts-runtime-and-completion.md": "8ef892436312636f7f2e368426c7f30c6949a170bf7a30e8e8b3ea59a1011a5a",
+    "docs/adr/0014-swift-production-baseline.md": "67b232d6ace0628a55cd4f6ecdaf68f13659d117979e6ad190b2ae67eefaddbb",
+    "docs/adr/0015-swift-extension-delivery.md": "2e68575715cfc446ce058c90e5d240b885b4f0ce22585ddcd3b4810b728f7e05",
+    "docs/adr/0016-arkts-production-baseline.md": "893a1bc3aae8500ac6daa6c6dbcba6c3636d2fd032aa59ea452a94eac24304a2",
+    "docs/adr/0017-arkts-extension-delivery.md": "ceaa60746c59c6d67a7c5f85604d5c08efc1f191c70757cc62e1c81f0d83c338",
+    "docs/architecture/02-modules-and-ports.md": "71587101ff533bde73da38c6b8534302d1a76e29f2d9fbb8d0da1ce2e0b7ed09",
+    "docs/architecture/15-developer-ergonomics.md": "68f71ad97bfdad50fa305d680808944ab55db2aca4f62ffe8cb4c2fa62b431c7",
+    "docs/architecture/17-extension-composition.md": "baf00ce8093dfce390225808cf0e992a32c0da776f4114b0f2206cd3567eb7a3",
+    "docs/catalog/implementation-plan.json": "f4d5e86a112e3ea1e210b3ff9326050d00949c4a295da22c06a77c2c34e50e0d",
+    "docs/delivery/01-implementation-plan.md": "f2cf6c39c163daddd346b973201b1f4efc60c37ee192957769671b4b6b661af4",
+    "docs/delivery/03-decisions-and-risks.md": "0eaad7a701e90b1c9764ff903c420f61a641b6c9bed79f634e7334513abfb9e4",
+    "docs/engineering/07-agent-development.md": "055b621b7c12bc673ed29ab902ffc7f251fff2a2dfbd421ba9d68de3732b4e8e",
+    "docs/reviews/2026-10-24-c06-kotlin-swift-rust.md": "32ce628a4ebd7a742d33df7879e922fc8321ca9de6de0b4c5e293dcd4330daf0",
+    "docs/reviews/2026-10-25-arkts-extension-delivery.md": "21a6113c4dcdc50f0a251c71ee5c33c7196ca41b291450784f5423b75deceecb",
+    "docs/reviews/2026-10-25-c07-arkts.md": "aa75a7ac025fa651fe2eba83b0379a42dcfa3e499871b4e8b8efe01bea677844",
+    "docs/reviews/2026-10-25-current-document-audit.md": "ab49b8d243ae8e4574528bd9a79951cbf7468a5348b33f51b5f3ecb833baca99",
+    "docs/reviews/2026-10-25-e05-l03-scheduling.md": "dcc41171ce204d27b5c69cc945c35f0c069fd112522fa8bed12bf89abe6e3491",
+    "docs/reviews/2026-10-25-swift-extension-delivery.md": "721f4cab0e17ebdcabad690b9fe95f1772187fed547d06722d99f6d7ba44205f",
+    "docs/reviews/README.md": "3172789241adcd154704d904bfd14f3680de1fccf28c1a9a059f7153b9eff444",
+    "docs/reviews/c07-local-closeout.json": "a54078e9c35a7732bbacb606ffca35609bfc0e7e840cf6745bc3ee2faaff6251",
+    "docs/tools/check_docs.py": "bd1a374b60bc5d558a641e48ef5a7a4afa2af789cd574e3d86fb4b1a6f4b7dbe",
+    "docs/tools/render_visuals.py": "f444ab0d0d77cd60f6bfecc586f223e89d623dbc895aa08434d57face34fa5de",
+    "docs/tools/tests/panorama_smoke.cjs": "e8ff310c4574820abfbc96e97dee832605713cdfda2869bdc11fbff1aada0239",
+    "docs/tools/tests/test_document_contracts.py": "7db9c71fb07ddf03b80f64b4a30c4f2e6b7b9d755226c19f940f7fb554a76335",
+    "docs/visuals/implementation-progress.html": "d5c9583d83fdf2ebac6d98af68e44b728913126101473cf3ac8ea9a6dd677937",
+    "sdk/arkts/observation/ArkUIStateModel.ets": "7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+    "sdk/arkts/observation/README.md": "43b860eaeadc1ba4ff31be18d07447f474571fdfbae77be7ea117db22faf50a7",
+    "sdk/arkts/observation/StateObservation.ets": "1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+    "sdk/swift/observation/.gitignore": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+    "sdk/swift/observation/Integration/SKIE/MadBSkieStateSource.swift": "e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+    "sdk/swift/observation/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "sdk/swift/observation/NOTICE": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+    "sdk/swift/observation/Package.swift": "43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46",
+    "sdk/swift/observation/README.md": "d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329",
+    "sdk/swift/observation/Sources/MadBObservation/MadBStateModel.swift": "425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7",
+    "sdk/swift/observation/Sources/MadBObservation/MadBStateSource.swift": "6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83",
+    "sdk/swift/observation/Tests/MadBObservationTests/ControlledSource.swift": "90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179",
+    "sdk/swift/observation/Tests/MadBObservationTests/MadBStateModelTests.swift": "e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6"
+  },
+  "lab_source_sha256": {
+    "AGENTS.md": "d0a66ebd522f1d2a6da4c686081ca299b4c01337f754da8248be0692509e58f5",
+    "docs/reference/README.md": "a3a9b22e78167146a1aef3ca30bffd660d06fdf7ff377b9b387df4da790423c1",
+    "scripts/check.py": "ccd0d3343f0f2b9fe0cb43ee0274822623f07beb6831ba34d6374682b0f617cf"
+  },
+  "c07_report_hash_check": [
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/c-ordinary-001/report.json",
+      "expected": "sha256:76a8009723e569bcbb4634a456c53f66055f927b5d81dd4a979751fac12ed4a6",
+      "observed": "sha256:76a8009723e569bcbb4634a456c53f66055f927b5d81dd4a979751fac12ed4a6",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/report.json",
+      "expected": "sha256:b03260113d91a6febcdc7c4ad20ada4a46e024339e0f030477f1a94e5ed094fd",
+      "observed": "sha256:b03260113d91a6febcdc7c4ad20ada4a46e024339e0f030477f1a94e5ed094fd",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/cpp-ordinary-001/report.json",
+      "expected": "sha256:5814a52ef46891874da7dbdbf84da47ff68402aa9af1b0a431f039b76aa89988",
+      "observed": "sha256:5814a52ef46891874da7dbdbf84da47ff68402aa9af1b0a431f039b76aa89988",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/report.json",
+      "expected": "sha256:1308b82c13912bd9fe15686abfa9bf521ba6b5b879d3050a97e5271d9e9dad34",
+      "observed": "sha256:1308b82c13912bd9fe15686abfa9bf521ba6b5b879d3050a97e5271d9e9dad34",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/rust-ordinary-001/report.json",
+      "expected": "sha256:7807db4ef676cab6f3da958378ad020c8bfefb6d75e89c8d2e217b1a0140a540",
+      "observed": "sha256:7807db4ef676cab6f3da958378ad020c8bfefb6d75e89c8d2e217b1a0140a540",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/report.json",
+      "expected": "sha256:cb58335a5ab0d319832c9c7f675617207ca3c9fd01eabff895459c4080a4376c",
+      "observed": "sha256:cb58335a5ab0d319832c9c7f675617207ca3c9fd01eabff895459c4080a4376c",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-ordinary-001/report.json",
+      "expected": "sha256:3f209a3ec6b2ab97f155e6869d3b9767d0514697d37726fe3f9423accc20a50a",
+      "observed": "sha256:3f209a3ec6b2ab97f155e6869d3b9767d0514697d37726fe3f9423accc20a50a",
+      "result": "match"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/report.json",
+      "expected": "sha256:b3758034fb267c70a6772e198324ce0be3400ae0ac67c2215a844ae7e075d008",
+      "observed": "sha256:b3758034fb267c70a6772e198324ce0be3400ae0ac67c2215a844ae7e075d008",
+      "result": "match"
+    }
+  ],
+  "validation": {
+    "status": "passed-with-explicit-scope",
+    "scope": "handoff documentation and unchanged generated views; not product acceptance",
+    "static_documents": {
+      "schema": "madb.documentation-validation/2",
+      "baseline": "0.9",
+      "status": "passed",
+      "scope": "static-documents-and-rendered-html",
+      "counts": {
+        "markdown": 119,
+        "json": 86,
+        "toml": 1,
+        "tables": 308,
+        "local_links": 1903,
+        "html": 13,
+        "scripts": 13
+      },
+      "extension_structure": {
+        "schemas": 2,
+        "frames": 4,
+        "vectors": 20
+      },
+      "catalog": {
+        "tasks": 41,
+        "routes": 16,
+        "problems": 48,
+        "case_groups": 96,
+        "historical_sources": 9,
+        "historical_mappings": 236
+      },
+      "browser": {
+        "status": "not_executed",
+        "scope": "layout, real interactions and console"
+      },
+      "product_tests_executed": false,
+      "errors": []
+    },
+    "generated_views": {
+      "command": "python -B docs/tools/render_visuals.py --check",
+      "exit_code": 0,
+      "pages": 13
+    },
+    "document_tool_tests": {
+      "command": "python -B -m unittest discover -s docs/tools/tests",
+      "exit_code": 0,
+      "tests": 29
+    },
+    "independent_review": {
+      "status": "no-blocking-findings",
+      "scope": "handoff and prompt authority, current statuses, dependency boundaries, dirty-worktree preservation; read-only",
+      "clarification_applied": "Existing ordinary-runtime-reopened observation located; companion coverage remains a specific evidence reconciliation task"
+    },
+    "not_executed": [
+      "product checks or target reruns",
+      "DOM smoke (no HTML source/data edits)",
+      "real browser",
+      "remote CI",
+      "publication"
+    ],
+    "generated_html_changed": false
+  },
+  "c07_archive_check": {
+    "path": "/Users/changyue/Desktop/MadB/.local/evidence/c07-18256fc-a466501/c07-evidence.tar.gz",
+    "exists": true,
+    "full_archive_digest_recomputed": false,
+    "target_scenarios_rerun": false
+  }
+}

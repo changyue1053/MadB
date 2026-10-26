@@ -1,0 +1,117 @@
+{
+  "scope": "Independent read-only review of E02 test composition-root diagnostic/readiness changes only; not product/native cancellation implementation",
+  "source_files": [
+    {
+      "path": "crates/madb-cli/examples/extension_session_probe/session.rs",
+      "sha256": "6be2eb7a195eeb57d0f422ca29e5e25102dadd91e25b421f756f39716705668a",
+      "before_path": "/private/tmp/madb-chief-round5/e02-investigation/session-before.rs",
+      "before_sha256": "720eda3b459408be138fd56692f2de6bd6746a14dd738c0412a625b67e23d0f1"
+    },
+    {
+      "path": "tests/integration/e02_session/test_session.py",
+      "sha256": "29968c273797692db7798a8ee5226de631c3f8c83b7940c2f4998c0da14592d0",
+      "before_path": "/private/tmp/madb-chief-round5/e02-investigation/test-session-before.py",
+      "before_sha256": "c2c6a55f428e709bb2566c31206d346e493b3f771329dd046c2c3783f6010d23"
+    }
+  ],
+  "conclusion": "No blocking finding within reviewed fixture-diagnostic scope. Process execution report is retained separately from watcher status; missing/late readiness cannot transfer an admitted value.",
+  "static_findings": [
+    {
+      "topic": "completion and race handling",
+      "result": "Completion send occurs after execute_process_validated returns. recv_timeout wakes the scoped watcher on finish/disconnect; marker cancellation may win or return AlreadyFinished. A readiness failure suppresses the returned value while retaining the original execution admission/report. The marker-vs-completion race is conservative rejection, not false admission."
+    },
+    {
+      "topic": "scoped cleanup",
+      "result": "Watcher joined in all normal result paths; panic is represented as WatcherPanicked, rather than replacing execution diagnostics. Existing process budgets and product cleanup implementation unchanged."
+    },
+    {
+      "topic": "assertions",
+      "result": "Original rejection/cancellation/terminal assertions remain. Cancellation tests additionally require no harness error and observed marker with Requested/AlreadyRequested. rejected() now diagnoses top-level execution errors before indexing report fields."
+    },
+    {
+      "topic": "controlled exit23",
+      "result": "Narrow regression asserts Unavailable, ToolFailed, code 23, original stderr, execution-finished-before-marker and AlreadyFinished; shared run_mode asserts complete cleanup and no pending cleanup."
+    }
+  ],
+  "checks": [
+    {
+      "command": "CARGO_TARGET_DIR=/private/tmp/madb-chief-round5/madb/target /Users/changyue/Desktop/MadB/madb/.venv/bin/python -B -m unittest test_session.ExtensionSessions.test_peer_exit_before_marker_retains_actual_failure_and_wakes_watcher test_session.ExtensionSessions.test_cancellation_precedes_result_admission_and_does_not_invoke_after_ack -v",
+      "cwd": "/private/tmp/madb-chief-round5/madb/tests/integration/e02_session",
+      "result": "passed",
+      "tests": 2,
+      "covered_modes": [
+        "controlled exit 23 before readiness",
+        "cancel",
+        "cancel-ok",
+        "ignore-cancel",
+        "cancel-before-ack",
+        "cancel-validation"
+      ]
+    },
+    {
+      "check": "independent successful peer with no readiness marker",
+      "result": "passed",
+      "evidence": "/private/tmp/madb-chief-round5/e02-review-probe-002/result.json",
+      "evidence_sha256": "445d8ecf05a5da4d076217196dc985f7d682ce34d726681460a601660e3f6808",
+      "observed": {
+        "execution_admitted": true,
+        "admission": "EligibleForValidation",
+        "admitted": false,
+        "files": null,
+        "harness_error": "execution finished before readiness marker",
+        "diagnostic": null,
+        "cleanup_complete": true,
+        "pending_cleanup": false,
+        "exit_code": 0
+      }
+    },
+    {
+      "command": "git diff --check -- crates/madb-cli/examples/extension_session_probe/session.rs tests/integration/e02_session/test_session.py",
+      "result": "passed"
+    }
+  ],
+  "independent_probe_setup_correction": {
+    "old_directory": "/private/tmp/madb-chief-round5/e02-review-probe",
+    "observation": "Initial reviewer wrapper placed the public peer executable without its sibling manifest; peer correctly failed to locate the manifest and returned ToolFailed/exit1 with complete cleanup. This was reviewer setup failure, not counted as a product regression or passing success-case test. Original stdout/stderr retained. Second probe copies the actual fixture manifest before invoking the fixed peer image."
+  },
+  "process_implementation_unchanged_from_round5_baseline": {
+    "crates/madb-app/src/process.rs": {
+      "unchanged": true,
+      "sha256": "2a130ff201072498f4c615ea1ec38eeb8145dad3d2a709b4930780b760fe2c7b"
+    },
+    "adapters/host/src/process/mod.rs": {
+      "unchanged": true,
+      "sha256": "4a50bfec39cce484a8db7c0a8828e1c9b4a7fc9a0c4e3d8d6dd2b8a93deac9ab"
+    },
+    "adapters/host/src/process/pipes.rs": {
+      "unchanged": true,
+      "sha256": "dd78f2a3748b86fef3157de0c475dfe7a85e59b43b5d7afd195094657bd669bf"
+    },
+    "adapters/host/src/process/supervise.rs": {
+      "unchanged": true,
+      "sha256": "4517a0570a2fd7c04170b838a78cabd3e8cdf7831c386a1ed40ad1f6c3b7a577"
+    },
+    "adapters/host/src/process/session.rs": {
+      "unchanged": true,
+      "sha256": "4cfbf49f1a795b97c29da84824cd8d728b87c5ef35bb630c94dad6a2ec8d7299"
+    }
+  },
+  "binary_sha256": {
+    "/private/tmp/madb-chief-round5/madb/target/debug/examples/extension_session_probe": "07908278ebbca1dad40a4c73099adaf998538c38f145fd62ae7d95b76aadff80",
+    "/private/tmp/madb-chief-round5/madb/target/debug/examples/extension_peer": "6319b425c95abd3dde756a632dc44325687182bb0c8258a686c6e30fda17f884",
+    "/private/tmp/madb-chief-round5/madb/target/debug/examples/extension_chain_probe": "775e680e9460523752c254ebfff4c0e4a19703ec5376b56e01755272821a8182"
+  },
+  "limits": [
+    "Only narrow tests repeated; author full 12-test suite evidence is recorded separately",
+    "Current full-suite Python version differs only by the final added top-level error assertion; this independent narrow run uses final Python hash above",
+    "No reconstruction or claim of root cause for the earlier masked process failure",
+    "No SDK/native target execution, overall E02 package acceptance or release claim",
+    "Prebuilt candidate binaries were exercised and hashed; this review did not independently rebuild them",
+    "No source edits, stage, commit or push; only temporary probes and this requested report written"
+  ],
+  "freeze_hashes_match_author_and_after_checks": true,
+  "author_evidence_not_independently_replayed": {
+    "path": "/private/tmp/madb-chief-round5/e02-cancellation-validation.json",
+    "sha256": "4f8400159f7368ade06e098486b51fcab6c78eef9d7ef812693db2f459ba672d"
+  }
+}

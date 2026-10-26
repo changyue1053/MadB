@@ -2,7 +2,7 @@
   "slug": "swift-rust-architecture",
   "title": "Swift ↔ Rust 架构全景",
   "eyebrow": "SWIFT × RUST",
-  "summary": "UniFFI 直连路线的构建、运行、回调、取消和分发全景；应用内装配与独立 SDK 交付分别定义验收边界。",
+  "summary": "UniFFI 直连路线的构建、运行、回调、取消和分发全景；应用内装配与独立 SDK 交付分别验收。当前 C06 仅覆盖固定 SampleEngine 的 macOS Arm64 候选，普通公开 Swift SDK 按生产基线推进。",
   "route_ids": [
     "SWIFT-RUST-UNIFFI"
   ],
@@ -12,7 +12,7 @@
       "id": "swift-uniffi-source",
       "name": "Swift · 应用内构建",
       "kind": "主线候选",
-      "summary": "UniFFI 为受支持的 Rust API 生成 Swift 绑定。应用侧通过类型化方法、async 和明确的 callback interface 使用内核；SKIE 与 KMP-NativeCoroutines 不参与这条直连路线。",
+      "summary": "UniFFI 为受支持的 Rust API 生成 Swift 绑定。C06 使用 0.32.2 与受管 Swift 取消补丁；应用侧通过类型化方法、async 和明确的 callback interface 使用内核，SKIE 与 KMP-NativeCoroutines 不参与这条直连路线。",
       "route_ids": [
         "SWIFT-RUST-UNIFFI"
       ],
@@ -253,7 +253,7 @@
               "id": "plan",
               "title": "能力检查与计划",
               "kind": "madb",
-              "summary": "UniFFI 为受支持的 Rust API 生成 Swift 绑定。应用侧通过类型化方法、async 和明确的 callback interface 使用内核；SKIE 与 KMP-NativeCoroutines 不参与这条直连路线。",
+              "summary": "UniFFI 为受支持的 Rust API 生成 Swift 绑定。C06 使用 0.32.2 与受管 Swift 取消补丁；应用侧通过类型化方法、async 和明确的 callback interface 使用内核，SKIE 与 KMP-NativeCoroutines 不参与这条直连路线。",
               "does": [
                 "适合 Swift 直接消费 Rust SDK；不需要 Kotlin 或 SKIE 中转。",
                 "应用同构建与对外二进制发布分别验收，不能互相继承。",
@@ -937,7 +937,7 @@
               "label": "取消、关闭与排水",
               "notes": [
                 "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。",
-                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+                "一次成功通知抛错后不得进入第二次错误完成；受管模板补丁与取消/释放回归须随候选保留。"
               ],
               "events": [
                 {
@@ -1055,7 +1055,7 @@
           "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
           "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
           "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
-          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+          "一次成功通知抛错后不得进入第二次错误完成；受管模板补丁与取消/释放回归须随候选保留。"
         ],
         "modules": [
           {
@@ -2070,7 +2070,7 @@
               "label": "取消、关闭与排水",
               "notes": [
                 "Task 取消、停止观察、原生工作结束分别确认；关闭不能只依靠 deinit，异步排水需要可等待接口。",
-                "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+                "一次成功通知抛错后不得进入第二次错误完成；受管模板补丁与取消/释放回归须随候选保留。"
               ],
               "events": [
                 {
@@ -2188,7 +2188,7 @@
           "Rust future 由其运行时或协议推进；不能把 await 当作自动后台执行。",
           "原生回调先满足声明的执行器要求；不持有业务锁调用宿主。",
           "Arc 提供引用计数，不证明内部共享可变状态线程安全。",
-          "一次成功通知抛错后不得进入第二次错误完成；生成模板也要修复。"
+          "一次成功通知抛错后不得进入第二次错误完成；受管模板补丁与取消/释放回归须随候选保留。"
         ],
         "modules": [
           {
@@ -2273,6 +2273,14 @@
     }
   ],
   "sources": [
+    {
+      "label": "Swift 生产与公开交付基线",
+      "path": "adr/0014-swift-production-baseline.md"
+    },
+    {
+      "label": "C06 受管补丁与当前消费范围",
+      "path": "examples/managed-routes/README.md"
+    },
     {
       "label": "Swift/Rust 后端边界",
       "path": "architecture/06-backend-profiles.md"

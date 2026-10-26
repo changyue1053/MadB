@@ -8,7 +8,9 @@
 |---|---|---|
 | [common](common.schema.json) | 身份、路径、引用、选择器、来源、策略与精确常量的共用定义 | 不单独作为业务文档 |
 | [project](project.schema.json) | 工程、结构入口、完整选择器、策略族与策略绑定 | 唯一身份、精确命中、策略冲突、冻结解析 |
-| [profile](profile.schema.json) | 运行时、目标、ABI、工具、能力与默认值 | 支持范围、工具一致性、后端配置验证器 |
+| [profile](profile.schema.json) | v1 运行时、目标、ABI、工具、能力与默认值 | 支持范围、工具一致性、后端配置验证器 |
+| [profile-v2](profile-v2.schema.json) | 同一组既有字段及显式 composition 引用 | 新版本输入/责任检查；旧执行入口不自动接纳 |
+| [composition](composition.schema.json) | 包源、组件、源/生成资产、依赖、责任和有限配方选择 | 真实字节、清单、锁命名空间、能力与唯一责任；生成后资产与执行另验 |
 | [lock](lock.schema.json) | project/profile/工具/组件/输入/schema 锁 | 实际文件字节、过期输入、完整依赖发现 |
 | [contract-ir](contract-ir.schema.json) | 源身份、类型、符号、有效策略、来源与布局观察 | 类型引用、能力、所有权、摘要、编译器布局身份 |
 | [case](case.schema.json) | 案例模板或实例、步骤、独立预期、清理与超时 | 实例化目标、精确错误、实际执行 |
@@ -25,11 +27,11 @@
 | [extension-manifest](extension-manifest.schema.json) | 既有扩展、组件、路线与执行要求 | 依赖/权限/能力协商由 E01–E03 完成 |
 | [extension-wire](extension-wire.schema.json) | 既有 hello/invoke/cancel/result 控制帧 | 帧状态机与进程协议；不能替代以上业务 payload |
 
-`common` 统一共享字段，其他 schema 通过固定 URN 引用。Rust `SchemaRegistry` 只装载内置 schema，禁用 HTTP/文件引用解析；输入不能诱导下载 schema。既有扩展帧尚未接入宿主运行时，保持原独立测试入口。
+`common` 统一共享字段，其他 schema 通过固定 URN 引用。Rust `SchemaRegistry` 只装载内置 schema，禁用 HTTP/文件引用解析；输入不能诱导下载 schema。扩展帧通过独立会话适配器接入宿主；格式通过不替代握手、执行身份、文件闭包及终态检查。
 
 ## 编解码与版本
 
-- 文档声明完整 `schema: madb.<kind>/1`；未知版本或端口格式拒绝。未知字段拒绝，不能靠宽松解码绕过新语义。
+- 文档声明明确版本；现有 `madb.<kind>/1` 与新增 `madb.profile/2` 分别登记，未知版本或端口格式拒绝。未知字段拒绝，不能靠宽松解码绕过新语义。
 - JSON 解析前限制 1 MiB，嵌套深度最多 64；schema 中数组通常最多 4096 项。重复键、孤立 surrogate、尾随 JSON 值拒绝。
 - JSON number 只接受 `[-9007199254740991, 9007199254740991]` 的**整数字面量**。`1.0`、`1e0`、`-0` 也拒绝，防止解析器先将 `1.0000000000000001` 舍入为 1 再通过检查。这是 MadB 的输入子集，不是对完整 JCS 数值范围的重新定义。
 - 精确整数常量使用 `{kind: integer, type: u64, decimal: "18446744073709551615"}`；类型决定宽度和符号。浮点使用 `{kind: float, type: f64, bits: "8000000000000000"}`，保存负零、NaN 与无穷位模式。十进制范围在纯规则中检查。
@@ -49,7 +51,7 @@ madb-model：Symbol / Type / Policy / Capability / CaseResult
 Findings 或受检结果 → C04 应用请求与端口
 ```
 
-不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 16 类文档格式正反例（15 类业务 payload 加 execution），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
+不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 18 类文档格式正反例（原 16 类及 composition/profile-v2），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
 
 应用请求与 wire 文件不是一个类型：C02 固定端口 payload；C04 按用例构造纯应用请求，并通过适配器转换。C02 没有空执行器、成功占位后端或伪造的 `build/verify` 命令。
 
@@ -84,6 +86,8 @@ Finding 带稳定 code、subject、message 和来源位置；格式错误带路�
 | madb.contract/1 | schema=madb.structure/1、namespace、boundary、公开 ID+shape、类型、必需功能、布局结果 | 公开 ID/类型/布局/功能按 ID；不含来源行、输入摘要及策略 |
 | madb.policy/1 | 每个 symbol+slot 的有效 values | 按 symbol、slot kind、parameter 排序；不含 provenance |
 | madb.profile/1 | 完整已解析 profile | 工具/宏/限制/功能按 ID；默认仅 values；排除 extensions 和默认来源 |
+| madb.profile/2 | 既有字段按 v1 规则投影，composition 只保留 id 与 semantic_digest | 使用独立域；FileRef 原字节另验，不继承旧 profile 身份 |
+| madb.composition/1 | 完整组合输入 | 包/组件/资产按 id、文件按 path、依赖与责任按规定键；重复/别名拒绝，args 保序 |
 | madb.project/1 | 工程与选择、策略、策略族、制品声明 | boundary/族按 ID；策略按规范 JSON 字节排序、族引用排序；排除 origin/extensions |
 | madb.source/1 | path、文件原始 sha256、size | 按逻辑路径；schema 标记不改变源字节身份 |
 | madb.task/1 | BuildTask 或带 operation 的阶段投影 | 去掉自身 task_digest；输入/环境/依赖/输出排序；参数顺序保留 |
@@ -123,3 +127,13 @@ C02 支持标量、精确常量、字符串、标量 buffer、可空值、值 re
 C06 使用可选 `shape.throws` / callback `throws` 与 resource `backend-handle`，分别受 `core.errors@1`、`core.backend-resources@1` 能力门禁保护。错误类型参与相关符号的可达类型摘要，旧文档省略字段时保持原摘要。定义和版本拒绝规则见[契约规范](../architecture/03-contract-and-ir.md#c06-的错误通道与后端句柄)。
 
 C07 的 `core.external-runtime-verification@1` 复用 profile.required_features 的现有结构，属于必需语义协商，不新增 wire 字段。默认三阶段保持；新模式的 Build 图仅允许 compile/link，并把目标运行留给独立 Lab。未知功能仍明确拒绝，选择进入 profile 摘要；只声明 supported_features 不切换策略。规则和回归边界见 [ADR-0010](../adr/0010-external-runtime-verification.md)。
+
+## 已采用组合格式的准入边界
+
+[ADR-0018](../adr/0018-extension-composition-formats.md)采用 `composition/1`、`profile/2` 和 `core.extension-composition@1`。`DocumentKind::ProfileV2` 与旧 `Profile` 分开；能够解码新格式不赋予旧 read/generate/package/verify 入口执行资格。旧扩展文件闭包遇到新格式明确拒绝，不能把它当作无引用的普通文件绕过组合检查。
+
+包源摘要复用 source 域，包内文件到 lock.inputs 使用包限定路径；执行镜像仍单独按实际字节绑定。生成资产只有 producer/output_slot/paths，真实 OutputSet 的字节、来源及事务要在生成后检查。新 feature 不加入旧运行语义的无条件能力集合，仅在明确的 profile/2 组合检查中识别。必需集合来自已固定配方和真实声明；输入自身不能授予完整性证明。
+
+新格式的 [共同向量](../../tests/fixtures/contracts/composition-format-vectors.json)与原向量一并运行。结构样例含专用夹具身份，不是已安装包或正式候选。实际执行接线、生成后绑定及独立普通/增强/禁用消费仍按 E01–E03 和相关工作包交付。
+
+当前纯适配接口由宿主传入固定配方事实与独立必需责任集合，返回只读绑定观察或比较结果；它尚不从实际业务声明和 SDK 导出自动建立整套配方事实，也不提供执行、提交或认证令牌。调用方不能把同一份申请数组同时当作必需集合和已提供集合来宣称完整性。

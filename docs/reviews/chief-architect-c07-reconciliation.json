@@ -1,0 +1,272 @@
+{
+  "scope": "read-only frozen evidence reconciliation, no target rerun; not work-package status authority",
+  "producer": "18256fcc4b26cf3cd1e2e79c39b86c2512e012d9",
+  "lab": "a466501275bee1786d171199390f228f55eb38a0",
+  "reports": [
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/c-ordinary-001/report.json",
+      "sha256": "sha256:76a8009723e569bcbb4634a456c53f66055f927b5d81dd4a979751fac12ed4a6",
+      "hash_match": true,
+      "candidate": "sha256:7fce7dc8b8befbb985694ca08dfecff0b769fef5d0443608b61cc79edf1d921a",
+      "profile": "c07-c-arkts-aarch64-ohos23"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/report.json",
+      "sha256": "sha256:b03260113d91a6febcdc7c4ad20ada4a46e024339e0f030477f1a94e5ed094fd",
+      "hash_match": true,
+      "candidate": "sha256:90f2c0e3e06bb92541171194ed8f7491017693a937300ef7b47acb0dc4f6730f",
+      "profile": "c07-c-arkts-aarch64-ohos23-test"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/cpp-ordinary-001/report.json",
+      "sha256": "sha256:5814a52ef46891874da7dbdbf84da47ff68402aa9af1b0a431f039b76aa89988",
+      "hash_match": true,
+      "candidate": "sha256:9d6b754fc12c45b93684cb7506ce8464381c836b6fcf99ce6a51eda0acb75962",
+      "profile": "c07-cpp-arkts-aarch64-ohos23"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/report.json",
+      "sha256": "sha256:1308b82c13912bd9fe15686abfa9bf521ba6b5b879d3050a97e5271d9e9dad34",
+      "hash_match": true,
+      "candidate": "sha256:a1b5da1c2861af3ed5527841d00eadbe7ac8def023393198858090c26b3eaac9",
+      "profile": "c07-cpp-arkts-aarch64-ohos23-test"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/rust-ordinary-001/report.json",
+      "sha256": "sha256:7807db4ef676cab6f3da958378ad020c8bfefb6d75e89c8d2e217b1a0140a540",
+      "hash_match": true,
+      "candidate": "sha256:7556ecf8535dab388259975cba1fcacb71fd1a9820d14d521c655b12d16cc4d4",
+      "profile": "c07-rust-arkts-aarch64-ohos23"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/report.json",
+      "sha256": "sha256:cb58335a5ab0d319832c9c7f675617207ca3c9fd01eabff895459c4080a4376c",
+      "hash_match": true,
+      "candidate": "sha256:ca7c2a14a22b01d943dc7d5911561159ebd0507e5801088db4a6561522f5c589",
+      "profile": "c07-rust-arkts-aarch64-ohos23-test"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-ordinary-001/report.json",
+      "sha256": "sha256:3f209a3ec6b2ab97f155e6869d3b9767d0514697d37726fe3f9423accc20a50a",
+      "hash_match": true,
+      "candidate": "sha256:21e0644c65e4ccd2ea282c35a6a0d38328311ef5308ffc9c084fcff6170b9664",
+      "profile": "c07-kotlin-arkts-aarch64-ohos23"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/report.json",
+      "sha256": "sha256:b3758034fb267c70a6772e198324ce0be3400ae0ac67c2215a844ae7e075d008",
+      "hash_match": true,
+      "candidate": "sha256:7de142788f3efb7ea8d324bde88b7435175d5547168247abae58c0ef4dc45e74",
+      "profile": "c07-kotlin-arkts-aarch64-ohos23-test"
+    }
+  ],
+  "routes": [
+    {
+      "route": "c",
+      "ordinary_candidate": "sha256:7fce7dc8b8befbb985694ca08dfecff0b769fef5d0443608b61cc79edf1d921a",
+      "ordinary_nonce": "c07-901afd23b1b344e7bb0ee417d746afef",
+      "ordinary_pid": 5690,
+      "ordinary_reparsed": "passed",
+      "ordinary_reopened": [
+        1,
+        42,
+        51,
+        3
+      ],
+      "ordinary_source_member": "entry/src/main/ets/OrdinaryCases.ets",
+      "ordinary_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-ordinary-001/c07-901afd23b1b344e7bb0ee417d746afef-observation-1792977006434106000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-ordinary-001/c07-901afd23b1b344e7bb0ee417d746afef-observation-1792977006902961000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-ordinary-001/c07-901afd23b1b344e7bb0ee417d746afef-sources.tar"
+      ],
+      "ordinary_claim": "normal Runtime.close then new Runtime; retained old Runtime/Engine/Operation/Subscription cannot damage current work/events",
+      "companion_candidate": "sha256:90f2c0e3e06bb92541171194ed8f7491017693a937300ef7b47acb0dc4f6730f",
+      "companion_scenario": "partial-open",
+      "companion_nonce": "c07-71216a378ca1444182f98c7a3602f94d",
+      "companion_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/c07-71216a378ca1444182f98c7a3602f94d-build.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/c07-71216a378ca1444182f98c7a3602f94d-namecache.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/c07-71216a378ca1444182f98c7a3602f94d-observation-1792978013207548000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/c07-71216a378ca1444182f98c7a3602f94d-observation-1792978013668670000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/c07-71216a378ca1444182f98c7a3602f94d-sources.tar",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/c07-71216a378ca1444182f98c7a3602f94d.hap",
+        "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/scenarios/partial-open/native-inspection.json"
+      ],
+      "companion_source_member": "entry/src/main/ets/FailureCases.ets",
+      "companion_exact_frames": {
+        "partial_failed_phase": 2,
+        "partial_failed_read_mode": 0,
+        "physical_phase": 3,
+        "physical_read_mode": 2
+      },
+      "physical_ack_before_reopen_rejection": "RuntimeAlreadyOpen branch executed during partial initialization rollback before physical ACK; not explicit normal-close-before-ACK reopen test.",
+      "final_receipt_before_reopen_rejection": "No explicit held-final-receipt new Runtime admission attempt located in frozen Lab consumer or scenario frames; do not infer from overall passed."
+    },
+    {
+      "route": "cpp",
+      "ordinary_candidate": "sha256:9d6b754fc12c45b93684cb7506ce8464381c836b6fcf99ce6a51eda0acb75962",
+      "ordinary_nonce": "c07-6f01e5cd6c054ea89d489ab424e756bc",
+      "ordinary_pid": 5796,
+      "ordinary_reparsed": "passed",
+      "ordinary_reopened": [
+        1,
+        42,
+        51,
+        3
+      ],
+      "ordinary_source_member": "entry/src/main/ets/OrdinaryCases.ets",
+      "ordinary_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-ordinary-001/c07-6f01e5cd6c054ea89d489ab424e756bc-observation-1792978299249107000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-ordinary-001/c07-6f01e5cd6c054ea89d489ab424e756bc-observation-1792978299719081000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-ordinary-001/c07-6f01e5cd6c054ea89d489ab424e756bc-sources.tar"
+      ],
+      "ordinary_claim": "normal Runtime.close then new Runtime; retained old Runtime/Engine/Operation/Subscription cannot damage current work/events",
+      "companion_candidate": "sha256:a1b5da1c2861af3ed5527841d00eadbe7ac8def023393198858090c26b3eaac9",
+      "companion_scenario": "partial-open",
+      "companion_nonce": "c07-d5c379e9003b4443834adbdf9ff8362a",
+      "companion_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/c07-d5c379e9003b4443834adbdf9ff8362a-build.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/c07-d5c379e9003b4443834adbdf9ff8362a-namecache.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/c07-d5c379e9003b4443834adbdf9ff8362a-observation-1792978511919449000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/c07-d5c379e9003b4443834adbdf9ff8362a-observation-1792978512382009000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/c07-d5c379e9003b4443834adbdf9ff8362a-sources.tar",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/c07-d5c379e9003b4443834adbdf9ff8362a.hap",
+        "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/scenarios/partial-open/native-inspection.json"
+      ],
+      "companion_source_member": "entry/src/main/ets/FailureCases.ets",
+      "companion_exact_frames": {
+        "partial_failed_phase": 2,
+        "partial_failed_read_mode": 0,
+        "physical_phase": 3,
+        "physical_read_mode": 2
+      },
+      "physical_ack_before_reopen_rejection": "RuntimeAlreadyOpen branch executed during partial initialization rollback before physical ACK; not explicit normal-close-before-ACK reopen test.",
+      "final_receipt_before_reopen_rejection": "No explicit held-final-receipt new Runtime admission attempt located in frozen Lab consumer or scenario frames; do not infer from overall passed."
+    },
+    {
+      "route": "rust",
+      "ordinary_candidate": "sha256:7556ecf8535dab388259975cba1fcacb71fd1a9820d14d521c655b12d16cc4d4",
+      "ordinary_nonce": "c07-e64c519801d1411dae185f67f9952206",
+      "ordinary_pid": 20985,
+      "ordinary_reparsed": "passed",
+      "ordinary_reopened": [
+        1,
+        42,
+        51,
+        3
+      ],
+      "ordinary_source_member": "entry/src/main/ets/OrdinaryCases.ets",
+      "ordinary_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-ordinary-001/c07-e64c519801d1411dae185f67f9952206-observation-1792978896939858000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-ordinary-001/c07-e64c519801d1411dae185f67f9952206-observation-1792978897392860000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-ordinary-001/c07-e64c519801d1411dae185f67f9952206-sources.tar"
+      ],
+      "ordinary_claim": "normal Runtime.close then new Runtime; retained old Runtime/Engine/Operation/Subscription cannot damage current work/events",
+      "companion_candidate": "sha256:ca7c2a14a22b01d943dc7d5911561159ebd0507e5801088db4a6561522f5c589",
+      "companion_scenario": "partial-open",
+      "companion_nonce": "c07-9bacbbbe5db44c98a63d30b69138ba45",
+      "companion_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/c07-9bacbbbe5db44c98a63d30b69138ba45-build.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/c07-9bacbbbe5db44c98a63d30b69138ba45-namecache.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/c07-9bacbbbe5db44c98a63d30b69138ba45-observation-1792979111730696000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/c07-9bacbbbe5db44c98a63d30b69138ba45-observation-1792979112191464000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/c07-9bacbbbe5db44c98a63d30b69138ba45-sources.tar",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/c07-9bacbbbe5db44c98a63d30b69138ba45.hap",
+        "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/scenarios/partial-open/native-inspection.json"
+      ],
+      "companion_source_member": "entry/src/main/ets/FailureCases.ets",
+      "companion_exact_frames": {
+        "partial_failed_phase": 2,
+        "partial_failed_read_mode": 0,
+        "physical_phase": 3,
+        "physical_read_mode": 2
+      },
+      "physical_ack_before_reopen_rejection": "RuntimeAlreadyOpen branch executed during partial initialization rollback before physical ACK; not explicit normal-close-before-ACK reopen test.",
+      "final_receipt_before_reopen_rejection": "No explicit held-final-receipt new Runtime admission attempt located in frozen Lab consumer or scenario frames; do not infer from overall passed."
+    },
+    {
+      "route": "kotlin",
+      "ordinary_candidate": "sha256:21e0644c65e4ccd2ea282c35a6a0d38328311ef5308ffc9c084fcff6170b9664",
+      "ordinary_nonce": "c07-2cf4062bac5a439d87c8734a9d9be869",
+      "ordinary_pid": 14079,
+      "ordinary_reparsed": "passed",
+      "ordinary_reopened": [
+        1,
+        42,
+        51,
+        3
+      ],
+      "ordinary_source_member": "entry/src/main/ets/OrdinaryCases.ets",
+      "ordinary_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-ordinary-001/c07-2cf4062bac5a439d87c8734a9d9be869-observation-1792977476281842000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-ordinary-001/c07-2cf4062bac5a439d87c8734a9d9be869-observation-1792977476742606000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-ordinary-001/c07-2cf4062bac5a439d87c8734a9d9be869-sources.tar"
+      ],
+      "ordinary_claim": "normal Runtime.close then new Runtime; retained old Runtime/Engine/Operation/Subscription cannot damage current work/events",
+      "companion_candidate": "sha256:7de142788f3efb7ea8d324bde88b7435175d5547168247abae58c0ef4dc45e74",
+      "companion_scenario": "kotlin-admission",
+      "companion_nonce": "c07-164742007cd8471b99d15140a1f01bea",
+      "companion_checked_files": [
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/c07-164742007cd8471b99d15140a1f01bea-build.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/c07-164742007cd8471b99d15140a1f01bea-namecache.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/c07-164742007cd8471b99d15140a1f01bea-observation-1792977566770807000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/c07-164742007cd8471b99d15140a1f01bea-observation-1792977567230565000.json",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/c07-164742007cd8471b99d15140a1f01bea-sources.tar",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/c07-164742007cd8471b99d15140a1f01bea.hap",
+        "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/scenarios/kotlin-admission/native-inspection.json"
+      ],
+      "companion_source_member": "entry/src/main/ets/kotlin/KotlinAdmissionCases.ets",
+      "companion_exact_frames": {
+        "epoch-key-changed": [
+          1
+        ],
+        "old-key-rejections": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "epoch2-local-id1": [
+          7,
+          7
+        ],
+        "epoch2-result": [
+          42
+        ],
+        "epoch1-admission": [
+          2,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          2,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "epoch2-admission": [
+          3,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          3,
+          1,
+          0,
+          1,
+          1,
+          0
+        ]
+      },
+      "companion_predicates": "passed",
+      "physical_ack_before_reopen_rejection": "No explicit new openRuntime attempt observed while old normal Runtime lacks physical ACK; closing ACK/slot-vacant evidence is present.",
+      "final_receipt_before_reopen_rejection": "No explicit held-final-receipt new Runtime admission attempt located in frozen Lab consumer or scenario frames; do not infer from overall passed."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "scope": "Third batch implementation and local checks; not whole-package or target certification",
+  "inputs": {
+    "madb": {
+      "source": "/Users/changyue/Desktop/MadB/madb",
+      "head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+      "branch": "codex/c07-arkts",
+      "source_files": 1017,
+      "capture": {
+        "path": "/private/tmp/madb-chief-round3/madb-input.json",
+        "sha256": "a00d73ed671ed15696636eca08cf9fa306afb6f1beadc11d0da48045391e424f",
+        "size": 130577
+      }
+    },
+    "madb_lab": {
+      "source": "/Users/changyue/Desktop/MadB/madb_lab",
+      "head": "a466501275bee1786d171199390f228f55eb38a0",
+      "branch": "codex/c07-arkts",
+      "source_files": 450,
+      "capture": {
+        "path": "/private/tmp/madb-chief-round3/madb_lab-input.json",
+        "sha256": "1ab110f613c62c16a8b9abd2c295d040a02186b5433a62e632d9aedf6636e04c",
+        "size": 52970
+      }
+    }
+  },
+  "checks": [
+    {
+      "command": "env CARGO_TARGET_DIR=/private/tmp/madb-chief-round3/madb/target CARGO_NET_OFFLINE=true /Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/check.py",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round3/product-full-check-permitted.log",
+        "sha256": "e7a2bc5835037d1728691a4ef2b391b08e82d6bcc15a697d4a9ef3f3412c907e",
+        "size": 62943
+      }
+    },
+    {
+      "command": "docs/tools/check_docs.py",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round3/docs-check.log",
+        "sha256": "10b520aaad7bd25f5e4b3d72d1be701d510b16863ae5acd79dd154416827f7b9",
+        "size": 689
+      }
+    }
+  ],
+  "retained_failed_check": {
+    "log": {
+      "path": "/private/tmp/madb-chief-round3/product-full-check.log",
+      "sha256": "d791d09c7832a6cd75d4ac03ba8dbe686b807319a933563140ae9b930d2985bf",
+      "size": 31507
+    },
+    "reason": "Sandbox denied UnixListener::bind in the existing unsupported filesystem member test; same complete gate rerun with required permissions, no assertion change."
+  },
+  "reviews": [
+    {
+      "path": "/private/tmp/madb-chief-round3/madb/docs/reviews/chief-architect-third-batch-e01-review.json",
+      "sha256": "3659ea0c196eeb1a6b798e6b71b0334eebd59ae6e757d2827976450b92c28a3f",
+      "size": 3622
+    },
+    {
+      "path": "/private/tmp/madb-chief-round3/madb/docs/reviews/chief-architect-third-batch-l02-review.json",
+      "sha256": "acae3dbb3e56ff301bea24d742d40c933f3e8c62dcff2f59ba49b34ce9edf44e",
+      "size": 5137
+    },
+    {
+      "path": "/private/tmp/madb-chief-round3/madb/docs/reviews/chief-architect-third-batch-l05-review.json",
+      "sha256": "2a9fecd5c3af078fdca3729ea5d9705f9eddc1577a5f0b26b7bd26597ed53386",
+      "size": 28033
+    },
+    {
+      "path": "/private/tmp/madb-chief-round3/madb/docs/reviews/composition-review.md",
+      "sha256": "6cde042c49dd2fe0a558a8309375195fa1400b65887f62fd2e7ae34ba0c2254e",
+      "size": 4985
+    }
+  ],
+  "not_executed": [
+    "New native candidate certification",
+    "L05 HAP installation or runtime execution in this batch",
+    "Whole L02/E01/E03/I01/L05 acceptance",
+    "Remote Actions, publication, push or PR",
+    "Real browser validation (DOM-shaped unit only)"
+  ],
+  "lab_changes": false,
+  "integration": "Guarded copy after source-set/hash/HEAD/branch recheck; post-copy focused checks recorded separately."
+}

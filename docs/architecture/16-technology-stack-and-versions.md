@@ -4,7 +4,7 @@
 
 MadB 采用四条独立版本线：官方 Kotlin、鸿蒙 CPF、原生实现与绑定、MadB 工具自身。共享契约与业务源码，分别构建，再验证组合应用。鸿蒙 Kotlin 默认采用 **CPF-KMP-CMP 工具链 + akinterop**；CMP 按需启用，KNOI 保留为独立扩展。
 
-本文集中管理选型依据与候选版本，[ADR 0007](../adr/0007-technology-stack-and-cpf.md)记录版本线与 CPF 决策，[ADR 0008](../adr/0008-route-selection-and-distribution.md)记录路线选择与分发决策，[路线目录](../catalog/routes.json)记录路线身份、阶段和认证引用。本文中的候选、参考工程结果和官方发布事实均不自动形成 MadB 认证。
+本文集中管理选型依据与候选版本，[ADR 0007](../adr/0007-technology-stack-and-cpf.md)记录版本线与 CPF 决策，[ADR 0008](../adr/0008-route-selection-and-distribution.md)记录路线选择与分发决策，[ADR 0014](../adr/0014-swift-production-baseline.md)明确 Swift 生产能力与公开交付基线，[路线目录](../catalog/routes.json)记录路线身份、阶段和认证引用。本文中的候选、参考工程结果和官方发布事实均不自动形成 MadB 认证。
 
 ## 四条版本线
 
@@ -27,7 +27,7 @@ MadB 采用四条独立版本线：官方 Kotlin、鸿蒙 CPF、原生实现与�
 | Compose 编译插件 | 2.4.20 | 2.2.21-1.1.0 | 跟随各自 Kotlin 编译器 |
 | kotlinx-coroutines | 1.11.0 | 1.10.2-1.0.0 | 共享代码只用双方支持的 API |
 | kotlinx-serialization 运行库 | 1.11.0 | 1.9.1-1.0.0 | 序列化编译插件另随 Kotlin 配套 |
-| atomicfu | 0.31.0，按需 | 0.31.0-1.0.0，按需 | 精确区分官方制品与 fork 制品 |
+| atomicfu | 0.31.0 为原候选；C06 Native 配套采用 0.32.1 | 0.31.0-1.0.0，按需 | 精确区分官方制品与 fork 制品，按实际依赖闭包锁定 |
 | KSP | 2.3.12，KSP2 | 2.2.21-2.0.4，当前 akinterop 配置使用 KSP1 | 前端适配器分别编译与运行 |
 | Gradle | 9.7.1，优先验证 | 8.14.6 | 不将 akinterop 插件直接搬入 Gradle 9 环境 |
 | 构建 JDK | 21 LTS | 21 LTS，参考 MadDemo 记录 | 锁定发行商、补丁与构建号；CPF 官方入门说明使用 JDK 17 |
@@ -122,6 +122,8 @@ Rust 领域实现与 FFI 导出模块分离，MadB 工具自身使用的 Rust �
 | MadDemo 修改版 Gobley 0.3.7 + UniFFI 0.32.1 | 调整元数据、句柄和回调布局；async 与 Rust Object 导出明确受限 | 实现经验与负例，不直接作为完整通用后端 |
 | uniffi-bindgen-arkts 0.0.1-beta.2 | manifest 使用 UniFFI 0.31.0 范围，当前仓库 lock 为 0.31.2；生成 napi-ohos 适配层 | 复用既有 UniFFI 接口的独立实验候选，不能混用 0.29.x/0.32.x 绑定 |
 
+上表的上游基线与 MadB 受管构建分开。C06 Swift/Rust 已使用 UniFFI 0.32.2 的受管 Swift cancellation 补丁，并验证 cancel/free 同步；补丁身份及适用源码闭包见 [C06 记录](../reviews/2026-10-24-c06-kotlin-swift-rust.md)。不能用未修改的上游模板推断该候选缺少取消，也不能将此固定配置推广为任意业务停止或排水保证。
+
 [上游 Gobley 0.3.7 依赖](https://raw.githubusercontent.com/gobley/gobley/v0.3.7/Cargo.toml)、[UniFFI 0.32.2](https://docs.rs/uniffi/0.32.2/uniffi/)、[ArkTS 生成器 manifest](https://github.com/ohos-rs/uniffi-bindgen-arkts/blob/main/Cargo.toml)、[对应 lock](https://github.com/ohos-rs/uniffi-bindgen-arkts/blob/main/Cargo.lock)。
 
 UniFFI 0.29.5 已修复 foreign future 可能重复完成的问题；Gobley 0.3.7 自有模板仍把 `handleSuccess(makeCall())` 放在会调用 `handleError` 的 catch 范围内。因此候选必须核对并回补**生成模板**，只升级 Rust runtime 或依赖数字不算修复。回归覆盖成功通知后异常、错误通知、取消竞争、重复完成与释放。该问题以源码与上游修复为依据，不能把本次源码审查当作 MadB 目标测试通过。[上游修复 #2733](https://github.com/mozilla/uniffi-rs/pull/2733)、[0.29.5 变更](https://raw.githubusercontent.com/mozilla/uniffi-rs/v0.29.5/CHANGELOG.md)、[Gobley 模板](https://github.com/gobley/gobley/blob/v0.3.7/crates/gobley-uniffi-bindgen/src/templates/ffi/Async.kt#L54)。
@@ -144,7 +146,7 @@ UniFFI Kotlin/JVM 实际依赖 JNA。首轮选 JNA 5.19.1，Android AAR、JVM JA
 | KN-ARKTS-NAPI | Kotlin/Native ↔ ArkTS | CPF Kotlin 2.2.21-1.1.0、akinterop 1.1.0 | KSP1、Gradle 8、注册、回调 env、释放 |
 | KJVM-RUST-UNIFFI | Kotlin/JVM ↔ Rust | UniFFI 0.32.2 独立候选；JNA 5.19.1 | 模板修复、回调单次完成、装载、混淆与 JVM/Android 差异 |
 | KN-RUST-GOBLEY | Kotlin/Native ↔ Rust | 修复后的 Gobley/UniFFI 配套待 P03 冻结 | 模板补丁、完整能力；官方 Kotlin/CPF 分别编译、链接与运行 |
-| SWIFT-RUST-UNIFFI | Swift ↔ Rust | 与二进制配套的 UniFFI 0.32.2 独立候选 | Swift 6、异步、对象释放、XCFramework；不推导其他后端兼容 |
+| SWIFT-RUST-UNIFFI | Swift ↔ Rust | 与二进制配套的 UniFFI 0.32.2；C06 使用受管补丁构建 | Swift 6、异步、对象释放；公开 XCFramework 配方另验，不推导其他后端兼容 |
 | ARKTS-RUST-NAPI | ArkTS ↔ Rust | napi-ohos/derive/build/sys 1.2.0；ohrs CLI 1.5.0；UniFFI-ArkTS 为独立实验候选 | 每个组件独立锁定；目标 SDK、env、线程、取消与 Release 消费 |
 | ARKTS-C-NAPI | ArkTS ↔ C | 目标 SDK Node-API，C17 编译基线 | C ABI、参数、缓冲区、回调所有权 |
 | ARKTS-CPP-NAPI | ArkTS ↔ C++ | 目标 SDK Node-API + C++17 | RAII、异常、标准库与线程回投 |
@@ -170,8 +172,8 @@ C++ 默认采用 C++17，C++20 作为单独能力配置。独立发布接口要�
 | 配置 | 适用条件 | 构建与分发约束 |
 |---|---|---|
 | 源码直接互操作 | 同源构建、类型受支持，消费方接受 C++ interop 配置 | 锁 Swift/Clang、标准库、编译参数；SwiftPM 的 C++ → Swift 调用与 Xcode/CMake 单独判断 |
-| C ABI 分发 | 独立二进制 SDK、收敛公开 ABI 或避免公开 C++ 类型 | C++ 实现在库内，导出不透明句柄与 C 函数；显式所有权、错误与版本协议 |
-| Objective-C++ 适配 | Apple 平台对象模型、Objective-C 可见协议或现有 Cocoa 接口 | Objective-C++ 隔离 C++，Swift 消费 Objective-C 可见面；管理 ARC 与原生所有权 |
+| C ABI 分发 | 独立二进制 SDK 优先候选；收敛公开 ABI 或避免公开 C++ 类型 | C++ 实现在库内，导出不透明句柄与 C 函数；显式所有权、错误与版本协议 |
+| Objective-C++ 适配 | 独立 Apple SDK 需要对象模型、Objective-C 可见协议或现有 Cocoa 接口时优先 | Objective-C++ 隔离 C++，Swift 消费 Objective-C 可见面；管理 ARC 与原生所有权 |
 
 SwiftPM 对 Swift 调用 C++ 的配置不能当作 C++ 调用 Swift 的构建支持证明；后者选择可生成并消费 Swift 导出头的 Xcode 或经验证的编译流程。公开 Swift 包启用 C++ interop 还可能要求下游同步启用，因此必须进入 API/制品兼容评估。具体支持以锁定工具链的双向消费者为准。[Swift 构建系统说明](https://www.swift.org/documentation/cxx-interop/project-build-setup/)、[类型与平台支持](https://www.swift.org/documentation/cxx-interop/status/)
 
@@ -180,12 +182,12 @@ SwiftPM 对 Swift 调用 C++ 的配置不能当作 C++ 调用 Swift 的构建支
 
 | 能力 | 选择 | 约束 |
 |---|---|---|
-| SKIE + NativeCoroutines | 0.10.15 + 1.0.6 | 每个接口的协程桥只有一个生成责任方；允许不重叠的 SKIE 类型增强 |
+| SKIE + NativeCoroutines | X01 按需组合 0.10.15 + 1.0.6 | 每个接口的协程桥只有一个生成责任方；允许不重叠的 SKIE 类型增强 |
 | Combine / RxSwift | 系统 Combine；RxSwift 6.10.2 按需 | NativeCoroutines Kotlin/Swift 组件同版本；Rx 不进入全部 SDK |
-| Swift 宏 | SwiftSyntax 603.0.1，匹配 Swift 6.3 | 普通 API 与预生成 SDK 可独立使用 |
+| Swift 宏 | SwiftSyntax 随所选编译器锁定；603.0.1 只作为 Swift 6.3 的参考候选 | 当前受管 Swift 6.4 首片使用系统 Observation，不沿用 603 作为自定义宏锁；宏实施时另验宿主组合，普通 API 可独立使用 |
 | Kotlin 注解生成 | 官方 KSP2 与 CPF KSP1 前端分开 | 不强迫旧处理器加载新 KSP；生成代码接受目标编译验证 |
 | ArkTS 状态和装饰器 | 选定 ArkTS/ArkUI SDK 配套能力 | 不以 TypeScript 装饰器库代替目标编译器能力 |
-| 官方 Swift export | 随 Kotlin 的独立实验配置 | 当前 Alpha，与 Objective-C export 分别验证 |
+| 官方 Swift export | 随 Kotlin 的独立实验配置 | 当前 Alpha，已有 suspend/Flow 映射且仅支持 direct integration；与 Objective-C export 分别验证 |
 | KNOI | 独立扩展，具体 fork 与版本另行验证 | 不进入 CPF + akinterop 默认工程，不串联两个调用桥 |
 | ANI | 固定 SDK、头文件、适配器版本或提交 | 不继承 Node-API 认证，也不自动新增 Kotlin/Native ANI 路线 |
 | UniFFI-ArkTS | uniffi-bindgen-arkts 0.0.1-beta.2；独立 0.31.x 锁 | 生成 napi-ohos adapter；不继承其他 UniFFI 版本或 napi 直连配置认证 |
@@ -195,7 +197,11 @@ SwiftPM 对 Swift 调用 C++ 的配置不能当作 C++ 调用 Swift 的构建支
 
 依据：[NativeCoroutines](https://github.com/rickclephas/KMP-NativeCoroutines)、[RxSwift 6.10.2](https://github.com/ReactiveX/RxSwift/releases/tag/6.10.2)、[SwiftSyntax 603.0.1](https://github.com/swiftlang/swift-syntax/releases/tag/603.0.1)、[Swift export](https://kotlinlang.org/docs/native-swift-export.html)、[KNOI](https://github.com/Tencent-TDS/KuiklyBase-components/tree/master/knoi)、[ANI](https://github.com/ohos-rs/ani-rs)、[FFM](https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html)、[Crubit](https://github.com/google/crubit)、[XcodeGen](https://github.com/yonaskolb/XcodeGen/releases/tag/2.46.0)。
 
-SKIE 本身也提供 Combine 预览适配，不能以“没有 Combine”为理由选择另一工具。组合需要验证启动、订阅、取消和共享语义。[SKIE Combine](https://skie.touchlab.co/features/combine)
+Swift 九项扩展的选择与替代方案集中在 [ADR-0015](../adr/0015-swift-extension-delivery.md)。L04 Observation 首片只使用 Apple Observation 与标准库，没有引入 SwiftSyntax、RxSwift 或 NativeCoroutines 包；系统 `@Observable` 的编译器实现不等于已交付自定义 MadB 宏。源码包的最低系统声明与当前已测试目标分别列在[包说明](../../sdk/swift/observation/README.md)，不能从清单中的部署版本推导所有目标已经通过。
+
+ArkTS 的必要与扩展工具选择分别集中在 [ADR-0016](../adr/0016-arkts-production-baseline.md)、[ADR-0017](../adr/0017-arkts-extension-delivery.md)。本页维护版本、来源与锁定条件；上游源码能力、可获取发布制品和 MadB 已验收能力分别记录。KNOI、ANI、UniFFI-ArkTS 的固定提交或单项能力不替代独立目标与发布验收；L05 页面状态首片也不升级这些后端的支持状态。
+
+SKIE 0.10.15 的 Flow 错误和 Combine Future 限制集中见[后端规范](06-backend-profiles.md)。不能以“没有 Combine”为理由选择另一工具，也不能把同名外观视为相同语义；组合按固定版本验证启动、订阅、错误、取消和共享，升级另验。
 
 ## CMP 可选组合
 
@@ -303,6 +309,8 @@ S5 仍要求十六条主线各有最低完整配置和全部适用必需项。�
 
 C06 的 `kotlin-jvm-rust`、`kotlin-native-rust`、`swift-rust`、`swift-kotlin` 四个固定 SampleEngine 配置使用 Xcode 27.0（27A266a）、Swift 6.4、macOS SDK 27.0（26A425）、Kotlin 2.4.20、Gradle 9.7.1、Temurin JDK 21.0.10+7、Rust 1.99.1 和 Python 3.14.4。UniFFI 0.32.2、Gobley 0.3.7 / UniFFI 0.29.4、SKIE 0.10.15 按路线分别锁定源码及受管补丁，不能混用。精确安装、依赖和工具镜像身份以[公开复现指南](../examples/managed-routes/README.md)及实际候选 profile/lock 为准。
 
+C06 的 coroutines 1.11.0 Native 运行依赖使用 atomicfu 0.32.1，见[受管运行依赖锁](../../adapters/toolchains/kotlin_rust/runtime-dependencies.json)及[上游固定 1.11.0 标签](https://raw.githubusercontent.com/Kotlin/kotlinx.coroutines/1.11.0/gradle.properties)。这不改写 CPF 或其他候选配置；SKIE 插件自身的不同依赖作用域继续以其实际锁为准。
+
 本轮本机四路线正式构建、54 个必需案例和 92 项 Lab harness 检查已通过；54 项包括 51 项目标运行及 3 项预期编译/链接拒绝。实际结果与源身份见[C06 记录](../reviews/2026-10-24-c06-kotlin-swift-rust.md)；跨机器验证与正式发布继续按各自证据确认。
 
-此实测锁只适用于本轮 macOS Arm64、未插桩 Release 的四配置，不替换其他 Apple 路线、iOS、初始化或 Swift 宏任务的候选版本。deployment target 14.0 是编译/链接参数，不代表已在该最低系统上运行。选定 profile 的工作包验收不等于整条路线、全部工具组合或公开发布渠道已经认证。
+此实测锁只适用于本轮 macOS Arm64、未插桩 Release 的四个固定 SampleEngine 配置，不替换其他 Apple 路线、iOS、初始化或 Swift 宏任务的候选版本。deployment target 14.0 是编译/链接参数，不代表已在该最低系统上运行。独立业务声明生成、普通公开 Swift SDK 与正式包渠道仍按生产基线推进，选定 profile 的局部结果不等于整条路线或公开发布已经认证。

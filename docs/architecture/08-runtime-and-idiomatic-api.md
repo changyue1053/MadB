@@ -44,6 +44,8 @@ Compose、SwiftUI、UIKit、ArkUI V1/V2 分开提供小型适配层。生命周�
 
 页面通常拥有观察令牌，应用或业务层拥有共享引擎。页面退出可以等待观察停止，不能顺手关闭其他页面使用的引擎。对需要保留后台观察的业务，使用显式策略。
 
+ArkTS 的 L05 首片采用页面状态薄适配，连接已有普通 API 的观察注册、停止请求和排水确认，在指定 UI 上下文更新同一个状态实例。它不增加第二套 producer、队列或 native 资源 owner；生命周期钩子只请求停止，异步收尾由明确 owner 管理。该片可与 C07 并行，页面适配的验证不替代 C07 的 native、env 退出或完整 SDK 证据。必要能力和可选 UI 配置分别见 [ADR-0016](../adr/0016-arkts-production-baseline.md)、[ADR-0017](../adr/0017-arkts-extension-delivery.md)。
+
 输入同步适配携带 revision、origin、编辑状态等业务允许的元数据，避免旧快照覆盖新输入。输入法组合态和“受理后清空”必须由真实 UI 案例验证；工具只能执行声明策略，不能替产品决定草稿丢弃时机。
 
 ## 语义适配例子
@@ -52,7 +54,21 @@ Compose、SwiftUI、UIKit、ArkUI V1/V2 分开提供小型适配层。生命周�
 
 冷 Flow 的每次收集可以拥有独立 native 观察；共享 StateFlow 的上游停止由 SharingStarted、其他消费者和 owner 决定。取消一个页面的收集不能默认注销共享数据源。非挂起清理回调只能发起停止；需要等待的排水由明确 owner 管理，确认接口与“停止请求”分开。
 
+Swift 的 `state` 可按声明保留最新快照；`event` 保留事件语义，按下文 DEC-08 的有界队列与显式溢出规则处理，不借状态属性或 AsyncSequence 静默丢弃事件。AsyncSequence/异步背压只是交付机制：入队成功或发送者恢复不等于消费者业务处理、持久化或事务完成；需要该确认时使用明确的业务 ack。停止收集按共享策略进入既有观察协议，原生停止与排水由声明的观察 owner 负责，UI 或宏不另建状态机。
+
+`AsyncStream` 的有界缓冲不提供生产者等待式背压；采用时明确缓冲与溢出反馈如何进入上述协议。需要可挂起生产者协调时可评估 `AsyncChannel`，但不能在每个同步 native 回调中创建不受限 Task 来绕过容量；发送恢复也不表示业务处理完成。这些是按配置的实现选择，不新增基础运行依赖。[AsyncStream 提案](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0314-async-stream.md)、[AsyncChannel 语义](https://github.com/apple/swift-async-algorithms/blob/main/Sources/AsyncAlgorithms/AsyncAlgorithms.docc/Guides/Channel.md)
+
 Kotlin 向 Swift 导出简单 DTO 时可直接用导出类型；需要 ID 类型安全时加 Facade；需要独立数据所有权时生成快照。快照只包含声明支持的字段，复杂对象和循环引用需要显式投影。
+
+## ArkTS 宿主回调
+
+宿主服务采用所选后端支持的类型化接口或回调，分别验证 Kotlin/Native、Rust、C/C++ 的反向入口。声明代理生成不授予任意对象跨 env/Worker 使用的能力；调用位置、保活 owner、撤销与排水继续由 [ADR-0013](../adr/0013-arkts-runtime-and-completion.md)和所选 profile 规定。要求同步返回的服务不能通过阻塞等待 UI 回投来实现；需要异步完成时在公开契约中明确表达。
+
+## Swift 宿主回调
+
+宿主能力通过所选路线支持的类型化协议、闭包或导出接口接入；同步和异步子集分别声明与验证，不从正向调用能力推导任意 Swift 反向导入。每个回调记录保活 owner、调用位置、重入限制、撤销准入及排水条件，复用[生命周期协议](05-lifecycle-and-concurrency.md)。
+
+必须同步返回的回调不能暗中改成异步，也不能阻塞等待 actor 回投来补齐缺失能力。宿主异常按[错误契约](04-data-and-errors.md)封闭；撤销或环境退出后由原 owner 完成迟到载荷与 context 清理，不能让消费者手工补写内部句柄保活。
 
 ## 发布约束
 
@@ -71,6 +87,8 @@ SubscriptionBridge 的投递票据覆盖 native 入口、执行器排队和用�
 DEC-07 要求 resolved profile 附上按符号和语义阶段分配的责任表：类型转换、输入保活、终态通知、结果接管、观察注册、停止、线程投递和最终释放分别指向一个实际组件及其锁定版本。它由 lowering 计划产生，并由核心检查唯一责任；不要求作者重复声明上游元数据已经明确的事实。
 
 上游完整实现某项保证时标记 delegated 并复用；MadB 只补缺失步骤，记录交接点和符合性用例。外层 Promise 不能替代 native 一次完成检查；再次包装已完成的模型转换也不能成为默认路径。SKIE + NativeCoroutines 的 X01 配置按接口关闭重叠协程桥，类型增强可独立复用。
+
+Swift 路线按锁定的 SKIE/UniFFI 等后端及实际生成模板逐方向核对协程、取消和回调责任；已有机制直接委派，缺失接线由受控适配补齐。`async` 签名或可编译的 `Sendable` 声明不能替代原生停止与共享状态的证明，也不表示当前 C06 已覆盖 [Swift 生产基线](../adr/0014-swift-production-baseline.md)的全部能力。
 
 SDK 作者声明必要语义，普通消费者只使用稳定方法、资源对象和状态 API。便利层不拥有第二套订阅/取消状态机，构造和 getter 不启动原生工作。UI 编辑 revision、origin、输入法状态留在选用的 UI 适配器，不进入所有边界都必须携带的业务模型。
 

@@ -1,0 +1,457 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:composition:1",
+  "title": "MadB composition v1",
+  "description": "Closed composition input only. Identity pins, reference closure, recipe applicability, capabilities, resolved ownership and execution admission require separate semantic checks.",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.composition/1"
+    },
+    "id": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "recipe": {
+      "$ref": "urn:madb:schema:common:1#/$defs/id"
+    },
+    "selection": {
+      "type": "object",
+      "properties": {
+        "profile_id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "route": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "direction": {
+          "enum": [
+            "consumer-to-provider",
+            "host-callback",
+            "reverse-export"
+          ]
+        },
+        "target": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        }
+      },
+      "required": [
+        "profile_id",
+        "route",
+        "direction",
+        "target"
+      ],
+      "additionalProperties": false
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/package"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/component"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      },
+      "minItems": 0,
+      "maxItems": 4096,
+      "uniqueItems": true
+    },
+    "responsibilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/responsibility"
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema",
+    "id",
+    "recipe",
+    "selection",
+    "packages",
+    "components",
+    "assets",
+    "dependencies",
+    "responsibilities"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "package_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]*[.][a-z0-9][a-z0-9.-]*$",
+      "maxLength": 128
+    },
+    "component_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9.-]*[.][a-z0-9][a-z0-9.-]*/[a-z][a-z0-9.-]*$",
+      "maxLength": 257
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)(-[A-Za-z0-9.-]+)?$",
+      "maxLength": 128
+    },
+    "package": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/package_id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "manifest": {
+          "allOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            {
+              "properties": {
+                "schema": {
+                  "const": "madb.extension/1"
+                }
+              }
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "file-set"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:madb:schema:common:1#/$defs/file"
+              },
+              "minItems": 1,
+              "maxItems": 4096,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "files"
+          ],
+          "additionalProperties": false
+        },
+        "source_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "manifest",
+        "source",
+        "source_digest"
+      ],
+      "additionalProperties": false
+    },
+    "component": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/component_id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "asset_source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "source"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:madb:schema:common:1#/$defs/file"
+              },
+              "minItems": 1,
+              "maxItems": 4096,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "files"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "generated"
+            },
+            "producer": {
+              "$ref": "#/$defs/component_id"
+            },
+            "output_slot": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "paths": {
+              "type": "array",
+              "items": {
+                "$ref": "urn:madb:schema:common:1#/$defs/path"
+              },
+              "minItems": 1,
+              "maxItems": 4096,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "kind",
+            "producer",
+            "output_slot",
+            "paths"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "asset": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "package": {
+          "$ref": "#/$defs/package_id"
+        },
+        "source": {
+          "$ref": "#/$defs/asset_source"
+        }
+      },
+      "required": [
+        "id",
+        "package",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "dependency": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "to": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "scope": {
+          "enum": [
+            "host-tool",
+            "author-plugin",
+            "consumer-compile",
+            "target-runtime",
+            "optional-integration",
+            "validation-dev"
+          ]
+        }
+      },
+      "required": [
+        "from",
+        "to",
+        "scope"
+      ],
+      "additionalProperties": false
+    },
+    "subject": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "public-symbol"
+            },
+            "public_id": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "public_id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "sdk-export"
+            },
+            "asset": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "name": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "asset",
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "output"
+            },
+            "path": {
+              "$ref": "urn:madb:schema:common:1#/$defs/path"
+            }
+          },
+          "required": [
+            "kind",
+            "path"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "anchor": {
+          "$ref": "#/$defs/subject"
+        },
+        "layer": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        }
+      },
+      "required": [
+        "kind",
+        "anchor",
+        "layer"
+      ],
+      "additionalProperties": false
+    },
+    "owner": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "component"
+            },
+            "id": {
+              "$ref": "#/$defs/component_id"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "sdk-asset"
+            },
+            "package": {
+              "$ref": "#/$defs/package_id"
+            },
+            "asset": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            }
+          },
+          "required": [
+            "kind",
+            "package",
+            "asset"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "responsibility": {
+      "type": "object",
+      "properties": {
+        "boundary": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "subject": {
+          "$ref": "#/$defs/subject"
+        },
+        "stage": {
+          "enum": [
+            "type-read",
+            "abi-lowering",
+            "projection",
+            "async-bridge",
+            "subscription",
+            "dispatch",
+            "cancel",
+            "stop",
+            "drain",
+            "release",
+            "physical-assembly"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/scope"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        }
+      },
+      "required": [
+        "boundary",
+        "subject",
+        "stage",
+        "scope",
+        "owner"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

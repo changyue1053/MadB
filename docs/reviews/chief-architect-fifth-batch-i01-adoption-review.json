@@ -1,0 +1,282 @@
+{
+  "kind": "i01-incremental-decision-adoption-independent-review",
+  "status": "passed-scope-limited-document-adoption-review",
+  "authorization_basis": "Parent coordinator reports the user explicitly adopted A–D; this review verifies transcription and bounds, not a new adoption decision.",
+  "reviewer": "/root/l01_contract",
+  "root": "/private/tmp/madb-chief-round5/madb",
+  "baseline": "/private/tmp/madb-chief-round5/madb-baseline",
+  "inputs": [
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/adr/0019-project-init-incremental-contracts.md",
+      "sha256": "b810339d917442faf32ad6ec3890d41fb4a88dee3cf693ed5b47910057ea8d70",
+      "size": 3375
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/architecture/14-project-initialization.md",
+      "sha256": "d71710e7afc6a07ebefc0a3f6dd44d4f3eae72d47b523fc71ec28049cbd0706a",
+      "size": 26838
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/delivery/03-decisions-and-risks.md",
+      "sha256": "b37223cb81bc3e286d045ee1ce6ed8e3169025d2766be9eff856e9b4b87f5a8f",
+      "size": 22579
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/catalog/implementation-plan.json",
+      "sha256": "35b369a597fc6e572a0b550128d5b8f0f612cbf09515357570fed45ad109009b",
+      "size": 111546
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/2026-10-26-chief-architect-fifth-batch.md",
+      "sha256": "c44394642dd5e8c4827e3517dcaa16f6ac72c41107265c81585cebc918ddbdb0",
+      "size": 7348
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/README.md",
+      "sha256": "80905f5dca78cbc6129e720421f347035641df736a46560f7a70cfffea5446b8",
+      "size": 8122
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision.md",
+      "sha256": "fb4a1741949fe1d1bfb878457819136de8a3782346900a02eb9b3afa10dce935",
+      "size": 19909
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision.source.txt",
+      "sha256": "105405575e121c861f81e56651a4bea76c47e95417f5e7ef032714eb45141e43",
+      "size": 19998
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-review.md",
+      "sha256": "6b8c90f54f5b7ac2c286ebf2a45e8c2b5d46db77af9794f855505fbb0b17bfbd",
+      "size": 4357
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-review.json",
+      "sha256": "12db30f8186e7d941569888a4bd0ef86744baf17541f17fc9a4268ef56897b3f",
+      "size": 13013
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-check.py",
+      "sha256": "a88d15f0bb0fde8753de47351877e5806ba9cffda1118b60e3cfb9f5562d83a2",
+      "size": 6946
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-vectors.json",
+      "sha256": "68cf6ceebf0cf0000b3881e12cdc5d49c5112885efcadd1f70e86939848814a9",
+      "size": 19084
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-check-result.json",
+      "sha256": "8f0a7a1cb3d624df2daca5ef732f013c1ef12bc43872a19afc3d38a2ae0e309b",
+      "size": 1311
+    }
+  ],
+  "checks": {
+    "command": [
+      "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+      "-B",
+      "-"
+    ],
+    "exit_code": 0,
+    "source_archive_exact": true,
+    "source_archive_sha256": "105405575e121c861f81e56651a4bea76c47e95417f5e7ef032714eb45141e43",
+    "archive_only_local_link_rewrite_and_adoption_navigation": true,
+    "converted_link_count": 15,
+    "converted_links": [
+      {
+        "original": "[第三批候选格式](</Users/changyue/Desktop/MadB/madb/docs/reviews/2026-10-26-project-init-format-draft.md>)",
+        "relative_target": "2026-10-26-project-init-format-draft.md",
+        "line": null
+      },
+      {
+        "original": "[第三批审查](</Users/changyue/Desktop/MadB/madb/docs/reviews/2026-10-26-project-init-format-review.md>)",
+        "relative_target": "2026-10-26-project-init-format-review.md",
+        "line": null
+      },
+      {
+        "original": "[现行 ErrorKind](</Users/changyue/Desktop/MadB/madb/crates/madb-app/src/lib.rs:18>)",
+        "relative_target": "../../crates/madb-app/src/lib.rs",
+        "line": "18"
+      },
+      {
+        "original": "[CLI 映射](</Users/changyue/Desktop/MadB/madb/crates/madb-cli/src/commands.rs:104>)",
+        "relative_target": "../../crates/madb-cli/src/commands.rs",
+        "line": "104"
+      },
+      {
+        "original": "[初始化阶段](</Users/changyue/Desktop/MadB/madb/docs/architecture/14-project-initialization.md:154>)",
+        "relative_target": "../architecture/14-project-initialization.md",
+        "line": "154"
+      },
+      {
+        "original": "[提交/取消规则](</Users/changyue/Desktop/MadB/madb/docs/architecture/14-project-initialization.md:167>)",
+        "relative_target": "../architecture/14-project-initialization.md",
+        "line": "167"
+      },
+      {
+        "original": "[common FileRef](</Users/changyue/Desktop/MadB/madb/docs/schemas/common.schema.json:343>)",
+        "relative_target": "../schemas/common.schema.json",
+        "line": "343"
+      },
+      {
+        "original": "[project.py:224](</Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/project.py:224>)",
+        "relative_target": "../../adapters/toolchains/arkts/project.py",
+        "line": "224"
+      },
+      {
+        "original": "[profile.sdk:261](</Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/project.py:261>)",
+        "relative_target": "../../adapters/toolchains/arkts/project.py",
+        "line": "261"
+      },
+      {
+        "original": "[observe:74](</Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/toolchain.py:74>)",
+        "relative_target": "../../adapters/toolchains/arkts/toolchain.py",
+        "line": "74"
+      },
+      {
+        "original": "[check_distribution:20](</Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/toolchain.py:20>)",
+        "relative_target": "../../adapters/toolchains/arkts/toolchain.py",
+        "line": "20"
+      },
+      {
+        "original": "[现行职责说明](</Users/changyue/Desktop/MadB/madb/docs/architecture/14-project-initialization.md:22>)",
+        "relative_target": "../architecture/14-project-initialization.md",
+        "line": "22"
+      },
+      {
+        "original": "[ADR-0018](</Users/changyue/Desktop/MadB/madb/docs/adr/0018-extension-composition-formats.md:5>)",
+        "relative_target": "../adr/0018-extension-composition-formats.md",
+        "line": "5"
+      },
+      {
+        "original": "[ProjectPlan](</Users/changyue/Desktop/MadB/madb/crates/madb-plan/src/project/mod.rs:54>)",
+        "relative_target": "../../crates/madb-plan/src/project/mod.rs",
+        "line": "54"
+      },
+      {
+        "original": "[现有规则](</Users/changyue/Desktop/MadB/madb/crates/madb-plan/src/project/mod.rs:68>)",
+        "relative_target": "../../crates/madb-plan/src/project/mod.rs",
+        "line": "68"
+      }
+    ],
+    "historical_review_and_check_artifacts_unchanged": [
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-review.md",
+        "sha256": "6b8c90f54f5b7ac2c286ebf2a45e8c2b5d46db77af9794f855505fbb0b17bfbd",
+        "size": 4357
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-review.json",
+        "sha256": "12db30f8186e7d941569888a4bd0ef86744baf17541f17fc9a4268ef56897b3f",
+        "size": 13013
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-check.py",
+        "sha256": "a88d15f0bb0fde8753de47351877e5806ba9cffda1118b60e3cfb9f5562d83a2",
+        "size": 6946
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-vectors.json",
+        "sha256": "68cf6ceebf0cf0000b3881e12cdc5d49c5112885efcadd1f70e86939848814a9",
+        "size": 19084
+      },
+      {
+        "path": "/private/tmp/madb-chief-round5/madb/docs/reviews/project-init-decision-check-result.json",
+        "sha256": "8f0a7a1cb3d624df2daca5ef732f013c1ef12bc43872a19afc3d38a2ae0e309b",
+        "size": 1311
+      }
+    ],
+    "all_task_count": 41,
+    "unchanged_catalog_fields": [
+      "status",
+      "verification",
+      "phase",
+      "start_phase",
+      "depends_on",
+      "acceptance"
+    ],
+    "c06_c07_full_objects_unchanged": true,
+    "i01_changed_fields": [
+      "documents",
+      "evidence",
+      "notes"
+    ],
+    "i01_status": "in_progress",
+    "i01_verification": "missing",
+    "production_schema_inventory_unchanged_from_baseline": true,
+    "schema_file_count": 25,
+    "local_link_targets_checked": 132,
+    "inputs_unchanged_during_review": true
+  },
+  "semantic_transcription": [
+    {
+      "amendment": "A",
+      "result": "pass",
+      "detail": "请求摘要完整度与错误分类独立；null有诊断，已形成摘要在后续失败保留。请求展示与完整投影分开。"
+    },
+    {
+      "amendment": "B",
+      "result": "pass",
+      "detail": "普通成功必须真实同根同计划无覆盖CommitNew、独立必需检查、所请求open与清理；structure仍创建；提交后失败保留created；dry-run由冻结请求决定且无下载/启动。"
+    },
+    {
+      "amendment": "C",
+      "result": "pass",
+      "detail": "原模板input_root保存；只有template.manifest/已选boundary_profiles外层路径加前缀，logs/attachments仍报告根；原字节/命名空间保留，单根失败拒绝；删宿主重复SDK列表而保留profile/固定recipe检查及composition SDK资产归属。"
+    },
+    {
+      "amendment": "D",
+      "result": "pass",
+      "detail": "四分支保留完整family选择；任何显式targets包括同时给profile时先拒空/重复；不补ABI、不裁剪、不创造组合。"
+    }
+  ],
+  "resolved_findings": [
+    {
+      "location": "/private/tmp/madb-chief-round5/madb/docs/adr/0019-project-init-incremental-contracts.md:11",
+      "issue": "“外层FileRef加前缀”曾可能扩大到logs/attachments。",
+      "resolution": "明确仅template.manifest和已选boundary_profiles；logs/attachments仍报告根。"
+    },
+    {
+      "location": "/private/tmp/madb-chief-round5/madb/docs/adr/0019-project-init-incremental-contracts.md:12",
+      "issue": "空/重复拒绝曾只写在“只给targets”分支。",
+      "resolution": "明确任何显式targets均先拒空/重复，含同时提供profile。"
+    }
+  ],
+  "remaining_blocking_findings": [],
+  "adoption_boundary": "只采用A–D四项增量，可落实内部纯规则/ProjectPlan适配。完整project-template/1、init-result/1生产schema/decoder、包摘要完整字节域/获取锁、recipe/renderer/版本表与其余字段仍待同流程定稿；不改变I01整包退出，不重开ADR0018。",
+  "documentation_logs_observed": [
+    {
+      "input": {
+        "path": "/private/tmp/madb-chief-round5/docs-pre-integration-check.log",
+        "sha256": "06a3fad78bfe9c483e56a3b3fe8880b060d1c6a06a73366211941d061e4bc15a",
+        "size": 2421
+      },
+      "status": "failed",
+      "error_count": 13,
+      "browser": "not_executed",
+      "product_tests_executed": false
+    },
+    {
+      "input": {
+        "path": "/private/tmp/madb-chief-round5/docs-pre-integration-check-final.log",
+        "sha256": "c3dc6364f0da247d4a0522a0f18175ea14603d03c390d18d13e5d355dbf8cf35",
+        "size": 689
+      },
+      "status": "passed",
+      "error_count": 0,
+      "browser": "not_executed",
+      "product_tests_executed": false
+    }
+  ],
+  "limits": [
+    "本次只做文档采用转录和归档绑定复核；未重跑58设计片段，沿用精确保留的原审查范围。",
+    "未运行生产init/schema/CommitNew/SDK/IDE/设备；不新增任何实现或整包验收声称。",
+    "check_docs首轮失败与后续通过日志均只读保留；最终两处ADR文案后的完整文档门禁由主协调执行，当前独审仅校验相关本地链接和语义。",
+    "未独立复核主协调所述产品完整门禁，本报告不据其扩张采用范围。"
+  ],
+  "writes": [
+    "/private/tmp/madb-chief-round5/i01-decision-adoption-review.json"
+  ],
+  "product_catalog_history_modified_by_reviewer": false
+}

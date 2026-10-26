@@ -281,7 +281,7 @@ impl ArtifactRecipe for BoundArtifactRecipe {
     }
 }
 
-pub(super) fn validate_sources(output_set: &Document, symbols: &BTreeSet<String>) -> Result<()> {
+pub(crate) fn validate_sources(output_set: &Document, symbols: &BTreeSet<String>) -> Result<()> {
     for file in output_set.value()["files"].as_array().expect("validated") {
         for source in file["sources"].as_array().expect("validated") {
             if !symbols.contains(source.as_str().expect("validated")) {

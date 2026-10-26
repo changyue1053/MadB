@@ -1,0 +1,762 @@
+{
+  "kind": "i01-four-decisions-design-cases",
+  "status": "unadopted-design-fragments-not-wire",
+  "source_root": "/Users/changyue/Desktop/MadB/madb",
+  "source_head": "5468d314928f8c5d494768a9b17e3ad6b7d22fcb",
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+      "size": 1796
+    },
+    {
+      "path": "docs/engineering/07-agent-development.md",
+      "sha256": "055b621b7c12bc673ed29ab902ffc7f251fff2a2dfbd421ba9d68de3732b4e8e",
+      "size": 7151
+    },
+    {
+      "path": "docs/catalog/implementation-plan.json",
+      "sha256": "ee409c8aeacaf97269551e7e236b4cd67dc32a1da02e832793569d88b719732a",
+      "size": 109988
+    },
+    {
+      "path": "docs/reviews/2026-10-26-project-init-format-draft.md",
+      "sha256": "e871462e3c3a8a80edcfa8d72064f4ab60df6d43d6cf063e28c74290097d7331",
+      "size": 28863
+    },
+    {
+      "path": "docs/reviews/2026-10-26-project-init-format-review.md",
+      "sha256": "2f7ce132237c77d0110150a48a36e5f155f4d111697c9d1ac225b88f4df9aaf5",
+      "size": 6275
+    },
+    {
+      "path": "docs/architecture/14-project-initialization.md",
+      "sha256": "e2684e5a94cb340ec290a19b90b10cac7d473092447d004c7918744874f211d6",
+      "size": 26413
+    },
+    {
+      "path": "docs/product/04-project-initialization.md",
+      "sha256": "3cc468ed05aa1de94e220e25551feb0c93e6308a9f8cd2c1695101fc23f746a3",
+      "size": 10186
+    },
+    {
+      "path": "docs/adr/0005-project-initialization.md",
+      "sha256": "b8ae1f0eb691d6d089a7443724667ace87aaaf6dddbdf4c577cf7fa80f73fb39",
+      "size": 2813
+    },
+    {
+      "path": "docs/adr/0018-extension-composition-formats.md",
+      "sha256": "2e99240abf20a99ec456d8deecce898758698e09536068f1a8fddc931b4e1b67",
+      "size": 3067
+    },
+    {
+      "path": "docs/schemas/common.schema.json",
+      "sha256": "df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314",
+      "size": 13073
+    },
+    {
+      "path": "docs/schemas/profile.schema.json",
+      "sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+      "size": 5526
+    },
+    {
+      "path": "docs/schemas/profile-v2.schema.json",
+      "sha256": "62d061513cf2d279e437522562ae56fbc826eade04eadabfa9c4f445b35f3a2e",
+      "size": 6439
+    },
+    {
+      "path": "crates/madb-plan/src/project/mod.rs",
+      "sha256": "3f526d07d3a8231166d4b8004af3f83e3050fbab67bc1cc0e65d7db463bca65a",
+      "size": 7696
+    },
+    {
+      "path": "crates/madb-plan/tests/project.rs",
+      "sha256": "18f36ea3e31d2056f09f16792a2ddd0c0f54aeb91063aca3f384db384ed050bd",
+      "size": 6911
+    },
+    {
+      "path": "crates/madb-app/src/lib.rs",
+      "sha256": "9be0d5e30552dc114a9966fbb4b948d9f10a231eea6a56147618007b84aadbc8",
+      "size": 1641
+    },
+    {
+      "path": "crates/madb-cli/src/commands.rs",
+      "sha256": "b370679fd2d8c00c8f8094e735237e6912ed923b660730796a322b94e2928353",
+      "size": 15500
+    },
+    {
+      "path": "adapters/toolchains/arkts/project.py",
+      "sha256": "7e81ce4b7fd67239cc309cf8fcee0575f332eabdcb0fcdb8ba280063dc81ed76",
+      "size": 28398
+    },
+    {
+      "path": "adapters/toolchains/arkts/toolchain.py",
+      "sha256": "b252fba08f5d8fb91014db541d2a0397a88903536c2d0dcced9c54e32d39abe8",
+      "size": 9087
+    },
+    {
+      "path": "adapters/toolchains/arkts/tools.py",
+      "sha256": "2c312568f648dc2c15362c4f0a41a9738238efdd1ab0d7f7e7ba7d90ff4b4ddf",
+      "size": 15971
+    }
+  ],
+  "profiles": {
+    "mobile": [
+      "android",
+      "ios"
+    ],
+    "mobile-ohos": [
+      "android",
+      "ios",
+      "ohos"
+    ],
+    "android": [
+      "android"
+    ],
+    "ios-device": [
+      "ios"
+    ],
+    "ios-simulator": [
+      "ios"
+    ],
+    "mobile-alt": [
+      "ios",
+      "android"
+    ]
+  },
+  "bases": {
+    "classification": {
+      "category": "Host",
+      "cancelled": false,
+      "reported_exit": 3,
+      "request_digest": null
+    },
+    "success": {
+      "identity_complete": true,
+      "termination": "completed",
+      "exit_code": 0,
+      "cleanup_complete": true,
+      "frozen_dry_run": false,
+      "reported_dry_run": false,
+      "request_open": null,
+      "open_requested": null,
+      "open_status": "skipped",
+      "creation": "created",
+      "commit_observed": true,
+      "checks": [
+        {
+          "key": "structure/android",
+          "status": "passed",
+          "cleanup": "complete"
+        },
+        {
+          "key": "build/android",
+          "status": "passed",
+          "cleanup": "complete"
+        }
+      ],
+      "required_checks": [
+        "structure/android",
+        "build/android"
+      ],
+      "execution_or_download_observed": false
+    },
+    "references": {
+      "input_root": "inputs/template-a",
+      "original_path": "profiles/profile.json",
+      "outer_path": "inputs/template-a/profiles/profile.json",
+      "original_text": "{\"composition\":{\"file\":{\"path\":\"compositions/c.json\"}}}\n",
+      "copied_text": "{\"composition\":{\"file\":{\"path\":\"compositions/c.json\"}}}\n",
+      "reference_size": 56,
+      "reference_sha256": "1033ede6db1050643e3b73bbdd97860304db70fa823cd91ecfc69ffe9c672923",
+      "nested_path": "compositions/c.json",
+      "nested_lookup": "inputs/template-a/compositions/c.json",
+      "required_closure_present": true,
+      "package_namespace_preserved": true
+    },
+    "sdk_gate": {
+      "legacy_requirements_sdks_present": false,
+      "renderer_available": true,
+      "stage_sdk_required": true,
+      "known_recipe": true,
+      "descriptor_supported": true,
+      "sdk_observed": true
+    }
+  },
+  "cases": {
+    "selection": [
+      {
+        "id": "D01-default",
+        "default": "mobile",
+        "profile": null,
+        "targets": null,
+        "expected": {
+          "profile": "mobile",
+          "targets": [
+            "android",
+            "ios"
+          ]
+        }
+      },
+      {
+        "id": "D02-explicit-profile-omitted-targets",
+        "default": "mobile",
+        "profile": "mobile-ohos",
+        "targets": null,
+        "expected": {
+          "profile": "mobile-ohos",
+          "targets": [
+            "android",
+            "ios",
+            "ohos"
+          ]
+        }
+      },
+      {
+        "id": "D03-exact-explicit",
+        "default": "mobile",
+        "profile": "mobile-ohos",
+        "targets": [
+          "ohos",
+          "ios",
+          "android"
+        ],
+        "expected": {
+          "profile": "mobile-ohos",
+          "targets": [
+            "android",
+            "ios",
+            "ohos"
+          ]
+        }
+      },
+      {
+        "id": "D04-no-hidden-subset",
+        "default": "mobile",
+        "profile": "mobile-ohos",
+        "targets": [
+          "android",
+          "ios"
+        ],
+        "expected": {
+          "error": "profile-target-mismatch"
+        }
+      },
+      {
+        "id": "D05-unique-targets",
+        "default": "mobile",
+        "profile": null,
+        "targets": [
+          "android"
+        ],
+        "expected": {
+          "profile": "android",
+          "targets": [
+            "android"
+          ]
+        }
+      },
+      {
+        "id": "D06-default-disambiguates",
+        "default": "mobile",
+        "profile": null,
+        "targets": [
+          "ios",
+          "android"
+        ],
+        "expected": {
+          "profile": "mobile",
+          "targets": [
+            "android",
+            "ios"
+          ]
+        }
+      },
+      {
+        "id": "D07-no-default-match",
+        "default": "mobile",
+        "profile": null,
+        "targets": [
+          "ios"
+        ],
+        "expected": {
+          "error": "ambiguous-profile"
+        }
+      },
+      {
+        "id": "D08-unknown-profile",
+        "default": "mobile",
+        "profile": "missing",
+        "targets": null,
+        "expected": {
+          "error": "unknown-profile"
+        }
+      },
+      {
+        "id": "D09-duplicate-target",
+        "default": "mobile",
+        "profile": null,
+        "targets": [
+          "android",
+          "android"
+        ],
+        "expected": {
+          "error": "invalid-targets"
+        }
+      },
+      {
+        "id": "D10-empty-not-omission",
+        "default": "mobile",
+        "profile": null,
+        "targets": [],
+        "expected": {
+          "error": "invalid-targets"
+        }
+      },
+      {
+        "id": "D11-no-new-combination",
+        "default": "mobile",
+        "profile": null,
+        "targets": [
+          "ohos"
+        ],
+        "expected": {
+          "error": "no-match"
+        }
+      },
+      {
+        "id": "D12-device-does-not-add-simulator",
+        "default": "mobile",
+        "profile": "ios-device",
+        "targets": null,
+        "expected": {
+          "profile": "ios-device",
+          "targets": [
+            "ios"
+          ]
+        }
+      },
+      {
+        "id": "D13-missing-default",
+        "default": "missing",
+        "profile": null,
+        "targets": null,
+        "expected": {
+          "error": "unknown-default"
+        }
+      }
+    ],
+    "classification": [
+      {
+        "id": "A01-offline-metadata-missing",
+        "input": {
+          "category": "Host",
+          "request_digest": null,
+          "reported_exit": 3
+        },
+        "expected": true
+      },
+      {
+        "id": "A02-malformed-request",
+        "input": {
+          "category": "InvalidInput",
+          "request_digest": null,
+          "reported_exit": 2
+        },
+        "expected": true
+      },
+      {
+        "id": "A03-output-conflict",
+        "input": {
+          "category": "Conflict",
+          "request_digest": "resolved",
+          "reported_exit": 4
+        },
+        "expected": true
+      },
+      {
+        "id": "A04-build-fails",
+        "input": {
+          "category": "CheckFailed",
+          "request_digest": "resolved",
+          "reported_exit": 1
+        },
+        "expected": true
+      },
+      {
+        "id": "A05-late-input-change",
+        "input": {
+          "category": "Conflict",
+          "request_digest": "resolved",
+          "reported_exit": 4
+        },
+        "expected": true
+      },
+      {
+        "id": "A06-sdk-missing-after-resolve",
+        "input": {
+          "category": "Host",
+          "request_digest": "resolved",
+          "reported_exit": 3
+        },
+        "expected": true
+      },
+      {
+        "id": "A07-null-not-invalidinput",
+        "input": {
+          "category": "Host",
+          "request_digest": null,
+          "reported_exit": 2
+        },
+        "expected": false
+      },
+      {
+        "id": "A08-cancelled-retains-origin-observations",
+        "input": {
+          "category": "Host",
+          "cancelled": true,
+          "reported_exit": 1
+        },
+        "expected": true
+      },
+      {
+        "id": "A09-blocked-does-not-reclassify-host",
+        "input": {
+          "category": "Host",
+          "reported_exit": 1
+        },
+        "expected": false
+      }
+    ],
+    "success": [
+      {
+        "id": "B01-real-created-complete",
+        "input": {},
+        "expected": true
+      },
+      {
+        "id": "B02-checks-without-create",
+        "input": {
+          "creation": "not-created",
+          "commit_observed": false
+        },
+        "expected": false
+      },
+      {
+        "id": "B03-created-string-no-observation",
+        "input": {
+          "commit_observed": false
+        },
+        "expected": false
+      },
+      {
+        "id": "B04-missing-required-check",
+        "input": {
+          "checks": [
+            {
+              "key": "structure/android",
+              "status": "passed",
+              "cleanup": "complete"
+            }
+          ]
+        },
+        "expected": false
+      },
+      {
+        "id": "B05-duplicate-check",
+        "input": {
+          "checks": [
+            {
+              "key": "structure/android",
+              "status": "passed",
+              "cleanup": "complete"
+            },
+            {
+              "key": "build/android",
+              "status": "passed",
+              "cleanup": "complete"
+            },
+            {
+              "key": "structure/android",
+              "status": "passed",
+              "cleanup": "complete"
+            }
+          ]
+        },
+        "expected": false
+      },
+      {
+        "id": "B06-required-failed",
+        "input": {
+          "checks": [
+            {
+              "key": "structure/android",
+              "status": "passed",
+              "cleanup": "complete"
+            },
+            {
+              "key": "build/android",
+              "status": "failed",
+              "cleanup": "complete"
+            }
+          ]
+        },
+        "expected": false
+      },
+      {
+        "id": "B07-cleanup-incomplete",
+        "input": {
+          "cleanup_complete": false
+        },
+        "expected": false
+      },
+      {
+        "id": "B08-identity-unresolved",
+        "input": {
+          "identity_complete": false
+        },
+        "expected": false
+      },
+      {
+        "id": "B09-open-actual-passed",
+        "input": {
+          "request_open": "xcode",
+          "open_requested": "xcode",
+          "open_status": "passed"
+        },
+        "expected": true
+      },
+      {
+        "id": "B10-open-failed",
+        "input": {
+          "request_open": "xcode",
+          "open_requested": "xcode",
+          "open_status": "failed"
+        },
+        "expected": false
+      },
+      {
+        "id": "B11-open-request-drift",
+        "input": {
+          "open_requested": "xcode"
+        },
+        "expected": false
+      },
+      {
+        "id": "B12-dry-run",
+        "input": {
+          "frozen_dry_run": true,
+          "reported_dry_run": true,
+          "creation": "not-created",
+          "commit_observed": false,
+          "checks": []
+        },
+        "expected": true
+      },
+      {
+        "id": "B13-dry-run-open-planned-not-launched",
+        "input": {
+          "frozen_dry_run": true,
+          "reported_dry_run": true,
+          "creation": "not-created",
+          "commit_observed": false,
+          "checks": [],
+          "request_open": "xcode",
+          "open_requested": "xcode"
+        },
+        "expected": true
+      },
+      {
+        "id": "B14-dry-run-did-download",
+        "input": {
+          "frozen_dry_run": true,
+          "reported_dry_run": true,
+          "creation": "not-created",
+          "commit_observed": false,
+          "checks": [],
+          "execution_or_download_observed": true
+        },
+        "expected": false
+      },
+      {
+        "id": "B15-dry-run-false-in-result",
+        "input": {
+          "reported_dry_run": true
+        },
+        "expected": false
+      },
+      {
+        "id": "B16-cancelled-after-commit",
+        "input": {
+          "termination": "cancelled",
+          "exit_code": 1
+        },
+        "expected": false
+      },
+      {
+        "id": "B17-build-failed-retains-created",
+        "input": {
+          "exit_code": 1,
+          "checks": [
+            {
+              "key": "structure/android",
+              "status": "passed",
+              "cleanup": "complete"
+            },
+            {
+              "key": "build/android",
+              "status": "failed",
+              "cleanup": "complete"
+            }
+          ]
+        },
+        "expected": false
+      }
+    ],
+    "references": [
+      {
+        "id": "C01-prefix-outer-only",
+        "input": {},
+        "expected": true
+      },
+      {
+        "id": "C02-wrong-same-basename-location",
+        "input": {
+          "outer_path": "profile.json"
+        },
+        "expected": false
+      },
+      {
+        "id": "C03-rewrite-frozen-profile",
+        "input": {
+          "copied_text": "{\"composition\":{\"file\":{\"path\":\"inputs/template-a/compositions/c.json\"}}}\n"
+        },
+        "expected": false
+      },
+      {
+        "id": "C04-inner-root-not-report-root",
+        "input": {
+          "nested_lookup": "compositions/c.json"
+        },
+        "expected": false
+      },
+      {
+        "id": "C05-inner-root-not-profile-parent",
+        "input": {
+          "nested_lookup": "inputs/template-a/profiles/compositions/c.json"
+        },
+        "expected": false
+      },
+      {
+        "id": "C06-traversal",
+        "input": {
+          "nested_path": "../composition.json",
+          "nested_lookup": "inputs/template-a/../composition.json"
+        },
+        "expected": false
+      },
+      {
+        "id": "C07-incomplete-closure",
+        "input": {
+          "required_closure_present": false
+        },
+        "expected": false
+      },
+      {
+        "id": "C08-namespace-collapse",
+        "input": {
+          "package_namespace_preserved": false
+        },
+        "expected": false
+      },
+      {
+        "id": "C09-same-name-different-bytes",
+        "input": {
+          "copied_text": "{}\n"
+        },
+        "expected": false
+      },
+      {
+        "id": "C10-size-mismatch",
+        "input": {
+          "reference_size": 57
+        },
+        "expected": false
+      },
+      {
+        "id": "C11-nested-manifest-retains-package-root",
+        "input": {
+          "original_path": "manifests/template.json",
+          "outer_path": "inputs/template-a/manifests/template.json"
+        },
+        "expected": true
+      },
+      {
+        "id": "C12-root-escape",
+        "input": {
+          "input_root": "../template-a",
+          "outer_path": "../template-a/profiles/profile.json"
+        },
+        "expected": false
+      }
+    ],
+    "sdk_gate": [
+      {
+        "id": "C13-known-recipe-observed-sdk",
+        "input": {},
+        "expected": true
+      },
+      {
+        "id": "C14-generic-sdk-field-removed",
+        "input": {
+          "legacy_requirements_sdks_present": true
+        },
+        "expected": false
+      },
+      {
+        "id": "C15-schema-string-not-capability",
+        "input": {
+          "descriptor_supported": false
+        },
+        "expected": false
+      },
+      {
+        "id": "C16-no-i01-recipe-yet",
+        "input": {
+          "known_recipe": false
+        },
+        "expected": false
+      },
+      {
+        "id": "C17-build-sdk-unavailable",
+        "input": {
+          "sdk_observed": false
+        },
+        "expected": false
+      },
+      {
+        "id": "C18-structure-does-not-need-build-sdk",
+        "input": {
+          "stage_sdk_required": false,
+          "sdk_observed": false
+        },
+        "expected": true
+      },
+      {
+        "id": "C19-structure-still-needs-renderer",
+        "input": {
+          "stage_sdk_required": false,
+          "sdk_observed": false,
+          "renderer_available": false
+        },
+        "expected": false
+      }
+    ]
+  },
+  "limitations": [
+    "Fragments only: none is a full project-template/profile/init-result instance",
+    "Trusted observations are test inputs, not proof of a real commit or SDK",
+    "No production schema or ProjectPlan implementation",
+    "Reference cases cover logical context/raw bytes, not host symlink or race safety"
+  ]
+}

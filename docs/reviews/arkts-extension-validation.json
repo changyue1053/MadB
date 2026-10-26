@@ -1,0 +1,956 @@
+{
+  "schema": "madb.documentation-validation/2",
+  "baseline": "0.9",
+  "status": "passed",
+  "scope": "static-documents-and-rendered-html",
+  "counts": {
+    "markdown": 115,
+    "json": 81,
+    "toml": 1,
+    "tables": 293,
+    "local_links": 1818,
+    "html": 13,
+    "scripts": 13
+  },
+  "extension_structure": {
+    "schemas": 2,
+    "frames": 4,
+    "vectors": 20
+  },
+  "catalog": {
+    "tasks": 41,
+    "routes": 16,
+    "problems": 48,
+    "case_groups": 96,
+    "historical_sources": 9,
+    "historical_mappings": 236
+  },
+  "browser": {
+    "status": "not_executed",
+    "scope": "layout, real interactions and console"
+  },
+  "product_tests_executed": true,
+  "errors": [],
+  "review": "2026-10-25-arkts-extension-delivery.md",
+  "review_date": "2026-10-25",
+  "source_head_at_start": "b4a0f6821d070818a9e9d7373eb9a3f84c625fab",
+  "overall_result": "arkts_development_slice_and_repository_checks_passed",
+  "certification": {
+    "new_route_certifications": 0,
+    "C07": "unchanged; full verification remains missing",
+    "L05": "in_progress; full verification remains missing",
+    "public_release": false
+  },
+  "host_lifecycle": {
+    "scope": "L05 host lifecycle; controlled Engine; ArkUI decorators erased",
+    "certifies_c07": false,
+    "certifies_l05": false,
+    "node": "v26.8.2",
+    "sources": [
+      {
+        "path": "sdk/arkts/observation/StateObservation.ets",
+        "sha256": "1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534"
+      },
+      {
+        "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+        "sha256": "7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef"
+      }
+    ],
+    "passed": 15,
+    "cases": [
+      "invalid listeners reject before acquiring a subscription",
+      "constructor/getters are inert; attach registers exactly once; values stay ordinary",
+      "stop gates synchronously; close is a shared pending join; restart waits for ACK",
+      "an entered listener can stop; the current frame returns but nested/late delivery is gated",
+      "stop during synchronous registration is applied to the returned Subscription",
+      "close during synchronous registration retains and drains exactly that Subscription",
+      "stop and close reentrancy join the already-registered close attempt",
+      "drain rejection retains the same Subscription and error identity; retry never resubscribes",
+      "synchronous stop failure gates delivery and becomes a retryable close rejection",
+      "synchronous close throw is a retained asynchronous rejection",
+      "listener exception identity survives; failed delivery cannot reenter later",
+      "synchronous registration listener failure remains unchanged, including an undefined throw",
+      "failed registration restores admission; reentrant close receives the original failure",
+      "ArkUI projection resets only on successful admission and preserves synchronous first state",
+      "ArkUI publishes synchronous snapshots only after successful registration"
+    ]
+  },
+  "sdk_development_compilation": {
+    "status": "passed",
+    "scope": "L05 API26 Release HAR and independent HAP development compilation",
+    "target_executed": false,
+    "dependencies_installed": false,
+    "toolchain": {
+      "root": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools",
+      "archive": {
+        "path": "/Users/changyue/Downloads/commandline-tools-mac-arm64-26.0.0.851.zip",
+        "sha256": "4c7f0eabd5c96a5a54f5e892c1cf8cf580154d6100d0d1fa6be23e189e33b771",
+        "size": 2139840078,
+        "checksum_source": "caller-reviewed expected checksum; locally computed from the user-supplied archive",
+        "official_checksum_or_signature_verified": false
+      },
+      "entries_sha256": "9be026c5d7f136e697db4bb56d4cf9b9cb0f53fd79f62f9141fcec6c106f1790",
+      "entry_count": 101927,
+      "ignored_installed_metadata": [],
+      "launchers": {
+        "node": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "image_sha256": "35d4bc736bbe4161f0c074aa140ddb74586e46969bc2ad63d32c838bec4463ff",
+          "link_target": null
+        },
+        "clang": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin/clang",
+          "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/llvm/bin/clang-15",
+          "image_sha256": "b9a36b6a434fd245460ddfa9abedefbfafe83b1f87749fe00491ee90d039d723",
+          "link_target": "clang-15"
+        },
+        "hdc": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/hdc",
+          "image_sha256": "f170c24ea37472562bba90860586c31b77928ba36830ed8dc1e5a2c5d19ff3cc",
+          "link_target": null
+        },
+        "hvigor": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+          "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+          "image_sha256": "468c9cdbb1dc43799a2024fea63c6c5f60993e3837b4a4d131b14680aac1aa05",
+          "link_target": null
+        },
+        "ohpm": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+          "image_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+          "image_sha256": "46cdd6216d402e5c1e16c9bfb3de6eaa563fb982370e11201a8e64275b94adb5",
+          "link_target": null
+        }
+      },
+      "metadata": {
+        "command_line_tools": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools",
+          "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/version.txt",
+          "version_source": "version.txt",
+          "version": "26.0.0.851",
+          "distribution_platform": "mac-arm64",
+          "releaseType": "release",
+          "hvigor_version": "6.26.8",
+          "ohpm_version": "26.0.0.630",
+          "bundled_sdk": {
+            "version": "26.0.0.105",
+            "apiVersion": "26",
+            "platformVersion": "26.0.0",
+            "releaseType": "Release"
+          }
+        },
+        "sdk": {
+          "root": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default",
+          "product": {
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/sdk-pkg.json",
+            "apiVersion": "26",
+            "version": "26.0.0.105",
+            "releaseType": "Release",
+            "stage": "Release",
+            "displayName": "HarmonyOS 26.0.0",
+            "path": "HarmonyOS-26.0.0",
+            "platformVersion": "26.0.0"
+          },
+          "components": {
+            "ets": {
+              "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/oh-uni-package.json",
+              "apiVersion": "26",
+              "version": "26.0.0.105",
+              "releaseType": "Release",
+              "displayName": "Ets",
+              "path": "ets",
+              "platformVersion": "26.0.0"
+            },
+            "native": {
+              "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/native/oh-uni-package.json",
+              "apiVersion": "26",
+              "version": "26.0.0.105",
+              "releaseType": "Release",
+              "displayName": "Native",
+              "path": "native",
+              "platformVersion": "26.0.0"
+            },
+            "toolchains": {
+              "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/toolchains/oh-uni-package.json",
+              "apiVersion": "26",
+              "version": "26.0.0.105",
+              "releaseType": "Release",
+              "displayName": "Toolchains",
+              "path": "toolchains",
+              "platformVersion": "26.0.0"
+            }
+          },
+          "is_formal": true,
+          "components_consistent": true,
+          "cpf_sysroot_checked": false
+        },
+        "packages": {
+          "@ohos/hvigor": {
+            "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/bin/hvigorw.js",
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/package.json",
+            "version_source": "package_metadata",
+            "name": "@ohos/hvigor",
+            "version": "6.26.8"
+          },
+          "@ohos/hvigor-ohos-plugin": {
+            "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor-ohos-plugin/package.json",
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor-ohos-plugin/package.json",
+            "version_source": "package_metadata",
+            "name": "@ohos/hvigor-ohos-plugin",
+            "version": "6.26.8"
+          },
+          "@ohos/ohpm": {
+            "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/bin/ohpm",
+            "metadata_path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/ohpm/package.json",
+            "version_source": "package_metadata",
+            "name": "@ohos/ohpm",
+            "version": "26.0.0.630"
+          }
+        }
+      },
+      "cpf": {
+        "state": "incomplete",
+        "reason": "separate reviewed compiler/LLVM/sysroot/runtime inputs required"
+      },
+      "certifies_c07": false
+    },
+    "versions": {
+      "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+      "node": "v24.14.1",
+      "java": "openjdk version \"21.0.8\" 2025-07-15\nOpenJDK Runtime Environment JBR-21.0.8+9-1038.71-jcef (build 21.0.8+9-b1038.71)\nOpenJDK 64-Bit Server VM JBR-21.0.8+9-1038.71-jcef (build 21.0.8+9-b1038.71, mixed mode, sharing)"
+    },
+    "source_and_support_inputs": [
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/facade/Boundary.ets.in",
+        "size": 23862,
+        "sha256": "1e186d30914e60ed8921760abf93b73224208072aaec8ba6489ec1b711c97705"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/facade/RuntimeFrame.ets",
+        "size": 1583,
+        "sha256": "a5eacf4b6b7aa7fdd886e1cc19ab3147517f96b60f19b4074df243de66e98492"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/native-gateway/Index.d.ts",
+        "size": 1163,
+        "sha256": "82dea1d77e3c5ed42554ed5a496e2cf4daadc6ae24cce71df420469d01eb11e2"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/observation/StateObservation.ets",
+        "size": 5662,
+        "sha256": "1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/sdk/arkts/observation/ArkUIStateModel.ets",
+        "size": 1184,
+        "sha256": "7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/scripts/check_arkts_observation.py",
+        "size": 20518,
+        "sha256": "8318a4846450b1d993786ba487775cc6d75eb1eb00fbac53167e4489977b70ae"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/.python-version",
+        "size": 7,
+        "sha256": "bb90877c5ee8c4703cfd03421e92ef2a17a10b67ecc822524baeea4c8da3dc9f"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/adapters/artifacts/arkts/har.py",
+        "size": 5733,
+        "sha256": "7f12b8cf95cce62432bd1c31cf39a554d69ac6ab0dd43972b78a34f76b090f38"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/adapters/artifacts/arkts/pack.py",
+        "size": 18700,
+        "sha256": "c2bc621bfd50cff6bf2942887b949cb308fed54027599a4183f96d50dc2a0d40"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/toolchain.py",
+        "size": 9087,
+        "sha256": "b252fba08f5d8fb91014db541d2a0397a88903536c2d0dcced9c54e32d39abe8"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/tools.py",
+        "size": 15971,
+        "sha256": "2c312568f648dc2c15362c4f0a41a9738238efdd1ab0d7f7e7ba7d90ff4b4ddf"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/adapters/toolchains/arkts/preflight.py",
+        "size": 17672,
+        "sha256": "ca8b53d7a791c891cac035ddc3059c88867caa9b80c2e67d8944fc64aa1462c3"
+      },
+      {
+        "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/arkts/support.py",
+        "size": 7137,
+        "sha256": "ae8123b6b832bf9ceee20016bc9f50b2932a2a870b11d607ad030a7e7a3f3ba4"
+      },
+      {
+        "path": "/private/tmp/madb-c07-public-c-attempt001/workspace/tools/cli-inventory.json",
+        "size": 25382354,
+        "sha256": "3fd5f07a1544baf46abcac095572a21a773823bd010aca42adb9a64b8ce6ae24"
+      }
+    ],
+    "host_images": [
+      {
+        "path": "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+        "size": 52448,
+        "sha256": "02a8df1726463faedb3adef289b3d1bdeabb7785c837fd8c174023aeeeb4d312"
+      },
+      {
+        "path": "/Applications/DevEco-Studio.app/Contents/jbr/Contents/Home/bin/java",
+        "size": 70704,
+        "sha256": "39f0084e830926e25c55fb3bdcadc1c8dd1caf661c573162abd75e2babbf288a"
+      }
+    ],
+    "inputs_unchanged_after": true,
+    "commands": [
+      {
+        "label": "node-version",
+        "cwd": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/versions",
+        "argv": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "--version"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.014,
+        "stdout": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/versions/node-version.stdout",
+          "size": 9,
+          "sha256": "50956a2c27b1a442408131f86103ff1df8a7f4a29502df81d216ba19e2c2f4a6"
+        },
+        "stderr": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/versions/node-version.stderr",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "project_input_count": 0,
+        "har_member_count": 0
+      },
+      {
+        "label": "java-version",
+        "cwd": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/versions",
+        "argv": [
+          "/Applications/DevEco-Studio.app/Contents/jbr/Contents/Home/bin/java",
+          "-version"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.028,
+        "stdout": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/versions/java-version.stdout",
+          "size": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/versions/java-version.stderr",
+          "size": 214,
+          "sha256": "b78ab2a6760b6ee1c1598016f7f2527e0b15af40202e4b1afb5e737b3d83f10d"
+        },
+        "project_input_count": 0,
+        "har_member_count": 0
+      },
+      {
+        "label": "assembleHar",
+        "cwd": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-har",
+        "argv": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/bin/hvigor.js",
+          "assembleHar",
+          "--mode",
+          "module",
+          "-p",
+          "product=default",
+          "-p",
+          "buildMode=release",
+          "--no-daemon"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 3.32,
+        "stdout": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-har/assembleHar.stdout",
+          "size": 2525,
+          "sha256": "f2d47db19075a21293c6543ef75cbcd55742e6d470e05cc027a92430bc097f4f"
+        },
+        "stderr": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-har/assembleHar.stderr",
+          "size": 242,
+          "sha256": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f"
+        },
+        "task_summary": [
+          "30 tasks in total: 30 executed, 0 up-to-date"
+        ],
+        "artifact": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-har/observation/build/default/outputs/default/observation.har",
+          "size": 17259,
+          "sha256": "746441790eb524eb9ff2b69e11453c343a546a602b4c36b7eadf22533e4a33e7"
+        },
+        "declaration_separation_passed": true,
+        "project_input_count": 20,
+        "har_member_count": 10
+      },
+      {
+        "label": "assembleHap",
+        "cwd": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-consumer",
+        "argv": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/bin/hvigor.js",
+          "assembleHap",
+          "--mode",
+          "module",
+          "-p",
+          "product=default",
+          "-p",
+          "buildMode=release",
+          "--no-daemon"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 3.338,
+        "stdout": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-consumer/assembleHap.stdout",
+          "size": 2605,
+          "sha256": "9f35dcfc278cd3182f9fb5bf4d97323f05c24085dff997a5299223ff9d47ee22"
+        },
+        "stderr": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-consumer/assembleHap.stderr",
+          "size": 1232,
+          "sha256": "851c683c8ba04aa1fd0679db9258c1a1f92d3d3660e54b3774168e28927579a7"
+        },
+        "task_summary": [
+          "34 tasks in total: 34 executed, 0 up-to-date"
+        ],
+        "artifact": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/plain-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+          "size": 12650,
+          "sha256": "7e12c866296fd81273e17803409540c39e7985c0d8b5cf4671241ef31d217059"
+        },
+        "project_input_count": 29,
+        "har_member_count": 0
+      },
+      {
+        "label": "assembleHar",
+        "cwd": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-har",
+        "argv": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/bin/hvigor.js",
+          "assembleHar",
+          "--mode",
+          "module",
+          "-p",
+          "product=default",
+          "-p",
+          "buildMode=release",
+          "--no-daemon"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 3.319,
+        "stdout": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-har/assembleHar.stdout",
+          "size": 2525,
+          "sha256": "37865566d4291761facd62a09d1e12c507b71b88ee82814b6781e203b5aa7b77"
+        },
+        "stderr": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-har/assembleHar.stderr",
+          "size": 242,
+          "sha256": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f"
+        },
+        "task_summary": [
+          "30 tasks in total: 30 executed, 0 up-to-date"
+        ],
+        "artifact": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-har/observation/build/default/outputs/default/observation.har",
+          "size": 18078,
+          "sha256": "92e2e512ee6cbd6f178d506600a0c13cacee9ecc66537867502b27a82fc1af3c"
+        },
+        "declaration_separation_passed": true,
+        "project_input_count": 21,
+        "har_member_count": 11
+      },
+      {
+        "label": "assembleHap",
+        "cwd": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-consumer",
+        "argv": [
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/hvigor/hvigor/bin/hvigor.js",
+          "assembleHap",
+          "--mode",
+          "module",
+          "-p",
+          "product=default",
+          "-p",
+          "buildMode=release",
+          "--no-daemon"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 3.37,
+        "stdout": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-consumer/assembleHap.stdout",
+          "size": 2605,
+          "sha256": "49ef88e09d7ff966d4488d4edc372d66e081c9b40f4c35db0e69ac6d83e8f832"
+        },
+        "stderr": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-consumer/assembleHap.stderr",
+          "size": 1584,
+          "sha256": "820e95235840ee85379980623fc55516e66ce079da4d1dd3a20d34255d06a863"
+        },
+        "task_summary": [
+          "34 tasks in total: 34 executed, 0 up-to-date"
+        ],
+        "artifact": {
+          "path": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/arkui-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+          "size": 13410,
+          "sha256": "90788c3df06c4468001a7d9f00331746337539351fe1dfa47e4a58bcffcc52dc"
+        },
+        "project_input_count": 30,
+        "har_member_count": 0
+      }
+    ],
+    "raw_receipt": {
+      "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/actual-r4/success.json",
+      "sha256": "dcb9e411d847f0238f1e8a06c84bae411031aad39b654d187c18c6e18f4e97a8",
+      "size": 63503
+    },
+    "negative_checks": {
+      "absolute_repo": {
+        "rejected": true,
+        "diagnostic": "--output must be outside the repo and installed tool trees",
+        "pure_guard_only": true
+      },
+      "symlink_repo": {
+        "rejected": true,
+        "diagnostic": "--output must be outside the repo and installed tool trees",
+        "pure_guard_only": true
+      },
+      "case_repo": {
+        "rejected": true,
+        "diagnostic": "--output must be outside the repo and installed tool trees",
+        "pure_guard_only": true
+      },
+      "absolute_tool": {
+        "rejected": true,
+        "diagnostic": "--output must be outside the repo and installed tool trees",
+        "pure_guard_only": true
+      },
+      "case_tool": {
+        "rejected": true,
+        "diagnostic": "--output must be outside the repo and installed tool trees",
+        "pure_guard_only": true
+      },
+      "absolute_java": {
+        "rejected": true,
+        "diagnostic": "--output must be outside the repo and installed tool trees",
+        "pure_guard_only": true
+      },
+      "missing_root": {
+        "rejected": true,
+        "pure_guard_only": true
+      },
+      "numeric_inventory_path": {
+        "exit_code": 1,
+        "diagnostic": "'int' object has no attribute 'startswith'",
+        "failure_receipt": "/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/review-negative/malformed-attempt/failure.json",
+        "no_success": true,
+        "no_commands": true
+      },
+      "existing_output": {
+        "exit_code": 2,
+        "evidence_unchanged": true
+      },
+      "failed_compile_inputs": {
+        "exit_code": 17,
+        "inputs_recorded": 20,
+        "compiler_invoked": false,
+        "controlled_subprocess_failure": true
+      },
+      "syntax": "passed",
+      "script_sha256": "8318a4846450b1d993786ba487775cc6d75eb1eb00fbac53167e4489977b70ae"
+    },
+    "known_limits": [
+      "API26 development probe, not a C04 candidate or C07/L05 certification",
+      "Native declarations only; no native DSO, native loading/drain or env execution",
+      "Unsigned HAP; no installation, device execution or UI notification proof",
+      "Local declaration/HAR resolution is constructed without ohpm; registry install is untested",
+      "Tool inventory is a caller-frozen local checksum, not a vendor signature",
+      "Java launcher/version are recorded; the complete JBR/OS runtime is not closed"
+    ],
+    "earlier_staged_receipt": {
+      "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/verify-arkts/script-reviewed-r3/success.json",
+      "sha256": "cb1458c76327bc7aff65b70b82a8f5335a618cbc841cc212216ac0e407917fe2",
+      "size": 65613
+    },
+    "source_scope": "actual repository after writeback and concurrent C07 facade changes"
+  },
+  "repository_checks": {
+    "status": "passed",
+    "command": "python -B scripts/check.py",
+    "top_level_commands": 37,
+    "rust_tests_reported": 300,
+    "python_tests_reported": 499,
+    "log": {
+      "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/repository-check-unsandboxed.log",
+      "sha256": "bc1a6f0362b4b87b5908c2dd4054681cb5e72eaed200049cf32cba50f4792542",
+      "size": 56513
+    },
+    "initial_sandbox_attempt": "existing Unix socket test denied; same staged input rerun with approved permissions, no assertions skipped",
+    "scope": "starting isolated worktree including this task; not all later concurrent C07 changes"
+  },
+  "document_tests": {
+    "unittest": 21,
+    "rendered_pages": 13,
+    "dom": {
+      "method": "isolated DOM-shaped unit execution; not a browser",
+      "profiles": 29,
+      "graph_filters": 173,
+      "sequence_scenarios": 87,
+      "node_keyboard_selections": 3044,
+      "deep_links": "passed",
+      "extension_categories": "passed",
+      "theme": "passed",
+      "network": false
+    },
+    "real_browser": false
+  },
+  "independent_reviews": {
+    "runtime": "passed after registration snapshot and retained-temporary fixes",
+    "plan": "passed after E05/I05 acceptance-boundary fixes",
+    "all_current_docs": "passed",
+    "sdk_checker": "passed after filesystem-identity and failed-receipt fixes"
+  },
+  "protection": {
+    "baseline_manifest": {
+      "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/baseline.json",
+      "sha256": "8bc0622eb88040f70d1475272c692fbb0d5aa00edfe5b302bffbe4fb8ee41119",
+      "size": 113160
+    },
+    "protected_unchanged_count": 119,
+    "new_work_packages": 0,
+    "phase_and_dependencies_unchanged": true,
+    "only_new_status_change": "L05 not_started -> in_progress, verification missing",
+    "existing_files_deleted": 0,
+    "writeback": "compare each actual destination with its starting digest before copy; no commit or publish"
+  },
+  "changed_file_count_including_this_receipt": 61,
+  "changed_files_excluding_self": [
+    {
+      "path": "README.md",
+      "sha256": "858e470d5958e314b2cfa6b04fe3d1a357c32b63377a99bf2baa3ff80a31cace",
+      "size": 15053
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "af5c34297e1e8a94b649d608689eb9ebae0d013ab841dd2a2cdf5d690e8c984f",
+      "size": 9322
+    },
+    {
+      "path": "docs/adr/0014-swift-production-baseline.md",
+      "sha256": "67b232d6ace0628a55cd4f6ecdaf68f13659d117979e6ad190b2ae67eefaddbb",
+      "size": 10256
+    },
+    {
+      "path": "docs/adr/0015-swift-extension-delivery.md",
+      "sha256": "2e68575715cfc446ce058c90e5d240b885b4f0ce22585ddcd3b4810b728f7e05",
+      "size": 8025
+    },
+    {
+      "path": "docs/adr/0016-arkts-production-baseline.md",
+      "sha256": "893a1bc3aae8500ac6daa6c6dbcba6c3636d2fd032aa59ea452a94eac24304a2",
+      "size": 7642
+    },
+    {
+      "path": "docs/adr/0017-arkts-extension-delivery.md",
+      "sha256": "ceaa60746c59c6d67a7c5f85604d5c08efc1f191c70757cc62e1c81f0d83c338",
+      "size": 10424
+    },
+    {
+      "path": "docs/architecture/02-modules-and-ports.md",
+      "sha256": "71587101ff533bde73da38c6b8534302d1a76e29f2d9fbb8d0da1ce2e0b7ed09",
+      "size": 28376
+    },
+    {
+      "path": "docs/architecture/04-data-and-errors.md",
+      "sha256": "49326d67fb51c78832f058f68b5d0037dfaf201a3e6730e77a2b9afd31b2f148",
+      "size": 6442
+    },
+    {
+      "path": "docs/architecture/05-lifecycle-and-concurrency.md",
+      "sha256": "1efa73ad727ca178b96acb0d1baf1a11db2d2bd98d0e3f28a5ca6d74e49cc24e",
+      "size": 12164
+    },
+    {
+      "path": "docs/architecture/06-backend-profiles.md",
+      "sha256": "0b976d6bff10ee881178d48e0b6d5cf1d99d3d5be119b78cec208f87935b9616",
+      "size": 17757
+    },
+    {
+      "path": "docs/architecture/07-code-generation.md",
+      "sha256": "68a0221db31761613a892e0f81563b9b59ab9b9109eebda7b159894cac8ba586",
+      "size": 34785
+    },
+    {
+      "path": "docs/architecture/08-runtime-and-idiomatic-api.md",
+      "sha256": "965404407ae073392b47ed672018f28b1652f260170a29149c72472c6e47daaf",
+      "size": 12150
+    },
+    {
+      "path": "docs/architecture/09-build-packaging-release.md",
+      "sha256": "1539a8c286c3a8e29d0a7f6978b69278b1e0c7d7aae777cca552a8d5f4694f5a",
+      "size": 18865
+    },
+    {
+      "path": "docs/architecture/11-language-extension.md",
+      "sha256": "a88585f73831bea2e6054faaec7d106e3dde8201356274a47c58ea30cf41596c",
+      "size": 11469
+    },
+    {
+      "path": "docs/architecture/14-project-initialization.md",
+      "sha256": "e2684e5a94cb340ec290a19b90b10cac7d473092447d004c7918744874f211d6",
+      "size": 26413
+    },
+    {
+      "path": "docs/architecture/15-developer-ergonomics.md",
+      "sha256": "8976f8994b91ac30ce6a48013df90dcea85adfa07bf75d6879ebc9e001771329",
+      "size": 38129
+    },
+    {
+      "path": "docs/architecture/16-technology-stack-and-versions.md",
+      "sha256": "41b57af2f5fb210422edc4e8338db8d06988a557255caa24412aa819d2654447",
+      "size": 38008
+    },
+    {
+      "path": "docs/architecture/17-extension-composition.md",
+      "sha256": "baf00ce8093dfce390225808cf0e992a32c0da776f4114b0f2206cd3567eb7a3",
+      "size": 26950
+    },
+    {
+      "path": "docs/catalog/implementation-plan.json",
+      "sha256": "ef25d35d61f7f11e22a6e6b4a3c09c584b9e0e87a01d9260d94617520938ab77",
+      "size": 97792
+    },
+    {
+      "path": "docs/catalog/route-views/arkts-c-cpp-architecture.json",
+      "sha256": "a9f95810953f5ec3b885c585adb0428d3cfb6106584f05811979cde2221d7ea7",
+      "size": 87845
+    },
+    {
+      "path": "docs/catalog/route-views/arkts-rust-architecture.json",
+      "sha256": "e5c7222ed49dbb512a81ae0fe006450796454bc2cd3981992f5ceac1303b8e34",
+      "size": 90345
+    },
+    {
+      "path": "docs/catalog/route-views/extensions-architecture.json",
+      "sha256": "7b4356b2616495580bde8f60805b76871d28057a494e28efdcaeedceac53c44e",
+      "size": 422428
+    },
+    {
+      "path": "docs/delivery/01-implementation-plan.md",
+      "sha256": "ea4677acd78af050b25449004efb1967f9f759dfae4d189a8a160f9b84e4ef12",
+      "size": 25095
+    },
+    {
+      "path": "docs/delivery/03-decisions-and-risks.md",
+      "sha256": "fb0dd9297d679245e80057df23074955559b34e871e8ffc80b26d6e9a5b6137a",
+      "size": 19345
+    },
+    {
+      "path": "docs/product/01-positioning-and-requirements.md",
+      "sha256": "668ee603dc7d9919850ab16c799b06dd75ee640e6d5baaa66c274fbd17631260",
+      "size": 6624
+    },
+    {
+      "path": "docs/product/02-capabilities-and-roadmap.md",
+      "sha256": "2a2be46f5972411f427883d1d9d626eacd757943dc83b96b06793b14c0748ffe",
+      "size": 7540
+    },
+    {
+      "path": "docs/product/03-developer-experience.md",
+      "sha256": "b896d26b20b51042533e3738af228dcc04ea512474d1d4139803ecf3bfbbc110",
+      "size": 13318
+    },
+    {
+      "path": "docs/product/04-project-initialization.md",
+      "sha256": "3cc468ed05aa1de94e220e25551feb0c93e6308a9f8cd2c1695101fc23f746a3",
+      "size": 10186
+    },
+    {
+      "path": "docs/references/README.md",
+      "sha256": "429a2fb440c49dc6fbbfa381b5d8469c1c65e5b3599fcb28e79c9b6c2002d627",
+      "size": 10865
+    },
+    {
+      "path": "docs/reviews/2026-10-25-arkts-extension-delivery.md",
+      "sha256": "21a6113c4dcdc50f0a251c71ee5c33c7196ca41b291450784f5423b75deceecb",
+      "size": 7503
+    },
+    {
+      "path": "docs/reviews/README.md",
+      "sha256": "49232b79316d76c93ef98489679423af16a330fde7fe4f4c1e1f08fc0efc0563",
+      "size": 4990
+    },
+    {
+      "path": "docs/tools/render_visuals.py",
+      "sha256": "f444ab0d0d77cd60f6bfecc586f223e89d623dbc895aa08434d57face34fa5de",
+      "size": 18836
+    },
+    {
+      "path": "docs/tools/templates/architecture-overview.html",
+      "sha256": "1b74ab3f2a46b3e7a977cd4900b2b2a175110276912d96cd8902a615e63e9039",
+      "size": 24266
+    },
+    {
+      "path": "docs/tools/templates/implementation-progress.html",
+      "sha256": "85b7faf4b3eb9312ee14d48d99673f39e4520454b94e28261e8161b4e6d1ec66",
+      "size": 33467
+    },
+    {
+      "path": "docs/tools/templates/kotlin-arkts-architecture.html",
+      "sha256": "f2239ba25e3bdd767c709100339e056731314a837089418058579fdb029bdda7",
+      "size": 74245
+    },
+    {
+      "path": "docs/validation/05-language-onboarding.md",
+      "sha256": "e038b8cf410824fd3d6dc5b8fa8371785b46b4c25152a937d7835a1f7799190f",
+      "size": 10951
+    },
+    {
+      "path": "docs/validation/06-project-initialization.md",
+      "sha256": "923b7b60d0ee5e3a75b3e9eb7e10768562d193ac1cb4d32867a78e5262803ee9",
+      "size": 11530
+    },
+    {
+      "path": "docs/validation/07-developer-ergonomics.md",
+      "sha256": "b5bfac6c0a7be17efecde6eb6b2b71c77e63fa186b9c763141a5a08f6838daa3",
+      "size": 13738
+    },
+    {
+      "path": "docs/visuals/README.md",
+      "sha256": "60d9554694469569bfd5c6c65a87a77638529a243f38130a5c26fa6b53c90664",
+      "size": 10257
+    },
+    {
+      "path": "docs/visuals/architecture-overview.html",
+      "sha256": "af9c2094c17cd3239f2dfb5d354de94349819e67dd8897983a6fb6b0ceb32c90",
+      "size": 155238
+    },
+    {
+      "path": "docs/visuals/arkts-c-cpp-architecture.html",
+      "sha256": "1a6fa488d17d343023d3df7c19117e6b23f2173d6d392c01b1039221e43a975f",
+      "size": 219237
+    },
+    {
+      "path": "docs/visuals/arkts-rust-architecture.html",
+      "sha256": "5c6ed4d6cdfaa42c9fc5aaf321499fd1c4c27a781edac87270cde1c3711d14ce",
+      "size": 221333
+    },
+    {
+      "path": "docs/visuals/extensions-architecture.html",
+      "sha256": "f0006ec581e69af5b0532702abf12134f88ac6fb46bef868d7802453fec56035",
+      "size": 415017
+    },
+    {
+      "path": "docs/visuals/implementation-progress.html",
+      "sha256": "12b5509182dbf8ef6bded452b3788c1e2946dbd74bcd612762a6a6ffde42498a",
+      "size": 163090
+    },
+    {
+      "path": "docs/visuals/kotlin-arkts-architecture.html",
+      "sha256": "4a56701aaac7cea2464f148fcedf8fc6e2dfde9bdc9f4f8a2012c3f8a2fc84ca",
+      "size": 197198
+    },
+    {
+      "path": "docs/visuals/kotlin-c-cpp-architecture.html",
+      "sha256": "d89dfb060a8123e650de85db328e375b4233c3b9d2685277a43efad95d64fc5c",
+      "size": 220597
+    },
+    {
+      "path": "docs/visuals/kotlin-rust-architecture.html",
+      "sha256": "54c469034153634e62da3a66dcd20e6bdee7c4673b53ef27d72f2a7de1843960",
+      "size": 246855
+    },
+    {
+      "path": "docs/visuals/kotlin-swift-architecture.html",
+      "sha256": "54c877d18de24dab8a9dc4f2187cb351d08fe73af8a535561bf68e3a8766364c",
+      "size": 197127
+    },
+    {
+      "path": "docs/visuals/route-atlas.html",
+      "sha256": "3f042949a3b1d53f04d461dff251c4381a6ae7df1b74e67d9545cabf9315a21b",
+      "size": 136276
+    },
+    {
+      "path": "docs/visuals/rust-c-cpp-architecture.html",
+      "sha256": "40f1b6284eaff4b6fd6db21ad6e4b6c033813a60fbad6b5f45689e0de465a2c1",
+      "size": 243563
+    },
+    {
+      "path": "docs/visuals/swift-c-cpp-architecture.html",
+      "sha256": "7e4de6d027e2d8efbb755fb642907bc606b5108818b849c2de3a8ada76dc274d",
+      "size": 265840
+    },
+    {
+      "path": "docs/visuals/swift-rust-architecture.html",
+      "sha256": "b03ccfecf104fc6be5221e64c9760696aa45509fe68b1a4964cd947b0afb3026",
+      "size": 220386
+    },
+    {
+      "path": "scripts/check.py",
+      "sha256": "9d897956a26a92e6b8af3ccac1ab72c97eec944180c0d1312dbb41f838e1436c",
+      "size": 5401
+    },
+    {
+      "path": "scripts/check_arkts_observation.py",
+      "sha256": "8318a4846450b1d993786ba487775cc6d75eb1eb00fbac53167e4489977b70ae",
+      "size": 20518
+    },
+    {
+      "path": "sdk/arkts/observation/ArkUIStateModel.ets",
+      "sha256": "7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+      "size": 1184
+    },
+    {
+      "path": "sdk/arkts/observation/README.md",
+      "sha256": "43b860eaeadc1ba4ff31be18d07447f474571fdfbae77be7ea117db22faf50a7",
+      "size": 8560
+    },
+    {
+      "path": "sdk/arkts/observation/StateObservation.ets",
+      "sha256": "1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+      "size": 5662
+    },
+    {
+      "path": "tests/integration/l05_arkts_observation/README.md",
+      "sha256": "07c074b3fe8bafc4e10e7eafa0af9c9545c99b1b0be8f33286002adeaa69f84b",
+      "size": 1840
+    },
+    {
+      "path": "tests/integration/l05_arkts_observation/SDK_README.md",
+      "sha256": "fa2bcd022845445d18627ed78bb0c8a4b79fec60def88e73f19243f2dac094ab",
+      "size": 3036
+    },
+    {
+      "path": "tests/integration/l05_arkts_observation/check.cjs",
+      "sha256": "9ab544193a3ed712d9c774c4474dc3bb304def2949b9a8be32b8246a3152fb25",
+      "size": 15961
+    }
+  ],
+  "post_writeback": {
+    "head_at_apply": "2a93c86ceff04999fa44181a0d21f03e3281b3ad",
+    "copied_files_verified": 61,
+    "static_documents": "passed",
+    "render_consistency": "passed",
+    "observation_host_cases": 15,
+    "current_c07_facade_host_cases": 19,
+    "current_c07_facade_log": {
+      "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/actual-c07-facade.json",
+      "sha256": "b06ed306344ad208a36e690aae3057ada4b7a8d0236ee4bb353d1b8ab3ec4082",
+      "size": 1131
+    },
+    "actual_sdk_compile": "four builds passed with before/after input check",
+    "parallel_C07_changes_preserved": true,
+    "comparison_log": {
+      "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-arkts-delivery-r8tlltu7/post-writeback-source-check.json",
+      "sha256": "038b4fbfc2d14124772b8df7a73bf4811b1c1f683dc6010f9abfdf5aad463bcb",
+      "size": 6774
+    }
+  }
+}

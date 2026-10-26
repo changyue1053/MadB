@@ -1,0 +1,139 @@
+{
+  "scope": "independent root review of final L05/C09 source, raw observations and artifact identity; no new target execution",
+  "l05_report": {
+    "path": "/private/tmp/madb-chief-round2/l05-native-ui-002/report.json",
+    "sha256": "sha256:88c5aa862d38a05e41973c7db157d4b195896fdfca21d3c568d0c389b2c3718c"
+  },
+  "l05": {
+    "bound_lab_inputs": 32,
+    "ui_assertions": 9,
+    "source_and_observation_review": "passed",
+    "limits": "page hide/return after observation drain; not queued-late-callback race, page destruction or physical-device certification"
+  },
+  "c09": {
+    "reports": [
+      {
+        "route": "c",
+        "report": "/private/tmp/madb-chief-round2/c09-c-run-002/report.json",
+        "sha256": "sha256:8d236d38861dbf9cfb93d58881869fe1ab9a186ad9058b88dad719a901f59b2a",
+        "candidate": "sha256:90f2c0e3e06bb92541171194ed8f7491017693a937300ef7b47acb0dc4f6730f",
+        "build": "passed",
+        "execution": "passed",
+        "before_physical_ack": "passed",
+        "after_physical_ack_before_receipt": {
+          "status": "unavailable",
+          "reason": "existing public facade exposes no deterministic before-receipt control point"
+        },
+        "provisional": true,
+        "lab_revision": "a466501275bee1786d171199390f228f55eb38a0",
+        "lab_source_digest": "sha256:68750458c29fd388c4450823e5f648361b02f266be38f1cb0a66f13fef6b87a8",
+        "nonce": "c07-f65bcb3e89a64fdeb026e6d9b29dd38e",
+        "pid": "25545",
+        "recovery_stop": "complete; not native cleanup evidence",
+        "target": {
+          "api": "23",
+          "version": "OpenHarmony-6.1.0.115",
+          "abi": "arm64-v8a",
+          "device_type": "phone",
+          "release_type": "Release",
+          "target": "127.0.0.1:5557",
+          "target_kind": "emulator"
+        }
+      },
+      {
+        "route": "cpp",
+        "report": "/private/tmp/madb-chief-round2/c09-cpp-run-002/report.json",
+        "sha256": "sha256:a78e4d42541fc8190c566b4997c7068b6adb9c45f66bad643bf9ab629b257010",
+        "candidate": "sha256:a1b5da1c2861af3ed5527841d00eadbe7ac8def023393198858090c26b3eaac9",
+        "build": "passed",
+        "execution": "passed",
+        "before_physical_ack": "passed",
+        "after_physical_ack_before_receipt": {
+          "status": "unavailable",
+          "reason": "existing public facade exposes no deterministic before-receipt control point"
+        },
+        "provisional": true,
+        "lab_revision": "a466501275bee1786d171199390f228f55eb38a0",
+        "lab_source_digest": "sha256:68750458c29fd388c4450823e5f648361b02f266be38f1cb0a66f13fef6b87a8",
+        "nonce": "c07-839fb071447a47149a3fd182c1da8c57",
+        "pid": "26123",
+        "recovery_stop": "complete; not native cleanup evidence",
+        "target": {
+          "api": "23",
+          "version": "OpenHarmony-6.1.0.115",
+          "abi": "arm64-v8a",
+          "device_type": "phone",
+          "release_type": "Release",
+          "target": "127.0.0.1:5557",
+          "target_kind": "emulator"
+        }
+      },
+      {
+        "route": "rust",
+        "report": "/private/tmp/madb-chief-round2/c09-rust-run-002/report.json",
+        "sha256": "sha256:ada570cc79266fc612f0f80ebe16060acdc9c6b995aeb981e494b8dd609631cb",
+        "candidate": "sha256:ca7c2a14a22b01d943dc7d5911561159ebd0507e5801088db4a6561522f5c589",
+        "build": "passed",
+        "execution": "passed",
+        "before_physical_ack": "passed",
+        "after_physical_ack_before_receipt": {
+          "status": "unavailable",
+          "reason": "existing public facade exposes no deterministic before-receipt control point"
+        },
+        "provisional": true,
+        "lab_revision": "a466501275bee1786d171199390f228f55eb38a0",
+        "lab_source_digest": "sha256:68750458c29fd388c4450823e5f648361b02f266be38f1cb0a66f13fef6b87a8",
+        "nonce": "c07-a6c169a6f50b4230b314a81978de7df0",
+        "pid": "26668",
+        "recovery_stop": "complete; not native cleanup evidence",
+        "target": {
+          "api": "23",
+          "version": "OpenHarmony-6.1.0.115",
+          "abi": "arm64-v8a",
+          "device_type": "phone",
+          "release_type": "Release",
+          "target": "127.0.0.1:5557",
+          "target_kind": "emulator"
+        }
+      },
+      {
+        "route": "kotlin",
+        "report": "/private/tmp/madb-chief-round2/c09-kotlin-run-003/report.json",
+        "sha256": "sha256:64a0cc6e52e01b05540fd59ddd4fb62f9b5bd51ecba074e065bbc7565809c496",
+        "candidate": "sha256:7de142788f3efb7ea8d324bde88b7435175d5547168247abae58c0ef4dc45e74",
+        "build": "passed",
+        "execution": "passed",
+        "before_physical_ack": "passed",
+        "after_physical_ack_before_receipt": {
+          "status": "unavailable",
+          "reason": "existing public facade exposes no deterministic before-receipt control point"
+        },
+        "provisional": true,
+        "lab_revision": "a466501275bee1786d171199390f228f55eb38a0",
+        "lab_source_digest": "sha256:b657e7387b1f37a04c83112b2742cde5348b6b27c34dcf2fa9b7b9c4adf01044",
+        "nonce": "c07-96a59e83e36f4a269db5a4b186823975",
+        "pid": "24412",
+        "recovery_stop": "complete; not native cleanup evidence",
+        "target": {
+          "api": "23",
+          "version": "OpenHarmony-6.1.0.115",
+          "abi": "arm64-v8a",
+          "device_type": "phone",
+          "release_type": "Release",
+          "target": "127.0.0.1:5557",
+          "target_kind": "emulator"
+        }
+      }
+    ],
+    "checked_attachment_count": 60,
+    "raw_observations": "passed",
+    "source_review": "passed",
+    "kotlin_oracle_corrections": "independently checked against frozen producer 18256fcc bootstrap.cpp.in:170 and OwnedCore.kt:73,77-83,226,682; prior failures retained"
+  },
+  "scope_does_not_grant": [
+    "L05 whole-package acceptance",
+    "C09 whole-package acceptance",
+    "C07 new certification",
+    "publication"
+  ]
+}

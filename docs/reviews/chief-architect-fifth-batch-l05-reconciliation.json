@@ -1,0 +1,36 @@
+{
+  "scope": "Append-only reconciliation of preserved preliminary attempts; no changes to historical reports",
+  "attempts": [
+    {
+      "report": "/private/tmp/madb-chief-round5/l05-page-lifecycle-001/report.json",
+      "report_sha256": "5a245e001367df421e471298a6b22dd6aaa1ddb81427d90121fddbbe76fda88b",
+      "actual_outcome": "target transport failure before compile/installation",
+      "explanation": "HDC local transport unavailable in sandbox; no device mutation",
+      "commands": [
+        {
+          "path": "/private/tmp/madb-chief-round5/l05-page-lifecycle-001/commands/006-target-api.json",
+          "sha256": "967d30d6e8cccfefdb9c21a9cabdd97a527da541c72b664bb51b8a5348915faa",
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "report": "/private/tmp/madb-chief-round5/l05-page-lifecycle-002/report.json",
+      "report_sha256": "9fd3a4f31c43b54977930312f506613f36148543233dcdbdfbbbd9bf9e85c5bf",
+      "actual_outcome": "actual compile failed; native/UI not run",
+      "explanation": "Original report compile=not_run was imprecise; assemble-release-hap command exit255 failed at ArkTS limited-throw. Corrected stage reporting and rejection tests apply to004.",
+      "commands": [
+        {
+          "path": "/private/tmp/madb-chief-round5/l05-page-lifecycle-002/commands/006-target-api.json",
+          "sha256": "da196490e87121375a1b5247512a8aa615aea90620d8aa60db28981d26803e9a",
+          "exit_code": 0
+        },
+        {
+          "path": "/private/tmp/madb-chief-round5/l05-page-lifecycle-002/commands/015-assemble-release-hap.json",
+          "sha256": "1880513e0febfc4125d0c55d1a7d0b18f67d12e87113d5de8f9da4730a8311e3",
+          "exit_code": 255
+        }
+      ]
+    }
+  ]
+}

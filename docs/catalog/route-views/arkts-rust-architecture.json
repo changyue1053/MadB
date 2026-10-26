@@ -184,7 +184,8 @@
       "choices": [
         "适合 Rust 直接提供 ArkTS SDK，避免无需求的 Kotlin 中转。",
         "Node-API 是调用机制，类型化值、JSON、字节是独立载荷决策。",
-        "ANI 是独立实验运行时；不从本 profile 的结果推导 ANI 支持。"
+        "ANI 是独立实验运行时；不从本 profile 的结果推导 ANI 支持。",
+        "ADR-0016 的必要责任按声明和 profile 适用；L05 可选消费层复用普通 API，选定配置仍须完整交付。"
       ],
       "detail": {
         "family": "napi",
@@ -1122,7 +1123,9 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -1311,7 +1314,8 @@
       "choices": [
         "适合已有 UniFFI Rust API，希望评估复用到 ArkTS 的场景。",
         "这是 X07 实验候选，不将 beta 生成能力包装成正式 SDK 承诺。",
-        "若依赖异线程同步 callback 或其他未支持类型，应先保留缺口并重新设计显式接口。"
+        "若依赖异线程同步 callback 或其他未支持类型，应先保留缺口并重新设计显式接口。",
+        "ADR-0017 已授权按前提推进 P13；正式 X07 验收保留 C11 前置，不反向阻断主线。"
       ],
       "detail": {
         "family": "napi",
@@ -2285,7 +2289,9 @@
       "spec_refs": [
         "architecture/06-backend-profiles.md",
         "architecture/05-lifecycle-and-concurrency.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "build_steps": [
         {
@@ -2335,6 +2341,14 @@
     {
       "label": "OpenHarmony Node-API 稳定性",
       "url": "https://github.com/openharmony/docs/blob/master/zh-cn/application-dev/napi/napi-faq-about-stability.md"
+    },
+    {
+      "label": "ArkTS 生产能力与交付基线",
+      "path": "adr/0016-arkts-production-baseline.md"
+    },
+    {
+      "label": "ArkTS 扩展选择与完整交付",
+      "path": "adr/0017-arkts-extension-delivery.md"
     }
   ],
   "view_schema": "madb.route-detail-view/3"

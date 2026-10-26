@@ -34,10 +34,21 @@
 | AGP 9 Android/KMP | 02、03、04、11、12 | shared 使用新 KMP 插件，app 独立；预构建 `.so` 以受管 `jniLibs` 接入，需 `externalNativeBuild`/多 variant 时使用独立 Android library；host/device tests 显式启用并真实执行 |
 | Android SDK 发布消费 | 01、03、04、09、11 | 新消费者仅声明 AAR/SDK 依赖就带齐 native 库与规则；源码变更会重建，不依赖 app 临时补库或旧缓存 |
 | 官方 Kotlin/CPF 双根 | 01、04、09、12 | 独立 Wrapper、输出、缓存和 Maven GAV；正确变体可消费，错坐标不悄悄选中另一条线；正式 SDK 和 Konan sysroot 分开 |
-| SKIE 二进制 SDK | 01、02、03、09 | 发布模板显式配置可分发 framework，异机真实调用 API；custom cinterop 不可用占位不能伪装成初始化成功 |
+| Swift SDK 作者/源码共同构建 | 02、03、04、09、11 | CLI 与 IDE 调用同一受检子任务，自动更新 Swift 包装与 native 制品；完整输入变化触发重建，新文件被索引，不递归构建调用方应用 |
+| Swift 混合 SDK 独立消费 | 01、02、03、05、06、09、10、12 | 普通 SwiftPM 依赖安装源码包装与 native XCFramework，资源和 native 依赖齐全；无需 MadB 或作者侧编译插件；适用 SKIE 分发设置、异机 API 调用及符号验证，unavailable 占位不算可用 |
 | Swift C++ | 02、03、04、06、12 | direct-source 与 C/ObjC++ SDK 包装分开；构建系统、interop 依赖传播和方向符合声明；SwiftPM 的反向直接消费请求被阻断或显式改选受支持配方 |
+| ArkTS SDK 作者/源码共同构建 | 02、03、04、06、09、11 | DevEco 与 CLI 使用同一 Hvigor/插件及 SDK 配置；改导出、实现、Native 输入后重新生成并构建，错误定位到来源；HarmonyOS/OpenHarmony 与作者侧编译 sysroot 分别核验 |
+| ArkTS HAR 独立消费 | 01、02、03、05、06、09、10、12 | 从冻结候选的公开入口安装 HAR，声明、资源、Native 依赖与适用消费者混淆规则完整；预编译 Native 配方无需 MadB/Cargo/Gradle；验证实际 HAP、Release 混淆、目标 ABI/最低系统及调试承诺 |
 
 IDE 版本、宿主 OS 和候选工具的具体值引用[技术栈选型](../architecture/16-technology-stack-and-versions.md)。每个实例仍为待实现/待执行，不因模板文本存在而获得通过状态。
+
+Swift 配方覆盖所有声明支持的产品/target、最低系统、设备或模拟器与 Debug/Release 组合，生产/消费工具链、语言模式及 tools-version 分别记录。安装与编译通过不代替目标运行；调试仅按 INIT-05 的公开承诺要求。对普通预生成 SDK 的消费场景，缺少 MadB、Cargo、Gradle、XcodeGen 或 fastlane 不应阻断安装；作者构建和显式选择宏的前提另验。分发边界以[发布规范](../architecture/09-build-packaging-release.md)为准。
+
+Swift 扩展沿用 INIT-06/09/12：分别消费基础产品、每个承诺扩展及允许组合，核对实际 package 解析/下载、宿主工具调用和最终链接依赖。高最低系统的 UI 配置或未选择的 Rx/宏依赖不能破坏基础产品的公开承诺；缺少宏宿主工具、目标不支持及桥接配置冲突应准确拒绝。分 product 的清单检查不能替代这些消费实验。
+
+ArkTS 配方依 [ADR-0016](../adr/0016-arkts-production-baseline.md)和 [ADR-0017](../adr/0017-arkts-extension-delivery.md)分别验证普通入口、已承诺增强及允许组合。源码 HAR 的 ArkTS 包装与预编译 Native 可以同时交付；字节码 HAR、HSP 和完整源码构建各有独立前提。检查最终包的 OHPM metadata、公开声明及资源；自行引入 libs 中的 `.so` 按工具规则维护 nativeComponents，需要传递保留名称时配置 consumerFiles，不能只验证作者侧混淆。包内许可文件与 metadata 的 license 字段分别检查。
+
+INIT-01/09/12 从实际声明的 GitHub Release、OHPM 或离线 HAR 入口重新下载消费；双渠道的版本、来源与候选摘要一致。GitHub 源码公开、Release 资产存在或 ohpm prepublish 成功不等于 OHPM 已发布、普通消费者可用。SDK 分发与宿主 HAP/APP 的签名分开，生产签名材料不进入 SDK。CI、模拟器和真机结果按实际环境记录，不把主机构建或模拟器结果提升为真机认证。
 
 ## 4 场景执行方式
 
@@ -55,6 +66,20 @@ IDE 版本、宿主 OS 和候选工具的具体值引用[技术栈选型](../arc
 S1 至 S4 各平台模板至少完成 INIT-01、02、03、04、06、07、08、09、10、11、12 的适用场景；对宣传支持调试的语言，INIT-05 同为必需。库模板的 Run 使用消费程序，应用模板使用实际应用界面。
 
 初始支持可限定精确 IDE、宿主和目标组合，但必须公开限制。`structure` 模式是有效用途，不构成该模板“可运行”认证。S5 发布时所有推荐模板必须有覆盖其公开承诺的有效证据；不能把原生工程可用性延后到可选 IDE 向导阶段。
+
+## 已有工程与增量成本实例
+
+沿用 INIT 编号验证已支持的已有工程配方，不能只测全新示例：
+
+- INIT-07/08/09：展示接入或升级计划，保留用户业务和构建文件；基准变化准确冲突，失败保留原锁与有效批次，恢复后可重试。
+- INIT-04/11：修改实现、增加/重命名/删除导出声明，正常 IDE 构建更新全部所需输出；不手动改生成文件或工程源码列表。
+- Swift 的 INIT-04/09/11：分别改变源文件集合、包清单/根解析锁、native 头与 module map、资源、编译条件和所选工具链；按[增量输入规则](../architecture/14-project-initialization.md#并发构建与更新边界)验证失效与复用。CLI/IDE 使用同一解析配置，依赖库的 Package.resolved 不覆盖消费者根锁；frozen 或离线缺项准确失败。
+- INIT-08/12：禁用可选项后基础配置可消费，仅移除归属明确且不再使用的受管依赖和输出，不删除共享资产。
+- Swift 扩展的 INIT-07/08/09/12：从已验证组合升级或禁用后，保留共享 native 制品和用户文件，重新消费声明的基础配置；不得残留旧宏展开、NativeCoroutines 生成接口或 Rx 链接依赖。失败保留旧锁和完整候选，回退后仍验证实际包安装。
+- ArkTS 的 INIT-04/07/08/09/11/12：改变公开声明、ABI 对应 Native 制品、资源和依赖后核对增量失效；升级失败保留旧锁与完整候选，禁用 UI/便利层后普通 HAR 仍可消费。GUI/CLI 不依赖作者绝对路径或全局缓存，特殊交付按其独立配方重验。
+- INIT-11 与 P09：记录冷构建、无改动重建、实现变化、公开声明变化的工具启动次数、阶段耗时及缓存原因；验证 GUI/CLI 使用同一依赖规则。没有性能基线前不承诺加速比例。
+
+测试工程的更新前后状态由 Lab 保存；项目接入/升级流程不是旧研究项目迁移，也不允许以重复 init 覆盖目录。
 
 ## 6 新用户实验
 

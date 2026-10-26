@@ -25,7 +25,7 @@ EXISTING_ROUTE_VIEWS = (
          route_ids=['KN-SWIFT-OBJC'], extension_task_ids=['X01', 'X02'], profiles=[]),
     dict(slug='kotlin-arkts-architecture', title='Kotlin/Native ↔ ArkTS',
          summary='CPF + akinterop 主线、KNOI 独立扩展、载荷和环境生命周期。',
-         route_ids=['KN-ARKTS-NAPI'], extension_task_ids=[], profiles=[]),
+         route_ids=['KN-ARKTS-NAPI'], extension_task_ids=['X08', 'X03'], profiles=[]),
 )
 
 def read_json(name: str):

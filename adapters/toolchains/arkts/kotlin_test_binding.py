@@ -29,6 +29,7 @@ def derive_boundary(boundary):
         "  testKey(): string { return this.session.testKey(); }\n  roundtrip(value: Snapshot): Snapshot { return this.session.roundtrip(this.record, value); }",
     )
     s = controls_boundary(s)
+    s = receipt_boundary(s)
     s += """
 // Test profile only. These are public HAR exports with checked wrapper brands.
 function checkedRuntime(value: Runtime): RuntimeHandle {
@@ -136,6 +137,7 @@ export function testSubscriptionState(subscription: Subscription): number[] { re
 export function testSubscriptionHandle(subscription: Subscription, probeCase: number): void { nativeCall(() => native.testHandle(checkedSubscription(subscription).testResource(), 2, probeCase)); }
 export function testSettleProbe(runtime: Runtime, action: () => void, throwAfter: boolean): void { checkedRuntime(runtime).testSettleProbe(action, throwAfter); }
 export function testSettleInspect(runtime: Runtime): number[] { return checkedRuntime(runtime).testSettleInspect(); }
+export function testBeforeRuntimeReceipt(runtime: Runtime, probe: () => void): void { checkedRuntime(runtime).testBeforeRuntimeReceipt(probe); }
 """
 
 CONTROL_PORT = """  testInspect(runtime: string): string { return this.current().ownedTestInspect(runtime); }
@@ -247,3 +249,56 @@ def controls_boundary(source):
         "  private fail(reason: Error): void {\n    this.clearSettler();",
     )
     return s
+
+
+def receipt_boundary(source):
+    """Insert the approved synchronous test cutpoint; no native gate or receipt."""
+    s = replace_once(source, "class Session {\n", "class Session {\n" + RECEIPT_MEMBERS)
+    s = replace_once(
+        s,
+        "        const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);",
+        "        if (!this.testBeforeReceipt()) { return; }\n        const receipt: number[] = native.consumeRuntimeReceipt(this.runtime);",
+    )
+    s = replace_once(
+        s, "    this.failed = reason;",
+        "    this.failed = reason;\n    this.testReceiptProbe = undefined;",
+    )
+    return replace_once(
+        s, "class RuntimeHandle implements Runtime {\n",
+        "class RuntimeHandle implements Runtime {\n  testBeforeRuntimeReceipt(probe: () => void): void { this.session.testBeforeRuntimeReceipt(probe); }\n",
+    )
+
+
+RECEIPT_MEMBERS = """  private testReceiptProbe: (() => void) | undefined = undefined;
+
+  testBeforeRuntimeReceipt(probe: () => void): void {
+    this.requireOpen();
+    if (this.testReceiptProbe !== undefined || typeof probe !== 'function') {
+      throw new BoundaryError('InvalidArgument');
+    }
+    this.testReceiptProbe = probe;
+  }
+  private testBeforeReceipt(): boolean {
+    const probe: (() => void) | undefined = this.testReceiptProbe;
+    // Retire the reference before external code runs. The original tick still
+    // owns the close control; no receipt or new admission has been granted.
+    this.testReceiptProbe = undefined;
+    try {
+      if (probe !== undefined && probe() !== undefined) {
+        // Void assignability does not exclude Promise/thenable returns. Never
+        // await, inspect or invoke a returned object.
+        throw new BoundaryError('InvalidArgument');
+      }
+      return true;
+    } catch (error) {
+      // User failures must not enter nativeError(), which reads native codes.
+      // In particular, undefined cannot occupy the ordinary failed sentinel.
+      let reason: Error = new BoundaryError('CallbackFailure');
+      try { if (error instanceof Error) { reason = error as Error; } }
+      catch (_classificationError) { reason = new BoundaryError('CallbackFailure'); }
+      this.fail(reason);
+      this.rejectClose();
+      return false;
+    }
+  }
+"""

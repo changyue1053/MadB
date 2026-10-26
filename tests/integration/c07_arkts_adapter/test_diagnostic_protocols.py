@@ -179,8 +179,12 @@ class KotlinTestPolicy(unittest.TestCase):
     def test_complete_explicit_managed_test_shape(self):
         self.assertNotIn("gateway_surface", self.policy)
         self.assertNotIn("c_seam_surface", self.policy)
-        self.assertEqual(len(self.policy["public_surface"]["functions"]), 30)
-        self.assertEqual(len(self.lower()[0]["symbols"]), 49)
+        self.assertEqual(len(self.policy["public_surface"]["functions"]), 31)
+        self.assertEqual(len(self.lower()[0]["symbols"]), 50)
+        receipt = self.policy["calls"]["testBeforeRuntimeReceipt"]["slots"]["parameter.probe"]
+        self.assertEqual(receipt["context_owner"], "caller")
+        self.assertTrue(receipt["synchronous_callback"])
+        self.assertEqual(receipt["keep_alive"], "source-lease")
         self.assertEqual(
             self.policy["calls"]["testSettleProbe"]["slots"]["parameter.action"][
                 "context_owner"

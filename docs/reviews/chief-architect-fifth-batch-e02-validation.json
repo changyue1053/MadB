@@ -1,0 +1,195 @@
+{
+  "task": "E02 fixture cancellation diagnostic masking investigation and narrow fix",
+  "root": "/private/tmp/madb-chief-round5/madb",
+  "final_files": {
+    "crates/madb-cli/examples/extension_session_probe/session.rs": "6be2eb7a195eeb57d0f422ca29e5e25102dadd91e25b421f756f39716705668a",
+    "tests/integration/e02_session/test_session.py": "29968c273797692db7798a8ee5226de631c3f8c83b7940c2f4998c0da14592d0"
+  },
+  "preserved_original": {
+    "path": "/private/tmp/madb-chief-round5/e02-investigation/original-inventory.json",
+    "sha256": "3ed8c17c67114e5376b125e01ea70c2e1c64f5a9c63a87d27955587606693e45"
+  },
+  "original_failure": {
+    "report": {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/02-cancel-ok.json",
+      "sha256": "8a250103c6d0d2bc7b71d1390cb675a35aa5e6fa30189ca252dbe567d9d6c98b"
+    },
+    "full_gate": {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/product-full-check-original.log",
+      "sha256": "a63d245526c00d14781ac3dfe10788b4dfb29c925066a1dc83bd592a291465c9"
+    },
+    "observation": "Only readiness-marker-missing was returned; no output or readiness file existed in preserved case tree. The old probe discarded the real execute_process_validated Result."
+  },
+  "established_cause": "The fixture joined its polling watcher and used ? on watcher failure after execute_process_validated had returned, replacing the execution result and waiting for the full 20-second deadline even when execution had already ended. This is the proven evidence-loss cause, not proof of the original peer failure cause.",
+  "unknown_original_cause": "The discarded original ProcessReport cannot be reconstructed. No assertion is made that the original spawn/handshake/peer failure cause has been located.",
+  "controlled_regression": {
+    "peer": "exit-before-ready-peer (controlled stderr and exit 23, no marker)",
+    "before": {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/controlled-before-fix.json",
+      "sha256": "3b7056d871be9a9c30b13acc0349adb1c27cc830c9590b486009bc9a249e615f"
+    },
+    "before_elapsed_seconds": 24.050185124971904,
+    "before_stdout": "{\"admitted\":false,\"error\":\"readiness marker missing\"}\n",
+    "after": {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/controlled-after-fix.json",
+      "sha256": "ed4b2ab83420d23de26dd4f4da6475e1b4bffa5364b0d5fc0ad4fb1cb33b90cc"
+    },
+    "after_elapsed_seconds": 3.208416583016515,
+    "after_admission": "Unavailable",
+    "after_diagnostic": {
+      "code": "ToolFailed",
+      "message": "helper exited before a terminal result",
+      "stage": "extension-session"
+    },
+    "after_cleanup": {
+      "complete": true,
+      "group_kill_attempted": true,
+      "leader_reaped": true,
+      "signal_failed": false,
+      "stderr_eof": true,
+      "stdout_eof": true
+    }
+  },
+  "fix": [
+    "completion notification wakes only the fixture watcher; existing cancellation and timeout budgets unchanged",
+    "watcher status and harness failure kept separate from real execution admission/diagnostics/stdout/stderr/cleanup",
+    "missing marker or watcher failure never transfers a value downstream, while execution_admitted records any original accepted observation",
+    "Python cancellation/cleanup assertions remain; watcher readiness and cancellation decision also asserted",
+    "Python rejected helper reports the full original outer error JSON before attempting other fields"
+  ],
+  "checks": [
+    {
+      "command": "cargo build --locked --offline -p madb-cli --example extension_session_probe --example extension_chain_probe",
+      "exit": 0,
+      "evidence": "observed tool output Finished dev profile in 1.26s; no new peer build required"
+    },
+    {
+      "command": "rustfmt --check --edition 2024 crates/madb-cli/examples/extension_session_probe/session.rs",
+      "exit": 0
+    },
+    {
+      "command": "cargo clippy --locked --offline -p madb-cli --example extension_session_probe --example extension_chain_probe -- -D warnings",
+      "exit": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/e02-investigation/clippy-after-fix.log",
+        "sha256": "b70f63ac4b5de03d7d5a541f8a67729ff1a73bb17f4401184bb1d9746673ff2b"
+      }
+    },
+    {
+      "command": "Python unittest TextTestRunner loaded full ExtensionSessions class",
+      "tests": 12,
+      "exit": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/e02-investigation/suite-after-fix.log",
+        "sha256": "3ace4e73e711ea600ec81078e23200f95806bd470069bfe844577689a7ecd0a3"
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round5/e02-investigation/suite-after-fix.json",
+        "sha256": "2a1543390e6caf360ee9e68befffccc794a46fe6099be1631c3f67b0db8ac32a"
+      },
+      "session_sha256": "6be2eb7a195eeb57d0f422ca29e5e25102dadd91e25b421f756f39716705668a",
+      "python_sha256": "9cb0d6a952d84086f04058587dc49c1ddc497b3d2fb6aef24d2588bac35dd55d",
+      "note": "Full suite loaded immediately before final diagnostic-only assertNotIn(error) addition; that exact test source is preserved as test-session-suite-version.py."
+    },
+    {
+      "command": "Final Python cancellation + peer_exit_before_marker tests, then controlled wrong-recipe rejection guard",
+      "tests": 2,
+      "exit": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round5/e02-investigation/final-python-focused.log",
+        "sha256": "b066286af040f0854e4ccac7ee60b668cea62d72f7914b197ecbba7c6164b7d5"
+      },
+      "result": {
+        "path": "/private/tmp/madb-chief-round5/e02-investigation/final-python-focused.json",
+        "sha256": "bab358ea37d61da3315d77514e2245595d307886fc37a8e42459b6fd4389d554"
+      },
+      "python_sha256": "29968c273797692db7798a8ee5226de631c3f8c83b7940c2f4998c0da14592d0"
+    }
+  ],
+  "original_mode_rechecks": [
+    {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/cancel-ok-diagnostic-001.json",
+      "sha256": "def4e66ea4c4e09e5331365cdb35e566d5eee8b92d3cc129d296ee90e58ab788"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/cancel-ok-diagnostic-002.json",
+      "sha256": "1e6ca3c9c0e9feef33e567081cc57032a607d027714d05de7a8776ad910e64cd"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round5/e02-investigation/cancel-ok-diagnostic-003.json",
+      "sha256": "a3a6d689f92004c850aac24310775b1180452bfe0ab966df76c3df6c230ffd04"
+    }
+  ],
+  "original_mode_recheck_conclusion": "Three instrumented cancel-ok runs had marker-observed/Requested, RejectedByCancellation and complete cleanup; this does not establish the unrecorded original failure cause.",
+  "archived_json_reports": {
+    "full-suite": {
+      "validated-results/full-suite/32-wrong-request.json": "1651899b4923dff5305bf4cd052ef07825467b31e7ff59909f8358000c5033fc",
+      "validated-results/full-suite/06-crash-before-ack.json": "8618f9fe228147d62a2dff0656ad5b49e73e21c60737fc5cfb6da95450c867c1",
+      "validated-results/full-suite/35-tool-error.json": "6d95a0881a2e5bbe8983f90f0e8b7076cd23336f5c028d4c0503b8d27bedfe03",
+      "validated-results/full-suite/chain-second-cancel.json": "927e0396af1f19942de586efa6462166f91f0e8b13040ec66833f6515457155b",
+      "validated-results/full-suite/26-undeclared.json": "cdc5ba7ea7d6c996747d772f4b40a7666804d23be7b9d329df147d06144452f5",
+      "validated-results/full-suite/07-crash.json": "731131f4ada9317ca93c6d98fe94327cc2d389d1a8b8ee3514a9c8a83d176692",
+      "validated-results/full-suite/21-duplicate-key.json": "08491cf88bad3fef641e2f02cb1a88168195b1ab6af5312a473e1fb3e27a06d7",
+      "validated-results/full-suite/23-wrong-payload.json": "f5714cf0587cff8dc137cbaaf66ded73254aa04f6057720fc95bd298ccae5895",
+      "validated-results/full-suite/28-late-create.json": "75abf530076bcd84fb4c968c0f6496c3a2a305c4a28ba4c004bfb864de4b196f",
+      "validated-results/full-suite/10-handshake-timeout.json": "4be3fe6cccd77d335f29a7b39a0e2af0e9935b2df7b4d92ad36c12d743875763",
+      "validated-results/full-suite/chain-second-failed.json": "cf819a47ce86ee1827db05c524beb52d0f878ef72aa11708d097f9cf177830e1",
+      "validated-results/full-suite/02-cancel-ok.json": "e99c3cbedf252fcec5a779e81a3a3d80cfc9cfa0cb6121cab365ed0c58f61771",
+      "validated-results/full-suite/11-timeout.json": "404ea1317ecd2f153af80205b44b2a259691417c0cd78cb6848032b80ffe55a8",
+      "validated-results/full-suite/14-wrong-session.json": "073c9533828fc2eb09e1af2f2bc3cfa4d347689fcc8b36239fb26ca12b20c6d5",
+      "validated-results/full-suite/27-late-write.json": "d97df0d70d173024c02ac30be6ea09b5cdfc1dd01c5c31f223c9ee92a31ac611",
+      "validated-results/full-suite/24-wrong-digest.json": "11c2b4116318339fe826ad576a59c9b33313fb339627e7998d1cfeabe6f4f073",
+      "validated-results/full-suite/33-wrong-result-version.json": "f0961df3c16aca61c4d3493dec47e7d46b452f02ac423cbeb68699e466ecb3d3",
+      "validated-results/full-suite/03-ignore-cancel.json": "747b1ae5875542bb6b3f7af8a6b3b672bab1bf2b2683a08373d1c67f2c8be2c6",
+      "validated-results/full-suite/01-cancel.json": "871f93594ef03b061514fd176e5511811c0d996d5e4663fd95033563583edc70",
+      "validated-results/full-suite/16-extra-feature.json": "c18c90d48b8cc8a93fbe5198f24795fc4127b82f3c564d61e5fd0f98b1b8547f",
+      "validated-results/full-suite/chain-ok.json": "67f8cd26557399e04ace5095bfeb10e342b4b7219bd37d6f1c24ef8f588a5844",
+      "validated-results/full-suite/05-cancel-validation.json": "370270857a45066160cedf155cb66fb37ba7c7b353b21a396d53db8e5195a3a3",
+      "validated-results/full-suite/09-eof.json": "14fa67a9aae86fcb4f9312f4a14706f0d735ec2ecf373fc79c58951094593d8f",
+      "validated-results/full-suite/29-business-failed.json": "d52b9a6ebf250a527516703b3616b6133c979a6f08e406f6edf0769bad34ca1a",
+      "validated-results/full-suite/chain-first-failed.json": "0ffe013922517303034875bbced5ae3984491b9a12e8ec7d789474d1819cd60f",
+      "validated-results/full-suite/chain-upstream-mutated.json": "67f8cd26557399e04ace5095bfeb10e342b4b7219bd37d6f1c24ef8f588a5844",
+      "validated-results/full-suite/15-wrong-version.json": "d678f2b3b40a6c8eb97a62d2c4a0976b900b5c2860e63c4a63635e23915eb7f4",
+      "validated-results/full-suite/38-slow-observer-global.json": "cc167e0683e5190b3a90130f32fcba4dd9b180bc95cc70cc1bc75fcb175a7fab",
+      "validated-results/full-suite/13-wrong-identity.json": "9b7214cb591524860d1ff57ed9a3b033f2539158ff24685c15c82c1f9213521b",
+      "validated-results/full-suite/31-ok.json": "4f1b7db9771ce5e9023a8c93df50edecf58a4f0c342b3b6ffdb92800aa67c361",
+      "validated-results/full-suite/25-outside-output.json": "4c2476c67d23bc2e7a8c2d2a5fc3508fea75265d16ff360f61fa5bddeccffbbe",
+      "validated-results/full-suite/19-utf8.json": "77f8730888446aa033af179813a816c14856219e68917e248a34bd19ae83c9db",
+      "validated-results/full-suite/30-cancel-ok.json": "ebfeec6a38eea866d53bf4b258942d3982e26c136fe989d8213d501ca3d86ff4",
+      "validated-results/full-suite/08-crash-after-result.json": "270a89fea9857021a01f535ca4aff0b0709f13252b4590b5aa597a1741ddd44c",
+      "validated-results/full-suite/34-duplicate-result.json": "09c546c2f560cba581140598a4b210b1745928fcaf1542ae73bcdcf8d22fa889",
+      "validated-results/full-suite/17-wrong-recipe.json": "c60485bd03d5d5821fa66ff3c3a46d97ebab3a169562cca80cf080cd8fc7d979",
+      "validated-results/full-suite/04-cancel-before-ack.json": "f05ce2b0414ed16db98c92dbe071fc7cbd3f947238c4b9d5809573c000f34560",
+      "validated-results/full-suite/22-early-result.json": "800e070275789046adcfa5ea24f88e32014afe42dce686ea8a0a8c1d9067f3ae",
+      "validated-results/full-suite/12-no-exit.json": "8851f2718ad257cd07eff93c112efe2d7f80cbc930f73e33563b332d57f44319",
+      "validated-results/full-suite/20-oversize.json": "e573f2b2213954abf24996f89417abf39660540d466aa466c4af33eda9cff3a1",
+      "validated-results/full-suite/chain-second-late-write.json": "ac916739ad9b22ea0c21c290daa193ca2e5ea5be718fb88da802e68425ab95b0",
+      "validated-results/full-suite/18-noise.json": "8fb79df7cf571e270d6a13201cf369bef7d955be743c88d35d70b5b159ee9902",
+      "validated-results/full-suite/37-slow-observer-phase.json": "385869e11d6f255aef2155f8f9596758cf465a0eaa3a168d0e5b2e2ac59fb215",
+      "validated-results/full-suite/36-descendant.json": "92783e046936f658d3e4e8a758958f3abdebf1a7d245efb375460dd24e54e330",
+      "validated-results/full-suite/chain-cancel-commit.json": "a02aa45e2a6a638f85c3df4f2d1d79f9d8de65e1a00ed18a912dab215ec975c1"
+    },
+    "focused": {
+      "validated-results/focused/06-cancel-ok.json": "ebfeec6a38eea866d53bf4b258942d3982e26c136fe989d8213d501ca3d86ff4",
+      "validated-results/focused/02-cancel-ok.json": "e99c3cbedf252fcec5a779e81a3a3d80cfc9cfa0cb6121cab365ed0c58f61771",
+      "validated-results/focused/07-wrong-recipe.json": "c60485bd03d5d5821fa66ff3c3a46d97ebab3a169562cca80cf080cd8fc7d979",
+      "validated-results/focused/03-ignore-cancel.json": "747b1ae5875542bb6b3f7af8a6b3b672bab1bf2b2683a08373d1c67f2c8be2c6",
+      "validated-results/focused/01-cancel.json": "871f93594ef03b061514fd176e5511811c0d996d5e4663fd95033563583edc70",
+      "validated-results/focused/05-cancel-validation.json": "370270857a45066160cedf155cb66fb37ba7c7b353b21a396d53db8e5195a3a3",
+      "validated-results/focused/04-cancel-before-ack.json": "f05ce2b0414ed16db98c92dbe071fc7cbd3f947238c4b9d5809573c000f34560"
+    }
+  },
+  "environment": {
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+  },
+  "not_changed": [
+    "host execution or protocol state machine",
+    "native or SDK lifecycle",
+    "peer implementation",
+    "cancel admission and cleanup assertions",
+    "device, CI, catalog or publication state"
+  ],
+  "independent_review": "ie_foundation assigned; pending at evidence creation",
+  "full_gate": "root owns final frozen full-gate rerun; no claim here that it has passed"
+}

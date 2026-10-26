@@ -112,6 +112,14 @@
         "action": "int32 enum0snapshot1arm2release"
       },
       "returns": "exactly21 uint64decimal CSV fields per thread-frame.json, max440bytes; identities remainstrings, pairwise comparisons7/8/9 UINT64_MAX when not simultaneouslylive"
+    },
+    "testBeforeRuntimeReceipt": {
+      "parameters": {
+        "runtime": "branded Runtime in open Session; one registration before normal close",
+        "probe": "required synchronous noargument voidcallback; one-shot after physical ACK and before receipt consumption; any nonundefined return rejects with InvalidArgument"
+      },
+      "returns": "void; wrong wrapper/nonfunction/duplicate InvalidArgument; Closing during close, Closed after close; failure keeps original reason",
+      "lifetime": "callback slot cleared before call and on Session failure; no native gate, waiter or owner; thrown callback/invalid return rejects close with receipt unconsumed User Error identity is preserved without property inspection; non-Error throws or Error-classification traps normalize to existing CallbackFailure, rejecting the original close with no restarted timer."
     }
   },
   "work_update": "testArmWork phase1beforecompute/2terminalbeforeworkexit; testReleaseWork releases both controls",

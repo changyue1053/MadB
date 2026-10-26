@@ -1,0 +1,770 @@
+{
+  "vectors": [
+    {
+      "id": "composition.valid",
+      "kind": "composition",
+      "file": "composition.json",
+      "expected": "valid"
+    },
+    {
+      "id": "profile-v2.valid",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "expected": "valid"
+    },
+    {
+      "id": "composition.wrong-version",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.composition/99"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "composition.unknown-top-field",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.wrong-version",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/schema",
+          "value": "madb.profile/99"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "profile-v2.unknown-top-field",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v1.rejects-v2",
+      "kind": "profile",
+      "file": "profile-v2.json",
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "profile-v2.rejects-v1",
+      "kind": "profile-v2",
+      "file": "profile.json",
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "profile-v2.missing-composition",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/composition"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.missing-required_features",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/required_features"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.missing-composition-feature",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/required_features",
+          "value": [
+            "core.values@1"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.invalid--composition-file-schema",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/composition/file/schema",
+          "value": "madb.composition/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.invalid--composition-unknown",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/composition/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.invalid--composition-file-unknown",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/composition/file/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "profile-v2.invalid--composition-semantic_digest",
+      "kind": "profile-v2",
+      "file": "profile-v2.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/composition/semantic_digest",
+          "value": "sha256:bad"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--components",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/components",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--responsibilities",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--recipe",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/recipe",
+          "value": ""
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--selection-direction",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/selection/direction",
+          "value": "provider-to-host-callback"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--selection-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/selection/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-id",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/id",
+          "value": "unnamespaced"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-version",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/version",
+          "value": "latest"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-manifest-schema",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/manifest/schema",
+          "value": "madb.profile/1"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-source-kind",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/source/kind",
+          "value": "remote-archive"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-source-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/source/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--packages-0-source-files-0-path",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/source/files/0/path",
+          "value": "../extension.json"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--components-0-id",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/components/0/id",
+          "value": "generator"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--components-0-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/components/0/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-0-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-0-source-sha256",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/source/sha256",
+          "value": "sha256:5bffcfe6a19a03f7206f3fe8e337d4d4767438c6bc7ac3b9255e31c5ad68a969"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-0-source-generation_id",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/source/generation_id",
+          "value": "sha256:5bffcfe6a19a03f7206f3fe8e337d4d4767438c6bc7ac3b9255e31c5ad68a969"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-0-source-output_set",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/source/output_set",
+          "value": {
+            "path": "extension.json",
+            "sha256": "sha256:35c53b7986dfb2897e7e2e9cdf56c69a49d2c1bcccaea7c310d60b11b59c9397",
+            "size": 16
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-0-source-producer",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/source/producer",
+          "value": "generator"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-0-source-paths",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/source/paths",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-1-source-producer",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/1/source/producer",
+          "value": "fixture.arkts/generator"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--assets-1-source-files-0-size",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/1/source/files/0/size",
+          "value": -1
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--dependencies-0-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/dependencies/0/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--dependencies-0-scope",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/dependencies/0/scope",
+          "value": "unknown"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--responsibilities-0-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--responsibilities-0-stage",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/stage",
+          "value": "unknown"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--responsibilities-0-subject-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/subject/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--responsibilities-0-scope-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/scope/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.invalid--responsibilities-0-owner-unknown",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/owner/unknown",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.component-owner",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/owner",
+          "value": {
+            "kind": "component",
+            "id": "fixture.arkts/generator"
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "composition.sdk-export-subject",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/subject",
+          "value": {
+            "kind": "sdk-export",
+            "asset": "facade",
+            "name": "Facade.call"
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "composition.output-subject",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities/0/subject",
+          "value": {
+            "kind": "output",
+            "path": "libfixture.so"
+          }
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "composition.duplicate-source-file",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/packages/0/source/files",
+          "value": [
+            {
+              "path": "extension.json",
+              "sha256": "sha256:35c53b7986dfb2897e7e2e9cdf56c69a49d2c1bcccaea7c310d60b11b59c9397",
+              "size": 16
+            },
+            {
+              "path": "extension.json",
+              "sha256": "sha256:35c53b7986dfb2897e7e2e9cdf56c69a49d2c1bcccaea7c310d60b11b59c9397",
+              "size": 16
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.generated-duplicate-path",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/assets/0/source/paths",
+          "value": [
+            "generated/Boundary.ets",
+            "generated/Boundary.ets"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "composition.duplicate-responsibility",
+      "kind": "composition",
+      "file": "composition.json",
+      "patch": [
+        {
+          "op": "set",
+          "path": "/responsibilities",
+          "value": [
+            {
+              "boundary": "fixture-boundary",
+              "subject": {
+                "kind": "public-symbol",
+                "public_id": "fixture.call.v1"
+              },
+              "stage": "projection",
+              "scope": {
+                "kind": "call",
+                "anchor": {
+                  "kind": "public-symbol",
+                  "public_id": "fixture.call.v1"
+                },
+                "layer": "facade"
+              },
+              "owner": {
+                "kind": "sdk-asset",
+                "package": "fixture.arkts",
+                "asset": "facade"
+              }
+            },
+            {
+              "boundary": "fixture-boundary",
+              "subject": {
+                "kind": "public-symbol",
+                "public_id": "fixture.call.v1"
+              },
+              "stage": "projection",
+              "scope": {
+                "kind": "call",
+                "anchor": {
+                  "kind": "public-symbol",
+                  "public_id": "fixture.call.v1"
+                },
+                "layer": "facade"
+              },
+              "owner": {
+                "kind": "sdk-asset",
+                "package": "fixture.arkts",
+                "asset": "facade"
+              }
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    }
+  ]
+}

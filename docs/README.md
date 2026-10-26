@@ -2,7 +2,7 @@
 
 设计基线 0.9 · 更新于 2026-10-25。MadB 为 Kotlin、Swift、ArkTS、Rust、C/C++ 提供跨端 SDK 的契约检查、代码生成、工程接入及制品验证；MadB-Lab 独立验证公开候选和开发者使用流程。
 
-C01–C05 已按各工作包范围验收，覆盖工程与契约基线、受控构建执行及 Rust ↔ C 首链；结果见[C05 记录](reviews/2026-10-24-c05-rust-c-first-route.md)和[审查索引](reviews/README.md)。C06 的固定 SampleEngine 四个 macOS Arm64 Release 配置已完成本机正式构建、54 个必需案例和 92 项 Lab harness 检查；已按完整本地验证验收收口；GitHub Actions 留作项目完成后的独立专项，不阻塞本包验收。具体身份与结果见[C06 记录](reviews/2026-10-24-c06-kotlin-swift-rust.md)，当前任务状态以[实施目录](catalog/implementation-plan.json)为准。
+C01–C05 已按各工作包范围验收，覆盖工程与契约基线、受控构建执行及 Rust ↔ C 首链。C06 四个固定 SampleEngine 配置已完成完整本地验证并验收收口，GitHub Actions 留作后续独立专项。当前任务状态只以[实施目录](catalog/implementation-plan.json)为准；具体候选、目标和检查结果见[审查索引](reviews/README.md)，不从样例通过推导任意业务或平台可用。
 
 C07 四路线已在既定的 8 个候选配置内完成本地验证并验收收口：120 个必需组、195 次实际 HAP 运行、16 个生成正反例均经独立复验。GitHub Actions 作为项目完成后的独立专项补跑，不阻塞本包验收；适用目标、配置与观察限制见[C07 记录](reviews/2026-10-25-c07-arkts.md)，不据此推导其他配置或公开发布已获验收。
 
@@ -16,13 +16,19 @@ C07 四路线已在既定的 8 个候选配置内完成本地验证并验收收�
 | 建立工程与确认源码归属 | [MadB 最终骨架](architecture/02-modules-and-ports.md) · [MadB-Lab 骨架](validation/02-lab-architecture.md) |
 | 查阅九组历史研究 | [研究索引](references/history.md) · [归档规则](references/legacy-boundaries/README.md) |
 | 使用 Agent 按计划开发 | [Agent 开发规范](engineering/07-agent-development.md) · [质量门禁](engineering/05-review-and-quality-gates.md) |
+| 查看本轮文档审查及待裁定问题 | [审查报告](reviews/2026-10-25-current-document-audit.md) · [待裁定入口](delivery/03-decisions-and-risks.md) |
 | 查看实施安排和任务状态 | [实施计划](delivery/01-implementation-plan.md) · [交互进度页](visuals/implementation-progress.html) |
 | 确认开工前要交付什么 | [设计准入与首链资产](delivery/04-design-readiness-and-first-route.md) · [十二项实施决定](adr/0009-implementation-contracts-and-gates.md) |
+| 查看 Swift 必要能力与实施归属 | [生产基线决定](adr/0014-swift-production-baseline.md) · [本次文档复核](reviews/2026-10-25-swift-production-baseline.md) |
+| 查看 ArkTS 必要能力、扩展与首片 | [生产基线](adr/0016-arkts-production-baseline.md) · [十二项扩展](adr/0017-arkts-extension-delivery.md) · [实施与检查记录](reviews/2026-10-25-arkts-extension-delivery.md) |
+| 查看 Swift 扩展选择与首片实现 | [九项扩展决定](adr/0015-swift-extension-delivery.md) · [实施与检查记录](reviews/2026-10-25-swift-extension-delivery.md) |
 | 查询后端与版本 | [后端配置](architecture/06-backend-profiles.md) · [技术栈、候选及冻结范围](architecture/16-technology-stack-and-versions.md) |
 | 使用 SDK 或创建工程 | [开发者体验](product/03-developer-experience.md) · [一键初始化](product/04-project-initialization.md) |
 | 查看交付与验收记录 | [C06 四路线](reviews/2026-10-24-c06-kotlin-swift-rust.md) · [C05 Rust/C 首链](reviews/2026-10-24-c05-rust-c-first-route.md) · [C04 整包](reviews/2026-10-24-c04-complete-package.md) · [全部审查记录](reviews/README.md) |
 
-鸿蒙 Kotlin 主线为 CPF-KMP-CMP + akinterop，CMP 只在共享 UI 配置启用；KNOI 独立扩展。Swift 主线采用 Objective-C export + SKIE，NativeCoroutines 组合按 X01 验收。候选版本、上游修复与具体支持范围以技术栈规范和实际 profile 证据为准。
+鸿蒙 Kotlin 主线为 CPF-KMP-CMP + akinterop，CMP 只在共享 UI 配置启用；KNOI 独立扩展。Kotlin/Native → Swift 主线采用 Objective-C export + SKIE，NativeCoroutines 组合按 X01 验收。候选版本、上游修复与具体支持范围以技术栈规范和实际 profile 证据为准。
+
+扩展架构覆盖全部路线，见[跨路线组合与接入契约](architecture/17-extension-composition.md)及[ADR-0012](adr/0012-extension-composition-and-delivery.md)。项目所有者已授权推进选定 Swift 扩展并委托安排实施顺序；L01/L04 的契约和 Observation 首片已启动，整包验收仍缺失。ArkTS 选定范围也已授权推进，L01/L05 的契约及普通观察/ArkUI V2 首片已启动，详见 ADR-0016/0017；其他新增范围按各自授权与决定处理。复杂度与角色体验的[复核结论](reviews/2026-10-25-architecture-simplification.md)已归入现有规范及[实施顺序](delivery/01-implementation-plan.md)：优先完善普通业务声明、API、工程持续使用和可复用扩展入口，构建性能先测量再决策。
 
 ## 按责任阅读
 
@@ -33,7 +39,7 @@ C07 四路线已在既定的 8 个候选配置内完成本地验证并验收收�
 | SDK 作者与平台实现 | [类型与错误](architecture/04-data-and-errors.md) → [生命周期](architecture/05-lifecycle-and-concurrency.md) → [运行时与机制责任](architecture/08-runtime-and-idiomatic-api.md) → [构建与发布](architecture/09-build-packaging-release.md) |
 | 语言与 UI 集成 | [语言特性、宏与属性封装](architecture/15-developer-ergonomics.md) → [开发体验验收](validation/07-developer-ergonomics.md) |
 | 工程模板 | [初始化架构](architecture/14-project-initialization.md) → [IDE 与模板验收](validation/06-project-initialization.md) |
-| 扩展贡献 | [扩展规范](architecture/11-language-extension.md) → [进程协议](architecture/12-extension-protocol.md) → [模型演进](architecture/13-contract-evolution.md) → [接入验收](validation/05-language-onboarding.md) |
+| 扩展贡献 | [扩展规范](architecture/11-language-extension.md) → [跨路线组合与需求](architecture/17-extension-composition.md) → [进程协议](architecture/12-extension-protocol.md) → [模型演进](architecture/13-contract-evolution.md) → [接入验收](validation/05-language-onboarding.md) |
 | 验证与交付 | [测试策略](validation/01-testing-strategy.md) → [Lab 架构](validation/02-lab-architecture.md) → [案例与报告](validation/03-case-specification.md) → [关键交错](validation/08-critical-scenarios.md) → [开源交付](delivery/02-open-source-and-contributing.md) |
 
 工程规范：[设计原则](engineering/01-architecture-principles.md)、[整洁代码](engineering/02-clean-code.md)、[设计模式](engineering/03-design-patterns.md)、[语言规范](engineering/04-language-guidelines.md)、[评审门禁](engineering/05-review-and-quality-gates.md)、[文档质量](engineering/06-documentation-quality.md)、[Agent 开发规范](engineering/07-agent-development.md)。诊断与预算见[性能规范](architecture/10-diagnostics-and-performance.md)。

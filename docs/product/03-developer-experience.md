@@ -2,6 +2,20 @@
 
 本页定义待实现的 CLI 与 SDK 使用契约。下面命令和 API 用于驱动实现与验收，当前尚无安装包。发布时必须把这些流程转为 MadB-Lab 的可运行旅程。
 
+## 各角色的最小使用面
+
+| 角色 | 需要明确的内容 | 由工具或既有生态承担 |
+|---|---|---|
+| SDK 消费者 | 业务 API、线程约束、资源 owner 和停止/关闭效果 | 安装依赖、身份核对、类型转换及已声明的生命周期接线 |
+| SDK 作者 | 导出声明、无法推导的语义、目标和交付方式 | 元数据读取、内部请求、摘要、任务图、绑定与必要 Facade |
+| 工程维护者 | 原生构建入口、受管文件范围、升级差异 | Wrapper、依赖排序、生成源码登记、增量失效与失败恢复 |
+| 扩展作者 | 自己贡献的端口、能力限制、映射与公开依赖 | 公共编解码、会话驱动、诊断、格式向量和接入模板 |
+| 核心维护者 | 公共语义、依赖方向、事务及兼容规则 | 从权威目录生成重复视图，不维护第二套状态或认证规则 |
+| 验证与发布维护者 | 候选、profile、独立预期、适用案例与证据缺口 | 环境准备、用例编排、报告关联和可证明范围内的重复执行 |
+| 项目所有者 | 业务需求、支持承诺、维护成本与实施时点 | 具体接线和实现细节由已授权任务处理 |
+
+高级能力按需展开，不能成为普通旅程的前置知识。减少手工步骤仍需保留影响业务正确性的资源与取消语义。
+
 ## SDK 消费者
 
 消费者通过 Gradle、SwiftPM 或对应 ArkTS 包管理方式安装版本化 SDK，在 IDE 中调用普通类型接口。包中携带所需原生库、语言包装和最低平台说明。消费者不需要安装 MadB CLI 才能使用预生成 SDK；安装说明明确源码或二进制分发、最低工具链和必要编译开关，不能把 producer 的完整工具链要求转嫁给普通消费者；SDK 作者也可以选择在自己的构建中运行锁定版本的生成任务。
@@ -17,6 +31,10 @@ let observation = engine.observeState { state in render(state) }
 observation.requestStop()
 await observation.awaitStopped()
 ```
+
+Swift 生产交付优先采用 SwiftPM 中的必要 Swift 源码与原生 XCFramework；真实业务方法由支持的声明和显式策略生成，消费者不手填 profile 摘要，也不依赖 raw/native 补齐普通调用。UI 和便利语法按配置启用；必要能力、现有证据与任务归属见[Swift 生产基线](../adr/0014-swift-production-baseline.md)。
+
+ArkTS 生产交付通过 OHPM 或明确的 HAR 文件入口安装公开门面、类型声明、资源和 Native 依赖。预编译 Native 配方的消费者不安装 MadB、Cargo 或 Gradle，也不手工补 `.so`；源码共同构建的前提另列。状态实例由声明支持的构造/生成路径建立，页面订阅按显式生命周期启动与停止，不以类型断言、属性读取或 UI 重建隐式注册。必要能力见 [ADR-0016](../adr/0016-arkts-production-baseline.md)，消费者按需选择的增强与特殊交付见 [ADR-0017](../adr/0017-arkts-extension-delivery.md)。
 
 `requestStop` 表示停止请求；`awaitStopped` 确认该观察实例已满足停止后条件。引擎关闭单独暴露，不混入页面对象析构。Swift、Kotlin、ArkTS 的表面语法可以不同，效果相同。
 
@@ -37,21 +55,18 @@ Text(state.title)
 ## SDK 作者
 
 ```sh
-madb init --template rust-swift --out ./sample-sdk --verify structure
+madb init --template rust-swift --out ./sample-sdk
 cd sample-sdk
-./madbw doctor
-./madbw build --task metadata --frozen  # 需要编译元数据的后端先准备快照
-./madbw inspect
-./madbw check
-./madbw plan
-./madbw generate
+# 修改受支持的导出声明、实现和必要策略后：
 ./madbw build --frozen
 ./madbw package --frozen
 ```
 
 模板必须包含最小业务实现、导出声明、行为策略、消费示例和验证入口。作者主要补充不能由签名推导的释放、线程、取消与交付语义。真实 Rust 函数仍需要所选后端的导出标记和构建设置；使用 UniFFI 不等于任意普通函数会自动导出。
 
-这条作者旅程显式选择先生成结构，再逐项检查和构建；普通新工程旅程默认由 init 完成目标构建。
+默认 init 完成目标构建；随后 build 根据已解析依赖执行必要的 metadata、检查、生成和编译，package 封装已固定构建。作者不需要手写内部 request、generation_id、摘要或 DAG。它们由工具计算和校验；作者仍提供无法从声明推导的安全语义。
+
+排错或审查时再使用 doctor、inspect、check、plan、generate 等显式入口。inspect/check/plan 保持只读语义，不暗中编译；缺快照时返回 metadata 准备入口。上面是目标默认旅程，当前源码 CLI 的显式输入限制见下文，不能把目标命令当作已经发布。
 
 ## 新工程开发者
 
@@ -64,6 +79,10 @@ madb init --template kmp-rust-app --out ./MyApp --open android-studio
 生成工程会明确哪个模块提供业务 API、哪个模块包装 native 库、哪个模块是应用；用户正常添加公开依赖即可消费。Android 不要求手工移动 `.so`，官方/CPF 依赖由模板选择各自坐标，Swift 二进制包按已验证的分发配置消费。
 
 CLI 与将来的 IDE 向导使用同一初始化用例。默认验证构建；仅生成、目标运行及离线模式见[完整使用规范](04-project-initialization.md)。工程创建后构建失败时保留目录，使用项目 Wrapper 重试，不覆盖重建。
+
+## 已有工程维护者
+
+已有应用或 SDK 可以按明确配置接入边界能力；新增/移除扩展和升级工具时，先看到依赖、模块、受管文件及公开 API 的变化计划，再执行已选择的变更。手写源码不被模板重写，失败后旧锁和旧有效批次保留。具体职责见[工程持续使用](../architecture/14-project-initialization.md)。这里定义待实现用例，不新增未经定稿的 CLI 命令，也不建立旧 mad/MadDemo 的迁移任务。
 
 ## CLI 职责
 
@@ -82,7 +101,7 @@ CLI 与将来的 IDE 向导使用同一初始化用例。默认验证构建；�
 | lock --update | 明确更新依赖解析和锁 | 输出锁变化，不隐式发布 |
 | explain | 解释诊断编号和修复路径 | 只读 |
 
-退出码：0 成功，1 检查或测试未通过，2 输入/配置/环境不满足，3 工具内部错误，4 输出冲突。自动化读取 JSON 报告字段，不解析面向人的描述文本。
+退出码：0 成功，1 检查或测试未通过，2 输入/配置/环境不满足，3 工具内部错误，4 输出冲突。目标自动化入口读取版本化结构化结果，复用现有诊断、固定批次引用和 Case/Report；格式缺口按共同 schema 与向量演进。CLI、IDE 和 CI 不解析面向人的描述文本，也不各自定义结果含义。
 
 ## C04 显式查询和执行
 

@@ -1,0 +1,493 @@
+{
+  "status": "passed",
+  "scope": "Independent L05 source/projection and existing formal compiler evidence review; no target execution",
+  "producer_report": {
+    "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/success.json",
+    "sha256": "94a46daf59e50447fff77e709c0b1ff39822ad90cff43c730a1bb09a9b7cd99c"
+  },
+  "source_sha256": {
+    "adapters/generators/arkts/read_facade.cjs": "6a5e2bcca564c7c771309b6633e6eabf26f2a114eba7977ba300e182a66c9b4a",
+    "adapters/generators/arkts/value_declarations.py": "2fc213b00a4c1602d65b339f14e797d69bc7a4dbb442183ffd69e45386ada4df",
+    "tests/integration/l05_declaration_generation/check.cjs": "393b6de70d90b6a7f2bce5d9d21fb410b3b2bbb1aa6053fbd63e2614288e53b5",
+    "tests/integration/l05_declaration_generation/check.py": "b3a261b80030bed5de2cf6a5930ad2e4b7f26e5d7eebaab51ad5201e333f6c3e",
+    "tests/integration/l05_declaration_generation/README.md": "f1404e69b413cc65b171e63a33fbc81c54f4100de108f288f42c9f4d0b258ddc"
+  },
+  "default_c07_differential_cases": 30,
+  "default_c07_accepted_cases": 6,
+  "independent_projections": [
+    {
+      "Business.ets": "3fd76c60c1b787ebd696e1813a57335c58ef36592738032ad5f00cb30207efb8",
+      "Index.ets": "dd2d03f7ccceb8f0623c2626442e2ce9ae2a57e01b0b6eb3e9acf2549c0c45b4",
+      "Index.d.ts": "8deba2bacac51ec0c64ebf12c9113746b669e6c077226c0b1cec16f6b40ed647",
+      "origins.json": "65e9f926b1dec50b40ec7a35d4f1824e9be85481d61b2f8813b32c9010705d03"
+    },
+    {
+      "Business.ets": "0602b5cf4cc683618617c1d043beb6bb0742e861622d3c9964fe6e54e355b5dc",
+      "Index.ets": "ce9ebcdfddf8f9fca327c5177abdcc8404053f7b7714064b859ef4e0f11a67e4",
+      "Index.d.ts": "1e9b558edc191700d66f220c6592a12104f8f64debc07b062896e6d12b7eda77",
+      "origins.json": "cbac33c50e0c5c53355893e072bb707b5aea4b34a764e666307a21181b924caf"
+    },
+    {
+      "Business.ets": "aa4ad45265b544e8dffe35cc57113c6434151bae2254d2aa12b376dfe93c84a2",
+      "Index.ets": "31edd1bfa91a4daa23bbb5aeb5f6eaa560523b75cd03f72ad0f3690caf2334dc",
+      "Index.d.ts": "51e8fce5094778b4f8c267164f9b90a5a30e4b5151bf094ba17dd472a5a68cba",
+      "origins.json": "80867f74ca658d29dd0031b475a7116d84bc273afff17dde33aea5fe722923e2"
+    }
+  ],
+  "attachment_sha256": {
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/bundled-node-version.stdout": "50956a2c27b1a442408131f86103ff1df8a7f4a29502df81d216ba19e2c2f4a6",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/bundled-node-version.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/java-version.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/java-version.stderr": "b78ab2a6760b6ee1c1598016f7f2527e0b15af40202e4b1afb5e737b3d83f10d",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/read-declarations.stdout": "795ef6464c90032f74e93d7aa38286b9dd29cdd4d0a810a14d1babf29179e7e3",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/read-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/generated-typecheck.stdout": "db9bed02eaa622cbf2546bdf7b9d1c0ea3569a08ef68978b7a2bafe7cef64920",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/generated-typecheck.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/generated-declarations.stdout": "693fd4f84066ad723d14692aa462ffe738bd4405366a3c372b15596e50568025",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/generated-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-har/assembleHar.stdout": "197a89c50245168b0d5794ef806197e80e43cb70e63c20324c125a6f921d975f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-har/assembleHar.stderr": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-har/observation/build/default/outputs/default/observation.har": "d5e3dfad32a6054014f39cb650e681f07c5d2550a7dcad88f69816393128a7c6",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/compiled-declarations.stdout": "fb524dd4cbc55e74ee9b679d988ebfe19b33ed9cd695268c90c6f84bed8b7565",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/compiled-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-consumer/assembleHap.stdout": "9bf18226e19ae620332c22235b1144ac6897ee20267fa4315d18931b0c173110",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-consumer/assembleHap.stderr": "63371a47b58d69f61a9bcb1ca61a6e598b89e328e9d4b52604c036212e3445f0",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap": "dd976b00ba862ab49c596477b58fa96e99ffe56e285fdb0fa0b334344a95bfbb",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/generated-typecheck.stdout": "db9bed02eaa622cbf2546bdf7b9d1c0ea3569a08ef68978b7a2bafe7cef64920",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/generated-typecheck.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/generated-declarations.stdout": "be9676b6c27f64ea9b46f9d220e4df018d6703d0482ae2173cbcb9f3b1a2ad46",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/generated-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-har/assembleHar.stdout": "a792155a1ab16592e712dd56786ffe86326c2f94010f96250bd495595cd3edaf",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-har/assembleHar.stderr": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-har/observation/build/default/outputs/default/observation.har": "561e4e22a4d189f45c0fcc9c55a79ffb7a9d3e7c6cd8a487348f5764b0df4f3f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/compiled-declarations.stdout": "0bf6c6c18f41c4c8ab7714a8917408750859d3afde91e70cbd9ab71a1ed14e15",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/compiled-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-consumer/assembleHap.stdout": "8325c9b397369467940a4211d98af3d7dfc0356e1ce56f40512eecb1f3e36ea3",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-consumer/assembleHap.stderr": "4203eecb21768058ebbffbba6baa7959915379d28be1e5cf3eca21f8d9b9aec1",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap": "460c53c992bcc415514138beeb24dd97fce10e9d381545e465db1b7d216e8140",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/generated-typecheck.stdout": "db9bed02eaa622cbf2546bdf7b9d1c0ea3569a08ef68978b7a2bafe7cef64920",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/generated-typecheck.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/generated-declarations.stdout": "4448c85f47f483b57bae64d230c2f8e023faabbf6389b18f94420c8a84d1d271",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/generated-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-har/assembleHar.stdout": "1c65945df882a8f8b993aa64d08dd8353038886ab86a819343b7b845f185e2a1",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-har/assembleHar.stderr": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-har/observation/build/default/outputs/default/observation.har": "be104efbed1b8d8107296992426e5d8f98c1d117a2da186ece8400637307bcee",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/compiled-declarations.stdout": "a3dc9f6a889fb31b80e25a06fd847747cc832a9f5690817cbafeb8aa3e9ae42f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/compiled-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-consumer/assembleHap.stdout": "48c8bb8bd5665f836db7e6f1ce288db47452f633a92383bbe6dbfccc20ab4486",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-consumer/assembleHap.stderr": "cc07f173214683c34691eb4e504b6e48a1bc73972f3ecc5ab6aea6040cc74dd0",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap": "4ff9abb20a00b268786e421ca4c6e8bda138682d6fdf82a540e9a710c021cea2",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/generated-typecheck.stdout": "db9bed02eaa622cbf2546bdf7b9d1c0ea3569a08ef68978b7a2bafe7cef64920",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/generated-typecheck.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/generated-declarations.stdout": "776cc28f69f86c5e137ec5a01257348de237e9f26048c618601f2e8a1b876653",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/generated-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-har/assembleHar.stdout": "2a9aee86065e4a4aacce73c7f6abe3b5c6277d91237f614664b8def91ab1c0ed",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-har/assembleHar.stderr": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-har/observation/build/default/outputs/default/observation.har": "dac8c3f2daa6f849cbe81a4b0917d4dc0d2fbdae61ccc8eb3c3119d742846f4b",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/compiled-declarations.stdout": "884c7cbe9eda84a7807ed4c5a949424fb5a9480dbacab4a8d9a5188383c25e85",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/compiled-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-consumer/assembleHap.stdout": "925df1bdcbaa2c057e9d64b2b82030b6663ecf037e8ff53598a7fae2beafb354",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-consumer/assembleHap.stderr": "223ee19444b95ba3c2e3622d999a2887b976a7d38bdb43a7375833f296b99432",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap": "5336b72713fb89dff447ef6cbcb0fe6a33b80b652f474b6ff17b65a4bfbc3e14",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/generated-typecheck.stdout": "db9bed02eaa622cbf2546bdf7b9d1c0ea3569a08ef68978b7a2bafe7cef64920",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/generated-typecheck.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/generated-declarations.stdout": "f6348d74575854cc071fb9cf6b3f17bab3850180f19a83e07de182586c776911",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/generated-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-har/assembleHar.stdout": "e7dfeaad8d514e0ad064f77b0bde639a6062d60588fa0a77cd2d4a0ee2185457",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-har/assembleHar.stderr": "3fbc8b8cd37f46d1f139987a75e4be935a31b9b913c6f37ea5f64ff0233a9a2f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-har/observation/build/default/outputs/default/observation.har": "98119f3734f9bfd1ab8fbf1da1e9729da99d86751b66d21c895c319a278eae7c",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/compiled-declarations.stdout": "75fa086ac480e981c00b7ff11448d2e12d1dad7f5b3cdd488653473aa7511c46",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/compiled-declarations.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-consumer/assembleHap.stdout": "0dbbb913ba212e84da81ff5fe657c12d24b8262b0c4d491c13461640952afdf0",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-consumer/assembleHap.stderr": "cab32b4381b6d64333e8289d1443673bf8023c2c2460020a80b478e2fb3bb9e7",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap": "3e0f2473b90a3b0a0310b87de5ef7000dd967ac4c42d86fa3e4b11cc1616a184",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/deleted-symbol-consumer/assembleHap.stdout": "ccc67d1d9a4e04fa45e25633e48dd91a46e8681107c34394b087a2c4bc3a59eb",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/deleted-symbol-consumer/assembleHap.stderr": "847931f8659c313dde726a9897ed900cc4511d3b66566da64d539b505ea7696f",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/Business.ets": "6f7365a54de18cc71261bbf7c7dd57664b234b171ca645be270cbdfb1fa677f5",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/Index.ets": "7bee0cc2f7535e18e2c0a7d4d638c4472d5b77da98f5ae50dae55a3b44b91792",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/Index.d.ts": "59da0036bff1e49b26d5b3354a3514eff4c7f34e960d0dedf4e00e1284a1bd94",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/initial/origins.json": "34245ea0c20633ce5c3b810f693c037a6bd2338e33191e17c0f420a7f73c3fa0",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/Business.ets": "e3483f9036d2683c899b2f6860a267be2f326a4cc0037ac723876efb10e54c19",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/Index.ets": "12acdc2ceabb59c8b3b818733be3563d8bd68a31f6a87ad3d79e4f5316290b36",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/Index.d.ts": "f70a19c9ad45765bf6043b2840e83ec77d61f0d7ca158ae8c6bbf9da5e99a64d",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-function/origins.json": "917d5adee3cac478fb90b32e36de25ddd0423b662546cf4b74383a2dbc587d45",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/Business.ets": "a28bf92193eaeb055faf2546e70ce64b3ae1b24f4d18ce577e32fae613f45c14",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/Index.ets": "12acdc2ceabb59c8b3b818733be3563d8bd68a31f6a87ad3d79e4f5316290b36",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/Index.d.ts": "93a2f9e4113b8cf896fc56813c37054318bc0a414f14c6cae77aa86d53f1eaa0",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/add-field/origins.json": "e9df1741c765ac46ae3f4d718751e9fdfd1483a705f3f106b8c7e8efdbcba59a",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/Business.ets": "2a169643998bb2a73f74cc427cff5b9f44a8e85b6a76c9ab88eb8aebfd53398c",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/Index.ets": "0f07979ea1afc064514915f67a256bed22fe3a7c3d93fe41560a22cfa3faae7c",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/Index.d.ts": "cb1000e0f90ee9b0220ab2ce1431aaf1091aa9aeab6c95b4d35c9be10521cb0b",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/rename/origins.json": "97311214181fe3fd1d87f6ea7aff21057eb3407ea6f1ea2206156aec9d9a0914",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/Business.ets": "70582c81bac74bf0c3633668836c4a376106ba62503555045c302bd13c80e6e8",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/Index.ets": "4190788686690066f2e654758f59723ba3353225e5dd2ceae0d95f575998fb3d",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/Index.d.ts": "7aa9c0be66678b4b9896f1e0b3da5947576f27a4d92d085a96e9f11f13c4cff7",
+    "/private/tmp/madb-chief-round3/l05-value-sdk-003/generated/delete-function/origins.json": "c25f76c0cbf8e0ff74682f6da87126ae4540e56dcc28d72ff822261e94fa332e"
+  },
+  "stages": [
+    {
+      "name": "initial",
+      "har": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-har/observation/build/default/outputs/default/observation.har",
+        "size": 1737,
+        "sha256": "d5e3dfad32a6054014f39cb650e681f07c5d2550a7dcad88f69816393128a7c6"
+      },
+      "hap": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+        "size": 8747,
+        "sha256": "dd976b00ba862ab49c596477b58fa96e99ffe56e285fdb0fa0b334344a95bfbb"
+      },
+      "har_members": [
+        "package/Business.d.ets",
+        "package/Index.d.ets",
+        "package/ets/modules.abc",
+        "package/oh-package.json5",
+        "package/src/main/module.json"
+      ],
+      "compiled_declaration": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/initial-consumer/oh_modules/.ohpm/business-local/oh_modules/business/Business.d.ets",
+        "size": 149,
+        "sha256": "ff27bb8004f057f61e0442fd61ec0f6a4443e9a6b20a1b157cc0ace1612f0663"
+      },
+      "source_generated_compiled_shape_reparsed": {
+        "records": [
+          [
+            "Reading",
+            [
+              [
+                "value",
+                {
+                  "tag": "number"
+                }
+              ],
+              [
+                "label",
+                {
+                  "tag": "string"
+                }
+              ]
+            ]
+          ]
+        ],
+        "functions": [
+          [
+            "normalize",
+            [
+              {
+                "tag": "reference",
+                "name": "Reading"
+              }
+            ],
+            {
+              "tag": "reference",
+              "name": "Reading"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "add-function",
+      "har": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-har/observation/build/default/outputs/default/observation.har",
+        "size": 1802,
+        "sha256": "561e4e22a4d189f45c0fcc9c55a79ffb7a9d3e7c6cd8a487348f5764b0df4f3f"
+      },
+      "hap": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+        "size": 8867,
+        "sha256": "460c53c992bcc415514138beeb24dd97fce10e9d381545e465db1b7d216e8140"
+      },
+      "har_members": [
+        "package/Business.d.ets",
+        "package/Index.d.ets",
+        "package/ets/modules.abc",
+        "package/oh-package.json5",
+        "package/src/main/module.json"
+      ],
+      "compiled_declaration": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-function-consumer/oh_modules/.ohpm/business-local/oh_modules/business/Business.d.ets",
+        "size": 203,
+        "sha256": "023b852b5e187f01b55807b2b2245d89a8e66ac7b4bd8bdc76d4d8a93d5c3e53"
+      },
+      "source_generated_compiled_shape_reparsed": {
+        "records": [
+          [
+            "Reading",
+            [
+              [
+                "value",
+                {
+                  "tag": "number"
+                }
+              ],
+              [
+                "label",
+                {
+                  "tag": "string"
+                }
+              ]
+            ]
+          ]
+        ],
+        "functions": [
+          [
+            "normalize",
+            [
+              {
+                "tag": "reference",
+                "name": "Reading"
+              }
+            ],
+            {
+              "tag": "reference",
+              "name": "Reading"
+            }
+          ],
+          [
+            "describe",
+            [
+              {
+                "tag": "reference",
+                "name": "Reading"
+              }
+            ],
+            {
+              "tag": "string"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "add-field",
+      "har": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-har/observation/build/default/outputs/default/observation.har",
+        "size": 1835,
+        "sha256": "be104efbed1b8d8107296992426e5d8f98c1d117a2da186ece8400637307bcee"
+      },
+      "hap": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+        "size": 8915,
+        "sha256": "4ff9abb20a00b268786e421ca4c6e8bda138682d6fdf82a540e9a710c021cea2"
+      },
+      "har_members": [
+        "package/Business.d.ets",
+        "package/Index.d.ets",
+        "package/ets/modules.abc",
+        "package/oh-package.json5",
+        "package/src/main/module.json"
+      ],
+      "compiled_declaration": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/add-field-consumer/oh_modules/.ohpm/business-local/oh_modules/business/Business.d.ets",
+        "size": 225,
+        "sha256": "d502b2cf8392893d4144601e6069cda664fc377537bcca9bf0ad0e0cc1841186"
+      },
+      "source_generated_compiled_shape_reparsed": {
+        "records": [
+          [
+            "Reading",
+            [
+              [
+                "value",
+                {
+                  "tag": "number"
+                }
+              ],
+              [
+                "label",
+                {
+                  "tag": "string"
+                }
+              ],
+              [
+                "revision",
+                {
+                  "tag": "number"
+                }
+              ]
+            ]
+          ]
+        ],
+        "functions": [
+          [
+            "normalize",
+            [
+              {
+                "tag": "reference",
+                "name": "Reading"
+              }
+            ],
+            {
+              "tag": "reference",
+              "name": "Reading"
+            }
+          ],
+          [
+            "describe",
+            [
+              {
+                "tag": "reference",
+                "name": "Reading"
+              }
+            ],
+            {
+              "tag": "string"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "rename",
+      "har": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-har/observation/build/default/outputs/default/observation.har",
+        "size": 1850,
+        "sha256": "dac8c3f2daa6f849cbe81a4b0917d4dc0d2fbdae61ccc8eb3c3119d742846f4b"
+      },
+      "hap": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+        "size": 8943,
+        "sha256": "5336b72713fb89dff447ef6cbcb0fe6a33b80b652f474b6ff17b65a4bfbc3e14"
+      },
+      "har_members": [
+        "package/Business.d.ets",
+        "package/Index.d.ets",
+        "package/ets/modules.abc",
+        "package/oh-package.json5",
+        "package/src/main/module.json"
+      ],
+      "compiled_declaration": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/rename-consumer/oh_modules/.ohpm/business-local/oh_modules/business/Business.d.ets",
+        "size": 255,
+        "sha256": "1febcb4d47b66ee0b0abaa9c3dd706bcb2df3ebe760b4864e1a679877e0de231"
+      },
+      "source_generated_compiled_shape_reparsed": {
+        "records": [
+          [
+            "Measurement",
+            [
+              [
+                "value",
+                {
+                  "tag": "number"
+                }
+              ],
+              [
+                "label",
+                {
+                  "tag": "string"
+                }
+              ],
+              [
+                "revision",
+                {
+                  "tag": "number"
+                }
+              ]
+            ]
+          ]
+        ],
+        "functions": [
+          [
+            "normalizeReading",
+            [
+              {
+                "tag": "reference",
+                "name": "Measurement"
+              }
+            ],
+            {
+              "tag": "reference",
+              "name": "Measurement"
+            }
+          ],
+          [
+            "describeReading",
+            [
+              {
+                "tag": "reference",
+                "name": "Measurement"
+              }
+            ],
+            {
+              "tag": "string"
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "name": "delete-function",
+      "har": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-har/observation/build/default/outputs/default/observation.har",
+        "size": 1765,
+        "sha256": "98119f3734f9bfd1ab8fbf1da1e9729da99d86751b66d21c895c319a278eae7c"
+      },
+      "hap": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-consumer/entry/build/default/outputs/default/entry-default-unsigned.hap",
+        "size": 8811,
+        "sha256": "3e0f2473b90a3b0a0310b87de5ef7000dd967ac4c42d86fa3e4b11cc1616a184"
+      },
+      "har_members": [
+        "package/Business.d.ets",
+        "package/Index.d.ets",
+        "package/ets/modules.abc",
+        "package/oh-package.json5",
+        "package/src/main/module.json"
+      ],
+      "compiled_declaration": {
+        "path": "/private/tmp/madb-chief-round3/l05-value-sdk-003/builds/delete-function-consumer/oh_modules/.ohpm/business-local/oh_modules/business/Business.d.ets",
+        "size": 190,
+        "sha256": "c1f706dc084c73a755ac08793f82f1eb464685be0ba601d4f0bf34e9ec85408d"
+      },
+      "source_generated_compiled_shape_reparsed": {
+        "records": [
+          [
+            "Measurement",
+            [
+              [
+                "value",
+                {
+                  "tag": "number"
+                }
+              ],
+              [
+                "label",
+                {
+                  "tag": "string"
+                }
+              ],
+              [
+                "revision",
+                {
+                  "tag": "number"
+                }
+              ]
+            ]
+          ]
+        ],
+        "functions": [
+          [
+            "normalizeReading",
+            [
+              {
+                "tag": "reference",
+                "name": "Measurement"
+              }
+            ],
+            {
+              "tag": "reference",
+              "name": "Measurement"
+            }
+          ]
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "Internal projection trusts the checked descriptor producer, not arbitrary externally supplied descriptor JSON",
+    "No numeric ABI inference, C04 committed Source, formal Candidate, native or device/runtime evidence",
+    "Successful HAP compilation does not execute the static consume method or establish normal SDK installation acceptance"
+  ]
+}

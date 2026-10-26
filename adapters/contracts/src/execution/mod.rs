@@ -1,5 +1,6 @@
 //! Pure binding of execution bundles and genuine metadata/generation/package ports.
 mod artifact;
+pub(crate) use artifact::validate_sources;
 mod build;
 mod dependencies;
 mod files;

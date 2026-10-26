@@ -4,6 +4,30 @@
 
 ## 当前修订
 
+- [接管第五批：生成资产绑定与真实页面消费](2026-10-26-chief-architect-fifth-batch.md)：只读生成后绑定、真实声明责任观察及独立 Lab 页面销毁/重建；整包条件保持。
+
+- [接管第四批：组合格式实施](2026-10-26-chief-architect-fourth-batch.md)：按已确认的 [ADR-0018](../adr/0018-extension-composition-formats.md)落实格式、纯输入绑定与责任比较；旧提案和审查保持原快照。
+
+- [接管第三批：声明诊断与扩展准入](2026-10-26-chief-architect-third-batch.md)：继承完整未提交输入，实施既有契约内的生成前端、诊断与锁准入，并复核待采用的格式。
+
+- [接管首批：L01、扩展格式与工程计划](2026-10-25-chief-architect-first-batch.md)：保留未提交输入后实施窄切片、核对 C07 重开场景，记录集成检查及两项经用户确认的责任决定。
+
+- [主总架构师交接](2026-10-25-chief-architect-handoff.md)：固定双仓库与未提交输入，衔接 C06/C07 收口、下一批并行工作和权限边界；附[接管提示词](2026-10-25-chief-architect-prompt.md)。实时状态仍以 catalog 为准。
+
+- [E05 / L03 阶段与验收依赖修订](2026-10-25-e05-l03-scheduling.md)：记录审查后的用户确认、早期子交付与整包出口、无环依赖及实际检查；前次审查保持原结论。
+
+- [现行文档、架构与交付计划审查](2026-10-25-current-document-audit.md)：固定工作区快照，核对全部工作包、证据和十三页 HTML；列出已修正问题、待裁定范围及静态/DOM/浏览器检查边界。
+
+- [ArkTS 必要能力、扩展计划与观察首片](2026-10-25-arkts-extension-delivery.md)：十二项必要能力与十二项扩展的选型、工作包及 L01/L05 首片，记录实际检查和剩余条件。
+
+- [Swift 扩展计划与 Observation 首片](2026-10-25-swift-extension-delivery.md)：九项扩展、完整交付出口和 L01/L04 首片；记录本次授权、实际检查及剩余验收。
+
+- [Swift 生产基线与全套文档复核](2026-10-25-swift-production-baseline.md)：十二项必要能力、公开交付与既有工作包衔接；保留当时的设计阶段与授权边界，后续 Swift 实施决定见上一项。
+
+- [架构复杂度与文档一致性复核](2026-10-25-architecture-simplification.md)：总结跨路线设计、角色使用面、业务生成及工程持续使用要求，保留 C07 原范围；配套检查只证明本次文档快照。
+
+- [跨路线扩展组合设计](2026-10-25-extension-composition-design.md)：覆盖全部路线的组合、依赖与接入验收；保留当时仅设计采用的检查快照。
+
 - [C07 ArkTS 四路线](2026-10-25-c07-arkts.md)：正式目标准入、四条直接路线与独立目标验收的实施记录。
 
 - [C06 四路线整包](2026-10-24-c06-kotlin-swift-rust.md)：实施范围、最低完整配置与逐项验收记录。
@@ -28,6 +52,8 @@
 
 - [C01 公开仓库与合入保护验收](2026-10-24-c01-public-repositories.md)：公开决定、main 实际保护、预期失败阻断和恢复 CI；补齐 C01 验收。
 
+- [接管第二批：L01 契约与真实会话、页面补证](2026-10-26-chief-architect-second-batch.md)：逐项契约、固定候选消费及独立复核；范围、未执行项和决定分开记录。
+
 ## 历史审查
 
 以下文件保留原内容和当时结论，不更新其中计数、版本或通过结果。
@@ -47,3 +73,13 @@
 | [早期完整审查](2026-10-24-final-audit.md) | 0.5 的历史设计快照 |
 
 同目录的 inventory 和 validation JSON 是配套历史记录。文件名没有版本号也不表示它是当前结果；查阅时以其基线、范围和关联报告为准。旧检查通过不能覆盖新文件，文档静态检查不等于浏览器或产品测试。
+
+批准前格式草案：[E01/E03 组合格式](2026-10-26-extension-composition-format-draft.md)保留当时快照，后续决定见 ADR-0018；[I01 模板与初始化结果](2026-10-26-project-init-format-draft.md)仍待具体格式决定。已有 CLI 归属决定保持有效。
+
+[I01 格式独立复核](2026-10-26-project-init-format-review.md)指出失败分类、真实创建、引用基准和目标默认值的具体修订；它不将上一版草案变成已采用格式。
+
+[E01/E03 具体格式提案](composition-decision.md)及[独立审查](composition-review.md)记录包源、生成资产、唯一责任和协商的修订；文件保留批准前的待决定结论，设计检查不计产品验收。
+
+项目所有者随后确认采用组合提案，决定见 [ADR-0018](../adr/0018-extension-composition-formats.md)；上述历史提案中的待裁定文字不再代表当前决定，产品实现与验收仍分别记录。
+
+[I01 四项增量提案](project-init-decision.md)及[最终独审](project-init-decision-review.md)仅处理错误分类、真实创建、引用根/SDK 和默认目标；原文保留批准前结论；项目所有者随后确认四项增量，见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)。完整两 envelope 的其余字段不由该决定批准。

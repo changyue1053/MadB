@@ -54,7 +54,7 @@ unsafe、线程能力、结果所有权转移、关闭排水、动态装载和�
 
 规范、计划、展示数据、模板和生成 HTML 作为一个变更审查，使用[文档质量规范](06-documentation-quality.md)。必须检查路线独有机制、条件与拒绝路径、原生/队列/消费者三段生命周期，以及问题→任务→验收的显式映射。节点数量、链接可用和 JS 语法通过仅是结构证据。
 
-`python3 tools/check_docs.py` 运行静态一致性检查，`python3 -m unittest discover -s tools/tests` 验证文档工具的关键拒绝规则。浏览器渲染、窄屏、键盘和交互结果另记录，未执行不能写成“已通过”。
+在仓库根、锁定开发环境中运行 `.venv/bin/python docs/tools/check_docs.py` 做静态一致性检查，`.venv/bin/python -m unittest discover -s docs/tools/tests` 验证文档工具的关键拒绝规则。浏览器渲染、窄屏、键盘和交互结果另记录，未执行不能写成“已通过”。
 
 ## 实施契约的评审准入
 

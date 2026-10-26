@@ -1,6 +1,6 @@
 # C06 Kotlin/Native → Swift SDK
 
-This is a conformance-provider SDK with an explicitly exported GC and completion-race observation hooks, rather than a general production SDK without test exports. This profile uses Objective-C export, Kotlin 2.4.20, coroutines 1.11.0 and SKIE 0.10.15. Its executed target is **macOS arm64, minimum macOS 14**, with a static Release framework. It makes no iOS, simulator, Combine, NativeCoroutines or Swift-export claim. The reverse direction is the Objective-C-visible synchronous `Host.transform` protocol, invoked on the engine's owned serial worker.
+This is a conformance-provider SDK with an explicitly exported GC and completion-race observation hooks, rather than a general production SDK without test exports. This profile uses Objective-C export, Kotlin 2.4.20, coroutines 1.11.0 and SKIE 0.10.15. Its executed target is **macOS arm64**, with a static Release framework and deployment target 14.0. That deployment setting is not evidence of execution on macOS 14; the actual runtime environment is recorded in the candidate's Lab report. It makes no iOS, simulator, Combine, NativeCoroutines or Swift-export claim. The reverse direction is the Objective-C-visible synchronous `Host.transform` protocol, invoked on the engine's owned serial worker.
 
 ## Source and generated responsibilities
 

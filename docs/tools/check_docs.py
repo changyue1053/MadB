@@ -120,6 +120,57 @@ def source_coverage_errors(coverage, resolve):
             errors.append(f'Historical snapshot invalid: {exc}')
     return errors
 
+def case_example_errors(document):
+    """Validate the planned example against the same bundled wire schema as C02."""
+    from jsonschema import Draft202012Validator
+    from referencing import Registry, Resource
+    common = load(ROOT/'schemas/common.schema.json')
+    schema = load(ROOT/'schemas/case.schema.json')
+    Draft202012Validator.check_schema(common)
+    Draft202012Validator.check_schema(schema)
+    registry = Registry().with_resource(common['$id'], Resource.from_contents(common))
+    validator = Draft202012Validator(schema, registry=registry)
+    return [f"Case example /{'/'.join(map(str, error.path))}: {error.message}"
+            for error in validator.iter_errors(document)]
+
+
+def extension_transcript_errors(manifest, frames):
+    """Check the documented normal session's bindings, not an executable protocol engine.
+
+    Call only after the manifest and each frame pass their structural schemas.
+    Cancellation, process behavior and other sessions remain separate runtime tests.
+    """
+    errors = []
+    def require(ok, message):
+        if not ok: errors.append('Extension transcript: ' + message)
+    if [frame['kind'] for frame in frames] != ['hello', 'hello_ack', 'invoke', 'result']:
+        return ['Extension transcript: expected one hello/ack/invoke/result example']
+    hello, ack, invoke, result = frames
+    require(all(frame['session_id'] == hello['session_id'] for frame in frames), 'session identity differs')
+    for frame in (hello, ack):
+        require(frame['extension_id'] == manifest['id'] and frame['extension_version'] == manifest['version'],
+                'extension identity differs from manifest')
+    require(ack['component_id'] == hello['component_id'], 'handshake component differs')
+    components = [component for component in manifest['components'] if component['id'] == hello['component_id']]
+    if len(components) != 1:
+        return errors + ['Extension transcript: handshake component is missing or ambiguous']
+    component = components[0]
+    for field in ('protocol', 'ir'):
+        common = set(hello[field + '_versions']) & set(manifest['compatibility'][field])
+        selected = max(common, key=lambda value: tuple(map(int, value.split('.')))) if common else None
+        require(ack[field] == selected, field + ' is not the highest explicitly common version')
+        require(invoke[field] == result[field] == ack[field], field + ' differs after negotiation')
+    required, supported, accepted = map(set, (hello['required_features'], component['supported_features'], ack['features']))
+    require(required <= supported, 'component lacks required features')
+    require(required <= accepted <= supported, 'ack features do not satisfy the declared component')
+    require(invoke['component'] == manifest['id'] + '/' + component['id'], 'invoke component differs')
+    operation = {'contract-reader': 'read', 'generator': 'generate', 'toolchain': 'build',
+                 'verifier': 'verify', 'artifact-packager': 'package'}[component['port']]
+    require(invoke['operation'] == operation, 'operation differs from component port')
+    require(result['request_id'] == invoke['request_id'], 'result request identity differs')
+    return errors
+
+
 def validate(node, reference_root=None):
     errors, counts = [], dict(markdown=0, json=0, toml=0, tables=0, local_links=0, html=0, scripts=0)
     def check(ok, message):
@@ -221,14 +272,21 @@ def validate(node, reference_root=None):
         for key, name in [('manifest','extension-manifest'),('frame','extension-wire')]:
             schema = load(ROOT/f'schemas/{name}.schema.json')
             Draft202012Validator.check_schema(schema); validators[key] = Draft202012Validator(schema)
+        errors.extend(case_example_errors(load(ROOT/'examples/case.example.json')))
         manifest = load(ROOT/'examples/extensions/dart-ffi.extension.example.json')
-        check(validators['manifest'].is_valid(manifest), 'Manifest example')
+        manifest_valid = validators['manifest'].is_valid(manifest)
+        check(manifest_valid, 'Manifest example')
         session = load(ROOT/'examples/extensions/protocol-session.example.json')
         frames = session['frames'] if isinstance(session, dict) else session
         digest = 'sha256:'+hashlib.sha256((ROOT/'examples/extensions/dart-ffi.extension.example.json').read_bytes()).hexdigest()
+        frames_valid = True
         for frame in frames:
-            check(validators['frame'].is_valid(frame), 'Invalid protocol frame')
+            valid = validators['frame'].is_valid(frame)
+            check(valid, 'Invalid protocol frame')
+            frames_valid = frames_valid and valid
             if 'manifest_digest' in frame: check(frame['manifest_digest'] == digest, 'Manifest transcript digest')
+        if manifest_valid and frames_valid:
+            errors.extend(extension_transcript_errors(manifest, frames))
         vectors = load(ROOT/'examples/extensions/schema-vectors.json')['vectors']
         for vector in vectors:
             check(validators[vector['subject']].is_valid(vector['document']) == (vector['expected_schema']=='valid'), f"Schema vector: {vector['id']}")

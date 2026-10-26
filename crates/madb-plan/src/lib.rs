@@ -1,4 +1,6 @@
 //! Deterministic task planning. No IO, backend or wire-format dependencies.
+pub mod project;
+
 use madb_model::{Id, LogicalPath, ValueError};
 use std::collections::{BTreeMap, BTreeSet};
 

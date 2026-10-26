@@ -1,0 +1,274 @@
+{
+  "status": "passed",
+  "scope": "Independent read-only review of ADR-0018 offline formats, byte/lock input observations, canonical provenance and pure responsibility comparison; not composition execution admission",
+  "source": [
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/Cargo.lock",
+      "size": 31392,
+      "sha256": "1abe88ef0ff6606f28d18309f705a5b5492e129fc3a18f5f41a6368bef781cf2"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/composition.rs",
+      "size": 4088,
+      "sha256": "4bdd459fe320b55b87495013f12929234a42a4f11db9b0c5f6bec838f4fd484c"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/composition/ownership.rs",
+      "size": 15189,
+      "sha256": "84ce8cf78c2aa0c2f7a61c30ac92dfd79069bccd0032fcfd937fd129ad126f26"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/composition/pins.rs",
+      "size": 22476,
+      "sha256": "bdfa6fe71effef0f73976a8885b25fc77297a50cd65225bcff9c7f73985f03b1"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/extension.rs",
+      "size": 7935,
+      "sha256": "bb5344f7f0d7b9d462d99746c46b563b25ca2998aed0939bebc9bbcd9ff8ad38"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/extension_files.rs",
+      "size": 32877,
+      "sha256": "d2260763b88820860c193381a3ddad4ae54e67ac99b8159096de90501ef8a780"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/lib.rs",
+      "size": 4655,
+      "sha256": "09d8f157e0863c20f4dc8b7fa392ac27ac24c5871ae85a137b2eecc3d6822ccf"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/src/projections.rs",
+      "size": 12370,
+      "sha256": "f7298b9ce20cc402998d6a0a767f3fa030023e5c4e8e85a32fb1f1a6adbb89e4"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/adapters/contracts/tests/composition.rs",
+      "size": 20793,
+      "sha256": "ebb66fedd859896d98e287f61fb4df9173535aff1166454f0b3317ff6b78e1b7"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/crates/madb-app/src/inputs.rs",
+      "size": 9621,
+      "sha256": "ed04ccf83a0ebb8bb6c7381e2d39fcede669ddc981b87a9b9312446733f8f9c5"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/crates/madb-model/src/contract.rs",
+      "size": 5375,
+      "sha256": "6928430f849562c9eab574cb09685ad791e6d99302f7ab1339d0c118d82e8472"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/crates/madb-protocol/src/canonical.rs",
+      "size": 3901,
+      "sha256": "6b1e569a08b09aa1c55805144285ecd906d031dfc58e0f802ba7bf3a5d86ce3f"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/crates/madb-protocol/src/schema.rs",
+      "size": 7872,
+      "sha256": "84ee601a0f36fc7ae70f81eb960b3fb7709a3f9f612e2fd3fbb502ae6143bd65"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/crates/madb-protocol/tests/formats.rs",
+      "size": 5517,
+      "sha256": "6b76412ac75cac8715132d640d7d3f2a785360c33f9046e664085005ce93b2de"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/adr/0018-extension-composition-formats.md",
+      "size": 3067,
+      "sha256": "2e99240abf20a99ec456d8deecce898758698e09536068f1a8fddc931b4e1b67"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/common.schema.json",
+      "size": 13073,
+      "sha256": "df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/composition.schema.json",
+      "size": 10439,
+      "sha256": "6759f5fd75d43a0ab69bf466f3e5c3d659d434538f938387cf10ab825c806c9a"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/contract-ir.schema.json",
+      "size": 19265,
+      "sha256": "e348cb256bfec8e279f455c69b457ecf7d052046f96d74df3808e8182244c8bf"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/extension-manifest.schema.json",
+      "size": 9734,
+      "sha256": "c744b3b5869f7dac9f63cc74aa203df159265bb9cc7bde2a87919f6513ff40c9"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/lock.schema.json",
+      "size": 2898,
+      "sha256": "f056caec970dd1e6f5a400255df52e6194282a010dc5e8775586322372bcca3c"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/profile-v2.schema.json",
+      "size": 6439,
+      "sha256": "62d061513cf2d279e437522562ae56fbc826eade04eadabfa9c4f445b35f3a2e"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/profile.schema.json",
+      "size": 5526,
+      "sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/docs/schemas/project.schema.json",
+      "size": 5647,
+      "sha256": "104256153131effea12260ddcb70c3b98258c946149de0d45049bd792123c498"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/rust-toolchain.toml",
+      "size": 86,
+      "sha256": "d13306be0ecda81ce779baa290ffb417380d525928477f16200884b5169cca33"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/contract/test_formats.py",
+      "size": 4306,
+      "sha256": "747af237b70192a42af7a03912a92947ec8d00c592e89e36fdaacd4a1ed50abe"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/fixtures/contracts/composition-format-vectors.json",
+      "size": 18321,
+      "sha256": "5952ef3a2c41ba27df3311980cda94741f03e3e4ff6db3673abcf3844d48e335"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/fixtures/contracts/composition.json",
+      "size": 2576,
+      "sha256": "021f65dd41cf04240b43caa4ac2e61b1f91773deb6b26533e7579cce22ab27d4"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/fixtures/contracts/lock.json",
+      "size": 1391,
+      "sha256": "9d4e760444d6ceaa9f53669671c001c6fe9dc7fdd853db53ca37747cc6fb3ddc"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/fixtures/contracts/profile-v2.json",
+      "size": 2064,
+      "sha256": "345bf38f536216b0b808387a1bbb340f971c6161c2f68709d659ab2fd79f84ff"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/fixtures/contracts/profile.json",
+      "size": 1616,
+      "sha256": "d1cca6225738f82ef0c822ba7867e6faed4d7545ac1bf8fc99048c11f6f0ac22"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/madb/tests/fixtures/contracts/project.json",
+      "size": 7391,
+      "sha256": "71d5227d78609df0f7b899d47e4078e1951cde4e894d3547fc1a1e31b6cd0cb9"
+    }
+  ],
+  "oracle": [
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/Cargo.toml",
+      "size": 352,
+      "sha256": "0491f2ecfdf2a142238d55f47bec6791ca847ab47e5818188a411688933f520c"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/Cargo.lock",
+      "size": 22829,
+      "sha256": "9557bc5a0d1baeac0a1cd84fc7d3f244d4fcfc4565ec65899bb4fa3ac4fb2ab7"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/src/main.rs",
+      "size": 20558,
+      "sha256": "50b4b1c0e1f1b1745dad393107f811c7fedd1224e72bef76dcec79d169e51d23"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/review_digests.py",
+      "size": 7083,
+      "sha256": "83db43788a223af9154d59459b896387aad718e36e94cc8a5a868b44c2465454"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/finalize.py",
+      "size": 8785,
+      "sha256": "89f871e061bd03da4739ddd663052cc8c972ebd2b1bec6751ea248ff1dcc83ad"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/target/debug/madb-composition-independent-review",
+      "size": 21709304,
+      "sha256": "36ce1ace6c632e1dcd1bd990183902cdf438e4d78d6afb0f88cfec17e734f1f0"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/input-cases-after-fix.json",
+      "size": 6081,
+      "sha256": "adae62b09ae46fefc167358364b4f0b3620125cb0a2429565b06e9601aabddb2"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/digest-review-after-fix.json",
+      "size": 3455,
+      "sha256": "f41a60e53778e54899207c2127f0e57833a3249da8c6acd08404a3dc6b7a2c5b"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round4/composition-review/redundant-profile-before-fix.json",
+      "size": 5417,
+      "sha256": "e0ba168fd2c8cc83debb96944163b8f31f5bbbadab61f69f88e29964c135f364"
+    }
+  ],
+  "environment": {
+    "python": "3.14.4 (main, Apr  7 2026, 13:13:20) [Clang 21.0.0 (clang-2100.0.123.102)]",
+    "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "offline": true,
+    "separate_target": "/private/tmp/madb-chief-round4/composition-review/target",
+    "external_registry_package_versions_and_checksums_match_product_lock": true
+  },
+  "checks": {
+    "input_and_responsibility_cases": {
+      "total": 27,
+      "accepted": 3,
+      "rejected_as_expected": 24
+    },
+    "independent_digest_comparisons": {
+      "total": 11,
+      "passed": 11,
+      "oracle": "Independent Python projection and domain calculation; integer/ASCII-key canonical subset with explicit UTF-16 set sorting; no production digest import"
+    },
+    "covered": [
+      "Seven actual bundled schema bytes with coherently repinned locks; missing schema rejection",
+      "Package manifest original bytes, package-qualified source inventory and package source digest binding",
+      "SDK frozen input membership and future output/input path alias separation",
+      "Canonical source asset alias rejection and exact generated producer/slot/path expectations",
+      "Cross-package generated owner rejection after two complete package closures are repinned",
+      "Fixed host component and profile/route/target/direction facts; target/direction coherent repinning rejection",
+      "Independent required/provided owner and scope comparison; applicant cannot shrink the fixed component set",
+      "Reader/generator mandatory composition feature versus ordinary toolchain helper exemption",
+      "Legacy mandatory feature and profile-v1 digest entry reject v2 semantics",
+      "Composition/P2 fixed digests, set reordering, content mutation, raw FileRef versus semantic identity and domain separation"
+    ]
+  },
+  "blocking_findings": [],
+  "resolved_findings": [
+    {
+      "location": "adapters/contracts/src/composition/pins.rs:242",
+      "problem": "The same byte-identical profile in lock.profiles and lock.inputs was counted twice as a path conflict.",
+      "contract_basis": "The profile is an upstream input after composition and before lock/IR; redundant exact pinning creates no hash cycle and is not prohibited.",
+      "reproduced_source_sha256": "23f1ece4dde63f4f10a335b152ef52e0966104e2e80884fdaa8acb1a7022f301",
+      "fixed_source_sha256": "bdfa6fe71effef0f73976a8885b25fc77297a50cd65225bcff9c7f73985f03b1",
+      "verification": [
+        "Same profile bytes are accepted after comparing actual frozen bytes",
+        "Same path with different bytes rejects FILE004",
+        "Generated same/case/parent path collisions still reject"
+      ]
+    }
+  ],
+  "commands": [
+    "CARGO_TARGET_DIR=/private/tmp/madb-chief-round4/composition-review/target CARGO_NET_OFFLINE=true cargo +1.99.1 run --manifest-path /private/tmp/madb-chief-round4/composition-review/Cargo.toml --offline --locked",
+    "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/madb-chief-round4/composition-review/review_digests.py --output /private/tmp/madb-chief-round4/composition-review/digest-review-after-fix.json"
+  ],
+  "limits": [
+    "The fixture source bytes are controlled test inputs, not executable or installable extension packages.",
+    "BoundCompositionInputs gives no process, grant, commit, runtime or certification authority. Installed executable image binding remains separate.",
+    "Independent recipe facts in this review are explicit fixture facts. Real required sets derived from checked IR, SDK exports and wiring remain unimplemented integration work.",
+    "Generated asset declarations are future slot/path intent only. No actual OutputSet file/lineage binding, transaction or materialized asset was proved.",
+    "Opaque SDK metadata and arbitrary cross-package re-exports/physical instance aliasing require dedicated adapters and are not inferred from source hashes.",
+    "The legacy shared format vectors and full product gate are outside these independent counts; root records their actual runs separately.",
+    "No target compilation/execution, independent Lab consumer acceptance, publication or full E01/E03 completion is claimed."
+  ],
+  "preliminary_harness_notes": [
+    "Earlier local harness iterations included an invalid empty secondary manifest; the final cross-package case includes a valid unselected helper and hits the intended package-owner rejection. Earlier files are preserved and are not final acceptance evidence."
+  ]
+}

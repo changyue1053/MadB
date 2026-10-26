@@ -1,10 +1,10 @@
 {
   "schema": "madb.implementation-plan/1",
   "baseline": "0.9",
-  "as_of": "2026-10-25",
+  "as_of": "2026-10-26",
   "project": "MadB",
   "basis": "设计基线 0.9：十二项实施决定按责任规范和阶段准入落地；范围、工作包和认证口径保持独立。",
-  "schedule_basis": "阶段顺序，不是日历工期；依赖表示验收前置，允许提前探针和并行开发。",
+  "schedule_basis": "阶段顺序不是日历工期，依赖表示整体验收前置。C07 及约定 C05/C06/C07 回归保持原范围；按 ADR-0015/0017 的授权并行推进 L01 Swift/ArkTS 契约、L04 Observation 与 L05 状态/页面适配首片，再按协议和工具就绪交付语言、工程与分发。I01、E01–E03 复用共同边界；X01/X02/X03/X07/X08 可按范围提前隔离原型，正式扩展仍满足原依赖。I07/L08 和特殊配方独立验收，不反向阻断未承诺这些配置的主线。",
   "design_status": "reviewed",
   "implementation_status": "in_progress",
   "progress_policy": "任务代码交付与独立验收分开；仅 implemented + passed + 有效证据计为已验收。任务数量不是工作量百分比。",
@@ -49,14 +49,14 @@
       "id": "S2",
       "title": "Kotlin · Swift · Rust",
       "focus": "四条主线与 Android / Apple 开发体验",
-      "exit": "四路线有目标证据；对应模板和语言 API 达标",
+      "exit": "四路线有目标证据；Android/Apple 对应模板和基础语言 API 达标；L03 的 CPF CMP 联合验收在 S3 收口",
       "order": 2
     },
     {
       "id": "S3",
       "title": "ArkTS 主线",
       "focus": "四条路线、环境生命期与 DevEco",
-      "exit": "真实 SDK/HAP 验证；装载、线程、停止和组合工程通过",
+      "exit": "真实 SDK/HAP 验证；装载、线程、停止和组合工程通过，L03 的 CPF CMP 联合验收完成",
       "order": 3
     },
     {
@@ -419,7 +419,9 @@
         "napi-ohos、napi-derive-ohos、napi-build-ohos、napi-sys-ohos 与 ohrs CLI 独立锁版本和来源，不假定同号；UniFFI ArkTS beta 不替代此主线认证",
         "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过",
         "DEC-10：复用后端检查或自有 bootstrap；错库/错 ABI/profile 按声明阶段拒绝，CRIT-12 通过",
-        "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析"
+        "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析",
+        "按 ADR-0016 交付四路线最低完整 profile 的真实声明、类型/错误、资源、env/线程、异步取消及状态/事件；能力按接口适用，不强制所有纯函数使用 Runtime/Engine，也不以全部 Unsupported 绕过必需验收",
+        "最终四路线普通/伴随候选绑定生成器、Native、HAR 与 Lab 实际消费身份；改名/拒绝诊断及完整受控矩阵独立执行，开发 HAR 或宿主结果不替代最终候选认证"
       ],
       "documents": [
         "architecture/06-backend-profiles.md",
@@ -427,7 +429,8 @@
         "architecture/16-technology-stack-and-versions.md",
         "delivery/03-decisions-and-risks.md",
         "architecture/08-runtime-and-idiomatic-api.md",
-        "architecture/09-build-packaging-release.md"
+        "architecture/09-build-packaging-release.md",
+        "adr/0016-arkts-production-baseline.md"
       ],
       "requirements": [
         "REQ-03",
@@ -472,7 +475,8 @@
         "JNI 生成以显式导出契约和真实 JVM 描述符为准，javac -h 只用于 Java 声明；RegisterNatives、ClassLoader、R8 与错误签名负例通过",
         "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过",
         "DEC-10：复用后端检查或自有 bootstrap；错库/错 ABI/profile 按声明阶段拒绝，CRIT-12 通过",
-        "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析"
+        "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析",
+        "每个交付的 Swift-C/Swift-C++ profile 除 native 导入/ABI/异常/方向/包装外，还须接线并复跑适用 L04/DX 普通入口、关闭/取消、跨 actor、共享 owner 与承诺 UI 配置；由 C09 独立验证，证据绑定本路线候选，不由 C06 或 L06 替代。"
       ],
       "documents": [
         "architecture/06-backend-profiles.md",
@@ -480,7 +484,8 @@
         "architecture/16-technology-stack-and-versions.md",
         "delivery/03-decisions-and-risks.md",
         "architecture/08-runtime-and-idiomatic-api.md",
-        "architecture/09-build-packaging-release.md"
+        "architecture/09-build-packaging-release.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-03",
@@ -500,7 +505,7 @@
       "probes": [
         "P07"
       ],
-      "notes": "JNI 生成策略与 Swift C++ 构建/方向/包装 profile 在 S0 提前定案；路线 ID 与阶段保持不变。"
+      "notes": "JNI 生成策略与 Swift C++ 构建/方向/包装 profile 在 S0 提前定案；路线 ID 与阶段保持不变。 本次接管已获用户确认 Swift 验收分责；具体边界见本包 acceptance 与 reviews/2026-10-25-chief-architect-first-batch.md，不因此计为实现或验收。"
     },
     {
       "id": "C09",
@@ -520,7 +525,9 @@
       "verification": "missing",
       "evidence": [
         "reviews/2026-10-24-c05-rust-c-first-route.md",
-        "reviews/2026-10-24-c06-kotlin-swift-rust.md"
+        "reviews/2026-10-24-c06-kotlin-swift-rust.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-second-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -529,7 +536,14 @@
         "48 问题/96 基础组、平台特例及 CRIT-01 至 CRIT-12 按适用配置实例化；不把场景编号当运行数",
         "控制竞态、失败注入和变异检验通过；预期不从生产状态机生成",
         "固定设备记录性能原始样本/噪声与未插桩 Release；按 profile 确定预算，不虚构跨平台阈值",
-        "cases、fixtures、consumers、scenarios、harness、expected 与 reports 分责；组合场景验证同一内核，普通运行输出与正式证据分开"
+        "cases、fixtures、consumers、scenarios、harness、expected 与 reports 分责；组合场景验证同一内核，普通运行输出与正式证据分开",
+        "P09 联合 I01 记录冷构建、无改动重建、实现变化与 API 变化的工具启动次数、阶段耗时和缓存原因；先测量再决策，不以缓存命中替代消费者证据",
+        "Swift 适用普通 API 的隔离、关闭排水、取消/完成竞争、状态/事件缓冲与宿主回调分别有独立 oracle、受控交错和资源计数；复用现有问题/CRIT/DX 分类，不把十二项设计索引增计为新案例组",
+        "Swift 包 digest、ABI/数据布局、profile/依赖与运行实例分别验证；错 native/错绑定、重复装载或静态复制、布局变化及缺依赖有准确反例，UniFFI 函数校验或链接成功不代替组合证明",
+        "Swift 观察/UI/宏的选定主线配置复用现有 DX/CRIT，验证重复订阅、状态与事件、关闭完成及未启用基线；X01/X02/L08 的独立扩展可复用 harness，但其缺失不自动阻断未承诺该扩展的主线配置",
+        "ArkTS 普通/增强/禁用配置复用既有 CRIT/DX；受控验证 env 退出、同步重入、停止/排空、关闭失败与容量，预期不由生产状态机生成；对真实 Native、UI 和替身结果分别标注",
+        "ArkTS 多 env、低复制及诊断配置分别保留负载预算、转移/释放负例、原始性能样本和未插桩 Release 对照；X03/X07/X08 仅复用 harness，不继承主线证据",
+        "交付 verify：固定候选、Lab revision 和 suite 产生既有 Report/覆盖结果；混候选、未知套件、缺必需案例或清理缺口不得通过，编译与运行分别报告；验证机器可读输出、退出结果及无意外副作用。"
       ],
       "documents": [
         "validation/01-testing-strategy.md",
@@ -541,7 +555,13 @@
         "architecture/07-code-generation.md",
         "architecture/08-runtime-and-idiomatic-api.md",
         "architecture/09-build-packaging-release.md",
-        "validation/02-lab-architecture.md"
+        "validation/02-lab-architecture.md",
+        "architecture/17-extension-composition.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md"
       ],
       "requirements": [
         "REQ-05",
@@ -552,7 +572,7 @@
       "probes": [
         "P09"
       ],
-      "notes": "C05 已验证 S1 首链的独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例；C06 增加四个 macOS Arm64 Release 配置的 54 项独立消费案例及容量、取消、排水、身份和负向编译检查，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。"
+      "notes": "C05 已验证 S1 首链的独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例；C06 增加四个 macOS Arm64 Release 配置的 54 项独立消费案例及容量、取消、排水、身份和负向编译检查，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。 ADR-0014 的 Swift 验收细化仍属待交付范围，不由已有固定样例和本机结果推导完成。 接管首批对 C07 冻结重开证据逐项对账；普通四路线重开和旧对象隔离已有目标观察，当时正常关闭的 ACK 前及 receipt 消费前重新准入拒绝仍保留具体补证项，不改 C07 已确认结论。 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第二批使用四条冻结 C07 test companion 补齐正常 Runtime.close 在 physical ACK 前拒绝重开的目标证据，均绑定新 Lab 源码/候选/目标；ACK 后 receipt 消费前的 test-only 同步回调已获批准并实现；独立审查发现并修复 Error getter 导致 close pending 的异常边界，旧试验候选不作最终验收。最终 producer a31ac4b / Lab a6e04ce 的四对候选完成实际构建、47 次伴随场景及4条普通基线、原始日志/HAP独立复核。两个窗口分别以各自候选/报告范围补证，不构成同一候选全矩阵或整包通过。四路线补证及 L05 C 路线真实页面均不扩张 C07 或 C09 整包结论。"
     },
     {
       "id": "C10",
@@ -581,14 +601,31 @@
         "生成批次、profile、工具/补丁、库/包装、符号和验证身份一致；CRIT-06/12 及新环境安装通过",
         "官方 Kotlin 与 CPF 独立 GAV/根 metadata；SKIE 分发设置、模块和异机消费通过",
         "组合应用按单一 owner 和链接配方消费，不将两段独立通过冒充组合认证",
-        "GitHub 发布主体、固定资产、构建来源与校验链有效；原样发布候选并下载验收；显式升级失败保留原锁/批次，坏版本停止推荐"
+        "GitHub 发布主体、固定资产、构建来源与校验链有效；原样发布候选并下载验收；显式升级失败保留原锁/批次，坏版本停止推荐",
+        "普通候选消费无需手工补库或填写内部身份；依赖与期望身份由公开包和装配流程提供，错 profile/版本仍拒绝；CLI/IDE/CI 复用版本化机器结果，不解析展示文本",
+        "Swift 正式包采用普通 SwiftPM 源码与必要 native XCFramework，固定模块/制品身份及依赖配方；消费者无需作者仓、MadB/Gradle/Cargo、手工补库或内部身份，Swift C++ 公开 SDK 优先 C/ObjC++ 包装，direct-source 仍按独立 profile 验收",
+        "SwiftPM 库的 Package.resolved 不作为下游锁定保证；宿主根锁与公开依赖约束分责，配套 bindings/native 身份在包中给出；下载字节摘要、ABI/布局和 profile 兼容分别校验，复用 UniFFI 检查但不冒充完整布局证明",
+        "Apple 候选按承诺目标/架构、最低系统、工具链和 native 依赖验证完整切片及链接所有者；模块稳定性/library evolution 与 SKIE 分发设置按实际二进制边界确认，异机/干净消费及发布后下载使用同一候选",
+        "Swift 增强模块按实际产品分发并验证启用/禁用后的依赖闭包；宏工具仅在编译端。C10 交付可复用的分发和依赖核验能力；Kotlin 响应式配置的 NativeCoroutines 两侧及实际 SwiftPM 依赖由 X01 随其候选正式验收，不作为 C10/C11 主线完成前置；X02 direct integration 实验不继承主线 XCFramework/SwiftPM 发布资格",
+        "ArkTS 默认 HAR 由源码门面、公开声明、所承诺 ABI 的预编译 Native 及运行依赖组成；消费无需作者仓库/MadB/Cargo/CPF Gradle；字节码 HAR 与 Native 二进制分开",
+        "按实际配方核对 license 元数据、LICENSE/NOTICE、依赖来源及符号/namecache；自行放入 libs 的 so 维护 nativeComponents，必要 consumerFiles 规则传递到消费者并实际验证 Release 混淆",
+        "工具链/应用 SDK 与最低系统分别记录；最终 HAR/DSO 原样进入候选、发布与下载验证，GitHub 和 OHPM 渠道分别验收，prepublish 不计发布完成",
+        "HSP/集成态 HSP、字节码 HAR、源码联编及企业配方使用既有端口独立验收签名/装载/兼容/依赖；特殊配方不成为默认 HAR 的隐含前置",
+        "交付 lock --update：显式展示新旧来源/版本/摘要、受影响批次及证据差异，完整解析校验成功前保留原锁；冲突、坏摘要、未知必需语义或取消不得留下部分更新。提供机器可读结果、明确退出结果及正反用例；不隐式发布。"
       ],
       "documents": [
         "architecture/09-build-packaging-release.md",
         "delivery/02-open-source-and-contributing.md",
         "architecture/16-technology-stack-and-versions.md",
         "delivery/03-decisions-and-risks.md",
-        "delivery/04-design-readiness-and-first-route.md"
+        "delivery/04-design-readiness-and-first-route.md",
+        "architecture/17-extension-composition.md",
+        "product/03-developer-experience.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md"
       ],
       "requirements": [
         "REQ-04",
@@ -599,7 +636,7 @@
       "probes": [
         "P08"
       ],
-      "notes": "C05 已验证三份公开候选、固定来源与身份、干净消费及同目标重建；C06 增加四份选定配置的公开候选、精确工具/依赖/补丁身份、可复现构建和独立消费，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道、正式发布资产与下载验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。"
+      "notes": "C05 已验证三份公开候选、固定来源与身份、干净消费及同目标重建；C06 增加四份选定配置的公开候选、精确工具/依赖/补丁身份、可复现构建和独立消费，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道、正式发布资产与下载验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。 ADR-0014 的 Swift 正式分发与身份装配要求仍待对应候选验证，本次仅细化交付，不增加已认证渠道或目标。 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。"
     },
     {
       "id": "C11",
@@ -627,13 +664,16 @@
         "推荐模板、普通 API、文档旅程和初次使用实验达标",
         "主线版本有明确范围、限制和可追溯发布证据",
         "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析",
-        "DEC-12：Apache-2.0 设计默认及实际许可文件落实；真实仓库/渠道身份、固定候选安装、升级失败恢复与坏版本处置可复现"
+        "DEC-12：Apache-2.0 设计默认及实际许可文件落实；真实仓库/渠道身份、固定候选安装、升级失败恢复与坏版本处置可复现",
+        "ArkTS 按 ADR-0016 及本版本承诺的 L05/I05 配置收口；授权扩展不新增主线数量，不要求等待 X03/X07/X08/I07/L08 的后续正式验收"
       ],
       "documents": [
         "delivery/01-implementation-plan.md",
         "architecture/09-build-packaging-release.md",
         "architecture/16-technology-stack-and-versions.md",
-        "delivery/02-open-source-and-contributing.md"
+        "delivery/02-open-source-and-contributing.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-01",
@@ -660,21 +700,32 @@
       "depends_on": [
         "C02"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-third-batch.md",
+        "reviews/2026-10-26-chief-architect-fourth-batch.md",
+        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
         "清单正反例、唯一身份、引用、环、权限和锁校验通过",
         "DEC-02：schema/解码器共用格式向量；首链 payload 完整；语义摘要与字节摘要分离并按确定规则计算",
-        "扩展目录只维护清单和资产索引；不复制适配器/SDK 源码，不依赖其他扩展私有实现或获得宿主最终提交权限"
+        "扩展目录只维护清单和资产索引；不复制适配器/SDK 源码，不依赖其他扩展私有实现或获得宿主最终提交权限",
+        "扩展组合的组件引用、依赖作用域、版本/目标冲突与文件所有权明确；现行格式不足时按受控版本演进补齐，不用说明文本或可忽略元数据执行规则",
+        "首版明确有限推荐 profile、允许组合及精确锁；不要求任意组合求解器，实验组合显示缺口",
+        "ADR-0017 的 ArkTS 配置复用共同扩展机制；普通/增强/替代后端声明所需依赖和语义责任，有限推荐组合与禁用边界可检查，不另建 ArkTS 插件平台"
       ],
       "documents": [
         "architecture/11-language-extension.md",
         "schemas/README.md",
         "architecture/03-contract-and-ir.md",
-        "architecture/02-modules-and-ports.md"
+        "architecture/02-modules-and-ports.md",
+        "architecture/17-extension-composition.md",
+        "delivery/01-implementation-plan.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-02",
@@ -682,7 +733,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "本次优化由 L01 先收敛所需公共边界；E01 随后与 I01、E02/E03 按接口依赖推进有限组合、清单与注册。不等待全部语言便利层完成；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批已实现既有 v1 清单解码及显式包集合注册检查；来源/权限、精确锁、版本/目标组合与独立消费仍未完成。 接管第三批新增既有 v1 单镜像组件的精确锁准入；清单、文件字节、工具完整元组及权限申请有正反例和独立复核。完整包来源认证、依赖闭包、组合格式与独立消费仍未完成。 接管第四批按已批准 ADR-0018 实现 composition/1、profile/2 及显式 feature；纯绑定检查真实 schema/包源/清单/锁字节、固定配方选择、生成位置和来源别名。返回只读观察；执行镜像准入、真实包闭包、生成后资产和独立消费仍须完成。 接管第五批新增实际生成请求/OutputSet/完整生成槽的只读字节与血缘绑定，13项本地测试和29项独立反例通过；真实包注册、执行镜像准入及独立组合消费仍缺。"
     },
     {
       "id": "E02",
@@ -696,20 +747,29 @@
       "depends_on": [
         "C02"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-second-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
         "握手、协商、超时、取消、恶意帧和临时目录边界通过",
         "DEC-02：schema/解码器共用格式向量；首链 payload 完整；语义摘要与字节摘要分离并按确定规则计算",
-        "帮助程序仅使用公开协议；wire/领域转换在适配层完成，非法 DTO 不绕过领域身份和能力检查"
+        "帮助程序仅使用公开协议；wire/领域转换在适配层完成，非法 DTO 不绕过领域身份和能力检查",
+        "组合中每组件独立握手并使用固定输入/输出域；上游结果校验后传递，必需步骤失败或取消时不提交部分组合",
+        "提供实际扩展所需的公共编解码、会话/取消/诊断支持与共同向量；作者实现端口业务，不重复手写通用协议，宿主独立核验",
+        "ADR-0017 的 ArkTS 配置复用共同扩展机制；普通/增强/替代后端声明所需依赖和语义责任，有限推荐组合与禁用边界可检查，不另建 ArkTS 插件平台"
       ],
       "documents": [
         "architecture/12-extension-protocol.md",
         "architecture/03-contract-and-ir.md",
-        "architecture/02-modules-and-ports.md"
+        "architecture/02-modules-and-ports.md",
+        "architecture/17-extension-composition.md",
+        "delivery/01-implementation-plan.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-03",
@@ -718,7 +778,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "本次优化由 L01 先收敛所需公共边界；E02 随后与 I01、E01/E03 按接口依赖推进协议会话及公共支持。复用共同格式，不扩大现行控制操作；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批已实现既有 v1 JSON Lines 帧编解码与共同向量拒绝检查；该首片不包含交互会话。 接管第二批实现真实交互会话、公开作者支持、严格文件引用闭包与 C04 配方复用、工具执行身份绑定、终态后快照复核和两组件事务例；独立复验 11 组/44 个真实模式及 18 个身份向量通过。当前仅 Darwin Arm64；E01 精确来源/lock、E03 组合责任与 ArkTS 普通/增强/替代/禁用配置仍缺，不将局部通过扩大为整包验收。"
     },
     {
       "id": "E03",
@@ -732,18 +792,28 @@
       "depends_on": [
         "C02"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-third-batch.md",
+        "reviews/2026-10-26-chief-architect-fourth-batch.md",
+        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
         "未知必需功能阻断；模型版本和证据失效规则通过",
-        "DEC-02：schema/解码器共用格式向量；首链 payload 完整；语义摘要与字节摘要分离并按确定规则计算"
+        "DEC-02：schema/解码器共用格式向量；首链 payload 完整；语义摘要与字节摘要分离并按确定规则计算",
+        "按符号、语义阶段和实例作用域校验唯一责任与能力前提；私有配置、公共必需语义和非语义元数据分开，未知组合保证准确拒绝",
+        "ADR-0017 的 ArkTS 配置复用共同扩展机制；普通/增强/替代后端声明所需依赖和语义责任，有限推荐组合与禁用边界可检查，不另建 ArkTS 插件平台"
       ],
       "documents": [
         "architecture/13-contract-evolution.md",
-        "architecture/03-contract-and-ir.md"
+        "architecture/03-contract-and-ir.md",
+        "architecture/17-extension-composition.md",
+        "delivery/01-implementation-plan.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-02",
@@ -751,7 +821,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "本次优化由 L01 先收敛所需公共边界；E03 随后与 I01、E01/E02 按接口依赖推进语义协商、责任与兼容检查。保持既有未知必需语义拒绝规则；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批仅落实当前核心功能目录上的必需语义拒绝检查，不静默映射旧设计样例的功能 ID；模型版本/证据失效及按符号/阶段/实例的完整责任协商仍未完成。 接管第三批进一步收敛包源/生成资产/责任与摘要协商的具体提案，独立审查发现的样例漏拒绝和生命周期责任混淆在设计稿修正；未将新字段或 feature 写入现行生产格式。 接管第四批已按 ADR-0018 落地新格式与独立摘要域、必需 feature 拒绝和规范来源上的责任集合比较；旧 profile/1 保持独立且拒绝新组合语义。必需集合当前由宿主显式传入，真实声明/SDK/接线派生与完整组合执行协商仍未交付。 接管第五批从固定 C07 真实 AST、生产声明投影与公开观察源码派生普通/增强的5/8项有限责任，禁用重新生成普通闭包；29项检查及路径隔离修复独审通过。该来源观察未产生 profile/2 OutputSet、未接入完整组合执行，不覆盖全 C07 语义责任或整包验收。"
     },
     {
       "id": "E04",
@@ -776,12 +846,14 @@
       "acceptance": [
         "一个真实目标的同步类型、错误和显式资源关闭通过",
         "仅依赖公开端口，不引入核心语言分支",
-        "build_runner/注解等按探针需要选择；首个 Dart 包仍限定同步值与显式资源关闭，不把特性表全部转为必需依赖"
+        "build_runner/注解等按探针需要选择；首个 Dart 包仍限定同步值与显式资源关闭，不把特性表全部转为必需依赖",
+        "独立包使用公开组件复用与锁，禁用后原路线仍可消费；不依赖核心私有接口或已有主线认证"
       ],
       "documents": [
         "validation/05-language-onboarding.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/11-language-extension.md"
+        "architecture/11-language-extension.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-03",
@@ -796,14 +868,18 @@
     {
       "id": "E05",
       "title": "扩展符合性验证",
-      "phase": "S1",
+      "phase": "S5",
       "start_phase": "S1",
       "track": "extension",
       "scope": "mainline",
       "owner_role": "验证维护者",
       "owner": null,
       "depends_on": [
-        "E04"
+        "E04",
+        "L03",
+        "L04",
+        "L05",
+        "L06"
       ],
       "status": "not_started",
       "verification": "missing",
@@ -811,10 +887,14 @@
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "EXT-01 至 EXT-12 的适用项、禁用隔离及旧路线回归通过"
+        "EXT-01 至 EXT-12 的适用项、禁用隔离及旧路线回归通过",
+        "基础配置、承诺增强与允许组合分别验证；重叠桥接/订阅、输出或物理装配冲突、升级失败和禁用依赖污染有负例",
+        "ArkTS 本版本主线 UI/取消/多 env/低复制的适用 EXT 与公开端口探针通过；重叠 owner、源订阅、文件装配冲突及禁用依赖污染有负例。X03/X07/X08 的正式后端 EXT 随各 X 包独立验收，不反向阻断 E05/E06/C11"
       ],
       "documents": [
-        "validation/05-language-onboarding.md"
+        "validation/05-language-onboarding.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-08",
@@ -822,7 +902,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "按项目所有者确认的阶段修订，从 S1 提供 E04 同步扩展与通用 EXT 检查子交付，S5 完成基础配置、已承诺主线增强及允许组合的整包符合性验收；L03–L06 是增强实现的验收输入，不把提前子范围通过计为整包通过。I05 的已选组合根/启用禁用候选切片及 C09/C10 的候选与独立验证子交付必须实际就绪；不等待这些包或 L07 的全部矩阵完成，不免除本包适用 EXT-09/10 的实际消费和交付证据。X 系列及 I07/L08 不反向成为本包前置。阶段与联合切片出口见 delivery/01-implementation-plan.md。"
     },
     {
       "id": "E06",
@@ -842,11 +922,16 @@
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "公开扩展模板、贡献教程、诊断和兼容说明可由另一人复现"
+        "公开扩展模板、贡献教程、诊断和兼容说明可由另一人复现",
+        "接入教程明确扩展点、普通/增强 API、机制责任、构建/运行依赖、版本与目标、公开消费和升级/禁用边界；设计采用不冒充实现",
+        "另一位作者从公开模板复用现有组件和协议支持，仅实现缺失端口，完成独立候选消费与禁用；记录作者实际需要编写和配置的部分",
+        "ArkTS 扩展作者通过公开模板复用端口/协议完成独立候选与禁用验证；区分上游功能、目标 SDK 能力和本扩展认证，不依赖作者私有源码"
       ],
       "documents": [
         "delivery/02-open-source-and-contributing.md",
-        "validation/05-language-onboarding.md"
+        "validation/05-language-onboarding.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-01",
@@ -869,20 +954,35 @@
       "depends_on": [
         "C02"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-third-batch.md",
+        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
         "模板格式、模块 DAG、文件所有权和 InitResult 有正反例",
         "XcodeGen/Gradle/Hvigor 入口和宿主前提明确",
         "模块配方明确 AGP 9 新 KMP 插件、独立 Android app、native 产物所有者及测试入口；宿主和 IDE 具体值引用技术栈选型",
-        "模板、SDK 手写实现、用户源码和受管输出的所有权明确；项目配方引用现有模块，不建立第二套生成或构建机制"
+        "模板、SDK 手写实现、用户源码和受管输出的所有权明确；项目配方引用现有模块，不建立第二套生成或构建机制",
+        "模板选择与扩展组合共享受检组件、文件 owner 和依赖图；可选功能不隐式下载/启用，IDE 与 CLI 不形成递归构建",
+        "已有工程接入、升级和禁用的受检计划、差异、基准复核及恢复契约明确；保护手写文件与原锁/批次，不扩张 init 为覆盖更新命令",
+        "默认 IDE/CLI 构建自动编排必要阶段；与 P09 建立增量成本基线，保留只读查询及现有提交保证",
+        "Swift 发行消费与作者源码协作分别形成配方：普通 SwiftPM 消费不启动 MadB/Gradle/Cargo，作者侧 CLI/IDE 共用 Wrapper 与目标/配置选择；build/prebuild 或 Xcode 脚本的适用条件、输入输出及保守重建边界明确"
       ],
       "documents": [
         "architecture/14-project-initialization.md",
-        "architecture/02-modules-and-ports.md"
+        "architecture/02-modules-and-ports.md",
+        "architecture/17-extension-composition.md",
+        "validation/06-project-initialization.md",
+        "architecture/07-code-generation.md",
+        "product/03-developer-experience.md",
+        "delivery/01-implementation-plan.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0019-project-init-incremental-contracts.md"
       ],
       "requirements": [
         "REQ-13"
@@ -891,7 +991,7 @@
       "probes": [
         "P11"
       ],
-      "notes": ""
+      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。"
     },
     {
       "id": "I02",
@@ -913,11 +1013,15 @@
       "planned_finish": null,
       "acceptance": [
         "Resolve → CommitNew → Build/Verify 有失败与取消测试",
-        "无覆盖提交；最终路径构建失败保留工程且可恢复"
+        "无覆盖提交；最终路径构建失败保留工程且可恢复",
+        "在本任务承诺的工程配方内验证已有工程接入、升级及禁用适用项：先展示受检差异，保护手写文件，失败保留原锁/有效批次；不承诺任意工程自动迁移",
+        "交付 doctor：按选定 profile/检查级别输出工具、SDK、锁的实际观察、缺项和修复指导，默认只读；未知配方、错版本/摘要/宿主、缺必需工具准确失败，未执行运行检查不填通过。提供机器可读结果、明确退出结果及正反用例，不隐式安装或构建。"
       ],
       "documents": [
         "architecture/14-project-initialization.md",
-        "validation/06-project-initialization.md"
+        "validation/06-project-initialization.md",
+        "architecture/17-extension-composition.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md"
       ],
       "requirements": [
         "REQ-01",
@@ -926,7 +1030,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。"
     },
     {
       "id": "I03",
@@ -949,13 +1053,15 @@
       "acceptance": [
         "Rust/C 新工程可导入、Run 和修改后重建；使用同一首链工具锁与生成配置",
         "GUI/CLI 共用 Wrapper；声明实际输入输出，固定生成批次；不依赖终端 PATH 或持锁递归构建",
-        "CRIT-09/10 和 INIT-04 验证并发构建、间接头/宏/新文件变化；离线缺包准确失败"
+        "CRIT-09/10 和 INIT-04 验证并发构建、间接头/宏/新文件变化；离线缺包准确失败",
+        "在本任务承诺的工程配方内验证已有工程接入、升级及禁用适用项：先展示受检差异，保护手写文件，失败保留原锁/有效批次；不承诺任意工程自动迁移"
       ],
       "documents": [
         "architecture/14-project-initialization.md",
         "validation/06-project-initialization.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/07-code-generation.md"
+        "architecture/07-code-generation.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-01",
@@ -988,13 +1094,22 @@
         "KMP、KMP+Rust、Swift/Rust 对应 INIT 适用项通过",
         "新增导出符号可在正常 IDE 构建中发现",
         "共享库使用 com.android.kotlin.multiplatform.library；Android app 独立，已构建 .so 通过受管 jniLibs 接入，需要 externalNativeBuild/多 variant 时使用独立 Android library",
-        "Android SDK/AAR 的独立消费无需使用者手工补 .so；host/device test 显式启用，CLI 与 IDE 首次及增量构建均覆盖"
+        "Android SDK/AAR 的独立消费无需使用者手工补 .so；host/device test 显式启用，CLI 与 IDE 首次及增量构建均覆盖",
+        "在本任务承诺的工程配方内验证已有工程接入、升级及禁用适用项：先展示受检差异，保护手写文件，失败保留原锁/有效批次；不承诺任意工程自动迁移",
+        "Apple 作者配方在正常 CLI/Xcode 构建中复用同一 Wrapper、目标/SDK/架构/配置与固定批次；选择已声明的 Gradle Native 目标或 Xcode 集成任务，避免 GUI/CLI 分叉、重复或递归构建",
+        "选用 SwiftPM 构建插件的配方中，build command 声明可预知的输入输出，prebuild 仅用于无法预先列出输出的生成步骤；Xcode 增量覆盖新增/删除源文件、配置切换和失败恢复，输入闭包不能证明时保守调用原生构建，不用虚假 stamp 放行",
+        "SwiftPM/Xcode 真实消费、生成源补全/定位及支持范围内的调试证据分别记录；SDK 消费者不安装 MadB/Gradle/Cargo，源码协作配方单独声明工具与脚本权限，不以仅生成工程文件计通过",
+        "Swift 扩展模板分别选择基础、Observation/UI 和薄宏配置；最低系统与编译依赖按产品声明，关闭增强不残留强制 UI/宏依赖；本机 macOS 原型与 iOS 应用入口、真机/模拟器 Release、IDE 运行和包安装分别验收"
       ],
       "documents": [
         "product/04-project-initialization.md",
         "validation/06-project-initialization.md",
         "architecture/16-technology-stack-and-versions.md",
-        "delivery/03-decisions-and-risks.md"
+        "delivery/03-decisions-and-risks.md",
+        "architecture/17-extension-composition.md",
+        "architecture/14-project-initialization.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md"
       ],
       "requirements": [
         "REQ-01",
@@ -1002,7 +1117,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "新 KMP 插件仍可包装 JNI 库；限制是 externalNativeBuild 和多 variant，不能误写为不支持 JNI。"
+      "notes": "新 KMP 插件仍可包装 JNI 库；限制是 externalNativeBuild 和多 variant，不能误写为不支持 JNI。 Apple 部分承接 I01 的双配方；既有 I02 → I03 → I04 依赖链不变，不因 Swift 设计已确定越过初始化用例与 Wrapper 验收。"
     },
     {
       "id": "I05",
@@ -1027,14 +1142,21 @@
         "DevEco 单路线模板及 mobile-ohos 组合分别验证",
         "官方 Kotlin 与 CPF 独立构建、插件/缓存/生成目录隔离，SDK/UI 选择明确，完整组合验证通过",
         "官方/CPF Maven 坐标和目标变体显式映射；不同构建根的发布、生成物和缓存互不覆盖，应用 SDK 与 Konan sysroot 分开记录",
-        "DEC-09：组合根创建；受管链接与入口注入；CRIT-04 验证声明共享的实例与最终释放一次"
+        "DEC-09：组合根创建；受管链接与入口注入；CRIT-04 验证声明共享的实例与最终释放一次",
+        "在本任务承诺的工程配方内验证已有工程接入、升级及禁用适用项：先展示受检差异，保护手写文件，失败保留原锁/有效批次；不承诺任意工程自动迁移",
+        "按 ADR-0016/0017 交付普通 HAR 与选定 ArkUI 状态/页面工程；IDE/CLI 共用构建入口，真实声明变化、无 UI 基线、增强启用/禁用和已有工程升级分别验证",
+        "本版本选定多 env/CMP 模板按独立 profile 验证；Kotlin provider、渲染依赖及应用组合根只有声明的最终 owner，不将 MadDemo 过渡渲染桩当作通用支持。HSP/字节码 HAR/源码协作或企业配方单独形成资格，不作为默认 HAR 的 I05/I06/L07/C11 新前置"
       ],
       "documents": [
         "product/04-project-initialization.md",
         "validation/06-project-initialization.md",
         "architecture/16-technology-stack-and-versions.md",
         "delivery/03-decisions-and-risks.md",
-        "architecture/09-build-packaging-release.md"
+        "architecture/09-build-packaging-release.md",
+        "architecture/17-extension-composition.md",
+        "architecture/14-project-initialization.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-01",
@@ -1067,12 +1189,17 @@
         "其余主线模板覆盖完整 INIT 适用项",
         "全新用户、目录迁移、失败恢复和调试承诺有证据",
         "Swift C++ 模板分别验收构建系统、方向和分发 profile；推荐的公开 SDK 不向消费者隐式传播未声明的 C++ interop 配置",
-        "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析"
+        "DEC-11：首链 P01/P02 独立冻结；P03/P05 仅阻断受影响组合；每路线最低完整 profile 与必需用例已解析",
+        "INIT-04/07/08/09/11/12 覆盖已有工程变更、并发基准冲突、升级失败恢复与可选项禁用；增量成本有实测记录，不以新建示例替代持续使用",
+        "ArkTS 新用户从公开候选完成 DevEco 导入、补全、构建/运行、目录迁移与升级/禁用；源码联编另验，UI 模板编译不代替真实页面生命周期"
       ],
       "documents": [
         "validation/06-project-initialization.md",
         "architecture/16-technology-stack-and-versions.md",
-        "delivery/03-decisions-and-risks.md"
+        "delivery/03-decisions-and-risks.md",
+        "architecture/17-extension-composition.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-01",
@@ -1101,10 +1228,13 @@
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "图形入口调用同一初始化用例；参数、诊断和结果一致"
+        "图形入口调用同一初始化用例；参数、诊断和结果一致",
+        "ArkTS 向导只包装同一 CLI/模板/Hvigor 用例，普通工程不依赖插件；参数、诊断、生成结果及取消/失败恢复与 CLI 对照"
       ],
       "documents": [
-        "architecture/14-project-initialization.md"
+        "architecture/14-project-initialization.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-13"
@@ -1125,20 +1255,40 @@
       "depends_on": [
         "C02"
       ],
-      "status": "not_started",
-      "verification": "missing",
-      "evidence": [],
+      "status": "implemented",
+      "verification": "passed",
+      "evidence": [
+        "reviews/2026-10-25-swift-extension-delivery.md",
+        "reviews/2026-10-25-arkts-extension-delivery.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-second-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
         "普通入口、便利层、生成依赖和运行依赖分开；按符号/语义阶段规定唯一机制责任",
         "主线基础、按配置便利层、S6 扩展及 E04 同步探针边界明确；默认不增加重复转换/订阅",
-        "S0 可以原型；集成提交普通/便利对照、展开、失败诊断与 DX 预期；公开 API 和兼容承诺在发布前收敛"
+        "S0 可以原型；集成提交普通/便利对照、展开、失败诊断与 DX 预期；公开 API 和兼容承诺在发布前收敛",
+        "明确受支持业务声明子集、通用手写运行时与按声明生成部分；消费方式和具体工具选择分开，组合按符号/阶段/实例范围分工",
+        "普通 API 的业务方法、期望接口/profile 身份与必要接线由生成/装配提供；高级原生访问说明保活、线程与关闭责任，不靠消费者补写内部句柄包装",
+        "按 ADR-0014 收敛 Swift 十二项必要能力的声明子集、默认行为、生成形状、拒绝诊断和独立验收输入；它们是讨论与设计索引，不新增工作包、案例 ID 或完成率",
+        "Swift 设计区分普通模型直接导出、类型安全 Facade 和独立所有权快照；通用运行时手写，业务 Facade 按真实声明生成；线程/Sendable、owner/关闭、async/取消、状态/事件及宿主反向接口复用既有 DEC 责任与协议",
+        "明确 SwiftPM 普通源码与必要 native XCFramework 的发行消费、作者源码协作和 UI/薄宏配置边界；正式消费者不安装 MadB/Gradle/Cargo，设计采用与具体执行授权分开记录",
+        "按 ADR-0015 固定 Swift 九项扩展的普通 API 前提、默认选型、依赖/冲突和逐配置验收；Kotlin Combine/Rx 的 NativeCoroutines 正式组合归 X01，L04 和主线发布不以该 S6 组合通过为前置",
+        "按 ADR-0016/0017 明确 ArkTS 十二项必要与十二项扩展的适用声明、普通替代、生成/手写分工、目标约束及正反输入；讨论索引不增加工作包或案例组",
+        "ArkTS 不强制统一对象层级或状态重放策略；便利层复用既定 owner、取消和订阅，类型断言/Promise/装饰器/Sendable 不赋予底层不存在的保证"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md",
+        "product/03-developer-experience.md",
+        "delivery/01-implementation-plan.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-06",
@@ -1148,7 +1298,7 @@
       "probes": [
         "P12"
       ],
-      "notes": ""
+      "notes": "按 ADR-0014–0017 交付共同契约、Swift 十二必要/九扩展、ArkTS 十二必要/十二扩展的声明子集、默认行为、普通替代、生成/手写责任、拒绝输入、依赖与独立验收预期；十一条 acceptance 经独立审查并绑定实际编译/宏展开/reader 正反例。本包验收限于契约与可执行设计样例，不将各语言实现并入 L01：第二业务真实增删改生成、C06 固定 Facade/显式 expectedProfile 接线、各语言增强、目标/IDE/公开包仍须 L02–L07、I 链及 C09/C10 按原 acceptance 完成。主线与 S6、消费者可选与项目承诺、C06/C07 已冻结证据均保持原边界。"
     },
     {
       "id": "L02",
@@ -1163,22 +1313,27 @@
         "C05",
         "L01"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-26-chief-architect-third-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
         "复用后端声明和来源映射；普通入口可独立消费",
         "关闭诊断仍保留资源/线程/状态机保护",
         "首链普通资源/回调接口与生成诊断先贯通；诊断、静态属性和运行检查分别声明覆盖范围",
-        "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅"
+        "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅",
+        "交付 explain：稳定诊断码映射含义、触发条件、声明来源及可执行修复入口；未知码明确失败；机器可读结果和退出结果有正反用例，查询只读且不隐式探测或构建。"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
         "validation/07-developer-ergonomics.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md"
       ],
       "requirements": [
         "REQ-02",
@@ -1188,12 +1343,12 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。"
     },
     {
       "id": "L03",
       "title": "Kotlin 惯用 API",
-      "phase": "S2",
+      "phase": "S3",
       "start_phase": "S2",
       "track": "ergonomics",
       "scope": "mainline",
@@ -1201,7 +1356,8 @@
       "owner": null,
       "depends_on": [
         "C06",
-        "L01"
+        "L01",
+        "C07"
       ],
       "status": "not_started",
       "verification": "missing",
@@ -1213,13 +1369,16 @@
         "冷/热流共享、异步清理及 Compose 生命周期测试通过",
         "按选择的 KSP/委托配置交付声明、生成形状、普通/便利两种用法、依赖和诊断；KSP 不推断函数体语义",
         "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅",
-        "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过"
+        "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过",
+        "CPF CMP 共享 UI 配置复用 Kotlin/ArkTS 普通协议和组合根；官方/CPF 编译与发布配套独立，纯逻辑消费者无渲染依赖，页面/订阅及渲染依赖按选定配置验收"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
         "validation/07-developer-ergonomics.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-05",
@@ -1228,7 +1387,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "按项目所有者确认的阶段修订，从 S2 交付 C06/L01 上的 Kotlin 声明、协程、普通 API 与 Compose 基础子范围；S3 在 C07 普通 Kotlin/ArkTS 路线就绪后完成 CPF CMP 联合验收。L03 提供 Kotlin/CPF 声明与 UI 适配，L05 提供 ArkTS 侧接线，I05 提供选定组合根与工程候选；联合切片须有配套锁、唯一 owner、页面/订阅生命周期、纯逻辑无渲染依赖及 Release/HAR 独立消费证据。不要求 L05/I05 整包先完成，也不向它们添加反向整包依赖；缺联合证据仍不能通过 L03。阶段与联合切片出口见 delivery/01-implementation-plan.md。"
     },
     {
       "id": "L04",
@@ -1243,18 +1402,31 @@
         "C06",
         "L01"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-swift-extension-delivery.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "async、AsyncSequence、Observation 与可选薄宏验证",
-        "普通入口、宏组合、来源和并发隔离有真实证据",
+        "普通 async/await、AsyncSequence 和类型化错误可独立消费；Observation、SwiftUI/UIKit 适配及选用薄宏按配置验证",
+        "普通入口、来源定位和并发隔离有真实证据；已承诺便利配置另验宏组合及等价普通用法",
         "SKIE 直接构建与二进制分发分别验收；不可调用占位不能算 API 可用，custom cinterop 与 lambda 泛型参数有公开处置",
         "先验证普通订阅、执行器、停止与资源协议，再验证 Observation/选用薄宏或属性封装；初始化/getter 无 native 注册副作用，给出等价普通 API",
         "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅",
-        "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过"
+        "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过",
+        "按支持子集生成业务方法、类型/错误与必要 Facade，复用可直接消费的导出模型；第二个业务模块增删改声明后可重生成，不修改工具私有映射或手工复制业务包装",
+        "按 profile 验证公开类型的隔离/Sendable、回调投递与目标线程；actor 串行不冒充固定 OS 线程，主线程切换不冒充完整并发安全证明",
+        "普通 API 显式表达资源 owner、借用/保活、关闭排水与回调生命期；区分等待取消、工作停止、停止确认和业务撤销，取消/完成竞争与迟到资源只交接或释放一次",
+        "状态与事件分别声明冷/热、初值/重放、合并、缓冲/溢出和停止保证；宿主协议/闭包明确持有关系、投递线程、可支持的错误返回与重入，不能让业务消费者手写内部注册和释放接线",
+        "Observation 首选 Swift 本地可观察状态外壳，复用普通观察/停止协议；只将可合并状态映射为属性，事件单独消费；UI 更新遵循 MainActor，不复制权威业务状态或由 getter/构造启动 native 工作",
+        "SwiftUI/UIKit 集成分别验证重复进入退出、身份稳定、订阅复用与停止完成；一个页面退出不关闭其他消费者共享的引擎；macOS Observation 原型不替代 iOS 真机/模拟器和 UIKit 证据",
+        "薄宏与属性封装只减少重复声明并调用已验证普通 API；宏展开、声明定位、组合失败与关闭宏后消费独立留证，SwiftSyntax 属编译依赖，不进入无宏配置",
+        "按 ADR-0015 交付选定 Combine/Rx 的普通 Swift 适配，复用 DX-01/06/07/08 验证订阅启动、独立订阅与共享、取消/Dispose、终态和有界交付；未选配置不引入对应运行依赖。Kotlin Combine/Rx 的 NativeCoroutines 正式组合由 X01 验收；本包不重复生成该协程桥，也不把 X01/X02/L08 的完成设为普通 API、Observation 或 UI 配置的完成前置",
+        "Apple 诊断优先将显式边界 hooks 接入 OSSignposter，按调用/观察身份有界记录；关闭采集不关闭必要保护，诊断与未插桩 Release 分开验证；OTel 和编译器深改写不作为默认运行依赖",
+        "整包基线限定 C06 配置上的通用 Swift 普通 API、Observation/UI 与已选便利层；维护通用用例与复验入口。后续 C08 Swift-C/Swift-C++ 配置须由 C08 接线并取得该候选的适用 Swift 回归证据，不继承 C06 证据；保留 C06/L01 依赖。"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
@@ -1262,7 +1434,10 @@
         "architecture/16-technology-stack-and-versions.md",
         "delivery/03-decisions-and-risks.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md"
       ],
       "requirements": [
         "REQ-05",
@@ -1271,7 +1446,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "承接 L01 的 Swift 契约并复用 C06/C08 对应后端能力；按本次执行授权已启动 sdk/swift/observation 的普通观察与 Observation macOS 子范围实现，再补 SwiftUI/UIKit、工程与便利语法配置。C06/L01 依赖是整体验收前置，允许在明确契约下提前独立原型；本机原型不授予 iOS 或发行资格。Combine/Rx 的 Kotlin 正式桥接组合归 X01，X02 独立实验，L08 深改写不在默认交付内。 evidence 仅导航到已交付契约/开发首片的历史报告，不表示当前整包或目标认证；verification 保持 missing。 项目所有者在本次接管中确认通用 Swift 与后续原生组合分责，具体 acceptance 已补齐；阶段和依赖保持原样，决定见 reviews/2026-10-25-chief-architect-first-batch.md。 接管首批补充真实 SKIE Engine 双观察模型共享 owner 消费检查；仅 macOS Arm64 开发组合，不覆盖 iOS/UI 或正式分发。"
     },
     {
       "id": "L05",
@@ -1281,14 +1456,20 @@
       "track": "ergonomics",
       "scope": "mainline",
       "owner_role": "OHOS 维护者",
-      "owner": null,
+      "owner": "changyue1053",
       "depends_on": [
         "C07",
         "L01"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "verification": "missing",
-      "evidence": [],
+      "evidence": [
+        "reviews/2026-10-25-arkts-extension-delivery.md",
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-second-batch.md",
+        "reviews/2026-10-26-chief-architect-third-batch.md",
+        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+      ],
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
@@ -1296,14 +1477,22 @@
         "ArkUI 版本、env 清理、重复页面和停止确认通过",
         "按选定 SDK 提交装饰器/访问器的生成与普通用法对照；状态实例、订阅 owner 和 env 生命周期分别验证，不以装饰器存在认定已接线",
         "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅",
-        "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过"
+        "DEC-08：线程/项数/字节预算明确；满队列和 env 退出保持清理责任；CRIT-11 通过",
+        "按 ADR-0017 交付普通无 UI 状态控制层及选定 ArkUI V2 实例，必要兼容配置另验；页面拥有订阅、应用拥有 Runtime，重复进入/关闭重试/迟到回调不更新新页面或关闭共享 Engine",
+        "首片至少验证同步 observe 回调和 listener 重入、重复 attach 拒绝、请求停止、异步关闭合并/失败重试及成功后重进；宿主替身、真实 ArkTS 编译、Native 组合、UI 运行分别留证",
+        "真实业务声明生成、普通/便利对照和选定装饰器/访问器不隐藏 native 注册与释放；第二业务模块增删改通过，不以固定 C07 Snapshot 首片充当通用生成",
+        "按实际消费 profile 分片交付受限流操作/AbortController、多 env、批量/低复制和 CMP 接线；分别验证事件保真、真实取消、env ownership、视图长度/转移/释放与唯一组合实例；不新增通用响应式 runtime",
+        "普通/增强/禁用配置各有独立消费及编译/运行依赖闭包；已承诺主线增强缺失仍未完成，X03/X07/X08/I07/L08 不成为 L05 的反向验收前置"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
         "validation/07-developer-ergonomics.md",
         "architecture/16-technology-stack-and-versions.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-05",
@@ -1312,7 +1501,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "按 ADR-0017 授权开始状态/页面订阅适配开发首片，位于 sdk/arkts/observation，复用 C07 公开协议。完整 ArkTS/ArkUI、真实 Native、Release HAR/HAP、声明生成和正式候选消费分别验收；首片实现或文档检查不标整包通过。 接管首批仅复验现有宿主观察检查；当时尚未执行真实 Native/HAP/页面，不扩张首批结论。 接管第二批在冻结 C ordinary HAR 上完成独立公开观察源组合的 Release HAP、真实 Native 双观察/停止/重进与 ArkUI V2 页面 hide/return 及清理；API 23 Arm64 模拟器、社区签名，仅本配置。关闭排水后隐藏发布的无更新不等于已入队迟到回调交错；销毁/后台/故障注入/其他路线与正式包仍缺，整包 verification 不变。 接管第三批完成纯值第二业务声明投影前端：五轮源码增改名删、生成声明与实际 HAR 导出对账、五 HAR/五 HAP 编译及删除导出的准确拒绝；独立输入与附件复核通过。该切片无 Native、无目标运行、无 C04 候选提交，不等于第二业务跨语言完整生成或整包验收。 接管第五批在同一冻结 C ordinary HAR 上完成独立 Lab 三轮实际页面替换/销毁回调、新模型及共享 Engine/其他观察持续运行；最终004候选编译、Native/UI和证据独审通过。仅API23 Arm64模拟器/社区签名；旧模型强引用是观察见证，不证明GC；排水后发布不证明已入队迟到交错。后台/故障重试/其他配置与正式包等出口保持。"
     },
     {
       "id": "L06",
@@ -1336,13 +1525,15 @@
         "RAII / move-only / 静态属性在所选编译器验证",
         "异步关闭不依赖同步析构；普通 C API 后条件相同",
         "声明静态属性可检测范围及不支持目标处置；lifetimebound 不延长寿命、不当作完整借用证明；所选包装有等价普通接口",
-        "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅"
+        "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅",
+        "负责 C/C++ RAII、move-only、静态属性和等价普通 C 后条件；不代替 Swift API、UI 或 actor 验收，Swift 原生组合由 C08 接线并复跑适用 L04 用例。"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
         "validation/07-developer-ergonomics.md",
         "delivery/04-design-readiness-and-first-route.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-05",
@@ -1351,7 +1542,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": " 本次接管已获用户确认 Swift 验收分责；具体边界见本包 acceptance 与 reviews/2026-10-25-chief-architect-first-batch.md，不因此计为实现或验收。"
     },
     {
       "id": "L07",
@@ -1378,11 +1569,23 @@
       "acceptance": [
         "DX 全部适用项、未插桩 Release、诊断开关对照通过",
         "生成源 IDE 接入与新人使用实验完成",
-        "公开发行前确定本版本 API、默认行为、目标/依赖、兼容政策和可编译消费样例；不能以架构能力表代替详细设计与证据"
+        "公开发行前确定本版本 API、默认行为、目标/依赖、兼容政策和可编译消费样例；不能以架构能力表代替详细设计与证据",
+        "第二个独立业务模块在承诺子集内新增方法、改字段、重命名和删除后可重生成并由候选消费；不修改 MadB 私有映射、固定样例 Facade 或生成文件",
+        "Swift 十二项必要能力按本版本承诺配置逐项归入既有 INIT/DX/CRIT 和候选证据；独立消费者验证普通 API、正常工程、包安装与兼容升级，源码联编、命令行编译和文档结论不替代正式分发消费",
+        "SwiftUI/UIKit、Observation 与选用薄宏等按 L04 配置独立留证；未启用时普通 API 不依赖 UI 或宏，已纳入交付承诺的配置缺失仍阻断相应完整交付，不因可选标签自动计整体完成",
+        "ADR-0015 的 L04 主线增强按实际承诺配置收口；X01/X02/L08 保持独立扩展资格与证据，不回流成为 L04、L07 或 C11 的新增完成前置；实验、功能可选与验收缺失分别表达",
+        "ArkTS 十二项必要能力与选定 L05/I05 增强按已有 INIT/DX/CRIT 收口；独立第二业务模块、普通/增强/禁用及公开 HAR 消费有证据，未执行目标保持缺失",
+        "ArkTS X03/X07/X08、I07/L08 及非默认特殊配方保留独立资格，不回流成为 L07/C11 新前置；消费者按需启用不豁免已经承诺的 L05 配置",
+        "按实际候选汇总 C06 上的 L04 基线与 C08 新增 Swift-C/Swift-C++ 组合的适用 Swift 复验；复用 C09 独立结果、I04 工程和 C10 制品证据，缺少对应路线结果不由通用层通过补齐。"
       ],
       "documents": [
         "validation/07-developer-ergonomics.md",
-        "delivery/04-design-readiness-and-first-route.md"
+        "delivery/04-design-readiness-and-first-route.md",
+        "architecture/17-extension-composition.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md",
+        "adr/0016-arkts-production-baseline.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-06",
@@ -1392,7 +1595,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "以独立业务模块和本版本真实发布候选收口 Swift 支持范围及兼容承诺；十二项必要能力和九项扩展的讨论索引不是新工作包。主线按已选 L04 配置验收，后续 X01/X02/L08 证据独立，避免形成主线依赖后续扩展的循环。 本次接管已获用户确认 Swift 验收分责；具体边界见本包 acceptance 与 reviews/2026-10-25-chief-architect-first-batch.md，不因此计为实现或验收。"
     },
     {
       "id": "L08",
@@ -1414,11 +1617,16 @@
       "acceptance": [
         "明确需求、范围和独立版本；不替代基础正确性保护",
         "插桩与非插桩对照及 IDE 兼容通过",
-        "先以原型证明深度改写解决的具体缺口，再收敛插件接口；未启用时普通 API 和必要保护保持可用"
+        "先以原型证明深度改写解决的具体缺口，再收敛插件接口；未启用时普通 API 和必要保护保持可用",
+        "ArkTS 优先 HiTraceMeter/Profiler 和显式 hooks；深度插桩保留开销/采集失败与非插桩 Release 对照，必要保护不随开关关闭；AKI/ArkAnalyzer 不自动进入交付依赖"
       ],
       "documents": [
         "architecture/15-developer-ergonomics.md",
-        "delivery/04-design-readiness-and-first-route.md"
+        "delivery/04-design-readiness-and-first-route.md",
+        "architecture/17-extension-composition.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-10",
@@ -1426,7 +1634,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "Swift 薄宏/属性封装仍按 L04 交付。ADR-0015 不将编译器深改写纳入默认 Swift 交付；先用已有诊断钩子和系统工具定位具体缺口，确需深改写时再形成范围、维护成本与验证方案。已授权 Swift 工作可自主推进，不因此将未知深改写需求自动记为开工或通过。"
     },
     {
       "id": "X01",
@@ -1448,13 +1656,19 @@
       "acceptance": [
         "Async / Combine / RxSwift 的订阅启动、取消和类型增强职责分别验证",
         "每接口只选一个协程桥；SKIE 类型增强与 NativeCoroutines 的源码、打包和取消组合单独验收，不沿用单工具证据",
-        "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅"
+        "DEC-07：每符号生成语义阶段责任表；普通/便利入口共用机制，不重复转换或订阅",
+        "Kotlin Combine/Rx 正式配置优先采用 NativeCoroutines 对应适配器，并保留不冲突的 SKIE 类型增强；关闭选定接口的重叠 Flow/suspend 桥，核对原始/增强/生成入口、名字与运行依赖，逐配置编译和消费",
+        "每次订阅的执行次数、冷/热共享、重放、失败和取消分别验证；Combine demand、Rx dispose 与 native 停止/排水分责，不能以 Deferred 补出取消或以 dispose 返回冒充停止完成；SKIE Future 预览不作为需要取消的默认实现",
+        "Kotlin、SKIE、NativeCoroutines Kotlin/Swift 组件及发行变体成套固定；无 Rx 配置核对解析和链接闭包，不能把未链接 Rx target 当作无需解析 Rx 依赖；订阅取消与作用域关闭均留负例"
       ],
       "documents": [
         "architecture/06-backend-profiles.md",
         "architecture/16-technology-stack-and-versions.md",
         "delivery/03-decisions-and-risks.md",
-        "architecture/08-runtime-and-idiomatic-api.md"
+        "architecture/08-runtime-and-idiomatic-api.md",
+        "architecture/17-extension-composition.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1463,7 +1677,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "本次 Swift 扩展已获执行授权，由技术执行方按 ADR-0015 安排隔离原型和集成；不再等待逐项重复授权。C11 依赖保留为正式扩展整体验收前置，允许提前验证明确子集；L04/C11 不反向依赖 X01。Kotlin Combine/Rx 正式桥组合在本包收口，主线 SKIE 能力和其他语言响应式适配分别管理，不沿用单工具或主线认证。"
     },
     {
       "id": "X02",
@@ -1483,10 +1697,15 @@
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "当前 Alpha 能力、直接集成、类型/泛型、协程与反向接口另建配置"
+        "当前 Alpha 能力、直接集成、类型/泛型、协程与反向接口另建配置",
+        "以锁定 Kotlin 的官方 Swift export direct integration 建独立实验配方，验证真实声明、类型/泛型、suspend/Flow、反向接口及生命周期边界；不默认与 SKIE 或 NativeCoroutines 叠加处理同一导出面",
+        "记录与 Objective-C export 主线的 API/模块/构建差异及不支持项；直接集成通过不证明公开二进制分发可用，正式发行前另有包与消费者证据"
       ],
       "documents": [
-        "architecture/06-backend-profiles.md"
+        "architecture/06-backend-profiles.md",
+        "architecture/17-extension-composition.md",
+        "adr/0014-swift-production-baseline.md",
+        "adr/0015-swift-extension-delivery.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1495,7 +1714,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "本次 Swift 授权涵盖独立实验路线，按 ADR-0015 在基础契约后安排 direct integration 原型；不替换当前 SKIE 主方案。C11 仍是正式扩展整体验收前置，提前原型不继承现有互操作、分发或兼容证据。"
     },
     {
       "id": "X03",
@@ -1515,10 +1734,15 @@
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "独立运行时、ABI 和 SDK 能力，不继承 Node-API 证据"
+        "独立运行时、ABI 和 SDK 能力，不继承 Node-API 证据",
+        "按 ADR-0017 明确产品 SDK、ArkTS 语言/运行时模式、ANI 接口与 ani-rs 固定发布版本或源码提交；主分支 async stream/执行器能力不等于已发布目标支持",
+        "独立验证装载、线程 attach/detach、引用、Promise 等待与业务取消、stream 背压和 shutdown；运行时退出模型不得套用 Node-API hook 证明",
+        "普通/增强、真实 HAP 及 Release 消费形成该后端自己的证据；正式验收保留 C11 前置，早期隔离原型不抬高主线完成度"
       ],
       "documents": [
-        "architecture/11-language-extension.md"
+        "architecture/11-language-extension.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1527,7 +1751,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": ""
+      "notes": "已授权按 ADR-0017 自主安排独立子范围；先确认可公开获取的目标 SDK/运行时和消费场景，状态仍以实际实现为准。正式扩展验收保留 C11 前置，不反向阻断主线。"
     },
     {
       "id": "X04",
@@ -1550,7 +1774,8 @@
         "分别验证目标 JDK 和宿主，不视为 Android 通用替代"
       ],
       "documents": [
-        "architecture/06-backend-profiles.md"
+        "architecture/06-backend-profiles.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1582,7 +1807,8 @@
         "真实工具链、受支持语言子集和正反消费验证"
       ],
       "documents": [
-        "architecture/11-language-extension.md"
+        "architecture/11-language-extension.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1614,7 +1840,8 @@
         "按开放身份和 EXT 门禁登记新范围；从单路线实测开始"
       ],
       "documents": [
-        "validation/05-language-onboarding.md"
+        "validation/05-language-onboarding.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1645,13 +1872,16 @@
       "acceptance": [
         "独立锁 uniffi-bindgen-arkts beta、UniFFI 0.31.x 及实际目标 SDK；与 Gobley 0.29.4 / UniFFI 0.32.x 配置隔离",
         "声明支持的类型、对象、async、回调、取消及 env 退出由真实 ArkTS/HAP 证明；native smoke 的仅构建结果不冒充设备运行",
-        "先通过适用 EXT 门禁并明确维护/许可/升级责任，再决定是否推荐；不自动增加第 17 条主线或继承 napi-ohos 认证"
+        "先通过适用 EXT 门禁并明确维护/许可/升级责任，再决定是否推荐；不自动增加第 17 条主线或继承 napi-ohos 认证",
+        "按 ADR-0017 服务已有 UniFFI 声明，核对原 cdylib 与 N-API adapter 的完整装载配套；async/free 不自动计公开取消，smoke 构建与设备执行分别记录"
       ],
       "documents": [
         "architecture/06-backend-profiles.md",
         "architecture/16-technology-stack-and-versions.md",
         "validation/05-language-onboarding.md",
-        "delivery/03-decisions-and-risks.md"
+        "delivery/03-decisions-and-risks.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1665,7 +1895,7 @@
       "probes": [
         "P13"
       ],
-      "notes": "S0 可提前执行可行性探针；依赖 C11 是扩展正式验收前置，不阻止实验。属于既有语言组的实验后端，不替换主线，失败不抬高或降低 S5 完成度。"
+      "notes": "S0 可提前执行可行性探针；依赖 C11 是扩展正式验收前置，不阻止实验。属于既有语言组的实验后端，不替换主线，失败不抬高或降低 S5 完成度。 ADR-0017 已授权独立子范围，由实施负责人按原型与完整验收前提安排；未开始状态不因授权自动修改。"
     },
     {
       "id": "X08",
@@ -1685,14 +1915,17 @@
       "planned_start": null,
       "planned_finish": null,
       "acceptance": [
-        "固定 KNOI、CPF、SDK 与注册配方，单独验证公开来源、依赖预载、sharedLib/initBridge 和 Release/HAR 消费",
+        "固定 KNOI、实际 Kotlin 编译器/KSP、SDK 与注册配方；CPF 配套必须先证明兼容，单独验证公开来源、依赖预载、sharedLib/initBridge 和 Release/HAR 消费",
         "按类型、载荷、同步/异步回调、env 退出与停止确认声明能力，真实 HAP 运行且无隐式 akinterop 串联",
-        "复用 EXT 验收规范，结果绑定本扩展候选；不以 C07 的主线通过替代 KNOI 认证"
+        "复用 EXT 验收规范，结果绑定本扩展候选；不以 C07 的主线通过替代 KNOI 认证",
+        "按 ADR-0017 对声明、双向服务、JSValue/ArrayBuffer、异常、同步/异步回调及最终释放逐项给出能力/拒绝；上游示例编译器与 CPF 兼容不能互相推定"
       ],
       "documents": [
         "architecture/06-backend-profiles.md",
         "validation/05-language-onboarding.md",
-        "delivery/03-decisions-and-risks.md"
+        "delivery/03-decisions-and-risks.md",
+        "architecture/17-extension-composition.md",
+        "adr/0017-arkts-extension-delivery.md"
       ],
       "requirements": [
         "REQ-03",
@@ -1706,7 +1939,7 @@
       "probes": [
         "P14"
       ],
-      "notes": "S0 可做探针，S6 正式验收；C11 是正式扩展验收前置。按独立配置记录证据，不作为 S5 主线发布条件。"
+      "notes": "S0 可做探针，S6 正式验收；C11 是正式扩展验收前置。按独立配置记录证据，不作为 S5 主线发布条件。 ADR-0017 已授权独立子范围，先验证实际编译器兼容；不将所研究上游能力或计划本身计为实现。"
     },
     {
       "id": "X09",
@@ -1733,7 +1966,8 @@
       "documents": [
         "architecture/09-build-packaging-release.md",
         "architecture/12-extension-protocol.md",
-        "validation/08-critical-scenarios.md"
+        "validation/08-critical-scenarios.md",
+        "architecture/17-extension-composition.md"
       ],
       "requirements": [
         "REQ-04",

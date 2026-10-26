@@ -1151,7 +1151,7 @@
           "label": "C++ 调用 Swift",
           "steps": [
             "选定支持反向 Swift 导出头的构建流程。",
-            "仅调用头文件中真实暴露的 Swift API，或使用显式 callback 适配器。",
+            "仅调用头文件中真实暴露的 Swift API；所选工具链未导出的 async/throws 等形状采用显式完成/错误适配。",
             "回调数据满足引用寿命与跨 actor 条件后投递指定执行器。",
             "SwiftPM 正向配置不构成反向构建保证。"
           ]
@@ -1279,7 +1279,7 @@
       ],
       "choices": [
         "同源构建、类型受支持且消费方接受 C++ interop 时选择。",
-        "独立二进制 SDK 或需收敛公开 ABI 时选择 C ABI 配置。",
+        "独立二进制 SDK 优先选择 C ABI；需要 Apple 对象或协议时选择 ObjC++，direct-source 另列受控配置。",
         "Apple 对象模型与现有 Cocoa 协议优先考虑 ObjC++ 配置。"
       ],
       "detail": {
@@ -1357,7 +1357,7 @@
               "summary": "受控源码构建直接导入受支持的 C++ 类型；调用方向、Swift/Clang、标准库和下游编译配置共同决定能力，不能把 SwiftPM 正向支持推导为反向支持。",
               "does": [
                 "同源构建、类型受支持且消费方接受 C++ interop 时选择。",
-                "独立二进制 SDK 或需收敛公开 ABI 时选择 C ABI 配置。",
+                "独立二进制 SDK 优先选择 C ABI；需要 Apple 对象或协议时选择 ObjC++，direct-source 另列受控配置。",
                 "Apple 对象模型与现有 Cocoa 协议优先考虑 ObjC++ 配置。"
               ],
               "constraints": [
@@ -1538,7 +1538,7 @@
               ],
               "constraints": [
                 "同源构建、类型受支持且消费方接受 C++ interop 时选择。",
-                "独立二进制 SDK 或需收敛公开 ABI 时选择 C ABI 配置。"
+                "独立二进制 SDK 优先选择 C ABI；需要 Apple 对象或协议时选择 ObjC++，direct-source 另列受控配置。"
               ],
               "lines": [
                 "Swift API + interop 配置"
@@ -1669,7 +1669,7 @@
               "kind": "ui",
               "summary": "选定支持反向 Swift 导出头的构建流程。",
               "does": [
-                "仅调用头文件中真实暴露的 Swift API，或使用显式 callback 适配器。",
+                "仅调用头文件中真实暴露的 Swift API；所选工具链未导出的 async/throws 等形状采用显式完成/错误适配。",
                 "回调数据满足引用寿命与跨 actor 条件后投递指定执行器。"
               ],
               "constraints": [
@@ -4469,6 +4469,10 @@
     }
   ],
   "sources": [
+    {
+      "label": "Swift 生产与公开交付基线",
+      "path": "adr/0014-swift-production-baseline.md"
+    },
     {
       "label": "后端配置与反向调用范围",
       "path": "architecture/06-backend-profiles.md"
