@@ -1,0 +1,377 @@
+{
+  "schema": "madb-review/linux-final-independent/1",
+  "reviewed_at": "2026-10-26T20:50:30.062406+00:00",
+  "result": "passed_for_frozen_linux_value_recipe_slice",
+  "blocking_findings": [],
+  "scope": "Independent read-only evidence audit of completed Linux native value recipe slice; reviewer did not operate container, execute SDK/compiler or modify either repository. Not whole L02/C06/C07/C09/C10 acceptance, GitHub Actions success or release.",
+  "source_pins": {
+    "madb": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+    "madb_lab": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1"
+  },
+  "target": "x86_64-unknown-linux-gnu",
+  "emulation": "QEMU 7.0.0",
+  "container_id": "8552514ab8ea0c225a3cf8858fa67f7fab0f7b721ed73a3026a98c089a8963e8",
+  "image_id": "sha256:4b826b95c4a62ef6be1f5a792519d9a86a235f03459e12d7b01326e9d5a02183",
+  "candidate_pins": {
+    "author-0": "sha256:2a8a74b8c41927982c02138b96e4351391979bc3187389d0c7db990e8464e21f",
+    "author-1": "sha256:773ecbc70cd48958343132c210637502565dde3df6a04913b825075b1a1140bf",
+    "author-2": "sha256:8ece2a00f7c86919cdbe5cf2ec7ec91192f8ed56b14ba479e9f4e1fe020b72e3",
+    "author-3": "sha256:a58742787042a0f2aafadf063bded8ef5c45bfaa57c1eafe26891ef20efdfa8c",
+    "author-4": "sha256:18111822df18e46e9326db888823ab0922b2add5b0ce49ff6cda81a546882f94",
+    "aux-grow": "sha256:c42aa5e9070c66539d46b0b2aad2baaee6a433cdba68b0f4624b6346492b6db0",
+    "aux-panic": "sha256:1d4b879f0afa98ec0cb8bb16351a46e065132a61e4df1ce31a2044ab8eb2d80e"
+  },
+  "external_pins_reviewed_at": "2026-10-26T20:26:49.197574+00:00",
+  "cases_started_at": "2026-10-26T20:29:12.447393Z",
+  "formal_lab_counts": {
+    "reports": 7,
+    "cases": 29,
+    "statuses": {
+      "passed": 29
+    },
+    "levels": {
+      "target-run": 23,
+      "static": 5,
+      "compiled": 1
+    },
+    "native_sdk_processes": 19,
+    "helper_only_processes": 5,
+    "helper_vectors": 116,
+    "export_checks": 7,
+    "accurate_compile_link_rejections": 9,
+    "raw_logs": 78,
+    "unique_attachments": 110,
+    "consumer_binaries": 14,
+    "compilations": 14
+  },
+  "native_supplementary_counts": {
+    "codegen_tests": 4,
+    "codegen_real_tool_tests": 3,
+    "codegen_render_only_tests": 1,
+    "client_tests": 3,
+    "client_real_C_stub_tests": 1,
+    "client_pure_checks": 2,
+    "retained_codegen_commands": 16,
+    "successful_codegen_commands": 15,
+    "expected_abort_commands": 1
+  },
+  "lab_repository_gate_tests": 621,
+  "producer_workspace_archives": {
+    "count": 8,
+    "successful": 7,
+    "failed": 1,
+    "members": 8801,
+    "uncompressed_file_bytes": 1768113809,
+    "compressed_bytes": 466822994
+  },
+  "source_and_input_closure": {
+    "scope": "Read-only actual named bytes, frozen sources, no-drift snapshots and archived producer-input audit",
+    "result": "passed",
+    "missing_formal_consumer_inputs": {},
+    "observed_at": "2026-10-26T20:50:17.594396+00:00",
+    "source_file_counts": {
+      "madb": 1186,
+      "madb_lab": 523
+    },
+    "unchanged_snapshots": [
+      "before-lab-inventory.json",
+      "after-lab-inventory.json",
+      "final-inventory.json"
+    ],
+    "named_byte_payloads": 77,
+    "formal_consumer_supplement": {
+      "scope": "Read-only independent exact original consumer dependency byte supplementation audit; no compiler/SDK rerun",
+      "result": "passed",
+      "reviewed_at": "2026-10-26T20:50:15.560960+00:00",
+      "input_file_count": 60,
+      "payload_bytes": 247527,
+      "archive": {
+        "path": "/private/tmp/madb-chief-round7/linux-consumer-input-supplement/formal-consumer-header-bytes.tar",
+        "sha256": "sha256:9c6cf264537a9150c1ae90f1f03dd1256f73336b552cd830a5cbed2e7b230219",
+        "size": 296960
+      },
+      "original_missing_mapping": {
+        "path": "/private/tmp/madb-chief-round7/linux-review/missing-formal-consumer-dependencies.json",
+        "sha256": "sha256:5ac7f9f6240cc94641ab36a867393e784aa0fe7d005ac3f728d8ab2a7a26c3aa",
+        "size": 9825
+      },
+      "files_index": {
+        "path": "/private/tmp/madb-chief-round7/linux-consumer-input-supplement/files.json",
+        "sha256": "sha256:0edd0aa94aa902607cc69e6c0d7ad91218f2df5f34f8f27b6f1e0e17e6402b26",
+        "size": 1685
+      },
+      "before_after_container": "8552514ab8ea0c225a3cf8858fa67f7fab0f7b721ed73a3026a98c089a8963e8",
+      "image": "sha256:4b826b95c4a62ef6be1f5a792519d9a86a235f03459e12d7b01326e9d5a02183",
+      "execution": {
+        "path": "/private/tmp/madb-chief-round7/linux-consumer-input-supplement/execution.json",
+        "sha256": "sha256:95b5388094080e0d6d6ad2c83d4b15132f6e22c058db6da880e7fcc0e3cbe60b",
+        "size": 2026
+      },
+      "export_script": {
+        "path": "/private/tmp/madb-chief-round7/linux-consumer-input-supplement/container-readonly-export.py",
+        "sha256": "sha256:1cfb0ef99189ad24d6eb3b392fcc307e02d13f2396007086359aed022f6bde80",
+        "size": 1631
+      },
+      "limits": [
+        "Not a complete operating system export",
+        "Only confirms these current read-only bytes equal the frozen report dependencies; no SDK rerun or historical process instrumentation added"
+      ]
+    },
+    "formal_lab_external_dependency_paths": 99,
+    "producer_workspaces": [
+      {
+        "group": "aux-panic",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      },
+      {
+        "group": "author-3",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      },
+      {
+        "group": "aux-grow",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      },
+      {
+        "group": "author-2",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      },
+      {
+        "group": "author-1",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      },
+      {
+        "group": "author-4",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      },
+      {
+        "group": "author-0",
+        "locked_inputs": 41,
+        "fixed_product_source_inputs": 36,
+        "schemas": 26,
+        "sdk_inputs": 64,
+        "tools": 10,
+        "archived_candidate_files": 18
+      }
+    ],
+    "named_archive": {
+      "sha256": "sha256:1f4d8eb4fa1e57fa9c5b12450a8df66f346cc491adcd9051ca5afb38570c2ff0",
+      "size": 185702400
+    },
+    "qemu": {
+      "scope": "read-only actual PID1 emulator image and version",
+      "container_id": "8552514ab8ea0c225a3cf8858fa67f7fab0f7b721ed73a3026a98c089a8963e8",
+      "container_image": "sha256:4b826b95c4a62ef6be1f5a792519d9a86a235f03459e12d7b01326e9d5a02183",
+      "proc_executable": "/proc/1/exe",
+      "kernel_label": "/usr/bin/qemu-x86_64",
+      "sha256": "sha256:bb39691198d944c52c142c9cd4cb7a5b0cdcb7146a3b04c60c4b34ddee5aebe9",
+      "size": 6104352,
+      "argv": [
+        "/proc/1/exe",
+        "--version"
+      ],
+      "exit_code": 0,
+      "stdout": "qemu-x86_64 version 7.0.0 (v7.0.0)\nCopyright (c) 2003-2022 Fabrice Bellard and the QEMU Project developers\n",
+      "stderr": ""
+    },
+    "final_storage": {
+      "/work": {
+        "total": 31524294656,
+        "used": 27491790848,
+        "free": 2405220352
+      },
+      "/cache": {
+        "total": 1995165736960,
+        "used": 1857885122560,
+        "free": 137280614400
+      }
+    },
+    "handoff_files": {
+      "sha256": "sha256:c438db3eef1cf45fc6098c146d791d6198c5ccb23189674350a6dc6e3c14abac",
+      "size": 3615
+    }
+  },
+  "native_semantics": "Allocation and cleanup actual harness covers reserve failures, invalid-later-field-before-allocation, valid values, 65-byte result rejection, Result Err, ordinary controlled unwind, primary panic-payload destructor panic -> caught secondary disposal -> status8/zero output/no net allocation; secondary payload destructor panic causes explicit expected SIGABRT, not successful recoverable return. Fixed runtime is present in retained generated shim.",
+  "preserved_failed_attempts": [
+    "Initial whole-target symlink clean-tree prepare rejection; no successful stage-prepare completion fabricated.",
+    "First author-1 build killed by unchanged 2 GiB guard; failed workspace and original command retained separately from fresh successful retry."
+  ],
+  "evidence_boundaries": [
+    {
+      "id": "native-client-temporary-artifacts",
+      "classification": "evidence_retention_boundary_not_blocker",
+      "detail": "Native client unittest uses TemporaryDirectory; original stub compile/run child logs, temporary header and executable are not archived. Frozen source and actual outer three-test success are retained. Formal Lab five helper-only processes independently retain headers, binaries and raw logs for 116 vectors. Do not claim all native-client temporary bytes are recheckable or merge these with real SDK counts."
+    },
+    {
+      "id": "parameter-name-source-reuse",
+      "classification": "evidence_retention_boundary_not_blocker",
+      "detail": "Eight parameter-name checks reuse a source path; only the last variant source is retained, while eight commands and rmeta outputs remain. Intermediate source variants are derivable from the fixed test loop but are not retained original bytes. Does not invalidate the observed eight compiler results."
+    },
+    {
+      "id": "guard-trigger-sampling",
+      "classification": "retained_failure_and_sampling_boundary",
+      "detail": "Original author-1 guard failure is retained with exit -9 and /work free 2144382976 <= 2147483648 in command.failure and after. space() raises before appending, so this trigger is absent from space.jsonl. No claim of continuous gap-free monitoring. Successful build/test commands keep the original 2 GiB guard."
+    },
+    {
+      "id": "low-space-recovery-archive",
+      "classification": "storage_recovery_boundary_not_gate_weakening",
+      "detail": "First author-0 archive reads an already-quiescent completed tree with /work free 2144321536 and writes /cache with >2 GiB headroom, verifies every archived member, then releases the named temporary copy to restore headroom. It is not a successful generation/test stage or a lower execution threshold."
+    },
+    {
+      "id": "v1-first-archive",
+      "classification": "preservation_boundary_not_blocker",
+      "detail": "First author-0 v1 archive lacks embedded v2 invocation records; original command path, exit0, stdout workspace, author and candidate bytes independently bind it. Other seven v2 archives also embed invocation hashes."
+    },
+    {
+      "id": "archive-restore-scope",
+      "classification": "verification_scope_boundary",
+      "detail": "Eight named producer trees are byte-complete against original manifests and retain restoration roots. No live filesystem restore or executable rerun was performed. Archived quiescence checks are historical evidence, not a new container observation. This does not assert preservation of every consumer/unittest temporary artifact."
+    },
+    {
+      "id": "process-timestamps",
+      "classification": "observation_boundary",
+      "detail": "External pins precede case-inputs.started_at in retained records. Raw child logs record command/duration/status but not independently trusted absolute start times; no stronger timestamp claim."
+    },
+    {
+      "id": "runtime-environment",
+      "classification": "target_scope_boundary",
+      "detail": "Only x86_64-unknown-linux-gnu under recorded QEMU 7.0.0/container/tool pins. Named tool/runtime/SDK bytes and recorded compiler dependencies are bound; this is not a complete operating-system export, physical x86 certification, or performance result."
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-review/values-report-audit.json",
+      "sha256": "sha256:ccfd82ad93be6218ffb4b4bc7489733f39bf1e4bfc8109ee6a0709f83da4a7b6",
+      "size": 32907
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-review/input-closure-audit.json",
+      "sha256": "sha256:828058008c08ecdd1c15b733bc0f083575d8bfa671d6293cb83cfbe3163239a7",
+      "size": 5096
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-review/audit-validator-source-binding.json",
+      "sha256": "sha256:82725bbdc0d98bbc545398f9e57faaefc58a77b33ecc47b52b3b7d68c1850a48",
+      "size": 134
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-native-evidence-review.md",
+      "sha256": "sha256:9673bd1123e20dc0bead572418ca2a98acd37a09c7dd7e8abedd83ccd6ad8195",
+      "size": 3432
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-native-evidence-review.json",
+      "sha256": "sha256:5159126a7fae9de04ae457c16f7df1e138382fd8cf8a0a69f892b6bf45840565",
+      "size": 41341
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-archive-evidence-review.md",
+      "sha256": "sha256:9e5aaef1db7dce7ec5b4f5cf03b616a0227f36013e38c1925bf1b4c4d89df6c6",
+      "size": 4160
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-archive-evidence-review.json",
+      "sha256": "sha256:083aaf42683c9b59d035c5495acf174e23f2e3129b67ad26436e585a27932ce5",
+      "size": 39565
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-review-values.py",
+      "sha256": "sha256:2e598aac2514844d01a921e96e2fd1ebf0d13ef13843e7b73eb1ee37c3722263",
+      "size": 13138
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-review-inputs.py",
+      "sha256": "sha256:c12de5ab010b53fd23d059d8c10451d61d9d3bd718b503f8a7ad5f49c2483b2e",
+      "size": 7103
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-archive-review/audit.py",
+      "sha256": "sha256:a2837bf1123709a8587e85357e8005c2e571f4be753fff948374d81cb1d33554",
+      "size": 11338
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-archive-review/audit.json",
+      "sha256": "sha256:de0607f58150ec76285398cc6de560f23f862691c2f851beecd8fc2c47e708c8",
+      "size": 31628
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux/external-pins-001/review.json",
+      "sha256": "sha256:701d7dae31a937edc9021d55781e3b6b888e42c34dce21fe59478bab6a4e00d4",
+      "size": 26678
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux/external-pins-001/reviewed-candidate-pins.json",
+      "sha256": "sha256:ef9435bf73b5bac974d2a9bafb3baec32001ca6c6c7d608f7e4d04b6969883d8",
+      "size": 627
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux/native-clang-alias-binding.json",
+      "sha256": "sha256:421a014e16a7e996d0d5d95f2410f3075eb907b1c8e21c0c5f6a975b7d19f996",
+      "size": 1100
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux/qemu-runtime-001.json",
+      "sha256": "sha256:002d989f2ac6d10567ebca486a2a1c9f7076b44d75028ae93f9cf15fafff516b",
+      "size": 643
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux/handoff-files.json",
+      "sha256": "sha256:c438db3eef1cf45fc6098c146d791d6198c5ccb23189674350a6dc6e3c14abac",
+      "size": 3615
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux/public-build-001/stage-verify/lab-gates/command.json",
+      "sha256": "sha256:6b033c56662260cd25a8fb358e2ae0c2e9853a1463ee31cfec5881691bb711d6",
+      "size": 1038
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/linux-consumer-input-supplement-review.json",
+      "sha256": "sha256:e91644d10de59fa12c828e2d35f2f55ac5d8c106889cafd920782718228d7919",
+      "size": 12133
+    }
+  ],
+  "transport_archives": [
+    {
+      "path": "public-candidates-001.tar",
+      "sha256": "sha256:6ea4d54428d6d5c6c879bc3d01f02b8039efade9c2a056c5372058347f3a8baa",
+      "size": 45424640,
+      "files_verified": 126
+    },
+    {
+      "path": "run-evidence-001.tar",
+      "sha256": "sha256:f7bb1270b2c5707cda9115465558d22ad28018d7cf6032f306645e13fe719b3f",
+      "size": 64112640,
+      "files_verified": 451
+    }
+  ],
+  "conclusion": "No remaining blocking inconsistency within the frozen Linux value recipe evidence scope after exact read-only consumer-input supplementation. Native client and parameter-name retention limits remain explicit; no new SDK rerun is required for these bounded claims."
+}

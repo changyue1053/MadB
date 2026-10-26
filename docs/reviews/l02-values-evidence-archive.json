@@ -1,0 +1,176 @@
+{
+  "scope": "L02 finite values frozen source/candidates and limited target proof; I01 files remain unadopted design materials",
+  "producer_revision": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+  "lab_revision": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+  "archive_root": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe",
+  "phases": [
+    {
+      "name": "macos-and-source",
+      "root": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe/macos-and-source",
+      "manifest": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe/macos-and-source/manifest.json",
+      "sha256": "sha256:51252eb5746cc11aa79a7d2e08453d6467775b874a6813651d0ee0e61999e705",
+      "size": 18569802
+    },
+    {
+      "name": "linux",
+      "root": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe/linux",
+      "manifest": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe/linux/manifest.json",
+      "sha256": "sha256:97b3068c9988ec5ffd1fe3553db72c71876350e4717b62f6df7034ac9b6607c6",
+      "size": 308105
+    },
+    {
+      "name": "closeout",
+      "root": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe/closeout",
+      "manifest": "/Users/changyue/Desktop/MadB/.local/evidence/round7-l02-e0f74a5-2d06cbe/closeout/manifest.json",
+      "sha256": "sha256:9e4eebd2506a8f836a591eca4479993b562da2fa0f09c9d84072967e2ba2ec6f",
+      "size": 38861
+    }
+  ],
+  "selected_evidence": [
+    {
+      "phase": "macos-and-source",
+      "path": "round7/formal-native-values-macos-r7/producer.json",
+      "size": 24685,
+      "sha256": "sha256:a65212b0e48449821d31a2f6fadb8d5983dd2a055e8700dd2503049c81119223"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/formal-macos-lab-r7/freeze.json",
+      "size": 1909,
+      "sha256": "sha256:8b06e9b6dfb2e545fba43c114076060769f6eff64d47642eeb7eb93819a3a4a5"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/formal-macos-lab-r7/runs.json",
+      "size": 3869,
+      "sha256": "sha256:2f29e4f17cd440a64d7b2efec984f390425887b80fed518a32d6142ac4caf8f1"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/formal-macos-c05-r7-sdkroot/run.json",
+      "size": 1178,
+      "sha256": "sha256:ea0037c0eb0b04b74a2c3d54fd27df0850d7538cdde37fd341c67f7f773eb494"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/final-clean-live-001-evidence/result.json",
+      "size": 9994,
+      "sha256": "sha256:f812ec6975215fdbb67d67f165cbdcba22f1e07ecbdcc9e5b35ae770dc9e88d8"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/native-independent-review.md",
+      "size": 5644,
+      "sha256": "sha256:f8ae92deb8c5e27686ec27f6cf822a17a275f2cebd9a1577872ae5e37b3eb92d"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/value-ownership-independent-review.md",
+      "size": 7602,
+      "sha256": "sha256:1e5820362e0913f3da81a39797ebb06dba7bea14b5cbe437c36ef8cbe9b6c6d2"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/pipeline-independent-review.md",
+      "size": 4710,
+      "sha256": "sha256:077e472cdb20c6e000c34019fb535ecfd65a9bf4fd3c8535f4bbb69cae4936bb"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/reader-primitive-independent-review.json",
+      "size": 52182,
+      "sha256": "sha256:a49ef30f6cd20e4164fa6ed222104c56c2f45e2adf466bdb7b813f3459dc8efd"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/product-clean-gates-004.log",
+      "size": 86563,
+      "sha256": "sha256:32de0f9e59512eccb03883a438ae154a4a6eb5ae6f7c6c143d8913c9134d2d2e"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/lab-clean-gates-001.log",
+      "size": 2469,
+      "sha256": "sha256:b8be9e50e22cbf12f284b8881d3e8d75967a2e99441e8b085dceceea14263b74"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/integration-source.json",
+      "size": 1733,
+      "sha256": "sha256:a924254f8c90c1cc6fa7e23ad1b2003f33a17bc8a47b2b47a878e0ef33549880"
+    },
+    {
+      "phase": "macos-and-source",
+      "path": "round7/remote-post-source-push.json",
+      "size": 7276,
+      "sha256": "sha256:acd0b5a692a3c27e5deb5cca9ccb1026414fd2333f51b1f5038334918efdba4f"
+    },
+    {
+      "phase": "linux",
+      "path": "handoff-files.json",
+      "size": 3615,
+      "sha256": "sha256:c438db3eef1cf45fc6098c146d791d6198c5ccb23189674350a6dc6e3c14abac"
+    },
+    {
+      "phase": "linux",
+      "path": "external-pins-001/review.json",
+      "size": 26678,
+      "sha256": "sha256:701d7dae31a937edc9021d55781e3b6b888e42c34dce21fe59478bab6a4e00d4"
+    },
+    {
+      "phase": "linux",
+      "path": "handoff-summary.json",
+      "size": 1508,
+      "sha256": "sha256:03ab9af3c05b06aaf0364eaa88f4b46f7d244b92d97766392a2d0778a7b82c75"
+    },
+    {
+      "phase": "closeout",
+      "path": "linux-final-independent-review.json",
+      "size": 16689,
+      "sha256": "sha256:734db698d03dac8f3fc4078149327539523109c68d855995fe3ae5237f2b610c"
+    },
+    {
+      "phase": "closeout",
+      "path": "linux-review/input-closure-audit.json",
+      "size": 5096,
+      "sha256": "sha256:828058008c08ecdd1c15b733bc0f083575d8bfa671d6293cb83cfbe3163239a7"
+    },
+    {
+      "phase": "closeout",
+      "path": "linux-consumer-input-supplement/verification.json",
+      "size": 19387,
+      "sha256": "sha256:f4a03f1822925b4209caeb42138f111f3cdc18a9c0683cf70eaa53309a7edb83"
+    },
+    {
+      "phase": "closeout",
+      "path": "l02-closure-audit.md",
+      "size": 12789,
+      "sha256": "sha256:80d2373fdc07a66deb7f054cf0b6c8126720dedc53340bb20b48f0843876d4c2"
+    },
+    {
+      "phase": "closeout",
+      "path": "l02-draft-review.md",
+      "size": 8063,
+      "sha256": "sha256:ba2eda256eb95cfb316e1d338a308364b0dbf6a3b7a84c07d796d12f835a874c"
+    },
+    {
+      "phase": "closeout",
+      "path": "i01-final-format-proposal.md",
+      "size": 45441,
+      "sha256": "sha256:09672664872c3d56fe1b81857692be87f4bd8222e38b012e9d5902055e207fa6"
+    },
+    {
+      "phase": "closeout",
+      "path": "i01-final-format-independent-review.md",
+      "size": 7638,
+      "sha256": "sha256:203c9f8200ebde0588c6ba6b58255c5c29f51b0eef53ba83219cc2b8e8709d07"
+    }
+  ],
+  "rules": [
+    "Original source and earlier evidence preserved",
+    "All copied file bytes and modes checked",
+    "Original partial and pending-review snapshots retain their original scope; later final reviews are separate",
+    "Recorded input bytes only; not a complete operating system or installable SDK",
+    "Workspace archives verified member-by-member but not restored and executed"
+  ]
+}

@@ -4,6 +4,10 @@
 
 ## 当前修订
 
+- [L02 自然值配方与收包对账](2026-10-26-l02-native-values-validation.md)：第二业务五步变更、双目标冻结候选、独立审查及归档；历史失败和各证据层级分列。
+
+- [I01 剩余格式提案](i01-final-format-proposal.md)与[独审](i01-final-format-independent-review.md)：已批四项保持，剩余公开格式与首个有限初始化配方等待决定；设计材料不是工程运行证据。
+
 - [L02 冻结候选与双目标复验](2026-10-26-l02-frozen-candidate-validation.md)：固定普通／诊断 SDK，五项标准案例与 C05 回归；保留失败配置、历史报告和整包缺项。
 
 - [接管第六批：L02 收口与真实组合接线](2026-10-26-chief-architect-sixth-batch.md)：批准后的 explain、生产诊断及普通构造接线；I01 纯选择、真实组合生成与 Swift UI 子范围分别验证。

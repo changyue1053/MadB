@@ -528,7 +528,8 @@
         "reviews/2026-10-24-c06-kotlin-swift-rust.md",
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-second-batch.md",
-        "reviews/2026-10-26-l02-frozen-candidate-validation.md"
+        "reviews/2026-10-26-l02-frozen-candidate-validation.md",
+        "reviews/2026-10-26-l02-native-values-validation.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -573,7 +574,7 @@
       "probes": [
         "P09"
       ],
-      "notes": "C05 已验证 S1 首链的独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例；C06 增加四个 macOS Arm64 Release 配置的 54 项独立消费案例及容量、取消、排水、身份和负向编译检查，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。 ADR-0014 的 Swift 验收细化仍属待交付范围，不由已有固定样例和本机结果推导完成。 接管首批对 C07 冻结重开证据逐项对账；普通四路线重开和旧对象隔离已有目标观察，当时正常关闭的 ACK 前及 receipt 消费前重新准入拒绝仍保留具体补证项，不改 C07 已确认结论。 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第二批使用四条冻结 C07 test companion 补齐正常 Runtime.close 在 physical ACK 前拒绝重开的目标证据，均绑定新 Lab 源码/候选/目标；ACK 后 receipt 消费前的 test-only 同步回调已获批准并实现；独立审查发现并修复 Error getter 导致 close pending 的异常边界，旧试验候选不作最终验收。最终 producer a31ac4b / Lab a6e04ce 的四对候选完成实际构建、47 次伴随场景及4条普通基线、原始日志/HAP独立复核。两个窗口分别以各自候选/报告范围补证，不构成同一候选全矩阵或整包通过。四路线补证及 L05 C 路线真实页面均不扩张 C07 或 C09 整包结论。 本轮首链验证补齐 L02 五个标准 case/1 与两个 selector 的 report/1 接线。Lab 修正 C05 started_at 为执行前捕获，并按真实 fixture 字节更新案例目录绑定；完整601项门禁通过。clean Lab 9286861 在 macOS arm64 与 QEMU Linux x86_64 各完成 L02 五项及 C05 十九项；两目标最终证据均经独立复核。C05 十九项含17目标运行、1链接拒绝和1静态拒绝；L02每端56次SDK进程/24次stub/4导出观察分列。Linux固定Clang配置通过、原GNU cc失败保留；旧报告不回写。该S1子范围不代表verify CLI、全矩阵、物理性能或C09整包完成。"
+      "notes": "C05 已验证 S1 首链的独立消费者、受控竞态/故障、独立 oracle 和 19 项公开案例；C06 增加四个 macOS Arm64 Release 配置的 54 项独立消费案例及容量、取消、排水、身份和负向编译检查，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。 ADR-0014 的 Swift 验收细化仍属待交付范围，不由已有固定样例和本机结果推导完成。 接管首批对 C07 冻结重开证据逐项对账；普通四路线重开和旧对象隔离已有目标观察，当时正常关闭的 ACK 前及 receipt 消费前重新准入拒绝仍保留具体补证项，不改 C07 已确认结论。 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第二批使用四条冻结 C07 test companion 补齐正常 Runtime.close 在 physical ACK 前拒绝重开的目标证据，均绑定新 Lab 源码/候选/目标；ACK 后 receipt 消费前的 test-only 同步回调已获批准并实现；独立审查发现并修复 Error getter 导致 close pending 的异常边界，旧试验候选不作最终验收。最终 producer a31ac4b / Lab a6e04ce 的四对候选完成实际构建、47 次伴随场景及4条普通基线、原始日志/HAP独立复核。两个窗口分别以各自候选/报告范围补证，不构成同一候选全矩阵或整包通过。四路线补证及 L05 C 路线真实页面均不扩张 C07 或 C09 整包结论。 本轮首链验证补齐 L02 五个标准 case/1 与两个 selector 的 report/1 接线。Lab 修正 C05 started_at 为执行前捕获，并按真实 fixture 字节更新案例目录绑定；完整601项门禁通过。clean Lab 9286861 在 macOS arm64 与 QEMU Linux x86_64 各完成 L02 五项及 C05 十九项；两目标最终证据均经独立复核。C05 十九项含17目标运行、1链接拒绝和1静态拒绝；L02每端56次SDK进程/24次stub/4导出观察分列。Linux固定Clang配置通过、原GNU cc失败保留；旧报告不回写。该S1子范围不代表verify CLI、全矩阵、物理性能或C09整包完成。 接管第七批在S1独立值配方增加29个case/1及7份report/1；固定e0f74a5/2d06cbe，两目标各自正式消费与证据独审通过，SDK/helper/静态/编译分列，集成复验不增加唯一案例数。C05两个Rust错配案例的构建日志被同名运行日志覆盖，运行拒绝证据仍有效；后续修正日志路径须新Lab revision/报告，不回写历史。该切片不完成verify CLI、性能/全矩阵或C09整包。"
     },
     {
       "id": "C10",
@@ -593,7 +594,8 @@
       "verification": "missing",
       "evidence": [
         "reviews/2026-10-24-c05-rust-c-first-route.md",
-        "reviews/2026-10-24-c06-kotlin-swift-rust.md"
+        "reviews/2026-10-24-c06-kotlin-swift-rust.md",
+        "reviews/2026-10-26-l02-native-values-validation.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -637,7 +639,7 @@
       "probes": [
         "P08"
       ],
-      "notes": "C05 已验证三份公开候选、固定来源与身份、干净消费及同目标重建；C06 增加四份选定配置的公开候选、精确工具/依赖/补丁身份、可复现构建和独立消费，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道、正式发布资产与下载验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。 ADR-0014 的 Swift 正式分发与身份装配要求仍待对应候选验证，本次仅细化交付，不增加已认证渠道或目标。 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。"
+      "notes": "C05 已验证三份公开候选、固定来源与身份、干净消费及同目标重建；C06 增加四份选定配置的公开候选、精确工具/依赖/补丁身份、可复现构建和独立消费，本机与远端结果分别见 C06 记录。完整工作包仍需 S5 全配置/渠道、正式发布资产与下载验收；verification=missing 表示整体证据尚不齐，不否定已绑定的局部结果。depends_on 表示整体验收前置。 ADR-0014 的 Swift 正式分发与身份装配要求仍待对应候选验证，本次仅细化交付，不增加已认证渠道或目标。 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第七批形成两目标自然值公开候选，源/工具/资产/身份与独立安装消费分别绑定并完整归档。分支阶段推送使用skip ci且未创建PR/标签/发布；不把候选或Git推送当作渠道发布、下载验收或C10整包完成。"
     },
     {
       "id": "C11",
@@ -963,7 +965,8 @@
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-third-batch.md",
         "reviews/2026-10-26-chief-architect-fifth-batch.md",
-        "reviews/2026-10-26-chief-architect-sixth-batch.md"
+        "reviews/2026-10-26-chief-architect-sixth-batch.md",
+        "reviews/2026-10-26-l02-native-values-validation.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -995,7 +998,7 @@
       "probes": [
         "P11"
       ],
-      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。"
+      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。 接管第七批补齐剩余模板/结果envelope、原包身份与完整库存、有限renderer及首个Rust/C值接口init分片的具体提案/完整设计向量和独审。仍待具体格式决定，未注册decoder、执行init或获得工程/IDE证据；已批ADR-0019四项不重复审批，首分片不替代原rust-c-sdk及C05资源接口承诺。"
     },
     {
       "id": "I02",
@@ -1317,13 +1320,14 @@
         "C05",
         "L01"
       ],
-      "status": "in_progress",
-      "verification": "missing",
+      "status": "implemented",
+      "verification": "passed",
       "evidence": [
         "reviews/2026-10-26-chief-architect-third-batch.md",
         "reviews/2026-10-26-chief-architect-sixth-batch.md",
         "reviews/2026-10-26-l02-frozen-candidate-validation.md",
-        "reviews/2026-10-26-chief-architect-seventh-batch.md"
+        "reviews/2026-10-26-chief-architect-seventh-batch.md",
+        "reviews/2026-10-26-l02-native-values-validation.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1351,7 +1355,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。 接管第六批按已批准 ADR-0020/0021 实现只读 explain、51码共用说明、来源字节核对、生产诊断及 checked constructor；逐符号责任已进入核心和真实生成，原生及CLI独审通过。正式冻结候选、独立消费与声明目标仍须分别复验，当前不记整包通过。 本轮后续从 clean producer fbb0a49 冻结 macOS arm64 与 Linux x86_64 五配置；clean Lab 9286861 补齐五个既有 case/1、运行前冻结和两个 report/1，两目标五项真实运行均通过。两目标最终证据均经独立复核。Linux 为 QEMU7 模拟目标，不扩物理硬件/性能认证；C05 在固定 Clang 消费链接配置通过，原 GNU cc 失败单独保留。普通/诊断候选、工具、头依赖、错库及清理分别绑定。explain 与固定首链诊断/checked constructor 子范围已取得本轮适用运行证据；DX-01/02/11 第二独立业务的公开声明增方法、改字段、重命名、删除→真实生成→候选消费仍未交付。有限自然 Rust 值配方已有具体 ABI 提案和独审，待格式决定，不据此声称实现；不增加 L06 或 C09 整包前置。 项目所有者随后采用有限自然 Rust 值配方，见 ADR-0022；现已按该决定进入第二业务实现，不再将格式列为待批准。实现/运行/整包验收分别核对。"
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。 接管第六批按已批准 ADR-0020/0021 实现只读 explain、51码共用说明、来源字节核对、生产诊断及 checked constructor；逐符号责任已进入核心和真实生成，原生及CLI独审通过。正式冻结候选、独立消费与声明目标仍须分别复验，当前不记整包通过。 本轮后续从 clean producer fbb0a49 冻结 macOS arm64 与 Linux x86_64 五配置；clean Lab 9286861 补齐五个既有 case/1、运行前冻结和两个 report/1，两目标五项真实运行均通过。两目标最终证据均经独立复核。Linux 为 QEMU7 模拟目标，不扩物理硬件/性能认证；C05 在固定 Clang 消费链接配置通过，原 GNU cc 失败单独保留。普通/诊断候选、工具、头依赖、错库及清理分别绑定。explain 与固定首链诊断/checked constructor 子范围已取得本轮适用运行证据；DX-01/02/11 第二独立业务的公开声明增方法、改字段、重命名、删除→真实生成→候选消费仍未交付。有限自然 Rust 值配方已有具体 ABI 提案和独审，待格式决定，不据此声称实现；不增加 L06 或 C09 整包前置。 项目所有者随后采用有限自然 Rust 值配方，见 ADR-0022；现已按该决定进入第二业务实现，不再将格式列为待批准。实现/运行/整包验收分别核对。 接管第七批按ADR-0022完成自然Rust有限值第二业务：clean producer e0f74a5 / Lab 2d06cbe，五步声明变更、真实同根事务及源/责任/身份准确拒绝通过；macOS arm64和QEMU7.0.0 Linux x86_64各7候选/29项分级案例通过，Linux原生4+3专项、621项Lab门禁及最终独审通过。结合第六批explain、首链普通资源/回调、生产诊断/关闭保护和DEC-07证据，现行L02验收齐备，按该有限配方/候选/两目标范围收口。29项分列18真实SDK案例、5helper、5static、1compiled；未扩大Swift/ArkTS、任意ABI、物理性能、全平台或发布。原失败、C05日志保留缺口、专项临时产物及模拟目标边界见新报告。C05/L01依赖不变，不新增L06或C09整包前置；Actions仍未执行。"
     },
     {
       "id": "L03",

@@ -1,0 +1,643 @@
+{
+  "audit_kind": "independent-read-only-existing-evidence-review",
+  "created_at": "2026-10-26T19:56:02.503285+00:00",
+  "result": "passed_with_evidence_limits",
+  "conclusion": "macOS values/L02 正式记录与固定候选、源码、工具及实际观察一致；C05 补跑 19 passed 状态有运行证据，构建日志归档完整性保留一项具体缺口。此审查不裁定整包退出。",
+  "sdk_reexecuted_by_reviewer": false,
+  "source_or_report_modified": false,
+  "package_closure_decided": false,
+  "producer_revision": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+  "lab_revision": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+  "catalog_digest": "sha256:feb2403181bf0a96371f0028c7fc582cbdf690f6682014b0f92adee9e8affaa7",
+  "freeze": {
+    "frozen_at": "2026-10-26T19:41:47.743774+00:00",
+    "producer": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+    "lab": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+    "pins": {
+      "values": {
+        "author-0": "sha256:5bb7a82502c42b1704ca188eb3a7ae691ef566b0dcbf1c781e177f3c5f0e8528",
+        "author-1": "sha256:5fa4aff72a64dc86f288b48948483eba595fe827e14f7edf38645923a76409d0",
+        "author-2": "sha256:732698ef20ec4354586203229395ed65f5394faa4efe0a3fa477ff24407ccb57",
+        "author-3": "sha256:e809a02124606f96f4cfdf86f82f9c48cbf6c6a6eebff7509665bbe67a3a2aec",
+        "author-4": "sha256:3014713de2871d747f485f385bcded11bcb7c09bd622cccca514ba77eb0e5519",
+        "aux-grow": "sha256:c45b7c7fedc64a21eac3cb07c2ccf5f92e36226e69d4ebef668b38959f773c5f",
+        "aux-panic": "sha256:a1cc330c8515866ab7941cf16ef240fff83fef2ef4dc941def390b16f66a40ea"
+      },
+      "first": {
+        "c-to-rust": "sha256:99d03ebc117ca0ee423854e93b72d3570316f3ff62e604ac5a2d7b90c14ae601",
+        "c-to-rust-diagnostics": "sha256:f3991113f7a6a6abf15fb974a929b4c9f5f81146ac8aeb2557d2e4cd12f0037c",
+        "c-to-rust-diagnostics-test": "sha256:215fe27bf8daef02243b498708e1733e3db9d192d5f236c73aa6a47a3c5fdf8b",
+        "c-to-rust-test": "sha256:70d4a415c538cb81efbe1be307805d55438b6bec71a25e680a9cdcd574f75b85",
+        "rust-to-c": "sha256:3a51dd832503708c30d0f9b7b7ae84ced6c45ec176253d237ca4da91f98b4581"
+      }
+    },
+    "clang": {
+      "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+      "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9"
+    },
+    "python": {
+      "path": "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+      "sha256": "sha256:02a8df1726463faedb3adef289b3d1bdeabb7785c837fd8c174023aeeeb4d312"
+    },
+    "runner_sha256": "sha256:1cd805694030ae8f99727c9f56be150f45023fb441448dd527ee45440d898c3d"
+  },
+  "integrated_source": [
+    {
+      "root": "/Users/changyue/Desktop/MadB/madb",
+      "head": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+      "expected": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+      "status": "",
+      "files": 1186,
+      "differing_paths": []
+    },
+    {
+      "root": "/Users/changyue/Desktop/MadB/madb_lab",
+      "head": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+      "expected": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+      "status": "",
+      "files": 523,
+      "differing_paths": []
+    }
+  ],
+  "environment": {
+    "host": "macOS 26.6.2 arm64",
+    "target": "aarch64-apple-darwin",
+    "SDK": "MacOSX27.0.sdk",
+    "C05_explicit_SDKROOT": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk",
+    "producer_tools": {
+      "ar": {
+        "id": "c05-ar",
+        "version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "sha256": "sha256:85d15bd3999895f659e8a483b17ea9ab44b924c8e0b3026abfe359f2de02cbd7",
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar"
+      },
+      "bindgen": {
+        "id": "c05-bindgen",
+        "version": "0.73.2",
+        "sha256": "sha256:026f84aac049a49af885d9069ea04ebf8c0002a6d6ae17cc4e6bc6186588851d",
+        "path": "/private/tmp/madb-c03-verified-tools/bin/bindgen"
+      },
+      "cbindgen": {
+        "id": "c05-cbindgen",
+        "version": "0.29.4",
+        "sha256": "sha256:28e4fa35fb22ccbd0cd9e5ad0f640d62644a0fce5666e8b1f246e336a63d9880",
+        "path": "/private/tmp/madb-c03-verified-tools/bin/cbindgen"
+      },
+      "clang": {
+        "id": "c05-clang",
+        "version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+      },
+      "finalizer": {
+        "id": "c05-finalizer",
+        "version": "0.1.0",
+        "sha256": "sha256:e45f064c025baf0602e9c05b4413c483363d995b1bf3cb1253c024443b8fb0e1",
+        "path": "/private/tmp/madb-chief-round7/madb/target/debug/madb-native-finalize"
+      },
+      "libclang": {
+        "id": "c05-libclang",
+        "version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "sha256": "sha256:b206adf7f1c2b3f466f5ae24acb6fa787e1872981083f28d3e691c8e23830c2a",
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib"
+      },
+      "nm": {
+        "id": "c05-nm",
+        "version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "sha256": "sha256:82e9189ec1a359699d4b680601c0a2930a9cbea7376c7320947dff5e9862cfa8",
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-nm"
+      },
+      "python": {
+        "id": "c05-python",
+        "version": "3.14.4",
+        "sha256": "sha256:02a8df1726463faedb3adef289b3d1bdeabb7785c837fd8c174023aeeeb4d312",
+        "path": "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/bin/python3.14"
+      },
+      "rustc": {
+        "id": "c05-rustc",
+        "version": "1.99.1",
+        "sha256": "sha256:1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+        "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/rustc"
+      },
+      "values_reader": {
+        "id": "madb-native-values-read",
+        "version": "0.1.0",
+        "sha256": "sha256:36648d411da7d57766ce9c8c4264aa125e11ed0b9e473965e2e00bb7be910e76",
+        "path": "/private/tmp/madb-chief-round7/madb/target/debug/madb-native-values-read"
+      }
+    },
+    "c05_tools": {
+      "clang": {
+        "id": "clang",
+        "version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+        "sha256": "sha256:1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "arguments": []
+      },
+      "cargo": {
+        "id": "cargo",
+        "version": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "sha256": "sha256:6d576d8058f8ca643e8fce55b64ee3c614ba64c9da2e536bae843e6a2e1f3951",
+        "host": "aarch64-apple-darwin",
+        "target": "aarch64-apple-darwin",
+        "source": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/cargo",
+        "arguments": []
+      }
+    }
+  },
+  "suites": {
+    "values": {
+      "case_count": 29,
+      "levels": {
+        "target-run": 23,
+        "static": 5,
+        "compiled": 1
+      },
+      "report_count": 7,
+      "unique_attachments": 112,
+      "log_count": 80,
+      "compile_count": 14,
+      "frozen_started_at": "2026-10-26T19:41:50.458976Z",
+      "first_compile_mtime_derived_utc": "2026-10-26T19:41:50.699932+00:00",
+      "runtime_processes": {
+        "native-sdk": 19,
+        "helper-only": 5
+      },
+      "helper_vectors": 116,
+      "runtime_assertions": 7387,
+      "runtime_details": [
+        {
+          "case": "l02.native-values.author-0.values",
+          "scope": "native-sdk",
+          "checks": 535,
+          "helper_vectors": 0,
+          "log": "logs/037.json"
+        },
+        {
+          "case": "l02.native-values.author-0.raw-rejections",
+          "scope": "native-sdk",
+          "checks": 197,
+          "helper_vectors": 0,
+          "log": "logs/038.json"
+        },
+        {
+          "case": "l02.native-values.author-0.bootstrap",
+          "scope": "native-sdk",
+          "checks": 270,
+          "helper_vectors": 0,
+          "log": "logs/039.json"
+        },
+        {
+          "case": "l02.native-values.author-0.helper-protocol",
+          "scope": "helper-only",
+          "checks": 286,
+          "helper_vectors": 22,
+          "log": "logs/043.json"
+        },
+        {
+          "case": "l02.native-values.author-1.values",
+          "scope": "native-sdk",
+          "checks": 657,
+          "helper_vectors": 0,
+          "log": "logs/044.json"
+        },
+        {
+          "case": "l02.native-values.author-1.raw-rejections",
+          "scope": "native-sdk",
+          "checks": 197,
+          "helper_vectors": 0,
+          "log": "logs/045.json"
+        },
+        {
+          "case": "l02.native-values.author-1.bootstrap",
+          "scope": "native-sdk",
+          "checks": 270,
+          "helper_vectors": 0,
+          "log": "logs/046.json"
+        },
+        {
+          "case": "l02.native-values.author-1.helper-protocol",
+          "scope": "helper-only",
+          "checks": 304,
+          "helper_vectors": 24,
+          "log": "logs/049.json"
+        },
+        {
+          "case": "l02.native-values.author-2.values",
+          "scope": "native-sdk",
+          "checks": 731,
+          "helper_vectors": 0,
+          "log": "logs/050.json"
+        },
+        {
+          "case": "l02.native-values.author-2.raw-rejections",
+          "scope": "native-sdk",
+          "checks": 201,
+          "helper_vectors": 0,
+          "log": "logs/051.json"
+        },
+        {
+          "case": "l02.native-values.author-2.bootstrap",
+          "scope": "native-sdk",
+          "checks": 270,
+          "helper_vectors": 0,
+          "log": "logs/052.json"
+        },
+        {
+          "case": "l02.native-values.author-2.helper-protocol",
+          "scope": "helper-only",
+          "checks": 305,
+          "helper_vectors": 24,
+          "log": "logs/055.json"
+        },
+        {
+          "case": "l02.native-values.author-2.mixed-candidates",
+          "scope": "native-sdk",
+          "checks": 74,
+          "helper_vectors": 0,
+          "log": "logs/058.json"
+        },
+        {
+          "case": "l02.native-values.author-2.mixed-candidates",
+          "scope": "native-sdk",
+          "checks": 74,
+          "helper_vectors": 0,
+          "log": "logs/061.json"
+        },
+        {
+          "case": "l02.native-values.author-3.values",
+          "scope": "native-sdk",
+          "checks": 731,
+          "helper_vectors": 0,
+          "log": "logs/062.json"
+        },
+        {
+          "case": "l02.native-values.author-3.raw-rejections",
+          "scope": "native-sdk",
+          "checks": 201,
+          "helper_vectors": 0,
+          "log": "logs/063.json"
+        },
+        {
+          "case": "l02.native-values.author-3.bootstrap",
+          "scope": "native-sdk",
+          "checks": 270,
+          "helper_vectors": 0,
+          "log": "logs/064.json"
+        },
+        {
+          "case": "l02.native-values.author-3.helper-protocol",
+          "scope": "helper-only",
+          "checks": 305,
+          "helper_vectors": 24,
+          "log": "logs/067.json"
+        },
+        {
+          "case": "l02.native-values.author-4.values",
+          "scope": "native-sdk",
+          "checks": 607,
+          "helper_vectors": 0,
+          "log": "logs/068.json"
+        },
+        {
+          "case": "l02.native-values.author-4.raw-rejections",
+          "scope": "native-sdk",
+          "checks": 201,
+          "helper_vectors": 0,
+          "log": "logs/069.json"
+        },
+        {
+          "case": "l02.native-values.author-4.bootstrap",
+          "scope": "native-sdk",
+          "checks": 270,
+          "helper_vectors": 0,
+          "log": "logs/070.json"
+        },
+        {
+          "case": "l02.native-values.author-4.helper-protocol",
+          "scope": "helper-only",
+          "checks": 287,
+          "helper_vectors": 22,
+          "log": "logs/074.json"
+        },
+        {
+          "case": "l02.native-values.aux-grow.output-capacity",
+          "scope": "native-sdk",
+          "checks": 72,
+          "helper_vectors": 0,
+          "log": "logs/078.json"
+        },
+        {
+          "case": "l02.native-values.aux-panic.unwind",
+          "scope": "native-sdk",
+          "checks": 72,
+          "helper_vectors": 0,
+          "log": "logs/080.json"
+        }
+      ],
+      "compile_link_rejections": 9,
+      "static_export_inspections": 7,
+      "sdk_case_count": 18,
+      "helper_only_case_count": 5
+    },
+    "l02": {
+      "case_count": 5,
+      "levels": {
+        "target-run": 5
+      },
+      "report_count": 2,
+      "unique_attachments": 120,
+      "log_count": 112,
+      "compile_count": 12,
+      "frozen_started_at": "2026-10-26T19:42:13.719356Z",
+      "first_compile_mtime_derived_utc": "2026-10-26T19:42:13.762863+00:00",
+      "observations_by_scope": {
+        "export-inspection": 4,
+        "native-sdk": 56,
+        "helper-only": 24
+      }
+    },
+    "c05": {
+      "report_count": 4,
+      "case_count": 19,
+      "statuses": {
+        "passed": 19
+      },
+      "evidence_levels": {
+        "target-run": 17,
+        "compiled": 1,
+        "static": 1
+      },
+      "unique_attachments": 38,
+      "run": {
+        "prior_failure": "formal-macos-lab-r7/c05",
+        "reason": "direct clang needs explicit SDKROOT to locate standard system headers",
+        "command": [
+          "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+          "-B",
+          "scripts/verify_first_route.py",
+          "--candidates",
+          "/private/tmp/madb-chief-round7/formal-first-route-regression-macos-r7/candidates",
+          "--output",
+          "/private/tmp/madb-chief-round7/formal-macos-c05-r7-sdkroot/reports",
+          "--producer-revision",
+          "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+          "--lab-revision",
+          "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+          "--clang",
+          "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+        ],
+        "environment": {
+          "SDKROOT": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk"
+        },
+        "started_at": "2026-10-26T19:43:52.065384+00:00",
+        "producer": "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+        "lab": "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+        "exit_code": 0,
+        "ended_at": "2026-10-26T19:44:05.333199+00:00",
+        "log_sha256": "sha256:a914c2fa518a899b27af27f00cfb8e7e3747a0c006fa20aa59cd490ea6140dde"
+      },
+      "reports": [
+        {
+          "path": "c-to-rust-test.report.json",
+          "sha256": "sha256:d3bf17335cb134073534d7d385e6671f8a492b9eda96b6497823a8c7968e1d38",
+          "started_at": "2026-10-26T19:43:57.478500Z",
+          "case_count": 7
+        },
+        {
+          "path": "c-to-rust.report.json",
+          "sha256": "sha256:78aced9ce9c24781ecc4872bcff5ea20aced2dcb7ec56dbfd323eb0fc9161aa9",
+          "started_at": "2026-10-26T19:43:52.290300Z",
+          "case_count": 7
+        },
+        {
+          "path": "packaging.report.json",
+          "sha256": "sha256:f7b43fa5e3889b1d09f463693d3f7d2daf500101e2a62f6eea2be4e741f57140",
+          "started_at": "2026-10-26T19:44:05.303786Z",
+          "case_count": 1
+        },
+        {
+          "path": "rust-to-c.report.json",
+          "sha256": "sha256:c68e83e25ccc29ebf6b5e5e94a1cf35c09039c06ec7346de78cafd3cedde5315",
+          "started_at": "2026-10-26T19:43:59.425548Z",
+          "case_count": 4
+        }
+      ],
+      "scope": "3 consumed first-route candidates; 2 diagnostics candidates identity-only in C05"
+    }
+  },
+  "prior_c05_failure": {
+    "run": {
+      "suite": "c05",
+      "command": [
+        "/Users/changyue/Desktop/MadB/madb/.venv/bin/python",
+        "-B",
+        "scripts/verify_first_route.py",
+        "--candidates",
+        "/private/tmp/madb-chief-round7/formal-first-route-regression-macos-r7/candidates",
+        "--output",
+        "/private/tmp/madb-chief-round7/formal-macos-lab-r7/c05",
+        "--producer-revision",
+        "e0f74a5fa5a9a6e73400ced70bc81ba06751227f",
+        "--lab-revision",
+        "2d06cbefa0f49187f163ce937c8c3bd01a062eb1",
+        "--clang",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+      ],
+      "started_at": "2026-10-26T19:42:04.511805+00:00",
+      "ended_at": "2026-10-26T19:42:11.558065+00:00",
+      "exit_code": 1,
+      "log_sha256": "sha256:de81204b5e667feed0b4f2b72f8dbe1b276110a474d9fb45945e2ccab2ec8392"
+    },
+    "statuses": {
+      "error": 4,
+      "blocked": 12,
+      "passed": 3
+    },
+    "evidence_levels": {
+      "static": 17,
+      "target-run": 2
+    },
+    "claim": "First run remains failed; it is not a pass."
+  },
+  "producer_input_coverage": {
+    "workspaces": 7,
+    "per_workspace": {
+      "lock_inputs": 41,
+      "fixed_commit_inputs": 36,
+      "generated_inputs": 5,
+      "schemas": 26,
+      "SDK_inputs": 120
+    },
+    "author_source": "actual author.rs equals independent Lab fixture bytes",
+    "tools": "actual binary bytes checked against freeze",
+    "candidate": "original manifest bytes checked against producer log"
+  },
+  "identity_and_reports": {
+    "original_candidates": 12,
+    "installed_copies_values_l02": 11,
+    "Lab_tracked_files": 523,
+    "Lab_file_inventory_digest": "sha256:6cac4a432435cff7f622317cd56885397c9896bc6e82e96997bc9772fadcb1d5",
+    "values_l02_independent_checks": 12036,
+    "values_l02_verified_unique_file_versions": 1381,
+    "reports": [
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/author-0.report.json",
+        "reference": {
+          "sha256": "sha256:3ada54ff590c29dc3e8b2f46aef6481d7e459ed6169979de686f63cc2baf4e53",
+          "size": 80216
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/author-1.report.json",
+        "reference": {
+          "sha256": "sha256:c072047bd5788d00f614e7a7c500d704866e28ae7bf5166ac3b55b943e51e8a6",
+          "size": 80215
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/author-2.report.json",
+        "reference": {
+          "sha256": "sha256:4f4cf46399948d02cda6a5ed3ed9421d1455944601acd1ecfcbbb18410c7ea27",
+          "size": 95820
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/author-3.report.json",
+        "reference": {
+          "sha256": "sha256:e03e96df2161460b053ced6c17f20a06e9f39417b984461da8f9de60d9f13119",
+          "size": 80215
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/author-4.report.json",
+        "reference": {
+          "sha256": "sha256:e1a9b4bb2c7c0a99c60a635f7a413299cae969dbe259c457664283edbe90771a",
+          "size": 95806
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/aux-grow.report.json",
+        "reference": {
+          "sha256": "sha256:f0efbf130ac454258abf0d5cf74c6f10f4303632e156775b898c66284664e0ad",
+          "size": 17864
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/values/aux-panic.report.json",
+        "reference": {
+          "sha256": "sha256:a99630fdee9296cd999bface6b49ecf8245f10091592b0bd1d7910d84aa2887e",
+          "size": 17850
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/l02/c-to-rust-diagnostics-test.report.json",
+        "reference": {
+          "sha256": "sha256:df9a33fafc0d2e245a29ba71128632c25d101c887b609b3ae90170166ab67310",
+          "size": 44492
+        }
+      },
+      {
+        "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/l02/c-to-rust-diagnostics.report.json",
+        "reference": {
+          "sha256": "sha256:4679c7d45c3388a5620d35cacb72fd87518479bfe063fac3c46b5d1f1c2e1579",
+          "size": 65531
+        }
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "C05-BUILD-LOG-OVERWRITE",
+      "severity": "evidence-archive-gap",
+      "scope": "rust-to-c.abi-mismatch and rust-to-c.profile-mismatch",
+      "source": "/private/tmp/madb-chief-round7/madb_lab/harness/runners/first_route.py",
+      "lines": [
+        197,
+        333,
+        357
+      ],
+      "impact": "original Cargo build outputs overwritten by same-name runtime logs; cannot certify complete build-log retention",
+      "runtime_result_invalidated": false,
+      "recommended_followup": "future narrow runner correction uses distinct build/run paths; preserve existing reports and obtain a new Lab revision for new evidence"
+    }
+  ],
+  "limits": [
+    "只读核对已有正式执行证据；本次独立审查没有重新执行 SDK、编译器或仓库门禁。",
+    "值配方的 5 helper-only 案例仅证明伴随 helper 对畸形 provider 的拒绝；不能替代自然 Rust 作者、真实 SDK 运行或 Rust 分配回收证明。",
+    "C05 两个 Rust 错配案例的 Cargo build 日志被同名运行日志覆盖；现存证据不能证明这两份构建输出已完整归档。运行结果、provider 编译/归档、lock/metadata 与固定 runner 保留。",
+    "C05 三个临时消费者目录已清理，不能重新核对其安装副本或可执行文件字节；其他 values/L02 的 11 份安装副本已核对。",
+    "外层/分组时间为本地记录；子进程日志缺独立绝对开始时间，mtime 仅辅助佐证，不能作为可信签名时间。C05 SDKROOT 在外层记录，子进程完整环境未归档。",
+    "结论仅适用于上述固定候选及 macOS Arm64 的实际案例；不等于 L02 整包、其他平台、真实 ArkTS 页面、GitHub Actions 或发布验收。",
+    "C05 首次失败保留，补跑成功不得回填为首次通过。"
+  ],
+  "evidence_artifacts": [
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/values-l02-audit.json",
+      "size": 10411,
+      "sha256": "sha256:e597da99274d872dfaa339183f3e7802c3f8fc9f28a48d56f8fdf65d64085446"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/values-l02-checks.json",
+      "size": 1328677,
+      "sha256": "sha256:3a5aaf35b31356299457bc06c8b71a773f54c87a7c87e9067c61364cf364ce5a"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/audit_values_l02.py",
+      "size": 13745,
+      "sha256": "sha256:f2bbed5c5639e140b90d3cea9d6ea23edbc8d6bd7bd2002d5b040190d8e95b88"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/producer-input-audit.json",
+      "size": 25415,
+      "sha256": "sha256:7c2eaab4aa0164db70f55e8fc4722fd3e1c1130746847f2e436c39450251ad09"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/audit_producer_inputs.py",
+      "size": 3089,
+      "sha256": "sha256:11a59af43323ce7a5cd25848b84b38c8303530d55e31868313471e265581f5fc"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/integrated-source-audit.json",
+      "size": 480,
+      "sha256": "sha256:d5ed8864ef4e6da280bc69b0dd08d2ca24591558dde882ee4d451e4a5938f6b7"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/c05-audit.json",
+      "size": 61695,
+      "sha256": "sha256:867c5a248cbccf06ec6a5757813a84d85aa7c97a0db242ac715312453c00fd26"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/macos-review/c05-audit.md",
+      "size": 3456,
+      "sha256": "sha256:61d0ae7f33f290bb82f10e80d14a4932ac0dd03c8df0e49aa447d0d1c0435426"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/formal-macos-lab-r7/freeze.json",
+      "size": 1909,
+      "sha256": "sha256:8b06e9b6dfb2e545fba43c114076060769f6eff64d47642eeb7eb93819a3a4a5"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/formal-native-values-macos-r7/producer.json",
+      "size": 24685,
+      "sha256": "sha256:a65212b0e48449821d31a2f6fadb8d5983dd2a055e8700dd2503049c81119223"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/formal-first-route-regression-macos-r7/producer.json",
+      "size": 5719,
+      "sha256": "sha256:7326342a0004855fc00e11923ea13f9ad4f1360cf1916e843f5e3e63bf5c40db"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/formal-macos-c05-r7-sdkroot/run.json",
+      "size": 1178,
+      "sha256": "sha256:ea0037c0eb0b04b74a2c3d54fd27df0850d7538cdde37fd341c67f7f773eb494"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round7/lab-independent-review.md",
+      "size": 4238,
+      "sha256": "sha256:8b350d38ff68984e7fa9e1bdf998b7ed5dea1363febfffa7f62980760691997b"
+    }
+  ]
+}
