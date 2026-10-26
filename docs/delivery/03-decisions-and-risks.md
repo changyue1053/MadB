@@ -17,6 +17,7 @@
 | 语言特性作为薄入口，普通 API 可用，诊断与必要保护分离 | 设计采用，随各平台验证工具和语义组合 | [ADR-0006](../adr/0006-developer-ergonomics.md) |
 | explain 只读查询、来源核对及机器结果 | 项目所有者已确认具体格式；实现与运行证据另验 | [ADR-0020](../adr/0020-explain-query-contracts.md) |
 | 首链生产诊断与普通 checked constructor | 项目所有者已采用单条 pull 修订2；默认7/诊断9导出分开固定和消费 | [ADR-0021](../adr/0021-native-diagnostics-and-checked-constructor.md) |
+| 自然 Rust 有限值配方与普通 C 入口 | 项目所有者已采用；有限 syn/rustc 读取链、64字节文本与同步 Result ABI 分别实施验证 | [ADR-0022](../adr/0022-native-value-recipe.md) |
 | Swift 十二项必要能力、普通 SDK 与作者工程分责 | 设计基线 0.9 采用；L01 收敛实施契约，L04/I04/C09/C10/L07 按原依赖交付；不计为实现或验收 | [ADR-0014](../adr/0014-swift-production-baseline.md) |
 | Swift 九项扩展选型与分步实施 | 本次已启动 L01 Swift 契约及 L04 观察首个实现子范围，与 C07 并行，X01/X02 独立，L08 深改写不纳入默认交付 | [ADR-0015](../adr/0015-swift-extension-delivery.md) |
 | ArkTS 十二项必要能力与公开交付 | 设计采用；C07 原验收、L05 普通 API、I05 工程和 C09/C10 发布分责 | [ADR-0016](../adr/0016-arkts-production-baseline.md) |

@@ -11,7 +11,7 @@ pub struct SnapshotAdapter {
 }
 pub struct PreparedQuery {
     pub(crate) request: Document,
-    project: Document,
+    pub(crate) project: Document,
     pub(crate) lock: Document,
     pub(crate) profile: Document,
 }

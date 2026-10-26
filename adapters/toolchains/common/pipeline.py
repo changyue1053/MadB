@@ -8,6 +8,7 @@ import re
 import shutil
 import signal
 import subprocess
+import tempfile
 
 from .documents import ref, save, unique, generation_task, task_digest, sha_file, profile_digest
 
@@ -280,9 +281,14 @@ class FrozenPipeline:
         previous = []
         previous_root = None
         tasks = []
+        # Each preparation attempt retains its own diagnostics. Rebuilding the
+        # same managed root must neither reuse stale previews nor delete them.
+        prepare_root = self.root / "prepare"
+        prepare_root.mkdir(exist_ok=True)
+        attempt = Path(tempfile.mkdtemp(prefix="build-", dir=prepare_root))
         for index, phase in enumerate(phases):
             dependencies = [] if index == 0 else [phases[index - 1]]
-            preview = self.root / "prepare" / phase
+            preview = attempt / phase
             inputs, work = preview / "inputs", preview / "work"
             inputs.mkdir(parents=True)
             work.mkdir()

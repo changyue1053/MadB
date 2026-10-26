@@ -171,6 +171,16 @@ impl BoundArtifactRecipe {
                     &adapter.decode(DocumentKind::ContractIr, snapshot)?,
                     provided,
                 )?;
+                if ownership.is_none() {
+                    ownership = crate::native::values_ownership(
+                        &prepared.project,
+                        &prepared.profile,
+                        &prepared.lock,
+                        &request_doc,
+                        &adapter.decode(DocumentKind::ContractIr, snapshot)?,
+                        provided,
+                    )?;
+                }
             } else {
                 packaged_responsibilities = validate_package(
                     &adapter,

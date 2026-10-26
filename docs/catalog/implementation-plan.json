@@ -1322,7 +1322,8 @@
       "evidence": [
         "reviews/2026-10-26-chief-architect-third-batch.md",
         "reviews/2026-10-26-chief-architect-sixth-batch.md",
-        "reviews/2026-10-26-l02-frozen-candidate-validation.md"
+        "reviews/2026-10-26-l02-frozen-candidate-validation.md",
+        "reviews/2026-10-26-chief-architect-seventh-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1339,7 +1340,8 @@
         "delivery/04-design-readiness-and-first-route.md",
         "architecture/08-runtime-and-idiomatic-api.md",
         "architecture/17-extension-composition.md",
-        "reviews/2026-10-25-chief-architect-first-batch.md"
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "adr/0022-native-value-recipe.md"
       ],
       "requirements": [
         "REQ-02",
@@ -1349,7 +1351,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。 接管第六批按已批准 ADR-0020/0021 实现只读 explain、51码共用说明、来源字节核对、生产诊断及 checked constructor；逐符号责任已进入核心和真实生成，原生及CLI独审通过。正式冻结候选、独立消费与声明目标仍须分别复验，当前不记整包通过。 本轮后续从 clean producer fbb0a49 冻结 macOS arm64 与 Linux x86_64 五配置；clean Lab 9286861 补齐五个既有 case/1、运行前冻结和两个 report/1，两目标五项真实运行均通过。两目标最终证据均经独立复核。Linux 为 QEMU7 模拟目标，不扩物理硬件/性能认证；C05 在固定 Clang 消费链接配置通过，原 GNU cc 失败单独保留。普通/诊断候选、工具、头依赖、错库及清理分别绑定。explain 与固定首链诊断/checked constructor 子范围已取得本轮适用运行证据；DX-01/02/11 第二独立业务的公开声明增方法、改字段、重命名、删除→真实生成→候选消费仍未交付。有限自然 Rust 值配方已有具体 ABI 提案和独审，待格式决定，不据此声称实现；不增加 L06 或 C09 整包前置。"
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。 接管第六批按已批准 ADR-0020/0021 实现只读 explain、51码共用说明、来源字节核对、生产诊断及 checked constructor；逐符号责任已进入核心和真实生成，原生及CLI独审通过。正式冻结候选、独立消费与声明目标仍须分别复验，当前不记整包通过。 本轮后续从 clean producer fbb0a49 冻结 macOS arm64 与 Linux x86_64 五配置；clean Lab 9286861 补齐五个既有 case/1、运行前冻结和两个 report/1，两目标五项真实运行均通过。两目标最终证据均经独立复核。Linux 为 QEMU7 模拟目标，不扩物理硬件/性能认证；C05 在固定 Clang 消费链接配置通过，原 GNU cc 失败单独保留。普通/诊断候选、工具、头依赖、错库及清理分别绑定。explain 与固定首链诊断/checked constructor 子范围已取得本轮适用运行证据；DX-01/02/11 第二独立业务的公开声明增方法、改字段、重命名、删除→真实生成→候选消费仍未交付。有限自然 Rust 值配方已有具体 ABI 提案和独审，待格式决定，不据此声称实现；不增加 L06 或 C09 整包前置。 项目所有者随后采用有限自然 Rust 值配方，见 ADR-0022；现已按该决定进入第二业务实现，不再将格式列为待批准。实现/运行/整包验收分别核对。"
     },
     {
       "id": "L03",

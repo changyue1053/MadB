@@ -15,6 +15,8 @@ mod composition;
 pub use composition::finalize_composition_metadata;
 mod first_route_ownership;
 pub(crate) use first_route_ownership::{FirstRouteOwnership, first_route_ownership};
+mod values_ownership;
+pub(crate) use values_ownership::values_ownership;
 
 /// Internal helper input limit, including the three-document envelope.
 pub const MAX_ENVELOPE_BYTES: usize = madb_protocol::MAX_DOCUMENT_BYTES;

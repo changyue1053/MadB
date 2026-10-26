@@ -165,8 +165,9 @@ fn uses_first_route_sdk(prepared: &PreparedQuery, provided: &FrozenInputs) -> Re
         return Ok(false);
     };
     Ok(config["provider"] == "rust"
-        && config["semantics"] == "madb.first-route/1"
-        && config["source"] == "sdk/rust/engine/src/lib.rs")
+        && ((config["semantics"] == "madb.first-route/1"
+            && config["source"] == "sdk/rust/engine/src/lib.rs")
+            || config["semantics"] == "madb.native-values/1"))
 }
 
 /// Package lineage comes exclusively from pinned parents. Workspace files with

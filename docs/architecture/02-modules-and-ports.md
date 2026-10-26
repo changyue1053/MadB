@@ -234,6 +234,8 @@ ContractSnapshot 保留输入摘要、符号、位置和精度；OutputSet 保�
 
 首链 Python 适配器按明确的 ABI v1 roles 解释编译器声明，不是通用 Rust/C AST 映射器；未知导出、类型、布局或调用约定必须拒绝。`madb-native-finalize` 只在工具端运行，seed 不能自带已解析策略或伪造来源，策略解析与摘要规则仍由既有 Rust 层维护；它不进入候选 SDK。`inspect/check/plan` 仍只读，实际编译器调用由显式读取或构建配方触发。
 
+L02 的自然 Rust 有限值配方按 [ADR-0022](../adr/0022-native-value-recipe.md)增加独立读取与生成分支：contracts 适配器中的纯 syn 读取不读文件或启动编译器，内部 CLI 桥接有界输入输出；外层 rust_c 配方冻结作者源与工具，执行 rustc 见证、生成 shim、cbindgen/Clang 物理验证及既有 C04 流程。新分支复用共同 IR 与宿主事务，SDK 不依赖工具；旧七／九角色读取器保持精确拒绝，不被改成通用映射器。
+
 公开入口是 `scripts/install_native_tools.py` 和 `scripts/build_first_route.py`。后者通过 `adapters/toolchains/rust_c/pipeline.py` 接入 C04：先 prepare 实际编译/链接/运行输出身份以形成静态 DAG，再由受控执行重新构建并核验；prepare 不充当语义预期或验收证据。候选分别为 `c-to-rust` Release、`c-to-rust-test` 测试 profile 和 `rust-to-c`，测试导出不能进入 Release。具体操作见[首链工具链说明](../../adapters/toolchains/rust_c/README.md)。
 
 首链 profile 的 `backend_config` 保持 `null`，内部 `backend.json` 由 ReadRequest 输入与 lock 固定，不放宽通用 backend-config 校验。公开 `toolchain.json` 记录工具镜像与 SDK 内容身份、逻辑名称和编译器语义，不发布宿主绝对路径；执行定位与完整参数留在内部锁定配置。Linux 记录实际 native host 的 observed profile，Apple 校验冻结 Xcode/SDK 配方，各自目标的运行证据分别用于验收。

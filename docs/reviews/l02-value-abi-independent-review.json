@@ -1,0 +1,349 @@
+{
+  "scope": "Independent read-only review of a proposed finite Rust value ABI; no production implementation acceptance",
+  "verdict": "no_blocking_design_findings_for_local_decision",
+  "proposal": {
+    "path": "/private/tmp/madb-chief-round6/l02-value-abi-proposal.md",
+    "sha256": "9a89e9308a7b95c7479f046bc10224a30f2962dd589ad30a97a90923a2ffdcdf",
+    "size": 25631
+  },
+  "repository_head": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "blocking_findings": [],
+  "confirmed": [
+    {
+      "topic": "approval boundary",
+      "result": "Local Rust reader/compiler-witness/ABI decision only; L01/L02 second-business obligation is not reopened. No claim of implemented reader, generated shim, runtime, Candidate or Lab acceptance.",
+      "proposal_lines": [
+        3,
+        259,
+        263,
+        267,
+        271,
+        275
+      ]
+    },
+    {
+      "topic": "single source authority",
+      "result": "Natural Rust declarations and bodies are authoritative; syn is a syntax reader, the actual rustc signature/field/tag witness checks types, and generated shim/cbindgen/Clang checks physical ABI. Authors do not maintain FFI or another IDL.",
+      "proposal_lines": [
+        7,
+        9,
+        13,
+        14,
+        15,
+        16,
+        17,
+        19
+      ]
+    },
+    {
+      "topic": "existing IR errors",
+      "result": "Existing Variant exact integer tags, null payload, tag_type and function throws support the finite Result<R,E> mapping. Core requires core.errors and accepts Variant error channels; exact tag integer width/sign is checked.",
+      "repository_lines": [
+        "docs/schemas/contract-ir.schema.json:239-285,455",
+        "adapters/contracts/src/convert.rs:130-144",
+        "crates/madb-rules/src/contract.rs:558-580,715-726"
+      ]
+    },
+    {
+      "topic": "identity and compatibility",
+      "result": "Existing native-interface digest projection can carry exact public integer constants, but the old reader only collects MADB_* names. Final proposal line16 explicitly requires the new recipe to verify actual generated P_E_V constants against Rust tags and include the exact declared set; it does not claim the old macro collector already handles them. Existing engine recipe and exports remain separate.",
+      "repository_lines": [
+        "adapters/generators/rust_c/README.md:101-109",
+        "adapters/generators/rust_c/lowering.py:105-109",
+        "adapters/generators/rust_c/native_ast.py:131-140,166-175"
+      ],
+      "proposal_lines": [
+        16,
+        17,
+        67,
+        92,
+        94,
+        267,
+        269,
+        275
+      ]
+    },
+    {
+      "topic": "ordinary result and ordering",
+      "result": "Five kinds, admitted statuses, bootstrap/interface/profile precedence, raw versus author invocation counts, domain-error tags and provider-protocol normalization are mutually consistent. Non-OK ordinary results retain zero value; output protocol violations become kind4/status8.",
+      "proposal_lines": [
+        110,
+        112,
+        114,
+        115,
+        116,
+        117,
+        119,
+        127,
+        131,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        142,
+        144
+      ]
+    },
+    {
+      "topic": "memory and UTF-8",
+      "result": "Raw valid allocation/alignment/nonoverlap/no-race preconditions are explicit. NULL/alignment checks are not advertised as an invalid-pointer oracle. Each valid output is cleared independently; input tails are ignored, output tails are zero, and ordinary wrapper uses separate stack values.",
+      "proposal_lines": [
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        112,
+        113,
+        114,
+        138
+      ]
+    },
+    {
+      "topic": "design evidence",
+      "result": "Ten unchanged Rust author/witness metadata checks are reused with matching current input pins; two current C declaration checks after the single-underscore rename report exit0 in declaration-check-002.json. Current 12 input and 2 tool SHA/size pins match. Archived original C bytes and records match their preserved pins. No compiler commands were rerun by the reviewer; no generated/runtime proof is inferred.",
+      "proposal_lines": [
+        261,
+        263
+      ]
+    },
+    {
+      "topic": "final revision consistency",
+      "result": "Proposal and both expected C examples use P_bootstrap_v1/P_raw_F consistently. Error validation promises membership in the current function E tag set, not provenance discrimination for equal integers in different enums. Ordinary result semantics and raw-pointer assumptions remain unchanged.",
+      "proposal_lines": [
+        24,
+        25,
+        72,
+        74,
+        77,
+        92,
+        94,
+        135,
+        253,
+        261
+      ]
+    }
+  ],
+  "nonblocking_implementation_gates": [
+    "Implement and test the now-explicit 1-16-field, named-parameter and finite-result restrictions; no generated reader exists in this design review.",
+    "Implement exact generated P_E_V constant observation and identity inclusion rather than reuse the old MADB_*-only collector unchanged.",
+    "Run section8 real generation, compiler layout, wrapper/provider, allocation/unwind, source drift, mixed identity, source/package responsibility and independent consumer checks after implementation. Current evidence is declaration compilation only."
+  ],
+  "recorded_check_count": 12,
+  "recorded_check_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "pin_audit": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-proposal.md",
+      "sha256": "9a89e9308a7b95c7479f046bc10224a30f2962dd589ad30a97a90923a2ffdcdf",
+      "size": 25631
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-0.rs",
+      "sha256": "e7b78aa38ace1baa9b89638e5d3f348072fc184b8f38a2a649798bf72ccd6842",
+      "size": 285,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-0.rs",
+      "sha256": "78d7ec0298da2df0495771331a72a6688e1dd22eabbebec6390af7c68418fd73",
+      "size": 315,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-1.rs",
+      "sha256": "b79d51f23a7d398b40e9605bad1c990b6cf8703529e259b106419e0546d52d5f",
+      "size": 567,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-1.rs",
+      "sha256": "dd70e1c51d94a226b09688f3f6c4fe9609349b86ff8a9e7583b80dea15c9d33f",
+      "size": 508,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-2.rs",
+      "sha256": "d41f1b7f50539e9ec8cf6b78cfd355615c98759bf3b6dd9f899492cabf3f1b28",
+      "size": 589,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-2.rs",
+      "sha256": "9a4a4269fb653f6590bef3d68f54f30cf64869fa4db345ce17d0866319a431cd",
+      "size": 555,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-3.rs",
+      "sha256": "e352db99382e51d3ea0b78fbaa143fc201de28d20ac39da3e3284e1cd8d8a523",
+      "size": 592,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-3.rs",
+      "sha256": "8eb968a27e84ec3f5b6d0cf534efbadaae375e26f4f990cd8e2dcfede1f9cc88",
+      "size": 558,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-4.rs",
+      "sha256": "616d85b36ef8e89396fb7924419d597951199ee190ae66a3b097c50748b0902e",
+      "size": 310,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-4.rs",
+      "sha256": "1837ace6599471575112cb51e4be8aa49c39e2cc625cd41ff2b552c99aee4fa4",
+      "size": 365,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/expected-0.c",
+      "sha256": "9e11f3b266ae8c75431872085f6c6edc4d6a373af8c943c28a0bfe9da74543be",
+      "size": 2052,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/expected-2.c",
+      "sha256": "36d6e3e07bf912e302c151dce8a8335dca5cbb9aea30e8dc062f7c74087de7f1",
+      "size": 2463,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/rustc",
+      "sha256": "1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+      "size": 413480,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+      "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+      "size": 124676976,
+      "recorded_pin_matches": true
+    }
+  ],
+  "repository_evidence": [
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/Cargo.lock",
+      "sha256": "0a99a4baf43cea5761ba695cdde2dc05b6654ef32e63693a36c1c46af37d363f",
+      "size": 31401
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/schemas/contract-ir.schema.json",
+      "sha256": "e348cb256bfec8e279f455c69b457ecf7d052046f96d74df3808e8182244c8bf",
+      "size": 19265
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-model/src/contract.rs",
+      "sha256": "6928430f849562c9eab574cb09685ad791e6d99302f7ab1339d0c118d82e8472",
+      "size": 5375
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-rules/src/contract.rs",
+      "sha256": "09cc399da5d078a54b69a4e316d6f09202d757ea8987e6bbf41ed5a877001cf4",
+      "size": 26406
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/contracts/src/convert.rs",
+      "sha256": "dd1f6d236b867b9e13b81b04744ee0507cca448e911ff49acf6341fae60e8769",
+      "size": 25027
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/README.md",
+      "sha256": "ded3147fe7e12922c1824b22071aa69540f328ca1c0873cfaf98fb7411e1f0fe",
+      "size": 8497
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/lowering.py",
+      "sha256": "63cc5589275e956299e45297cff96261dbb48e5191bd33a275f7c9bfdc286850",
+      "size": 11974
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/native_ast.py",
+      "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c",
+      "size": 9409
+    }
+  ],
+  "not_performed": [
+    "No product or proposal edits",
+    "No compiler/test rerun",
+    "No generated SDK or runtime execution",
+    "No network lookup",
+    "No shared format or feature approval"
+  ],
+  "resolved_findings": [
+    {
+      "id": "VALUE-ABI-EMPTY-RECORD",
+      "resolution": "Final proposal line24 limits records to 1-16 fields and line253 includes empty/17-field rejection; no dummy-field or shared-format change. Named parameter restriction and a 1088-byte maximum physical-record budget are now explicit at lines24-25.",
+      "status": "closed_by_read_only_document_review"
+    }
+  ],
+  "recorded_evidence_sources": {
+    "unchanged_rust_10": {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/declaration-check.json",
+      "sha256": "ed1a180dff873dbb53c6e0c22adaadccc98555a0aebd6d216ad749d80e53bc14",
+      "size": 9744
+    },
+    "current_c_2": {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/declaration-check-002.json",
+      "sha256": "499c0ffc569e549d4a7cfe0c4909a9b2a895699e1953a2ae64d3b68b41a32286",
+      "size": 4335
+    },
+    "old_c_checks_not_reused": true
+  },
+  "archived_evidence_audit": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/expected-0.c",
+      "sha256": "96371bb295b1eb8ff18c5a0aa62bce9e2abacada37bfd2e8cb82778f883b75cc",
+      "size": 2054,
+      "recorded_hash_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/expected-2.c",
+      "sha256": "ef65263a2ba8657139844d88b6d821fb0d031528fe478a13ccdc21b7b83ef2a1",
+      "size": 2466,
+      "recorded_hash_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/declaration-check.json",
+      "sha256": "ed1a180dff873dbb53c6e0c22adaadccc98555a0aebd6d216ad749d80e53bc14",
+      "size": 9744,
+      "recorded_hash_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/l02-value-abi-proposal.md",
+      "sha256": "f6b869cb94356d46ef1516722a64b58cb010081b4031245344643f7d4d6dac64",
+      "size": 25121,
+      "recorded_hash_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/declaration-check.json",
+      "sha256": "ed1a180dff873dbb53c6e0c22adaadccc98555a0aebd6d216ad749d80e53bc14",
+      "size": 9744,
+      "recorded_pin_matches": true
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/source-snapshot.json",
+      "sha256": "273850af963746d9178cebcc6fad56c79694ce882ba6a28373f5b93cd70dc518",
+      "size": 1158,
+      "recorded_pin_matches": true
+    }
+  ]
+}

@@ -89,3 +89,5 @@
 [I01 四项增量提案](project-init-decision.md)及[最终独审](project-init-decision-review.md)仅处理错误分类、真实创建、引用根/SDK 和默认目标；原文保留批准前结论；项目所有者随后确认四项增量，见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)。完整两 envelope 的其余字段不由该决定批准。
 
 [L02 explain 提案](l02-explain-proposal.md)及[独审](l02-explain-independent-review.md)、[SDK 修订2提案](l02-native-sdk-decision.md)及[独审](l02-native-independent-review.md)保留批准前的设计快照。项目所有者随后确认采用，分别见 [ADR-0020](../adr/0020-explain-query-contracts.md)和 [ADR-0021](../adr/0021-native-diagnostics-and-checked-constructor.md)；设计检查不是实现或独立消费验收。
+
+[L02 有限值 ABI 提案](l02-value-abi-proposal.md)及[独审](l02-value-abi-independent-review.md)保留批准前的设计快照；项目所有者随后采用，现行决定见 [ADR-0022](../adr/0022-native-value-recipe.md)。设计声明检查不计实现或候选消费验收。

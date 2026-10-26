@@ -1,0 +1,289 @@
+{
+  "scope": "Concrete local ABI proposal for existing L02 second-business requirement; approval pending; no product changes",
+  "source_root": "/Users/changyue/Desktop/MadB/madb",
+  "source_revision": "fbb0a493fa0380797918a5a83c210b1b5f621ae1",
+  "source_porcelain": "",
+  "proposal": {
+    "path": "/private/tmp/madb-chief-round6/l02-value-abi-proposal.md",
+    "sha256": "9a89e9308a7b95c7479f046bc10224a30f2962dd589ad30a97a90923a2ffdcdf",
+    "size": 25631
+  },
+  "independent_review": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-independent-review.md",
+      "sha256": "9fdfc5a003823b9c7851caedcbf4a1f42948e601cff45b177e5c9d74cae05f4e",
+      "size": 2023
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-independent-review.json",
+      "sha256": "c6f243adf0aa1fa904ad864a0f1067c10e28a0112ee2a634335cd53964b97886",
+      "size": 13475
+    }
+  ],
+  "source_inputs": [
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/AGENTS.md",
+      "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+      "size": 1796
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/Cargo.lock",
+      "sha256": "0a99a4baf43cea5761ba695cdde2dc05b6654ef32e63693a36c1c46af37d363f",
+      "size": 31401
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/rust-toolchain.toml",
+      "sha256": "d13306be0ecda81ce779baa290ffb417380d525928477f16200884b5169cca33",
+      "size": 86
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/engineering/07-agent-development.md",
+      "sha256": "055b621b7c12bc673ed29ab902ffc7f251fff2a2dfbd421ba9d68de3732b4e8e",
+      "size": 7151
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/engineering/02-clean-code.md",
+      "sha256": "a2b1c17cbd3c056584951932ee518b6385ceb409d9d0889ab05e822ae0190a66",
+      "size": 4858
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/engineering/05-review-and-quality-gates.md",
+      "sha256": "889c91a420a5b739fa410b45e9f072876298e48473eb5ae563677e0e80c62b1f",
+      "size": 9289
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/catalog/implementation-plan.json",
+      "sha256": "bc1f3454d03ae44c7ece2a692dfb4d884ef786ad229425f99046eff681f291ca",
+      "size": 113101
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/architecture/03-contract-and-ir.md",
+      "sha256": "507429839f569ead5665b66ef8388831337d71e50f8c5347cdbe74179fd697c8",
+      "size": 16828
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/architecture/04-data-and-errors.md",
+      "sha256": "49326d67fb51c78832f058f68b5d0037dfaf201a3e6730e77a2b9afd31b2f148",
+      "size": 6442
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/architecture/07-code-generation.md",
+      "sha256": "68a0221db31761613a892e0f81563b9b59ab9b9109eebda7b159894cac8ba586",
+      "size": 34785
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/architecture/13-contract-evolution.md",
+      "sha256": "dd6bcfbdf9d5ef40d7e03d01eb048e1823fe5173f98f03a3b4537b05965601a5",
+      "size": 8169
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/architecture/15-developer-ergonomics.md",
+      "sha256": "7f67fca717d7e89a07c1de346573216edb4877cb8027110af5fab4d42d7d7bd6",
+      "size": 39192
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/adr/0021-native-diagnostics-and-checked-constructor.md",
+      "sha256": "67ac54ba81b6339db52507de2cc0fd73de2bae4a138958e05ae08e1a0d3279f6",
+      "size": 2411
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/examples/language-api/README.md",
+      "sha256": "6f3e8119c94bfde2ba850e6abd5dcc9dcc11b3f062d36c35da97ab63af1b389b",
+      "size": 15028
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/examples/language-api/second-business.ets",
+      "sha256": "6f7365a54de18cc71261bbf7c7dd57664b234b171ca645be270cbdfb1fa677f5",
+      "size": 323
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/examples/first-route/README.md",
+      "sha256": "f1643dfce1e8e6b6158882cc2e5473a2e77dc5c01de96b20f0fece5021c0988e",
+      "size": 9916
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/schemas/contract-ir.schema.json",
+      "sha256": "e348cb256bfec8e279f455c69b457ecf7d052046f96d74df3808e8182244c8bf",
+      "size": 19265
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/docs/schemas/profile.schema.json",
+      "sha256": "b438c5ff64073654be0cc912f0972ab7455ecf78872b263a19de0df374714c49",
+      "size": 5526
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-model/src/contract.rs",
+      "sha256": "6928430f849562c9eab574cb09685ad791e6d99302f7ab1339d0c118d82e8472",
+      "size": 5375
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-rules/src/contract.rs",
+      "sha256": "09cc399da5d078a54b69a4e316d6f09202d757ea8987e6bbf41ed5a877001cf4",
+      "size": 26406
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/crates/madb-rules/src/observations.rs",
+      "sha256": "ae2d2d75fe3377603a99e1810d8d406dc57ef55b8c2450d61435a24db3c25374",
+      "size": 3221
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/README.md",
+      "sha256": "ded3147fe7e12922c1824b22071aa69540f328ca1c0873cfaf98fb7411e1f0fe",
+      "size": 8497
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/native_ast.py",
+      "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c",
+      "size": 9409
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/lowering.py",
+      "sha256": "63cc5589275e956299e45297cff96261dbb48e5191bd33a275f7c9bfdc286850",
+      "size": 11974
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/generators/rust_c/checked_client.py",
+      "sha256": "7615fdfeb9b09429c4888b8d55d199a145cd9c5e34b57705154833999dcf439e",
+      "size": 2594
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/adapters/contracts/src/native.rs",
+      "sha256": "808545501a7c85d188622fac81622d0069f254274ada1efc469aabde93b2ec26",
+      "size": 7963
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/sdk/rust/engine/src/lib.rs",
+      "sha256": "6908951b6c1a6d00ca57bda3c7a808a742511dd1f8d4ff7d075ece825cea88ed",
+      "size": 13827
+    },
+    {
+      "path": "/Users/changyue/Desktop/MadB/madb/sdk/rust/engine/cbindgen.toml",
+      "sha256": "c9d9f14add9974d4ab15bac578af72ed3849758fb5163c143b6ce8467ff67715",
+      "size": 620
+    }
+  ],
+  "scope_inputs": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-second-business-scope.md",
+      "sha256": "f844e36f681016588d25e50dcc757dc8aa06aa18aba56611db42d5d5225b8e4d",
+      "size": 16654
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-second-business-scope.json",
+      "sha256": "dfa4dbe40602178255d00f8a9fa0b00a75872eed45cc3ad4a0c1983c83f1368d",
+      "size": 10581
+    }
+  ],
+  "example_inputs": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-0.rs",
+      "sha256": "e7b78aa38ace1baa9b89638e5d3f348072fc184b8f38a2a649798bf72ccd6842",
+      "size": 285
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-0.rs",
+      "sha256": "78d7ec0298da2df0495771331a72a6688e1dd22eabbebec6390af7c68418fd73",
+      "size": 315
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-1.rs",
+      "sha256": "b79d51f23a7d398b40e9605bad1c990b6cf8703529e259b106419e0546d52d5f",
+      "size": 567
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-1.rs",
+      "sha256": "dd70e1c51d94a226b09688f3f6c4fe9609349b86ff8a9e7583b80dea15c9d33f",
+      "size": 508
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-2.rs",
+      "sha256": "d41f1b7f50539e9ec8cf6b78cfd355615c98759bf3b6dd9f899492cabf3f1b28",
+      "size": 589
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-2.rs",
+      "sha256": "9a4a4269fb653f6590bef3d68f54f30cf64869fa4db345ce17d0866319a431cd",
+      "size": 555
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-3.rs",
+      "sha256": "e352db99382e51d3ea0b78fbaa143fc201de28d20ac39da3e3284e1cd8d8a523",
+      "size": 592
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-3.rs",
+      "sha256": "8eb968a27e84ec3f5b6d0cf534efbadaae375e26f4f990cd8e2dcfede1f9cc88",
+      "size": 558
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/author-4.rs",
+      "sha256": "616d85b36ef8e89396fb7924419d597951199ee190ae66a3b097c50748b0902e",
+      "size": 310
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/witness-4.rs",
+      "sha256": "1837ace6599471575112cb51e4be8aa49c39e2cc625cd41ff2b552c99aee4fa4",
+      "size": 365
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/expected-0.c",
+      "sha256": "9e11f3b266ae8c75431872085f6c6edc4d6a373af8c943c28a0bfe9da74543be",
+      "size": 2052
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/expected-2.c",
+      "sha256": "36d6e3e07bf912e302c151dce8a8335dca5cbb9aea30e8dc062f7c74087de7f1",
+      "size": 2463
+    }
+  ],
+  "checks": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/declaration-check.json",
+      "sha256": "ed1a180dff873dbb53c6e0c22adaadccc98555a0aebd6d216ad749d80e53bc14",
+      "size": 9744
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/revision-1/source-snapshot.json",
+      "sha256": "273850af963746d9178cebcc6fad56c79694ce882ba6a28373f5b93cd70dc518",
+      "size": 1158
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-value-abi-examples/declaration-check-002.json",
+      "sha256": "499c0ffc569e549d4a7cfe0c4909a9b2a895699e1953a2ae64d3b68b41a32286",
+      "size": 4335
+    }
+  ],
+  "fixed_tool_receipt": {
+    "path": "/private/tmp/madb-c03-verified-tools/receipt.json",
+    "sha256": "ee44a28418ed7b18b40836fc4adfc6793f5769ff13abc745dd61538428be02a7",
+    "size": 947
+  },
+  "syn_choice": {
+    "version": "2.0.119",
+    "cargo_lock_checksum": "872831b642d1a07999a962a351ed35b955ea2cfc8f3862091e2a240a84f17297",
+    "reader_implemented": false
+  },
+  "actual_checks_summary": {
+    "natural_rust_inputs_metadata_compile": 5,
+    "hand_authored_rust_witnesses_compile": 5,
+    "final_hand_authored_c_declaration_checks": 2,
+    "all_recorded_exit_codes": 0,
+    "target": "aarch64-apple-darwin source/type and arm64-apple-macosx14.0 C declarations"
+  },
+  "proposal_decisions": [
+    "Natural Rust module is sole public business structure authority; generator owns ABI shim, no author FFI/IDL duplication",
+    "Explicit bounded syn plus rustc witness chain; existing cbindgen and Clang validate generated physical ABI",
+    "1–16 field i32/u32/String records; sync R or Result<R,E>, fieldless explicit positive i32 enum errors",
+    "Inline UTF-8 64-byte limit for this new recipe only; precise raw/ordinary failure semantics and identity-first priority",
+    "Single-underscore namespace templates, exact exports, no change to old 7/14/9/16 profiles"
+  ],
+  "not_claimed": [
+    "New reader implemented",
+    "Generated native ABI shim or cbindgen header produced",
+    "SDK/runtime/FFI behavior tested",
+    "Candidate or Lab acceptance",
+    "New public JSON/schema/feature",
+    "All Unicode trim equivalence",
+    "L02 whole package completion or publication"
+  ]
+}

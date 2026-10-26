@@ -10,6 +10,7 @@ pub mod extension_files;
 pub mod extension_lock;
 pub mod extension_session;
 pub mod native;
+pub mod native_values;
 mod projections;
 mod resolution;
 mod wire;

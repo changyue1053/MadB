@@ -134,3 +134,69 @@ generator receipt, defaulting to `/private/tmp/madb-c03-verified-tools`; overrid
 its install root with `MADB_C03_TOOLS`. Missing tools are failures, not skipped
 passes. The separate native Linux preparation/CI profile does not inherit Apple
 runtime certification.
+
+## Natural Rust finite values
+
+The additive `madb.native-values/1` recipe is specified by
+[ADR-0022](../../../docs/adr/0022-native-value-recipe.md). A single natural Rust
+module supplies public records with 1–16 `i32`, `u32`, or `String` fields and safe
+synchronous functions taking that record, optionally followed by `i32`. Functions
+return the same record or `Result<Record, Error>`; public `#[repr(i32)]` errors
+have explicit positive, unique integer tags. The boundary limits each String to
+64 UTF-8 bytes. Types, fields and functions come from the author module; there is
+no hand-maintained signature/field map.
+
+```rust
+pub struct Reading { pub value: i32, pub label: String }
+pub fn normalize(mut value: Reading) -> Reading {
+    value.label = value.label.trim().to_owned();
+    value
+}
+```
+
+`scripts/build_native_values.py --help` lists the producer inputs. Pass the natural
+source, SDK namespace, variant, predefined independent Lab case IDs, fresh output
+directory and fixed bindgen/cbindgen executables. Formal preparation requires a
+clean committed producer; `--allow-dirty` is explicitly provisional. The script
+builds through the existing frozen metadata → generation → build → package
+coordinator. It does not certify or publish the candidate.
+
+The pure `madb-native-values-read` bridge uses locked syn, then the external
+adapter runs a real rustc signature/field/tag witness. Rustc dependency output
+must contain only the witness and copied author, with no environment dependencies.
+The generated Rust shim is read by actual cbindgen; Clang checks both physical
+headers, layouts and constants before logical IR finalization. The mechanical
+bootstrap has the separate source key `$recipe.bootstrap.v1`, so a legitimate
+business method named `bootstrap` remains distinct. It is identified as generated
+recipe evidence, rather than an authored function at that location.
+
+A public C consumer includes `reading_demo.h` and links `libreading_demo` from the
+candidate. For the module above, the ordinary call is:
+
+```c
+#include "reading_demo.h"
+reading_demo_Reading value = {0};
+value.value = 7;
+value.label.byte_count = 3;
+value.label.bytes[0] = ' ';
+value.label.bytes[1] = 'x';
+value.label.bytes[2] = ' ';
+reading_demo_ReadingResult result = reading_demo_normalize(value);
+/* Check result.kind and result.status before using result.value. */
+```
+
+The ordinary helper embeds the expected interface/profile identities, checks
+bootstrap first, calls the native function once, and validates the returned value
+or typed error. It neither asks consumers to provide hashes nor owns another
+Rust conversion. Advanced `_raw_` calls require valid, aligned, nonoverlapping
+caller storage; null/alignment checks do not establish arbitrary pointer validity.
+Native temporary Strings are local to the synchronous call. Recoverable unwind
+and input reserve failure have distinct statuses; abort, allocator abort and
+process faults are not recoverable SDK results.
+
+Repository gates exercise pure reader/lowering/rendering and responsibility
+checks. Real tool tests in `test_native_values_codegen.py`,
+`test_native_values_client.py`, and `LiveValuePipelineTests` require explicit fixed
+tools. The independent Lab validates public candidates, their exact author bytes,
+ordinary calls, identity rejection, exports and removed declarations. Compiler
+success, same-root transaction checks and target Lab reports are separate evidence.
