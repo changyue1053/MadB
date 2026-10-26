@@ -1,0 +1,114 @@
+{
+  "result": "passed",
+  "producer_revision": "18256fcc4b26cf3cd1e2e79c39b86c2512e012d9",
+  "lab_revision": "a466501275bee1786d171199390f228f55eb38a0",
+  "required_passed": 120,
+  "actual_hap_receipts": 195,
+  "unique_nonces": 195,
+  "generation_fixture_observations": 16,
+  "reports": [
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/c-ordinary-001/report.json",
+      "sha256": "sha256:76a8009723e569bcbb4634a456c53f66055f927b5d81dd4a979751fac12ed4a6"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/c-test-001/report.json",
+      "sha256": "sha256:b03260113d91a6febcdc7c4ad20ada4a46e024339e0f030477f1a94e5ed094fd"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/cpp-ordinary-001/report.json",
+      "sha256": "sha256:5814a52ef46891874da7dbdbf84da47ff68402aa9af1b0a431f039b76aa89988"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/cpp-test-001/report.json",
+      "sha256": "sha256:1308b82c13912bd9fe15686abfa9bf521ba6b5b879d3050a97e5271d9e9dad34"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/rust-ordinary-001/report.json",
+      "sha256": "sha256:7807db4ef676cab6f3da958378ad020c8bfefb6d75e89c8d2e217b1a0140a540"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/rust-test-001/report.json",
+      "sha256": "sha256:cb58335a5ab0d319832c9c7f675617207ca3c9fd01eabff895459c4080a4376c"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-ordinary-001/report.json",
+      "sha256": "sha256:3f209a3ec6b2ab97f155e6869d3b9767d0514697d37726fe3f9423accc20a50a"
+    },
+    {
+      "path": "/private/tmp/madb-c07-formal-lab-18256fc/kotlin-test-001/report.json",
+      "sha256": "sha256:b3758034fb267c70a6772e198324ce0be3400ae0ac67c2215a844ae7e075d008"
+    }
+  ],
+  "scope": "Read-only re-admission, existing raw parsers/coverage gates and byte closure; no target rerun.",
+  "outer_process_limit": "Rust test outer monitor was interrupted; original OS exit code unobserved. All per-scene command/cleanup/report evidence was revalidated; no inferred process exit zero.",
+  "environment_limit": "Kotlin main-env shutdown/Worker-first rejection is explicit applicability; actual host VM destroy and env validity remain unobserved.",
+  "interpretation": "Selected C07 local profiles passed. Overall verification remains missing while the agreed remote regressions are deferred by the project owner.",
+  "review_audit_sha256": "2ea4f15c679a56c3da361f127d89343105148593ecd3c803a335b5d056788afb",
+  "local_checks": {
+    "producer_python_tests": 548,
+    "producer_check_exit_code": 0,
+    "lab_tests": 500,
+    "lab_check_exit_code": 0
+  },
+  "target": {
+    "kind": "emulator",
+    "abi": "arm64-v8a",
+    "api": 23,
+    "build_type": "Release",
+    "app_signing": "community-debug",
+    "compiler_sdk": "26.0.0.105 Release"
+  },
+  "remote_checks": {
+    "deferred_by_user": true,
+    "deferred_until": "Project completion, then execute the agreed GitHub Actions together",
+    "passed": [
+      {
+        "repository": "MadB",
+        "run_id": 40250888175,
+        "revision": "18256fcc4b26cf3cd1e2e79c39b86c2512e012d9",
+        "scope": "CI"
+      },
+      {
+        "repository": "MadB",
+        "run_id": 40250888152,
+        "revision": "18256fcc4b26cf3cd1e2e79c39b86c2512e012d9",
+        "scope": "C05"
+      },
+      {
+        "repository": "MadB-Lab",
+        "run_id": 40255577661,
+        "revision": "a466501275bee1786d171199390f228f55eb38a0",
+        "scope": "CI"
+      }
+    ],
+    "cancelled_at_user_request": [
+      {
+        "repository": "MadB",
+        "run_id": 40255628832,
+        "revision": "18256fcc4b26cf3cd1e2e79c39b86c2512e012d9",
+        "scope": "C06 four routes; build/consumer verification not completed"
+      },
+      {
+        "repository": "MadB-Lab",
+        "run_id": 40255577655,
+        "revision": "a466501275bee1786d171199390f228f55eb38a0",
+        "scope": "C05 independent candidates; verification not completed"
+      }
+    ]
+  },
+  "archive_plan": {
+    "sha256": "ccf033d6e4ccee119bbfc2f0e1101a060e30d1181027c305145adb1ab6746e20",
+    "payload_files": 9722,
+    "logical_bytes": 3650602433,
+    "scope": "Original-byte evidence payload; historical full replay retains original-path dependencies. Local archive is not a public release."
+  },
+  "local_delivery": {
+    "directory": "/Users/changyue/Desktop/MadB/.local/evidence/c07-18256fc-a466501",
+    "archive": "c07-evidence.tar.gz",
+    "archive_sha256": "2852a21abe376ed3d8cca19032a0f50b1919e9554a1d262f9965ca1efd5e85ae",
+    "archive_size": 896905223,
+    "delivery_manifest_sha256": "3d9873dbba15ef16faae909437a62c50ae6f22dae8156172d89067d17884a8fa",
+    "scope": "Local original-byte archive; not uploaded or published. Full historical replay retains original-path dependencies."
+  }
+}
