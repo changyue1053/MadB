@@ -11,6 +11,11 @@ use madb_model::policy::{EffectivePolicy, Origin, PolicyValue, Slot};
 use madb_protocol::{Value, canonical_json, strict_json};
 use serde_json::{Map, json};
 
+mod composition;
+pub use composition::finalize_composition_metadata;
+mod first_route_ownership;
+pub(crate) use first_route_ownership::{FirstRouteOwnership, first_route_ownership};
+
 /// Internal helper input limit, including the three-document envelope.
 pub const MAX_ENVELOPE_BYTES: usize = madb_protocol::MAX_DOCUMENT_BYTES;
 
@@ -72,6 +77,23 @@ fn finalize_documents(
     project: Document,
     profile: Document,
 ) -> Result<Vec<u8>, ContractError> {
+    let completed = complete_metadata(registry, seed, &project, || {
+        crate::convert::profile_defaults(&profile)
+    })?;
+    check_contract(&completed, &profile)?;
+    check_policy_resolution(&completed, &project, &profile, &[])?;
+    Ok(canonical_json(completed.value())?)
+}
+
+// Keep the declaration/policy computation common while each entry point owns
+// its profile version and input admission. The closure preserves the legacy
+// parsing order: declaration identities, project policies, then defaults.
+fn complete_metadata(
+    registry: &SchemaRegistry,
+    seed: Document,
+    project: &Document,
+    defaults: impl FnOnce() -> Result<(Vec<PolicyValue>, Origin), FormatError>,
+) -> Result<Document, ContractError> {
     let mut model = contract(&seed)?;
     if !model.policies.is_empty() {
         return Err(FormatError::new(
@@ -92,8 +114,8 @@ fn finalize_documents(
         })?;
         value["symbols"][index]["source_id"] = json!(symbol.source_id.as_str());
     }
-    let inputs = project_policies(&project)?;
-    let (defaults, origin) = crate::convert::profile_defaults(&profile)?;
+    let inputs = project_policies(project)?;
+    let (defaults, origin) = defaults()?;
     let policies = madb_rules::resolve_policies(
         &inputs.namespace,
         &model.symbols,
@@ -113,10 +135,7 @@ fn finalize_documents(
     }
     value["structure_digest"] = json!(structure_digest(&resolved)?);
     value["policy_digest"] = json!(policy_digest(&resolved)?);
-    let completed = registry.validate(DocumentKind::ContractIr, value)?;
-    check_contract(&completed, &profile)?;
-    check_policy_resolution(&completed, &project, &profile, &[])?;
-    Ok(canonical_json(completed.value())?)
+    Ok(registry.validate(DocumentKind::ContractIr, value)?)
 }
 
 fn policy_wire(policy: &EffectivePolicy) -> Value {

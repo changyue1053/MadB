@@ -56,36 +56,25 @@ pub fn compare_responsibility_sets(
     required: &[ResolvedResponsibility],
     provided: &[ResolvedResponsibility],
 ) -> Result<()> {
-    fn map(
-        rows: &[ResolvedResponsibility],
-    ) -> Result<BTreeMap<&ResponsibilityKey, &ResolvedOwner>> {
-        let mut result = BTreeMap::new();
-        for row in rows {
-            if result.insert(&row.key, &row.owner).is_some() {
-                return Err(invalid(
-                    "InputInvalid",
-                    "responsibilities",
-                    "duplicate responsibility key or conflicting owner",
-                ));
-            }
-        }
-        Ok(result)
-    }
-    if required.is_empty() {
-        return Err(invalid(
+    let required: Vec<_> = required.iter().map(|row| (&row.key, &row.owner)).collect();
+    let provided: Vec<_> = provided.iter().map(|row| (&row.key, &row.owner)).collect();
+    madb_rules::compare_unique_owners(&required, &provided).map_err(|error| match error {
+        madb_rules::OwnerSetError::EmptyRequired => invalid(
             "InputInvalid",
             "required",
             "no independent responsibility requirements",
-        ));
-    }
-    if map(required)? != map(provided)? {
-        return Err(invalid(
+        ),
+        madb_rules::OwnerSetError::DuplicateKey => invalid(
+            "InputInvalid",
+            "responsibilities",
+            "duplicate responsibility key or conflicting owner",
+        ),
+        madb_rules::OwnerSetError::Mismatch => invalid(
             "InputInvalid",
             "responsibilities",
             "missing, extra, or mismatched responsibility",
-        ));
-    }
-    Ok(())
+        ),
+    })
 }
 
 pub(super) fn bind_assets(

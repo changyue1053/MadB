@@ -1,0 +1,86 @@
+{
+  "revision": 2,
+  "result": "no blockers within changed-source local generation scope",
+  "validation": "/private/tmp/madb-chief-round6/composition-generation-final-validation-002.json",
+  "validation_sha256": "3fc9709e5422bb95cff56aa660ae329bf965d71d4a7a1ca059928631f0a33af0",
+  "independent_script": "/private/tmp/madb-chief-round6/composition-generation-final-independent-check-002.py",
+  "independent_results": "/private/tmp/madb-chief-round6/composition-generation-independent-009/results.json",
+  "checks": [
+    {
+      "name": "all-131-inputs-10-schemas-and-package-twins-bound",
+      "package_files": 58,
+      "result": "passed"
+    },
+    {
+      "file_sha256": "sha256:5944ca4090b1cadd850fc0dd40fbaf5e0ae62ae6a42150c9711eed16d5552265",
+      "name": "author-real-observer-five-roles-preserved",
+      "result": "passed"
+    },
+    {
+      "name": "real-generation-and-one-slot-15-payload-byte-identical",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "LOCK004",
+      "name": "wrong-producer",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "LOCK001",
+      "name": "wrong-selector",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "FILE004",
+      "name": "changed-generated-byte",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "INPUT003",
+      "name": "changed-source-byte",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "absolute non-traversing directory required",
+      "name": "path-traversal",
+      "result": "passed"
+    },
+    {
+      "name": "diagnostic-catalog-package-and-root-input-closure",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "INPUT003",
+      "name": "changed-diagnostic-catalog",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "INPUT003",
+      "name": "changed-package-diagnostic-catalog",
+      "result": "passed"
+    },
+    {
+      "diagnostic": "missing, extra, or mismatched responsibility",
+      "name": "coherently-repinned-two-missing-responsibilities",
+      "result": "passed"
+    },
+    {
+      "name": "positive-independent-copy-restored",
+      "result": "passed"
+    }
+  ],
+  "changed_scope": "Only NATIVE006 triggers/repairs text differs; 50 other codes and all 56 remaining package source files unchanged from prior revalidation.",
+  "actual_result": "22 existing production checks and 13 independent focused checks passed; all15 payloads/OutputSet/one-slot bind byte-identical between008 and009. All131 inputs/10 locked schemas and57 root/package/current source twins verified; independent positive copy restored.",
+  "byte_drift": "Explanation data changed source/package identities and compiled helper image; only expected backend/composition/toolchain and two catalog input refs changed. Across prior006 vs008 exactly three identity-bearing payload refs changed; all15 match within the new independent replay.",
+  "legacy_checks": "Prior old-entry AST/helper/public regressions and20 compiled-kind coverage retained as unchanged-scope evidence; not rerun or relabelled as new checks.",
+  "previous_review": {
+    "path": "/private/tmp/madb-chief-round6/composition-generation-final-review.json",
+    "sha256": "f95d75c0e75d5fb9b5f14167abf1c469383a7f13083abcb2ae0b8cf793d62b69"
+  },
+  "limits": [
+    "Exactly 10 schemas frozen by the fixture; 20 compiled DocumentKinds were separately validated. No fixture schema inventory expansion.",
+    "The diagnostic catalog is source/image-bound data; this evidence does not certify every explanation entry semantic meaning.",
+    "The new manifest/component is local fixed recipe data, not installed E01 registration or E02 session authorization.",
+    "No C04 composition transaction, SDK/native compilation, target execution, device access, enhanced/disabled full generation, Lab certification or publication."
+  ]
+}

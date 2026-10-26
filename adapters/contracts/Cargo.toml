@@ -14,6 +14,7 @@ madb-model.workspace = true
 madb-rules.workspace = true
 madb-protocol.workspace = true
 serde_json.workspace = true
+toml.workspace = true
 
 [lints]
 workspace = true

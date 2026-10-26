@@ -1,0 +1,151 @@
+{
+  "kind": "l02-explain-independent-review",
+  "created_at_utc": "2026-10-26T10:37:25.567186+00:00",
+  "status": "no-remaining-blocking-findings-ready-for-owner-decision",
+  "decision_status": "proposal remains unadopted",
+  "inputs": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-proposal.md",
+      "sha256": "6bc0f329a0e3c7e0c537b235ede7efede61bf58366c414cce95e97b6e07bf821",
+      "size": 17698
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-design.json",
+      "sha256": "757f37e3855b896ce0c23a33aa6cdf8d8bd0d51f2251c3bbe6213504ab081274",
+      "size": 48595
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-design-check.py",
+      "sha256": "02dc9a4722b539835c45faea5b5f2ff79459a99b44f9747bc6312f79e6545b29",
+      "size": 7433
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-design-build.py",
+      "sha256": "7c4b866e09f82b520d6757ef31caec0cbc6ed61c8ba24df3070a02d9ef1e6fd3",
+      "size": 12092
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-design-check-result.json",
+      "sha256": "4c4d65bccad22c1f8fea429bf688e6dc5b010ebe1891c5cb63e21e43bc4bf10c",
+      "size": 21821
+    }
+  ],
+  "blocking_findings": [],
+  "resolved_findings": [
+    {
+      "id": "B1",
+      "summary": "CAP003 原提案误写为调用形态不支持；最终冻结稿已更正为 heuristic 来源结构不能授权 safe wrapper。",
+      "actual_evidence": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs:161-170",
+      "final_proposal_sha256": "6bc0f329a0e3c7e0c537b235ede7efede61bf58366c414cce95e97b6e07bf821",
+      "prior_materials_preserved": "/private/tmp/madb-chief-round6/l02-explain-before-cap003-fix/"
+    }
+  ],
+  "nonblocking_findings": [
+    {
+      "id": "N1",
+      "severity": "nonblocking-implementation-condition",
+      "summary": "Explain 的 Host/3 I/O 分类需要明确宿主适配，不能直接透传现有读取错误类别。",
+      "evidence": {
+        "path": "/private/tmp/madb-chief-round6/madb/adapters/host/src/lib.rs",
+        "lines": [
+          59,
+          81,
+          82,
+          127,
+          129
+        ]
+      },
+      "detail": "现有 LocalWorkspace read 对不存在返回 None，多数其他 I/O 由 host_error 归 InvalidInput/HOST002；提案明确要求不存在/权限/读写错误为 EXPLAIN003/3。新 explain 路径需保留实际 typed I/O cause 或在适当宿主适配边界分类，旧六命令行为不得随之改写。不是本提案字段或分层的阻断。"
+    },
+    {
+      "id": "N2",
+      "severity": "nonblocking-implementation-condition",
+      "summary": "参数错误 JSON 需 explain 专用受控解析路径。",
+      "evidence": {
+        "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/commands.rs",
+        "lines": [
+          9,
+          10
+        ]
+      },
+      "detail": "现入口 get_matches() 可直接输出/退出；实施时必须在进入 explain 且独立 --json 存在时接管可表达解析失败，并保持 help/version 及原六命令行为。提案已给出可实现的目标，不需要新任务系统/通用参数协议。"
+    }
+  ],
+  "assessment": [
+    "两种闭合格式均保留真实可用字段；context 是可选点位置/字节绑定，不能作为 producer authentication、完整符号范围或候选证据。未强塞 Report 或 IR 成功事实。",
+    "code-only 不触工作区；参数、说明表、context、source 的拒绝顺序明确。0/2/3/4只表达解释查询，原事故失败不转换成查询失败； stdout失败的不能保证JSON例外明确。",
+    "byte-lf 与 utf16-js 明确区分；初始BOM、astral surrogate midpoint、JS换行与原始字节offset规则相容，EOF点不冒认声明range。",
+    "CAP001–004已按实际分支复核；其余现有47码集合/分支概述与固定产生方相容。实际51项独立说明数据尚未实现，本审查没有把存在性检查视作字典完整验收。",
+    "纯值留model/app，用例持读端口；protocol/contracts做wire转换、host读文件、CLI解析展示。无需新crate/执行器/任务系统；不改变SDK owner/线程/关闭机制。",
+    "新增context及result有明确最小理由，不构成producer证书、自动修复、扫描或探测协议；SDK constructor/hooks不由本提案批准。"
+  ],
+  "validation": {
+    "original_check_readonly_replay": {
+      "exit_code": 0,
+      "counts": {
+        "format_and_semantic_examples": 28,
+        "independent_position_examples": 14,
+        "source_pins": 29,
+        "existing_code_spelling_checks": 47,
+        "cross_sample_checks": 5
+      },
+      "author_output_write_suppressed": true,
+      "source_and_validation_logic_unchanged": true,
+      "note": "通过Python AST仅省略唯一结果文件write_text语句，实际执行原形状/语义/位置/来源pin校验；未覆盖作者结果。"
+    },
+    "additional_position_comparison": {
+      "count": 10,
+      "compared_with": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/declaration_diagnostics.py:83-140",
+      "all_matched": true,
+      "observed_offsets": [
+        {
+          "id": "bom",
+          "byte_offset": 3
+        },
+        {
+          "id": "astral-after",
+          "byte_offset": 4
+        },
+        {
+          "id": "astral-midpoint",
+          "byte_offset": null
+        },
+        {
+          "id": "crlf-line-end",
+          "byte_offset": 1
+        },
+        {
+          "id": "crlf-inside-newline",
+          "byte_offset": null
+        },
+        {
+          "id": "last-empty-line",
+          "byte_offset": 2
+        },
+        {
+          "id": "two-boms",
+          "byte_offset": 6
+        },
+        {
+          "id": "non-JS-vtab",
+          "byte_offset": 2
+        },
+        {
+          "id": "LS-line-end",
+          "byte_offset": 1
+        },
+        {
+          "id": "invalid-utf8",
+          "byte_offset": null
+        }
+      ]
+    },
+    "final_frozen_input_hashes_unchanged": true
+  },
+  "limits": [
+    "28个格式/语义样例及14个位置例为设计片段；实际CLI、host读取/复核/输出错误、真实reader上下文接线均未执行。",
+    "29来源pin、47代码拼写存在检查和5交叉样例检查单列；不当作51项完整字典、每个产生分支或修复有效性的验收。",
+    "额外10个位置比较使用固定字节/点并对照现有UTF16 helper，不证明原编译器确实发出某条诊断。",
+    "未跑SDK/Native/设备/全workspace，不修改产品、作者提案/脚本/结果或历史报告；仅本独审MD/JSON写入tmp。"
+  ]
+}

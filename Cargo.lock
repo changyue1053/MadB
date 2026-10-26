@@ -476,6 +476,7 @@ dependencies = [
  "madb-protocol",
  "madb-rules",
  "serde_json",
+ "toml",
 ]
 
 [[package]]

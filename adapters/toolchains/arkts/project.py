@@ -16,6 +16,7 @@ support = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(support)
 LOCAL = Path(__file__).resolve().parent
 HELPERS = (
+    "adapters/generators/diagnostic-explanations.json",
     "adapters/generators/arkts/driver.py",
     "adapters/generators/arkts/support.py",
     "adapters/generators/arkts/read_arkts.cjs",

@@ -19,6 +19,10 @@ CASES = {
     "c-to-rust-test": ["operation-close", "source-lease", "registration-failure", "panic", "diagnostics", "token-exhaustion", "capacity"],
     "rust-to-c": ["data", "bootstrap", "abi-mismatch", "profile-mismatch"],
 }
+DIAGNOSTIC_CASES = {
+    "c-to-rust-diagnostics": ["checked-constructor", "diagnostics", "disabled-protection"],
+    "c-to-rust-diagnostics-test": ["diagnostics-isolation", "diagnostics-capacity"],
+}
 
 
 def require_revision(revision):
@@ -47,6 +51,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True, help="new output directory; never overwrite a candidate")
     parser.add_argument("--bindgen", type=Path, required=True)
     parser.add_argument("--cbindgen", type=Path, required=True)
+    parser.add_argument("--diagnostics", action="store_true", help="also build the two explicit L02 diagnostics candidates")
     parser.add_argument("--allow-dirty", action="store_true", help="development only: emit provisional candidates that formal Lab acceptance rejects")
     args = parser.parse_args()
     output = args.output.absolute()
@@ -66,7 +71,8 @@ def main():
     if args.allow_dirty:
         print("PROVISIONAL development candidates: producer checkout contains uncommitted changes", flush=True)
     print("Native execution workspace: " + str(work), flush=True)
-    for variant, case_names in CASES.items():
+    cases = {**CASES, **DIAGNOSTIC_CASES} if args.diagnostics else CASES
+    for variant, case_names in cases.items():
         root = work / variant
         print("Preparing " + variant, flush=True)
         if not args.allow_dirty:
@@ -79,7 +85,8 @@ def main():
         pipeline.metadata()
         pipeline.generate()
         pipeline.build()
-        candidate = pipeline.package(output / variant, revision, ["c05." + variant + "." + case for case in case_names], provisional=args.allow_dirty)
+        prefix = "l02." if variant in DIAGNOSTIC_CASES else "c05."
+        candidate = pipeline.package(output / variant, revision, [prefix + variant + "." + case for case in case_names], provisional=args.allow_dirty)
         print(variant + ": " + candidate["candidate_digest"], flush=True)
     if not args.allow_dirty:
         require_revision(revision)

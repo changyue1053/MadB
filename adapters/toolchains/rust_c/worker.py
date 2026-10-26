@@ -28,6 +28,7 @@ TEST_SYMBOLS = (
     "madb_fixture_test_set_fault", "madb_fixture_test_set_next_token",
 )
 C_SYMBOLS = ("madb_c_fixture_bootstrap", "madb_c_fixture_checksum")
+DIAGNOSTIC_SYMBOLS = ("madb_fixture_diagnostics_configure", "madb_fixture_diagnostics_drain")
 
 
 def canonical(value):
@@ -193,6 +194,8 @@ def phase_outputs(config, phase):
         raise ValueError("native provider/test-support configuration is invalid")
     if provider == "c" and config.get("test_support", False):
         raise ValueError("the stateless C provider has no test-support feature")
+    if not isinstance(config.get("diagnostics", False), bool) or (provider == "c" and config.get("diagnostics", False)):
+        raise ValueError("diagnostics must be boolean and enabled only for the Rust provider")
     platform = platform_kind(config)
     if phase == "compile":
         return ["objects/libengine.a" if provider == "rust" else "objects/provider.o"]
@@ -226,6 +229,8 @@ def compile_provider(config, input_root, work, commands):
                      "--remap-path-prefix", f"{work}=/madb/work"]
         if config.get("test_support", False):
             arguments.extend(["--cfg", 'feature="test-support"'])
+        if config.get("diagnostics", False):
+            arguments.extend(["--cfg", 'feature="diagnostics"'])
         commands.run("rustc", [*arguments, source, "-o", output], extra_environment={"OUT_DIR": str(input_root)})
     else:
         source = input_path(input_root, config.get("implementation", "sdk/c/first-route/madb_c.c"))
@@ -275,6 +280,8 @@ def link_provider(config, input_root, work, scratch, commands):
     if provider == "rust":
         archive = input_path(input_root, "objects/libengine.a")
         symbols = (*RUST_SYMBOLS, *TEST_SYMBOLS) if config.get("test_support", False) else RUST_SYMBOLS
+        if config.get("diagnostics", False):
+            symbols = (*symbols, *DIAGNOSTIC_SYMBOLS)
         exports = scratch / "exports.txt"
         if platform == "apple":
             # Current dyld requires LC_UUID; ld uses a content hash, not a random UUID.

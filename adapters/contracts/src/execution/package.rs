@@ -24,7 +24,7 @@ pub(super) fn validate_package(
     input: &Digest,
     symbols: &BTreeSet<String>,
     materialized: &[FileReference],
-) -> Result<()> {
+) -> Result<Option<FileReference>> {
     let q = request.value();
     reference_schema(&q["output_set"], DocumentKind::OutputSet)?;
     let output_ref = reference(&q["output_set"])?;
@@ -139,7 +139,34 @@ pub(super) fn validate_package(
         declared_file(materialized, &dependency)?;
         require_file(provided, &dependency)?;
     }
-    Ok(())
+    // Anchor preservation to bytes in the Source input digest: a new reader
+    // label can still repackage the same pinned Source batch. This preserves an
+    // existing table, without certifying another reader or requiring a table in
+    // historical Source batches that never generated one.
+    let responsibilities = if uses_first_route_sdk(prepared, provided)? {
+        references(&v["files"])?
+            .into_iter()
+            .find(|file| file.path.as_str() == "responsibilities.md")
+    } else {
+        None
+    };
+    Ok(responsibilities)
+}
+
+fn uses_first_route_sdk(prepared: &PreparedQuery, provided: &FrozenInputs) -> Result<bool> {
+    let inputs = prepared.request.value()["inputs"]
+        .as_array()
+        .expect("validated");
+    let Some(backend) = inputs.iter().find(|file| file["path"] == "backend.json") else {
+        return Ok(false);
+    };
+    let bytes = require_file(provided, &reference(backend)?)?;
+    let Ok(config) = madb_protocol::strict_json(bytes) else {
+        return Ok(false);
+    };
+    Ok(config["provider"] == "rust"
+        && config["semantics"] == "madb.first-route/1"
+        && config["source"] == "sdk/rust/engine/src/lib.rs")
 }
 
 /// Package lineage comes exclusively from pinned parents. Workspace files with

@@ -1,0 +1,223 @@
+{
+  "scope": "L02 SDK 修订2 native diagnostics ring/ABI/hooks 独立源码级复核",
+  "result": "no_blocking_findings_in_reviewed_native_slice",
+  "source_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-native-implementation-freeze.json",
+    "sha256": "e6a4f168523dbf5bf6ac03ec88cce3fcc321cd1fcab381a3d575c686c9403d79",
+    "size": 4367
+  },
+  "source_files": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/Cargo.toml",
+      "sha256": "f7f7a870f793a0025b27ac1254fcb82ae14f75b17288fbe0f4691e5e3914aae9",
+      "size": 312
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/lib.rs",
+      "sha256": "6908951b6c1a6d00ca57bda3c7a808a742511dd1f8d4ff7d075ece825cea88ed",
+      "size": 13827
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/runtime.rs",
+      "sha256": "e585be9a06e7d9345c14d1e6a9db5c7fc42aeb404fcd559dc9ec37ee9785c7b9",
+      "size": 16369
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/tests.rs",
+      "sha256": "11060e2f5c1cce55bf4b3df22220db97cffbffe90f065d5810ef76674f475173",
+      "size": 21156
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/diagnostics.rs",
+      "sha256": "98d8cec497148d10e8932fe4c91ff246a89ff76a4178d0607f36449f8ef7ed48",
+      "size": 6923
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/diagnostics_tests.rs",
+      "sha256": "0c086e1d8f66f151137c5aaa2eb574195e96e107966448d7cf0427f01bbf6358",
+      "size": 5951
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/diagnostics_abi_tests.rs",
+      "sha256": "01a26da7ce97373c80d26addcbe99fa285a114489a35e83b7325b31c56a70f05",
+      "size": 7340
+    }
+  ],
+  "source_identity_rechecked_after_tests": true,
+  "tools": {
+    "rustc": {
+      "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/rustc",
+      "sha256": "1ba7bb8e273bd64125f4048d2ecce530e0a6470e565ab1b3aecf0b82b532f7b1",
+      "version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)"
+    },
+    "cargo": {
+      "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/cargo",
+      "sha256": "6d576d8058f8ca643e8fce55b64ee3c614ba64c9da2e536bae843e6a2e1f3951",
+      "version": "cargo 1.99.1 (5f94df478 2026-08-27)"
+    },
+    "rustfmt": {
+      "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/rustfmt",
+      "sha256": "fae904bce0d6e9fcdd0ac4a4b597bdec4e571133dc7e9e9527b3e54bf5008a8d",
+      "version": "rustfmt 1.10.0-stable (58cf8f9c35 2026-10-13)"
+    },
+    "clippy-driver": {
+      "path": "/Users/changyue/.rustup/toolchains/1.99.1-aarch64-apple-darwin/bin/clippy-driver",
+      "sha256": "396b9478a39ee3e51df9534d34c86e50a9904ff581024856c6d5ca53b314cd91",
+      "version": "clippy 0.1.99 (58cf8f9c35 2026-10-13)"
+    }
+  },
+  "host": {
+    "system": "Darwin",
+    "release": "25.6.0",
+    "machine": "arm64"
+  },
+  "test_identity": {
+    "interface": "1111111111111111111111111111111111111111111111111111111111111111",
+    "profile": "2222222222222222222222222222222222222222222222222222222222222222",
+    "kind": "explicit synthetic SDK unit-test identities, not a generated public candidate"
+  },
+  "findings": [],
+  "review": [
+    {
+      "path": "sdk/rust/engine/src/diagnostics.rs:40",
+      "conclusion": "静态初始化固定64槽；无逐事件allocation/线程/timer/exporter；ring/config/id同锁，每路径一次try_lock；不持ring锁取registry或调用外部代码。"
+    },
+    {
+      "path": "sdk/rust/engine/src/diagnostics.rs:60",
+      "conclusion": "off begin无clock；完成先检查采样资格/atomic hint后try_lock，并在锁内重核enabled；configure与入队线性化，counter独立原子模计数，不用于业务保护。"
+    },
+    {
+      "path": "sdk/rust/engine/src/diagnostics.rs:114",
+      "conclusion": "满、争用、中毒或编号耗尽各放弃记录；FIFO保留已有数据，checked_add使最后MAX后None不重复编号；clock/record异常在诊断域内捕获。"
+    },
+    {
+      "path": "sdk/rust/engine/src/lib.rs:60",
+      "conclusion": "七个business入口各一次完成计数，status保真；create/observe成功token来自局部返回值，不反读out pointer；控制入口直接catch，不递归计数。"
+    },
+    {
+      "path": "sdk/rust/engine/src/lib.rs:348",
+      "conclusion": "四out通过tuple分别clear，无短路漏清；机械null/alignment拒绝在drain之前；busy/poison保持全零且队列不消费，任意地址可访问性/alias仍调用方责任。"
+    },
+    {
+      "path": "sdk/rust/engine/src/runtime.rs:283",
+      "conclusion": "callback开始采样、实际返回后完成记录；只用SourceLease既有数字subscription/parent，不额外锁registry、不改lease获取/释放或调用时机，不携带context地址。"
+    }
+  ],
+  "executed_checks": [
+    {
+      "command": "env MADB_INTERFACE_DIGEST=<11 repeated 32 bytes> MADB_PROFILE_DIGEST=<22 repeated 32 bytes> cargo test --manifest-path /private/tmp/madb-chief-round6/l02-native-review/Cargo.toml --target-dir /private/tmp/madb-chief-round6/l02-native-review/target --locked --offline --test public_api -- --exact approved_public_abi_contract_without_private_test_hooks --nocapture",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-native-review/public-api-final.log",
+        "sha256": "bfc554a8e942ceec3f279bd00b40634e4328f5e9f8dc0eae560341629714ad2e",
+        "size": 433
+      },
+      "tests": 1,
+      "scope": [
+        "实际Rust repr(C) Event64/Stats40及全部字段offset",
+        "fresh image off counters精确11/1/1、无event/drop",
+        "on精确11条七入口+callback phase/resource/status映射",
+        "4输出各null/allocated-misaligned共8拒绝，其他合法输出全零且FIFO不消费",
+        "64满载drop-new、disable保留/不drop、重复配置不reset、成功id连续",
+        "8线程×32公开bootstrap，无消费者时events+drops=256、counter准确",
+        "callback内drain/configure/checksum可重入；self-wait精确WouldDeadlock；parent关闭使observe Closing且未交付sub0，随后正常关闭"
+      ]
+    },
+    {
+      "command": "env MADB_INTERFACE_DIGEST=<11 repeated 32 bytes> MADB_PROFILE_DIGEST=<22 repeated 32 bytes> cargo test --manifest-path /private/tmp/madb-chief-round6/l02-native-review/engine-snapshot/Cargo.toml --target-dir /private/tmp/madb-chief-round6/l02-native-review/private-target --locked --offline --features diagnostics independent_review:: -- --nocapture",
+      "exit_code": 0,
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/l02-native-review/private-seams.log",
+        "sha256": "9e37f80de400490195a4bfb65ddefb1d89a9d39e579ce872ca9410d5701bbd62",
+        "size": 949
+      },
+      "tests": 3,
+      "scope": [
+        "入场off的调用无法被随后enable追溯采集",
+        "完成时off且ring已持锁，仍不计drop或等待",
+        "持全局ring锁时公开control Busy+全部out0+不消费；受控poison后InternalFailure+全部out0+队列仍保留"
+      ]
+    }
+  ],
+  "independent_fixtures": {
+    "public_api": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/tests/public_api.rs",
+      "sha256": "c3f1ce41c4b484a914413d8b5c6770f60f75c280df9f8b7ed0bf790fd16bc9ca",
+      "size": 10321
+    },
+    "cargo_manifest": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/Cargo.toml",
+      "sha256": "14f3d13e3159e29af467d694b464d2d2d6497a390c6b7d42c3e573feb7fcca3d",
+      "size": 202
+    },
+    "cargo_lock": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/Cargo.lock",
+      "sha256": "44e324381b75dd2c0ac3a9d90c5dff0cafa2a39043cbba36cb013578595d5911",
+      "size": 282
+    },
+    "copied_source_input_inventory": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/snapshot-inputs.json",
+      "sha256": "e340ca612270770bb3d85ebefccfd82873bfeea1892f5891adaf21db9323c049",
+      "size": 1276
+    },
+    "private_append_only_test_patch": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/independent-seams.patch",
+      "sha256": "f995c0bd63ead1780908daa7366caa5ae875f7294a0ab8e9cbc19735af8ff27c",
+      "size": 3220
+    },
+    "private_test_source": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/engine-snapshot/src/diagnostics.rs",
+      "sha256": "e7a791b42a21474515bdfe27766aaea930200385e9c2a1c653bcba0b913c4b83",
+      "size": 9953
+    },
+    "isolation": "复制10个冻结必需文件到temp，仅diagnostics.rs末尾追加cfg(test)模块；产品源码/真实原根未改。公共用例不启用test-support。"
+  },
+  "failed_attempt_preserved": {
+    "source": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/public-api-001.rs",
+      "sha256": "9b2e7fd36772a937355e5671d8a6cfc9da60765101df55cf7090d0717de5ae63",
+      "size": 9347
+    },
+    "log": {
+      "path": "/private/tmp/madb-chief-round6/l02-native-review/public-api-001.log",
+      "sha256": "0e840b21a19aac9badd66c69ffac6743832bb0a3207e929d31b9a4a5fbd575df",
+      "size": 921
+    },
+    "reason": "独审夹具把初始callback关闭parent后的observe误写OK。冻结runtime::observe在deliver后engine_open应返回Closing，既有synchronous_registration_close测试亦明确Closing/sub0；只修临时独立预期和不对未交付sub执行close，不放宽为任意status。"
+  },
+  "author_checks_used_as_context": {
+    "evidence": [
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-validation/tests.json",
+        "sha256": "818337040554c64928808b51fa1a9f1c21d0b940604e4fbc5f4cf2c1c770477e"
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-validation/release-checks.json",
+        "sha256": "54200e9ee7ab5fd49d196bee989b2274184bf7a3a3a240aa10072364392a74f2"
+      }
+    ],
+    "reported_results": {
+      "default_tests": 1,
+      "test_support_tests": 1,
+      "diagnostics_tests": 8,
+      "diagnostics_test_support_tests": 8,
+      "format": "passed",
+      "clippy_default_all_targets": "passed",
+      "clippy_both_features_all_targets": "passed",
+      "release_symbols": [
+        7,
+        14,
+        9,
+        16
+      ]
+    },
+    "note": "已核冻结源/工具及记录身份；四feature完整测试和Release nm由作者运行，本审者没有宣称独立重跑该全组。"
+  },
+  "limits": [
+    "只覆盖宿主arm64源码级/原生ABI行为；不是clean冻结候选或独立Lab认证",
+    "未替代真实cbindgen/Clang读取、ContractIR投影/最终izer、checked header、包闭包和四候选验收",
+    "未运行设备、TSan/ASan或正式overhead采样；并发有限case不证明任意调度无缺陷",
+    "生产无exporter入口的代码和callback重入已审，独立慢exporter/跨进程image候选用例仍按原方案执行",
+    "不继承旧7候选/C05/C06/C07通过；不授予L02整包、发布或CI通过"
+  ]
+}

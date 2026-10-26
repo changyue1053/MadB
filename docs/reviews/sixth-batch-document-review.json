@@ -1,0 +1,71 @@
+{
+  "scope": "Read-only review of current sixth-batch documentation against actual code and saved evidence; no code, device, compiler or verification run",
+  "result": "no remaining blocking documentation findings in reviewed snapshot",
+  "documents": {
+    "docs/adr/0020-explain-query-contracts.md": "9db1c95079a52a369f934153a189b5e2206389d3d7040d0cf36230cde8a30289",
+    "docs/adr/0021-native-diagnostics-and-checked-constructor.md": "67ac54ba81b6339db52507de2cc0fd73de2bae4a138958e05ae08e1a0d3279f6",
+    "docs/architecture/10-diagnostics-and-performance.md": "9bb37b1b01713e388aee71755ec8110a2b7864bb7fda88ebdd8f1b1ccd3c5e94",
+    "docs/architecture/15-developer-ergonomics.md": "7f67fca717d7e89a07c1de346573216edb4877cb8027110af5fab4d42d7d7bd6",
+    "docs/schemas/README.md": "99697370974049f84037a8ae83e63a2140edbd5bacf2c5bf0687dd8d538fc703",
+    "docs/examples/language-api/l02-diagnostics.md": "5d5b083448c0b960de95167e62a804ac8bb96f0c7a996ce5734f0e65b3ec0f35",
+    "sdk/rust/engine/README.md": "ca79ca16a79a0178143b65f224108fcfefcaff7e50a18c88a421ab02bb644815",
+    "docs/reviews/2026-10-26-chief-architect-sixth-batch.md": "c7c90f7b1916f7b1bd9a9e9179d50051fc274a2b336928a7779b0a42be412a04",
+    "docs/catalog/implementation-plan.json": "bc1f3454d03ae44c7ece2a692dfb4d884ef786ad229425f99046eff681f291ca"
+  },
+  "resolved_findings": [
+    {
+      "path": "docs/examples/language-api/l02-diagnostics.md",
+      "line": 9,
+      "issue": "Old no-file-read claim omitted import-time loading of the fixed shared explanation JSON",
+      "verified_resolution": "Distinguishes import-time frozen catalog read from pure explain/source-binding functions; matches _bundled_explanations"
+    },
+    {
+      "path": "docs/reviews/2026-10-26-chief-architect-sixth-batch.md",
+      "line": 33,
+      "issue": "Lab oracle/unit checks and implemented real wrong-library probes needed distinct execution levels",
+      "verified_resolution": "Now explicitly 27 Python oracle + 13 parser/refusal/coverage unit tests; four real wrong-library cases implemented but execution awaits formal candidates"
+    }
+  ],
+  "checks": [
+    {
+      "subject": "ADR0020 approved proposal digest",
+      "actual": "6bc0f329a0e3c7e0c537b235ede7efede61bf58366c414cce95e97b6e07bf821",
+      "matches_declared": true
+    },
+    {
+      "subject": "ADR0021 approved revision2 digest",
+      "actual": "5489d3b10f0164f3a7b73bade3e74f5b814d575d7350c41f05b6ee724d45e036",
+      "matches_declared": true
+    },
+    {
+      "subject": "explain command syntax and 0/2/3/4 output semantics",
+      "result": "matches crates/madb-cli/src/explain.rs; examples use valid context-relative path/root options; no CLI executed"
+    },
+    {
+      "subject": "SDK helper/diagnostic and builder usage",
+      "result": "fixed7/test14/diag9/diagtest16, five builder variants with explicit --diagnostics, generated helper five outcomes and original lifecycle match current implementation"
+    },
+    {
+      "subject": "C06/C07 catalog preservation",
+      "result": "Each complete parsed JSON task object equals the round6 baseline; implemented/passed unchanged."
+    },
+    {
+      "subject": "initial source capture counts",
+      "result": "actual read-only baseline directories contain1076 MadB/460 Lab files; no .git checkout in baseline, so no independent baseline HEAD command claim"
+    },
+    {
+      "subject": "L04 and E evidence boundaries",
+      "result": "saved UI evidence supports62 frames/three rounds perframework/one XCTest; E006/007 evidence supports131 inputs/10 locked schemas/15payload/22+16 checks; source/UI/local generation not widened to native/SDK/platform or composition transaction acceptance"
+    },
+    {
+      "subject": "L02 catalog/report state",
+      "result": "in_progress/missing retained;005 expressly provisional and superseded shared Package fixes separated; no formal Mac/Linux result claimed"
+    }
+  ],
+  "limits": [
+    "Root is still preparing final Package and formal clean-candidate records; future report changes need their own evidence binding",
+    "E diagnostic catalog NATIVE006 text just changed; root assigned new008/009 verification, so current006/007 narrative remains limited to its saved snapshot until updated",
+    "SDK README modification changes a source input; old005 candidate identity must not be reused for the later clean build",
+    "No product files or catalog edited by this reviewer; both textual corrections applied by root"
+  ]
+}

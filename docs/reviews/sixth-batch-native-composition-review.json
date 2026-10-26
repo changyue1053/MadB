@@ -1,0 +1,250 @@
+{
+  "kind": "native-composition-independent-review",
+  "created_at_utc": "2026-10-26T10:27:23.395937+00:00",
+  "status": "passed-within-metadata-and-shared-extraction-scope",
+  "root": "/private/tmp/madb-chief-round6/madb",
+  "baseline": "/private/tmp/madb-chief-round6/madb-baseline",
+  "head": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "scope": "Explicit profile/2 metadata completion and common contract/policy extraction; not native SDK concurrency or process execution.",
+  "source_pins": [
+    {
+      "path": "adapters/contracts/src/native.rs",
+      "sha256": "fce68b2fdae19461e38eab36957d6e9302aab1abc07c74b13ddb2ced1a9cad61",
+      "size": 7852,
+      "matched_before_and_after": true,
+      "baseline_sha256": "15233ef97a7c76213122fe57fe73ae0ea33ed54183c1c41d4446693afa9312d3"
+    },
+    {
+      "path": "adapters/contracts/src/native/composition.rs",
+      "sha256": "3f1c3bdf00e899cdcabb65d1b723604a8ecd4a0d6a4b6ae3659ed11c99b1686b",
+      "size": 2418,
+      "matched_before_and_after": true,
+      "baseline_sha256": null
+    },
+    {
+      "path": "adapters/contracts/src/convert.rs",
+      "sha256": "dd1f6d236b867b9e13b81b04744ee0507cca448e911ff49acf6341fae60e8769",
+      "size": 25027,
+      "matched_before_and_after": true,
+      "baseline_sha256": "7b86f3ea31db151c3e97794d0bda3a7cc609f1586190a9be0032bf5c5f1ede7a"
+    },
+    {
+      "path": "adapters/contracts/src/lib.rs",
+      "sha256": "1fb70b6f6def25aea902bcb569eadd3a0d93b78098cddb564526f36bcc6e7fc1",
+      "size": 6110,
+      "matched_before_and_after": true,
+      "baseline_sha256": "09d8f157e0863c20f4dc8b7fa392ac27ac24c5871ae85a137b2eecc3d6822ccf"
+    },
+    {
+      "path": "adapters/contracts/tests/native_composition.rs",
+      "sha256": "ec61f4ef5f46a908994a3cbecc580a8323114f955dac1db3b17a812d35bf57e2",
+      "size": 16040,
+      "matched_before_and_after": true,
+      "baseline_sha256": null
+    },
+    {
+      "path": "adapters/contracts/tests/native_metadata.rs",
+      "sha256": "7073c63ed8cad15bce40083f62e05af2ce49e0763770b1f4dc1268b148051bb7",
+      "size": 12078,
+      "matched_before_and_after": true,
+      "baseline_sha256": "7073c63ed8cad15bce40083f62e05af2ce49e0763770b1f4dc1268b148051bb7"
+    },
+    {
+      "path": "adapters/contracts/tests/semantics.rs",
+      "sha256": "4d348b3e9b17f66cd29b65c0c8a528e692fce5aa85e000d846fcbbaa9712f9ea",
+      "size": 8970,
+      "matched_before_and_after": true,
+      "baseline_sha256": "4d348b3e9b17f66cd29b65c0c8a528e692fce5aa85e000d846fcbbaa9712f9ea"
+    },
+    {
+      "path": "adapters/contracts/src/composition/pins.rs",
+      "sha256": "f33efb05ac15c6f2303cf56f03c09849a977740f943ca262d3bffc8bd5cd9437",
+      "size": 22766,
+      "matched_before_and_after": true,
+      "baseline_sha256": "f33efb05ac15c6f2303cf56f03c09849a977740f943ca262d3bffc8bd5cd9437"
+    },
+    {
+      "path": "adapters/contracts/src/composition/ownership.rs",
+      "sha256": "84ce8cf78c2aa0c2f7a61c30ac92dfd79069bccd0032fcfd937fd129ad126f26",
+      "size": 15189,
+      "matched_before_and_after": true,
+      "baseline_sha256": "84ce8cf78c2aa0c2f7a61c30ac92dfd79069bccd0032fcfd937fd129ad126f26"
+    },
+    {
+      "path": "adapters/contracts/src/composition.rs",
+      "sha256": "c8fa0431fca1f953411601a8ccb6bc1c72281747a83086d6463b0c3804915093",
+      "size": 4413,
+      "matched_before_and_after": true,
+      "baseline_sha256": "0fbabbf42725884910a182f1bf6c4af5f1e315532a055abec0afa2518f175ea7"
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "1abe88ef0ff6606f28d18309f705a5b5492e129fc3a18f5f41a6368bef781cf2",
+      "size": 31392
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "d13306be0ecda81ce779baa290ffb417380d525928477f16200884b5169cca33",
+      "size": 86
+    },
+    {
+      "path": "adapters/contracts/Cargo.toml",
+      "sha256": "a1e1ceeb9f9e35ecae990700c1a6caf24dc1d0ad4b80c0d4ef92a1f0f4b6097e",
+      "size": 452
+    },
+    {
+      "path": "docs/adr/0018-extension-composition-formats.md",
+      "sha256": "2e99240abf20a99ec456d8deecce898758698e09536068f1a8fddc931b4e1b67",
+      "size": 3067
+    },
+    {
+      "path": "tests/fixtures/contracts/profile.json",
+      "sha256": "d1cca6225738f82ef0c822ba7867e6faed4d7545ac1bf8fc99048c11f6f0ac22",
+      "size": 1616
+    },
+    {
+      "path": "tests/fixtures/contracts/project.json",
+      "sha256": "71d5227d78609df0f7b899d47e4078e1951cde4e894d3547fc1a1e31b6cd0cb9",
+      "size": 7391
+    },
+    {
+      "path": "tests/fixtures/contracts/contract-ir.json",
+      "sha256": "2df5fb39020bd8f69bc6690904d7fb8df4a674c1c01507dba01fd50f766a4b3c",
+      "size": 28909
+    }
+  ],
+  "observations": [
+    {
+      "rule": "Legacy raw and envelope finalizers still decode DocumentKind::Profile only; public capability/build policy/check_contract/check_policy_resolution remain /1-only",
+      "evidence": "native.rs:29-69; convert.rs:332-356; lib.rs:52-58,112-120",
+      "independent_probe": "Six legacy entry checks reject /2 with exact FMT003"
+    },
+    {
+      "rule": "Shared extraction keeps original v1 declaration->project policies->profile defaults order and original public checker order",
+      "evidence": "native.rs:78-82,86-136 vs baseline finalize_documents; lib.rs:56-58,118-120,139-152 vs baseline",
+      "independent_probe": "Nonempty seed policies retain NATIVE001 before invalid source key/default; empty policies then invalid source key retain DTO002; invalid annotation authority remains POL005 before /2 defaults rejection"
+    },
+    {
+      "rule": "The new entry binds actual project/lock/profile, frozen source/schema/package inputs before seed completion; capabilities/defaults require bound private construction",
+      "evidence": "native/composition.rs:33-39; convert.rs:336-339,361-364; composition/pins.rs:69-79,99-282",
+      "note": "bind_composition_inputs and pin/ownership checks unchanged from baseline"
+    },
+    {
+      "rule": "Seed and completed IR bind exact namespace,boundary,selector and whole locked source digest; schema/source bytes remain checked",
+      "evidence": "native/composition.rs:36-43; composition/pins.rs:287-331; tests/native_composition.rs:298-325,373-388",
+      "independent_probe": "Different seed namespace/boundary both LOCK001"
+    },
+    {
+      "rule": "Metadata resolves policies against the same actual context.project, then rechecks completed contract and authoritative policy/provenance",
+      "evidence": "native/composition.rs:33,40-45; lib.rs:123-187",
+      "independent_probe": "Coherently repinned actual project change to blocking=non-blocking appears in completed call policy"
+    },
+    {
+      "rule": "No feature erasure or /2->/1 conversion: composition capability adds only explicit interpretation of extension composition; IR stays under existing core feature semantics",
+      "evidence": "convert.rs:367-407; native/composition.rs:22-27; tests/native_composition.rs:328-370"
+    },
+    {
+      "rule": "No complete required-responsibility or declaration-observation proof is claimed, and no process/commit/execution capability is returned",
+      "evidence": "native/composition.rs:13-27; return type Vec<u8>; fixtures explicitly metadata-only"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "madb-contracts",
+        "--locked",
+        "--offline",
+        "--test",
+        "native_metadata",
+        "--test",
+        "native_composition",
+        "--test",
+        "semantics",
+        "--test",
+        "identities"
+      ],
+      "cwd": "/private/tmp/madb-chief-round6/madb",
+      "environment": {
+        "CARGO_TARGET_DIR": "/private/tmp/madb-chief-round6/madb/target",
+        "CARGO_NET_OFFLINE": "true"
+      },
+      "exit_code": 0,
+      "suites": {
+        "native_metadata": 9,
+        "native_composition": 6,
+        "semantics": 14,
+        "identities": 5
+      },
+      "passed": 34,
+      "failed": 0
+    },
+    {
+      "kind": "temporary independent Rust probe linked to just-built candidate libraries",
+      "build_record": "/private/tmp/madb-chief-round6/native-composition-independent-probe/build-002.json",
+      "run_log": "/private/tmp/madb-chief-round6/native-composition-independent-probe/run-002.log",
+      "passed": 4,
+      "failed": 0,
+      "exit_code": 0,
+      "initial_attempt": {
+        "log": "/private/tmp/madb-chief-round6/native-composition-independent-probe/run.log",
+        "passed": 3,
+        "failed": 1,
+        "cause": "Audit fixture used invalid enum nonblocking; schema correctly rejected FMT004. Only the fixture and its assertion spelling were corrected to non-blocking. Initial files/logs preserved."
+      }
+    }
+  ],
+  "probe_artifacts": [
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/probe.rs",
+      "sha256": "5996de2e36c8f542ec07fd159477faa0690bdeca8caacbf634e1f0e933fb92a0",
+      "size": 13650
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/compile.log",
+      "sha256": "dbc065a3be5f63c295ccc0c71a09da8505e1e671e692beafd59806eeb8c1a686",
+      "size": 477
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/run.log",
+      "sha256": "d320f903a07653f1ec0651e0aad98011102553f24733b1423d26da72c3b3ff3b",
+      "size": 939
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/build.json",
+      "sha256": "ef976274198d17aa4bcafc4d92cceca96e73a7f3851a6a23d9a30f3b85047bf5",
+      "size": 2205
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/probe-002.rs",
+      "sha256": "513b00b959e95fe553a2453efa31970c3f1f9dfd1753b16416464edc52fbba7f",
+      "size": 13652
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/compile-002.log",
+      "sha256": "b00dc1a9148cb1f4c1ed12d6b594326ed9e08b0c12c659f830ef90fb8d2ebfe0",
+      "size": 481
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/run-002.log",
+      "sha256": "b6ac2e4fff18e9eb1cb06a64407d78019eb38d615a05fa1d39a970a6f6b00c8b",
+      "size": 390
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/native-composition-independent-probe/build-002.json",
+      "sha256": "118bd75889e37c46c475245635e19bd772f25bdcf3296e81bd23805275a4c320",
+      "size": 2416
+    }
+  ],
+  "limits": [
+    "Baseline was read/compared, not rebuilt or executed in this review. Legacy exact-code probes ran on candidate and were checked against baseline control flow.",
+    "Test fixture construction was reused for bound input setup; added assertions were independent and no production rules were reused as an oracle.",
+    "Byte binding does not prove source confinement, reader observation, actual complete responsibility derivation, execution image/port session admission or SDK acceptance.",
+    "No whole workspace/full protocol suite, native SDK compilation, process execution, device tests, C04/E02/C07 certification or publishing.",
+    "No product source, fixture, schema, state or historical report edited. Temporary probes/logs and this JSON are the only authored artifacts."
+  ]
+}

@@ -247,6 +247,7 @@ def run_explicit_reader_checks():
         "tests/integration/l02_diagnostics/test_declaration_diagnostics.py",
         "adapters/generators/arkts/read_facade.cjs",
         "adapters/generators/arkts/declaration_diagnostics.py",
+        "adapters/generators/diagnostic-explanations.json",
         "adapters/generators/arkts/driver.py",
         "adapters/generators/arkts/support.py",
         "adapters/generators/arkts/lowering.py",

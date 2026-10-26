@@ -15,6 +15,8 @@
 | [contract-ir](contract-ir.schema.json) | 源身份、类型、符号、有效策略、来源与布局观察 | 类型引用、能力、所有权、摘要、编译器布局身份 |
 | [case](case.schema.json) | 案例模板或实例、步骤、独立预期、清理与超时 | 实例化目标、精确错误、实际执行 |
 | [coverage](coverage.schema.json) | 按 profile/target/direction 的适用性要求 | 48 项无遗漏、排除理由、案例集合；不代表通过率 |
+| [diagnostic-context](diagnostic-context.schema.json) | explain 的显式诊断与源引用、位置编码及报告精度 | 实际源字节与位置核对，不认证外来诊断来源 |
+| [explain-result](explain-result.schema.json) | 只读解释结果或明确失败 | 稳定说明目录、0/2/3/4退出及只读边界；ADR-0020 |
 | [report](report.schema.json) | 固定候选的执行结果、清理、附件和资源观察 | 独立预期、六项身份、最低证据层级、资源计数 |
 | [read-request](read-request.schema.json) | reader 的已锁输入和目标 | 输入与返回 IR 的对应关系 |
 | [generate-request](generate-request.schema.json) | 固定快照与输入、任务身份 | 返回批次、源输入和 profile 一致性 |
@@ -51,7 +53,7 @@ madb-model：Symbol / Type / Policy / Capability / CaseResult
 Findings 或受检结果 → C04 应用请求与端口
 ```
 
-不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 18 类文档格式正反例（原 16 类及 composition/profile-v2），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
+不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 20 类文档格式正反例（原 16 类、composition/profile-v2 及 diagnostic-context/explain-result），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
 
 应用请求与 wire 文件不是一个类型：C02 固定端口 payload；C04 按用例构造纯应用请求，并通过适配器转换。C02 没有空执行器、成功占位后端或伪造的 `build/verify` 命令。
 

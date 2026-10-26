@@ -4,6 +4,7 @@ pub mod composition;
 mod convert;
 pub mod dependencies;
 pub mod execution;
+pub mod explain;
 pub mod extension;
 pub mod extension_files;
 pub mod extension_lock;
@@ -55,7 +56,22 @@ pub fn check_contract(
 ) -> Result<madb_model::contract::Contract, ContractError> {
     let model = contract(ir)?;
     let capabilities = capability(profile)?;
-    let mut findings = madb_rules::validate_contract(&model, &capabilities);
+    check_contract_model(ir, model, &capabilities)
+}
+
+pub(crate) fn check_contract_with_capability(
+    ir: &Document,
+    capabilities: &madb_model::contract::Capability,
+) -> Result<madb_model::contract::Contract, ContractError> {
+    check_contract_model(ir, contract(ir)?, capabilities)
+}
+
+fn check_contract_model(
+    ir: &Document,
+    model: madb_model::contract::Contract,
+    capabilities: &madb_model::contract::Capability,
+) -> Result<madb_model::contract::Contract, ContractError> {
+    let mut findings = madb_rules::validate_contract(&model, capabilities);
     if !findings.is_empty() {
         return Err(ContractError::Findings(findings));
     }
@@ -100,6 +116,27 @@ pub fn check_policy_resolution(
     profile: &Document,
     annotations: &[Binding],
 ) -> Result<(), ContractError> {
+    let (model, inputs) = policy_resolution_inputs(ir, project, annotations)?;
+    let (defaults, origin) = convert::profile_defaults(profile)?;
+    check_resolved_policies(model, inputs, &defaults, &origin)
+}
+
+pub(crate) fn check_policy_resolution_with_defaults(
+    ir: &Document,
+    project: &Document,
+    defaults: &[madb_model::policy::PolicyValue],
+    origin: &madb_model::policy::Origin,
+    annotations: &[Binding],
+) -> Result<(), ContractError> {
+    let (model, inputs) = policy_resolution_inputs(ir, project, annotations)?;
+    check_resolved_policies(model, inputs, defaults, origin)
+}
+
+fn policy_resolution_inputs(
+    ir: &Document,
+    project: &Document,
+    annotations: &[Binding],
+) -> Result<(madb_model::contract::Contract, PolicyInputs), ContractError> {
     let model = contract(ir)?;
     let mut inputs = project_policies(project)?;
     if annotations
@@ -113,15 +150,23 @@ pub fn check_policy_resolution(
         )]));
     }
     inputs.bindings.extend_from_slice(annotations);
-    let (defaults, origin) = convert::profile_defaults(profile)?;
+    Ok((model, inputs))
+}
+
+fn check_resolved_policies(
+    model: madb_model::contract::Contract,
+    inputs: PolicyInputs,
+    defaults: &[madb_model::policy::PolicyValue],
+    origin: &madb_model::policy::Origin,
+) -> Result<(), ContractError> {
     let resolved = madb_rules::resolve_policies(
         &inputs.namespace,
         &model.symbols,
         &model.types,
         &inputs.bindings,
         &inputs.families,
-        &defaults,
-        &origin,
+        defaults,
+        origin,
     )
     .map_err(ContractError::Findings)?;
     if inputs.namespace != model.namespace {

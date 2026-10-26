@@ -1,0 +1,179 @@
+{
+  "scope": "L02 独立Lab消费者/runner准备源码审查；非正式SDK运行",
+  "result": "no_remaining_blocking_source_review_findings",
+  "reviewer": "c07_reconcile",
+  "source_root": "/private/tmp/madb-chief-round6/madb_lab",
+  "final_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-consumer-prepared-inputs-003.json",
+    "sha256": "9587c73fdd56a6393a38148a001c54c98e16bc8d618c30b7007c6f2c5ab5278e",
+    "size": 3420
+  },
+  "source_files": {
+    "consumers/c/l02_diagnostics.c": {
+      "sha256": "372bc4ba62ef3858d1a57457694a5e5af13b5a58c127c8ed8420eea4fcd8d6d7",
+      "size": 28524
+    },
+    "consumers/c/README-l02.md": {
+      "sha256": "a52794cd1b58d609abe3136def53ff6f7f36bb7c1d73796549023a9900ed8ce6",
+      "size": 3057
+    },
+    "scripts/verify_l02.py": {
+      "sha256": "0d6e3f97ced4de464404703218df67d1ccdd4270fbba62c7a0772dd76962fa85",
+      "size": 34141
+    },
+    "scripts/test_l02.py": {
+      "sha256": "f57afbdf8266d5b80dce932c73174612c451f12a5d3166cd29500b398691784d",
+      "size": 12534
+    }
+  },
+  "source_hashes_rechecked_after_tests": true,
+  "authority": {
+    "lab_agents": {
+      "path": "/private/tmp/madb-chief-round6/madb_lab/AGENTS.md",
+      "sha256": "d0a66ebd522f1d2a6da4c686081ca299b4c01337f754da8248be0692509e58f5",
+      "size": 1596
+    },
+    "reference_revision": "0daf56372c721059be5cc49f80857dd79941cf9d",
+    "reference_integrity": "SHA256SUMS的7份固定规范实际核验全匹配",
+    "approved_sdk_scope": "SDK decision revision2（授权由主协调传达）；四profile精确7/14/9/16；不改公共协议/验收条件"
+  },
+  "resolved_findings": [
+    {
+      "finding": "rejections未检查bootstrap完整阶段/token/status与全部stats；concurrent未拒绝最终capture_enabled非法值",
+      "original_reproduction": {
+        "path": "/private/tmp/round6/l02-lab-implementation-review.probes.json",
+        "sha256": "4e83eb3fb733bf30c95213a19bb1aa9baf242df146afbc2a0be906dd9dffec89",
+        "size": 1088
+      },
+      "resolution": "C与Python均补确定字段；并发拉取事件逐项phase/status/token与跨controller/最终排空顺序检查，capture最终0；BUSY/drop不添加固定出现次数",
+      "verification": "独立27向量全部符合预期，含逐字段错误拒绝和busy=0合法正例；作者测试13项独立重跑通过"
+    },
+    {
+      "finding": "diagnostics.checked-constructor曾借默认header的actual-mismatch，未直接覆盖该候选header",
+      "resolution": "保留原两对并补diagnostics header→diagnostics-test(kind3)/default-test(kind2)；case_results按header_group及实际observation indexes绑定，缺任一pair或错header拒绝",
+      "verification": "最终四对循环及mismatch-only宏独立源审；13测试包含缺pair/错header/重复provider拒绝；四对开发编译记录仅compiled-not-run"
+    }
+  ],
+  "code_review": [
+    {
+      "path": "scripts/verify_l02.py:58",
+      "conclusion": "exact clean Lab HEAD+完整tracked文件摘要；没有allow-dirty/provisional入口。provisional producer、错误producer revision、candidate digest、profile/route/direction/target均拒绝。"
+    },
+    {
+      "path": "scripts/verify_l02.py:123",
+      "conclusion": "实际nm导出MadB集合精确7/14/9/16，ContractIR的native declarations与该profile一致；编译器/nm字节与candidate tools绑定，SDK receipt与实际C使用依赖复核，native producer-only receipts不伪称消费。"
+    },
+    {
+      "path": "scripts/verify_l02.py:306",
+      "conclusion": "编译输入由真实depfile枚举，只容许本消费者/已安装公开headers/实际SDK与Clang resources；执行文件、candidate原件及安装副本、编译依赖和工具运行后重验。每进程dladdr路径+native bootstrap identity+PID绑定实际库。"
+    },
+    {
+      "path": "consumers/c/l02_diagnostics.c:65",
+      "conclusion": "普通构造实际调用生成checked helper，无消费者expected digest参数；同时检查kind/native_status/nonzero owned handle，关闭使用原公开协议。stub标明仅helper控制流，六分支不替代SDK。"
+    },
+    {
+      "path": "consumers/c/l02_diagnostics.c:168",
+      "conclusion": "off/on、FIFO64/drop-new、toggle、错误输出清零与不消费有独立精确预期；原十次业务调用+一个callback分阶段计数，不把控制调用计入业务。"
+    },
+    {
+      "path": "consumers/c/l02_diagnostics.c:270",
+      "conclusion": "并发线程均join后再读非atomic controller字段；固定4000业务完成数但不假定busy/drop次数；最终capture0、所有已取事件语义和单调ID均核查。"
+    },
+    {
+      "path": "consumers/c/l02_diagnostics.c:296",
+      "conclusion": "exporter为消费者自有线程与condvar，已取得值副本后阻塞；普通业务正常关闭发生在显式释放exporter之前，无SDK sink入口或把process kill当排水。"
+    },
+    {
+      "path": "consumers/c/l02_diagnostics.c:331",
+      "conclusion": "受检companion gates固定暂停operation/source lease，TIMEOUT/BUSY时ctx保持alive；resume+join+successful await后才撤销ctx，随后closed emit拒绝且次数不变；资源守恒独立snapshot，off/on/full分别安排。"
+    },
+    {
+      "path": "scripts/verify_l02.py:434",
+      "conclusion": "四个真实错库pair各有自己的header/library身份；MISMATCH_ONLY仅裁掉错配进程的诊断函数调用并限制mode=mismatch，普通/诊断正确配对程序不启用此宏；仍调用实际generated helper/bootstrap及companion snapshot检验no-create。"
+    }
+  ],
+  "executed_checks": [
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B /private/tmp/round6/l02-lab-implementation-review.check.py",
+      "exit_code": 0,
+      "checks": 27,
+      "result": {
+        "path": "/private/tmp/round6/l02-lab-implementation-review.check.json",
+        "sha256": "a99a16086904f918b4d7364d1fb8c05b78480250a8ef6d50f54e59e46a32f1ca",
+        "size": 6063
+      },
+      "script": {
+        "path": "/private/tmp/round6/l02-lab-implementation-review.check.py",
+        "sha256": "d6d2c4a688a36697730df8b1ba7cfcda74961092d1c35df75cdce6cf9810149a",
+        "size": 3594
+      },
+      "kind": "独立纯Python正反oracle检查，未执行SDK"
+    },
+    {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/test_l02.py",
+      "cwd": "/private/tmp/madb-chief-round6/madb_lab",
+      "exit_code": 0,
+      "tests": 13,
+      "log": {
+        "path": "/private/tmp/round6/l02-lab-implementation-review.unit.log",
+        "sha256": "848660d8816e8047e1a43a22a5cda413812c750a4daaf9739cd54a723b9fef31",
+        "size": 112
+      },
+      "kind": "Lab parser/refusal/coverage单元检查，未执行SDK"
+    }
+  ],
+  "prepared_compile_evidence": {
+    "reference": {
+      "python_oracle": {
+        "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/test_l02.py",
+        "tests": 13,
+        "exit_code": 0
+      },
+      "development_compile": {
+        "path": "/private/tmp/madb-chief-round6/l02-consumer-compile-004/report.json",
+        "sha256": "bae56ff0d43fc5feaebc4c48ec8c9cd1c5130669ac3a0436450c9248864cb1af",
+        "size": 417676,
+        "programs": 10,
+        "provisional": true,
+        "runtime": "not_run"
+      },
+      "dirty_formal_refusal": {
+        "path": "/private/tmp/madb-chief-round6/l02-formal-dirty-refusal-001/expected-refusal.json",
+        "sha256": "d8db5fccccb5a93089f2d21d98424328005b8c08d46be0e37081237ac224bb25",
+        "size": 1248,
+        "matched": true
+      },
+      "affected_development_compile": {
+        "path": "/private/tmp/madb-chief-round6/l02-consumer-compile-005/report.json",
+        "sha256": "8adc70fca76bc9ccb94217693348daeb2887b9111d3f7d42b54de6f8e9e87ef6",
+        "size": 84947,
+        "programs": 2,
+        "provisional": true,
+        "runtime": "not_run"
+      },
+      "independent_mutation_replay": {
+        "path": "/private/tmp/madb-chief-round6/l02-oracle-repair-replay.json",
+        "sha256": "a9e5fcd874e1f2dd2f9959f3c83557f3424cfaf882cc37dba3f449a5a3da0a5e",
+        "size": 583,
+        "both_rejected": true
+      },
+      "actual_mismatch_development_compile": {
+        "path": "/private/tmp/madb-chief-round6/l02-consumer-compile-006/report.json",
+        "sha256": "b82e73e98276dbe432f01fe0f7816727960640a0e6e3b4af88c202efdaaf9144",
+        "size": 169541,
+        "programs": 4,
+        "provisional": true,
+        "runtime": "not_run"
+      }
+    },
+    "note": "已核各报告实际hash/size；004/005/006是分阶段开发编译，明确provisional和runtime=not_run。审者未重跑编译、未消费provisional候选、未将这些记录当正式运行。"
+  },
+  "formal_runtime": "not_run_by_reviewer",
+  "remaining": [
+    "root与Lab作者须以新clean producer、clean Lab和四个固定候选摘要正式编译/执行全部selected场景",
+    "四错库pair实际运行、两fresh process的image独立性、真实性能样本及完整case归属待该正式report",
+    "私有ring poison/编号耗尽/Atomic wrap另由native实现独审覆盖，不伪装成普通公开Lab证据",
+    "旧C05 required cases未在本runner重新认证，L02整包及其他语言/目标/发布仍未获通过"
+  ],
+  "actions": "只读Lab/公开设计与记录；仅在/private/tmp/round6/l02-lab-implementation-review.*写临时复核脚本/JSON/log；未改产品或Lab源码，未操作设备。"
+}

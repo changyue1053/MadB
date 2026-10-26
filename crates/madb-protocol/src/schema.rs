@@ -33,9 +33,11 @@ pub enum DocumentKind {
     Candidate,
     VerifyRequest,
     Execution,
+    DiagnosticContext,
+    ExplainResult,
 }
 impl DocumentKind {
-    pub const ALL: [Self; 18] = [
+    pub const ALL: [Self; 20] = [
         Self::Project,
         Self::ContractIr,
         Self::Lock,
@@ -54,6 +56,8 @@ impl DocumentKind {
         Self::Candidate,
         Self::VerifyRequest,
         Self::Execution,
+        Self::DiagnosticContext,
+        Self::ExplainResult,
     ];
     pub fn name(self) -> &'static str {
         match self {
@@ -75,6 +79,8 @@ impl DocumentKind {
             Self::Candidate => "candidate",
             Self::VerifyRequest => "verify-request",
             Self::Execution => "execution",
+            Self::DiagnosticContext => "diagnostic-context",
+            Self::ExplainResult => "explain-result",
         }
     }
     fn source(self) -> &'static str {
@@ -97,6 +103,8 @@ impl DocumentKind {
             Self::Candidate => schema!("candidate"),
             Self::VerifyRequest => schema!("verify-request"),
             Self::Execution => schema!("execution"),
+            Self::DiagnosticContext => schema!("diagnostic-context"),
+            Self::ExplainResult => schema!("explain-result"),
         }
     }
     pub fn schema_id(self) -> String {

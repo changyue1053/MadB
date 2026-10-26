@@ -16,7 +16,7 @@ use madb_app::{
     Digest, Result,
     inputs::FrozenInputs,
     pipeline::{ArtifactDeclaration, ArtifactInvocation, ArtifactKind, ArtifactRecipe},
-    ports::{ConfigurationBytes, SnapshotFormat},
+    ports::{ConfigurationBytes, FileReference, SnapshotFormat},
     process::{MAX_STDIN_BYTES, ProcessRequest},
 };
 use madb_protocol::{DigestDomain, semantic_digest};
@@ -33,6 +33,8 @@ pub struct BoundArtifactRecipe {
     task_digest: Digest,
     profile_digest: Digest,
     symbols: BTreeSet<String>,
+    ownership: Option<crate::native::FirstRouteOwnership>,
+    packaged_responsibilities: Option<FileReference>,
 }
 impl BoundArtifactRecipe {
     /// Bind real port requests against checked configuration and immutable supplied bytes.
@@ -117,6 +119,8 @@ impl BoundArtifactRecipe {
             Digest::new(crate::source_digest(&read["inputs"]).map_err(format_error)?)
                 .map_err(|e| invalid("HASH004", "input_digest", e.to_string()))?;
         let mut symbols = BTreeSet::new();
+        let mut ownership = None;
+        let mut packaged_responsibilities = None;
         if operation == ExecutionOperation::Metadata {
             if request != read_request_bytes || snapshot.is_some() {
                 return Err(invalid(
@@ -160,8 +164,15 @@ impl BoundArtifactRecipe {
                 }
                 declared_file(&recipe.inputs, &reference(&q["contract"])?)?;
                 require_file(provided, &reference(&q["contract"])?)?;
+                ownership = crate::native::first_route_ownership(
+                    &prepared.profile,
+                    &prepared.lock,
+                    &request_doc,
+                    &adapter.decode(DocumentKind::ContractIr, snapshot)?,
+                    provided,
+                )?;
             } else {
-                validate_package(
+                packaged_responsibilities = validate_package(
                     &adapter,
                     &prepared,
                     &request_doc,
@@ -222,6 +233,8 @@ impl BoundArtifactRecipe {
             task_digest,
             profile_digest,
             symbols,
+            ownership,
+            packaged_responsibilities,
         })
     }
     pub fn operation(&self) -> ExecutionOperation {
@@ -255,6 +268,34 @@ impl ArtifactRecipe for BoundArtifactRecipe {
             }
             if kind == ArtifactKind::Generation {
                 validate_sources(&response, &self.symbols)?;
+                if let Some(expected) = &self.ownership {
+                    let files = references(&value["files"])?;
+                    let declared: Vec<_> = files
+                        .iter()
+                        .filter(|file| file.path == expected.reference.path)
+                        .collect();
+                    if declared.len() != 1
+                        || declared[0] != &expected.reference
+                        || declared[0].digest != Digest::of_bytes(&expected.bytes)
+                        || declared[0].size != expected.bytes.len() as u64
+                    {
+                        return Err(invalid(
+                            "NATIVE006",
+                            "responsibilities",
+                            "generated responsibility table differs from the core-checked plan",
+                        ));
+                    }
+                }
+            }
+            if let Some(expected) = &self.packaged_responsibilities {
+                let files = references(&value["files"])?;
+                if !files.contains(expected) {
+                    return Err(invalid(
+                        "NATIVE006",
+                        "responsibilities",
+                        "candidate must preserve the checked source responsibility table",
+                    ));
+                }
             }
             let identity = digest(
                 &value[if kind == ArtifactKind::Generation {

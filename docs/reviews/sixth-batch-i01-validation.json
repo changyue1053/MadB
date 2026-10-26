@@ -1,0 +1,69 @@
+{
+  "task": "I01 / ADR-0019 D profile/targets selection",
+  "root": "/private/tmp/madb-chief-round6/madb",
+  "head": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+  "implementation_scope": [
+    "crates/madb-plan/src/project/selection.rs",
+    "crates/madb-plan/tests/project_selection.rs"
+  ],
+  "coordinated_export": "crates/madb-plan/src/project/mod.rs",
+  "files": {
+    "crates/madb-plan/src/project/selection.rs": {
+      "sha256": "dffe987b9287c832059774e2b0103661aafe36b8661e5e952d7e3a8b4abd7632",
+      "bytes": 6100
+    },
+    "crates/madb-plan/tests/project_selection.rs": {
+      "sha256": "aa6ee1c68d7b4f51122fdcf2cf436f5fcd180b9cbe789d373ccd937b223c6832",
+      "bytes": 12623
+    },
+    "crates/madb-plan/src/project/mod.rs": {
+      "sha256": "243b27e39f23c9c28a3eb62d6757131c922b996a803ee08832867b10979a77aa",
+      "bytes": 7819
+    }
+  },
+  "environment": {
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "CARGO_TARGET_DIR": "/private/tmp/madb-chief-round6/madb/target",
+    "CARGO_NET_OFFLINE": "true"
+  },
+  "checks": [
+    {
+      "command": "cargo test -p madb-plan --locked --offline --test project_selection --test project",
+      "exit_code": 0,
+      "project_selection_passed": 12,
+      "existing_project_passed": 9,
+      "ignored": 0,
+      "failed": 0
+    },
+    {
+      "command": "rustfmt --edition 2024 --check crates/madb-plan/src/project/selection.rs crates/madb-plan/tests/project_selection.rs",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "cargo clippy -p madb-plan --locked --offline --tests -- -D warnings",
+      "exit_code": 0
+    }
+  ],
+  "prior_integration_observation": {
+    "command": "cargo test -p madb-plan --locked --offline --test project_selection --test project",
+    "exit_code": 101,
+    "diagnostic": "E0432: shared project/mod.rs exports had not yet been added by coordinator; retained as intermediate integration observation, not passing evidence"
+  },
+  "limits": [
+    "Internal typed selection only: no template/result production schema or decoder",
+    "Exact target Id and explicit family are retained; no ABI/SDK expansion or compatibility validation",
+    "All selected module/file inputs go through existing ProjectPlan; unselected module/file plans are not validated",
+    "No filesystem creation, rendering, CommitNew, IDE launch or execution authorization",
+    "No full I01 acceptance, SDK/platform certification or release claim"
+  ],
+  "independent_review": {
+    "path": "/private/tmp/madb-chief-round6/i01-selection-independent-review.json",
+    "sha256": "2b55e3efcb01647fa32b3c3bd7bcca38457d082a69f2a8a3eb12a664d1a59b9e",
+    "conclusion": "No blocking finding; same frozen sources, 12 new plus 9 existing tests independently passed"
+  }
+}

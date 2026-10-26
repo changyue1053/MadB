@@ -1,0 +1,282 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.explain-result/1"
+    },
+    "tool_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "code": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "context": {
+      "anyOf": [
+        {
+          "allOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            {
+              "properties": {
+                "schema": {
+                  "const": "madb.diagnostic-context/1"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "explanation": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "meaning": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "triggers": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "minItems": 1,
+              "maxItems": 64
+            },
+            "repairs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "edit-author-input",
+                      "inspect-configuration",
+                      "restore-locked-input"
+                    ]
+                  },
+                  "instruction": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "location": {
+                    "anyOf": [
+                      {
+                        "$ref": "urn:madb:schema:common:1#/$defs/location"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "kind",
+                  "instruction",
+                  "location"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 16
+            },
+            "limits": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              },
+              "maxItems": 64
+            }
+          },
+          "required": [
+            "meaning",
+            "triggers",
+            "repairs",
+            "limits"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "reference": {
+              "$ref": "urn:madb:schema:common:1#/$defs/file"
+            },
+            "location": {
+              "$ref": "urn:madb:schema:common:1#/$defs/location"
+            },
+            "position_encoding": {
+              "enum": [
+                "byte-lf",
+                "utf16-js"
+              ]
+            },
+            "reported_precision": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "compiler-derived",
+                    "artifact-derived",
+                    "schema-derived",
+                    "heuristic"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "byte_offset": {
+              "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+            }
+          },
+          "required": [
+            "reference",
+            "location",
+            "position_encoding",
+            "reported_precision",
+            "byte_offset"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "location": {
+            "anyOf": [
+              {
+                "$ref": "urn:madb:schema:common:1#/$defs/location"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "location"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 64
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "tool_version",
+    "code",
+    "context",
+    "explanation",
+    "source",
+    "diagnostics",
+    "exit_code"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:explain-result:1",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "object"
+          },
+          "diagnostics": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "explanation": {
+            "type": "null"
+          },
+          "source": {
+            "type": "null"
+          },
+          "diagnostics": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "context": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

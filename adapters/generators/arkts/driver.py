@@ -386,6 +386,11 @@ def metadata(request, config, root, work):
 def generate(request, config, root, work):
     descriptor, seed, _ = _read(request, config, root, work)
     contract = finalize(seed, config, root, work)
+    return _generate_from_metadata(request, config, root, work, descriptor, contract)
+
+
+def _generate_from_metadata(request, config, root, work, descriptor, contract):
+    """Render from freshly finalized metadata; callers retain admission ownership."""
     expected = support.read_json(support.input_path(root, request["contract"]["path"]))
     if contract != expected or any(
         request[k] != contract[v]

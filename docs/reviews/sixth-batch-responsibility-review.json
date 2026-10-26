@@ -1,0 +1,291 @@
+{
+  "scope": "DEC07/L02 finite C-to-Rust ownership implementation independent review; no public wire or new API",
+  "conclusion": "No remaining blocker in reviewed implementation after B1/B2 repairs; final clean candidates and independent Lab acceptance remain separate",
+  "review_mode": {
+    "product_implementation": "read-only; implementation authors root and ie child",
+    "authorized_test_write": "adapters/contracts/tests/execution_binding.rs only; three permanent Package regression tests added by reviewer after root authorization",
+    "no_sdk_or_device_execution": true
+  },
+  "sources": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/ownership.rs",
+      "sha256": "30ed6b2161eaeb1b755b372b90b559d395e20d6f73ec4c31dac68573561e7e3f",
+      "size": 2266
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/lib.rs",
+      "sha256": "87173f9428b990225e3f74d1666e67d7f2b03f2e30e4bc0e955c3d9272cf29c9",
+      "size": 462
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/native/first_route_ownership.rs",
+      "sha256": "e600b39ad1b5415c8f3c6027d4a2abd61c881ff9dffd7aaa9d9a1ec10dbcadee",
+      "size": 27889
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/native/first_route_ownership_tests.rs",
+      "sha256": "cb08a86eaa63d9ef46225933032dd03f6cfb2d732947379b21f04dab8e78fc90",
+      "size": 18370
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/native.rs",
+      "sha256": "808545501a7c85d188622fac81622d0069f254274ada1efc469aabde93b2ec26",
+      "size": 7963
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/composition/ownership.rs",
+      "sha256": "b0c79d418543c709ba5924aed0e72573455f28d5432b52c96fa1da47e1ba393a",
+      "size": 15121
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/execution/artifact.rs",
+      "sha256": "658454d71bbda26722b5aede69bf3185b11d8cacef22502752ba22d5ca8c7c3f",
+      "size": 13586
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/execution/package.rs",
+      "sha256": "f6f0d8b10db6a0a36163aa93804e55cd9862010e7713d453efcb57a4b19e7b04",
+      "size": 8848
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/tests/execution_binding.rs",
+      "sha256": "03c845ac3c17913fa619e4c5f8cbe88959303cfd78eb5cb5dad2709ef7fa13b3",
+      "size": 40606
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/Cargo.toml",
+      "sha256": "ba11a682086ee03d739eeccd31835c694ca343c79e9e26b5c93e6631d2c04213",
+      "size": 474
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/Cargo.lock",
+      "sha256": "0a99a4baf43cea5761ba695cdde2dc05b6654ef32e63693a36c1c46af37d363f",
+      "size": 31401
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+      "sha256": "b7d871ec6a61c35c745863ede69a5ef6f7a723237b9d35da75833b50eb18f2f5",
+      "size": 9955
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+      "sha256": "b3116ee1c8786626f17a5fe66750cf59d2d1c1a920fc7b783d5fce104cac99f8",
+      "size": 16808
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/tests/integration/c05_reader/test_diagnostics.py",
+      "sha256": "5c64c24220339dc0c8c6620862bd29cc94ad73c0a283d2acc777f8a622da763a",
+      "size": 8565
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/pipeline.rs",
+      "sha256": "b198c46cd3e5b729874710eecf49ee52a31b3ec36eeb9b3d22771521278fe411",
+      "size": 24340
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/inputs.rs",
+      "sha256": "ed04ccf83a0ebb8bb6c7381e2d39fcede669ddc981b87a9b9312446733f8f9c5",
+      "size": 9621
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/artifacts/rust_c/pack.py",
+      "sha256": "49cd552b011c529723e8c5ddb468e1b3c6b65038993dbca966a856d7fe5a1108",
+      "size": 2524
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/toolchains/common/pipeline.py",
+      "sha256": "0127331c6a7629c81e8591fecd758c34e79a4e93aa1190f977eeec16da230e6f",
+      "size": 19929
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/toolchains/rust_c/pipeline.py",
+      "sha256": "c8070565e60b9df485abc0c7fef554e226bdce94fd5d6638606024ed3adfb799",
+      "size": 685
+    }
+  ],
+  "author_evidence": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-rust-validation.json",
+      "sha256": "b81f29b6be91c451589aae4182ee5d4392e92c8b6653fd5c813ac9d30eca9da3",
+      "size": 4265
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-python-freeze.json",
+      "sha256": "51434d3a12deb63720ced6ae914fa8a65b3aff6b0af5c327811e6a7b9c2eb07d",
+      "size": 1664
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-generation-validation.json",
+      "sha256": "41a7f7bc582e7b0261a14dfa9a5b4413a6fa18bbf09912aa2b4b85405efb7fe6",
+      "size": 15250
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-workspaces.json",
+      "sha256": "d72a147d4b2bb8a674bd3ee8940ab1dd3241c72fb493a99266b395656efe15f4",
+      "size": 5630
+    }
+  ],
+  "independent_evidence": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/core.rs",
+      "sha256": "893316932d55c59f394fdae1b2831484ad61046e08c26d8b7e4de7f6471f9868",
+      "size": 2261
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/core-result.json",
+      "sha256": "878882419319fc43ece5f430c0494863ff6b932e9e4a32fb63df1831e7067113",
+      "size": 46
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/binding.rs",
+      "sha256": "0a612a3afaecd7cde117d228046c9788266d9dc8ddf8e8fbaeb5dab8f96f4be8",
+      "size": 4200
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/package.rs",
+      "sha256": "f0a0733aab8fcd2a760a253af9e4ed003e23040c7f4202544ad1ec38c25850e4",
+      "size": 4159
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/binding-final-results-002.json",
+      "sha256": "776aab395026a000b1910ad432862b4aff9a38e6984d8cb2602659ec6df3edb3",
+      "size": 3611
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/candidate-assets.json",
+      "sha256": "0f15844f2a00a93469b2058b8026adb7e7c5f9e4d68217f08ccdb1d9a7ebe3a2",
+      "size": 1878
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/package-003-before.json",
+      "sha256": "3a1018641ba146b2ecd091e5082b325d6b4c3c02179cfe26039d729313558cc8",
+      "size": 29
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/package-switch-with-parents-before-fix.json",
+      "sha256": "8b095df3c9632f08c49d25885872f08d713dc602116ceb5ce630b49119ce4627",
+      "size": 674
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/package-regression-004.log",
+      "sha256": "10d92828680acabe3c9dec4437cb8a63fc91fa6494f4fc4845d8c4b60b171168",
+      "size": 953
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/core",
+      "sha256": "306b816e5e7ead00fe75d9f4e4dc418ddf747422988cc131b5976d8f5b2ca83f",
+      "size": 603720
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/binding-final-002",
+      "sha256": "e7ab8f077f82193ff49043494a5e50c48781fcd37abf6feab94518e9131fea90",
+      "size": 24934528
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-review-probes/package-final",
+      "sha256": "34b583ade832c324545b983a27b3a37e304c81821b37b30a95ec8b5ce5189190",
+      "size": 25058960
+    }
+  ],
+  "tool": {
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "compile": "direct rustc of standalone probes linked to actual compiled app/contracts/protocol; no product copying or implementation edits",
+    "final_libraries": [
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/target/debug/deps/libmadb_contracts-39a9281a3aa056ad.rlib",
+        "sha256": "41f193f17d520ac7ee55d0faf21a99b41a2e13894b6245c73fac9ff59058e963",
+        "size": 43794152
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/target/debug/deps/libmadb_protocol-79b0207a2ab75e53.rlib",
+        "sha256": "2d58b8e020fd199dd848132293fbcf976ffceb050125b3d29bc61805b7eed4b4",
+        "size": 3633888
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/target/debug/deps/libmadb_app-6186633f4fd048de.rlib",
+        "sha256": "7dfa7374a292e839dc03368f5c36fe453c078d379dd79f72a14f4c49b05fcab3",
+        "size": 8616128
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "B1",
+      "severity": "blocking-before-fix",
+      "trigger": "A candidate omits responsibilities.md and recomputes candidate_digest; actual file set and manifest agree",
+      "observed_before": "Actual provisional-003 candidate accepted by BoundArtifactRecipe and capture_artifact_result",
+      "resolution": "Package captures the already checked Source MD FileReference; Candidate must retain the exact reference before actual byte capture",
+      "status": "resolved"
+    },
+    {
+      "id": "B2",
+      "severity": "blocking-before-fix",
+      "trigger": "Same actual Source/Build and frozen SDK backend; change current read/lock component, update package context/request/candidate lock bytes and identities, omit MD",
+      "observed_before": "ExecutionContext and actual Source/Build parent checks pass; first repair still accepts candidate",
+      "resolution": "Preservation applicability uses provider/semantics/source from backend.json bound by Source input_digest, not a current reader label",
+      "status": "resolved"
+    }
+  ],
+  "checks": {
+    "independent_generic_core": {
+      "assertions": 312,
+      "sets": [
+        27,
+        33
+      ],
+      "result": "passed",
+      "coverage": "each removal, wrong owner, wrong scope, equal/conflicting duplicate; extra async/cancel/queue/subscription; error precedence"
+    },
+    "actual_source_binding": {
+      "configurations": [
+        "c-to-rust",
+        "c-to-rust-diagnostics"
+      ],
+      "assertions_per_configuration": 15,
+      "result": "passed",
+      "coverage": "valid capture; missing table, wrong declared digest/size, empty/fake header/second owner/one byte changed with original or self-consistent new references; missing physical file; recovery to exact bytes"
+    },
+    "actual_package_binding": {
+      "configurations": [
+        "c-to-rust",
+        "c-to-rust-diagnostics",
+        "switched-reader-same-source"
+      ],
+      "result": "all accepted positive candidates and rejected missing MD with NATIVE006",
+      "parents": "actual Source and Build inventories validated separately; changed current context validated"
+    },
+    "candidate_assets": {
+      "configurations": 5,
+      "result": "four Rust-provider candidate/source MD bytes and FileRefs identical, exact independently enumerated 27/33 rows; reverse C provider has no MD"
+    },
+    "permanent_regressions": {
+      "command": "cargo test -p madb-contracts --locked --offline --test execution_binding package_",
+      "result": "7 passed (3 new, 4 existing)",
+      "coverage": "rehash omission/hash/size/rename; actual byte mutation; unchanged candidate; same Source with switched reader; historical no-table and unrelated-source behavior"
+    },
+    "format": "rustfmt --edition 2024 --check adapters/contracts/tests/execution_binding.rs passed"
+  },
+  "reviewed_invariants": [
+    "Required rows arise from the finite role recipe, provided rows from checked IR shape/types/effective policies, neither from a submitted responsibility array; shared row constructors do not erase duplicates.",
+    "Seven/nine roles and exact finite types/policies are required; one subscription/SourceLease dispatch plus stop/drain/release and non-IR checked-helper identity gate.",
+    "Native owner binds exact SDK source inventory, protocol/package identity and SDK metadata reference; reader owner uses locked component source digest, not a fabricated runtime executable hash.",
+    "Existing composition wrapper preserves error code/subject/message and empty-required then required-duplicate then provided-duplicate then mismatch order.",
+    "Expected MD is created after core checks inside Generate binding, pinned by FileRef before host captures and checks actual bytes. No MD parser is used as a new public wire.",
+    "Candidate retention is anchored to immutable backend source facts. Invalid or unrelated backend formats do not inherit the finite recipe; fixed generated Source cannot switch backend facts without changing its source digest.",
+    "Legacy Source with no table is not retroactively certified or newly required to have one; nonfixed reader/source is not granted this SDK guarantee."
+  ],
+  "retained_failed_attempts": [
+    "Author TOML whole-document Value FromStr failure is preserved in l02-build-002.log and repaired using toml::from_str with real Cargo regression.",
+    "Reviewer first binding probe compile attempted Vec<u8>.into_bytes; corrected temporary harness only.",
+    "Reviewer first temporary capture fixture asserted read limit and lacked native/run.json; corrected temporary input handling and actual Build root, not product checks.",
+    "Reviewer first parent test incorrectly used merged FrozenInputs; rejected undeclared Source files. Corrected to separate actual Source/Build inventories and reproduced B2.",
+    "package-regression-001.log is reviewer test borrow-check failure, repaired only test fixture. package-regression-003.log is the intentional red B2 regression before repair.",
+    "binding-final-results-001.json linked older libmadb_contracts-5f1a3f... and does not verify B2 repair; final -002 pins libmadb_contracts-39a9281... and passes."
+  ],
+  "limits": [
+    "provisional-005 consists of development candidates from a dirty cooperative checkout, not clean frozen acceptance candidates",
+    "The five generation pipelines and their SDK smoke are author evidence; this reviewer did not independently run SDK or device behavior",
+    "This evidence does not certify native concurrency, all platforms, real ArkTS pages, release readiness or complete L02 acceptance",
+    "Final integration, clean candidate regeneration and Lab joint acceptance remain the root coordinator responsibility"
+  ]
+}

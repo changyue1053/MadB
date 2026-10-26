@@ -1,0 +1,127 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.diagnostic-context/1"
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/file"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "position_encoding": {
+      "anyOf": [
+        {
+          "enum": [
+            "byte-lf",
+            "utf16-js"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "reported_precision": {
+      "anyOf": [
+        {
+          "enum": [
+            "compiler-derived",
+            "artifact-derived",
+            "schema-derived",
+            "heuristic"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "diagnostic",
+    "source",
+    "position_encoding",
+    "reported_precision"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:diagnostic-context:1",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "diagnostic": {
+            "properties": {
+              "location": {
+                "type": "null"
+              }
+            }
+          },
+          "position_encoding": {
+            "type": "null"
+          },
+          "reported_precision": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "diagnostic": {
+            "properties": {
+              "location": {
+                "type": "object"
+              }
+            }
+          },
+          "position_encoding": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ]
+}

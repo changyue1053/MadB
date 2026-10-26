@@ -13,6 +13,7 @@ from .common import profile_digest, project_digest, ref, save, semantic, sha_fil
 
 
 VARIANTS = {"c-to-rust": ("rust", False), "c-to-rust-test": ("rust", True), "rust-to-c": ("c", False)}
+DIAGNOSTIC_VARIANTS = {"c-to-rust-diagnostics": ("rust", False), "c-to-rust-diagnostics-test": ("rust", True)}
 ZERO = "sha256:" + "0" * 64
 
 
@@ -47,22 +48,28 @@ def _copy_sources(repo, workspace, provider):
     return sorted(set(names)), schemas
 
 
-def _exports(provider):
+def _exports(provider, diagnostics=False):
     roles = ["bootstrap", "checksum"] if provider == "c" else ["bootstrap", "create", "checksum", "request_close", "await_closed", "release_handle", "observe"]
+    if diagnostics:
+        roles += ["diagnostics_configure", "diagnostics_drain"]
     prefix = "madb_c_fixture_" if provider == "c" else "madb_fixture_"
     namespace = "madb.c" if provider == "c" else "madb.engine"
     return [{"name": prefix + role, "role": role, "public_id": namespace + "." + role + ".v1"} for role in roles]
 
 
-def _config(provider, test_support, observation):
+def _config(provider, test_support, observation, diagnostics=False):
+    if not isinstance(diagnostics, bool) or (diagnostics and provider != "rust"):
+        raise ValueError("diagnostics must be boolean and enabled only for the Rust provider")
     result = dict(schema="madb.rust-c-backend/1", provider=provider, semantics="madb.first-route/1",
                   source="sdk/rust/engine/src/lib.rs" if provider == "rust" else "sdk/c/first-route/madb_c.h",
-                  project="project.json", profile="profile.json", exports=_exports(provider),
+                  project="project.json", profile="profile.json", exports=_exports(provider, diagnostics),
                   tools=deepcopy(observation["tools"]), clang_arguments=list(observation["clang_arguments"]),
                   environment=dict(observation["environment"]), rust_target=observation["target"],
                   sdk_inputs=deepcopy(observation["sdk_inputs"]), test_support=test_support)
     if provider == "rust":
-        result["cbindgen_config"] = "sdk/rust/engine/cbindgen.toml"
+        result["cbindgen_config"] = "sdk/rust/engine/cbindgen-diagnostics.toml" if diagnostics else "sdk/rust/engine/cbindgen.toml"
+        if diagnostics:
+            result["diagnostics"] = True
         if test_support:
             result["test_support_header"] = "sdk/rust/engine/test-support.h"
     else:
@@ -155,7 +162,7 @@ def _policies(seed, config):
     for symbol in seed["symbols"]:
         shape = symbol["shape"]
         role = roles[shape["link_name"]]
-        blocking = "unbounded" if role == "observe" else "non-blocking" if role == "request_close" else "bounded"
+        blocking = "unbounded" if role == "observe" else "non-blocking" if role in ("request_close", "diagnostics_configure", "diagnostics_drain") else "bounded"
         add(symbol, dict(kind="call"), dict(threading="caller", blocking=blocking,
             delivery="registered" if role == "observe" else "work-completed", cancellation="none", cancellation_confirmation="not-supported"))
         if shape["result"] == "handle":
@@ -180,12 +187,13 @@ def prepare(repo: Path, workspace: Path, observation: dict, variant: str) -> dic
     # Each variant owns its dependency closure; another variant's discovered
     # headers must not change this profile merely by being prepared first.
     observation = deepcopy(observation)
-    if variant not in VARIANTS:
+    variants = {**VARIANTS, **DIAGNOSTIC_VARIANTS}
+    if variant not in variants:
         raise ValueError("unknown first-route variant: " + variant)
     workspace.mkdir(parents=True, exist_ok=False)
-    provider, test_support = VARIANTS[variant]
+    provider, test_support = variants[variant]
     names, schema_names = _copy_sources(repo, workspace, provider)
-    config = _config(provider, test_support, observation)
+    config = _config(provider, test_support, observation, variant in DIAGNOSTIC_VARIANTS)
     generator_dir = workspace / "adapters/generators/rust_c"
     sys.path.insert(0, str(generator_dir))
     try:

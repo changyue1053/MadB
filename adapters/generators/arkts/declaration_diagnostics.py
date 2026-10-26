@@ -6,7 +6,8 @@ invocation; a digest match does not independently authenticate that invocation.
 """
 
 from hashlib import sha256
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
+import json
 import re
 from typing import NamedTuple
 
@@ -32,30 +33,27 @@ class Explanation(NamedTuple):
     ordinary: str
 
 
-_EXPLANATIONS = {
-    "ARKTS_DECL_UNSUPPORTED_MODIFIERS": Explanation(
-        "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
-        "unsupported export/member modifiers",
-        "The declaration modifiers are outside the selected reader subset.",
-        "The compiler node modifiers differ from those accepted at this node "
-        "in source or declaration mode.",
-        "Inspect the reported declaration and its author input; use the supported modifier "
-        "set for that node; do not edit generated output or silently remove effects.",
-        "Use the ordinary declared method. Async work must retain its explicit "
-        "Promise/operation contract; a modifier change does not supply cancellation.",
-    ),
-    "ARKTS_DECL_CALLBACK_RESULT": Explanation(
-        "ARKTS_DECL_CALLBACK_RESULT",
-        "callback must return void",
-        "The callback has a parsed return type other than synchronous void.",
-        "A supported callback type returns a non-void value, including a supported "
-        "Promise type; other unsupported types can fail before this diagnostic.",
-        "Change the author callback declaration and implementation to return void. "
-        "Move asynchronous work outside this synchronous listener contract.",
-        "Use the ordinary synchronous void listener and its explicit subscription "
-        "stop/close operations; returning a Promise does not make delivery await it.",
-    ),
-}
+def _bundled_explanations():
+    # One fixed data source is embedded by the Rust CLI and included in the
+    # actual generator helper input closure. Loading happens at module import;
+    # lookup itself remains pure and never probes a source/compiler/workspace.
+    catalog = json.loads((Path(__file__).resolve().parent.parent /
+                          "diagnostic-explanations.json").read_bytes())
+    entries = catalog["entries"]
+    by_code = {entry["code"]: entry for entry in entries}
+    if catalog["version"] != 1 or len(entries) != len(by_code):
+        raise ValueError("invalid bundled diagnostic explanation catalog")
+    result = {}
+    for code in ("ARKTS_DECL_UNSUPPORTED_MODIFIERS", "ARKTS_DECL_CALLBACK_RESULT"):
+        entry = by_code[code]
+        result[code] = Explanation(
+            code, entry["reader_message"], entry["meaning"], entry["triggers"][0],
+            entry["repairs"][0]["instruction"], entry["ordinary"],
+        )
+    return result
+
+
+_EXPLANATIONS = _bundled_explanations()
 
 
 class SourcePoint(NamedTuple):

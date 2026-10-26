@@ -148,7 +148,8 @@ def check(root: Path, boundaries_only: bool = False) -> None:
     check_template_format(root / "sdk/rust/c-client")
     commands = [["cargo", "fmt", "--manifest-path", str(root / directory / "Cargo.toml"), "--", "--check"]
                 for directory in SDK_PACKAGES if directory != "sdk/rust/c-client"]
-    for features in ([], ["--features", "test-support"]):
+    for features in ([], ["--features", "test-support"],
+                     ["--features", "diagnostics"], ["--features", "diagnostics,test-support"]):
         commands.extend([
             ["cargo", "clippy", "--manifest-path", str(manifest), "--all-targets", *features,
              "--locked", "--offline", "--", "-D", "warnings"],
@@ -163,7 +164,7 @@ def check(root: Path, boundaries_only: bool = False) -> None:
     for command in commands:
         print("+ " + " ".join(command), flush=True)
         subprocess.run(command, cwd=root, env=environment, check=True)
-    print("Native SDK unit gates passed (default Release and test-support); candidate/Lab verification is separate.")
+    print("Native SDK unit gates passed (default, test-support, diagnostics, and combined Release); candidate/Lab verification is separate.")
 
 
 def main() -> int:

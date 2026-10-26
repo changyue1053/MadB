@@ -1,0 +1,686 @@
+{
+  "vectors": [
+    {
+      "id": "explain-located-context",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-unlocated-context",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/diagnostic",
+          "value": {
+            "code": "NATIVE001",
+            "message": "configuration is invalid",
+            "location": null
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/position_encoding",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/reported_precision",
+          "value": null
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-context-extra",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/unexpected",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-context-version",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/schema",
+          "value": "madb.diagnostic-context/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "explain-source-absent",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-unknown-position-mode",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/position_encoding",
+          "value": "unicode-scalar"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-zero-line",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/diagnostic",
+          "value": {
+            "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+            "message": "source declaration has unsupported modifier async",
+            "location": {
+              "path": "src/Bad.ets",
+              "line": 0,
+              "column": 1
+            }
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-located-result",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-code-only-result",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": {
+            "meaning": "The source declaration uses modifiers outside this reader’s supported declaration subset.",
+            "triggers": [
+              "A real reader diagnostic reports unsupported source or declaration modifiers."
+            ],
+            "repairs": [
+              {
+                "kind": "edit-author-input",
+                "instruction": "Inspect the author declaration at the bound point and use the supported ordinary declaration shape; preserve required async semantics instead of hiding the modifier.",
+                "location": null
+              }
+            ],
+            "limits": [
+              "The point is bound to source bytes, not independently attested to a compiler invocation.",
+              "Code explanation does not enable async declarations or certify a generated candidate.",
+              "No source context was supplied; no declaration location is claimed."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-unknown-code",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/code",
+          "value": "MISSING001"
+        },
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/diagnostics",
+          "value": [
+            {
+              "code": "EXPLAIN001",
+              "message": "This tool version has no explanation entry for MISSING001.",
+              "location": null
+            }
+          ]
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 2
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-bad-arguments",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/code",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/diagnostics",
+          "value": [
+            {
+              "code": "EXPLAIN002",
+              "message": "A valid CODE is required.",
+              "location": null
+            }
+          ]
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 2
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-source-io",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/code",
+          "value": "SEM007"
+        },
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/diagnostics",
+          "value": [
+            {
+              "code": "EXPLAIN003",
+              "message": "The explicitly supplied source could not be read.",
+              "location": null
+            }
+          ]
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 3
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-changed-source",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/code",
+          "value": "SEM007"
+        },
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/diagnostics",
+          "value": [
+            {
+              "code": "EXPLAIN004",
+              "message": "A captured input changed during this query.",
+              "location": null
+            }
+          ]
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 4
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "explain-success-diagnostics",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/diagnostics",
+          "value": [
+            {
+              "code": "EXPLAIN002",
+              "message": "failed",
+              "location": null
+            }
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-failure-partial-explanation",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 2
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-success-code-null",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/code",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": {
+            "meaning": "The source declaration uses modifiers outside this reader’s supported declaration subset.",
+            "triggers": [
+              "A real reader diagnostic reports unsupported source or declaration modifiers."
+            ],
+            "repairs": [
+              {
+                "kind": "edit-author-input",
+                "instruction": "Inspect the author declaration at the bound point and use the supported ordinary declaration shape; preserve required async semantics instead of hiding the modifier.",
+                "location": null
+              }
+            ],
+            "limits": [
+              "The point is bound to source bytes, not independently attested to a compiler invocation.",
+              "Code explanation does not enable async declarations or certify a generated candidate.",
+              "No source context was supplied; no declaration location is claimed."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-source-without-context",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-result-extra",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": {
+            "meaning": "The source declaration uses modifiers outside this reader’s supported declaration subset.",
+            "triggers": [
+              "A real reader diagnostic reports unsupported source or declaration modifiers."
+            ],
+            "repairs": [
+              {
+                "kind": "edit-author-input",
+                "instruction": "Inspect the author declaration at the bound point and use the supported ordinary declaration shape; preserve required async semantics instead of hiding the modifier.",
+                "location": null
+              }
+            ],
+            "limits": [
+              "The point is bound to source bytes, not independently attested to a compiler invocation.",
+              "Code explanation does not enable async declarations or certify a generated candidate.",
+              "No source context was supplied; no declaration location is claimed."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/candidate_digest",
+          "value": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-unsupported-exit-one",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": {
+            "meaning": "The source declaration uses modifiers outside this reader’s supported declaration subset.",
+            "triggers": [
+              "A real reader diagnostic reports unsupported source or declaration modifiers."
+            ],
+            "repairs": [
+              {
+                "kind": "edit-author-input",
+                "instruction": "Inspect the author declaration at the bound point and use the supported ordinary declaration shape; preserve required async semantics instead of hiding the modifier.",
+                "location": null
+              }
+            ],
+            "limits": [
+              "The point is bound to source bytes, not independently attested to a compiler invocation.",
+              "Code explanation does not enable async declarations or certify a generated candidate.",
+              "No source context was supplied; no declaration location is claimed."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 1
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-result-context-schema",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": {
+            "path": "diagnostics/bad.json",
+            "sha256": "sha256:340d017002dd8f9e67046b35568583311d483f582ddae3545c0bbad5ef33e1f3",
+            "size": 500,
+            "schema": "madb.report/1"
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-result-empty-repair",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": {
+            "meaning": "The source declaration uses modifiers outside this reader’s supported declaration subset.",
+            "triggers": [
+              "A real reader diagnostic reports unsupported source or declaration modifiers."
+            ],
+            "repairs": [],
+            "limits": [
+              "The point is bound to source bytes, not independently attested to a compiler invocation.",
+              "Code explanation does not enable async declarations or certify a generated candidate.",
+              "No source context was supplied; no declaration location is claimed."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-failure-no-diagnostic",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/code",
+          "value": "SEM007"
+        },
+        {
+          "op": "replace",
+          "path": "/context",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/explanation",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": null
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 3
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-context-null-location",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/diagnostic",
+          "value": {
+            "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+            "message": "source declaration has unsupported modifier async",
+            "location": null
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-context-absolute-path",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": {
+            "path": "/Bad.ets",
+            "sha256": "sha256:619dd635282300b5f98c6afa2b94b508644f637e9bc6ab8214c1b62d40061898",
+            "size": 61
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-context-invalid-hash",
+      "kind": "diagnostic-context",
+      "file": "diagnostic-context.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/source",
+          "value": {
+            "path": "src/Bad.ets",
+            "sha256": "sha256:bad",
+            "size": 61
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "explain-result-version",
+      "kind": "explain-result",
+      "file": "explain-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/schema",
+          "value": "madb.explain-result/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    }
+  ]
+}

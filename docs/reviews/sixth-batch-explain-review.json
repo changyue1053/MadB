@@ -1,0 +1,1531 @@
+{
+  "scope": "L02 explain implementation independent read-only review",
+  "conclusion": "No remaining blocker in reviewed explain implementation and final reader-to-context-to-CLI integration. This is the explain sub-scope only, not full L02 acceptance.",
+  "source_refs": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/adr/0020-explain-query-contracts.md",
+      "sha256": "9db1c95079a52a369f934153a189b5e2206389d3d7040d0cf36230cde8a30289"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/reviews/l02-explain-proposal.md",
+      "sha256": "6bc0f329a0e3c7e0c537b235ede7efede61bf58366c414cce95e97b6e07bf821"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/explain.rs",
+      "sha256": "7b6764cf6eb4bc05f73299e3e2230f75dfd3f286e60bc81c5f3c432e710df08e"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/bootstrap/explain.rs",
+      "sha256": "1f7a567046e6f4ac17046a5eacb8a478b169af43ef4b802bea4077884e2f7b88"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/commands.rs",
+      "sha256": "ce43e8a58ceabc25a71002d7536b1d5562faab5acb7ce0256ead135f94fbedf1"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/main.rs",
+      "sha256": "bd3e7020b16658b603cc76a51eda0b93aca37a2bd56ede3db7fbf07379504c7e"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+      "sha256": "eecba455c390a6c91442c3f5045a0856216269a0c984cd68fb45992b2170ce24"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/explain.rs",
+      "sha256": "c33d146273ec6267abb6e8c50bd3a74b63a84318ddbe4f2f0690a834763576c7"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/host/src/lib.rs",
+      "sha256": "269003da9754f0f1a3623353bb1b7a85932c3d77b5ca779dc5ef422447a234cd"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-protocol/src/schema.rs",
+      "sha256": "6c3e148b3af885d5ad431754cf0ef7b18b39798714ca06381763bbbfff33c0dc"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/schemas/diagnostic-context.schema.json",
+      "sha256": "7bf01e3fb4a0ea71d256acbe42ab748028c289fccb4e3d4a36ff3d65637c587e"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/schemas/explain-result.schema.json",
+      "sha256": "68c25f1890adae365841cbd9bc4da44ac3be63e0b5b23bdc43159b9fac0156fa"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/diagnostic-explanations.json",
+      "sha256": "acf00e80f49cbdfe3e483d2f66652b635064a85fa44b275686ec75f9de23a3be"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/declaration_diagnostics.py",
+      "sha256": "41a5cec55a3257d91f7f92d9fa23dc9c88c5d5aaa0f8ed251c15faeae14e5268"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/read_facade.cjs",
+      "sha256": "6a5e2bcca564c7c771309b6633e6eabf26f2a114eba7977ba300e182a66c9b4a"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/toolchains/arkts/project.py",
+      "sha256": "780dcc519841d119874db0ec29036c330372e4d5b136d4f0e1622b155e7da30d"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+      "sha256": "09cc399da5d078a54b69a4e316d6f09202d757ea8987e6bbf41ed5a877001cf4"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+      "sha256": "1445b26733ad809fb9839e72ca5899712a981ec9ab88f48778d82fd038e40079"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+      "sha256": "38d12cadcd81b7c3f1373ef6986528c6998a4a0481f4a2be7ce9e8fd9e98f026"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+      "sha256": "f0719d2b1dd61fbea9346b0a6d43b05dff75c2eeceaa1071baca4bcd4d7a9b9d"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+      "sha256": "b3116ee1c8786626f17a5fe66750cf59d2d1c1a920fc7b783d5fce104cac99f8"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+      "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+      "sha256": "63cc5589275e956299e45297cff96261dbb48e5191bd33a275f7c9bfdc286850"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/checked_client.py",
+      "sha256": "7615fdfeb9b09429c4888b8d55d199a145cd9c5e34b57705154833999dcf439e"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+      "sha256": "c36752e5f48210a5e4e18e73966a23df359fbb4208a34d404329b89f54375285"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/tests/integration/l02_diagnostics/check_explain_cli.py",
+      "sha256": "564773c5a6efec48fe0fc1df83f7b14b9b551f788d0eaac084a080390d2d7a1f"
+    }
+  ],
+  "executed": [
+    {
+      "path": "/private/tmp/l02-explain-review-probes/cli-results.json",
+      "sha256": "f2d0b4896c212423e8d660b5dbe162cb5e5c67555e1099805691433836aa3311",
+      "checks": 21
+    },
+    {
+      "path": "/private/tmp/l02-explain-review-probes/catalog-results.json",
+      "sha256": "6383273bb53529615d4472f8db5764d4c266aecbed05142eba213e98fbed67d0",
+      "checks": 51
+    },
+    {
+      "exit": 0,
+      "stdout": "12 controlled initial/recheck classifications plus 2 zero-read checks passed\n",
+      "source_sha256": "b711467cb234623cfcf469e24fed32dc0fae4fdf3d4817f7fb735c98f78bf88e",
+      "binary_sha256": "9e4f0d79c43a25e4363b94925840457ae15ca5062fd77575f40cb5fb796303ff",
+      "app_library": {
+        "path": "/private/tmp/madb-chief-round6/madb/target/debug/deps/libmadb_app-6186633f4fd048de.rlib",
+        "sha256": "33b3f99e6bd75f061a08df630f4428be2987d2600626c34edea279522809683d"
+      },
+      "note": "Temporary fixture initially used a non-reexported Location and then an unmatched madb_model artifact; those compile errors were fixture-only, corrected before execution."
+    },
+    {
+      "kind": "reviewed author harness independently replayed without modification",
+      "path": "/private/tmp/l02-explain-review-probes/reader-cli-replay.json",
+      "sha256": "68203e2af31643f789464b94474099416e37c24f65e3d7f10b8b07f52529cfe8",
+      "exit": 0,
+      "real_reader_failures": 2,
+      "cli_queries": 10,
+      "tools": {
+        "node": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "sha256": "sha256:35d4bc736bbe4161f0c074aa140ddb74586e46969bc2ad63d32c838bec4463ff",
+          "size": 119168512,
+          "id": "c07-node",
+          "version": "24.14.1",
+          "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+        },
+        "typescript": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+          "sha256": "sha256:9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1",
+          "size": 8031399,
+          "id": "c07-typescript",
+          "version": "4.9.5-r4",
+          "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+        }
+      },
+      "cli": {
+        "path": "/private/tmp/madb-chief-round6/l02-explain-target/debug/madb",
+        "sha256": "sha256:158daa0630c780c888596cfe6563615b788220b6e7c497862e5e7766f88b7916",
+        "size": 34136072
+      },
+      "observations": [
+        {
+          "label": "modifiers",
+          "source": {
+            "path": "author/modifiers.ets",
+            "sha256": "sha256:62e20d6ee5833fced0f48ed331ba86d5b205c16cfe023a9cdf7c9933db0625c1",
+            "size": 64
+          },
+          "diagnostic": {
+            "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+            "message": "unsupported export/member modifiers",
+            "location": {
+              "path": "author/modifiers.ets",
+              "line": 1,
+              "column": 10
+            }
+          },
+          "byte_offset": 14
+        },
+        {
+          "label": "callback",
+          "source": {
+            "path": "author/callback.ets",
+            "sha256": "sha256:4f27d9dbfe6656c09c30136b06c044277250c9e52cc3d1590f68f5ce784c8e93",
+            "size": 23336
+          },
+          "diagnostic": {
+            "code": "ARKTS_DECL_CALLBACK_RESULT",
+            "message": "callback must return void",
+            "location": {
+              "path": "author/callback.ets",
+              "line": 13,
+              "column": 26
+            }
+          },
+          "byte_offset": 523
+        }
+      ]
+    }
+  ],
+  "corrected_findings": [
+    {
+      "code": "NATIVE005",
+      "issue": "Trigger omitted newly selected Event/Stats field/layout branches",
+      "resolution": "Author added exact selected diagnostic record triggers; source data reread and final CLI queried"
+    },
+    {
+      "code": "NUM001",
+      "issue": "Generic bounded literal wording had no producer branch",
+      "resolution": "Author narrowed to integer width/canonical decimal/range and float width/lowercase exact bits; string/boolean wire checks explicitly excluded"
+    },
+    {
+      "code": "SEM007",
+      "issue": "Repair referred only to resource type despite transfer-slot check",
+      "resolution": "Author changed to exact transferred slot type"
+    }
+  ],
+  "code_audit": [
+    {
+      "code": "ARKTS_DECL_CALLBACK_RESULT",
+      "meaning": "The callback has a parsed return type other than synchronous void.",
+      "triggers": [
+        "A supported callback type returns a non-void value, including a supported Promise type; other unsupported types can fail before this diagnostic."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/explain.rs",
+          "line": 54,
+          "source_line": "\"ARKTS_DECL_CALLBACK_RESULT\".into(),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/declaration_diagnostics.py",
+          "line": 47,
+          "source_line": "for code in (\"ARKTS_DECL_UNSUPPORTED_MODIFIERS\", \"ARKTS_DECL_CALLBACK_RESULT\"):"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/read_facade.cjs",
+          "line": 47,
+          "source_line": "const returns=type(n.type,depth+1);if(returns.tag!=='void')fail(returns.tag==='promise'?n.type:n,'ARKTS_DECL_CALLBACK_RESULT: callback must return void');"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+      "meaning": "The declaration modifiers are outside the selected reader subset.",
+      "triggers": [
+        "The compiler node modifiers differ from those accepted at this node in source or declaration mode."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/explain.rs",
+          "line": 53,
+          "source_line": "\"ARKTS_DECL_UNSUPPORTED_MODIFIERS\".into(),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/declaration_diagnostics.py",
+          "line": 47,
+          "source_line": "for code in (\"ARKTS_DECL_UNSUPPORTED_MODIFIERS\", \"ARKTS_DECL_CALLBACK_RESULT\"):"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/arkts/read_facade.cjs",
+          "line": 29,
+          "source_line": "function modifiers(n, expected) {const values=Array.from(n.modifiers||[],x=>x.kind);if(JSON.stringify(values)!==JSON.stringify(expected))fail(n,'ARKTS_DECL_UNSUPPORTED_MODIFIERS: unsupported export/member modifiers');}"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "CAP001",
+      "meaning": "The contract and resolved capability select different configurations.",
+      "triggers": [
+        "Their complete profile/route/target/direction selector values differ."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 12,
+          "source_line": "\"CAP001\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "CAP002",
+      "meaning": "A mandatory feature is unknown, restricted or unsupported by the selected capability.",
+      "triggers": [
+        "A required feature is outside the core set, absent from supported_features, or explicitly restricted."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 24,
+          "source_line": "\"CAP002\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "CAP003",
+      "meaning": "Heuristic declaration structure cannot authorize a safe wrapper.",
+      "triggers": [
+        "A symbol’s evidence precision is heuristic."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 165,
+          "source_line": "\"CAP003\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "CAP004",
+      "meaning": "The contract omitted a feature required by its actual declarations.",
+      "triggers": [
+        "A type, error channel, async/stream call or exact constant requires an undeclared feature; a resource additionally requires core.explicit-close@1."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 281,
+          "source_line": "\"CAP004\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 455,
+          "source_line": "\"CAP004\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "EXPLAIN001",
+      "meaning": "This tool version has no explanation entry for the exact code.",
+      "triggers": [
+        "A syntactically valid code is absent from the finite bundled explanation catalog; lookup is case-sensitive."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 80,
+          "source_line": "\"EXPLAIN001\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "EXPLAIN002",
+      "meaning": "The explanation query or diagnostic context is invalid.",
+      "triggers": [
+        "Invalid CLI/context/schema, unknown fields or position mode, code/path mismatch, initial source size/digest mismatch, or an invalid source point caused rejection."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/explain.rs",
+          "line": 98,
+          "source_line": "QueryError::new(ErrorKind::InvalidInput, \"EXPLAIN002\", \"arguments\", message)"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/bootstrap/explain.rs",
+          "line": 30,
+          "source_line": "_ => (ErrorKind::InvalidInput, \"EXPLAIN002\"),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 194,
+          "source_line": "(ErrorKind::InvalidInput, \"EXPLAIN002\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 215,
+          "source_line": "\"EXPLAIN002\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/explain.rs",
+          "line": 302,
+          "source_line": "QueryError::new(ErrorKind::InvalidInput, \"EXPLAIN002\", subject, message)"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "EXPLAIN003",
+      "meaning": "An explicit query file or output operation could not be completed.",
+      "triggers": [
+        "A required file is missing or unreadable, an I/O operation failed, or stdout could not be delivered."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/bootstrap/explain.rs",
+          "line": 28,
+          "source_line": "ErrorKind::Host => (ErrorKind::Host, \"EXPLAIN003\"),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/bootstrap/explain.rs",
+          "line": 48,
+          "source_line": "\"EXPLAIN003\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 152,
+          "source_line": "\"EXPLAIN003\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 191,
+          "source_line": "ErrorKind::Host => (ErrorKind::Host, \"EXPLAIN003\"),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 202,
+          "source_line": "\"EXPLAIN003\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "EXPLAIN004",
+      "meaning": "An input changed after capture or no longer satisfies the query read boundary.",
+      "triggers": [
+        "A recheck observes disappearance, changed bytes or a changed path/file boundary after initial successful capture."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-cli/src/bootstrap/explain.rs",
+          "line": 29,
+          "source_line": "ErrorKind::Conflict => (ErrorKind::Conflict, \"EXPLAIN004\"),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 160,
+          "source_line": "\"EXPLAIN004\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 168,
+          "source_line": "\"EXPLAIN004\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+          "line": 192,
+          "source_line": "ErrorKind::Conflict => (ErrorKind::Conflict, \"EXPLAIN004\"),"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ID001",
+      "meaning": "The supplied symbol set repeats a public identity.",
+      "triggers": [
+        "Two symbols carry the same public_id."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+          "line": 17,
+          "source_line": "Finding::new(\"ID001\", subject, \"duplicate public identity\").at(&symbol.location),"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ID002",
+      "meaning": "The supplied symbol set repeats a source identity.",
+      "triggers": [
+        "Two symbols carry the same source_id."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+          "line": 22,
+          "source_line": "Finding::new(\"ID002\", subject, \"duplicate source identity\").at(&symbol.location),"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ID003",
+      "meaning": "A source identity does not match its stable reader key.",
+      "triggers": [
+        "Hashing reader/package/module/kind/qualified_name/overload does not produce the supplied source_id, or that key is incomplete."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+          "line": 28,
+          "source_line": "\"ID003\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ID004",
+      "meaning": "A derived public identity disagrees with namespace and source identity.",
+      "triggers": [
+        "public_id_origin=derived but the required namespace/source-derived Id differs from public_id."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+          "line": 40,
+          "source_line": "\"ID004\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ID005",
+      "meaning": "A retired public identity is being reused.",
+      "triggers": [
+        "The symbol public_id appears in the retired-ID set supplied to identity validation."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+          "line": 49,
+          "source_line": "Finding::new(\"ID005\", subject, \"retired public identity cannot be reused\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "ID006",
+      "meaning": "The declaration source position is not one-based.",
+      "triggers": [
+        "The source line or column is zero."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/identity.rs",
+          "line": 55,
+          "source_line": "Finding::new(\"ID006\", subject, \"source position is one-based\").at(&symbol.location),"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NATIVE001",
+      "meaning": "The native adapter configuration or request is invalid.",
+      "triggers": [
+        "Unsupported schema/provider/semantic version, role mapping, compiler arguments, target pairing, environment, JSON member/budget or logical path; a required tool declaration can also be absent."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 33,
+          "source_line": "raise NativeError(\"NATIVE001\", f\"JSON input exceeds 1 MiB: {path}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 38,
+          "source_line": "raise NativeError(\"NATIVE001\", f\"duplicate JSON member: {key}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 47,
+          "source_line": "raise NativeError(\"NATIVE001\", f\"expected logical input path: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 50,
+          "source_line": "raise NativeError(\"NATIVE001\", f\"input escapes frozen root: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 68,
+          "source_line": "raise NativeError(\"NATIVE001\", f\"missing locked tool: {name}\") from error"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 74,
+          "source_line": "raise NativeError(\"NATIVE001\", f\"unsupported environment name/value: {key}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 22,
+          "source_line": "raise NativeError(\"NATIVE001\", \"clang_arguments must be a fixed string array\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 28,
+          "source_line": "raise NativeError(\"NATIVE001\", \"duplicate native compiler argument: \" + flag)"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 33,
+          "source_line": "raise NativeError(\"NATIVE001\", \"missing native compiler argument value: \" + flag)"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 37,
+          "source_line": "raise NativeError(\"NATIVE001\", \"native compiler target differs from the frozen target/deployment\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 39,
+          "source_line": "raise NativeError(\"NATIVE001\", \"native compiler search root must be an installed absolute directory\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 42,
+          "source_line": "raise NativeError(\"NATIVE001\", \"unsupported native compiler argument: \" + flag)"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 45,
+          "source_line": "raise NativeError(\"NATIVE001\", \"explicit native target and C11 language standard are required\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 52,
+          "source_line": "raise NativeError(\"NATIVE001\", \"unknown required backend configuration fields: \" + str(sorted(set(config) - allowed)))"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 55,
+          "source_line": "raise NativeError(\"NATIVE001\", \"native helper requires ReadRequest or GenerateRequest\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 57,
+          "source_line": "raise NativeError(\"NATIVE001\", \"request and native tool target differ\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 78,
+          "source_line": "raise NativeError(\"NATIVE001\", \"test_support must agree with the explicit test-support header\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 83,
+          "source_line": "raise NativeError(\"NATIVE001\", \"native tool images cannot contain hidden invocation arguments\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 167,
+          "source_line": "raise NativeError(\"NATIVE001\", \"metadata finalizer envelope exceeds 1 MiB\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 265,
+          "source_line": "raise NativeError(\"NATIVE001\", \"generation output already exists\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 282,
+          "source_line": "raise NativeError(\"NATIVE001\", \"request exceeds 1 MiB\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 59,
+          "source_line": "raise NativeError(\"NATIVE001\", \"clang_arguments must be a fixed string array\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 37,
+          "source_line": "raise NativeError(\"NATIVE001\", \"diagnostics must be boolean and enabled only for the Rust provider\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 43,
+          "source_line": "raise NativeError(\"NATIVE001\", \"unsupported backend configuration/semantic version\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 46,
+          "source_line": "raise NativeError(\"NATIVE001\", \"provider must be rust or c\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 54,
+          "source_line": "raise NativeError(\"NATIVE001\", \"exports must map each supported role and public identity exactly once\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 179,
+          "source_line": "raise NativeError(\"NATIVE001\", \"Clang producer id/version are required for layout provenance\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/checked_client.py",
+          "line": 9,
+          "source_line": "raise NativeError(\"NATIVE001\", \"checked constructor requires native identity v1\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/checked_client.py",
+          "line": 14,
+          "source_line": "raise NativeError(\"NATIVE001\", \"checked constructor requires a SHA-256 identity: \" + field)"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 43,
+          "source_line": "raise NativeError(\"NATIVE001\", \"unsupported finite responsibility policy value\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 96,
+          "source_line": "raise NativeError(\"NATIVE001\", \"responsibility roles differ from the selected ABI recipe\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NATIVE002",
+      "meaning": "An installed tool or SDK input does not match its locked byte identity.",
+      "triggers": [
+        "A required tool path is not an installed file, its size or digest differs, or the observed libclang installation cannot be verified."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 57,
+          "source_line": "raise NativeError(\"NATIVE002\", f\"tool path is not an installed file: {path}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 60,
+          "source_line": "raise NativeError(\"NATIVE002\", f\"locked tool bytes changed: {path}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 196,
+          "source_line": "raise NativeError(\"NATIVE002\", \"bindgen must use the exact locked libclang directory\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NATIVE003",
+      "meaning": "A locked native tool invocation did not yield an acceptable bounded result.",
+      "triggers": [
+        "Process startup or timeout, output budgets, nonzero exit, or malformed expected compiler JSON/AST output prevented the adapter from reading the result."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 82,
+          "source_line": "raise NativeError(\"NATIVE003\", f\"{name} did not finish: {error}\") from error"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 84,
+          "source_line": "raise NativeError(\"NATIVE003\", f\"{name} output exceeded adapter budget\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/support.py",
+          "line": 90,
+          "source_line": "raise NativeError(\"NATIVE003\", f\"{name} exited {result.returncode}: \""
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 64,
+          "source_line": "raise NativeError(\"NATIVE003\", \"Clang did not produce a JSON AST\") from error"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NATIVE004",
+      "meaning": "The declaration or target is outside this native reader’s supported subset.",
+      "triggers": [
+        "Unsupported ABI types/aliases, unions/bitfields/macros/attributes/inline or unnamed declarations, extra or missing exports/constants, unsupported record fields, indirect user headers, or an unselected target can trigger rejection."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 61,
+          "source_line": "raise NativeError(\"NATIVE004\", \"target is outside the explicit 64-bit first-route profile set\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 144,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"indirect user header requires a separate supported reader: {path}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 38,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"unsupported C ABI type: {spelling}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 44,
+          "source_line": "raise NativeError(\"NATIVE004\", \"macro-generated public declaration is outside this reader\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 89,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"unsupported public function: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 91,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"duplicate public function declaration: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 93,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"inline implementation is outside header contract: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 95,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"function attributes/alternate conventions are unsupported: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 101,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"public parameters must be named: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 106,
+          "source_line": "raise NativeError(\"NATIVE004\", \"unions are unsupported\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 110,
+          "source_line": "raise NativeError(\"NATIVE004\", \"anonymous record has no stable typedef\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 120,
+          "source_line": "raise NativeError(\"NATIVE004\", \"bitfields are unsupported\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 126,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"unsupported public declaration: {kind} {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 134,
+          "source_line": "raise NativeError(\"NATIVE004\", \"public function-like macros are unsupported\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 139,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"unsupported public integer macro: {match[1]}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 158,
+          "source_line": "raise NativeError(\"NATIVE004\", f\"unsupported record layout field: {name}.{field['name']}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 56,
+          "source_line": "raise NativeError(\"NATIVE004\", \"actual public exports differ: missing=\" + str(sorted(set(names) - set(surface[\"functions\"])))"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 80,
+          "source_line": "raise NativeError(\"NATIVE004\", \"unsupported public constant\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 85,
+          "source_line": "raise NativeError(\"NATIVE004\", \"unsupported public typedef or callback\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NATIVE005",
+      "meaning": "Observed native signatures, status constants or the required record layout disagree with the selected ABI.",
+      "triggers": [
+        "A role has a different return/parameter type, MadbError fields/layout or a selected diagnostic Event/Stats field/layout differ from the explicit profile, or a required status constant is not the specified value."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 63,
+          "source_line": "raise NativeError(\"NATIVE005\", \"MadbError and the selected native record set must match exactly\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 66,
+          "source_line": "raise NativeError(\"NATIVE005\", \"compiler-observed MadbError layout differs from ABI v1\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 72,
+          "source_line": "raise NativeError(\"NATIVE005\", \"compiler-observed diagnostic layout differs: \" + name)"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 75,
+          "source_line": "raise NativeError(\"NATIVE005\", \"native status constants differ from ABI v1\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+          "line": 92,
+          "source_line": "raise NativeError(\"NATIVE005\", f\"ABI signature mismatch for {item['name']} ({item['role']})\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NATIVE006",
+      "meaning": "Native declaration provenance or frozen metadata is missing, ambiguous or inconsistent.",
+      "triggers": [
+        "Frozen source bytes changed; source/config/wrapper or compiler dependencies are undeclared; a Rust source point or Clang layout is missing/ambiguous; SDK headers are unlocked; repeated generated metadata differs."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 68,
+          "source_line": "raise NativeError(\"NATIVE006\", f\"frozen source changed: {reference['path']}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 80,
+          "source_line": "raise NativeError(\"NATIVE006\", \"source, generator config and wrapper must be explicit source inputs\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 104,
+          "source_line": "raise NativeError(\"NATIVE006\", f\"Rust declaration source location is absent or ambiguous: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 119,
+          "source_line": "raise NativeError(\"NATIVE006\", \"cbindgen read undeclared source/config dependencies\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 146,
+          "source_line": "raise NativeError(\"NATIVE006\", f\"Clang read an unlocked SDK header: {path}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+          "line": 239,
+          "source_line": "raise NativeError(\"NATIVE006\", \"fresh native metadata differs from the requested checked contract\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 48,
+          "source_line": "raise NativeError(\"NATIVE006\", f\"missing declaration offset: {node.get('name')}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 153,
+          "source_line": "raise NativeError(\"NATIVE006\", f\"missing compiler layout: {name}\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+          "line": 162,
+          "source_line": "raise NativeError(\"NATIVE006\", \"Clang omitted a public record layout\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 29,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility source reference changed: \" + reference[\"path\"])"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 65,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility profile differs from its checked selector\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 68,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility reader component differs from the lock\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 72,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility source inventory differs from the lock\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 77,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility SDK source closure is incomplete\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 79,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility backend differs from its frozen bytes\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 82,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility SDK metadata is not a frozen source\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 87,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility SDK protocol differs from its metadata\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 93,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility SDK package identity differs\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 99,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility symbols differ from the checked ABI roles\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+          "line": 105,
+          "source_line": "raise NativeError(\"NATIVE006\", \"responsibility symbol differs from its ABI role\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "NUM001",
+      "meaning": "An exact numeric constant or integer variant tag has invalid numeric encoding.",
+      "triggers": [
+        "The exact-constant validator rejects integer width, canonical decimal syntax/range, or float width and lowercase hexadecimal bit encoding; string and boolean wire validation do not produce this code."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 225,
+          "source_line": "Finding::new(\"NUM001\", symbol.public_id.as_str(), message).at(&symbol.location),"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 684,
+          "source_line": "errors.push(Finding::new(\"NUM001\", item.id.as_str(), message));"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL001",
+      "meaning": "A policy selector does not identify exactly one complete symbol.",
+      "triggers": [
+        "An exact public/source identity selector matches zero symbols or more than one symbol."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 65,
+          "source_line": "\"POL001\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL002",
+      "meaning": "The selected policy slot does not exist on its symbol.",
+      "triggers": [
+        "A declaration binding names an absent parameter/return slot, or an effective policy points to a nonexistent non-call slot."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 110,
+          "source_line": "\"POL002\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 77,
+          "source_line": "\"POL002\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL003",
+      "meaning": "Multiple policy-family defaults supply the same policy key for one slot.",
+      "triggers": [
+        "Two default values for the same key are supplied through policy families, even when their values are equal."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 136,
+          "source_line": "\"POL003\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL004",
+      "meaning": "Multiple explicit authorities supply the same policy key for one slot.",
+      "triggers": [
+        "Two source/project explicit values target the same key, including duplicate equal values."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 147,
+          "source_line": "\"POL004\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL005",
+      "meaning": "A policy origin or family declaration has invalid authority.",
+      "triggers": [
+        "A family is duplicated or is not policy-family authority; an explicit binding lacks source-annotation/project-policy authority; a replaced source is not an allowed default; reader annotations use the wrong channel."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 152,
+          "source_line": "\"POL005\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 41,
+          "source_line": "\"POL005\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 91,
+          "source_line": "\"POL005\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL006",
+      "meaning": "The inferred profile default exceeds the permitted value-copy rule.",
+      "triggers": [
+        "Profile defaults contain anything beyond at most one ownership=copy value, or an effective profile-default policy is not copy on a value input parameter."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 137,
+          "source_line": "\"POL006\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 27,
+          "source_line": "\"POL006\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL007",
+      "meaning": "A binding references a policy family that was not declared.",
+      "triggers": [
+        "The exact family identity is absent from the supplied family set."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/policies.rs",
+          "line": 126,
+          "source_line": "Finding::new(\"POL007\", id.as_str(), \"unknown policy family\")"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL008",
+      "meaning": "The effective contract repeats a policy slot.",
+      "triggers": [
+        "More than one effective policy targets the same symbol identity and slot."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 90,
+          "source_line": "\"POL008\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL009",
+      "meaning": "An effective policy references a symbol absent from the contract.",
+      "triggers": [
+        "Its symbol_id does not occur in the current symbol set."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 101,
+          "source_line": "\"POL009\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "POL010",
+      "meaning": "An effective policy map key disagrees with its typed value.",
+      "triggers": [
+        "For example a map entry keyed as one policy property contains another property’s value."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 121,
+          "source_line": "\"POL010\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM001",
+      "meaning": "A policy required by the actual call or value slot is absent.",
+      "triggers": [
+        "Required call threading/blocking/delivery/cancellation facts, stream bounds and stop facts, resource ownership/close/release-thread, callback lifetime facts, or borrow/transfer policies are missing."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 310,
+          "source_line": "\"SEM001\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM002",
+      "meaning": "Cancellation effect and its confirmation do not agree.",
+      "triggers": [
+        "none requires not-supported, wait requires wait-ended, observe requires stopped, and work requires operation-terminal."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 350,
+          "source_line": "\"SEM002\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM003",
+      "meaning": "A stream declares no stream kind or no stopping semantics.",
+      "triggers": [
+        "A stream call has stream_kind=none or stop=none; absent required properties can additionally produce SEM001."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 380,
+          "source_line": "\"SEM003\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM004",
+      "meaning": "An event stream cannot silently use latest-state coalescing.",
+      "triggers": [
+        "The stream is event while overflow is coalesce-latest."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 396,
+          "source_line": "\"SEM004\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM005",
+      "meaning": "A resource needs explicit close and cannot be copied as a value.",
+      "triggers": [
+        "A resource slot lacks request-await-release close semantics or declares ownership=copy."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 442,
+          "source_line": "\"SEM005\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM006",
+      "meaning": "A callback that cannot unregister must retain a source lease.",
+      "triggers": [
+        "A callback slot declares stop=none but keep_alive is not source-lease."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 486,
+          "source_line": "\"SEM006\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM007",
+      "meaning": "The transfer releaser does not have the required logical signature.",
+      "triggers": [
+        "The named releaser is absent, not synchronous, does not take exactly one parameter of the transferred slot type, or does not return unit."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 511,
+          "source_line": "\"SEM007\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM008",
+      "meaning": "An async or stream borrow outlives call-frame protection.",
+      "triggers": [
+        "A non-synchronous call borrows a slot with keep_alive=call-frame."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 533,
+          "source_line": "\"SEM008\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "SEM009",
+      "meaning": "A returned borrow cannot expire with the returning call.",
+      "triggers": [
+        "The return slot has ownership=borrow and borrow_scope=call."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 548,
+          "source_line": "\"SEM009\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE001",
+      "meaning": "The contract contains duplicate type identities.",
+      "triggers": [
+        "Two type entries have the same Id in the supplied type set."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 34,
+          "source_line": "\"TYPE001\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE002",
+      "meaning": "A referenced logical type is missing.",
+      "triggers": [
+        "A type definition, parameter, return slot or declared error channel refers to an absent type Id."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 42,
+          "source_line": "\"TYPE002\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 187,
+          "source_line": "\"TYPE002\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 197,
+          "source_line": "Finding::new(\"TYPE002\", symbol.public_id.as_str(), \"return type missing\")"
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 568,
+          "source_line": "\"TYPE002\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE003",
+      "meaning": "A value layout is recursive or exceeds the finite traversal depth.",
+      "triggers": [
+        "Following inline record/nullable/variant references revisits a type or reaches the 64-level traversal guard."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 79,
+          "source_line": "\"TYPE003\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE004",
+      "meaning": "Parameter or field names repeat within a logical declaration.",
+      "triggers": [
+        "A symbol parameter list, callback parameter list or record field list repeats a name."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 177,
+          "source_line": "\"TYPE004\","
+        },
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 666,
+          "source_line": "\"TYPE004\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE005",
+      "meaning": "A scalar, string or buffer definition violates supported bounds.",
+      "triggers": [
+        "Integer width is outside 8/16/32/64/128, float width is not 32/64, encoding or buffer length unit is invalid, or its byte bound is zero."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 652,
+          "source_line": "\"TYPE005\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE006",
+      "meaning": "A variant repeats a case name or encoded tag.",
+      "triggers": [
+        "Its case-name or tag identity set is not unique."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 678,
+          "source_line": "\"TYPE006\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE007",
+      "meaning": "A composite requires unsupported ownership or buffer-element adaptation.",
+      "triggers": [
+        "A buffer element is not integer/float/boolean, or a record/variant payload contains a value that is not recursively copyable (including resource/callback ownership)."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 713,
+          "source_line": "errors.push(Finding::new(\"TYPE007\",item.id.as_str(),\"nested resource/callback ownership or non-scalar buffer requires an explicit adapter; not supported by v1\"));"
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE008",
+      "meaning": "A variant tag does not match its declared integer tag type.",
+      "triggers": [
+        "The tag type is not an integer, or its width/signedness differ from the exact integer tag."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 723,
+          "source_line": "\"TYPE008\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    },
+    {
+      "code": "TYPE009",
+      "meaning": "A declared error channel has an unsupported logical type.",
+      "triggers": [
+        "The declared error is neither a value variant nor a backend-handle resource representing a backend-owned erased error."
+      ],
+      "producer_refs": [
+        {
+          "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+          "line": 578,
+          "source_line": "\"TYPE009\","
+        }
+      ],
+      "audit": "Compared against actual producer conditions, not inferred from prefix"
+    }
+  ],
+  "reviewed_boundaries": [
+    "code-only and unknown-before-context use NoWorkspace; offline schemas and bundled include_bytes catalog",
+    "CLI --json parser failures preserve 2 and code-null when invalid; text/help legacy routes kept",
+    "source first pin/point failures=2; missing/I/O=3; post-capture disappearance/bytes/boundary change=4, recheck I/O remains3",
+    "UTF16 BOM and astral boundary rules match adopted proposal; byte-lf separate",
+    "new envelopes and nested objects close additional fields; encode/decode guard cross-path/repair/source relations",
+    "DiagnosticWorkspace alone adds exact-name and Host classification; legacy LocalWorkspace false-policy behavior remains",
+    "Python old two codes share the bundled data, exact coded stderr matching unchanged; catalog included in ArkTS helper input closure"
+  ],
+  "limits": [
+    "No production files edited",
+    "No fullgate, candidate generation, device or remote CI performed",
+    "Controlled-read tests use a temporary ReadWorkspace to prove classifications, not filesystem-race certification",
+    "Synthetic checks and actual captured reader failures remain distinct; context byte/point binding is not general producer or candidate certification.",
+    "Author app/CLI/host and both-language format suites were reviewed rather than recounted as independent tests; final manifest records 26 shared vectors.",
+    "The added real-reader execution replays the reviewed author harness unchanged; it is separate from the independently authored 21 CLI, 51 exact-entry and 14 controlled-read checks."
+  ],
+  "author_final_evidence": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-reader-explain-cli-001.json",
+      "sha256": "68203e2af31643f789464b94474099416e37c24f65e3d7f10b8b07f52529cfe8"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-shared-reader-002.json",
+      "sha256": "b9f8e4936d82267cd40eaac0e467915a0c73a5421559dfc1a53b566429ff7ebe"
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-implementation-inputs.json",
+      "sha256": "29bd3524791afef81494bfd2db49ac633ecfc0c9b3210a0026961c9fc3c25acc"
+    }
+  ],
+  "source_updates": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+      "previous_sha256": "02811bbbc1543cd07c0b13ab67ff9de712ef550a2f11eea9a4b522ad79fc7c67",
+      "current_sha256": "b3116ee1c8786626f17a5fe66750cf59d2d1c1a920fc7b783d5fce104cac99f8",
+      "review": "Concurrent parent generator added ownership rendering/import; reread entire driver and new ownership helper. NATIVE001 config/role and NATIVE006 frozen provenance classifications remain covered by final catalog."
+    }
+  ],
+  "final_source_check": "All 14 author source pins rechecked after independent replay; exact bytes unchanged. Concurrent native generator source changed separately and was reread as recorded. All final review source pins verified. Final shared format manifest records 26 vectors."
+}

@@ -135,6 +135,8 @@ fn observe(engine: u64, context: &mut Context) -> u64 {
 fn first_route_protocol() {
     bootstrap_and_values();
     synchronous_registration_close();
+    #[cfg(feature = "diagnostics")]
+    diagnostics_public_contract();
     capacity_limits();
     #[cfg(feature = "test-support")]
     {
@@ -142,6 +144,8 @@ fn first_route_protocol() {
         source_close_barrier();
         reentrant_subscription_close();
         registration_panic_and_diagnostic_failures();
+        #[cfg(feature = "diagnostics")]
+        diagnostics_full_keeps_resource_protection();
         token_exhaustion();
     }
 }
@@ -593,3 +597,11 @@ fn capacity_limits() {
         }
     }
 }
+
+#[cfg(feature = "diagnostics")]
+#[path = "diagnostics_abi_tests.rs"]
+mod diagnostics_abi_tests;
+#[cfg(all(feature = "diagnostics", feature = "test-support"))]
+use diagnostics_abi_tests::diagnostics_full_keeps_resource_protection;
+#[cfg(feature = "diagnostics")]
+use diagnostics_abi_tests::diagnostics_public_contract;

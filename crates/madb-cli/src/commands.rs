@@ -7,6 +7,10 @@ use std::io::{self, Write};
 use std::path::Path;
 
 pub fn run() -> u8 {
+    let arguments: Vec<_> = std::env::args_os().collect();
+    if arguments.get(1).is_some_and(|value| value == "explain") {
+        return super::explain::run(arguments, cli());
+    }
     let matches = cli().get_matches();
     let (command, args) = matches.subcommand().expect("subcommand required");
     if matches!(command, "generate" | "build" | "package") {
@@ -236,7 +240,7 @@ fn cli() -> Command {
         }
         command = command.subcommand(sub);
     }
-    command
+    command.subcommand(super::explain::command())
 }
 
 fn execution_options(command: &str, args: &ArgMatches) -> super::bootstrap::ExecutionOptions {

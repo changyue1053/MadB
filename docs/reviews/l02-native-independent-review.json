@@ -1,0 +1,347 @@
+{
+  "status": "ready-for-owner-decision",
+  "scope": "Independent design-contract review only; no product SDK approval or implementation/compile/runtime/Lab acceptance.",
+  "proposal_revision": 2,
+  "proposal_refs": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-native-sdk-decision.md",
+      "sha256": "5489d3b10f0164f3a7b73bade3e74f5b814d575d7350c41f05b6ee724d45e036",
+      "size": 21304
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-native-sdk-vectors.json",
+      "sha256": "75fca75d8f828fd3b807306b8a1d84f3b54f378e5b4f8588695466adebf25ffc",
+      "size": 6975
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-native-sdk-freeze.json",
+      "sha256": "e4dd8a54bd73a2d93eed62a9c5700a122bf538c044d546391802a3d3370d32ca",
+      "size": 1295
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-native-feature-header-check.json",
+      "sha256": "fcac848aee3a2c0be46cebe95e5be092533188ee817e4b5e03714d174cecd690",
+      "size": 6756
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-native-implementation-notes.md",
+      "sha256": "6d5a8138e369aa9feca45b7b9a21ea2e1644d036eea6e94736e6afa7338fb5f2",
+      "size": 2558
+    }
+  ],
+  "source_refs": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/AGENTS.md",
+      "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+      "size": 1796
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/lib.rs",
+      "sha256": "c2c46a652932025e1b25edc528e5d52c65d8ef05a3d024d9238b7c9eb2c6b879",
+      "size": 8585
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/runtime.rs",
+      "sha256": "78461a98abe716c0b3c38a2f276d8b417e550aa1b3df79f4ae99491098becfa8",
+      "size": 16142
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/test_support.rs",
+      "sha256": "e1d4b1f5e91deb29afdb318c7a67481264241211d5894d1660805950296e4263",
+      "size": 8450
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+      "sha256": "7b478f012996b5cc8c9f8e64d7d9137a82ccd402cc007f76403adf3114116485",
+      "size": 9068
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+      "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c",
+      "size": 9409
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+      "sha256": "09cc399da5d078a54b69a4e316d6f09202d757ea8987e6bbf41ed5a877001cf4",
+      "size": 26406
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/architecture/10-diagnostics-and-performance.md",
+      "sha256": "480d82429902679df2187499c4c8c73139080888f369dd72bd4b79bffb0d2302",
+      "size": 4113
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/validation/07-developer-ergonomics.md",
+      "sha256": "b5bfac6c0a7be17efecde6eb6b2b71c77e63fa186b9c763141a5a08f6838daa3",
+      "size": 13738
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/schemas/contract-ir.schema.json",
+      "sha256": "e348cb256bfec8e279f455c69b457ecf7d052046f96d74df3808e8182244c8bf",
+      "size": 19265
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/docs/schemas/common.schema.json",
+      "sha256": "df10f44406bfaf6ba6592e8d667861adb5b194bdcbb1aa72f462fdac44f33314",
+      "size": 13073
+    }
+  ],
+  "open_blockers": [],
+  "resolved_findings": [
+    {
+      "id": "B1",
+      "result": "Resolved: drain now returns one event plus present and stats; scalar-only C records map to an existing logical value record. Exact nine-role projection, i64, per-C-record compiler layout witnesses, unchanged core TYPE007, strict diagnostics provider/feature selection and separate cbindgen configs are explicit. Actual finalizer path remains a required implementation test."
+    },
+    {
+      "id": "C1",
+      "result": "Resolved: enqueue rechecks capture while holding same control lock. Author implementation note additionally fixes completion atomic sampling and drop eligibility without waiting/retry."
+    },
+    {
+      "id": "C2",
+      "result": "Resolved: control belongs to a loaded SDK image, callable from any thread; collectors coordinate, controls do not own/close engines. Two paths alone do not prove two loaded image instances."
+    }
+  ],
+  "checks": [
+    {
+      "id": "freeze:l02-native-sdk-decision.md",
+      "passed": true
+    },
+    {
+      "id": "freeze:l02-native-sdk-vectors.json",
+      "passed": true
+    },
+    {
+      "id": "freeze:l02-native-lab-audit.json",
+      "passed": true
+    },
+    {
+      "id": "freeze:l02-native-design-check.json",
+      "passed": true
+    },
+    {
+      "id": "freeze:l02-native-feature-header-check.json",
+      "passed": true
+    },
+    {
+      "id": "feature-input:lib.rs",
+      "passed": true
+    },
+    {
+      "id": "feature-input:default.toml",
+      "passed": true
+    },
+    {
+      "id": "feature-input:diagnostics.toml",
+      "passed": true
+    },
+    {
+      "id": "feature-input:check_feature_headers.py",
+      "passed": true
+    },
+    {
+      "id": "tool:cbindgen",
+      "passed": true
+    },
+    {
+      "id": "tool:clang",
+      "passed": true
+    },
+    {
+      "id": "header:default",
+      "passed": true
+    },
+    {
+      "id": "header:diagnostics",
+      "passed": true
+    },
+    {
+      "id": "existing-type-schema:diagnostic_event",
+      "passed": true
+    },
+    {
+      "id": "existing-type-schema:diagnostic_stats",
+      "passed": true
+    },
+    {
+      "id": "existing-type-schema:diagnostic_pull",
+      "passed": true
+    },
+    {
+      "id": "capture-completion-clarification-recorded",
+      "passed": true
+    }
+  ],
+  "counts": {
+    "freeze_input_tool_header_and_type_schema_checks": 17,
+    "ordinary_boundary_functions_read": 7,
+    "replayed_constructor_mock_paths": 6,
+    "proposed_lab_vectors": 16
+  },
+  "verified_facts": [
+    {
+      "id": "old-seven-boundaries",
+      "result": "All seven ordinary functions, including bootstrap, invoke boundary; source has exactly seven native ordinary exports and seven direct boundary calls."
+    },
+    {
+      "id": "constructor-design-replay",
+      "result": "Verified original mock source/binary hashes against author report and independently executed unchanged binary: exit0, six constructor paths and C layout assertions. This is design-only and may be superseded by drain ABI repair."
+    },
+    {
+      "id": "compatibility",
+      "result": "Proposal distinguishes unchanged old seven signatures, new 9/16 selected surfaces, old 7/14 export gates, and new candidate identities. Old evidence is not reused."
+    },
+    {
+      "id": "no-foreign-sink",
+      "result": "Proposal exports only numeric value drain; no sink pointer/context. External consumer sink cannot synchronously enter SDK through producer path; actual implementation still requires review."
+    }
+  ],
+  "implementation_conditions": [
+    "Run actual reader, strict lowering, unchanged ContractIR finalizer and policy validation for all nine roles; new C records require actual per-target witness, logical aggregate gets none.",
+    "No ring or exporter callback under native registry lock; diagnose completed boundaries and real callback return once; diagnostics failure must not replace original result/output/lease semantics.",
+    "Use completion atomic capture sample, one try_lock, lock-held capture recheck; count contention drops by documented sampling, off is not a drop; no waits/retries.",
+    "Reject invalid/null/alignment outputs without consuming queue; independently clear each valid whole output; empty success present0 with zero event; producer full is drop-new.",
+    "Validate actual old7/14 and new9/16 symbols, exact headers, profile identities, generated helper bytes, package closure and clean independent Lab; mismatch create count0, create failure handle0 must be true in the actual native ABI.",
+    "Actual collector image ownership and candidate identity must be observed; duplicate paths alone are not two image proof.",
+    "Report real off/on/full overhead samples without invented threshold; diagnostics counters are modular approximate observations and never correctness counters."
+  ],
+  "limits": [
+    "Source-only proposal and design artifacts reviewed; product and Lab were not modified.",
+    "Existing type schema validated only three proposed value types in memory; full IR source/policy/identity/finalizer is not proven.",
+    "Original mock binary was replayed for six constructor branches; no ring implementation was executed.",
+    "Author generated-header evidence was checked against file/tool bytes and declarations; author generation was not rerun or relabeled independent runtime acceptance.",
+    "16 Lab vectors are proposed checks, not passed cases.",
+    "User owner decision, actual production changes, native independent review and fresh candidate/Lab evidence remain separate."
+  ],
+  "prior_review_preserved": {
+    "status": "changes-required",
+    "scope": "Independent read-only review of pending L02 native SDK public-contract proposal; no production approval or runtime certification.",
+    "proposal_refs": [
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-sdk-decision.md",
+        "sha256": "38bdae402f8443932db91a00c128cede7bad8d2122756d5a72b2a25b5aa08930",
+        "size": 16375
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-sdk-vectors.json",
+        "sha256": "1be7a6d86c7d179caf6cf941990ebea17d9da11321374336cac4330aa8a7d714",
+        "size": 5504
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-sdk-freeze.json",
+        "sha256": "84707974e45209515c973a35f0f1b7ff6ffe9974fb56f2c076a727950796eeb4",
+        "size": 511
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-design-check.json",
+        "sha256": "055fddd852001e5a64e3432d6e15a69e117db471cb189db342a6a6892263557e",
+        "size": 4476
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-design-probe/probe.c",
+        "sha256": "42a507ad0806db982168d0f3f3116042bd1f59ffca51b882c0eb3c6b7b0adb5f",
+        "size": 4090
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/l02-native-design-probe/probe",
+        "sha256": "aaab1cfdc033d21a47410df28ff4ccf9f1e9f0937358ddd1fbdb908a0e528e83",
+        "size": 34232
+      }
+    ],
+    "source_refs": [
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/AGENTS.md",
+        "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+        "size": 1796
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/lib.rs",
+        "sha256": "c2c46a652932025e1b25edc528e5d52c65d8ef05a3d024d9238b7c9eb2c6b879",
+        "size": 8585
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/runtime.rs",
+        "sha256": "78461a98abe716c0b3c38a2f276d8b417e550aa1b3df79f4ae99491098becfa8",
+        "size": 16142
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/sdk/rust/engine/src/test_support.rs",
+        "sha256": "e1d4b1f5e91deb29afdb318c7a67481264241211d5894d1660805950296e4263",
+        "size": 8450
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/lowering.py",
+        "sha256": "7b478f012996b5cc8c9f8e64d7d9137a82ccd402cc007f76403adf3114116485",
+        "size": 9068
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+        "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c",
+        "size": 9409
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/crates/madb-rules/src/contract.rs",
+        "sha256": "09cc399da5d078a54b69a4e316d6f09202d757ea8987e6bbf41ed5a877001cf4",
+        "size": 26406
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/docs/architecture/10-diagnostics-and-performance.md",
+        "sha256": "480d82429902679df2187499c4c8c73139080888f369dd72bd4b79bffb0d2302",
+        "size": 4113
+      },
+      {
+        "path": "/private/tmp/madb-chief-round6/madb/docs/validation/07-developer-ergonomics.md",
+        "sha256": "b5bfac6c0a7be17efecde6eb6b2b71c77e63fa186b9c763141a5a08f6838daa3",
+        "size": 13738
+      }
+    ],
+    "blockers": [
+      {
+        "id": "B1",
+        "status": "open",
+        "proposal_location": "l02-native-sdk-decision.md:42-51",
+        "evidence": [
+          "crates/madb-rules/src/contract.rs:691-713 rejects non-scalar buffer elements as TYPE007",
+          "adapters/generators/rust_c/lowering.py:24-58 only permits seven roles and MadbError",
+          "adapters/generators/rust_c/lowering.py:80-130 has no diagnostic role/result mapping"
+        ],
+        "finding": "The public drain ABI returns an array of MadbDiagnosticEvent, but the proposal assigns two public IDs without defining a representable logical shape, types and policies. Merely allowing two structs and native signatures is insufficient.",
+        "required_change": "Define an exact existing-model-compatible ABI and logical mapping with strict selected-profile checks; do not weaken TYPE007 or silently add shared IR wire."
+      }
+    ],
+    "clarifications_requested": [
+      {
+        "id": "C1",
+        "finding": "Completion capture must be rechecked while holding the ring lock, before enqueue, so a disable that already returned cannot be bypassed by a stale pre-lock enabled observation."
+      },
+      {
+        "id": "C2",
+        "finding": "State that configure/drain control is shared per loaded SDK image; callers coordinate collection, not a separate business owner or permission grant; exact allowed concurrent/reentrant thread use must be clear."
+      }
+    ],
+    "verified_facts": [
+      {
+        "id": "old-seven-boundaries",
+        "result": "All seven ordinary functions, including bootstrap, invoke boundary; source has exactly seven native ordinary exports and seven direct boundary calls."
+      },
+      {
+        "id": "constructor-design-replay",
+        "result": "Verified original mock source/binary hashes against author report and independently executed unchanged binary: exit0, six constructor paths and C layout assertions. This is design-only and may be superseded by drain ABI repair."
+      },
+      {
+        "id": "compatibility",
+        "result": "Proposal distinguishes unchanged old seven signatures, new 9/16 selected surfaces, old 7/14 export gates, and new candidate identities. Old evidence is not reused."
+      },
+      {
+        "id": "no-foreign-sink",
+        "result": "Proposal exports only numeric value drain; no sink pointer/context. External consumer sink cannot synchronously enter SDK through producer path; actual implementation still requires review."
+      }
+    ],
+    "limits": [
+      "No product or Lab source edits",
+      "No native ring implementation or native concurrency execution exists in this review",
+      "No SDK package/candidate or independent Lab run was verified",
+      "Author design check does not establish compiler reader/lowering/ContractIR consistency",
+      "Final recommendation withheld until B1 resolved and final proposal hashes rebound"
+    ]
+  }
+}

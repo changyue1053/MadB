@@ -330,7 +330,17 @@ pub fn project_policies(document: &Document) -> Result<PolicyInputs> {
     })
 }
 pub(crate) fn profile_defaults(document: &Document) -> Result<(Vec<PolicyValue>, Origin)> {
-    let w = Wire::root(document, DocumentKind::Profile)?.field("defaults")?;
+    defaults_fields(Wire::root(document, DocumentKind::Profile)?)
+}
+
+pub(crate) fn composition_profile_defaults(
+    bound: &crate::composition::BoundCompositionInputs,
+) -> Result<(Vec<PolicyValue>, Origin)> {
+    defaults_fields(Wire::root(bound.profile(), DocumentKind::ProfileV2)?)
+}
+
+fn defaults_fields(root: Wire<'_>) -> Result<(Vec<PolicyValue>, Origin)> {
+    let w = root.field("defaults")?;
     Ok((values(w.field("values")?)?, origin(w.field("origin")?)?))
 }
 /// Resolve a build policy only after checking required feature support.
@@ -343,7 +353,19 @@ pub fn build_completion_policy(
 }
 
 pub fn capability(document: &Document) -> Result<Capability> {
-    let w = Wire::root(document, DocumentKind::Profile)?;
+    profile_capability(document, DocumentKind::Profile)
+}
+
+/// Only the explicitly bound composition path interprets the /2 feature.
+/// This remains a pure capability observation, not execution admission.
+pub(crate) fn composition_capability(
+    bound: &crate::composition::BoundCompositionInputs,
+) -> Result<Capability> {
+    profile_capability(bound.profile(), DocumentKind::ProfileV2)
+}
+
+fn profile_capability(document: &Document, kind: DocumentKind) -> Result<Capability> {
+    let w = Wire::root(document, kind)?;
     if !w.field("backend_config")?.value.is_null() {
         return Err(FormatError::new(
             "CAP005",
@@ -353,7 +375,9 @@ pub fn capability(document: &Document) -> Result<Capability> {
     }
     let supported = ids(w.field("supported_features")?)?;
     for feature in ids(w.field("required_features")?)? {
-        if !CORE_FEATURES.contains(&feature.as_str()) || !supported.contains(&feature) {
+        let known = CORE_FEATURES.contains(&feature.as_str())
+            || (kind == DocumentKind::ProfileV2 && feature.as_str() == EXTENSION_COMPOSITION);
+        if !known || !supported.contains(&feature) {
             return Err(FormatError::new(
                 "CAP002",
                 "/required_features",
@@ -366,8 +390,11 @@ pub fn capability(document: &Document) -> Result<Capability> {
         selector: ResolvedSelector {
             route: w.field("route")?.id()?,
             profile_id: w.field("id")?.id()?,
-            profile_digest: Digest::new(crate::profile_digest(document)?)
-                .map_err(|e| w.domain_error(e))?,
+            profile_digest: Digest::new(match kind {
+                DocumentKind::ProfileV2 => crate::composition::profile_v2_digest(document)?,
+                _ => crate::profile_digest(document)?,
+            })
+            .map_err(|e| w.domain_error(e))?,
             target: w.field("target")?.id()?,
             direction: direction(w.field("direction")?)?,
         },

@@ -24,6 +24,8 @@ Finding 表示检测到的问题；Gap 表示证明某项能力所需的信息�
 
 诊断 sink 失败、队列满和导出阻塞不得改变业务结果或破坏资源协议；使用有界采集和明确丢弃策略。生成钩子与字节码插桩避免对同一边界重复计数。工具依据见[语言特性与插桩](15-developer-ergonomics.md)，开关等价性和未插桩验证见[DX 套件](../validation/07-developer-ergonomics.md)。
 
+首链 C→Rust 的具体生产配置按 [ADR-0021](../adr/0021-native-diagnostics-and-checked-constructor.md) 使用每个 loaded image 的固定64槽和单条主动拉取，不在 native 回调栈中调用外部 sink。采集开关、模计数、丢弃、值记录及默认7/诊断9导出的精确边界由该决定维护；关闭采集不关闭正确性保护。说明静态码与显式来源核对的 `explain` 查询按 [ADR-0020](../adr/0020-explain-query-contracts.md) 执行，查询退出0不代表原错误已修复或 SDK 已验收。
+
 契约检查、静态属性和运行插桩分别报告覆盖范围：缺释放器可由声明规则阻断；`lifetimebound` 等只帮助检查可识别的寿命关系；Sanitizer 只对支持目标和实际执行路径提供观察。不能把三者概括为任意跨语言内存与线程行为已经静态证明。S1 先交付边界诊断及开关对照，深度插桩仍按 L08 单独推进。
 
 ## 性能模型

@@ -1,0 +1,876 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "code": "ARKTS_DECL_CALLBACK_RESULT",
+      "meaning": "The callback has a parsed return type other than synchronous void.",
+      "triggers": [
+        "A supported callback type returns a non-void value, including a supported Promise type; other unsupported types can fail before this diagnostic."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Change the author callback declaration and implementation to return void. Move asynchronous work outside this synchronous listener contract."
+        }
+      ],
+      "limits": [
+        "Use the ordinary synchronous void listener and its explicit subscription stop/close operations; returning a Promise does not make delivery await it.",
+        "A bound source point is not independent evidence that the reader issued the diagnostic."
+      ],
+      "reader_message": "callback must return void",
+      "ordinary": "Use the ordinary synchronous void listener and its explicit subscription stop/close operations; returning a Promise does not make delivery await it."
+    },
+    {
+      "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+      "meaning": "The declaration modifiers are outside the selected reader subset.",
+      "triggers": [
+        "The compiler node modifiers differ from those accepted at this node in source or declaration mode."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Inspect the reported declaration and its author input; use the supported modifier set for that node; do not edit generated output or silently remove effects."
+        }
+      ],
+      "limits": [
+        "Use the ordinary declared method. Async work must retain its explicit Promise/operation contract; a modifier change does not supply cancellation.",
+        "A bound source point is not independent evidence that the reader issued the diagnostic."
+      ],
+      "reader_message": "unsupported export/member modifiers",
+      "ordinary": "Use the ordinary declared method. Async work must retain its explicit Promise/operation contract; a modifier change does not supply cancellation."
+    },
+    {
+      "code": "CAP001",
+      "meaning": "The contract and resolved capability select different configurations.",
+      "triggers": [
+        "Their complete profile/route/target/direction selector values differ."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Use the contract and capabilities from the same explicitly resolved profile and target; regenerate stale inputs instead of changing selector labels."
+        }
+      ],
+      "limits": [
+        "Selector agreement alone does not certify execution.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "CAP002",
+      "meaning": "A mandatory feature is unknown, restricted or unsupported by the selected capability.",
+      "triggers": [
+        "A required feature is outside the core set, absent from supported_features, or explicitly restricted."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Select a profile that actually implements the required semantics, or explicitly redesign the author API; do not drop a mandatory feature to force acceptance."
+        }
+      ],
+      "limits": [
+        "An explanation entry does not grant feature support.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "CAP003",
+      "meaning": "Heuristic declaration structure cannot authorize a safe wrapper.",
+      "triggers": [
+        "A symbol’s evidence precision is heuristic."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Obtain supported backend/compiler/schema declaration evidence from the real source and regenerate; do not relabel heuristic metadata as stronger evidence."
+        }
+      ],
+      "limits": [
+        "This code concerns evidence precision, not unsupported call shape; a source point alone does not upgrade precision.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "CAP004",
+      "meaning": "The contract omitted a feature required by its actual declarations.",
+      "triggers": [
+        "A type, error channel, async/stream call or exact constant requires an undeclared feature; a resource additionally requires core.explicit-close@1."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Make required_features accurately describe the author declarations and confirm the resolved profile supports every required feature."
+        }
+      ],
+      "limits": [
+        "Adding a feature name does not create its implementation or acceptance evidence.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "EXPLAIN001",
+      "meaning": "This tool version has no explanation entry for the exact code.",
+      "triggers": [
+        "A syntactically valid code is absent from the finite bundled explanation catalog; lookup is case-sensitive."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Check the exact reported stable code and the tool version that produced it; use a version with an explicitly supported explanation entry."
+        }
+      ],
+      "limits": [
+        "Absence from this catalog does not mean no other module can emit the code; no workspace or reader is probed.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "EXPLAIN002",
+      "meaning": "The explanation query or diagnostic context is invalid.",
+      "triggers": [
+        "Invalid CLI/context/schema, unknown fields or position mode, code/path mismatch, initial source size/digest mismatch, or an invalid source point caused rejection."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Correct the explicit query/context from the captured diagnostic and actual source bytes; keep the original source encoding and exact code."
+        }
+      ],
+      "limits": [
+        "No partial explanation or invented source position is a successful result.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "EXPLAIN003",
+      "meaning": "An explicit query file or output operation could not be completed.",
+      "triggers": [
+        "A required file is missing or unreadable, an I/O operation failed, or stdout could not be delivered."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Check the explicitly named root/file and access permissions or the output pipe, then retry without changing the diagnostic identity."
+        }
+      ],
+      "limits": [
+        "An I/O failure is not evidence that source contents changed; a broken pipe may prevent delivery of complete JSON.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "EXPLAIN004",
+      "meaning": "An input changed after capture or no longer satisfies the query read boundary.",
+      "triggers": [
+        "A recheck observes disappearance, changed bytes or a changed path/file boundary after initial successful capture."
+      ],
+      "repairs": [
+        {
+          "kind": "restore-locked-input",
+          "instruction": "Retry against stable captured context and source files, restoring the intended paths and exact bytes first."
+        }
+      ],
+      "limits": [
+        "Rechecking detects conflicts; it is not an atomic filesystem snapshot or compiler invocation proof.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "ID001",
+      "meaning": "The supplied symbol set repeats a public identity.",
+      "triggers": [
+        "Two symbols carry the same public_id."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Assign or restore distinct stable public identities at the author identity mapping and regenerate the symbol set."
+        }
+      ],
+      "limits": [
+        "Textual declaration order does not select a winning public API.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "ID002",
+      "meaning": "The supplied symbol set repeats a source identity.",
+      "triggers": [
+        "Two symbols carry the same source_id."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Correct duplicate reader output or author declaration keys so each source symbol has one complete stable identity."
+        }
+      ],
+      "limits": [
+        "Source line numbers are intentionally absent from stable source identity.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "ID003",
+      "meaning": "A source identity does not match its stable reader key.",
+      "triggers": [
+        "Hashing reader/package/module/kind/qualified_name/overload does not produce the supplied source_id, or that key is incomplete."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Regenerate the source identity from the complete real reader key and author declaration; do not hand-edit only the digest."
+        }
+      ],
+      "limits": [
+        "A matching identity hash does not establish declaration behavior.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "ID004",
+      "meaning": "A derived public identity disagrees with namespace and source identity.",
+      "triggers": [
+        "public_id_origin=derived but the required namespace/source-derived Id differs from public_id."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Restore the derived mapping, or adopt an explicit stable public-ID mapping through the compatibility decision process before regeneration."
+        }
+      ],
+      "limits": [
+        "A rename is not permission to silently replace a public identity.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "ID005",
+      "meaning": "A retired public identity is being reused.",
+      "triggers": [
+        "The symbol public_id appears in the retired-ID set supplied to identity validation."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Choose a fresh public identity or follow the explicit compatibility decision process; retain retirement history."
+        }
+      ],
+      "limits": [
+        "This check only covers the retired-ID set actually supplied to the validator.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "ID006",
+      "meaning": "The declaration source position is not one-based.",
+      "triggers": [
+        "The source line or column is zero."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Fix the actual reader’s source position conversion to emit one-based line and column without inventing source precision."
+        }
+      ],
+      "limits": [
+        "A positive position still requires source-byte and coordinate-system binding.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NATIVE001",
+      "meaning": "The native adapter configuration or request is invalid.",
+      "triggers": [
+        "Unsupported schema/provider/semantic version, role mapping, compiler arguments, target pairing, environment, JSON member/budget or logical path; a required tool declaration can also be absent."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Inspect the exact adapter failure and the authoritative native backend configuration and request; restore the supported explicit role/target/tool/input declarations."
+        }
+      ],
+      "limits": [
+        "This is configuration rejection, not proof that a compiler or SDK was run.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NATIVE002",
+      "meaning": "An installed tool or SDK input does not match its locked byte identity.",
+      "triggers": [
+        "A required tool path is not an installed file, its size or digest differs, or the observed libclang installation cannot be verified."
+      ],
+      "repairs": [
+        {
+          "kind": "restore-locked-input",
+          "instruction": "Restore the exact locked installed tool or SDK input, then deliberately prepare a new lock if a supported tool change is intended; do not rewrite hashes to accept unreviewed bytes."
+        }
+      ],
+      "limits": [
+        "A matching file digest does not certify the tool output or target behavior.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NATIVE003",
+      "meaning": "A locked native tool invocation did not yield an acceptable bounded result.",
+      "triggers": [
+        "Process startup or timeout, output budgets, nonzero exit, or malformed expected compiler JSON/AST output prevented the adapter from reading the result."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Read the captured command failure and bounded log, check the fixed tool installation and arguments, and rerun the explicit preparation after correcting the cause."
+        }
+      ],
+      "limits": [
+        "This code does not imply that a failed or cancelled compiler invocation passed.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NATIVE004",
+      "meaning": "The declaration or target is outside this native reader’s supported subset.",
+      "triggers": [
+        "Unsupported ABI types/aliases, unions/bitfields/macros/attributes/inline or unnamed declarations, extra or missing exports/constants, unsupported record fields, indirect user headers, or an unselected target can trigger rejection."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Inspect the reported author declaration and selected reader subset; use its supported explicit ordinary ABI, or select a separately reviewed adapter without weakening unknown-declaration checks."
+        }
+      ],
+      "limits": [
+        "Explaining an unsupported construct does not enable it or certify another target.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NATIVE005",
+      "meaning": "Observed native signatures, status constants or the required record layout disagree with the selected ABI.",
+      "triggers": [
+        "A role has a different return/parameter type, MadbError fields/layout or a selected diagnostic Event/Stats field/layout differ from the explicit profile, or a required status constant is not the specified value."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Restore the author export signature, fixed status values and repr(C) record layout required by this explicit ABI, then regenerate from those sources."
+        }
+      ],
+      "limits": [
+        "Do not repair a mismatch by hand-editing generated headers or suppressing layout observations.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NATIVE006",
+      "meaning": "Native declaration provenance or frozen metadata is missing, ambiguous or inconsistent.",
+      "triggers": [
+        "Frozen source bytes changed; source/config/wrapper or compiler dependencies are undeclared; a Rust source point or Clang layout is missing/ambiguous; SDK headers are unlocked; repeated generated metadata differs; the finite native role/policy responsibility plan or its preserved Source/Candidate table is inconsistent."
+      ],
+      "repairs": [
+        {
+          "kind": "restore-locked-input",
+          "instruction": "Inspect the named source, dependency, metadata or responsibility witness; restore the complete pinned inputs and the supported role/policy ownership plan. Regenerate from those inputs, and ensure packaging preserves the checked Source responsibility table; do not hand-edit generated output."
+        }
+      ],
+      "limits": [
+        "This includes provenance and layout-evidence defects, not only changed files.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "NUM001",
+      "meaning": "An exact numeric constant or integer variant tag has invalid numeric encoding.",
+      "triggers": [
+        "The exact-constant validator rejects integer width, canonical decimal syntax/range, or float width and lowercase hexadecimal bit encoding; string and boolean wire validation do not produce this code."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Correct the author numeric literal and its exact integer type/decimal or floating-point bit encoding; preserve values outside safe JSON numbers as the specified exact strings."
+        }
+      ],
+      "limits": [
+        "Safe JSON integer parsing and exact business numeric semantics are separate checks.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL001",
+      "meaning": "A policy selector does not identify exactly one complete symbol.",
+      "triggers": [
+        "An exact public/source identity selector matches zero symbols or more than one symbol."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Use the intended complete stable public/source identity in the authoritative binding and resolve duplicate identities before regeneration."
+        }
+      ],
+      "limits": [
+        "Names or source lines are not substitutes for complete stable identity.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL002",
+      "meaning": "The selected policy slot does not exist on its symbol.",
+      "triggers": [
+        "A declaration binding names an absent parameter/return slot, or an effective policy points to a nonexistent non-call slot."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Update the authoritative exact slot binding after checking the current declaration; remove stale bindings only when the declaration was intentionally removed."
+        }
+      ],
+      "limits": [
+        "Do not fabricate a parameter to satisfy an obsolete policy.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL003",
+      "meaning": "Multiple policy-family defaults supply the same policy key for one slot.",
+      "triggers": [
+        "Two default values for the same key are supplied through policy families, even when their values are equal."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Choose one authoritative family default for this key and slot; express a deliberate explicit override through its supported authority."
+        }
+      ],
+      "limits": [
+        "Input order is not a conflict resolution rule.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL004",
+      "meaning": "Multiple explicit authorities supply the same policy key for one slot.",
+      "triggers": [
+        "Two source/project explicit values target the same key, including duplicate equal values."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Retain one authoritative explicit binding and remove the duplicate from its author source or project policy."
+        }
+      ],
+      "limits": [
+        "Equal values still represent conflicting ownership of the decision.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL005",
+      "meaning": "A policy origin or family declaration has invalid authority.",
+      "triggers": [
+        "A family is duplicated or is not policy-family authority; an explicit binding lacks source-annotation/project-policy authority; a replaced source is not an allowed default; reader annotations use the wrong channel."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Correct the actual policy source/channel and remove duplicate family identities; do not relabel project metadata as a compiler annotation."
+        }
+      ],
+      "limits": [
+        "An authority label is not independent evidence that a compiler supplied the value.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL006",
+      "meaning": "The inferred profile default exceeds the permitted value-copy rule.",
+      "triggers": [
+        "Profile defaults contain anything beyond at most one ownership=copy value, or an effective profile-default policy is not copy on a value input parameter."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Keep profile defaults limited to copying value inputs; declare resource, borrow, callback and other safety policies explicitly at their authoritative source."
+        }
+      ],
+      "limits": [
+        "Do not infer unsafe lifetime or thread behavior from convenience defaults.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL007",
+      "meaning": "A binding references a policy family that was not declared.",
+      "triggers": [
+        "The exact family identity is absent from the supplied family set."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Declare the intended family in the authoritative project inputs or correct the binding to the existing complete family identity."
+        }
+      ],
+      "limits": [
+        "No family is discovered by basename, wildcard or input order.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL008",
+      "meaning": "The effective contract repeats a policy slot.",
+      "triggers": [
+        "More than one effective policy targets the same symbol identity and slot."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Fix policy generation/resolution from the authoritative inputs so each symbol slot has one effective policy."
+        }
+      ],
+      "limits": [
+        "Do not delete a required safety policy merely to silence duplication.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL009",
+      "meaning": "An effective policy references a symbol absent from the contract.",
+      "triggers": [
+        "Its symbol_id does not occur in the current symbol set."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Reconcile the author export and exact policy identity after rename/deletion, then regenerate the effective contract."
+        }
+      ],
+      "limits": [
+        "A previous candidate’s symbol identity is not current declaration evidence.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "POL010",
+      "meaning": "An effective policy map key disagrees with its typed value.",
+      "triggers": [
+        "For example a map entry keyed as one policy property contains another property’s value."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Correct the authoritative policy conversion so each property key contains its matching typed value and rerun resolution."
+        }
+      ],
+      "limits": [
+        "This is an internal semantic inconsistency, not a request to weaken policy validation.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM001",
+      "meaning": "A policy required by the actual call or value slot is absent.",
+      "triggers": [
+        "Required call threading/blocking/delivery/cancellation facts, stream bounds and stop facts, resource ownership/close/release-thread, callback lifetime facts, or borrow/transfer policies are missing."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Add the missing policy to its authoritative declaration or exact project binding with the real ownership/thread/lifetime semantics; do not invent a permissive default."
+        }
+      ],
+      "limits": [
+        "Presence of a policy does not prove that a backend implements it.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM002",
+      "meaning": "Cancellation effect and its confirmation do not agree.",
+      "triggers": [
+        "none requires not-supported, wait requires wait-ended, observe requires stopped, and work requires operation-terminal."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Correct the author cancellation and confirmation pair to the effect the implementation actually provides."
+        }
+      ],
+      "limits": [
+        "Ending a wait or observation is not confirmation that underlying work stopped.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM003",
+      "meaning": "A stream declares no stream kind or no stopping semantics.",
+      "triggers": [
+        "A stream call has stream_kind=none or stop=none; absent required properties can additionally produce SEM001."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Declare whether the source is state or event and provide its real stop/drain protocol in the authoritative stream policy."
+        }
+      ],
+      "limits": [
+        "Naming a stop protocol alone does not prove successful drain.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM004",
+      "meaning": "An event stream cannot silently use latest-state coalescing.",
+      "triggers": [
+        "The stream is event while overflow is coalesce-latest."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Choose an event-preserving bounded delivery policy, or change the author API to state semantics only when that is its actual meaning."
+        }
+      ],
+      "limits": [
+        "Changing a label cannot make event loss correct.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM005",
+      "meaning": "A resource needs explicit close and cannot be copied as a value.",
+      "triggers": [
+        "A resource slot lacks request-await-release close semantics or declares ownership=copy."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Provide the resource’s real request/await/release contract and explicit ownership in the authoritative slot policy."
+        }
+      ],
+      "limits": [
+        "Diagnostics never replace the runtime owner or closing state machine.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM006",
+      "meaning": "A callback that cannot unregister must retain a source lease.",
+      "triggers": [
+        "A callback slot declares stop=none but keep_alive is not source-lease."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Keep the callback context alive under the actual source lease until confirmed drain, or expose a real supported unregister/stop mechanism."
+        }
+      ],
+      "limits": [
+        "Stopping delivery is not necessarily revocation of the producer’s context reference.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM007",
+      "meaning": "The transfer releaser does not have the required logical signature.",
+      "triggers": [
+        "The named releaser is absent, not synchronous, does not take exactly one parameter of the transferred slot type, or does not return unit."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Add or correct the author release declaration and exact releaser binding so it accepts the exact transferred slot type once and returns unit."
+        }
+      ],
+      "limits": [
+        "This checks the logical declaration; it does not prove native release timing or thread correctness.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM008",
+      "meaning": "An async or stream borrow outlives call-frame protection.",
+      "triggers": [
+        "A non-synchronous call borrows a slot with keep_alive=call-frame."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Use an actual operation/subscription lifetime owner for the borrow, or redesign the author contract to copy/transfer with supported ownership."
+        }
+      ],
+      "limits": [
+        "A longer declared lifetime requires a real owner; it is not supplied by metadata alone.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "SEM009",
+      "meaning": "A returned borrow cannot expire with the returning call.",
+      "triggers": [
+        "The return slot has ownership=borrow and borrow_scope=call."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Bind the returned borrow to an actual longer-lived owner or return a supported owned/copied value."
+        }
+      ],
+      "limits": [
+        "No source location assertion can extend native memory lifetime.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE001",
+      "meaning": "The contract contains duplicate type identities.",
+      "triggers": [
+        "Two type entries have the same Id in the supplied type set."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Resolve the duplicate at its author declaration or conversion source and regenerate unique type identities."
+        }
+      ],
+      "limits": [
+        "Do not choose a definition by declaration order.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE002",
+      "meaning": "A referenced logical type is missing.",
+      "triggers": [
+        "A type definition, parameter, return slot or declared error channel refers to an absent type Id."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Restore the intended author type/export or correct the stale type reference, then regenerate the full type closure."
+        }
+      ],
+      "limits": [
+        "Missing types are not treated as opaque values automatically.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE003",
+      "meaning": "A value layout is recursive or exceeds the finite traversal depth.",
+      "triggers": [
+        "Following inline record/nullable/variant references revisits a type or reaches the 64-level traversal guard."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Use an explicitly supported indirection/resource representation with its required ownership contract, or reduce the author value nesting."
+        }
+      ],
+      "limits": [
+        "Do not truncate the layout or label a recursive value as a scalar.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE004",
+      "meaning": "Parameter or field names repeat within a logical declaration.",
+      "triggers": [
+        "A symbol parameter list, callback parameter list or record field list repeats a name."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Give each author parameter/field one unambiguous name and regenerate its declaration mapping."
+        }
+      ],
+      "limits": [
+        "This code does not check duplicate constant values.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE005",
+      "meaning": "A scalar, string or buffer definition violates supported bounds.",
+      "triggers": [
+        "Integer width is outside 8/16/32/64/128, float width is not 32/64, encoding or buffer length unit is invalid, or its byte bound is zero."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Use a supported exact scalar width, explicit encoding/length unit and a positive bounded author string/buffer contract."
+        }
+      ],
+      "limits": [
+        "A valid bound does not prove a caller-provided native pointer is accessible.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE006",
+      "meaning": "A variant repeats a case name or encoded tag.",
+      "triggers": [
+        "Its case-name or tag identity set is not unique."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Assign distinct author variant names and exact tags, preserving any compatibility mapping that has been explicitly adopted."
+        }
+      ],
+      "limits": [
+        "Changing public tags can be a compatibility decision, not an automatic repair.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE007",
+      "meaning": "A composite requires unsupported ownership or buffer-element adaptation.",
+      "triggers": [
+        "A buffer element is not integer/float/boolean, or a record/variant payload contains a value that is not recursively copyable (including resource/callback ownership)."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Use the selected profile’s supported scalar buffer or pure value composite, or add a separately reviewed explicit adapter for the required ownership."
+        }
+      ],
+      "limits": [
+        "Do not reinterpret a record array as a scalar buffer or weaken the v1 guard.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE008",
+      "meaning": "A variant tag does not match its declared integer tag type.",
+      "triggers": [
+        "The tag type is not an integer, or its width/signedness differ from the exact integer tag."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Correct the author variant tag type and every exact tag encoding to the same width and signedness."
+        }
+      ],
+      "limits": [
+        "A numerically similar value of another type is not the same tag representation.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    },
+    {
+      "code": "TYPE009",
+      "meaning": "A declared error channel has an unsupported logical type.",
+      "triggers": [
+        "The declared error is neither a value variant nor a backend-handle resource representing a backend-owned erased error."
+      ],
+      "repairs": [
+        {
+          "kind": "edit-author-input",
+          "instruction": "Declare a supported typed error variant or the selected backend’s real erased-error resource and required error feature."
+        }
+      ],
+      "limits": [
+        "A string or arbitrary native address is not automatically a safe error channel.",
+        "An explanation query does not rerun the original check or certify a generated candidate."
+      ]
+    }
+  ]
+}

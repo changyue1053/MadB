@@ -1,0 +1,82 @@
+{
+  "result": "no blockers within the declared local generation scope",
+  "validation": "/private/tmp/madb-chief-round6/composition-generation-final-validation.json",
+  "validation_sha256": "244de17086e034268fad74d72dec2cbfea515364a4dc437614d05e3085b0717f",
+  "independent_script": "/private/tmp/madb-chief-round6/composition-generation-final-independent-check.py",
+  "independent_results": "/private/tmp/madb-chief-round6/composition-generation-independent-007/results.json",
+  "checks": [
+    {
+      "name": "old-entry-and-generation-body-preserved",
+      "result": "passed"
+    },
+    {
+      "name": "all-131-inputs-10-schemas-and-package-twins-bound",
+      "result": "passed"
+    },
+    {
+      "name": "author-real-observer-five-roles-preserved",
+      "result": "passed"
+    },
+    {
+      "name": "real-generation-and-one-slot-15-payload-byte-identical",
+      "result": "passed"
+    },
+    {
+      "name": "wrong-producer",
+      "result": "passed"
+    },
+    {
+      "name": "wrong-selector",
+      "result": "passed"
+    },
+    {
+      "name": "changed-generated-byte",
+      "result": "passed"
+    },
+    {
+      "name": "changed-source-byte",
+      "result": "passed"
+    },
+    {
+      "name": "path-traversal",
+      "result": "passed"
+    },
+    {
+      "name": "diagnostic-catalog-package-and-root-input-closure",
+      "result": "passed"
+    },
+    {
+      "name": "changed-diagnostic-catalog",
+      "result": "passed"
+    },
+    {
+      "name": "changed-package-diagnostic-catalog",
+      "result": "passed"
+    },
+    {
+      "name": "old-v1-helper-rejects-real-v2",
+      "result": "passed"
+    },
+    {
+      "name": "old-helper-image-pin",
+      "result": "passed"
+    },
+    {
+      "name": "coherently-repinned-two-missing-responsibilities",
+      "result": "passed"
+    },
+    {
+      "name": "positive-independent-copy-restored",
+      "result": "passed"
+    }
+  ],
+  "source_and_output_integrity": "all package/root/current-repository source twins and 131 lock inputs/10 locked schemas match; independent final positive copy restored and exact bind rechecked",
+  "legacy_boundary": "original driver generation body AST preserved; actual old exact-three-field helper rejected real profile/2 input FMT003; actual new entry rejected profile/1 reference",
+  "provenance_limit": "This agent replayed both the existing author checker and a separate independent harness; the harness does not import the author checker or production semantic hash implementation.",
+  "limits": [
+    "Exactly 10 schemas frozen by the fixture; 20 compiled DocumentKinds were separately validated. No fixture schema inventory expansion.",
+    "The diagnostic catalog is source/image-bound data; this evidence does not certify every explanation entry semantic meaning.",
+    "The new manifest/component is local fixed recipe data, not installed E01 registration or E02 session authorization.",
+    "No C04 composition transaction, SDK/native compilation, target execution, device access, enhanced/disabled full generation, Lab certification or publication."
+  ]
+}

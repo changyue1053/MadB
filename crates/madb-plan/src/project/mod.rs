@@ -1,5 +1,10 @@
 //! Pure module and file planning for I01. These are internal values, not a
 //! template wire format or permission to write an existing workspace.
+mod selection;
+pub use selection::{
+    ProjectProfile, ProjectTarget, SelectedProjectProfile, select_project_profile,
+};
+
 use madb_model::{Id, LogicalPath};
 use std::collections::{BTreeMap, BTreeSet};
 

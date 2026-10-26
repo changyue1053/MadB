@@ -1,0 +1,157 @@
+{
+  "scope": "L04 纯 Swift public Observation source package 的 SwiftUI/UIKit 独立只读复核",
+  "result": "no_blocking_findings_in_reviewed_slice",
+  "reviewer": "c07_reconcile",
+  "source_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l04-final-inputs-003.json",
+    "sha256": "0a3f178ad21f3049df0922be57894ac9257c3f785a21ffd2857dbb4ac416c4a2",
+    "size": 21290
+  },
+  "source_files": {
+    "consumers/swift/l04_ui/App.swift": {
+      "sha256": "4e2e203fc788f9ab74286f2705634eb51e0c19e49f77b34ee0760d2ea1250edf",
+      "size": 6752
+    },
+    "consumers/swift/l04_ui/LifecycleUITests.swift": {
+      "sha256": "f97cc59559a0a6f417302ee2577cee9ece4ea3c904a4bed085c36084a7905c46",
+      "size": 3361
+    },
+    "consumers/swift/l04_ui/LocalSource.swift": {
+      "sha256": "94b3f396d16819997c62f4afe04435ac876356f1c6e4037d0fd285c977531804",
+      "size": 3983
+    },
+    "consumers/swift/l04_ui/MadBL04UI.xcscheme": {
+      "sha256": "2a9df550a079debe8844339350e4dacc3d064ff046f2ed79e6c9c285d9032ab3",
+      "size": 2088
+    },
+    "consumers/swift/l04_ui/Owner.swift": {
+      "sha256": "2bd224abd176bff0a90faea78b388e7f976b68c798cddd85b4ee3b228a073b54",
+      "size": 5784
+    },
+    "consumers/swift/l04_ui/README.md": {
+      "sha256": "597f6dd614ff084e8c601c833abb23d24e6c6de304ee2c67be0b5db58ec8af59",
+      "size": 2926
+    },
+    "consumers/swift/l04_ui/SourceBarrierTests.swift": {
+      "sha256": "20f7c09cf020a232965eaadb9a99622e460594d6b9431d7b88514fefae30257c",
+      "size": 2499
+    },
+    "consumers/swift/l04_ui/project.pbxproj": {
+      "sha256": "ed5fef82222d692f40f5c83336b7861f1edf0cc90662b6c391ab0a7c318dc0d2",
+      "size": 6182
+    },
+    "scripts/verify_l04_ui.py": {
+      "sha256": "b4bc7acf4560b1fc4c01124d3258c1b775dc6730459ec7b55f477d43aab2eb21",
+      "size": 17874
+    },
+    "scripts/test_l04_ui.py": {
+      "sha256": "48fc9184d35cf231118683cc5334fe8c0b7bd1259d0f1c0f0cda466387122014",
+      "size": 4056
+    }
+  },
+  "target_report": {
+    "path": "/private/tmp/madb-chief-round6/l04-ui-003/report.json",
+    "sha256": "ab98b8255c359df33e48787beee8fc2573e56e47b4478b5d1167287dc6b38200",
+    "size": 27832
+  },
+  "independent_evidence_check": {
+    "path": "/private/tmp/madb-chief-round6/l04-independent-evidence-check.json",
+    "sha256": "846b227fdc0b1767c4a9d71270c544c4664c7ef1ea11d96918964d86b552952a",
+    "size": 2658
+  },
+  "independent_check_script": {
+    "path": "/private/tmp/madb-chief-round6/review_l04_evidence.py",
+    "sha256": "ca9022f9d6d8a96dea1bd0ef1051a0d7fd5990b0d5038987bbe1b9aa9a2f2832",
+    "size": 6759
+  },
+  "commands": [
+    {
+      "command": "python3 /private/tmp/madb-chief-round6/review_l04_evidence.py",
+      "exit_code": 0,
+      "meaning": "独立检查实际22项Lab输入、10公开包文件、89冻结附件、app库存、源码archive、20条执行记录和62帧精确断言"
+    },
+    {
+      "command": "xcrun xcresulttool get test-results summary --path /private/tmp/madb-chief-round6/l04-ui-003/tests.xcresult",
+      "exit_code": 0,
+      "meaning": "独立读取实际xcresult，与报告一致：1 passed /0 failed /0 skipped，device/nonce一致"
+    }
+  ],
+  "code_review": [
+    {
+      "paths": [
+        "consumers/swift/l04_ui/LocalSource.swift:65",
+        "consumers/swift/l04_ui/LocalSource.swift:103"
+      ],
+      "conclusion": "单 collector 锁内准入；先 finishing，锁外 didEnd，完成后才 ended 并恢复所有已注册等待者，重复collect精确拒绝，未见剩余早确认路径。"
+    },
+    {
+      "paths": [
+        "consumers/swift/l04_ui/Owner.swift:83",
+        "consumers/swift/l04_ui/Owner.swift:113",
+        "consumers/swift/l04_ui/App.swift"
+      ],
+      "conclusion": "MainActor owner 保活 page 到 stopAndWait 成功；真实框架生命周期触发停止；controller销毁、model释放、source排水分别观察；页面退出不关闭共享ordinary源，最终显式关闭。"
+    },
+    {
+      "paths": [
+        "consumers/swift/l04_ui/SourceBarrierTests.swift",
+        "scripts/verify_l04_ui.py:142"
+      ],
+      "conclusion": "didEnd固定屏障停留，3等待者仍pending且重复collector拒绝；disposable copy仅mutate ended||finishing，要求L04_EARLY_STOP_CONFIRMATION且非timeout，未把任意失败算正确。"
+    },
+    {
+      "paths": [
+        "consumers/swift/l04_ui/LifecycleUITests.swift",
+        "consumers/swift/l04_ui/project.pbxproj",
+        "scripts/verify_l04_ui.py"
+      ],
+      "conclusion": "真实Xcode app/XCUITest导航与可访问性断言；公开source package按独立pin准入、离线SwiftPM；没有私有native/producer代码或C06二进制输入；构建/目标/cleanup分开记账。"
+    }
+  ],
+  "actual_evidence": {
+    "source_barrier": "已审读003真实运行记录：正例exit0；精确早确认反例exit-5；本审者没有重复运行Swift探针",
+    "ui": "独立62帧oracle通过；6唯一UUID、SwiftUI/UIKit各3次，精确值1..12、订阅/排水/释放计数、MainActor标记和单PID140一致",
+    "close": "最终active0/created7/drained7/sourceClosed1、destroyed6/released6；close precedes simulator deletion",
+    "environment": "Xcode27.0/27A266a, Swift6.4, SDK27.0/24A430, actual iOSSimulator26.5/23F77 arm64",
+    "cleanup": "专用0085FC3C-408C-4038-851D-CF6D82C8B74A创建/启动/运行/关闭/删除均可追；最终device列表无该UUID",
+    "visual": "逐图查看003 SwiftUI page1及UIKit page4，实际UUID/值1、7和计数与目标日志一致；001同类两图亦已查看"
+  },
+  "history": [
+    {
+      "run": "001",
+      "conclusion": "历史UI通过保留；未固定清理竞争窗口，不继承为原source正确性证明",
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l04-ui-001/report.json",
+        "sha256": "0fbad7562f868e56452b487a3bdde180dd6db3b2339b9fd1a6c5ac7d546866ca",
+        "size": 27576
+      }
+    },
+    {
+      "run": "002",
+      "conclusion": "host fixture因async上下文semaphore.wait编译失败；UI未执行、未创建设备；转GCD continuation仅修测试可编译性，断言未放宽",
+      "report": {
+        "path": "/private/tmp/madb-chief-round6/l04-ui-002/report.json",
+        "sha256": "043ad08d39a178a1fcc0a0cd1a4dcf9c4f66464e80f164b3081cc27d30317b27",
+        "size": 25936
+      }
+    }
+  ],
+  "acceptance_boundary": {
+    "handoff": {
+      "path": "/private/tmp/madb-chief-round6/l04-acceptance-handoff.md",
+      "sha256": "f96e581ce7135b8c0014cdddaea1995fa013d2a8b0a0cf35da6b15e00dcdf859",
+      "size": 8115
+    },
+    "checked": "逐项对照catalog L04当前16条，handoff把本片贡献与缺项分开，无整包/原生/分发外推",
+    "not_claimed": [
+      "C06/iOS native组合",
+      "L04整包或所有profile",
+      "物理设备/最低iOS17行为",
+      "native迟到回调/排水失败/取消竞争",
+      "后台/旋转/同时多页面",
+      "第二业务生成、薄宏、Combine/Rx、OSSignposter",
+      "C10注册发行/公开包认证"
+    ]
+  },
+  "review_actions": "只读源及证据；仅在/private/tmp写审查脚本/JSON；未改仓库、未操作模拟器、未重跑全量目标。"
+}

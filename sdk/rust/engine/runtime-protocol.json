@@ -124,6 +124,18 @@
       "component": "madb-first-route-engine@0.1.0",
       "implementation": "sdk/rust/engine/src/runtime.rs",
       "responsibility": "native/context cleanup before Closed, followed by explicit caller token release"
+    },
+    {
+      "stage": "optional-diagnostic-capture",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/diagnostics.rs",
+      "responsibility": "The explicit diagnostics feature records numeric boundary-returned and callback-returned facts into one bounded 64-slot ring per loaded image. Capture defaults off; diagnostic counters never govern business admission, resource ownership or close completion. One try-lock attempt, drop-new on contention/full, no exporter or worker."
+    },
+    {
+      "stage": "diagnostic-value-transfer",
+      "component": "madb-first-route-engine@0.1.0",
+      "implementation": "sdk/rust/engine/src/lib.rs",
+      "responsibility": "The diagnostics profile exposes configure and single-record drain; the default profile preserves exactly seven native exports. Returned records are caller-owned value copies without payloads or addresses. Consumer exporters run after drain returns and hold no SDK callback context. The generated checked constructor reuses the existing bootstrap and create once; it does not add native ownership or a second diagnostic event."
     }
   ],
   "test_support": {

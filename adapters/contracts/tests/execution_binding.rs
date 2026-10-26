@@ -820,3 +820,244 @@ fn two_phase_package_parent_gate_rejects_omission_external_and_duplicate_refs() 
         "FILE003",
     );
 }
+
+// This fixture starts at the already-checked Source handoff. It tests asset
+// preservation, not whether these illustrative Markdown bytes prove ownership.
+fn package_responsibility_fixture(
+    fixed_reader: bool,
+    with_table: bool,
+    fixed_sdk_source: bool,
+) -> (Fixture, Value, Value) {
+    let mut f = Fixture::new();
+    if fixed_reader || fixed_sdk_source {
+        let mut lock: Value = serde_json::from_slice(&f.lock).unwrap();
+        let mut read: Value = serde_json::from_slice(&f.read).unwrap();
+        if fixed_reader {
+            lock["components"][0]["id"] = json!("org.madb.rust-c/reader-generator");
+            read["component"] = lock["components"][0].clone();
+        }
+        if fixed_sdk_source {
+            let backend = encode(&json!({"schema":"madb.rust-c-backend/1",
+                "provider":"rust","semantics":"madb.first-route/1",
+                "source":"sdk/rust/engine/src/lib.rs"}));
+            let reference = file("backend.json", "madb.source-input/1", &backend);
+            f.memory
+                .0
+                .insert(LogicalPath::new("backend.json").unwrap(), backend);
+            read["inputs"]
+                .as_array_mut()
+                .unwrap()
+                .push(reference.clone());
+            let mut plain = reference.clone();
+            plain.as_object_mut().unwrap().remove("schema");
+            lock["inputs"].as_array_mut().unwrap().push(plain);
+            let input = source_digest(&read["inputs"]).unwrap();
+            let mut snapshot: Value = serde_json::from_slice(&f.snapshot).unwrap();
+            snapshot["source_digest"] = json!(input);
+            f.snapshot = encode(&snapshot);
+            f.memory.0.insert(
+                LogicalPath::new("contract.json").unwrap(),
+                f.snapshot.clone(),
+            );
+            f.generate["inputs"] = read["inputs"].clone();
+            f.generate["input_digest"] = json!(input);
+            f.generate["contract"] = file("contract.json", "madb.contract-ir/1", &f.snapshot);
+            f.bundle["context"]["contract"] = f.generate["contract"].clone();
+            f.bundle["recipe"]["inputs"][2] = f.generate["contract"].clone();
+            f.bundle["recipe"]["inputs"]
+                .as_array_mut()
+                .unwrap()
+                .push(reference);
+        }
+        f.lock = encode(&lock);
+        read["lock"] = file("madb.lock", "madb.lock/1", &f.lock);
+        f.read = encode(&read);
+        f.generate["lock"] = read["lock"].clone();
+        f.generate["component"] = read["component"].clone();
+        f.bundle["context"]["lock"] = read["lock"].clone();
+        f.bundle["context"]["read_request"] = file("read.json", "madb.read-request/1", &f.read);
+        f.seal();
+    }
+    let mut output = f.outputs();
+    f.memory.0.insert(
+        LogicalPath::new("include/fixture.h").unwrap(),
+        b"generated header\n".to_vec(),
+    );
+    if with_table {
+        let bytes = b"# Checked source responsibility fixture\n";
+        let sources = output["files"][0]["sources"].clone();
+        output["files"].as_array_mut().unwrap().push(json!({
+            "path":"responsibilities.md", "sha256":Digest::of_bytes(bytes).as_str(),
+            "size":bytes.len(), "sources":sources
+        }));
+        f.memory.0.insert(
+            LogicalPath::new("responsibilities.md").unwrap(),
+            bytes.to_vec(),
+        );
+    }
+    output["generation_id"] = json!(
+        generation_id(
+            &registry()
+                .validate(DocumentKind::OutputSet, output.clone())
+                .unwrap()
+        )
+        .unwrap()
+    );
+    let output_bytes = encode(&output);
+    f.memory.0.insert(
+        LogicalPath::new("outputs.json").unwrap(),
+        output_bytes.clone(),
+    );
+    f.memory.0.insert(
+        LogicalPath::new("build/library.a").unwrap(),
+        b"library".to_vec(),
+    );
+    let mut evidence_refs = Vec::new();
+    for phase in ["compile", "link", "run"] {
+        let mut evidence = value(DocumentKind::BuildEvidence);
+        evidence["generation_id"] = output["generation_id"].clone();
+        evidence["input_digest"] = output["input_digest"].clone();
+        evidence["profile_digest"] = output["profile_digest"].clone();
+        evidence["tool"] = f.bundle["recipe"]["tool"].clone();
+        evidence["phase"] = json!(phase);
+        evidence["task_id"] = json!(phase);
+        evidence["outputs"] = json!([{"path":"build/library.a","sha256":Digest::of_bytes(b"library").as_str(),"size":7}]);
+        let bytes = encode(&evidence);
+        let path = format!("evidence/{phase}.json");
+        evidence_refs.push(file(&path, "madb.build-evidence/1", &bytes));
+        f.memory.0.insert(LogicalPath::new(path).unwrap(), bytes);
+    }
+    let mut request = value(DocumentKind::PackageRequest);
+    request["selector"] = f.generate["selector"].clone();
+    request["generation_id"] = output["generation_id"].clone();
+    request["lock"] = f.generate["lock"].clone();
+    request["output_set"] = file("outputs.json", "madb.output-set/1", &output_bytes);
+    request["build_evidence"] = json!(evidence_refs);
+    let mut candidate = value(DocumentKind::Candidate);
+    for field in [
+        "selector",
+        "generation_id",
+        "contract_digest",
+        "policy_digest",
+        "public_symbols",
+        "required_cases",
+        "dependencies",
+        "build_evidence",
+    ] {
+        candidate[field] = request[field].clone();
+    }
+    candidate["lock_digest"] = request["lock"]["sha256"].clone();
+    candidate["manifest_path"] = json!("candidate.json");
+    candidate["files"] = json!(f.memory.0.iter().map(|(path, bytes)| json!({"path":path.as_str(),"sha256":Digest::of_bytes(bytes).as_str(),"size":bytes.len()})).collect::<Vec<_>>());
+    (f, request, candidate)
+}
+fn sealed_candidate(mut candidate: Value) -> Vec<u8> {
+    candidate["candidate_digest"] = json!(
+        madb_contracts::candidate_digest(
+            &registry()
+                .validate(DocumentKind::Candidate, candidate.clone())
+                .unwrap()
+        )
+        .unwrap()
+    );
+    encode(&candidate)
+}
+#[test]
+fn package_preserves_checked_responsibility_table_after_candidate_rehash() {
+    use madb_app::pipeline::capture_artifact_result;
+    let (mut f, request, candidate) = package_responsibility_fixture(true, true, true);
+    let recipe = package_recipe(&f, &request);
+    let bound = BoundArtifactRecipe::new(
+        f.configuration(),
+        Some(&f.snapshot),
+        &recipe,
+        &encode(&request),
+        &f.frozen(),
+    )
+    .unwrap();
+    let good = sealed_candidate(candidate.clone());
+    f.memory
+        .0
+        .insert(LogicalPath::new("candidate.json").unwrap(), good.clone());
+    capture_artifact_result(&f.memory, &bound, &good, 1024 * 1024).unwrap();
+    let index = candidate["files"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .position(|r| r["path"] == "responsibilities.md")
+        .unwrap();
+    for mutation in ["omit", "hash", "size", "rename"] {
+        let mut changed = candidate.clone();
+        match mutation {
+            "omit" => {
+                changed["files"].as_array_mut().unwrap().remove(index);
+            }
+            "hash" => {
+                changed["files"][index]["sha256"] = json!(Digest::of_bytes(b"other").as_str())
+            }
+            "size" => changed["files"][index]["size"] = json!(1),
+            "rename" => changed["files"][index]["path"] = json!("other-responsibilities.md"),
+            _ => unreachable!(),
+        }
+        // Recompute identity so PORT003 cannot mask the missing asset check.
+        code(
+            bound.validate_result(&sealed_candidate(changed)),
+            "NATIVE006",
+        );
+    }
+    let md = LogicalPath::new("responsibilities.md").unwrap();
+    let original = f.memory.0[&md].clone();
+    f.memory.0.get_mut(&md).unwrap()[0] ^= 1;
+    code(
+        capture_artifact_result(&f.memory, &bound, &good, 1024 * 1024),
+        "INPUT003",
+    );
+    f.memory.0.insert(md, original);
+    capture_artifact_result(&f.memory, &bound, &good, 1024 * 1024).unwrap();
+}
+#[test]
+fn package_preserves_historical_and_other_reader_contracts() {
+    for (fixed_reader, with_table) in [(true, false), (false, true)] {
+        let (f, request, mut candidate) =
+            package_responsibility_fixture(fixed_reader, with_table, fixed_reader);
+        let recipe = package_recipe(&f, &request);
+        let bound = BoundArtifactRecipe::new(
+            f.configuration(),
+            Some(&f.snapshot),
+            &recipe,
+            &encode(&request),
+            &f.frozen(),
+        )
+        .unwrap();
+        candidate["files"]
+            .as_array_mut()
+            .unwrap()
+            .retain(|r| r["path"] != "responsibilities.md");
+        bound.validate_result(&sealed_candidate(candidate)).unwrap();
+    }
+}
+
+#[test]
+fn package_cannot_drop_fixed_sdk_table_by_switching_current_reader() {
+    let (f, request, mut candidate) = package_responsibility_fixture(false, true, true);
+    let recipe = package_recipe(&f, &request);
+    let bound = BoundArtifactRecipe::new(
+        f.configuration(),
+        Some(&f.snapshot),
+        &recipe,
+        &encode(&request),
+        &f.frozen(),
+    )
+    .unwrap();
+    bound
+        .validate_result(&sealed_candidate(candidate.clone()))
+        .unwrap();
+    candidate["files"]
+        .as_array_mut()
+        .unwrap()
+        .retain(|r| r["path"] != "responsibilities.md");
+    code(
+        bound.validate_result(&sealed_candidate(candidate)),
+        "NATIVE006",
+    );
+}

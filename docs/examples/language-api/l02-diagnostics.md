@@ -1,12 +1,12 @@
-# L02 声明来源与诊断解释首片
+# L02 声明来源、解释查询与首链诊断
 
-本页描述 ArkTS 既有声明读取器的内部解释接线，适用输入仍为 [L01 ArkTS 契约](arkts-contract.md)及 C07 当前受限 profile。任务状态只见 [catalog](../../catalog/implementation-plan.json)；本首片不构成 L02 整包验收。
+本页描述 ArkTS 声明来源复用、ADR-0020 的只读解释命令和 ADR-0021 的 C→Rust 首链诊断。ArkTS 适用输入仍为 [L01 ArkTS 契约](arkts-contract.md)及 C07 受限 profile；新增 SDK 配置绑定自己的候选。任务状态只见 [catalog](../../catalog/implementation-plan.json)，历史首片证据不自动覆盖新实现。
 
 ## 输入与责任
 
 `adapters/generators/arkts/read_facade.cjs` 使用锁定 TypeScript 编译器 API 读取真实声明，输出既有私有 descriptor；其 `source` 保留实际输入的逻辑路径、UTF-8 字节摘要及大小。各声明位置包含一基行列、UTF-16 offset 和范围。`lowering.lower_public` 将实际函数/方法的 path、line、column 和 `compiler-derived` 精度写入既有 ContractIR，不另创声明、符号身份或来源格式。
 
-`declaration_diagnostics.py` 只解释下表已有的两种稳定代码，输入为调用方已捕获的源字节、对应 FileRef 和该次读取器的原始错误。它不读文件、不执行工具、不推导所有权，不把泛化类型失败临时编号成稳定代码。内部 Python 返回值不是 CLI JSON、公共 wire 或可序列化协议；`explain(code)` 对未知码抛出 `UnknownDiagnosticCode`，无码错误和不匹配消息为 `UnsupportedReaderDiagnostic`，来源不符为 `SourceBindingError`。
+`declaration_diagnostics.py` 从 CLI 共用的固定说明目录提取下表两种稳定代码，输入为调用方已捕获的源字节、对应 FileRef 和该次读取器的原始错误。模块导入时只加载已冻结的固定说明目录；解释与来源绑定函数不读取作者源文件、不执行工具、不推导所有权，不把泛化类型失败临时编号成稳定代码。内部 Python 返回值不是 CLI JSON、公共 wire 或可序列化协议；`explain(code)` 对未知码抛出 `UnknownDiagnosticCode`，无码错误和不匹配消息为 `UnsupportedReaderDiagnostic`，来源不符为 `SourceBindingError`。
 
 | 既有码 | 当前真实触发条件 | 修复与普通替代 |
 |---|---|---|
@@ -47,14 +47,32 @@
 
 报告绑定实际 helper/reader/driver/测试、策略及输入摘要、工具记录和运行结果。失败报告保留；修复后使用新报告路径重跑。无 SDK 生成、HAR/HAP 编译、native 运行、设备调用、独立 Lab 验收或发布含义。
 
-## 与 L02 整包验收的差距
+## 正式 explain 查询
 
-| catalog 条件 | 本首片提供 | 仍须交付 |
-|---|---|---|
-| 复用后端声明/来源，普通入口独立消费 | 当前 ArkTS 普通 descriptor 与既有 IR 点来源复用 | 其他后端覆盖、完整普通 SDK 独立消费与第二业务生成 |
-| 诊断关闭仍保留资源/线程/状态机保护 | 未修改这些保护，解释器只在工具失败路径运行 | 诊断开关/失败 sink 与各实际候选资源后条件对照 |
-| 首链资源/回调与生成诊断贯通，分别声明覆盖 | 当前两种声明拒绝到实际驱动 stderr；运行协议投影保持独立 | 完整首链语义诊断、运行 hooks 与适用静态属性覆盖 |
-| DEC-07 每符号生成语义阶段责任表 | reader 担任结构/来源权威，lowering 担任既有 IR 映射，解释器只附说明；普通/便利共享相同声明机制 | 由 resolved profile/lowering 实际产生并检查完整每符号/阶段/实例责任表，不能用本页静态分工替代 |
-| explain 稳定解释、未知失败、机器输出/退出正反例、只读 | 两个既有码的内部说明/条件/来源/可执行修复指导，未知码明确拒绝，查询无探测与构建 | 正式 `explain` CLI、经格式审查的机器输出、命令级正反例与所承诺代码覆盖；人类 stderr note 不替代该入口 |
+[ADR-0020](../../adr/0020-explain-query-contracts.md) 固定命令及 [explain-result/1](../../schemas/explain-result.schema.json)、[diagnostic-context/1](../../schemas/diagnostic-context.schema.json)。例如：
 
-后续沿 [已批准职责](../../reviews/2026-10-25-chief-architect-first-batch.md#目标-cli-的归属与可见行为)接入正式 explain；新增公共字段或兼容语义仍按格式流程处理。不得把本页两个代码的实现扩大成所有语言、所有声明或 L02 整包已通过。
+```sh
+madb explain ARKTS_DECL_CALLBACK_RESULT
+madb explain TYPE004 --json
+madb explain ARKTS_DECL_UNSUPPORTED_MODIFIERS --context diagnostic.json --root ./project --json
+```
+
+纯码查询从内置目录解释47个既有码及4个查询码，不读取工作区。未知码在打开 context 前失败；context 只能是显式逻辑文件路径，不接受 stdin。指定 context 后核对同次诊断码、实际源字节及位置，拒绝符号链接、路径别名、错误摘要和越界位置。来源精度仍是输入声明，不认证外来诊断出自哪个编译器。实际 reader 到 CLI 的验证入口为 [check_explain_cli.py](../../../tests/integration/l02_diagnostics/check_explain_cli.py)。
+
+退出0表示查询完成；2表示未知码或非法输入，3表示实际宿主 I/O 失败，4表示捕获的输入在本次复核时变化。JSON 结果只写 stdout；无法写出结果时退出3。文本成功写 stdout，错误写 stderr。修复建议供调用者执行，命令本身不修改声明、不运行探测或构建。既有读取器的 stderr note 保持原失败身份；它与正式查询复用说明目录，仍是两个有明确边界的入口。
+
+## C→Rust 普通构造与可选诊断
+
+[ADR-0021](../../adr/0021-native-diagnostics-and-checked-constructor.md) 规定新生成候选的 `include/madb_rust_client.h`。消费者调用 `madb_engine_create_checked()` 即可核对该头文件的 interface/profile 身份，再调用原 create；无需手写64字节身份常量。结果区分 bootstrap 失败、接口错配、配置错配及 create 失败；失败不交付句柄，成功只取得一个 owned handle。后续仍显式执行原 request_close、await_closed、release_handle，helper 不建立另一套资源或订阅状态机。
+
+默认库保持7个原生导出；测试伴随14个。显式 diagnostics 配置增加 configure/drain 两个入口，分别为9/16个导出，普通候选不传播诊断依赖。诊断使用每个 loaded image 的固定64槽，默认关闭；业务完成边界记录纯值，满载丢新，单次 try_lock 不等待，不调用外部日志 sink。消费者在 native 调用之外拉取最多一条 Event 和 Stats，再自行导出。关闭采集不关闭句柄、线程、SourceLease、准入或停止排水保护；诊断计数不替代资源守恒观察。
+
+该首链的静态声明来自真实 cbindgen/Clang surface，lowering 仍用现有受检 IR 与策略。运行记录只描述已声明的调用/回调边界，不验证任意裸指针有效性、用户回调无 unwind 或消费者 exporter 的线程安全。默认 Release、诊断 Release、测试伴随及独立消费分别记录，编译和临时 mock 不当作实际候选运行。
+
+## 逐符号责任及验证边界
+
+固定首链从精确七/九项 ABI role、真实 IR、effective policies 与冻结 reader/SDK 来源派生责任。核心纯规则校验唯一且完整的 key/owner 集合；Python 生成 `responsibilities.md`，宿主按核心已核对的期望 FileRef 再核实际输出字节，随正常 Source 和候选文件清单交付。附表不新增共同 wire，不把其他 reader 或 SDK 误纳入本有限配方。
+
+普通配置27行、诊断配置33行，区分读取、ABI lowering、同步投影和适用的订阅、投递、停止、排水、释放。checked constructor 仅有身份分支的 helper 责任，bootstrap/create 委派原入口；不存在第二次转换、订阅或资源 owner。source-caller 同步投递不声称固定 OS 线程、队列或线程池；不适用的 async/cancel 不伪造 owner。物理装配与运行语义仍由真实 Build/Candidate/Lab 证据证明。
+
+现行验收保留声明/来源、独立普通消费、关闭诊断的保护、首链资源/回调、责任表和解释命令全部条件。具体实现、编译、运行、独审及尚缺环境见 [本批记录](../../reviews/2026-10-26-chief-architect-sixth-batch.md)；不能据本文将所有语言、平台、正式分发或 L02 整包记为完成。

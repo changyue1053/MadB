@@ -13,3 +13,5 @@ pub fn query(root: &Path, request: &QueryRequest) -> Result<QueryOutcome> {
 
 mod execution;
 pub use execution::{ExecutionOptions, execute};
+mod explain;
+pub use explain::ExplanationService;

@@ -1,0 +1,19 @@
+{
+  "schema": "madb.diagnostic-context/1",
+  "diagnostic": {
+    "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+    "message": "source declaration has unsupported modifier async",
+    "location": {
+      "path": "src/Bad.ets",
+      "line": 2,
+      "column": 1
+    }
+  },
+  "source": {
+    "path": "src/Bad.ets",
+    "sha256": "sha256:619dd635282300b5f98c6afa2b94b508644f637e9bc6ab8214c1b62d40061898",
+    "size": 61
+  },
+  "position_encoding": "utf16-js",
+  "reported_precision": "compiler-derived"
+}

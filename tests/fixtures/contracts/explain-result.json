@@ -1,0 +1,49 @@
+{
+  "schema": "madb.explain-result/1",
+  "tool_version": "0.1.0-dev.0",
+  "code": "ARKTS_DECL_UNSUPPORTED_MODIFIERS",
+  "context": {
+    "path": "diagnostics/bad.json",
+    "sha256": "sha256:340d017002dd8f9e67046b35568583311d483f582ddae3545c0bbad5ef33e1f3",
+    "size": 500,
+    "schema": "madb.diagnostic-context/1"
+  },
+  "explanation": {
+    "meaning": "The source declaration uses modifiers outside this reader’s supported declaration subset.",
+    "triggers": [
+      "A real reader diagnostic reports unsupported source or declaration modifiers."
+    ],
+    "repairs": [
+      {
+        "kind": "edit-author-input",
+        "instruction": "Inspect the author declaration at the bound point and use the supported ordinary declaration shape; preserve required async semantics instead of hiding the modifier.",
+        "location": {
+          "path": "src/Bad.ets",
+          "line": 2,
+          "column": 1
+        }
+      }
+    ],
+    "limits": [
+      "The point is bound to source bytes, not independently attested to a compiler invocation.",
+      "Code explanation does not enable async declarations or certify a generated candidate."
+    ]
+  },
+  "source": {
+    "reference": {
+      "path": "src/Bad.ets",
+      "sha256": "sha256:619dd635282300b5f98c6afa2b94b508644f637e9bc6ab8214c1b62d40061898",
+      "size": 61
+    },
+    "location": {
+      "path": "src/Bad.ets",
+      "line": 2,
+      "column": 1
+    },
+    "position_encoding": "utf16-js",
+    "reported_precision": "compiler-derived",
+    "byte_offset": 15
+  },
+  "diagnostics": [],
+  "exit_code": 0
+}

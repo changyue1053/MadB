@@ -1,0 +1,312 @@
+{
+  "scope": "L02/DEC07 finite default/diagnostic C-to-Rust generation, Source expected-MD admission and Package byte preservation; provisional engineering candidates only",
+  "root": "/private/tmp/madb-chief-round6/madb",
+  "source_files": {
+    "adapters/generators/rust_c/driver.py": {
+      "sha256": "b3116ee1c8786626f17a5fe66750cf59d2d1c1a920fc7b783d5fce104cac99f8",
+      "size": 16808
+    },
+    "adapters/generators/rust_c/lowering.py": {
+      "sha256": "63cc5589275e956299e45297cff96261dbb48e5191bd33a275f7c9bfdc286850",
+      "size": 11974
+    },
+    "adapters/generators/rust_c/checked_client.py": {
+      "sha256": "7615fdfeb9b09429c4888b8d55d199a145cd9c5e34b57705154833999dcf439e",
+      "size": 2594
+    },
+    "adapters/toolchains/rust_c/project.py": {
+      "sha256": "94a3801aa934681df589dc160fa9d8b84d2749fbebe3f39a3e21b7f85c99d23c",
+      "size": 15743
+    },
+    "adapters/toolchains/rust_c/worker.py": {
+      "sha256": "891d68b125ab6f0bc281d2b3e023735a4be47c9776bd7650bd545189bde6fc02",
+      "size": 20829
+    },
+    "scripts/build_first_route.py": {
+      "sha256": "33d221f7cfaf31eb2a8e8c8d260f06e1d8cbb4d2f34f2bcd92caa1c13ce2c43b",
+      "size": 5010
+    },
+    "sdk/rust/engine/cbindgen.toml": {
+      "sha256": "c9d9f14add9974d4ab15bac578af72ed3849758fb5163c143b6ce8467ff67715",
+      "size": 620
+    },
+    "sdk/rust/engine/cbindgen-diagnostics.toml": {
+      "sha256": "59a6e76a4b7ee54a4e725a04baa99cb08722d0577e5eccd29fb4804abe6e2658",
+      "size": 596
+    },
+    "tests/integration/c05_reader/test_diagnostics.py": {
+      "sha256": "5c64c24220339dc0c8c6620862bd29cc94ad73c0a283d2acc777f8a622da763a",
+      "size": 8565
+    },
+    "tests/integration/c05_reader/test_checked_client.py": {
+      "sha256": "1a739c5bfd072365572c608a9c225ad7aa452fa9cecbf320a792caba10a493de",
+      "size": 4709
+    },
+    "adapters/generators/rust_c/ownership.py": {
+      "sha256": "b7d871ec6a61c35c745863ede69a5ef6f7a723237b9d35da75833b50eb18f2f5",
+      "size": 9955
+    }
+  },
+  "integrated_shared_files": {
+    "crates/madb-rules/src/ownership.rs": "30ed6b2161eaeb1b755b372b90b559d395e20d6f73ec4c31dac68573561e7e3f",
+    "crates/madb-rules/src/lib.rs": "87173f9428b990225e3f74d1666e67d7f2b03f2e30e4bc0e955c3d9272cf29c9",
+    "adapters/contracts/src/native/first_route_ownership.rs": "e600b39ad1b5415c8f3c6027d4a2abd61c881ff9dffd7aaa9d9a1ec10dbcadee",
+    "adapters/contracts/src/native/first_route_ownership_tests.rs": "cb08a86eaa63d9ef46225933032dd03f6cfb2d732947379b21f04dab8e78fc90",
+    "adapters/contracts/src/native.rs": "808545501a7c85d188622fac81622d0069f254274ada1efc469aabde93b2ec26",
+    "adapters/contracts/src/execution/artifact.rs": "658454d71bbda26722b5aede69bf3185b11d8cacef22502752ba22d5ca8c7c3f",
+    "adapters/contracts/src/execution/package.rs": "1d8f9c06862bc9499d7ae3ed196b1576e80dcb4f5525f592a30f95827fd1c731",
+    "adapters/contracts/src/composition/ownership.rs": "b0c79d418543c709ba5924aed0e72573455f28d5432b52c96fa1da47e1ba393a",
+    "adapters/contracts/Cargo.toml": "ba11a682086ee03d739eeccd31835c694ca343c79e9e26b5c93e6631d2c04213",
+    "Cargo.lock": "0a99a4baf43cea5761ba695cdde2dc05b6654ef32e63693a36c1c46af37d363f",
+    "sdk/rust/engine/runtime-protocol.json": "cf6c321a14a122b61a28ba3829e452beb9489bc759c3c4bfb167093c805837dc"
+  },
+  "checks": [
+    {
+      "command": "CARGO_NET_OFFLINE=true CARGO_TARGET_DIR=/private/tmp/madb-chief-round6/madb/target python -B scripts/build_first_route.py --output /private/tmp/madb-chief-round6/l02-provisional-005 --bindgen /private/tmp/madb-c03-verified-tools/bin/bindgen --cbindgen /private/tmp/madb-c03-verified-tools/bin/cbindgen --diagnostics --allow-dirty",
+      "count": 5,
+      "exit_code": 0,
+      "log": "/private/tmp/madb-chief-round6/l02-build-005.log",
+      "log_sha256": "54f7a01270c79f11a9b39671875b355de92f4395bff86f9b2c26705f1f989fe4"
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/integration/c05_reader -v",
+      "count": 29,
+      "exit_code": 0,
+      "log": "/private/tmp/madb-chief-round6/l02-ownership-reader-005.log",
+      "log_sha256": "b818a02e7a3861e70dcaabae26f74d05d95bd7e87b6c980f4f94bdd49b84e9e6"
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/integration/c05_pipeline -v",
+      "count": 13,
+      "exit_code": 0,
+      "log": "/private/tmp/madb-chief-round6/l02-ownership-pipeline-005.log",
+      "log_sha256": "b4d0d4749f070d17d5adb1346671a4669d6b14837bc62f65dbf943b1dfb19ede"
+    }
+  ],
+  "post_build_checks": [
+    "all five exact nm symbol sets",
+    "every candidate file hash and size",
+    "generator/toolchain/cbindgen and SDK source lock equals frozen current source",
+    "four responsibility docs exact Source/Candidate bytes and FileRefs; 27/33 rows; reverse C absent"
+  ],
+  "variants": {
+    "c-to-rust": {
+      "candidate_digest": "sha256:f9aefca76e32a7b474b7cc2ca4021db34bab0fa7df168637d695b5022200956e",
+      "manifest_sha256": "8bf289e5db9f8cfd29659dc6d64d208b353feb50dbbc3510903233d888aac05b",
+      "profile_id": "c05-c-to-rust-aarch64-apple-darwin",
+      "profile_digest": "sha256:080aceaa6bdc0d1b2cb22b24413d79d374b285977b5ff7bc11bdcb25702ce283",
+      "generation_id": "sha256:a67ea461f99015f8dd907963162fd251d76ea9ddfb09bc1441663120e44692cc",
+      "identity": {
+        "bootstrap_version": 1,
+        "interface_digest": "sha256:d5dd6de4896bc5cb306db845aa7ab82afe8f92e12ac2763e503c0480e30b37e9",
+        "profile_digest": "sha256:080aceaa6bdc0d1b2cb22b24413d79d374b285977b5ff7bc11bdcb25702ce283",
+        "schema": "madb.native-identity/1"
+      },
+      "native_symbols": [
+        "madb_fixture_await_closed",
+        "madb_fixture_bootstrap",
+        "madb_fixture_checksum",
+        "madb_fixture_create",
+        "madb_fixture_observe",
+        "madb_fixture_release_handle",
+        "madb_fixture_request_close"
+      ],
+      "files_verified": 16,
+      "responsibilities": {
+        "sha256": "a0a6a8874883280162928d451a62cdc6214b0d1a1dd86746324c5e9e5bdd56db",
+        "size": 15354,
+        "responsibility_rows": 27,
+        "source_and_candidate_bytes_equal": true,
+        "exact_file_ref_preserved": true
+      },
+      "provenance": {
+        "input_digest": "sha256:c5a9f7003ed5fbdbfd6ee549426cb167867a3f01532f3a77111e768591a6c5c3",
+        "producer_revision": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+        "provisional": true,
+        "schema": "madb.native-provenance/1",
+        "tool_digest": "sha256:db096c076f08133804f9b35298a3dee1389dde6bac43f13cc9be6283eebfe10a"
+      }
+    },
+    "c-to-rust-diagnostics": {
+      "candidate_digest": "sha256:1365f42ac21448110c6e781ad8f0e630aa0eb1c0f442d96b5c10d84ae589f0a8",
+      "manifest_sha256": "7742a84a77d14a2aedf60caac9b3cae70c8e7f4ffa24a9c6dea06bc62201f468",
+      "profile_id": "c05-c-to-rust-diagnostics-aarch64-apple-darwin",
+      "profile_digest": "sha256:4a4e8e4cce4572808cc113354f9808f15453006516061e468bcb1faec506a089",
+      "generation_id": "sha256:0406d45d8e2933903765382c802566f66062b4e9f8d11e3145f8a29d2c79d80f",
+      "identity": {
+        "bootstrap_version": 1,
+        "interface_digest": "sha256:59163d5b99450f8e6804f4ac4678ba3a2fb75e28d41a0fc8d3f67e3ada69c9ae",
+        "profile_digest": "sha256:4a4e8e4cce4572808cc113354f9808f15453006516061e468bcb1faec506a089",
+        "schema": "madb.native-identity/1"
+      },
+      "native_symbols": [
+        "madb_fixture_await_closed",
+        "madb_fixture_bootstrap",
+        "madb_fixture_checksum",
+        "madb_fixture_create",
+        "madb_fixture_diagnostics_configure",
+        "madb_fixture_diagnostics_drain",
+        "madb_fixture_observe",
+        "madb_fixture_release_handle",
+        "madb_fixture_request_close"
+      ],
+      "files_verified": 16,
+      "responsibilities": {
+        "sha256": "38bd1e8908547b526367d06b9634763e055be68451685b3745058b07913768f8",
+        "size": 17421,
+        "responsibility_rows": 33,
+        "source_and_candidate_bytes_equal": true,
+        "exact_file_ref_preserved": true
+      },
+      "provenance": {
+        "input_digest": "sha256:8d4d6dac7ecfa89dc1f2a1583ff354bda1cd6562394c455fa88c3773ad5e9c49",
+        "producer_revision": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+        "provisional": true,
+        "schema": "madb.native-provenance/1",
+        "tool_digest": "sha256:db096c076f08133804f9b35298a3dee1389dde6bac43f13cc9be6283eebfe10a"
+      }
+    },
+    "c-to-rust-diagnostics-test": {
+      "candidate_digest": "sha256:94ba57029062618d54c0e77640dfe5ee9a891344ba3eb4c94ded1f1f52bfd973",
+      "manifest_sha256": "f770316b57d27729e27de9a1a3091bdbf7f465cadbb721dad3a0696621588ba8",
+      "profile_id": "c05-c-to-rust-diagnostics-test-aarch64-apple-darwin",
+      "profile_digest": "sha256:24434aa36826816777fce58b0312d08b9e5e4c5036aa2f65eac622101ad49c25",
+      "generation_id": "sha256:b80fd1819f92b5ad910acd5585f71e28a3a125d738775f55dab1864cb468ec3b",
+      "identity": {
+        "bootstrap_version": 1,
+        "interface_digest": "sha256:59163d5b99450f8e6804f4ac4678ba3a2fb75e28d41a0fc8d3f67e3ada69c9ae",
+        "profile_digest": "sha256:24434aa36826816777fce58b0312d08b9e5e4c5036aa2f65eac622101ad49c25",
+        "schema": "madb.native-identity/1"
+      },
+      "native_symbols": [
+        "madb_fixture_await_closed",
+        "madb_fixture_bootstrap",
+        "madb_fixture_checksum",
+        "madb_fixture_create",
+        "madb_fixture_diagnostics_configure",
+        "madb_fixture_diagnostics_drain",
+        "madb_fixture_observe",
+        "madb_fixture_release_handle",
+        "madb_fixture_request_close",
+        "madb_fixture_test_arm",
+        "madb_fixture_test_emit",
+        "madb_fixture_test_resume",
+        "madb_fixture_test_set_fault",
+        "madb_fixture_test_set_next_token",
+        "madb_fixture_test_snapshot",
+        "madb_fixture_test_wait"
+      ],
+      "files_verified": 17,
+      "responsibilities": {
+        "sha256": "0f1f46b73a83215b2601ae3c980d97fc2ec941760618f6984a32441938f13ff0",
+        "size": 17431,
+        "responsibility_rows": 33,
+        "source_and_candidate_bytes_equal": true,
+        "exact_file_ref_preserved": true
+      },
+      "provenance": {
+        "input_digest": "sha256:c8811a4bde4d88de6639c5b972e1b261ae737dfd2c076e7e03bae6e47e5f6534",
+        "producer_revision": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+        "provisional": true,
+        "schema": "madb.native-provenance/1",
+        "tool_digest": "sha256:db096c076f08133804f9b35298a3dee1389dde6bac43f13cc9be6283eebfe10a"
+      }
+    },
+    "c-to-rust-test": {
+      "candidate_digest": "sha256:e1479d1257830990555953d79753602bfdeb9fa42ced4a51a9c6f31688d622ee",
+      "manifest_sha256": "cdd09a842e017138d9b6ad12e30cddced2b16642557766a7332a3282c38843aa",
+      "profile_id": "c05-c-to-rust-test-aarch64-apple-darwin",
+      "profile_digest": "sha256:3edfdabc604ca2d79f04d2398dcd50b4e9d87d9e564798d554994dcb789d818d",
+      "generation_id": "sha256:b9cc02d18aba024ee507478eb3753b37578571384233aa7160f89814fcf8b913",
+      "identity": {
+        "bootstrap_version": 1,
+        "interface_digest": "sha256:d5dd6de4896bc5cb306db845aa7ab82afe8f92e12ac2763e503c0480e30b37e9",
+        "profile_digest": "sha256:3edfdabc604ca2d79f04d2398dcd50b4e9d87d9e564798d554994dcb789d818d",
+        "schema": "madb.native-identity/1"
+      },
+      "native_symbols": [
+        "madb_fixture_await_closed",
+        "madb_fixture_bootstrap",
+        "madb_fixture_checksum",
+        "madb_fixture_create",
+        "madb_fixture_observe",
+        "madb_fixture_release_handle",
+        "madb_fixture_request_close",
+        "madb_fixture_test_arm",
+        "madb_fixture_test_emit",
+        "madb_fixture_test_resume",
+        "madb_fixture_test_set_fault",
+        "madb_fixture_test_set_next_token",
+        "madb_fixture_test_snapshot",
+        "madb_fixture_test_wait"
+      ],
+      "files_verified": 17,
+      "responsibilities": {
+        "sha256": "aae6126811dc08f8d15c4877e663612e972f16c9f902510d908d9296e40a8bfe",
+        "size": 15364,
+        "responsibility_rows": 27,
+        "source_and_candidate_bytes_equal": true,
+        "exact_file_ref_preserved": true
+      },
+      "provenance": {
+        "input_digest": "sha256:4684aa8eb990d0337bd8d995cdb951ccc508830b77b84e83c9330376ba6b9b7d",
+        "producer_revision": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+        "provisional": true,
+        "schema": "madb.native-provenance/1",
+        "tool_digest": "sha256:db096c076f08133804f9b35298a3dee1389dde6bac43f13cc9be6283eebfe10a"
+      }
+    },
+    "rust-to-c": {
+      "candidate_digest": "sha256:cb1a7b9956cab696b54290067a8e9fa74d6efce95299406141f28be739227dfb",
+      "manifest_sha256": "8d38d65750b7185537a1883f266346b4b8b761efbed8fb0e942fde42026e97df",
+      "profile_id": "c05-rust-to-c-aarch64-apple-darwin",
+      "profile_digest": "sha256:7ac04d707a689455af2ba5a87efaf4dc8c4b9b67bd68c7b4ac1a3a61cbb28eb1",
+      "generation_id": "sha256:41af8bd02400a51bf151ad35b329076fc6b7488fc3534924367dfba23f8d6ea1",
+      "identity": {
+        "bootstrap_version": 1,
+        "interface_digest": "sha256:9b725005c6b737a5448a41b39fd212dd31787babcf433dac46979a40eda3f8de",
+        "profile_digest": "sha256:7ac04d707a689455af2ba5a87efaf4dc8c4b9b67bd68c7b4ac1a3a61cbb28eb1",
+        "schema": "madb.native-identity/1"
+      },
+      "native_symbols": [
+        "madb_c_fixture_bootstrap",
+        "madb_c_fixture_checksum"
+      ],
+      "files_verified": 19,
+      "responsibilities": null,
+      "provenance": {
+        "input_digest": "sha256:e80de4c2640104eb7bace3afe89bfbb4e94f09667b6d6766fc77fbccf53c8342",
+        "producer_revision": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+        "provisional": true,
+        "schema": "madb.native-provenance/1",
+        "tool_digest": "sha256:db096c076f08133804f9b35298a3dee1389dde6bac43f13cc9be6283eebfe10a"
+      }
+    }
+  },
+  "workspace_inventory": "/private/tmp/madb-chief-round6/l02-ownership-workspaces.json",
+  "workspace_inventory_sha256": "d72a147d4b2bb8a674bd3ee8940ab1dd3241c72fb493a99266b395656efe15f4",
+  "host_image": {
+    "path": "/private/var/folders/h_/h9j1tz1n59x4mw1sdppn3_f00000gn/T/madb-first-route-e_pnfo_n/madb-host",
+    "sha256": "db096c076f08133804f9b35298a3dee1389dde6bac43f13cc9be6283eebfe10a"
+  },
+  "independent_review": "pending final combined native/C04/Python review by l02_native",
+  "preserved_prior_attempts": [
+    {
+      "log": "l02-build-002.log",
+      "result": "failed: Rust mistakenly parsed real Cargo.toml as TOML value; owner fixed document parser and added real Cargo regression"
+    },
+    {
+      "log": "l02-build-003.log",
+      "result": "five configurations passed before compatibility gate alignment and Package omission fix"
+    },
+    {
+      "log": "l02-build-004.log",
+      "result": "five fixed positive configurations passed; transient over-broad Python wrong-route skip replaced by strict fixed-SDK rejection before final005"
+    }
+  ],
+  "limits": [
+    "Every candidate is explicitly provisional; no formal clean producer revision or independent Lab acceptance claimed",
+    "No SDK publication or complete L02/DEC07 certification claim",
+    "Core generic comparison and SDK native concurrency tests are recorded by their independent owners; generated text does not itself prove runtime behavior"
+  ]
+}

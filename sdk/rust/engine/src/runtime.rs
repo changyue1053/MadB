@@ -279,9 +279,13 @@ impl SourceLease {
         if let Ok(mut state) = lock() {
             state.counters.callbacks_started += 1;
         }
+        #[cfg(feature = "diagnostics")]
+        let diagnostic_started = diagnostics::begin();
         // SAFETY: caller's registration promise plus this source lease keep the
         // target/context alive; no registry lock is held across foreign code.
         unsafe { (self.target.callback)(self.target.context.0, self.sequence, value) };
+        #[cfg(feature = "diagnostics")]
+        diagnostics::complete_callback(diagnostic_started, self.subscription, self.parent);
         #[cfg(feature = "test-support")]
         if let Ok(mut state) = lock() {
             state.counters.callbacks_finished += 1;

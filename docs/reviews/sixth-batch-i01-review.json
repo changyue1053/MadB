@@ -1,0 +1,172 @@
+{
+  "kind": "i01-selection-independent-review",
+  "created_at_utc": "2026-10-26T10:13:48.024353+00:00",
+  "status": "passed-within-pure-selection-scope",
+  "blocking_findings": [],
+  "nonblocking_findings": [],
+  "root": "/private/tmp/madb-chief-round6/madb",
+  "head": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+  "scope": "I01 ADR-0019 D: internal template profile/target-family selection and unchanged ProjectPlan delegation; no wire/schema/decoder or execution admission",
+  "inputs": [
+    {
+      "path": "crates/madb-plan/src/project/selection.rs",
+      "sha256": "dffe987b9287c832059774e2b0103661aafe36b8661e5e952d7e3a8b4abd7632",
+      "size": 6100,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "crates/madb-plan/tests/project_selection.rs",
+      "sha256": "aa6ee1c68d7b4f51122fdcf2cf436f5fcd180b9cbe789d373ccd937b223c6832",
+      "size": 12623,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "crates/madb-plan/src/project/mod.rs",
+      "sha256": "243b27e39f23c9c28a3eb62d6757131c922b996a803ee08832867b10979a77aa",
+      "size": 7819,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "crates/madb-plan/src/lib.rs",
+      "sha256": "451986fde2e90f929b3eacbec1215776fd29c90352ab4f08e64907e07db85219",
+      "size": 7645,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "crates/madb-plan/Cargo.toml",
+      "sha256": "bb9efbbfa74fe31374cddb768705460aa86c21f0e234519c4f0c8cc8a168622d",
+      "size": 347,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "Cargo.toml",
+      "sha256": "4fcf6bb4580c24fee8d3df3beb0b7d3ce8701de00d640a8fe121a57043ed465d",
+      "size": 1179,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "Cargo.lock",
+      "sha256": "1abe88ef0ff6606f28d18309f705a5b5492e129fc3a18f5f41a6368bef781cf2",
+      "size": 31392,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "rust-toolchain.toml",
+      "sha256": "d13306be0ecda81ce779baa290ffb417380d525928477f16200884b5169cca33",
+      "size": 86,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "docs/adr/0019-project-init-incremental-contracts.md",
+      "sha256": "b810339d917442faf32ad6ec3890d41fb4a88dee3cf693ed5b47910057ea8d70",
+      "size": 3375,
+      "matched_before_and_after": true
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "cb8d37cfa61036925c109aa6ce503fe06b792141788f68ab7741598b5d0eab02",
+      "size": 1796
+    },
+    {
+      "path": "docs/engineering/07-agent-development.md",
+      "sha256": "055b621b7c12bc673ed29ab902ffc7f251fff2a2dfbd421ba9d68de3732b4e8e",
+      "size": 7151
+    },
+    {
+      "path": "docs/engineering/02-clean-code.md",
+      "sha256": "a2b1c17cbd3c056584951932ee518b6385ceb409d9d0889ab05e822ae0190a66",
+      "size": 4858
+    },
+    {
+      "path": "docs/engineering/05-review-and-quality-gates.md",
+      "sha256": "889c91a420a5b739fa410b45e9f072876298e48473eb5ae563677e0e80c62b1f",
+      "size": 9289
+    },
+    {
+      "path": "docs/reviews/project-init-decision.md",
+      "sha256": "fb4a1741949fe1d1bfb878457819136de8a3782346900a02eb9b3afa10dce935",
+      "size": 19909
+    },
+    {
+      "path": "crates/madb-plan/tests/project.rs",
+      "sha256": "18f36ea3e31d2056f09f16792a2ddd0c0f54aeb91063aca3f384db384ed050bd",
+      "size": 6911
+    }
+  ],
+  "author_freeze_matched": true,
+  "original_project_plan_body_unchanged": true,
+  "review_observations": [
+    {
+      "rule": "Any explicit targets reject empty/duplicates before profile lookup or indexing",
+      "evidence": "crates/madb-plan/src/project/selection.rs:69,132-148; tests/project_selection.rs:124-143"
+    },
+    {
+      "rule": "Four branches preserve explicit selection; targets-only selects exact family-set and only matching declared default resolves a tie",
+      "evidence": "crates/madb-plan/src/project/selection.rs:81-120; tests/project_selection.rs:71-121,146-233"
+    },
+    {
+      "rule": "All declared exact target identities retained and sorted; repeated family may retain multiple target identities; no sibling ABI is inferred",
+      "evidence": "crates/madb-plan/src/project/selection.rs:122-127,151-169; tests/project_selection.rs:236-304"
+    },
+    {
+      "rule": "Selected complete module/file vectors flow unchanged into existing ProjectPlan, and original errors propagate",
+      "evidence": "crates/madb-plan/src/project/selection.rs:121; tests/project_selection.rs:307-369"
+    },
+    {
+      "rule": "Nested modules and root-owned descendant files preserve existing ownership; no deepest-directory owner rule",
+      "evidence": "crates/madb-plan/tests/project_selection.rs:353-369; original ProjectPlan body unchanged"
+    },
+    {
+      "rule": "Unselected module/file plans remain intentionally unchecked; structural profile/target identities are checked for every declaration",
+      "evidence": "crates/madb-plan/src/project/selection.rs:62,71-79,151-169; tests/project_selection.rs:339-350"
+    },
+    {
+      "rule": "New values use model Id and existing planning values only; no serialization, envelope, SDK lookup, filesystem authority, process or ABI construction",
+      "evidence": "crates/madb-plan/src/project/selection.rs:1-67; project/mod.rs changes only module/reexports; Cargo manifests and lock unchanged"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "-p",
+        "madb-plan",
+        "--locked",
+        "--offline",
+        "--test",
+        "project_selection",
+        "--test",
+        "project"
+      ],
+      "cwd": "/private/tmp/madb-chief-round6/madb",
+      "environment": {
+        "CARGO_TARGET_DIR": "/private/tmp/madb-chief-round6/madb/target",
+        "CARGO_NET_OFFLINE": "true"
+      },
+      "exit_code": 0,
+      "project_selection": {
+        "passed": 12,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 0
+      },
+      "project": {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0,
+        "filtered_out": 0
+      },
+      "actual_independent_replay": true,
+      "source_hashes_rechecked_after": true
+    }
+  ],
+  "limits": [
+    "No production project-template/1 or init-result/1 format approval or decoder validation.",
+    "No full template, boundary profile/2 composition, ABI or SDK admissibility validation.",
+    "Only selected module/file plan is checked; complete catalog admission remains outside this function.",
+    "No actual init/render/CommitNew, host path isolation, IDE/native/device, full workspace or I01 certification.",
+    "Author-reported clippy was not independently rerun here; it is not counted as an independent check.",
+    "No product, test, manifest, schema, catalog or historical report files edited; only this review JSON written."
+  ]
+}

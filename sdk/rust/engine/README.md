@@ -65,3 +65,31 @@ seven explicit fixture controls; it must receive a different resolved profile
 identity and is not the uninstrumented Release candidate. Counters distinguish
 actual native/context cleanup from registry-token removal. The fixture barriers
 pause after real acquisition, and no second lifecycle state machine is used.
+
+## Checked construction and optional diagnostics
+
+New generated C→Rust candidates include `madb_rust_client.h`. Its
+`madb_engine_create_checked()` compares the generated interface and profile bytes
+before delegating to the ordinary create function. The result distinguishes
+bootstrap failure, interface mismatch, profile mismatch and native create failure;
+success transfers exactly one handle. The same ordinary close/wait/release
+protocol remains mandatory. Existing low-level entry points are unchanged.
+
+The explicit `diagnostics` feature adds `madb_fixture_diagnostics_configure` and
+`madb_fixture_diagnostics_drain`, producing nine exports, or sixteen together with
+`test-support`. The fixed 64-event ring starts disabled. Hooks capture numeric
+call/callback observations after business work, use a single nonblocking try-lock,
+and drop new events on overflow. They do not call external sinks, add threads or
+replace resource protection. Drain copies at most one fixed event plus statistics;
+consumers perform any exporting outside the native callback. Diagnostic counters
+are separate from lifecycle/resource counters.
+
+The reviewed ABI, output clearing and concurrency conditions are fixed by
+[ADR-0021](../../../docs/adr/0021-native-diagnostics-and-checked-constructor.md).
+The generated `responsibilities.md` describes the finite checked role/policy
+plan and frozen source identities; Source and Candidate must retain the same
+bytes. This table is not a runtime or platform certification. Build the five
+separate candidate configurations with `scripts/build_first_route.py --diagnostics`
+and its required explicit tool/output arguments; independent Lab consumption is
+a separate check. Old frozen candidates retain their original identities and
+reports.

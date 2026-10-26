@@ -4,6 +4,9 @@ mod outputs;
 mod ownership;
 mod pins;
 
+// The fixed recipe selection exposes this domain type in its fields.
+pub use madb_model::contract::Direction;
+
 pub use outputs::{
     BoundGeneratedOutputs, BoundGeneratedSlot, GenerationBindingContext, GenerationSchemaPaths,
     GenerationStepObservation, GenerationStepRequirement, bind_generated_outputs,

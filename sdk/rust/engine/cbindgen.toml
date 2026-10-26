@@ -7,6 +7,10 @@ cpp_compat = true
 
 [export]
 exclude = [
+    "MadbDiagnosticEvent",
+    "MadbDiagnosticStats",
+    "madb_fixture_diagnostics_configure",
+    "madb_fixture_diagnostics_drain",
     "MadbTestCounts",
     "madb_fixture_test_arm",
     "madb_fixture_test_wait",

@@ -9,8 +9,10 @@ import shutil
 import sys
 import tempfile
 
-from lowering import interface_identity, lower
+from checked_client import render_checked_client
+from lowering import diagnostics_enabled, interface_identity, lower
 from native_ast import read_header
+from ownership import render_ownership
 from support import NativeError, canonical, digest, file_reference, input_path, load_json, run_tool, semantic, verify_tool
 
 
@@ -45,9 +47,10 @@ def _compiler_arguments(arguments, expected_target):
 
 def _verify_context(request, config, input_root):
     allowed = {"schema", "provider", "semantics", "source", "project", "profile", "cbindgen_config", "exports", "tools",
-               "clang_arguments", "environment", "rust_target", "wrapper", "sdk_inputs", "test_support_header", "test_support"}
+               "clang_arguments", "environment", "rust_target", "wrapper", "sdk_inputs", "test_support_header", "test_support", "diagnostics"}
     if set(config) - allowed:
         raise NativeError("NATIVE001", "unknown required backend configuration fields: " + str(sorted(set(config) - allowed)))
+    diagnostics_enabled(config)
     if request.get("schema") not in ("madb.read-request/1", "madb.generate-request/1"):
         raise NativeError("NATIVE001", "native helper requires ReadRequest or GenerateRequest")
     if request["selector"]["target"] != config["rust_target"]:
@@ -210,6 +213,10 @@ def _copy_wrapper(config, input_root, destination):
 def _declaration_check(config, destination, scratch):
     header = destination / ("include/madb_rust.h" if config["provider"] == "rust" else "include/madb_c.h")
     run_tool(config, "clang", [*config["clang_arguments"], "-fsyntax-only", "-x", "c", header])
+    if config["provider"] == "rust":
+        probe = scratch / "checked-client-check.c"
+        probe.write_text('#include "madb_rust_client.h"\nMadbCheckedEngineCreateResult madb_checked_syntax_probe(void) { return madb_engine_create_checked(); }\n')
+        run_tool(config, "clang", [*config["clang_arguments"], "-I", destination / "include", "-fsyntax-only", probe])
     if config.get("test_support_header"):
         probe = scratch / "test-support-check.c"
         probe.write_text('#include "madb_rust.h"\n#include "test-support.h"\n')
@@ -236,6 +243,11 @@ def generate(request, config, input_root: Path, work: Path):
         shutil.copyfile(header, target)
         identity = interface_identity(surface, config, request["selector"]["profile_digest"])
         _identity_files(identity, config["provider"], destination)
+        if config["provider"] == "rust":
+            (destination / "include/madb_rust_client.h").write_text(render_checked_client(identity))
+        ownership = render_ownership(checked, request, config, input_root)
+        if ownership is not None:
+            (destination / "responsibilities.md").write_text(ownership)
         if config["provider"] == "c":
             _rust_bindings(header, config, destination)
             _copy_wrapper(config, input_root, destination)

@@ -1,0 +1,61 @@
+{
+  "scope": "explicit profile/2 native metadata completion; not actual generator/process/registration/Source acceptance",
+  "root": "/private/tmp/madb-chief-round6/madb",
+  "files": {
+    "adapters/contracts/src/native.rs": "fce68b2fdae19461e38eab36957d6e9302aab1abc07c74b13ddb2ced1a9cad61",
+    "adapters/contracts/src/native/composition.rs": "3f1c3bdf00e899cdcabb65d1b723604a8ecd4a0d6a4b6ae3659ed11c99b1686b",
+    "adapters/contracts/tests/native_composition.rs": "ec61f4ef5f46a908994a3cbecc580a8323114f955dac1db3b17a812d35bf57e2"
+  },
+  "shared_dependencies": {
+    "adapters/contracts/src/convert.rs": "dd1f6d236b867b9e13b81b04744ee0507cca448e911ff49acf6341fae60e8769",
+    "adapters/contracts/src/lib.rs": "1fb70b6f6def25aea902bcb569eadd3a0d93b78098cddb564526f36bcc6e7fc1"
+  },
+  "checks": [
+    {
+      "command": "cargo test -p madb-contracts --test native_metadata --test native_composition --test composition --test composition_outputs --locked --offline",
+      "exit": 0,
+      "tests": {
+        "native_composition": 6,
+        "native_metadata": 9,
+        "composition": 15,
+        "composition_outputs": 13
+      },
+      "log": "native-composition-tests-004.log"
+    },
+    {
+      "command": "cargo clippy -p madb-contracts --tests --locked --offline -- -D warnings",
+      "exit": 0,
+      "log": "native-composition-clippy-final.log"
+    }
+  ],
+  "logs": {
+    "native-composition-first.log": "8caf2cb4286d329170d56d7f2d274667fa211db13aec812d58e124dea721f2f9",
+    "native-composition-tests.log": "8b1a5a7386737e608b5761b0c7860d19bbcf8cfaa5f319fc0c9d9b1512debfa4",
+    "native-composition-final-tests.log": "5a4808bd7d8ca41643d5c1ab0c29a0527184b7602e173bd8c10e79dc652f5aba",
+    "native-composition-tests-004.log": "c0c7b6c1016f465974cf361b761d1dbc340f16382eaa60e3e82f26fc6bf7d2eb",
+    "native-composition-clippy-final.log": "736e2582f563605dd272e5fb977840b0c0767377d27b6940c440caf75eec7157"
+  },
+  "preserved_failed_test_attempts": [
+    "first: new test oracle used nonexistent provider-to-host-callback instead of host-callback; unknown type correctly rejected earlier in shape hashing as HASH004, not later TYPE002",
+    "second: new test changed project origin id, which existing project semantic projection intentionally excludes; replaced with a real blocking policy value change to prove LOCK002",
+    "third: fixed recipe selection mismatch is existing LOCK001, not new test expected InputInvalid"
+  ],
+  "implementation_modified_for_these_failures": false,
+  "covered": [
+    "profile/2 selector/source retained; source IDs and all semantic digests recomputed",
+    "bound authoritative policy and defaults origin used; pre-resolved policies rejected",
+    "real locked source/schema bytes and project semantic digest reject drift",
+    "fixed recipe selection and seed selector/source mismatch reject",
+    "unknown profile feature, unsupported/restricted IR feature and composition feature in core-only IR reject",
+    "old profile/1 metadata/envelope/check_contract continue to reject /2",
+    "old metadata behavior and composition/output binder regressions"
+  ],
+  "not_claimed": [
+    "actual declaration reader provenance",
+    "complete real recipe required/provided responsibilities",
+    "actual generate execution or OutputSet from this slice",
+    "E01 registration or E02 session admission",
+    "Source transaction, target SDK consumer, certification, publication"
+  ],
+  "independent_review": "root to assign final review; no self-certification"
+}

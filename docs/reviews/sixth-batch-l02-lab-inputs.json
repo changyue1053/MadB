@@ -1,0 +1,98 @@
+{
+  "scope": "L02 independent consumer final preparation after oracle and own-header mismatch evidence repair; SDK runtime still unverified",
+  "source_root": "/private/tmp/madb-chief-round6/madb_lab",
+  "files": {
+    "consumers/c/l02_diagnostics.c": {
+      "sha256": "372bc4ba62ef3858d1a57457694a5e5af13b5a58c127c8ed8420eea4fcd8d6d7",
+      "size": 28524
+    },
+    "consumers/c/README-l02.md": {
+      "sha256": "a52794cd1b58d609abe3136def53ff6f7f36bb7c1d73796549023a9900ed8ce6",
+      "size": 3057
+    },
+    "scripts/verify_l02.py": {
+      "sha256": "0d6e3f97ced4de464404703218df67d1ccdd4270fbba62c7a0772dd76962fa85",
+      "size": 34141
+    },
+    "scripts/test_l02.py": {
+      "sha256": "f57afbdf8266d5b80dce932c73174612c451f12a5d3166cd29500b398691784d",
+      "size": 12534
+    }
+  },
+  "checks": {
+    "python_oracle": {
+      "command": "/Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/test_l02.py",
+      "tests": 13,
+      "exit_code": 0
+    },
+    "development_compile": {
+      "path": "/private/tmp/madb-chief-round6/l02-consumer-compile-004/report.json",
+      "sha256": "bae56ff0d43fc5feaebc4c48ec8c9cd1c5130669ac3a0436450c9248864cb1af",
+      "size": 417676,
+      "programs": 10,
+      "provisional": true,
+      "runtime": "not_run"
+    },
+    "dirty_formal_refusal": {
+      "path": "/private/tmp/madb-chief-round6/l02-formal-dirty-refusal-001/expected-refusal.json",
+      "sha256": "d8db5fccccb5a93089f2d21d98424328005b8c08d46be0e37081237ac224bb25",
+      "size": 1248,
+      "matched": true
+    },
+    "affected_development_compile": {
+      "path": "/private/tmp/madb-chief-round6/l02-consumer-compile-005/report.json",
+      "sha256": "8adc70fca76bc9ccb94217693348daeb2887b9111d3f7d42b54de6f8e9e87ef6",
+      "size": 84947,
+      "programs": 2,
+      "provisional": true,
+      "runtime": "not_run"
+    },
+    "independent_mutation_replay": {
+      "path": "/private/tmp/madb-chief-round6/l02-oracle-repair-replay.json",
+      "sha256": "a9e5fcd874e1f2dd2f9959f3c83557f3424cfaf882cc37dba3f449a5a3da0a5e",
+      "size": 583,
+      "both_rejected": true
+    },
+    "actual_mismatch_development_compile": {
+      "path": "/private/tmp/madb-chief-round6/l02-consumer-compile-006/report.json",
+      "sha256": "b82e73e98276dbe432f01fe0f7816727960640a0e6e3b4af88c202efdaaf9144",
+      "size": 169541,
+      "programs": 4,
+      "provisional": true,
+      "runtime": "not_run"
+    }
+  },
+  "missing": [
+    "new clean producer candidates and externally fixed digests",
+    "clean final Lab revision",
+    "formal SDK runtime observations and independent source/native review"
+  ],
+  "preserved_previous_freeze": {
+    "path": "/private/tmp/madb-chief-round6/l02-consumer-prepared-inputs-002.json",
+    "sha256": "24110c772c81a971159b46ef8a900e3f0dbeacb20d0b4b4da85eafc6e92ab1cb",
+    "size": 2580,
+    "source_baseline": "/private/tmp/madb-chief-round6/l02-consumer-prepared-002-source-baseline"
+  },
+  "mismatch_pairs": [
+    {
+      "header": "c-to-rust",
+      "library": "c-to-rust-test",
+      "expected_kind": 3
+    },
+    {
+      "header": "c-to-rust",
+      "library": "c-to-rust-diagnostics-test",
+      "expected_kind": 2
+    },
+    {
+      "header": "c-to-rust-diagnostics",
+      "library": "c-to-rust-diagnostics-test",
+      "expected_kind": 3
+    },
+    {
+      "header": "c-to-rust-diagnostics",
+      "library": "c-to-rust-test",
+      "expected_kind": 2
+    }
+  ]
+}

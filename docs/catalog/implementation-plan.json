@@ -706,7 +706,8 @@
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-third-batch.md",
         "reviews/2026-10-26-chief-architect-fourth-batch.md",
-        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+        "reviews/2026-10-26-chief-architect-fifth-batch.md",
+        "reviews/2026-10-26-chief-architect-sixth-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -733,7 +734,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "本次优化由 L01 先收敛所需公共边界；E01 随后与 I01、E02/E03 按接口依赖推进有限组合、清单与注册。不等待全部语言便利层完成；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批已实现既有 v1 清单解码及显式包集合注册检查；来源/权限、精确锁、版本/目标组合与独立消费仍未完成。 接管第三批新增既有 v1 单镜像组件的精确锁准入；清单、文件字节、工具完整元组及权限申请有正反例和独立复核。完整包来源认证、依赖闭包、组合格式与独立消费仍未完成。 接管第四批按已批准 ADR-0018 实现 composition/1、profile/2 及显式 feature；纯绑定检查真实 schema/包源/清单/锁字节、固定配方选择、生成位置和来源别名。返回只读观察；执行镜像准入、真实包闭包、生成后资产和独立消费仍须完成。 接管第五批新增实际生成请求/OutputSet/完整生成槽的只读字节与血缘绑定，13项本地测试和29项独立反例通过；真实包注册、执行镜像准入及独立组合消费仍缺。"
+      "notes": "本次优化由 L01 先收敛所需公共边界；E01 随后与 I01、E02/E03 按接口依赖推进有限组合、清单与注册。不等待全部语言便利层完成；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批已实现既有 v1 清单解码及显式包集合注册检查；来源/权限、精确锁、版本/目标组合与独立消费仍未完成。 接管第三批新增既有 v1 单镜像组件的精确锁准入；清单、文件字节、工具完整元组及权限申请有正反例和独立复核。完整包来源认证、依赖闭包、组合格式与独立消费仍未完成。 接管第四批按已批准 ADR-0018 实现 composition/1、profile/2 及显式 feature；纯绑定检查真实 schema/包源/清单/锁字节、固定配方选择、生成位置和来源别名。返回只读观察；执行镜像准入、真实包闭包、生成后资产和独立消费仍须完成。 接管第五批新增实际生成请求/OutputSet/完整生成槽的只读字节与血缘绑定，13项本地测试和29项独立反例通过；真实包注册、执行镜像准入及独立组合消费仍缺。 接管第六批普通 ArkTS 已实际经过 profile/2 finalizer、生产生成体和1槽15文件绑定；131输入/10schema闭包和独立重生成通过。真实扩展包注册、执行准入、组合会话及独立消费仍未完成。"
     },
     {
       "id": "E02",
@@ -798,7 +799,8 @@
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-third-batch.md",
         "reviews/2026-10-26-chief-architect-fourth-batch.md",
-        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+        "reviews/2026-10-26-chief-architect-fifth-batch.md",
+        "reviews/2026-10-26-chief-architect-sixth-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -821,7 +823,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "本次优化由 L01 先收敛所需公共边界；E03 随后与 I01、E01/E02 按接口依赖推进语义协商、责任与兼容检查。保持既有未知必需语义拒绝规则；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批仅落实当前核心功能目录上的必需语义拒绝检查，不静默映射旧设计样例的功能 ID；模型版本/证据失效及按符号/阶段/实例的完整责任协商仍未完成。 接管第三批进一步收敛包源/生成资产/责任与摘要协商的具体提案，独立审查发现的样例漏拒绝和生命周期责任混淆在设计稿修正；未将新字段或 feature 写入现行生产格式。 接管第四批已按 ADR-0018 落地新格式与独立摘要域、必需 feature 拒绝和规范来源上的责任集合比较；旧 profile/1 保持独立且拒绝新组合语义。必需集合当前由宿主显式传入，真实声明/SDK/接线派生与完整组合执行协商仍未交付。 接管第五批从固定 C07 真实 AST、生产声明投影与公开观察源码派生普通/增强的5/8项有限责任，禁用重新生成普通闭包；29项检查及路径隔离修复独审通过。该来源观察未产生 profile/2 OutputSet、未接入完整组合执行，不覆盖全 C07 语义责任或整包验收。"
+      "notes": "本次优化由 L01 先收敛所需公共边界；E03 随后与 I01、E01/E02 按接口依赖推进语义协商、责任与兼容检查。保持既有未知必需语义拒绝规则；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批仅落实当前核心功能目录上的必需语义拒绝检查，不静默映射旧设计样例的功能 ID；模型版本/证据失效及按符号/阶段/实例的完整责任协商仍未完成。 接管第三批进一步收敛包源/生成资产/责任与摘要协商的具体提案，独立审查发现的样例漏拒绝和生命周期责任混淆在设计稿修正；未将新字段或 feature 写入现行生产格式。 接管第四批已按 ADR-0018 落地新格式与独立摘要域、必需 feature 拒绝和规范来源上的责任集合比较；旧 profile/1 保持独立且拒绝新组合语义。必需集合当前由宿主显式传入，真实声明/SDK/接线派生与完整组合执行协商仍未交付。 接管第五批从固定 C07 真实 AST、生产声明投影与公开观察源码派生普通/增强的5/8项有限责任，禁用重新生成普通闭包；29项检查及路径隔离修复独审通过。该来源观察未产生 profile/2 OutputSet、未接入完整组合执行，不覆盖全 C07 语义责任或整包验收。 接管第六批有限真实责任贯通 profile/2 finalizer/IR/task/OutputSet，旧 /1 拒绝新语义；新增说明目录字节闭包、双责任缺失和独立重生成通过。完整组合责任及执行协商继续按原验收交付。"
     },
     {
       "id": "E04",
@@ -959,7 +961,8 @@
       "evidence": [
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-third-batch.md",
-        "reviews/2026-10-26-chief-architect-fifth-batch.md"
+        "reviews/2026-10-26-chief-architect-fifth-batch.md",
+        "reviews/2026-10-26-chief-architect-sixth-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -991,7 +994,7 @@
       "probes": [
         "P11"
       ],
-      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。"
+      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。"
     },
     {
       "id": "I02",
@@ -1316,7 +1319,8 @@
       "status": "in_progress",
       "verification": "missing",
       "evidence": [
-        "reviews/2026-10-26-chief-architect-third-batch.md"
+        "reviews/2026-10-26-chief-architect-third-batch.md",
+        "reviews/2026-10-26-chief-architect-sixth-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1343,7 +1347,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。"
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 接管第三批启动声明诊断首片：复用 ArkTS 真实编译器来源及两个既有稳定码，原驱动失败附加只读解释；BOM 来源偏移经独立反例修复。未交付完整 explain 命令/机器格式、首链资源回调与完整责任表；不改变运行保护。 接管第六批按已批准 ADR-0020/0021 实现只读 explain、51码共用说明、来源字节核对、生产诊断及 checked constructor；逐符号责任已进入核心和真实生成，原生及CLI独审通过。正式冻结候选、独立消费与声明目标仍须分别复验，当前不记整包通过。"
     },
     {
       "id": "L03",
@@ -1406,7 +1410,8 @@
       "verification": "missing",
       "evidence": [
         "reviews/2026-10-25-swift-extension-delivery.md",
-        "reviews/2026-10-25-chief-architect-first-batch.md"
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "reviews/2026-10-26-chief-architect-sixth-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1446,7 +1451,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "承接 L01 的 Swift 契约并复用 C06/C08 对应后端能力；按本次执行授权已启动 sdk/swift/observation 的普通观察与 Observation macOS 子范围实现，再补 SwiftUI/UIKit、工程与便利语法配置。C06/L01 依赖是整体验收前置，允许在明确契约下提前独立原型；本机原型不授予 iOS 或发行资格。Combine/Rx 的 Kotlin 正式桥接组合归 X01，X02 独立实验，L08 深改写不在默认交付内。 evidence 仅导航到已交付契约/开发首片的历史报告，不表示当前整包或目标认证；verification 保持 missing。 项目所有者在本次接管中确认通用 Swift 与后续原生组合分责，具体 acceptance 已补齐；阶段和依赖保持原样，决定见 reviews/2026-10-25-chief-architect-first-batch.md。 接管首批补充真实 SKIE Engine 双观察模型共享 owner 消费检查；仅 macOS Arm64 开发组合，不覆盖 iOS/UI 或正式分发。"
+      "notes": "承接 L01 的 Swift 契约并复用 C06/C08 对应后端能力；按本次执行授权已启动 sdk/swift/observation 的普通观察与 Observation macOS 子范围实现，再补 SwiftUI/UIKit、工程与便利语法配置。C06/L01 依赖是整体验收前置，允许在明确契约下提前独立原型；本机原型不授予 iOS 或发行资格。Combine/Rx 的 Kotlin 正式桥接组合归 X01，X02 独立实验，L08 深改写不在默认交付内。 evidence 仅导航到已交付契约/开发首片的历史报告，不表示当前整包或目标认证；verification 保持 missing。 项目所有者在本次接管中确认通用 Swift 与后续原生组合分责，具体 acceptance 已补齐；阶段和依赖保持原样，决定见 reviews/2026-10-25-chief-architect-first-batch.md。 接管首批补充真实 SKIE Engine 双观察模型共享 owner 消费检查；仅 macOS Arm64 开发组合，不覆盖 iOS/UI 或正式分发。 接管第六批补齐独立 Swift 源包的真实 iOS 模拟器 SwiftUI/UIKit 各三轮进出、共享源持续工作及停止完成屏障；最终003和独审通过。该 UI 子范围不含 C06 native 接线、全部便利配置或整包验收。"
     },
     {
       "id": "L05",

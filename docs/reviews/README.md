@@ -4,6 +4,8 @@
 
 ## 当前修订
 
+- [接管第六批：L02 收口与真实组合接线](2026-10-26-chief-architect-sixth-batch.md)：批准后的 explain、生产诊断及普通构造接线；I01 纯选择、真实组合生成与 Swift UI 子范围分别验证。
+
 - [接管第五批：生成资产绑定与真实页面消费](2026-10-26-chief-architect-fifth-batch.md)：只读生成后绑定、真实声明责任观察及独立 Lab 页面销毁/重建；整包条件保持。
 
 - [接管第四批：组合格式实施](2026-10-26-chief-architect-fourth-batch.md)：按已确认的 [ADR-0018](../adr/0018-extension-composition-formats.md)落实格式、纯输入绑定与责任比较；旧提案和审查保持原快照。
@@ -83,3 +85,5 @@
 项目所有者随后确认采用组合提案，决定见 [ADR-0018](../adr/0018-extension-composition-formats.md)；上述历史提案中的待裁定文字不再代表当前决定，产品实现与验收仍分别记录。
 
 [I01 四项增量提案](project-init-decision.md)及[最终独审](project-init-decision-review.md)仅处理错误分类、真实创建、引用根/SDK 和默认目标；原文保留批准前结论；项目所有者随后确认四项增量，见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)。完整两 envelope 的其余字段不由该决定批准。
+
+[L02 explain 提案](l02-explain-proposal.md)及[独审](l02-explain-independent-review.md)、[SDK 修订2提案](l02-native-sdk-decision.md)及[独审](l02-native-independent-review.md)保留批准前的设计快照。项目所有者随后确认采用，分别见 [ADR-0020](../adr/0020-explain-query-contracts.md)和 [ADR-0021](../adr/0021-native-diagnostics-and-checked-constructor.md)；设计检查不是实现或独立消费验收。

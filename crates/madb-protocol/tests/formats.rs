@@ -17,12 +17,14 @@ fn fixture(name: &str) -> Value {
 fn shared_format_vectors_cover_every_payload() {
     let original = fixture("format-vectors.json");
     let composition = fixture("composition-format-vectors.json");
+    let explain = fixture("explain-format-vectors.json");
     let mut covered = std::collections::BTreeSet::new();
     for vector in original["vectors"]
         .as_array()
         .unwrap()
         .iter()
         .chain(composition["vectors"].as_array().unwrap())
+        .chain(explain["vectors"].as_array().unwrap())
     {
         let kind = DocumentKind::ALL
             .into_iter()

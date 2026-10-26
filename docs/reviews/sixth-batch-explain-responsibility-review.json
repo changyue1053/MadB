@@ -1,0 +1,223 @@
+{
+  "scope": "Read-only NATIVE006 explanation follow-up for approved finite responsibility implementation; no new code, wire, or contract decision",
+  "conclusion": "Updated triggers and repairs accurately cover actual NATIVE006 producers; no remaining issue in this follow-up",
+  "catalog": {
+    "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/diagnostic-explanations.json",
+    "sha256": "d27b38cf41be605c3834e4ad45a9a2e9f0e6c7af04ce1459005f94e7bdb17b4b",
+    "size": 38349
+  },
+  "binary": {
+    "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/madb",
+    "sha256": "8f4a61398946ad9082552bfdf4eb4f37eb869fa78936a5eb38c5067c89895d3d",
+    "size": 35128264
+  },
+  "previous_catalog": {
+    "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/previous-catalog-pinned.json",
+    "sha256": "acf00e80f49cbdfe3e483d2f66652b635064a85fa44b275686ec75f9de23a3be",
+    "size": 38133
+  },
+  "previous_catalog_proof": "Exact public catalog bytes recovered from the previous frozen CLI include_bytes asset and verified against the prior independent catalog SHA-256; no inferred baseline.",
+  "change": [
+    {
+      "code": "NATIVE006",
+      "fields": [
+        "triggers",
+        "repairs"
+      ],
+      "before": {
+        "triggers": [
+          "Frozen source bytes changed; source/config/wrapper or compiler dependencies are undeclared; a Rust source point or Clang layout is missing/ambiguous; SDK headers are unlocked; repeated generated metadata differs."
+        ],
+        "repairs": [
+          {
+            "kind": "restore-locked-input",
+            "instruction": "Inspect the named source, dependency or metadata witness; restore the complete pinned inputs and unique declaration source, then rerun explicit metadata preparation from those bytes."
+          }
+        ]
+      },
+      "after": {
+        "triggers": [
+          "Frozen source bytes changed; source/config/wrapper or compiler dependencies are undeclared; a Rust source point or Clang layout is missing/ambiguous; SDK headers are unlocked; repeated generated metadata differs; the finite native role/policy responsibility plan or its preserved Source/Candidate table is inconsistent."
+        ],
+        "repairs": [
+          {
+            "kind": "restore-locked-input",
+            "instruction": "Inspect the named source, dependency, metadata or responsibility witness; restore the complete pinned inputs and the supported role/policy ownership plan. Regenerate from those inputs, and ensure packaging preserves the checked Source responsibility table; do not hand-edit generated output."
+          }
+        ]
+      }
+    }
+  ],
+  "unchanged_entries": 50,
+  "producer_review": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/native/first_route_ownership.rs",
+      "mapping": "invalid() emits NATIVE006 for finite role/type/policy applicability, actual source/SDK/package/selector identity and core ownership coverage failures."
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/execution/artifact.rs",
+      "mapping": "Generate expected MD FileRef mismatch and Candidate missing/changed retained Source MD FileRef emit NATIVE006."
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+      "mapping": "Frozen SDK source/provenance, profile/selector, identity, checked symbols and shape inconsistency emit NATIVE006. Raw unsupported backend role configuration remains NATIVE001 and is not reassigned."
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/inputs.rs",
+      "mapping": "Actual byte capture defects keep their existing INPUT errors; the revised explanation does not change any producer code or classify every physical-byte failure as NATIVE006."
+    }
+  ],
+  "sources": [
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/diagnostic-explanations.json",
+      "sha256": "d27b38cf41be605c3834e4ad45a9a2e9f0e6c7af04ce1459005f94e7bdb17b4b",
+      "size": 38349
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/native/first_route_ownership.rs",
+      "sha256": "e600b39ad1b5415c8f3c6027d4a2abd61c881ff9dffd7aaa9d9a1ec10dbcadee",
+      "size": 27889
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/execution/artifact.rs",
+      "sha256": "658454d71bbda26722b5aede69bf3185b11d8cacef22502752ba22d5ca8c7c3f",
+      "size": 13586
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/execution/package.rs",
+      "sha256": "f6f0d8b10db6a0a36163aa93804e55cd9862010e7713d453efcb57a4b19e7b04",
+      "size": 8848
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/ownership.py",
+      "sha256": "b7d871ec6a61c35c745863ede69a5ef6f7a723237b9d35da75833b50eb18f2f5",
+      "size": 9955
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/driver.py",
+      "sha256": "b3116ee1c8786626f17a5fe66750cf59d2d1c1a920fc7b783d5fce104cac99f8",
+      "size": 16808
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/generators/rust_c/native_ast.py",
+      "sha256": "3e524d4d26aefcf07f98866c35c0e5547d91093fc2755ce07d0e62ba7dc3930c",
+      "size": 9409
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/adapters/contracts/src/explain.rs",
+      "sha256": "c33d146273ec6267abb6e8c50bd3a74b63a84318ddbe4f2f0690a834763576c7",
+      "size": 12606
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/explain.rs",
+      "sha256": "eecba455c390a6c91442c3f5045a0856216269a0c984cd68fb45992b2170ce24",
+      "size": 8992
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/crates/madb-app/src/inputs.rs",
+      "sha256": "ed04ccf83a0ebb8bb6c7381e2d39fcede669ddc981b87a9b9312446733f8f9c5",
+      "size": 9621
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/tests/integration/l02_diagnostics/test_declaration_diagnostics.py",
+      "sha256": "5663a9341b9601a10fb617d6a78e8ce08163be991e6ff980006109bb115ee237",
+      "size": 17086
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/madb/tests/integration/l02_diagnostics/check_explain_cli.py",
+      "sha256": "564773c5a6efec48fe0fc1df83f7b14b9b551f788d0eaac084a080390d2d7a1f",
+      "size": 8803
+    }
+  ],
+  "checks": [
+    {
+      "kind": "exact public code-only catalog",
+      "count": 51,
+      "result": "passed",
+      "evidence": {
+        "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/catalog-results.json",
+        "sha256": "78113f5e9d3df0392267ca40174446295787383e73b95cb0134a3179a4b33605",
+        "size": 8414
+      },
+      "baseline_delta": "Only NATIVE006 triggers and repairs differ; all fields of other 50 entries unchanged."
+    },
+    {
+      "kind": "existing source binding plus real pinned reader checks",
+      "count": 10,
+      "result": "passed",
+      "evidence": {
+        "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/shared-reader.json",
+        "sha256": "dd7672bca62beee10168cd66ad5767dae209b1b1d68a172e844d8ab9c136ee4d",
+        "size": 41152
+      },
+      "tools": {
+        "node": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/tool/node/bin/node",
+          "sha256": "sha256:35d4bc736bbe4161f0c074aa140ddb74586e46969bc2ad63d32c838bec4463ff",
+          "size": 119168512,
+          "id": "c07-node",
+          "version": "24.14.1",
+          "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+        },
+        "typescript": {
+          "path": "/Users/changyue/Desktop/MadB/.local/toolchains/harmonyos-26.0.0.851/command-line-tools/sdk/default/openharmony/ets/build-tools/ets-loader/node_modules/typescript/lib/typescript.js",
+          "sha256": "sha256:9475e93f3904bb0a6a83ec457cbb4926c28d02202bac7b1fb31dbc49af7d56a1",
+          "size": 8031399,
+          "id": "c07-typescript",
+          "version": "4.9.5-r4",
+          "source": "caller-reviewed local archive; independently verified installed tree; not a vendor signature"
+        }
+      },
+      "versions": {
+        "node": "v24.14.1",
+        "compiler_api": "4.9.5"
+      }
+    },
+    {
+      "kind": "real reader failure to captured context to public CLI",
+      "actual_reader_failures": 2,
+      "cli_queries": 10,
+      "result": "passed",
+      "evidence": {
+        "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/reader-cli.json",
+        "sha256": "d370fd9e3c869d481c45771b7cd85d25e008cf92737e0839a5e936868b8495e5",
+        "size": 45589
+      },
+      "source_unchanged_before_after": true,
+      "query_workspace_unchanged": true
+    }
+  ],
+  "build": {
+    "command": "cargo build -p madb-cli --bin madb --locked --offline",
+    "exit": 0,
+    "log": {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/build.log",
+      "sha256": "a289f851c70451e06a96bf5ad9bde6dc8e629efb151c93b42998d7584f81cac8",
+      "size": 161
+    },
+    "note": "Existing target/debug/madb initially embedded the prior catalog; rebuilt then copied to an isolated review path before execution."
+  },
+  "retained_attempts": [
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-explain-responsibility-review/check_catalog-001.py",
+      "result": "Initial reviewer assertion incorrectly compared wire projection with two reader-only fields in catalog entries; corrected the temporary checker to compare public projection plus the exact pinned prior full catalog. Product unchanged."
+    }
+  ],
+  "unchanged_previous_reports": [
+    {
+      "path": "/private/tmp/l02-explain-implementation-review.json",
+      "sha256": "9744f3973de114c614acdf847b84f8c6b78306a169974d32b878e10a99cddf9f",
+      "size": 67503
+    },
+    {
+      "path": "/private/tmp/madb-chief-round6/l02-ownership-independent-review.json",
+      "sha256": "a78ec22d84fa4d03436e1febf9be62794547c699ab3c077b6ff5a86b65d4ab06",
+      "size": 14665
+    }
+  ],
+  "limits": [
+    "Documentation-data update only; these checks do not rerun or certify SDK lifecycle behavior or full L02 acceptance.",
+    "Reader suites are reviewed existing harnesses replayed under pinned tools; the 51-entry/baseline comparison is independently authored.",
+    "No product source or old report changed by this review."
+  ]
+}

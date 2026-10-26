@@ -1,0 +1,83 @@
+{
+  "purpose": "Sixth-batch implementation-stage validation; fixed candidates and target acceptance are separate",
+  "baseline": {
+    "madb": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+    "lab": "341088a122cb36f468367f49b0f3d45d01d86a24"
+  },
+  "implementation_gate": {
+    "command": "env CARGO_TARGET_DIR=/private/tmp/madb-chief-round6/madb/target CARGO_NET_OFFLINE=true /Users/changyue/Desktop/MadB/madb/.venv/bin/python -B scripts/check.py",
+    "attempts": [
+      {
+        "exit_code": 1,
+        "result": "failed",
+        "log": {
+          "path": "/private/tmp/madb-chief-round6/product-gate-001.log",
+          "sha256": "8c7a778b54a90f42a2483fc0f46bb9d5847fa21934d88bcadc0b1daec10fec23",
+          "size": 2987
+        },
+        "reason": "two Clippy findings in new diagnostic_reads test; fixed equivalent permission literal and error destructuring"
+      },
+      {
+        "exit_code": 0,
+        "result": "passed",
+        "log": {
+          "path": "/private/tmp/madb-chief-round6/product-gate-002.log",
+          "sha256": "1967b16038c0f6c24543e1f97f14d6c3de51e895b654af39dbd00f0b0382d486",
+          "size": 71149
+        },
+        "limit": "before final Package preservation fixes"
+      },
+      {
+        "exit_code": 0,
+        "result": "passed",
+        "log": {
+          "path": "/private/tmp/madb-chief-round6/product-gate-003.log",
+          "sha256": "ee21feff5dcf2f7b786ada8198f4269d098a156138d3c70dcbc65637d59e11d8",
+          "size": 70371
+        },
+        "inputs": {
+          "path": "/private/tmp/madb-chief-round6/product-gate-003-inputs.json",
+          "sha256": "87590133d9b8d75eb19f78c621061147916a11ebe905695c87d9f739d3b86aad",
+          "size": 135822
+        }
+      }
+    ]
+  },
+  "post_gate_code_change": {
+    "path": "adapters/generators/diagnostic-explanations.json",
+    "scope": "only NATIVE006 triggers and repairs",
+    "sha256": "d27b38cf41be605c3834e4ad45a9a2e9f0e6c7af04ce1459005f94e7bdb17b4b",
+    "rechecks": [
+      "sixth-batch-explain-responsibility-review.json",
+      "sixth-batch-composition-generation-validation-002.json",
+      "sixth-batch-composition-generation-review-002.json"
+    ]
+  },
+  "lab_gate": [
+    {
+      "scope": "isolated final Mac sources",
+      "result": "passed",
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/lab-gate-002.log",
+        "sha256": "729d00a91f9ec40c391afc48312cd6819308011e817f560bb0f3980c425de264",
+        "size": 2251
+      }
+    },
+    {
+      "scope": "actual integrated Lab root",
+      "result": "passed",
+      "log": {
+        "path": "/private/tmp/madb-chief-round6/lab-integrated-gate-001.log",
+        "sha256": "dea57e84ed3140edc1953d17e03a0c00fbd9f773107f1b556553705d2e04a01a",
+        "size": 2251
+      }
+    }
+  ],
+  "lab_clean_commit": "a6ec8585f61fa4fc83a534b6611b38260c13661b",
+  "limits": [
+    "All formal candidate/target evidence is still separate; development candidates are provisional.",
+    "No GitHub Actions run, PR, SDK publication or release.",
+    "C06 and C07 full catalog objects are unchanged.",
+    "Linux environment preparation is not Linux candidate validation."
+  ]
+}

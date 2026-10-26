@@ -1,0 +1,137 @@
+{
+  "kind": "proposal-validation-vectors",
+  "status": "proposed-not-executed",
+  "product_baseline": "bc32a61e0dd0fa4f35e57421c309619304b97381",
+  "lab_baseline": "341088a122cb36f468367f49b0f3d45d01d86a24",
+  "profiles": [
+    {
+      "name": "c-to-rust",
+      "feature_diagnostics": false,
+      "feature_test_support": false,
+      "native_exports": 7
+    },
+    {
+      "name": "c-to-rust-test",
+      "feature_diagnostics": false,
+      "feature_test_support": true,
+      "native_exports": 14
+    },
+    {
+      "name": "c-to-rust-diagnostics",
+      "feature_diagnostics": true,
+      "feature_test_support": false,
+      "native_exports": 9
+    },
+    {
+      "name": "c-to-rust-diagnostics-test",
+      "feature_diagnostics": true,
+      "feature_test_support": true,
+      "native_exports": 16
+    }
+  ],
+  "vectors": [
+    {
+      "id": "L02-N01",
+      "proof": "actual native reader + compiler + nm",
+      "input": "four selected C-to-Rust profiles",
+      "expect": "exact export sets, unchanged old seven signatures, event64/align8/stats40/align8, strict field offsets; original rust-to-c remains separate; feature-selected locked cbindgen configs produce exact7/exact9; logical scalar-only nested value record passes unchanged core checker; buffer<record> remains rejected"
+    },
+    {
+      "id": "L02-N02",
+      "proof": "independent ordinary installed C consumer",
+      "input": "checked helper with matching header/library",
+      "expect": "bootstrap once then create once, owned nonzero handle, no caller expected identity, normal close/drain/release"
+    },
+    {
+      "id": "L02-N03",
+      "proof": "helper design mocks and actual mismatched installed candidate pairing",
+      "input": "bootstrap failure / interface mismatch / profile mismatch / both mismatch",
+      "expect": "kinds1/2/3/2; bootstrap actual status retained; error/handle zero; create count0; no resource cleanup required"
+    },
+    {
+      "id": "L02-N04",
+      "proof": "private unit/design mock then installed test companion resource limit",
+      "input": "matching identity plus create failure",
+      "expect": "kind4, actual native status/error, handle0, create exactly1, no hidden owned handle"
+    },
+    {
+      "id": "L02-N05",
+      "proof": "ordinary installed candidate",
+      "input": "capture defaultoff; repeated data/lifecycle/observe",
+      "expect": "same return/output/callback/close semantics; count0 events; counters increment once; no events/drop for off"
+    },
+    {
+      "id": "L02-N06",
+      "proof": "ordinary installed candidate",
+      "input": "captureon + create/checksum/observe/close/await/release",
+      "expect": "finite symbol/phase maps, exact native statuses; callback status_present0; numeric token correlation; helper adds no own boundary event"
+    },
+    {
+      "id": "L02-N07",
+      "proof": "ordinary installed candidate",
+      "input": "more than64 eligible events without exporter; repeated single-event pulls with explicit consumer limit",
+      "expect": "ringneverexceeds64, FIFO retained, drop-new count, no business/resource failure; everypullpresent0/1; emptyeventallzero"
+    },
+    {
+      "id": "L02-N08",
+      "proof": "ordinary installed candidate",
+      "input": "disable with queued events then work then drain; re-enable",
+      "expect": "queued events preserved; off operations noevents/nodrops; countersadvance; record_idnotreset; repeatedconfigidempotent; completion rechecks enabled under same ring lock as configure so disabled period cannot enqueue"
+    },
+    {
+      "id": "L02-N09",
+      "proof": "ordinary installed candidate with valid allocated canaries",
+      "input": "configure2; eachof4drainoutputs null or misaligned independently with others valid",
+      "expect": "INVALID_ARGUMENT, separately valid event/present/stats/error allzero; queued eventsunconsumed; no capacity/array/arbitrary-invalid-address tests"
+    },
+    {
+      "id": "L02-N10",
+      "proof": "private Rust controlled lock tests plus installed public concurrency smoke",
+      "input": "heldringlock / poisonedlock; concurrent capture/configure/drain",
+      "expect": "producerdoesnotwait; one dropperdiscard; controlsBUSY or INTERNAL_FAILURE with allvalidoutputs zero/noqueueconsume; sameimageconcurrentcontrollers; no business status/output change"
+    },
+    {
+      "id": "L02-N11",
+      "proof": "private Rust exact counter/id seam",
+      "input": "recordidUINT64_MAX-1 then enqueue/drain; counternearwrap",
+      "expect": "lastIDsunique, exhaustiondrops/noreuse; modulo2^64countercontract; correctnesscountersunaffected"
+    },
+    {
+      "id": "L02-N12",
+      "proof": "installed test companion existing gates + independent native review",
+      "input": "inflight checksum and SourceLease close; callback selfwait; diagnostics off/on/full",
+      "expect": "original TIMEOUT/BUSY/WOULD_DEADLOCK/closing rules, contextretaineduntilsuccessfuldrain, nolatecallback, resourcebaselinebalanced"
+    },
+    {
+      "id": "L02-N13",
+      "proof": "independent ordinary consumer exporter fixture",
+      "input": "pull event value, exporterblocks/fails/drops or deliberately never drains",
+      "expect": "SDKdoesnotcall exporter, noSDKlockheldbyexporter, parallel nativeworkterminatescorrectly, queuebounded/dropobservable, no native-to-sink reentry"
+    },
+    {
+      "id": "L02-N14",
+      "proof": "independent installed candidate inspection + two independently started consumer processes (one real loaded SDK image each); same-process multi-image only if actual loader handles prove separation",
+      "input": "two actual loaded instances and candidate identity binding; two filesystem paths alone do not establish two instances",
+      "expect": "separatecontrol/rings/counters observed; collectorlabelsactualbootstrap/profile/candidate; no crossimageglobalIDclaim or finaldigestembedding; loader-coalesced images cannot count as separate-instance proof"
+    },
+    {
+      "id": "L02-N15",
+      "proof": "actual fixed-tool runtime sampling",
+      "input": "ordinary default vs diagnostics captureoff/on/full, identical bounded checksum work",
+      "expect": "recordactualiterations/environment/durations/artifacthashes; no invented timingthreshold; anyoutlierinvestigated; no real-timeguarantee"
+    },
+    {
+      "id": "L02-N16",
+      "proof": "package closure and public Lab provenance",
+      "input": "new clean producer revision + clean Lab revision + frozen fourprofiles",
+      "expect": "new helper hashed in OutputSet/package; fresh candidateverify; exact source/case/tool hashes; dirty/provisionalcannotpass"
+    }
+  ],
+  "not_evidence": [
+    "This file declares proposed checks only; none ran",
+    "Old test-support diagnostic fault3 does not prove production hooks",
+    "No full L02 closure before explain/source mapping/unique-owner checks and root review"
+  ],
+  "revision": 2,
+  "supersedes_sha256": "1be7a6d86c7d179caf6cf941990ebea17d9da11321374336cac4330aa8a7d714"
+}
