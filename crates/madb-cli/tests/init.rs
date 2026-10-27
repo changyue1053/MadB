@@ -1,6 +1,8 @@
 //! Real CLI filesystem tests for the explicitly approved formal producer.
 //! Structure and dry-run do not claim native generation, build, run, or IDE use.
+#[cfg(target_os = "macos")]
 use madb_contracts::{DocumentKind, SchemaRegistry};
+#[cfg(target_os = "macos")]
 use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
@@ -34,6 +36,7 @@ impl Drop for Workspace {
         fs::remove_dir_all(&self.0).unwrap();
     }
 }
+#[cfg(target_os = "macos")]
 fn report(output: Output, expected: i32) -> Value {
     assert_eq!(
         output.status.code(),
@@ -153,6 +156,7 @@ fn unsupported_build_run_modes_fail_before_creation_and_keep_the_frozen_digest()
         fs::remove_dir_all(root).unwrap();
     }
 }
+#[cfg(target_os = "macos")]
 fn evidence_root(report: &Value) -> PathBuf {
     let root = PathBuf::from(report["evidence_root"]["path"].as_str().unwrap());
     assert!(root.is_absolute());
@@ -165,6 +169,7 @@ fn evidence_root(report: &Value) -> PathBuf {
     );
     root
 }
+#[cfg(target_os = "macos")]
 #[test]
 fn machine_argument_errors_reject_unapproved_sources_and_version_overrides() {
     let w = Workspace::new();
@@ -269,6 +274,7 @@ fn missing_parent_is_a_host_failure_with_a_frozen_request() {
     assert!(!w.0.join("absent").exists());
     fs::remove_dir_all(evidence_root(&value)).unwrap();
 }
+#[cfg(target_os = "macos")]
 #[test]
 fn catalog_does_not_accept_url_path_or_unlocked_version_selectors() {
     let w = Workspace::new();
@@ -294,5 +300,29 @@ fn catalog_does_not_accept_url_path_or_unlocked_version_selectors() {
         assert!(value["evidence_root"].is_null());
         assert_eq!(value["creation"], "not-created");
         assert_eq!(fs::read_dir(&w.0).unwrap().count(), 0);
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+#[test]
+fn unsupported_host_does_not_invent_tool_identity_or_create_a_project() {
+    let workspace = Workspace::new();
+    for dry_run in [false, true] {
+        let mut args = vec![
+            "init",
+            "--out",
+            "untouched",
+            "--verify",
+            "structure",
+            "--json",
+        ];
+        if dry_run {
+            args.push("--dry-run");
+        }
+        let output = workspace.run(&args);
+        assert_eq!(output.status.code(), Some(3));
+        assert!(output.stdout.is_empty());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("HOST004"));
+        assert_eq!(fs::read_dir(&workspace.0).unwrap().count(), 0);
     }
 }

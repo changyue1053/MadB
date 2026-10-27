@@ -40,6 +40,7 @@ fn failure(kind: ErrorKind, subject: &str, message: impl std::fmt::Display) -> Q
 fn host(subject: &str, message: impl std::fmt::Display) -> QueryError {
     failure(ErrorKind::Host, subject, message)
 }
+#[cfg(target_os = "macos")]
 fn conflict(subject: &str, message: impl std::fmt::Display) -> QueryError {
     failure(ErrorKind::Conflict, subject, message)
 }
