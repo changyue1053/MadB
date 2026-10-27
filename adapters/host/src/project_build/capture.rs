@@ -83,10 +83,7 @@ impl LocalProjectBuild {
     pub(super) fn verify_sources(&self) -> Result<()> {
         self.verify_root()?;
         for (name, (bytes, stamp)) in &self.files {
-            let (current, now) = fs::read(&self.directory, name.as_str(), bytes.len())?;
-            if &current != bytes || &now != stamp {
-                return Err(conflict(name.as_str(), "captured input identity changed"));
-            }
+            fs::verify_captured(&self.directory, name.as_str(), bytes, stamp)?;
         }
         for (path, stamp) in &self.directory_stamps {
             if &fs::stamp(&fs::directory(&self.directory, path.as_str())?)? != stamp {

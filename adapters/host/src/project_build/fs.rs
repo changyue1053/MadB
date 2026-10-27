@@ -112,6 +112,86 @@ pub(super) fn read(root: &File, path: &str, limit: usize) -> Result<(Vec<u8>, St
     }
     Ok((bytes, before))
 }
+/// A captured length is an identity, not a new input budget. Check its stamp
+/// before allocating/reading, then recheck both the FD and its confined name.
+pub(super) fn verify_captured(
+    root: &File,
+    path: &str,
+    expected: &[u8],
+    identity: &Stamp,
+) -> Result<()> {
+    verify_captured_with_reader(root, path, expected, identity, |file, bytes| {
+        file.read_exact_at(bytes, 0)
+    })
+}
+pub(super) fn verify_captured_with_reader(
+    root: &File,
+    path: &str,
+    expected: &[u8],
+    identity: &Stamp,
+    read_bytes: impl FnOnce(&File, &mut [u8]) -> std::io::Result<()>,
+) -> Result<()> {
+    let file = captured_regular(root, path)?;
+    if &stamp(&file)? != identity {
+        return Err(conflict(path, "captured input identity changed"));
+    }
+    let mut bytes = vec![0; expected.len()];
+    let read_result = read_bytes(&file, &mut bytes);
+    // A truncate can produce EOF before the post-read stamp check. Other IO
+    // errors retain their real Host classification, even if a writer also ran.
+    if let Err(error) = &read_result
+        && error.kind() != std::io::ErrorKind::UnexpectedEof
+    {
+        return Err(host(path, error));
+    }
+    if &stamp(&file)? != identity || &stamp(&captured_regular(root, path)?)? != identity {
+        return Err(conflict(path, "captured input changed while read"));
+    }
+    read_result.map_err(|error| host(path, error))?;
+    if bytes != expected {
+        return Err(conflict(path, "captured input bytes changed"));
+    }
+    Ok(())
+}
+fn captured_regular(root: &File, path: &str) -> Result<File> {
+    logical(path)?;
+    let (parents, name) = path.rsplit_once('/').unwrap_or(("", path));
+    let mut directory = root.try_clone().map_err(|error| host(path, error))?;
+    for part in parents.split('/').filter(|part| !part.is_empty()) {
+        directory = File::from(
+            openat(&directory, part, FLAGS | OFlags::DIRECTORY, Mode::empty())
+                .map_err(|error| captured_path_error(path, error))?,
+        );
+    }
+    let named = statat(&directory, name, AtFlags::SYMLINK_NOFOLLOW)
+        .map_err(|error| captured_path_error(path, error))?;
+    if FileType::from_raw_mode(named.st_mode) != FileType::RegularFile || named.st_nlink != 1 {
+        return Err(conflict(
+            path,
+            "captured input is no longer a single-link regular file",
+        ));
+    }
+    let file = File::from(
+        openat(&directory, name, FLAGS, Mode::empty())
+            .map_err(|error| captured_path_error(path, error))?,
+    );
+    let metadata = file.metadata().map_err(|error| host(path, error))?;
+    if !metadata.is_file() || metadata.nlink() != 1 {
+        return Err(conflict(
+            path,
+            "captured input is no longer a single-link regular file",
+        ));
+    }
+    Ok(file)
+}
+fn captured_path_error(path: &str, error: rustix::io::Errno) -> QueryError {
+    match error {
+        rustix::io::Errno::NOENT | rustix::io::Errno::NOTDIR | rustix::io::Errno::LOOP => {
+            conflict(path, "captured input path disappeared or changed type")
+        }
+        _ => host(path, error),
+    }
+}
 pub(super) fn create_directory(root: &File, name: &str) -> Result<File> {
     logical(name)?;
     if name.contains('/') {
