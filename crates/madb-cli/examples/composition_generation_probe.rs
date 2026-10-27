@@ -10,11 +10,12 @@ use madb_contracts::{
     artifacts::ProvidedFile,
     composition::{
         AssetOrigin, BoundCompositionInputs, ComponentRequirement, CompositionInputContext,
-        CompositionSchemaPaths, Direction, GeneratedSlot, GenerationBindingContext,
-        GenerationSchemaPaths, GenerationStepObservation, GenerationStepRequirement,
-        RecipeRequirements, RecipeSelection, ResolvedOwner, ResolvedResponsibility, ResolvedScope,
-        ResolvedSubject, ResponsibilityKey, bind_composition_inputs, bind_generated_outputs,
-        compare_responsibility_sets, composition_digest, profile_v2_digest,
+        CompositionSchemaPaths, DependencyRequirement, DependencyScope, Direction, GeneratedSlot,
+        GenerationBindingContext, GenerationSchemaPaths, GenerationStepObservation,
+        GenerationStepRequirement, RecipeRequirements, RecipeSelection, ResolvedOwner,
+        ResolvedResponsibility, ResolvedScope, ResolvedSubject, ResponsibilityKey,
+        bind_composition_inputs, bind_generated_outputs, compare_responsibility_sets,
+        composition_digest, profile_v2_digest,
     },
     execution::{ExecutionRecipe, ExecutionTool, generation_task_digest},
     native,
@@ -102,12 +103,27 @@ fn main() -> Result<()> {
             if seed.len() > DOCUMENT_LIMIT {
                 return Err("metadata seed exceeds document budget".into());
             }
-            check_roles(
-                &input,
-                &bound,
-                &input.registry.decode(DocumentKind::ContractIr, &seed)?,
-            )?;
+            let source_semantics = recipe
+                .id
+                .as_str()
+                .starts_with("madb.local.c07-c-arkts/source-semantics-");
+            if !source_semantics {
+                check_roles(
+                    &input,
+                    &bound,
+                    &input.registry.decode(DocumentKind::ContractIr, &seed)?,
+                )?;
+            }
             let completed = native::finalize_composition_metadata(&seed, input.context(), &recipe)?;
+            if source_semantics {
+                check_roles(
+                    &input,
+                    &bound,
+                    &input
+                        .registry
+                        .decode(DocumentKind::ContractIr, &completed)?,
+                )?;
+            }
             input.frozen.verify(&input.workspace)?;
             input.verify_context()?;
             std::io::stdout().lock().write_all(&completed)?;
@@ -153,6 +169,11 @@ pub(crate) fn recipe() -> RecipeRequirements {
             port: id("generator"),
             interprets_composition: true,
         }],
+        dependencies: vec![DependencyRequirement {
+            from: id("facade"),
+            to: id("native-runtime"),
+            scope: DependencyScope::TargetRuntime,
+        }],
         generated_slots: vec![GeneratedSlot {
             producer: id(COMPONENT),
             slot: id(SLOT),
@@ -169,13 +190,20 @@ pub(crate) fn selected_recipe(input: &Inputs) -> Result<RecipeRequirements> {
     if name == "c07-c-arkts-composition-aarch64-ohos23" {
         return Ok(selected);
     }
-    let mode = match name {
-        "c07-c-arkts-chain-ordinary-aarch64-ohos23" => "ordinary",
-        "c07-c-arkts-chain-enhanced-aarch64-ohos23" => "enhanced",
-        "c07-c-arkts-chain-disabled-aarch64-ohos23" => "disabled",
+    let (mode, source_semantics) = match name {
+        "c07-c-arkts-chain-ordinary-aarch64-ohos23" => ("ordinary", false),
+        "c07-c-arkts-chain-enhanced-aarch64-ohos23" => ("enhanced", false),
+        "c07-c-arkts-chain-disabled-aarch64-ohos23" => ("disabled", false),
+        "c07-c-arkts-source-semantics-ordinary-aarch64-ohos23" => ("ordinary", true),
+        "c07-c-arkts-source-semantics-enhanced-aarch64-ohos23" => ("enhanced", true),
+        "c07-c-arkts-source-semantics-disabled-aarch64-ohos23" => ("disabled", true),
         _ => return Err("unsupported fixed composition profile".into()),
     };
-    selected.id = id(&format!("madb.local.c07-c-arkts/chain-{mode}@1"));
+    selected.id = id(&if source_semantics {
+        format!("madb.local.c07-c-arkts/source-semantics-{mode}@2")
+    } else {
+        format!("madb.local.c07-c-arkts/chain-{mode}@1")
+    });
     selected.selection.profile_id = id(name);
     selected.components.push(ComponentRequirement {
         id: id("madb.local.c07-composition/reader"),
@@ -183,10 +211,74 @@ pub(crate) fn selected_recipe(input: &Inputs) -> Result<RecipeRequirements> {
         interprets_composition: true,
     });
     if mode == "enhanced" {
+        selected.dependencies.extend([
+            DependencyRequirement {
+                from: id("state"),
+                to: id("facade"),
+                scope: DependencyScope::TargetRuntime,
+            },
+            DependencyRequirement {
+                from: id("arkui"),
+                to: id("state"),
+                scope: DependencyScope::TargetRuntime,
+            },
+        ]);
         selected.generated_slots[0].paths.extend([
             path("generated/facade/StateObservation.ets"),
             path("generated/facade/ArkUIStateModel.ets"),
         ]);
+    }
+    if source_semantics {
+        // Uses of the fixed SDK source recipe, not package installation order
+        // or claims copied from composition.dependencies. This Source recipe
+        // grants no physical library assembly or target-run qualification.
+        selected.dependencies = [
+            ("facade", "native-gateway", DependencyScope::TargetRuntime),
+            (
+                "native-gateway",
+                "native-runtime",
+                DependencyScope::TargetRuntime,
+            ),
+            (
+                "native-gateway",
+                "native-worker",
+                DependencyScope::TargetRuntime,
+            ),
+            (
+                "native-gateway",
+                "native-provider",
+                DependencyScope::TargetRuntime,
+            ),
+            (
+                "native-worker",
+                "native-runtime",
+                DependencyScope::TargetRuntime,
+            ),
+        ]
+        .into_iter()
+        .map(|(from, to, scope)| DependencyRequirement {
+            from: id(from),
+            to: id(to),
+            scope,
+        })
+        .collect();
+        if mode == "enhanced" {
+            selected.dependencies.extend(
+                [
+                    ("state", "facade", DependencyScope::ConsumerCompile),
+                    ("state", "facade", DependencyScope::TargetRuntime),
+                    ("arkui", "facade", DependencyScope::ConsumerCompile),
+                    ("arkui", "state", DependencyScope::ConsumerCompile),
+                    ("arkui", "state", DependencyScope::TargetRuntime),
+                ]
+                .into_iter()
+                .map(|(from, to, scope)| DependencyRequirement {
+                    from: id(from),
+                    to: id(to),
+                    scope,
+                }),
+            );
+        }
     }
     Ok(selected)
 }
@@ -603,6 +695,15 @@ pub(crate) fn required_roles(
     bound: &BoundCompositionInputs,
     ir: &Document,
 ) -> Result<Vec<ResolvedResponsibility>> {
+    if selected_recipe(input)?
+        .id
+        .as_str()
+        .starts_with("madb.local.c07-c-arkts/source-semantics-")
+    {
+        return Ok(madb_contracts::composition::c07_source_requirements(
+            bound, ir,
+        )?);
+    }
     const NATIVE: &str = "sdk/arkts/native-runtime/src/protocol.cpp";
     for (name, digest) in [
         (

@@ -105,6 +105,11 @@ impl Fixture {
                 port: id("generator"),
                 interprets_composition: true,
             }],
+            dependencies: vec![DependencyRequirement {
+                from: id("facade"),
+                to: id("runtime"),
+                scope: DependencyScope::TargetRuntime,
+            }],
             generated_slots: vec![GeneratedSlot {
                 producer: id("test.composed/generator"),
                 slot: id("ordinary-facade"),

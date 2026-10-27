@@ -1,4 +1,4 @@
-use super::pins::{RecipeRequirements, digest, index, logical};
+use super::pins::{DependencyRequirement, RecipeRequirements, digest, index, logical};
 use super::{Result, invalid, text};
 use crate::extension::ExtensionManifest;
 use madb_model::{Digest, Id, LogicalPath, PublicId};
@@ -259,6 +259,7 @@ pub(super) fn check_dependencies(
     c: &Value,
     assets: &BTreeMap<String, AssetOrigin>,
     components: &BTreeMap<String, Digest>,
+    required: &[DependencyRequirement],
 ) -> Result<()> {
     let mut nodes = BTreeSet::new();
     let packages = index(&c["packages"], "id")?;
@@ -308,6 +309,28 @@ pub(super) fn check_dependencies(
                 "composition dependency cycle",
             ));
         }
+    }
+    let mut expected = BTreeSet::new();
+    for dependency in required {
+        let from = dependency.from.as_str();
+        let to = dependency.to.as_str();
+        if !nodes.contains(from)
+            || !nodes.contains(to)
+            || !expected.insert((from, to, dependency.scope.as_str()))
+        {
+            return Err(invalid(
+                "InputInvalid",
+                "recipe.dependencies",
+                "host recipe has an absent or repeated dependency",
+            ));
+        }
+    }
+    if edges != expected {
+        return Err(invalid(
+            "InputInvalid",
+            "dependencies",
+            "dependency uses differ from the host recipe: missing, extra or wrong scope",
+        ));
     }
     Ok(())
 }

@@ -105,6 +105,11 @@ impl Fixture {
                 port: id("generator"),
                 interprets_composition: true,
             }],
+            dependencies: vec![DependencyRequirement {
+                from: id("facade"),
+                to: id("runtime"),
+                scope: DependencyScope::TargetRuntime,
+            }],
             generated_slots: vec![GeneratedSlot {
                 producer: id("test.composed/generator"),
                 slot: id("ordinary-facade"),
@@ -571,4 +576,117 @@ fn redundant_profile_input_does_not_hide_generated_path_conflicts() {
         freeze_profile_as_input(&mut f, bytes);
         rejects(&f, "InputInvalid");
     }
+}
+
+#[test]
+fn omitted_or_rescoped_runtime_dependency_is_rejected_even_when_repinned() {
+    let mut f = Fixture::new();
+    f.composition["dependencies"] = json!([]);
+    f.repin_composition();
+    rejects(&f, "InputInvalid");
+    for scope in [
+        "host-tool",
+        "author-plugin",
+        "consumer-compile",
+        "optional-integration",
+        "validation-dev",
+    ] {
+        let mut f = Fixture::new();
+        f.composition["dependencies"][0]["scope"] = json!(scope);
+        f.repin_composition();
+        rejects(&f, "InputInvalid");
+    }
+}
+
+#[test]
+fn recipe_dependency_set_is_exact_but_order_independent() {
+    let extra = json!({"from":"test.composed/generator","to":"facade","scope":"consumer-compile"});
+    let mut f = Fixture::new();
+    f.composition["dependencies"]
+        .as_array_mut()
+        .unwrap()
+        .push(extra.clone());
+    f.repin_composition();
+    rejects(&f, "InputInvalid");
+    f.recipe.dependencies.push(DependencyRequirement {
+        from: id("test.composed/generator"),
+        to: id("facade"),
+        scope: DependencyScope::ConsumerCompile,
+    });
+    assert!(f.check().is_ok());
+    f.composition["dependencies"]
+        .as_array_mut()
+        .unwrap()
+        .reverse();
+    f.repin_composition();
+    assert!(f.check().is_ok());
+    f.recipe.dependencies.push(f.recipe.dependencies[0].clone());
+    let error = match f.check() {
+        Ok(_) => panic!("duplicate host requirement accepted"),
+        Err(error) => error,
+    };
+    assert_eq!(error.code, "InputInvalid");
+    assert_eq!(error.path, "recipe.dependencies");
+}
+
+#[test]
+fn every_existing_scope_requires_its_exact_host_recipe_choice() {
+    for (scope, wire) in [
+        (DependencyScope::HostTool, "host-tool"),
+        (DependencyScope::AuthorPlugin, "author-plugin"),
+        (DependencyScope::ConsumerCompile, "consumer-compile"),
+        (DependencyScope::TargetRuntime, "target-runtime"),
+        (DependencyScope::OptionalIntegration, "optional-integration"),
+        (DependencyScope::ValidationDev, "validation-dev"),
+    ] {
+        let mut f = Fixture::new();
+        f.recipe.dependencies[0].scope = scope;
+        f.composition["dependencies"][0]["scope"] = json!(wire);
+        f.repin_composition();
+        assert!(f.check().is_ok(), "{wire}");
+    }
+}
+
+#[test]
+fn external_manifest_dependency_needs_a_registered_host_mapping() {
+    for kind in ["toolchain", "generator"] {
+        for present_tool in [false, true] {
+            let name = "dependency.tool";
+            let mut f = Fixture::new();
+            assert!(
+                !f.profile["tools"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|t| t["id"] == name)
+            );
+            if present_tool {
+                // Even an exact same-name tool tuple is not a logical mapping.
+                f.profile["tools"][0]["id"] = json!(name);
+            }
+            f.manifest["dependencies"] = json!([{"id":name,"kind":kind}]);
+            f.repin_package();
+            let error = match f.check() {
+                Ok(_) => panic!("unmapped dependency accepted"),
+                Err(error) => error,
+            };
+            assert_eq!(error.code, "CapabilityUnsupported");
+            assert_eq!(error.path, format!("test.composed/dependencies/{name}"));
+        }
+    }
+}
+
+#[test]
+fn incomplete_host_dependency_recipe_cannot_authorize_declared_edges() {
+    let mut f = Fixture::new();
+    f.recipe.dependencies.clear();
+    rejects(&f, "InputInvalid");
+    let mut f = Fixture::new();
+    f.recipe.dependencies[0].to = id("not-a-selected-node");
+    let error = match f.check() {
+        Ok(_) => panic!("absent host endpoint accepted"),
+        Err(error) => error,
+    };
+    assert_eq!(error.code, "InputInvalid");
+    assert_eq!(error.path, "recipe.dependencies");
 }

@@ -23,6 +23,37 @@ pub struct RecipeRequirements {
     pub selection: RecipeSelection,
     pub components: Vec<ComponentRequirement>,
     pub generated_slots: Vec<GeneratedSlot>,
+    /// Exact dependency uses established by this host recipe's sources/wiring.
+    /// Never derive this list from the submitted composition dependency rows.
+    pub dependencies: Vec<DependencyRequirement>,
+}
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DependencyRequirement {
+    pub from: Id,
+    pub to: Id,
+    pub scope: DependencyScope,
+}
+/// Existing composition/1 scopes, without an unvalidated string fallback.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum DependencyScope {
+    HostTool,
+    AuthorPlugin,
+    ConsumerCompile,
+    TargetRuntime,
+    OptionalIntegration,
+    ValidationDev,
+}
+impl DependencyScope {
+    pub(super) fn as_str(self) -> &'static str {
+        match self {
+            Self::HostTool => "host-tool",
+            Self::AuthorPlugin => "author-plugin",
+            Self::ConsumerCompile => "consumer-compile",
+            Self::TargetRuntime => "target-runtime",
+            Self::OptionalIntegration => "optional-integration",
+            Self::ValidationDev => "validation-dev",
+        }
+    }
 }
 pub struct RecipeSelection {
     pub profile_id: Id,
@@ -269,7 +300,7 @@ pub fn bind_composition_inputs(
         }
     }
     super::ownership::check_output_paths(&all_paths)?;
-    check_dependencies(c, &assets, &components)?;
+    check_dependencies(c, &assets, &components, &recipe.dependencies)?;
     let responsibilities = resolve_responsibilities(c, context.boundary_id, &assets, &components)?;
     Ok(BoundCompositionInputs {
         locked_document: context.lock.clone(),
@@ -508,6 +539,26 @@ fn bind_packages(
         manifests.insert(id.into(), manifest);
     }
     validate_registration(&manifests.values().cloned().collect::<Vec<_>>())?;
+    // Logical external dependency names do not identify a checked executable.
+    // This finite /2 entry has no host mapping for them; matching a tool name
+    // in the lock cannot establish that missing mapping or its provenance.
+    for (id, manifest) in &manifests {
+        for dependency in manifest.value()["dependencies"]
+            .as_array()
+            .expect("checked dependencies")
+        {
+            if dependency["kind"] != "extension" {
+                return Err(invalid(
+                    "CapabilityUnsupported",
+                    &format!("{id}/dependencies/{}", text(&dependency["id"])?),
+                    format!(
+                        "host mapping is not registered for {} dependency",
+                        text(&dependency["kind"])?
+                    ),
+                ));
+            }
+        }
+    }
     Ok(manifests)
 }
 fn bind_components(

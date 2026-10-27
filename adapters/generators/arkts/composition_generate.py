@@ -36,8 +36,11 @@ def _profile(request, config, root):
     if profile["schema"] != "madb.profile/2" or "core.extension-composition@1" not in profile["required_features"]:
         raise ValueError("composition profile must require the adopted composition feature")
     name = profile["id"]
-    modes = {"c07-c-arkts-composition-aarch64-ohos23":"ordinary", **{
-        "c07-c-arkts-chain-"+mode+"-aarch64-ohos23":mode for mode in ("ordinary","enhanced","disabled")}}
+    modes = {"c07-c-arkts-composition-aarch64-ohos23": "ordinary", **{
+        f"c07-c-arkts-{recipe}-{mode}-aarch64-ohos23": mode
+        for recipe in ("chain", "source-semantics")
+        for mode in ("ordinary", "enhanced", "disabled")
+    }}
     if name not in modes:
         raise ValueError("unsupported fixed composition profile")
     # This guard separates entry points; full format, pins and fixed recipe

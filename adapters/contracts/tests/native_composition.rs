@@ -8,8 +8,9 @@ use madb_contracts::{
     ContractError, Document, DocumentKind, SchemaRegistry,
     artifacts::ProvidedFile,
     composition::{
-        ComponentRequirement, CompositionInputContext, CompositionSchemaPaths, GeneratedSlot,
-        RecipeRequirements, RecipeSelection, composition_digest, profile_v2_digest,
+        ComponentRequirement, CompositionInputContext, CompositionSchemaPaths,
+        DependencyRequirement, DependencyScope, GeneratedSlot, RecipeRequirements, RecipeSelection,
+        composition_digest, profile_v2_digest,
     },
     native, policy_digest, project_digest, shape_digest, source_digest, structure_digest,
 };
@@ -167,6 +168,11 @@ impl Fixture {
                 id: id("test.metadata/generator"),
                 port: id("generator"),
                 interprets_composition: true,
+            }],
+            dependencies: vec![DependencyRequirement {
+                from: id("facade"),
+                to: id("runtime"),
+                scope: DependencyScope::TargetRuntime,
             }],
             generated_slots: vec![GeneratedSlot {
                 producer: id("test.metadata/generator"),

@@ -3,6 +3,9 @@
 mod outputs;
 mod ownership;
 mod pins;
+mod semantics;
+
+pub use semantics::c07_source_requirements;
 
 // The fixed recipe selection exposes this domain type in its fields.
 pub use madb_model::contract::Direction;
@@ -17,8 +20,8 @@ pub use ownership::{
 };
 pub use pins::{
     BoundCompositionInputs, ComponentRequirement, CompositionInputContext, CompositionSchemaPaths,
-    GeneratedSlot, RecipeRequirements, RecipeSelection, bind_composition_inputs,
-    check_composition_snapshot_binding,
+    DependencyRequirement, DependencyScope, GeneratedSlot, RecipeRequirements, RecipeSelection,
+    bind_composition_inputs, check_composition_snapshot_binding,
 };
 
 use crate::{Document, DocumentKind, FormatError, wire::Wire};
