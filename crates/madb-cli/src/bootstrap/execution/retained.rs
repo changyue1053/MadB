@@ -133,10 +133,10 @@ mod tests {
                 })),
             }),
         };
-        let early_error = (|| -> Result<(), ()> {
+        let early_error: Result<(), ()> = {
             let _run = RetainOnReturn::new(process, Some(&journal), RetainedExecution::Process);
             Err(())
-        })();
+        };
         assert!(early_error.is_err());
         assert_eq!(drops.load(Ordering::SeqCst), 0);
         let mut retained = journal.into_inner().retained;

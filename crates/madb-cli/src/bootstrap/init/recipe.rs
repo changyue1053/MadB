@@ -260,7 +260,6 @@ impl RunState<'_> {
             .consumer
             .clone()
             .ok_or_else(|| invalid("consumer", "no executable was frozen by this CMake build"))?;
-        file.verify()?;
         let tool = LockedInitializationTool {
             observation: ToolObservation {
                 id: Id::new("i01-ordinary-consumer").expect("fixed id"),
