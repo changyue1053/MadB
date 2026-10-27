@@ -1,0 +1,188 @@
+{
+  "scope": "Round12 finite project rebuild and Dart resource implementation, actual-root replay and independent evidence; catalog alone owns task status.",
+  "product_code_revision": "bf478767273069c47798bc04140185c671d93957",
+  "lab_revision": "ac12f847a46ca9c8dba6f79dcc1b2db993fb6c37",
+  "product_source_files": 1550,
+  "lab_source_files": 565,
+  "engineering": {
+    "initial_candidate": "0007f8a55510037d055f59411ba9e879b421a02c",
+    "final_tool": {
+      "path": "/private/tmp/madb-chief-round12/e04-formal-producer-001/images/madb",
+      "sha256": "447b781651e70dc27a9bbcedd554dffb52b8d3dbe3fc994cebc5a5fcfd8b8edb",
+      "size": 61591512
+    },
+    "final_tool_receipt": {
+      "path": "/private/tmp/madb-chief-round12/e04-formal-producer-001/receipt.json",
+      "sha256": "44f16aef3058a1d5945af65bdd9e6ad044ddb3566eef20075ab7cb45350c7770",
+      "size": 1854
+    },
+    "replay": {
+      "path": "/private/tmp/madb-chief-round12/engineering-replay-e2e-001/verification.json",
+      "sha256": "edf4c8a759939ef1263298bec0833abcff612f0f50706007828a505a9223990b",
+      "size": 2166
+    },
+    "independent_review": {
+      "path": "/private/tmp/madb-chief-round12/engineering-source-drift-runtime-independent-review.md",
+      "sha256": "04b762a95313893f2f55a23b48df4e385f1f28206fcdc6f51d083e606b32516c",
+      "size": 3748
+    },
+    "actual_replay_exit_codes": [
+      0,
+      4,
+      0
+    ],
+    "actual_ordinary_outputs": [
+      "7:x",
+      "7:x"
+    ],
+    "source_growth_failure": "STORE003 conflict, unpublished; old current preserved; healthy retry creates generation 2",
+    "not_claimed": [
+      "installed system SDK wrong/missing image target test",
+      "OS-level network isolation",
+      "full P09 process accounting and cost baseline",
+      "IDE and full I01/I02/I03 exits"
+    ]
+  },
+  "dart": {
+    "candidate_digest": "sha256:ca5f71c451be9cfb408501ae2017daf3ec773b6ae23949ea4a6d27a35fe2b47c",
+    "candidate": {
+      "path": "/private/tmp/madb-chief-round12/e04-formal-producer-001/pipeline/package-run/candidate/candidate.json",
+      "sha256": "af088f9087661cfaf11ac81fd53f2cdad0d27e362bfe1421596cc0957b6b4ec0",
+      "size": 20301
+    },
+    "provisional": false,
+    "payload_files": 126,
+    "producer": {
+      "path": "/private/tmp/madb-chief-round12/e04-formal-producer-001/result.json",
+      "sha256": "2a4a2d93afb4e87bc762ced0c514b52faa44daa5725ed45d8af89a52ef40d153",
+      "size": 7119
+    },
+    "producer_review": {
+      "path": "/private/tmp/madb-chief-round12/e04-formal-producer-independent-review.md",
+      "sha256": "1454b599d8a0c830008510c2ef5ed97d5b2c88e54cbb369dca9a8dfda046ab62",
+      "size": 8046
+    },
+    "independent_report": {
+      "path": "/private/tmp/madb-chief-round12/e04-lab-formal-002/dart-sync.report.json",
+      "sha256": "70bbc217dd7db5aa721be22b1dba5dfff870283d2c04be5722e692e27a9ed61f",
+      "size": 30383
+    },
+    "independent_review": {
+      "path": "/private/tmp/madb-chief-round12/e04-lab-formal002-independent-review.md",
+      "sha256": "8e8c59aed0a7d8cd495cb605962c270bc1a7ffb8f5acbb76d7cdc430276ffe4a",
+      "size": 7050
+    },
+    "required_cases": 5,
+    "target_invocations": 16,
+    "all_commands": 22,
+    "unique_attachments": 31,
+    "preserved_inputs": {
+      "lab_sources": 565,
+      "candidate_files_including_manifest": 127,
+      "dart_sdk_files": 1044,
+      "dependency_files": 54
+    },
+    "scope_limits": [
+      "macOS Arm64 only",
+      "second natural value business generation not included",
+      "full loader graph fault/native failure schedule not included",
+      "disable/version isolation and other applicable EXT remain",
+      "not full E04 acceptance or release"
+    ]
+  },
+  "checks": {
+    "product_full_gate": {
+      "path": "/private/tmp/madb-chief-round12/product-full-gates003-summary.json",
+      "sha256": "c640cbd14ae9abb75100e2d3c96293b728c5f28730ec84c0480a7c1ee700f599",
+      "size": 1479
+    },
+    "source_drift_host_tests": 21,
+    "lab_targeted_tests": 51,
+    "lab_repository_tests": 733
+  },
+  "archives": [
+    {
+      "archive": "/Users/changyue/Desktop/MadB/.local/evidence/round12-engineering-dart-arkts/engineering-initial002.tar.gz",
+      "archive_sha256": "74096db24e3409f424b8281016e0f9161a6e568a85d433354eafe4c399c60dc7",
+      "archive_size": 1119278774,
+      "entries": 30157,
+      "original_file_bytes": 3603053129,
+      "manifest_sha256": "0be60c9f74d80c856216735a9af77726b08378d5ab58c57d5ec18b2472dc550a"
+    },
+    {
+      "archive": "/Users/changyue/Desktop/MadB/.local/evidence/round12-engineering-dart-arkts/engineering-final-delta001.tar.gz",
+      "archive_sha256": "accf58bbd3c1b97c43a155d11945f34d1b3bfd10acafcbf2d3e9b8f19c589386",
+      "archive_size": 196056012,
+      "entries": 4293,
+      "original_file_bytes": 654596615,
+      "manifest_sha256": "e44583de775862f7a39bd37f9a8db6f4d9eb087f5cc39c4e979bb9a9d5876a2a"
+    },
+    {
+      "archive": "/Users/changyue/Desktop/MadB/.local/evidence/round12-engineering-dart-arkts/e04-resource001.tar.gz",
+      "archive_sha256": "40a548c682cc0f96b2066fc9de68ab28e1cfbb267ea9af7776def27e59704864",
+      "archive_size": 1434669421,
+      "entries": 48988,
+      "original_file_bytes": 3159488033,
+      "manifest_sha256": "b8c27e9d473f57a0b14345f22edc3501e31dbaccee3c5030f0af6de2b68d6bb2"
+    }
+  ],
+  "delivery": {
+    "product_code": {
+      "repository": "changyue1053/MadB",
+      "branch": "codex/c07-arkts",
+      "before": "2fac2f7437e7bc235392fcca8c5d7af86b510e22",
+      "after": "bf478767273069c47798bc04140185c671d93957",
+      "commits": [
+        "bf478767273069c47798bc04140185c671d93957\tfix: classify captured source drift as conflict [skip ci]",
+        "ffa458afd86acc5c12b40a1e6f6ab742420254dc\tfeat: implement frozen project rebuild and Dart resource slice [skip ci]"
+      ],
+      "actions_checks": [
+        {
+          "head": "bf478767273069c47798bc04140185c671d93957",
+          "total_count": 0,
+          "runs": 0,
+          "record": "product-code-stage-retry002-actions-bf478767273069c47798bc04140185c671d93957.json",
+          "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915"
+        },
+        {
+          "head": "ffa458afd86acc5c12b40a1e6f6ab742420254dc",
+          "total_count": 0,
+          "runs": 0,
+          "record": "product-code-stage-retry002-actions-ffa458afd86acc5c12b40a1e6f6ab742420254dc.json",
+          "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915"
+        }
+      ],
+      "scope": "stage push only; no PR, tags, release, dispatch or certification"
+    },
+    "lab": {
+      "repository": "changyue1053/MadB-Lab",
+      "branch": "codex/c07-arkts",
+      "before": "f6f1d1bf071616d68cf68441adf9ded85e64b91b",
+      "after": "ac12f847a46ca9c8dba6f79dcc1b2db993fb6c37",
+      "commits": [
+        "ac12f847a46ca9c8dba6f79dcc1b2db993fb6c37\tfix: preserve actual Dart attempts through log failures [skip ci]",
+        "189e1517feeb1be811bb030aaadb1dedc48a4c63\tfeat: add bounded Dart resource consumer checks [skip ci]"
+      ],
+      "actions_checks": [
+        {
+          "head": "ac12f847a46ca9c8dba6f79dcc1b2db993fb6c37",
+          "total_count": 0,
+          "runs": 0,
+          "record": "lab-e04-stage-actions-ac12f847a46ca9c8dba6f79dcc1b2db993fb6c37.json",
+          "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915"
+        },
+        {
+          "head": "189e1517feeb1be811bb030aaadb1dedc48a4c63",
+          "total_count": 0,
+          "runs": 0,
+          "record": "lab-e04-stage-actions-189e1517feeb1be811bb030aaadb1dedc48a4c63.json",
+          "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915"
+        }
+      ],
+      "scope": "stage push only; no PR, tags, release, dispatch or certification"
+    },
+    "scope": "Skip-ci stage pushes only; no PR, tag, release or Actions dispatch. Zero runs is not CI passed."
+  },
+  "historical_failures": "Keep original product gate001/002, engineering0007 source-growth classification, Lab formal001, initial archive metadata failures and first network push failure; later results do not rewrite them.",
+  "path_relocation": "Archive manifests map each original absolute source path to its opaque archive member. Engineering initial002 plus final-delta001 form the full engineering evidence set; E04 resource001 contains its full selected evidence."
+}

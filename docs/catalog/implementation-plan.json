@@ -856,7 +856,8 @@
       "status": "in_progress",
       "verification": "missing",
       "evidence": [
-        "reviews/2026-10-27-chief-architect-twelfth-batch.md"
+        "reviews/2026-10-27-chief-architect-twelfth-batch.md",
+        "reviews/twelfth-batch-dart-lab-review.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -881,7 +882,7 @@
       "probes": [
         "P10"
       ],
-      "notes": "第十二批在C05/E01/E02/E03前置已齐后启动P10有限Dart Native→C同步子集探针与具体契约。只以一个经确认目标开始，正式工具/公开候选、组件绑定、真实独立消费与禁用隔离分别留证；当前设计样例不作为正式安装包，开工不表示实现或验收完成。 项目所有者已采用冻结Dart首包契约，见ADR-0026：单目标同步值/显式关闭、单包装配与实际镜像核对、单isolate边界和1000ms默认等待预算；P10手工探针及固定ffigen生成已有局部证据，正式公开reader/generator、Build/Package、独立Lab和适用EXT继续实施，批准不计整包验收。 第十二批已补真实公开reader/generator、显式profile2 Build/Package受检接线和单取消间隔的后绑定构建；纯检查、开发Source/Build及SDK定向证据分别保留。独立Lab五案例的导入路径/文件schema/超时排水三项缺口已修复并独审，41项定向及723项仓库检查通过，clean源码189e151冻结；正式非provisional生产候选与16次JIT/AOT消费仍待运行。仓内独立包manifest登记不等于首包或整包通过。"
+      "notes": "第十二批在C05/E01/E02/E03前置已齐后启动P10有限Dart Native→C同步子集探针与具体契约。只以一个经确认目标开始，正式工具/公开候选、组件绑定、真实独立消费与禁用隔离分别留证；当前设计样例不作为正式安装包，开工不表示实现或验收完成。 项目所有者已采用冻结Dart首包契约，见ADR-0026：单目标同步值/显式关闭、单包装配与实际镜像核对、单isolate边界和1000ms默认等待预算；P10手工探针及固定ffigen生成已有局部证据，正式公开reader/generator、Build/Package、独立Lab和适用EXT继续实施，批准不计整包验收。 第十二批已补真实公开reader/generator、显式profile2 Build/Package受检接线和单取消间隔的后绑定构建；纯检查、开发Source/Build及SDK定向证据分别保留。独立Lab五案例的导入路径/文件schema/超时排水三项缺口已修复并独审，41项定向及723项仓库检查通过，clean源码189e151冻结；正式非provisional生产候选与16次JIT/AOT消费仍待运行。仓内独立包manifest登记不等于首包或整包通过。 第十二批最终bf478从实际根以固定工具生成非provisional资源候选ca5f71c4，Source10/工具5/完整三层链及独审通过。实际Lab ac12正式002的5案例/16次JIT-AOT、22命令/31附件、完整候选与SDK守恒及独审通过；001日志失败和错误not-run表述均保留原件，新Lab修正实际执行事实保全，51定向及733仓库检查通过。仅固定macOS Arm64资源首片；第二自然值业务正常增改删生成、完整加载图/原生fault时序、禁用与版本隔离及其他适用EXT仍待各自证据，E04完整出口不变。"
     },
     {
       "id": "E05",
@@ -983,7 +984,8 @@
         "reviews/2026-10-26-chief-architect-eighth-batch.md",
         "reviews/2026-10-26-chief-architect-ninth-batch.md",
         "reviews/2026-10-26-chief-architect-tenth-batch.md",
-        "reviews/2026-10-27-chief-architect-twelfth-batch.md"
+        "reviews/2026-10-27-chief-architect-twelfth-batch.md",
+        "reviews/twelfth-batch-engineering-source-drift-runtime-review.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1018,7 +1020,7 @@
       "probes": [
         "P11"
       ],
-      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。 接管第七批补齐剩余模板/结果envelope、原包身份与完整库存、有限renderer及首个Rust/C值接口init分片的具体提案/完整设计向量和独审。仍待具体格式决定，未注册decoder、执行init或获得工程/IDE证据；已批ADR-0019四项不重复审批，首分片不替代原rust-c-sdk及C05资源接口承诺。 接管第八批项目所有者已采用第七批剩余格式提案，原文SHA为09672664872c3d56fe1b81857692be87f4bd8222e38b012e9d5902055e207fa6，见ADR-0023；开始格式/纯规则子范围，工具镜像、真实Host创建、最终根执行及IDE仍需各自证据。当前MadB 0.1.0-dev.0不能被偷映射成模板准入要求的正式三元版本；I01整包出口不变。 第八批格式/纯规则已实现：两schema、完整原包库存、三renderer、选择与provenance计划、contracts转换及app事实判断；定向检查和独审按各自范围留证，真实Host/CLI/init与整包不据此通过。CMake4.4.4/Ninja1.13.2正式原包及镜像已核对归档，仅版本/能力观察，不是生产锁或工程运行证据。 格式/纯规则冻结候选f2e39a3通过独立分层复核及完整本地仓库门禁；仅本子范围实现/检查，未执行真实init、IDE或整包验收，详细身份见第八批记录。 第九批按 ADR-0024 获批重新构建真实0.1.0内部工具，保留开发版拒绝与SDK旧版本；开工可信内置包、实际Host/CLI结构初始化和证据闭包，生成/链接/运行另验，不解除整包IDE出口。 第九批结构级真实init/dry-run已贯通内置包、实际Host与CLI，独审105断言与完整原包复核通过；工具镜像替换及原生提交另有独审。build/run/open尚未登记执行，I01整包仍未验收。 第九批代码候选2c3d9bb的前序7edd888完整本地门禁通过，两个平台适用性文件增量另经独审/定向复验，最终真实0.1.0镜像重放原105断言通过；归档及精确候选见第九批机器证据。 第十批完成有限macOS Arm64 Rust→C初始化执行分片：新版模板0.1.1在最终根实际生成SDK、CMake/Ninja链接和普通C运行，旧0.1.0仅结构/dry-run字节保持。正式7c2e545候选11项有效CLI场景与独立Lab两项target-run通过，集成后公开导出候选复验通过。完整本地门禁004通过；IDE/Wrapper、已有工程接入及其他目标仍缺，P09四类基线尚未齐备，整包保持未验收。 第十二批所有者已采用ADR-0027的显式0.2.0有限日常重建配方、Wrapper、project build/install-tool及两个新格式；每次完整输入快照、共享来源冻结和完整工程结果CAS，已发布/安装后的失败事实保留。现进入实现，P09现状观察和格式/launcher原型不计工程验收；I01/I02/I03原整包条件及前置继续保留。"
+      "notes": "L01 先收敛本次优化所需的普通 API 与生成职责边界；I01 随后承接工程初始化、已有工程接入/升级/禁用与 IDE 构建契约，可与 E01–E03 按接口依赖并行。技术 depends_on 保持原义，不因计划说明计为已开工。 接管首批已实现内部纯 ProjectPlan 模块 DAG/文件 owner/路径冲突检查；模板 schema、InitResult、Wrapper、真实 IDE、更新恢复与成本基线仍未完成。 接管第三批复验现有纯计划，未发现可证缺陷；模板/InitResult 草案的失败分类、创建条件、引用基准和默认目标待按具体格式决定落地，不引入未经批准的更新模型。 接管第五批完成四项格式增量提案及独立复核，58设计片段、19来源pin和6独立边界观察通过；项目所有者已确认四项增量（ADR-0019），完整envelope、包摘要/获取锁及有限配方支持表仍待定稿，不据此准入生产decoder或扩大I01验收。 接管第六批落实 ADR-0019 的内部 profile/target 纯选择，新增12项及原9项检查与独审通过；完整 template/InitResult、包摘要/有限配方、真实创建及IDE出口仍待交付。 接管第七批补齐剩余模板/结果envelope、原包身份与完整库存、有限renderer及首个Rust/C值接口init分片的具体提案/完整设计向量和独审。仍待具体格式决定，未注册decoder、执行init或获得工程/IDE证据；已批ADR-0019四项不重复审批，首分片不替代原rust-c-sdk及C05资源接口承诺。 接管第八批项目所有者已采用第七批剩余格式提案，原文SHA为09672664872c3d56fe1b81857692be87f4bd8222e38b012e9d5902055e207fa6，见ADR-0023；开始格式/纯规则子范围，工具镜像、真实Host创建、最终根执行及IDE仍需各自证据。当前MadB 0.1.0-dev.0不能被偷映射成模板准入要求的正式三元版本；I01整包出口不变。 第八批格式/纯规则已实现：两schema、完整原包库存、三renderer、选择与provenance计划、contracts转换及app事实判断；定向检查和独审按各自范围留证，真实Host/CLI/init与整包不据此通过。CMake4.4.4/Ninja1.13.2正式原包及镜像已核对归档，仅版本/能力观察，不是生产锁或工程运行证据。 格式/纯规则冻结候选f2e39a3通过独立分层复核及完整本地仓库门禁；仅本子范围实现/检查，未执行真实init、IDE或整包验收，详细身份见第八批记录。 第九批按 ADR-0024 获批重新构建真实0.1.0内部工具，保留开发版拒绝与SDK旧版本；开工可信内置包、实际Host/CLI结构初始化和证据闭包，生成/链接/运行另验，不解除整包IDE出口。 第九批结构级真实init/dry-run已贯通内置包、实际Host与CLI，独审105断言与完整原包复核通过；工具镜像替换及原生提交另有独审。build/run/open尚未登记执行，I01整包仍未验收。 第九批代码候选2c3d9bb的前序7edd888完整本地门禁通过，两个平台适用性文件增量另经独审/定向复验，最终真实0.1.0镜像重放原105断言通过；归档及精确候选见第九批机器证据。 第十批完成有限macOS Arm64 Rust→C初始化执行分片：新版模板0.1.1在最终根实际生成SDK、CMake/Ninja链接和普通C运行，旧0.1.0仅结构/dry-run字节保持。正式7c2e545候选11项有效CLI场景与独立Lab两项target-run通过，集成后公开导出候选复验通过。完整本地门禁004通过；IDE/Wrapper、已有工程接入及其他目标仍缺，P09四类基线尚未齐备，整包保持未验收。 第十二批所有者已采用ADR-0027的显式0.2.0有限日常重建配方、Wrapper、project build/install-tool及两个新格式；每次完整输入快照、共享来源冻结和完整工程结果CAS，已发布/安装后的失败事实保留。现进入实现，P09现状观察和格式/launcher原型不计工程验收；I01/I02/I03原整包条件及前置继续保留。 第十二批已实现并集成显式0.2.0日常重建分片：project build/madbw build --frozen、完整快照与工程CAS、同字节install-tool。旧0007真实冷建/无变化/实现变化/新增twice/字段破坏恢复/间接头/双构建CAS/活动取消分别留证；源增长误报2的原失败保留。最终bf478、真实0.1.0镜像447b7816在实际根重放0→4→0且普通C两次7:x，21项Host修正检查及独审通过。安装SDK实体错/缺、完整P09、IDE及各I包原完整出口仍未满足；不把有限CLI分片登记为整包验收。"
     },
     {
       "id": "I02",
@@ -1041,7 +1043,8 @@
         "reviews/2026-10-27-chief-architect-eleventh-batch.md",
         "reviews/eleventh-batch-doctor-final-independent-review.md",
         "reviews/eleventh-batch-doctor-validation.json",
-        "reviews/2026-10-27-chief-architect-twelfth-batch.md"
+        "reviews/2026-10-27-chief-architect-twelfth-batch.md",
+        "reviews/twelfth-batch-engineering-source-drift-runtime-review.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1066,7 +1069,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 第九批提前实施与I01-P共用的真实CommitNew/取消/证据保存子范围；不代表I01前置或I02整包验收已满足，doctor及后续Build/Verify/恢复仍须各自交付。 提前子范围已完成no-replace创建、取消/提交后证据失败事实保留与独立Host70断言；不是doctor、最终根Build/Verify或I02整包验收。 第十批与I01共享的最终根Build/Verify、实际配置失败与SIGINT取消、已创建工程和真实证据保留已验证；真实veto、pending owner和保存尾窗经独审。仅首个Rust→C值配方子范围，doctor、已有工程接入/升级/禁用及其他配方仍未交付，I01整包前置未解除。 第十一批项目所有者采用doctor现有冻结上下文的只读CLI及doctor-result/1具体契约，见ADR-0025；进入实现，三档仅检查静态前提，不执行构建/运行/安装。模板模式、已有工程升级/禁用及I01/I02整包前置保持，批准不计实现或验收。 第十一批在干净e26a73b实现已批准现有冻结工程上下文的doctor首片，正式13镜像与独立17项按15+2原始证据通过；structure/build/run分别核6/23/24个静态前提，空/污染PATH、机器错误、缺snapshot、输出预算/漂移及DOCTOR001解释按各层证据核对。完整集成本地门禁通过。返回0只表示preflight-only，不执行生成/构建/运行/安装，部分观察不能成为执行凭据；仅当前macOS Arm64固定0.1.1值配方。模板模式、已有工程升级/禁用、其他配方及I01整包前置继续保留，I02整包仍未验收。 第十二批所有者已采用ADR-0027的显式0.2.0有限日常重建配方、Wrapper、project build/install-tool及两个新格式；每次完整输入快照、共享来源冻结和完整工程结果CAS，已发布/安装后的失败事实保留。现进入实现，P09现状观察和格式/launcher原型不计工程验收；I01/I02/I03原整包条件及前置继续保留。"
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 第九批提前实施与I01-P共用的真实CommitNew/取消/证据保存子范围；不代表I01前置或I02整包验收已满足，doctor及后续Build/Verify/恢复仍须各自交付。 提前子范围已完成no-replace创建、取消/提交后证据失败事实保留与独立Host70断言；不是doctor、最终根Build/Verify或I02整包验收。 第十批与I01共享的最终根Build/Verify、实际配置失败与SIGINT取消、已创建工程和真实证据保留已验证；真实veto、pending owner和保存尾窗经独审。仅首个Rust→C值配方子范围，doctor、已有工程接入/升级/禁用及其他配方仍未交付，I01整包前置未解除。 第十一批项目所有者采用doctor现有冻结上下文的只读CLI及doctor-result/1具体契约，见ADR-0025；进入实现，三档仅检查静态前提，不执行构建/运行/安装。模板模式、已有工程升级/禁用及I01/I02整包前置保持，批准不计实现或验收。 第十一批在干净e26a73b实现已批准现有冻结工程上下文的doctor首片，正式13镜像与独立17项按15+2原始证据通过；structure/build/run分别核6/23/24个静态前提，空/污染PATH、机器错误、缺snapshot、输出预算/漂移及DOCTOR001解释按各层证据核对。完整集成本地门禁通过。返回0只表示preflight-only，不执行生成/构建/运行/安装，部分观察不能成为执行凭据；仅当前macOS Arm64固定0.1.1值配方。模板模式、已有工程升级/禁用、其他配方及I01整包前置继续保留，I02整包仍未验收。 第十二批所有者已采用ADR-0027的显式0.2.0有限日常重建配方、Wrapper、project build/install-tool及两个新格式；每次完整输入快照、共享来源冻结和完整工程结果CAS，已发布/安装后的失败事实保留。现进入实现，P09现状观察和格式/launcher原型不计工程验收；I01/I02/I03原整包条件及前置继续保留。 第十二批已实现并集成显式0.2.0日常重建分片：project build/madbw build --frozen、完整快照与工程CAS、同字节install-tool。旧0007真实冷建/无变化/实现变化/新增twice/字段破坏恢复/间接头/双构建CAS/活动取消分别留证；源增长误报2的原失败保留。最终bf478、真实0.1.0镜像447b7816在实际根重放0→4→0且普通C两次7:x，21项Host修正检查及独审通过。安装SDK实体错/缺、完整P09、IDE及各I包原完整出口仍未满足；不把有限CLI分片登记为整包验收。"
     },
     {
       "id": "I03",
@@ -1084,7 +1087,8 @@
       "status": "in_progress",
       "verification": "missing",
       "evidence": [
-        "reviews/2026-10-27-chief-architect-twelfth-batch.md"
+        "reviews/2026-10-27-chief-architect-twelfth-batch.md",
+        "reviews/twelfth-batch-engineering-source-drift-runtime-review.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1109,7 +1113,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 第十二批所有者已采用ADR-0027的显式0.2.0有限日常重建配方、Wrapper、project build/install-tool及两个新格式；每次完整输入快照、共享来源冻结和完整工程结果CAS，已发布/安装后的失败事实保留。现进入实现，P09现状观察和格式/launcher原型不计工程验收；I01/I02/I03原整包条件及前置继续保留。"
+      "notes": " 第十二批所有者已采用ADR-0027的显式0.2.0有限日常重建配方、Wrapper、project build/install-tool及两个新格式；每次完整输入快照、共享来源冻结和完整工程结果CAS，已发布/安装后的失败事实保留。现进入实现，P09现状观察和格式/launcher原型不计工程验收；I01/I02/I03原整包条件及前置继续保留。 第十二批已实现并集成显式0.2.0日常重建分片：project build/madbw build --frozen、完整快照与工程CAS、同字节install-tool。旧0007真实冷建/无变化/实现变化/新增twice/字段破坏恢复/间接头/双构建CAS/活动取消分别留证；源增长误报2的原失败保留。最终bf478、真实0.1.0镜像447b7816在实际根重放0→4→0且普通C两次7:x，21项Host修正检查及独审通过。安装SDK实体错/缺、完整P09、IDE及各I包原完整出口仍未满足；不把有限CLI分片登记为整包验收。"
     },
     {
       "id": "I04",

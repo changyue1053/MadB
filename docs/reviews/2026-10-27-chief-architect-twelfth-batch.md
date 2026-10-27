@@ -79,3 +79,23 @@ Dart开发链008按最终源码冻结002完成真实Source/Build/Package、JIT/A
 工程clean候选0007的真实冷init与无变化Wrapper重建已通过；Rust实现变化触发旧consumer拒绝，更新独立预期后实际输出8:x。兼容新增普通入口twice由实际C调用返回12，合同、头文件和原生导出均有对应证据；真实双CLI竞争只有一个发布，另一个准确拒绝并保留attempt。缺失工具同字节恢复、错误工具拒绝覆盖及实际活动子进程SIGINT已有各自原件。字段改名使旧C在consumer-link准确失败并保全旧current，源码捕获后漂移和间接头变化仍在执行；以上不等于I链、P09或IDE整包验收。
 
 完整产品门禁002在旧有Unix socket测试被沙箱拒绝创建socket而失败，原件保留；003在允许该本地测试能力的环境执行同一门禁。没有删除测试、放宽断言或将环境失败记为通过。
+
+## 最终集成、有限验收与后续出口
+
+本批代码最终为`bf478767273069c47798bc04140185c671d93957`，Lab为`ac12f847a46ca9c8dba6f79dcc1b2db993fb6c37`。主协调分别从完整工作区冻结1550/565项源字节与模式，快进实际两仓后再执行相应真实验证；旧C07 detached工作树和无关内容保留。最终工具与消费者绑定这些明确代码提交，后续仅文档提交不重写其来源身份。完整机器记录见[验证与归档索引](twelfth-batch-engineering-dart-validation.json)。
+
+工程0.2.0显式模板、`madb project build --root PATH --frozen`、`madbw build --frozen`及同字节`install-tool`已接入原C04链。旧0.1.0/0.1.1模板字节保持；普通构建采用保守完整快照，不宣称缓存命中。初始0007候选真实验证冷建、无变化、Rust实现变化、普通新增twice返回12、字段破坏编译拒绝与修复、间接头7:x→9:x、两个CLI的单赢家CAS及活动进程取消。[原候选独审](twelfth-batch-engineering-initial-review.md)保留其源增长错误分类P2；[安装补证](twelfth-batch-engineering-install-review.md)明确同镜像inode保持、错字节不覆盖、缺失恢复与自有SDK产物副本拒绝，不能替代系统安装SDK实体准入。
+
+源增长修正仅在已捕获身份重验处分辨Conflict与真正I/O；初次输入预算和公开映射不变。21项Host定向检查与[代码独审](twelfth-batch-engineering-source-drift-code-review.md)通过。实际根最终0.1.0工具SHA为`447b781651e70dc27a9bbcedd554dffb52b8d3dbe3fc994cebc5a5fcfd8b8edb`；新工程显式空PATH/offline参数执行冷init、捕获后增长、正常恢复，实际退出为0→4→0，普通C均为7:x，旧current保全且最终generation2。[三步原件独审](twelfth-batch-engineering-source-drift-runtime-review.md)闭合本风险。空PATH与offline参数不等于OS网络隔离；事后转录的顶层调用收据不冒充同步耗时记录。
+
+Dart最终候选`sha256:ca5f71c451be9cfb408501ae2017daf3ec773b6ae23949ea4a6d27a35fe2b47c`明确provisional=false，126个payload加manifest。实际Source10、工具5和Source/Build/Package全过程通过，[生产者独审](twelfth-batch-dart-producer-review.md)核清楚新profile2与旧provider身份、真实工具及所有输出；它本身不替代Lab。
+
+Lab正式001确实执行了准备命令和首个values JIT，但自身日志的小数秒被严格整数JSON拒绝；原报告error保持，其not-run/static描述不能覆盖raw进程事实。新Lab改为整数毫秒并在严格解析/业务接纳前保存实际Popen元事实；坏日志与日志写失败保留已发生执行，启动前失败不借用旧调用。51定向、733仓库检查及[失败路径独审](twelfth-batch-dart-lab-fix-review.md)通过，未放宽业务预期、250ms预算或公共wire。
+
+集成后的formal002从头执行5个required案例和16次JIT/AOT调用，公开report SHA为`70bbc217dd7db5aa721be22b1dba5dfff870283d2c04be5722e692e27a9ed61f`。22条实际命令、31唯一附件、565源文件、127候选文件、1044个Dart SDK文件及54依赖文件逐项闭合；12个私有目录的36个文件只在实际进程退出后清理，文件清理与owner显式关闭分别验证。[独立消费复审](twelfth-batch-dart-lab-review.md)通过本固定macOS Arm64资源首片。第二自然值业务、完整加载图/原生故障时序、禁用和版本隔离及其他适用EXT继续排队，未登记E04整包通过。
+
+完整产品门禁003通过，001格式失败、002沙箱socket拒绝均保留；最终Host与Lab增量分别补受影响检查及独审。原生目标、独立验收、文档门禁和远程Actions分开记录。I01/I02/I03仍保留安装SDK实体错/缺、P09完整计数/基线、IDE及原工程配方完整出口；后续继续E04自然值业务与隔离、工程I链，并按当前catalog推进L02/L03、C08/L06和C09/C10联合队列，不因子范围通过解除整包前置。
+
+本批证据持久归档到`/Users/changyue/Desktop/MadB/.local/evidence/round12-engineering-dart-arkts`。工程使用`engineering-initial002.tar.gz`及`engineering-final-delta001.tar.gz`，Dart使用`e04-resource001.tar.gz`；相邻manifest保存完整原路径映射与每成员摘要，验证了档案全部成员及源前后身份。初次目录归档多出vscode-merge-base元数据而拒绝；改为封装档案后通过。工程增量首次元数据索引误用单候选键，档案数据保留并完整重读后生成双候选索引；失败原件和修复记录都保留，未改写运行报告。
+
+产品两个代码提交和Lab两个提交均带`[skip ci]`，已推送既有`codex/c07-arkts`；分别核对精确远端bf478/ac12及逐提交Actions运行数0。首次产品网络连接失败与随后远端未变观察保留，成功重试单列。没有PR、标签、发布或dispatch；Actions未执行不是通过。文档提交的后续交付另以实际delivery记录为准。
