@@ -1,0 +1,134 @@
+{
+  "scope": "round10 local finite initialization and E02 acceptance; current task state only in catalog",
+  "as_of": "2026-10-27",
+  "producer_revision": "7c2e545fefe58f9e29652b8a15074c802ef2eb8b",
+  "integrated_test_revision": "7d3d25d8002ace10b8c35f445d62e8ea41fa3ee9",
+  "lab_revision": "d270293f50c04ebdca31a4a1eaa7335b1e869cd1",
+  "candidate_digest": "sha256:e3b022d83ccab4e1d3599e4efd865ce220280f9c31e5c4f08c18d71e91fe8871",
+  "archive": {
+    "root": "/Users/changyue/Desktop/MadB/.local/evidence/round10-init-composition/validation",
+    "entries": 44921,
+    "file_bytes": 6045744338,
+    "manifest_sha256": "9a34483c47600f93e61ccb0b9763d8beae66fd58758256204e77c445709e7151",
+    "manifest_size": 10512871,
+    "symlinks": 0
+  },
+  "records": {
+    "frozen-tools-002/receipt.json": {
+      "path": "frozen-tools-002/receipt.json",
+      "sha256": "aeed018f5c6305c1eb65ae7b5c153b1d984a02bb12af598f4fc5d42962ec41fb",
+      "size": 7184
+    },
+    "final-production-test-binding.json": {
+      "path": "final-production-test-binding.json",
+      "sha256": "daa01117a0b409fa70f6120b68fe53f91bdc3fa67e8c138bbcfb1dd0e24dc7ad",
+      "size": 1120
+    },
+    "final-repository-gates-004.result.json": {
+      "path": "final-repository-gates-004.result.json",
+      "sha256": "f52ec0489e935cee4b47088033d390528b974ed6b75fce5e0a3f43cf8c297ee9",
+      "size": 821
+    },
+    "i01-independent-result.json": {
+      "path": "i01-independent-result.json",
+      "sha256": "9d57c6f530b8b984f534642fbeca542884ca9618b006a7391dca78e8aff4649f",
+      "size": 27609
+    },
+    "i01-independent-final-review.md": {
+      "path": "i01-independent-final-review.md",
+      "sha256": "2bf70c819fc8cef2deb68d04aa5011de155d76c568cb7e9170166dfc7ab2cfa9",
+      "size": 5977
+    },
+    "e02-final-independent-review.json": {
+      "path": "e02-final-independent-review.json",
+      "sha256": "bed0b3d4df22319bbc86e2bded055a67ffa42bc06f16bd830aa661aeaefb9141",
+      "size": 2556
+    },
+    "e02-final-independent-review.md": {
+      "path": "e02-final-independent-review.md",
+      "sha256": "b7222a6363712688c7ffb0251f7e93e534f53a6a792716a00e642406098690fc",
+      "size": 7409
+    },
+    "final-e02-image-rejection-001/supplement.json": {
+      "path": "final-e02-image-rejection-001/supplement.json",
+      "sha256": "c2d6951f38c677a040300277655df5ea09507938c6e57b8dc7bfcaea041e293f",
+      "size": 8987
+    },
+    "review-waker/result.json": {
+      "path": "review-waker/result.json",
+      "sha256": "0e7c969e9034c3df65b5a5b924b2270154ed0f812f52953f88f7a96623be4a2d",
+      "size": 3854
+    },
+    "waker-independent-final-review.md": {
+      "path": "waker-independent-final-review.md",
+      "sha256": "697e36656fa06a7cd431a4b4fb663fc5ba35ee0591c232e2ef6f8a9fec6f89f5",
+      "size": 3495
+    },
+    "integration-code.json": {
+      "path": "integration-code.json",
+      "sha256": "073133527610de66b464a3b0e7edbe94f4536cd85d042f96727ce9100f540044",
+      "size": 1029
+    },
+    "public-candidate-export.json": {
+      "path": "public-candidate-export.json",
+      "sha256": "d0f14261d63b11c6f7b627aa47d2799f529442fd4c5e53b855e13ebf7ba92493",
+      "size": 3464
+    },
+    "post-integration-verification.json": {
+      "path": "post-integration-verification.json",
+      "sha256": "df7a01b73e666d87103dbd39c4ecef3b48f788ec13c5a09be5bbd26c70397319",
+      "size": 3840
+    },
+    "final-environment.json": {
+      "path": "final-environment.json",
+      "sha256": "c7dc44d123b619e3b1013fe33cd4e3da1c38d049e8b947879603751f872a1ae3",
+      "size": 2761
+    }
+  },
+  "scope_results": {
+    "I01_runtime_slice": {
+      "valid_cli_cases": 11,
+      "independent_assertions": 2107,
+      "lab_cases": 2,
+      "lab_evidence_level": "target-run",
+      "post_integration_repeated_cases": 2,
+      "whole_I01_or_I02": false
+    },
+    "E02": {
+      "six_acceptance_rows": "supported",
+      "matrix": {
+        "original_command_exit_code": 1,
+        "original_completed_cases": 21,
+        "separate_affected_case_rerun": 1,
+        "original_failure_preserved": true
+      },
+      "peer_cases": 20,
+      "legacy_cases": 9,
+      "sdk_har_target_page_or_X_backend_certification": false
+    },
+    "repository_gates": {
+      "final_command_exit_code": 0,
+      "attempt": "004",
+      "prior_failed_attempts_preserved": [
+        "001",
+        "002",
+        "003"
+      ]
+    },
+    "ci": {
+      "status": "not_run",
+      "not_a_pass": true
+    },
+    "publication": {
+      "release": false,
+      "pull_request": false,
+      "tags_created": false
+    }
+  },
+  "remaining": [
+    "I01 IDE/Wrapper/existing project adoption; the full four-state P09 baseline remains incomplete",
+    "I02 doctor and other engineering recipes",
+    "E01/E03 whole-package exit reconciliation",
+    "L03/L04/L05/C08/L06 and C09/C10 joint acceptance per catalog"
+  ]
+}

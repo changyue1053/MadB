@@ -21,14 +21,14 @@ cargo run --locked -p madb-cli -- --help
 cargo run --locked -p madb-cli -- --version
 ```
 
-`init` 当前仅提供 macOS 26.6.2 / arm64 内部 Rust/C 值工程的结构级创建与 dry-run；工具真实版本为 0.1.0，仍禁止发布。输出目录须不存在，父目录须已存在且路径不含符号链接：
+`init` 的内部有限配方用于 macOS 26.6.2 / arm64 的 Rust→C 值工程。模板 0.1.1 支持结构创建、dry-run、最终根 build 和普通 C run；工具真实版本为 0.1.0，保留 publish=false。输出目录须不存在，父目录须已存在且路径不含符号链接：
 
 ```sh
 cargo run --locked -p madb-cli -- init --out ./ReadingDemo --name ReadingDemo --verify structure
 cargo run --locked -p madb-cli -- init --out ./ReadingPlan --name ReadingPlan --verify structure --dry-run
 ```
 
-结果包含实际创建事实及独立证据目录。build/run/open 尚未登记执行，明确失败；默认 verify 仍是 build，使用本分片须显式选择 structure。结构检查不编译 SDK 或运行 C，也不替代 IDE 验收。固定模板与边界见 [内置模板](templates/projects/rust-c-sdk-values/README.md)。`verify` 尚未交付；当前 `generate/build/package` 仍要求显式锁定配方。
+结果包含实际创建事实及独立证据目录。默认 verify 是 build；build/run 要求已有精确工具/SDK 安装及带真实源码构建记录的冻结内部工具，普通源码开发命令可使用上面的 structure。`--verify run` 在最终工程中执行普通 C 消费者，失败或取消保留已创建工程。显式 `--template org.madb.template/rust-c-sdk@0.1.0` 保留旧版结构/dry-run；`--open` 与独立 `verify` 命令尚未交付。配方边界见[模板 0.1.1](templates/projects/rust-c-sdk-values/versions/0.1.1/README.md)，实际候选与检查见[第十批记录](docs/reviews/2026-10-26-chief-architect-tenth-batch.md)。这些检查不代替 IDE 或其他平台验收；高级 `generate/build/package` 仍要求显式锁定配方。
 
 ## 当前可运行的只读查询
 
