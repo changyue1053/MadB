@@ -422,6 +422,7 @@ fn waker_clone_drop_and_wake_can_reenter_instance() {
         engine: Arc<Engine>,
         clones: AtomicUsize,
         drops: AtomicUsize,
+        drop_event: mpsc::Sender<()>,
     }
     // Each raw waker owns one Arc. The vtable intentionally enters the public SDK
     // on every clone/drop, so holding Shared.state across either action deadlocks.
@@ -443,13 +444,16 @@ fn waker_clone_drop_and_wake_can_reenter_instance() {
         let state = Arc::from_raw(data.cast::<Reenter>());
         state.engine.statistics();
         state.drops.fetch_add(1, Ordering::SeqCst);
+        let _ = state.drop_event.send(());
     }
     static TABLE: RawWakerVTable = RawWakerVTable::new(clone, wake, wake_ref, release);
     let e = Arc::new(engine());
+    let (drop_event, drop_events) = mpsc::channel();
     let state = Arc::new(Reenter {
         engine: e.clone(),
         clones: AtomicUsize::new(0),
         drops: AtomicUsize::new(0),
+        drop_event,
     });
     let raw = RawWaker::new(Arc::into_raw(state.clone()).cast(), &TABLE);
     let waker = unsafe { Waker::from_raw(raw) };
@@ -466,6 +470,17 @@ fn waker_clone_drop_and_wake_can_reenter_instance() {
     assert!(waiter.as_mut().poll(&mut cx).is_ready()); // ready removal
     drop(waiter);
     assert!(state.clones.load(Ordering::SeqCst) >= 4);
+    // Ready removes the registration; an already-taken notification snapshot
+    // may still own the previous Arc<Waker>. Observe its actual final drop.
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while state.drops.load(Ordering::SeqCst) < 4 {
+        let remaining = deadline
+            .checked_duration_since(Instant::now())
+            .expect("registered wakers were not released within the bounded wait");
+        drop_events
+            .recv_timeout(remaining)
+            .expect("registered wakers did not report their actual final drop");
+    }
     assert!(state.drops.load(Ordering::SeqCst) >= 4);
 }
 
