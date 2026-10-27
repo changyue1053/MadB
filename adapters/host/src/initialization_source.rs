@@ -43,6 +43,15 @@ impl FrozenInitializationTool {
     pub fn identity(&self) -> &ComponentIdentity {
         &self.identity
     }
+    /// The path captured with this image's held inode; revalidate before use.
+    pub fn image_path(&self) -> &Path {
+        &self.path
+    }
+    /// Size of the captured image, never a fresh pathname observation.
+    pub fn image_size(&self) -> u64 {
+        self.stamp.size
+    }
+
     /// The held inode and its original pathname must still identify the same
     /// regular image. Replacement, in-place writes and parent redirection fail.
     pub fn revalidate(&self) -> Result<()> {
@@ -128,10 +137,36 @@ pub fn observe_initialization_host() -> Result<InitializationHost> {
     ))
 }
 
+#[cfg(not(any(target_os = "macos", test)))]
+pub fn observe_initialization_system_build() -> Result<String> {
+    Err(QueryError::new(
+        ErrorKind::Host,
+        "HOST004",
+        "host.build",
+        "system build observation requires macOS",
+    ))
+}
+
 // Only the fixed flat XML system-version file is accepted. This parser does
 // not expand entities, follow a DTD, accept nested dicts or parse arbitrary XML.
 #[cfg(any(target_os = "macos", test))]
 fn system_product_version(bytes: &[u8]) -> Result<Version> {
+    Version::parse(&system_property(bytes, "ProductVersion")?)
+        .map_err(|_| invalid("system version is not formal N.N.N"))
+}
+
+/// Read the same root-owned system observation used by Python shared-cache pins.
+#[cfg(any(target_os = "macos", test))]
+pub fn observe_initialization_system_build() -> Result<String> {
+    let file = open_regular(Path::new(
+        "/System/Library/CoreServices/SystemVersion.plist",
+    ))?;
+    let (bytes, _) = read_stable(&file, 64 * 1024)?;
+    system_property(&bytes, "ProductBuildVersion")
+}
+
+#[cfg(any(target_os = "macos", test))]
+fn system_property(bytes: &[u8], property: &str) -> Result<String> {
     let source = std::str::from_utf8(bytes).map_err(|_| invalid("system version is not UTF-8"))?;
     let prefix = [
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
@@ -176,14 +211,12 @@ fn system_product_version(bytes: &[u8]) -> Result<Version> {
         if value.contains(['<', '&']) {
             return Err(invalid("escaped system string"));
         }
-        if key == "ProductVersion" {
-            version = Some(
-                Version::parse(value).map_err(|_| invalid("system version is not formal N.N.N"))?,
-            );
+        if key == property {
+            version = Some(value.to_owned());
         }
         dict = remainder;
     }
-    version.ok_or_else(|| invalid("system ProductVersion is missing"))
+    version.ok_or_else(|| invalid("required system property is missing"))
 }
 
 #[cfg(unix)]
@@ -361,6 +394,8 @@ mod tests {
         std::fs::write(&path, b"original image").unwrap();
         let captured = FrozenInitializationTool::capture_path(path.clone(), "0.1.0").unwrap();
         captured.revalidate().unwrap();
+        assert_eq!(captured.image_path(), path);
+        assert_eq!(captured.image_size(), b"original image".len() as u64);
         std::fs::write(root.join("replacement"), b"original image").unwrap();
         std::fs::rename(root.join("replacement"), &path).unwrap();
         assert_eq!(captured.revalidate().unwrap_err().kind, ErrorKind::Conflict);
@@ -387,5 +422,6 @@ mod tests {
         let observed = observe_initialization_host().unwrap();
         assert_eq!(observed.os.as_str(), std::env::consts::OS);
         assert_eq!(observed.arch.as_str(), std::env::consts::ARCH);
+        assert!(!observe_initialization_system_build().unwrap().is_empty());
     }
 }

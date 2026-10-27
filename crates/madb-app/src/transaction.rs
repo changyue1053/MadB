@@ -179,6 +179,7 @@ enum Phase {
 struct State {
     phase: Phase,
     cancelled: bool,
+    rejected_by_cancellation: bool,
 }
 /// A separate single-use admission interval for actual index publication.
 /// Completing a DAG never consumes this control or authorizes a commit.
@@ -197,6 +198,11 @@ impl CommitControl {
         }
         state.cancelled = true;
         CancelDecision::Requested
+    }
+    /// True only when an actual publication/preparation admission rejected
+    /// cancellation, never merely because a request arrived before an IO error.
+    pub fn rejected_by_cancellation(&self) -> bool {
+        self.lock().rejected_by_cancellation
     }
     pub fn begin(&self) -> Result<CommitPermit<'_>> {
         let mut state = self.lock();
@@ -225,11 +231,29 @@ impl CommitPermit<'_> {
     pub fn cancelled(&self) -> bool {
         self.control.lock().cancelled
     }
+    /// Explicit early rejection before commit preparation. Reading cancelled()
+    /// remains side-effect-free; only this actual refusal records its cause.
+    pub fn reject_if_cancelled(&mut self) -> Result<()> {
+        let mut state = self.control.lock();
+        if state.cancelled {
+            state.phase = Phase::Finished;
+            state.rejected_by_cancellation = true;
+            self.finished = true;
+            Err(error(
+                "STORE002",
+                "commit",
+                "cancelled before commit preparation",
+            ))
+        } else {
+            Ok(())
+        }
+    }
     /// Run only the bounded index replacement (or same-content acceptance).
     /// Do not call external tools, callbacks, or cancel from within `publish`.
     pub fn publish(mut self, publish: impl FnOnce() -> Result<()>) -> Result<()> {
         let mut state = self.control.lock();
         if state.cancelled {
+            state.rejected_by_cancellation = true;
             state.phase = Phase::Finished;
             self.finished = true;
             return Err(error(

@@ -22,6 +22,7 @@ impl TrustedTemplateRecord {
     pub fn bundled(
         tool: &ComponentIdentity,
         bytes: &'static [u8],
+        version: Version,
         archive: FileIdentity,
         manifest: FileReference,
     ) -> Result<Self> {
@@ -35,7 +36,7 @@ impl TrustedTemplateRecord {
         }
         Ok(Self {
             id: Id::new("org.madb.template/rust-c-sdk").expect("fixed template id"),
-            version: Version::parse("0.1.0").expect("fixed template version"),
+            version,
             archive,
             manifest,
             source: BundledSource::Bundled,
@@ -80,7 +81,44 @@ fn invalid(message: impl Into<String>) -> QueryError {
 
 /// Fixed package shipped in this producer. The build records these raw bytes;
 /// no runtime filesystem path or remote catalog can replace the installation.
-pub(super) fn installed(tool: &ComponentIdentity) -> Result<TrustedTemplateRecord> {
+pub(super) fn installed(
+    tool: &ComponentIdentity,
+    selector: Option<&str>,
+) -> Result<TrustedTemplateRecord> {
+    if selector == Some("org.madb.template/rust-c-sdk@0.1.0") {
+        return installed_legacy(tool);
+    }
+    let record = TrustedTemplateRecord::bundled(
+        tool,
+        include_bytes!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../templates/projects/rust-c-sdk-values/versions/0.1.1/package.tar"
+        )),
+        Version::parse("0.1.1").expect("fixed template version"),
+        FileIdentity {
+            path: path("templates/projects/rust-c-sdk-values/versions/0.1.1/package.tar"),
+            sha256: Digest::new(
+                "sha256:ffd2687530f5510374d7da389cac9ac883691adb28ad11cf31a3a6fc297d4a93",
+            )
+            .expect("fixed archive digest"),
+            size: 49_664,
+        },
+        FileReference {
+            file: FileIdentity {
+                path: path("meta/template.json"),
+                sha256: Digest::new(
+                    "sha256:47ee331592c12aca99cfdd5fbc80a55e1fb2109039dbad3a4b813eb84c94be7d",
+                )
+                .expect("fixed manifest digest"),
+                size: 13_914,
+            },
+            schema: Id::new("madb.project-template/1").expect("fixed schema"),
+        },
+    )?;
+    record.select(selector)?;
+    Ok(record)
+}
+fn installed_legacy(tool: &ComponentIdentity) -> Result<TrustedTemplateRecord> {
     const ARCHIVE: &[u8] = include_bytes!(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../templates/projects/rust-c-sdk-values/package.tar"
@@ -88,6 +126,7 @@ pub(super) fn installed(tool: &ComponentIdentity) -> Result<TrustedTemplateRecor
     TrustedTemplateRecord::bundled(
         tool,
         ARCHIVE,
+        Version::parse("0.1.0").expect("legacy template version"),
         FileIdentity {
             path: path("templates/projects/rust-c-sdk-values/package.tar"),
             sha256: Digest::new(

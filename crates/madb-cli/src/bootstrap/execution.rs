@@ -29,6 +29,9 @@ use std::{
 };
 
 mod dependencies;
+mod retained;
+use retained::RetainOnReturn;
+pub(super) use retained::RetainedExecution;
 
 pub struct ExecutionOptions {
     pub command: String,
@@ -43,6 +46,150 @@ pub struct ExecutionOptions {
 }
 
 pub fn execute(options: &ExecutionOptions) -> Result<String> {
+    execute_inner(options, None, None).map(|outcome| outcome.summary)
+}
+
+/// In-process initialization composition supplies one stage's existing C04
+/// cancellation owner. It does not install a second signal listener or parse
+/// human-readable output to recover verified metadata bytes.
+pub(super) fn execute_controlled(
+    options: &ExecutionOptions,
+    control: &PipelineControl,
+) -> std::result::Result<ExecutionOutcome, ControlledExecutionError> {
+    let journal = std::cell::RefCell::new(ExecutionJournal::default());
+    if control.commit().rejected_by_cancellation() {
+        return Err(ControlledExecutionError {
+            error: QueryError::new(
+                ErrorKind::Conflict,
+                "STORE002",
+                "commit",
+                "execution control already rejected a previous publication",
+            ),
+            journal: journal.into_inner(),
+        });
+    }
+    if options.task.as_deref() == Some("dependencies") {
+        return Err(ControlledExecutionError {
+            error: invalid(
+                "dependencies",
+                "initialization must supply its frozen dependency closure",
+            ),
+            journal: journal.into_inner(),
+        });
+    }
+    match execute_inner(options, Some(control), Some(&journal)) {
+        Ok(mut outcome) => {
+            outcome.journal = journal.into_inner();
+            Ok(outcome)
+        }
+        Err(mut error) => {
+            let mut journal = journal.into_inner();
+            if control.commit().rejected_by_cancellation() {
+                journal.cancelled = true;
+            }
+            if let Some(kind) = journal.stage_error_kind {
+                error.kind = kind;
+            }
+            Err(ControlledExecutionError { error, journal })
+        }
+    }
+}
+#[derive(Default)]
+pub(super) struct ExecutionJournal {
+    pub files: Vec<(String, Vec<u8>)>,
+    pub cancelled: bool,
+    pub retained: Vec<RetainedExecution>,
+    pub cleanup_complete: Option<bool>,
+    pub committed: Option<Box<(Digest, madb_app::transaction::Batch)>>,
+    stage_error_kind: Option<ErrorKind>,
+}
+pub(super) struct ControlledExecutionError {
+    pub error: QueryError,
+    pub journal: ExecutionJournal,
+}
+type Journal<'a> = Option<&'a std::cell::RefCell<ExecutionJournal>>;
+fn record_execution(
+    journal: Journal<'_>,
+    id: &str,
+    execution: Option<&madb_app::process::ProcessResult<madb_app::process::ProcessExecution>>,
+) {
+    let Some(journal) = journal else {
+        return;
+    };
+    let mut journal = journal.borrow_mut();
+    let index = journal.files.len();
+    let Some(execution) = execution else {
+        return;
+    };
+    let execution = match execution {
+        Ok(execution) => execution,
+        Err(error) => {
+            journal.stage_error_kind = Some(ErrorKind::Host);
+            journal.files.push((
+                format!("process-{index:04}.txt"),
+                format!("id={id}\nprocess-error={error}\n").into_bytes(),
+            ));
+            return;
+        }
+    };
+    let mut summary = format!("id={id}\nadmission={:?}\n", execution.admission);
+    if let Some(process) = &execution.process {
+        let complete =
+            process.pending_cleanup.is_none() && process.report.cleanup.locally_complete();
+        journal.cleanup_complete = Some(journal.cleanup_complete.unwrap_or(true) && complete);
+        summary.push_str(&format!("termination={:?}\ncleanup={:?}\npending_cleanup={}\nstdout_observed={}\nstdout_truncated={}\nstderr_observed={}\nstderr_truncated={}\ndiagnostic={:?}\n",process.report.termination,process.report.cleanup,process.pending_cleanup.is_some(),process.report.stdout.observed_bytes,process.report.stdout.truncated(),process.report.stderr.observed_bytes,process.report.stderr.truncated(),process.report.diagnostic));
+        journal.files.push((
+            format!("process-{index:04}.stdout"),
+            process.report.stdout.bytes.clone(),
+        ));
+        journal.files.push((
+            format!("process-{index:04}.stderr"),
+            process.report.stderr.bytes.clone(),
+        ));
+    }
+    journal
+        .files
+        .push((format!("process-{index:04}.txt"), summary.into_bytes()));
+}
+fn record_graph_status(journal: Journal<'_>, status: GraphStatus, failure: Option<&QueryError>) {
+    if let Some(journal) = journal {
+        let mut journal = journal.borrow_mut();
+        // A later cancellation flag does not replace an observed IO/input error.
+        journal.cancelled = status == GraphStatus::Cancelled && failure.is_none();
+        if failure.is_some() || status == GraphStatus::Failed {
+            journal.stage_error_kind = Some(
+                failure
+                    .map(|e| e.kind)
+                    .filter(|kind| matches!(kind, ErrorKind::Host | ErrorKind::Conflict))
+                    .unwrap_or(ErrorKind::CheckFailed),
+            );
+        }
+    }
+}
+pub(super) struct ExecutionOutcome {
+    pub summary: String,
+    pub metadata: Option<(FileReference, Vec<u8>)>,
+    pub journal: ExecutionJournal,
+}
+impl ExecutionOutcome {
+    fn plain(summary: String) -> Self {
+        Self {
+            summary,
+            metadata: None,
+            journal: ExecutionJournal::default(),
+        }
+    }
+}
+#[derive(Clone, Copy)]
+struct ExecutionContext<'a> {
+    control: Option<&'a PipelineControl>,
+    journal: Journal<'a>,
+}
+fn execute_inner(
+    options: &ExecutionOptions,
+    control: Option<&PipelineControl>,
+    journal: Journal<'_>,
+) -> Result<ExecutionOutcome> {
     if options.command == "build"
         && options.task.as_deref() == Some("dependencies")
         && options.process_timeout != ProcessPolicy::default().timeout
@@ -66,6 +213,12 @@ pub fn execute(options: &ExecutionOptions) -> Result<String> {
     let bytes = workspace
         .read(&execution_path, 1024 * 1024)?
         .ok_or_else(|| invalid("execution", "execution document is missing"))?;
+    if let Some(journal) = journal {
+        journal
+            .borrow_mut()
+            .files
+            .push(("execution.json".into(), bytes.clone()));
+    }
     let spec = execution::read_execution(&bytes)?;
     validate_command(options, &spec)?;
     let documents = load_documents(
@@ -124,10 +277,11 @@ pub fn execute(options: &ExecutionOptions) -> Result<String> {
                 &task_documents,
             )?;
         }
-        return dependencies::prepare(options, &spec, &documents, &workspace);
+        return dependencies::prepare(options, &spec, &documents, &workspace)
+            .map(ExecutionOutcome::plain);
     }
     if spec.operation == ExecutionOperation::Metadata {
-        return metadata(options, &spec, &documents, &workspace);
+        return metadata(options, &spec, &documents, &workspace, control, journal);
     }
     let store_path = locations::directory(&options.root, &spec.store, !options.check)?
         .ok_or_else(|| drift("no committed source batch; run generate first"))?;
@@ -145,9 +299,27 @@ pub fn execute(options: &ExecutionOptions) -> Result<String> {
     };
     let parents = PipelineParents::capture(&store, layer)?;
     if spec.operation == ExecutionOperation::Build {
-        build(options, &spec, &documents, &workspace, &store, &parents)
+        build(
+            options,
+            &spec,
+            &documents,
+            &workspace,
+            &store,
+            &parents,
+            ExecutionContext { control, journal },
+        )
+        .map(ExecutionOutcome::plain)
     } else {
-        artifact(options, &spec, &documents, &workspace, &store, &parents)
+        artifact(
+            options,
+            &spec,
+            &documents,
+            &workspace,
+            &store,
+            &parents,
+            ExecutionContext { control, journal },
+        )
+        .map(ExecutionOutcome::plain)
     }
 }
 
@@ -277,7 +449,9 @@ fn metadata(
     spec: &ExecutionSpec,
     documents: &FrozenInputs,
     workspace: &LocalWorkspace,
-) -> Result<String> {
+    supplied_control: Option<&PipelineControl>,
+    journal: Journal<'_>,
+) -> Result<ExecutionOutcome> {
     let recipe_spec = spec.recipe.as_ref().expect("validated recipe");
     let dependency = dependencies::load(options, spec, documents, workspace)?;
     if let Some(dependency) = &dependency {
@@ -298,9 +472,16 @@ fn metadata(
         ));
     }
     let observation = watch(spec, workspace)?;
-    let control = PipelineControl::default();
+    let local_control = PipelineControl::default();
+    let control = supplied_control.unwrap_or(&local_control);
     let _scope = control.scope();
-    let _signals = madb_host::cancellation::CancellationSignals::install(&control)?;
+    let _signals = if supplied_control.is_none() {
+        Some(madb_host::cancellation::CancellationSignals::install(
+            control,
+        )?)
+    } else {
+        None
+    };
     let mut executor = LocalArtifactExecutor::new(
         &run_parent(options, spec)?,
         &locations::unique_run_name(),
@@ -311,7 +492,27 @@ fn metadata(
         ),
     )
     .map_err(|error| error.error)?;
-    let run = run_artifact(&recipe, workspace, &mut executor, control.graph())?;
+    let run = RetainOnReturn::new(
+        run_artifact(&recipe, workspace, &mut executor, control.graph())?,
+        journal,
+        |run| RetainedExecution::Artifact(Box::new(run)),
+    );
+    record_graph_status(journal, run.status, run.failure.as_ref());
+    if let Some(node) = run.node() {
+        record_execution(journal, "artifact", node.execution());
+    }
+    if let Some(journal) = journal {
+        journal.borrow_mut().files.push((
+            "invocation.txt".into(),
+            format!(
+                "tool={:?}\narguments={:?}\nenvironment={:?}\n",
+                recipe.invocation().process.tool,
+                recipe.invocation().process.arguments,
+                recipe.invocation().process.environment
+            )
+            .into_bytes(),
+        ));
+    }
     let result = run.result().ok_or_else(|| artifact_failure(&run))?;
     documents.verify(workspace)?;
     dependencies::verify(options, &dependency, workspace)?;
@@ -323,11 +524,15 @@ fn metadata(
         .expect("successful owner")
         .join("work")
         .join(result.manifest().0.path.as_str());
-    Ok(format!(
-        "MetadataPrepared\nManifest: {}\nDigest: {}\nNo source/build/candidate index changed.\n",
-        path.display(),
-        result.manifest().0.digest.as_str()
-    ))
+    Ok(ExecutionOutcome {
+        journal: ExecutionJournal::default(),
+        metadata: Some((result.manifest().0.clone(), result.manifest().1.to_vec())),
+        summary: format!(
+            "MetadataPrepared\nManifest: {}\nDigest: {}\nNo source/build/candidate index changed.\n",
+            path.display(),
+            result.manifest().0.digest.as_str()
+        ),
+    })
 }
 
 fn artifact(
@@ -337,7 +542,12 @@ fn artifact(
     workspace: &LocalWorkspace,
     store: &LocalBatchStore,
     parents: &PipelineParents<madb_host::transaction::BatchLease>,
+    context: ExecutionContext<'_>,
 ) -> Result<String> {
+    let ExecutionContext {
+        control: supplied_control,
+        journal,
+    } = context;
     let source = parents.workspace(workspace)?;
     let recipe_spec = spec.recipe.as_ref().expect("validated recipe");
     if spec.operation == ExecutionOperation::Package {
@@ -371,9 +581,16 @@ fn artifact(
         ));
     }
     let observation = watch(spec, workspace)?;
-    let control = PipelineControl::default();
+    let local_control = PipelineControl::default();
+    let control = supplied_control.unwrap_or(&local_control);
     let _scope = control.scope();
-    let _signals = madb_host::cancellation::CancellationSignals::install(&control)?;
+    let _signals = if supplied_control.is_none() {
+        Some(madb_host::cancellation::CancellationSignals::install(
+            control,
+        )?)
+    } else {
+        None
+    };
     let mut executor = LocalArtifactExecutor::new(
         &run_parent(options, spec)?,
         &locations::unique_run_name(),
@@ -384,7 +601,27 @@ fn artifact(
         ),
     )
     .map_err(|error| error.error)?;
-    let run = run_artifact(&recipe, &source, &mut executor, control.graph())?;
+    let run = RetainOnReturn::new(
+        run_artifact(&recipe, &source, &mut executor, control.graph())?,
+        journal,
+        |run| RetainedExecution::Artifact(Box::new(run)),
+    );
+    record_graph_status(journal, run.status, run.failure.as_ref());
+    if let Some(node) = run.node() {
+        record_execution(journal, "artifact", node.execution());
+    }
+    if let Some(journal) = journal {
+        journal.borrow_mut().files.push((
+            "invocation.txt".into(),
+            format!(
+                "tool={:?}\narguments={:?}\nenvironment={:?}\n",
+                recipe.invocation().process.tool,
+                recipe.invocation().process.arguments,
+                recipe.invocation().process.environment
+            )
+            .into_bytes(),
+        ));
+    }
     let result = run.result().ok_or_else(|| artifact_failure(&run))?;
     let batch = parents.batch(result)?;
     let retained = run
@@ -417,8 +654,12 @@ fn artifact(
         ))
     } else {
         let receipt = parents
-            .publish(store, &batch, &control, revalidate)
+            .publish(store, &batch, control, revalidate)
             .map_err(|error| retained_error(error, &retained))?;
+        if let Some(journal) = journal {
+            journal.borrow_mut().committed =
+                Some(Box::new((receipt.batch_id.clone(), batch.clone())));
+        }
         Ok(format!(
             "{:?}\nLayer: {}\nBatch: {}\nGeneration: {}\nRevision: {}\n{}",
             receipt.disposition,
@@ -438,7 +679,12 @@ fn build(
     workspace: &LocalWorkspace,
     store: &LocalBatchStore,
     parents: &PipelineParents<madb_host::transaction::BatchLease>,
+    context: ExecutionContext<'_>,
 ) -> Result<String> {
+    let ExecutionContext {
+        control: supplied_control,
+        journal,
+    } = context;
     let source = parents.workspace(workspace)?;
     let snapshot = document(
         documents,
@@ -486,9 +732,16 @@ fn build(
         source_lease.files(),
     )?;
     let observation = watch(spec, workspace)?;
-    let control = PipelineControl::default();
+    let local_control = PipelineControl::default();
+    let control = supplied_control.unwrap_or(&local_control);
     let _scope = control.scope();
-    let _signals = madb_host::cancellation::CancellationSignals::install(&control)?;
+    let _signals = if supplied_control.is_none() {
+        Some(madb_host::cancellation::CancellationSignals::install(
+            control,
+        )?)
+    } else {
+        None
+    };
     let environment = execution::build_environment_names(&selected_bytes)?;
     let mut executor = LocalGraphExecutor::new(
         &run_parent(options, spec)?,
@@ -497,7 +750,23 @@ fn build(
         policy(options, environment.into_iter()),
     )
     .map_err(|error| error.error)?;
-    let run = execute_graph(&graph, &source, &mut executor, control.graph())?;
+    let run = RetainOnReturn::new(
+        execute_graph(&graph, &source, &mut executor, control.graph())?,
+        journal,
+        RetainedExecution::Graph,
+    );
+    record_graph_status(journal, run.status, run.failure.as_ref());
+    for (id, node) in run.nodes() {
+        record_execution(journal, id.as_str(), node.execution());
+    }
+    if let Some(journal) = journal {
+        for (index, bytes) in selected_bytes.iter().enumerate() {
+            journal
+                .borrow_mut()
+                .files
+                .push((format!("task-{index:04}.json"), bytes.clone()));
+        }
+    }
     if run.status != GraphStatus::Validated {
         let mut failure = invalid("build", format!("graph failed: {:?}", run.status));
         if let Some(cause) = &run.failure {
@@ -538,7 +807,7 @@ fn build(
         configuration(spec, documents).profile,
     )?;
     let batch = parents.build_batch(artifacts.identity, artifacts.files)?;
-    let receipt = parents.publish(store, &batch, &control, || {
+    let receipt = parents.publish(store, &batch, control, || {
         documents.verify(workspace)?;
         dependencies::verify(options, &dependency, workspace)?;
         run.inputs()
@@ -546,6 +815,9 @@ fn build(
             .verify(&source)?;
         observation.verify(workspace)
     })?;
+    if let Some(journal) = journal {
+        journal.borrow_mut().committed = Some(Box::new((receipt.batch_id.clone(), batch.clone())));
+    }
     Ok(format!(
         "{:?}\nLayer: build\nBatch: {}\nGeneration: {}\nRevision: {}\n{}",
         receipt.disposition,
@@ -725,3 +997,33 @@ mod tests {
 #[cfg(all(test, unix))]
 #[path = "execution_grace_tests.rs"]
 mod grace_tests;
+
+#[cfg(test)]
+mod controlled_reuse_tests {
+    use super::*;
+    #[test]
+    fn previous_veto_is_not_reported_as_this_attempt_cancellation() {
+        let control = PipelineControl::default();
+        control.cancel();
+        assert!(control.finish_without_commit().is_err());
+        assert!(control.commit().rejected_by_cancellation());
+        let options = ExecutionOptions {
+            command: "generate".into(),
+            root: PathBuf::from("/not-an-execution-root"),
+            execution: "missing.json".into(),
+            tool_root: None,
+            process_timeout: Duration::from_secs(1),
+            process_termination_grace: Duration::from_millis(1),
+            check: false,
+            task: None,
+            active_tasks: Vec::new(),
+        };
+        let Err(error) = execute_controlled(&options, &control) else {
+            panic!("consumed control")
+        };
+        assert_eq!(error.error.kind, ErrorKind::Conflict);
+        assert_eq!(error.error.findings[0].code, "STORE002");
+        assert!(!error.journal.cancelled);
+        assert!(control.commit().rejected_by_cancellation());
+    }
+}

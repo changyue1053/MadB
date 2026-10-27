@@ -335,7 +335,7 @@ fn check_schemas(inputs: &BoundCompositionInputs, paths: &GenerationSchemaPaths)
     }
     Ok(())
 }
-fn check_ir_identities(ir: &Document) -> Result<()> {
+pub(super) fn check_ir_identities(ir: &Document) -> Result<()> {
     if ir.value()["structure_digest"] != structure_digest(ir)? {
         return Err(invalid(
             "HASH001",

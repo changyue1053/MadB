@@ -48,6 +48,46 @@ def policies(seed):
     return result
 
 
+def finish_context(root, profile, config, plan, surface, variant, names, schema_names, writer=save):
+    """Prepare existing public context documents from an authoritative profile.
+
+    This function has no tool discovery or execution authority. Both the older
+    producer preparation and the installed init recipe use the same project,
+    policy, component and lock projections.
+    """
+    from values_lowering import lower
+    target = profile["target"]
+    selector = dict(route="RUST-C-ABI", profile_id=profile["id"],
+                    profile_digest=profile_digest(profile), target=target, direction="consumer-to-provider")
+    project = dict(schema="madb.project/1", project="madb-native-values", sdk_namespace=plan["namespace"],
+        boundaries=[dict(id=variant, route="RUST-C-ABI", direction="consumer-to-provider",
+            source=dict(kind="rust-c-declaration", path="author.rs"),
+            profile=ref(root, "profile.json", "madb.profile/1"), target=target, output="generated")],
+        policies=[], policy_families=[],
+        artifacts=dict(package="madb-native-values-"+variant, manifest="candidate.json"))
+    inputs = unique(ref(root, name, "madb.source-input/1") for name in names)
+    preliminary = dict(schema="madb.read-request/1", boundary_id=variant, selector=selector, inputs=inputs)
+    seed = lower(surface, plan, config, preliminary, project)
+    project["policies"] = policies(seed)
+    writer(root, "project.json", project)
+    component_files = [item for item in inputs if item["path"].startswith("adapters/generators/rust_c/")
+        or item["path"].startswith("adapters/contracts/src/native_values")
+        or item["path"] == "crates/madb-cli/src/bin/madb-native-values-read.rs"]
+    component = dict(id=COMPONENT, version="0.1.0", sha256=semantic("madb.native-component/1", component_files))
+    lock = dict(schema="madb.lock/1", project_digest=project_digest(project),
+        profiles=[dict(id=profile["id"], semantic_digest=profile_digest(profile),
+                       file=ref(root, "profile.json", "madb.profile/1"))],
+        tools=profile["tools"], components=[component],
+        inputs=[{key: item[key] for key in ("path", "sha256", "size")} for item in inputs],
+        schemas=[ref(root, name) for name in schema_names])
+    writer(root, "madb.lock", lock)
+    read = dict(schema="madb.read-request/1", boundary_id=variant, selector=selector, inputs=inputs,
+        component=component, lock=ref(root, "madb.lock", "madb.lock/1"),
+        profile=ref(root, "profile.json", "madb.profile/1"), output_root="staging/read")
+    writer(root, "read.json", read)
+    return dict(profile=profile, project=project, read=read, lock=lock, config=config)
+
+
 def prepare(repo, workspace, observation, author, namespace, variant, reader_image):
     repo,root=Path(repo).resolve(),Path(workspace).resolve()
     if not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,63}",variant):raise ValueError("invalid finite value variant name")
@@ -61,7 +101,6 @@ def prepare(repo, workspace, observation, author, namespace, variant, reader_ima
     try:
         import values_driver as native
         from values_codegen import render_values_cbindgen_config
-        from values_lowering import lower
         with tempfile.TemporaryDirectory(prefix="madb-value-discovery-") as temporary:
             scratch=Path(temporary);plan=native.read_plan(config,root,scratch,namespace)
             for base,key in ((True,"base_cbindgen_config"),(False,"cbindgen_config")):
@@ -83,20 +122,5 @@ def prepare(repo, workspace, observation, author, namespace, variant, reader_ima
             required_features=sorted(features),supported_features=sorted(features),restrictions=[],
             defaults=dict(values=dict(ownership="copy"),origin=dict(authority="profile-default",id="native-values.copy",location=dict(path="profile.json",line=1,column=1))),backend_config=None)
         save(root,"profile.json",profile)
-        selector=dict(route="RUST-C-ABI",profile_id=profile["id"],profile_digest=profile_digest(profile),target=target,direction="consumer-to-provider")
-        project=dict(schema="madb.project/1",project="madb-native-values",sdk_namespace=plan["namespace"],
-            boundaries=[dict(id=variant,route="RUST-C-ABI",direction="consumer-to-provider",source=dict(kind="rust-c-declaration",path="author.rs"),
-                profile=ref(root,"profile.json","madb.profile/1"),target=target,output="generated")],policies=[],policy_families=[],artifacts=dict(package="madb-native-values-"+variant,manifest="candidate.json"))
-        inputs=unique(ref(root,n,"madb.source-input/1") for n in names)
-        preliminary=dict(schema="madb.read-request/1",boundary_id=variant,selector=selector,inputs=inputs)
-        seed=lower(surface,plan,config,preliminary,project);project["policies"]=policies(seed);save(root,"project.json",project)
+        return finish_context(root, profile, config, plan, surface, variant, names, schema_names)
     finally:sys.path.pop(0)
-    component_files=[r for r in inputs if r["path"].startswith("adapters/generators/rust_c/") or r["path"].startswith("adapters/contracts/src/native_values") or r["path"]=="crates/madb-cli/src/bin/madb-native-values-read.rs"]
-    component=dict(id=COMPONENT,version="0.1.0",sha256=semantic("madb.native-component/1",component_files))
-    lock=dict(schema="madb.lock/1",project_digest=project_digest(project),profiles=[dict(id=profile["id"],semantic_digest=profile_digest(profile),file=ref(root,"profile.json","madb.profile/1"))],
-        tools=profile["tools"],components=[component],inputs=[{k:r[k] for k in ("path","sha256","size")} for r in inputs],schemas=[ref(root,n) for n in schema_names])
-    save(root,"madb.lock",lock)
-    read=dict(schema="madb.read-request/1",boundary_id=variant,selector=selector,inputs=inputs,component=component,lock=ref(root,"madb.lock","madb.lock/1"),
-              profile=ref(root,"profile.json","madb.profile/1"),output_root="staging/read")
-    save(root,"read.json",read)
-    return dict(profile=profile,project=project,read=read,lock=lock,config=config)

@@ -78,6 +78,12 @@ mod unsupported {
         pub fn root(&self) -> &AbsolutePath {
             unreachable!("unsupported constructors cannot succeed")
         }
+        pub fn result_was_saved(&self) -> bool {
+            false
+        }
+        pub fn fork_verified(&self) -> Result<Self> {
+            Err(unavailable())
+        }
         pub fn store_file(&mut self, _: &FileReference, _: &[u8]) -> Result<()> {
             Err(unavailable())
         }

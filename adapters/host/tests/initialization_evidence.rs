@@ -240,3 +240,45 @@ fn allocation_preserves_noncollision_parent_error() {
         0
     );
 }
+
+#[test]
+fn saved_result_forks_verified_attachments_without_copying_old_terminal_bytes() {
+    let sandbox = Sandbox::new();
+    let root = sandbox.root();
+    let mut original = LocalInitEvidence::create(&root).unwrap();
+    let file = reference("stage/output.log", b"actual completed stage");
+    original
+        .store_file(&file, b"actual completed stage")
+        .unwrap();
+    original
+        .save_result(&root, b"old completed result", &[identity(&file)])
+        .unwrap();
+    assert!(original.result_was_saved());
+    let mut fork = original.fork_verified().unwrap();
+    let new_root = fork.root().clone();
+    assert_ne!(root, new_root);
+    assert!(
+        !PathBuf::from(new_root.as_str())
+            .join("init-result.json")
+            .exists()
+    );
+    fork.save_result(&new_root, b"later cancelled result", &[identity(&file)])
+        .unwrap();
+    assert_eq!(
+        fs::read(PathBuf::from(root.as_str()).join("init-result.json")).unwrap(),
+        b"old completed result"
+    );
+    assert_eq!(
+        fs::read(PathBuf::from(new_root.as_str()).join("stage/output.log")).unwrap(),
+        b"actual completed stage"
+    );
+    fs::write(
+        PathBuf::from(root.as_str()).join("stage/output.log"),
+        b"changed bytes",
+    )
+    .unwrap();
+    assert_eq!(
+        original.fork_verified().err().unwrap().kind,
+        ErrorKind::Conflict
+    );
+}

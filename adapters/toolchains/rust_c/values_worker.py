@@ -88,6 +88,22 @@ def run_phase(config,phase,input_root,work):
     finally:verify_tools(config)
 
 
+def interpreter_arguments():
+    """Match the real interpreter mode, never a prefix asserted by the task."""
+    isolated = ["-I", "-S", "-B", "-X", "pycache_prefix=/dev/null"]
+    flags = sys.flags
+    if (flags.isolated and flags.no_site and flags.dont_write_bytecode
+            and flags.ignore_environment and not flags.optimize
+            and sys._xoptions == {"pycache_prefix": "/dev/null"}
+            and sys.pycache_prefix == "/dev/null"):
+        return isolated
+    if not flags.isolated and not flags.no_site and not flags.optimize and not sys._xoptions:
+        # Existing C05 producers may set PYTHONDONTWRITEBYTECODE. That alone is
+        # not evidence of the isolated installation resource closure.
+        return []
+    raise ValueError("finite worker interpreter mode differs from the fixed recipe")
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument("--config",required=True,type=Path);args=parser.parse_args()
     try:
@@ -96,7 +112,7 @@ def main():
         task=decode_json(data);work=Path.cwd().resolve();root=(work.parent/"inputs").resolve(strict=True)
         path=args.config.resolve(strict=True);script=Path(__file__).resolve(strict=True)
         if not path.is_relative_to(root) or not script.is_relative_to(root):raise ValueError("worker/config must be frozen inputs")
-        expected=[os.path.relpath(script,work),"--config",os.path.relpath(path,work)]
+        expected=interpreter_arguments()+[os.path.relpath(script,work),"--config",os.path.relpath(path,work)]
         config=load_json(path)
         if task.get("schema")!="madb.build-task/1" or task["arguments"]!=expected or task["selector"]["target"]!=config["rust_target"]:
             raise ValueError("finite task arguments/target differ")

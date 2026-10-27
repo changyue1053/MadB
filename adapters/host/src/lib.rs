@@ -6,6 +6,7 @@ pub mod dag;
 pub mod dependencies;
 pub mod extension_files;
 pub mod initialization;
+pub mod initialization_execution;
 pub mod initialization_source;
 pub mod inputs;
 pub mod locations;

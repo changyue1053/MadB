@@ -55,26 +55,7 @@ pub fn complete_initialization<F: InitResultFormat, E: InitEvidencePort>(
         ));
     }
     let frozen = request.projection();
-    let selected = request.selected();
-    let project_prefix = format!("{}/", project.root().as_str());
-    if observations.evidence_root == *project.root()
-        || observations
-            .evidence_root
-            .as_str()
-            .starts_with(&project_prefix)
-    {
-        return Err(invalid(
-            "evidence_root",
-            "report evidence must remain outside the new user project",
-        ));
-    }
-    check_provenance(project, &observations)?;
-    if observations.open.requested != frozen.open {
-        return Err(invalid(
-            "open",
-            "open observation differs from the frozen request",
-        ));
-    }
+    validate_observation_context(request, project, &observations)?;
     let creation = if frozen.dry_run {
         if committed.is_some()
             || !observations.checks.is_empty()
@@ -108,6 +89,21 @@ pub fn complete_initialization<F: InitResultFormat, E: InitEvidencePort>(
         }
         Creation::Created
     };
+    let mut report = progress_report(request, project, observations)?;
+    report.creation = creation;
+    report.termination = Termination::Completed;
+    report.exit_code = 0;
+    let bytes = save_report(request, &report, format, evidence_store)?;
+    Ok(CompletedInitialization { report, bytes })
+}
+
+fn progress_report(
+    request: &FrozenInitRequest,
+    project: &PreparedProject,
+    observations: SuccessObservations,
+) -> Result<InitReport> {
+    validate_observation_context(request, project, &observations)?;
+    let selected = request.selected();
     let ide_entries = selected
         .template()
         .ide_entries
@@ -129,21 +125,20 @@ pub fn complete_initialization<F: InitResultFormat, E: InitEvidencePort>(
         task_roots: selected.profile().task_roots.clone(),
         downloads: Vec::new(),
     };
-    let root = observations.evidence_root.clone();
     let report = InitReport {
         request_digest: Some(request.digest().clone()),
         tool: observations.tool,
         template: Some(observations.template),
         template_package: Some(observations.template_package),
-        evidence_root: Some(DisplayPath::Absolute(root.clone())),
+        evidence_root: Some(DisplayPath::Absolute(observations.evidence_root)),
         template_profile: Some(selected.profile_id().clone()),
         boundary_profiles: observations.boundary_profiles,
         request: Some(request_observation(request)),
         output: Some(DisplayPath::Absolute(project.root().clone())),
         plan: Some(plan),
-        creation,
-        termination: Termination::Completed,
-        exit_code: 0,
+        creation: Creation::NotCreated,
+        termination: Termination::Failed,
+        exit_code: 1,
         checks: observations.checks,
         ide_entries,
         open: observations.open,
@@ -151,8 +146,54 @@ pub fn complete_initialization<F: InitResultFormat, E: InitEvidencePort>(
         diagnostics: observations.diagnostics,
         logs: observations.logs,
     };
-    let required = evidence_inventory(request, &report)?;
-    let bytes = format.encode_result(&report)?;
+    Ok(report)
+}
+
+fn validate_observation_context(
+    request: &FrozenInitRequest,
+    project: &PreparedProject,
+    observations: &SuccessObservations,
+) -> Result<()> {
+    let frozen = request.projection();
+    let project_prefix = format!("{}/", project.root().as_str());
+    if observations.evidence_root == *project.root()
+        || observations
+            .evidence_root
+            .as_str()
+            .starts_with(&project_prefix)
+    {
+        return Err(invalid(
+            "evidence_root",
+            "report evidence must remain outside the new user project",
+        ));
+    }
+    check_provenance(project, observations)?;
+    if observations.open.requested != frozen.open {
+        return Err(invalid(
+            "open",
+            "open observation differs from the frozen request",
+        ));
+    }
+    Ok(())
+}
+
+fn save_report<F: InitResultFormat, E: InitEvidencePort>(
+    request: &FrozenInitRequest,
+    report: &InitReport,
+    format: &F,
+    evidence_store: &mut E,
+) -> Result<Vec<u8>> {
+    let root = match &report.evidence_root {
+        Some(DisplayPath::Absolute(root)) => root.clone(),
+        _ => {
+            return Err(invalid(
+                "evidence_root",
+                "saving requires an actual evidence root",
+            ));
+        }
+    };
+    let required = evidence_inventory(request, report)?;
+    let bytes = format.encode_result(report)?;
     let actual = evidence_store.save_result(&root, &bytes, &required)?;
     let mut expected = required;
     expected.push(FileIdentity {
@@ -171,7 +212,31 @@ pub fn complete_initialization<F: InitResultFormat, E: InitEvidencePort>(
             "saved evidence root/files differ from actual report bytes and required references",
         ));
     }
-    Ok(CompletedInitialization { report, bytes })
+    Ok(bytes)
+}
+
+/// Save the exact observations already made by this attempt on failure. The
+/// result remains failed/cancelled and cannot become completion authority.
+/// Original inputs, successful predecessor checks and failed-stage logs stay
+/// in the same evidence root; creation still comes only from the Host receipt.
+pub fn preserve_initialization_failure<F: InitResultFormat, E: InitEvidencePort>(
+    project: &PreparedProject,
+    created: Option<&CreatedProject>,
+    observations: SuccessObservations,
+    failure: InitializationFailure,
+    format: &F,
+    evidence_store: &mut E,
+) -> Result<InitReport> {
+    let request = project.request();
+    check_provenance(project, &observations)?;
+    let report = progress_report(request, project, observations)?;
+    let mut report = failure_report(report, Some(request), created, failure)?;
+    if created.is_some() {
+        report.recovery.push(Recovery { kind: RecoveryKind::Inspect,
+            message: "The project was created and has been preserved. Inspect its recorded stage diagnostics; do not initialize over it.".into(), arguments: None });
+    }
+    save_report(request, &report, format, evidence_store)?;
+    Ok(report)
 }
 
 fn check_provenance(project: &PreparedProject, observed: &SuccessObservations) -> Result<()> {

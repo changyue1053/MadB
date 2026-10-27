@@ -14,6 +14,9 @@ use crate::{
     },
 };
 
+mod sequence;
+pub use sequence::ArtifactSequence;
+
 /// Generator and packager invocations have dynamically declared file inventories
 /// in their genuine response payload, rather than pretending to be BuildTasks.
 pub struct ArtifactInvocation {
@@ -172,46 +175,12 @@ pub fn run_artifact<R: ArtifactRecipe, W: ReadWorkspace, E: ArtifactExecutor<R>>
     executor: &mut E,
     control: &GraphControl,
 ) -> Result<ArtifactRun<E::Run>> {
+    // Preserve the legacy preflight order: invalid invocations do not consume
+    // the caller's single-use graph interval.
     recipe.invocation().validate()?;
-    let guard = control.begin()?;
-    let mut run = ArtifactRun {
-        status: GraphStatus::Validated,
-        failure: None,
-        node: None,
-        result: None,
-        inputs: None,
-    };
-    if !guard.cancelled() {
-        match capture_inputs(source, recipe.invocation().inputs.clone()) {
-            Err(error) => run.failure = Some(error),
-            Ok(inputs) => {
-                if let Some(child) = guard.activate() {
-                    let mut node =
-                        executor.execute(recipe, inputs.clone(), &child, 128 * 1024 * 1024);
-                    guard.deactivate();
-                    run.result = node.take_value();
-                    run.node = Some(node);
-                    if run.result.is_none() {
-                        run.failure = Some(error(
-                            "PIPE003",
-                            recipe.invocation().id.as_str(),
-                            "artifact did not produce an accepted result; inspect retained process diagnostics",
-                        ));
-                    } else if let Err(error) = inputs.verify(source) {
-                        run.failure = Some(error);
-                    }
-                }
-                run.inputs = Some(inputs);
-            }
-        }
-    }
-    run.status = if guard.finish() {
-        GraphStatus::Cancelled
-    } else if run.failure.is_some() {
-        GraphStatus::Failed
-    } else {
-        GraphStatus::Validated
-    };
+    let mut sequence = ArtifactSequence::begin(control)?;
+    let mut run = sequence.run_checked(recipe, source, executor);
+    run.status = sequence.finish();
     if run.status != GraphStatus::Validated {
         run.result = None;
     }

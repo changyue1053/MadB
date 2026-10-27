@@ -15,14 +15,8 @@ impl LocalBatchStore {
         mut hook: impl FnMut(TransactionPoint) -> Result<()>,
     ) -> Result<CommitReceipt> {
         self.writable()?;
-        let permit = control.begin()?;
-        if permit.cancelled() {
-            return Err(fail(
-                "STORE002",
-                "commit",
-                "cancelled before commit preparation",
-            ));
-        }
+        let mut permit = control.begin()?;
+        permit.reject_if_cancelled()?;
         let _guard = self.lock(FlockOperation::LockExclusive)?;
         ownership::validate_root(&self.root)?;
         if staged.domain_identity != identity(&self.root)? {

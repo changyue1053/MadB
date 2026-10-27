@@ -139,11 +139,20 @@ fn dry_run_saves_a_plan_and_complete_original_inputs_without_user_project() {
 }
 #[cfg(target_os = "macos")]
 #[test]
-fn unsupported_build_run_modes_fail_before_creation_and_keep_the_frozen_digest() {
+fn legacy_build_run_modes_fail_before_creation_and_keep_the_frozen_digest() {
     let w = Workspace::new();
     for level in ["build", "run"] {
         let value = report(
-            w.run(&["init", "--out", "future_build", "--verify", level, "--json"]),
+            w.run(&[
+                "init",
+                "--template",
+                "org.madb.template/rust-c-sdk@0.1.0",
+                "--out",
+                "future_build",
+                "--verify",
+                level,
+                "--json",
+            ]),
             2,
         );
         assert_eq!(value["creation"], "not-created");
@@ -325,4 +334,53 @@ fn unsupported_host_does_not_invent_tool_identity_or_create_a_project() {
         assert!(String::from_utf8_lossy(&output.stderr).contains("HOST004"));
         assert_eq!(fs::read_dir(&workspace.0).unwrap().count(), 0);
     }
+}
+
+#[cfg(target_os = "macos")]
+#[test]
+fn both_fixed_template_versions_keep_structure_and_dry_run() {
+    let w = Workspace::new();
+    for version in ["0.1.0", "0.1.1"] {
+        for dry in [false, true] {
+            let selector = format!("org.madb.template/rust-c-sdk@{version}");
+            let name = format!("version_{}_{}", version.replace('.', "_"), dry);
+            let mut args = vec![
+                "init",
+                "--template",
+                &selector,
+                "--out",
+                &name,
+                "--verify",
+                "structure",
+                "--json",
+            ];
+            if dry {
+                args.push("--dry-run");
+            }
+            let value = report(w.run(&args), 0);
+            assert_eq!(value["template"]["version"], version);
+            assert_eq!(w.0.join(&name).exists(), !dry);
+            fs::remove_dir_all(evidence_root(&value)).unwrap();
+        }
+    }
+    let value = report(
+        w.run(&["init", "--out", "default_version", "--dry-run", "--json"]),
+        0,
+    );
+    assert_eq!(value["template"]["version"], "0.1.1");
+    fs::remove_dir_all(evidence_root(&value)).unwrap();
+}
+#[cfg(target_os = "macos")]
+#[test]
+fn build_requires_the_actual_compiled_source_revision_before_creation() {
+    if option_env!("MADB_SOURCE_REVISION").is_some() {
+        return;
+    }
+    let w = Workspace::new();
+    let value = report(w.run(&["init", "--out", "source_missing", "--json"]), 3);
+    assert_eq!(value["creation"], "not-created");
+    assert!(value["request_digest"].is_string());
+    assert_eq!(value["diagnostics"][0]["code"], "HOST005");
+    assert!(!w.0.join("source_missing").exists());
+    fs::remove_dir_all(evidence_root(&value)).unwrap();
 }

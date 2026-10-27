@@ -67,6 +67,7 @@ def main():
         [sys.executable, "tests/integration/test_native_values_codegen.py", "ValueRenderingTests"],
         [sys.executable, "tests/integration/test_native_values_client.py", "ValuesClientTests.test_identity_is_not_caller_supplied", "ValuesClientTests.test_invalid_internal_plans_are_not_rendered"],
         [sys.executable, "tests/integration/test_native_values_pipeline.py", "ValuePipelineTests"],
+        [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration", "-p", "test_init_values.py"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c07_environment"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c07_tools"],
         [sys.executable, "-m", "unittest", "discover", "-s", "tests/integration/c07_har"],

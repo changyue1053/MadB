@@ -8,6 +8,12 @@ import shutil
 import sys
 import tempfile
 
+# The installed recipe runs Python with -I/-S; imports come only from this
+# Host-frozen adapter directory, not the launcher's working directory or site.
+_MODULE_ROOT = str(Path(__file__).resolve().parent)
+if _MODULE_ROOT not in sys.path:
+    sys.path.insert(0, _MODULE_ROOT)
+
 from driver import _compiler_arguments, _finalize
 from native_ast import read_header, abi_projection
 from support import NativeError, canonical, digest, file_reference, input_path, load_json, run_tool, semantic, verify_tool

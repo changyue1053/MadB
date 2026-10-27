@@ -90,7 +90,7 @@ pub(super) fn observations(
         BundledSource::Bundled => "bundled",
     };
     let mut installation = format!(
-        "Trusted installation catalog\nsupported initialization: structure, dry-run\nunavailable initialization execution: build, run, open\ntemplate={}@{}\narchive={} {}\nmanifest={} {}\nsource={}\n",
+        "Trusted installation catalog\ncapability depends on selected template and source-bound tool; explicit 0.1.0 retains structure/dry-run only\nopen unavailable\ntemplate={}@{}\narchive={} {}\nmanifest={} {}\nsource={}\n",
         record.id,
         record.version,
         record.archive.sha256.as_str(),

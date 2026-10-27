@@ -35,12 +35,19 @@ def _profile(request, config, root):
     profile = support.read_json(support.input_path(root, "profile.json"))
     if profile["schema"] != "madb.profile/2" or "core.extension-composition@1" not in profile["required_features"]:
         raise ValueError("composition profile must require the adopted composition feature")
+    name = profile["id"]
+    modes = {"c07-c-arkts-composition-aarch64-ohos23":"ordinary", **{
+        "c07-c-arkts-chain-"+mode+"-aarch64-ohos23":mode for mode in ("ordinary","enhanced","disabled")}}
+    if name not in modes:
+        raise ValueError("unsupported fixed composition profile")
     # This guard separates entry points; full format, pins and fixed recipe
     # validation belong to the explicitly bound native bridge below.
+    return modes[name]
 
 
 def _complete(request, config, root, work):
-    _profile(request, config, root)
+    mode = _profile(request, config, root)
+    _optional_sources(config, root, work, mode)
     descriptor, seed, _ = driver._read(request, config, root, work)
     completed = support.command(
         config, "finalizer", ["metadata", Path(root).absolute()], cwd=work,
@@ -50,13 +57,44 @@ def _complete(request, config, root, work):
     return descriptor, json.loads(completed)
 
 
+OPTIONAL = (
+    ("sdk/arkts/observation/StateObservation.ets", "1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534", "state"),
+    ("sdk/arkts/observation/ArkUIStateModel.ets", "7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef", "ui"),
+)
+
+def _optional_sources(config, root, work, mode):
+    if mode != "enhanced":
+        return []
+    result = []
+    for name, digest, kind in OPTIONAL:
+        source = support.input_path(root, name)
+        data = source.read_bytes()
+        if support.sha(source).removeprefix("sha256:") != digest:
+            raise ValueError("unsupported optional SDK source: " + name)
+        support.command(config, "node", [Path(__file__).with_name("read_observation.cjs"), config["tools"]["typescript"]["path"], name, kind], cwd=work, stdin=data)
+        result.append(("generated/facade/" + source.name, data))
+    return result
+
+
 def metadata(request, config, root, work):
     return _complete(request, config, root, work)[1]
 
 
 def generate(request, config, root, work):
     descriptor, contract = _complete(request, config, root, work)
-    return driver._generate_from_metadata(request, config, root, work, descriptor, contract)
+    value = driver._generate_from_metadata(request, config, root, work, descriptor, contract)
+    optional = _optional_sources(config, root, work, _profile(request, config, root))
+    for name, data in optional:
+        destination = Path(work) / name
+        with destination.open("xb") as stream:
+            stream.write(data)
+        ref = driver.documents(root).ref(work, name)
+        ref["sources"] = ["madb.c07.Engine.observeState.v1", "madb.c07.Subscription.close.v1", "madb.c07.Subscription.requestStop.v1"]
+        value["files"].append(ref)
+    if optional:
+        value["files"].sort(key=lambda f: f["path"])
+        value["generation_id"] = driver.documents(root).semantic("madb.generation/1", {k: value[k] for k in ("input_digest","task_digest","profile_digest","files")})
+    return value
 
 
 def main():

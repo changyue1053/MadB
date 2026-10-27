@@ -1,23 +1,21 @@
 //! Installed initialization composition. Format/plan/rendering remain pure;
 //! only Host obtains identities, creates directories, and saves evidence.
 mod catalog;
+mod control;
 mod evidence;
 mod prepare;
+mod recipe;
 
 use crate::init::InitOptions;
-use madb_app::transaction::CommitControl;
+use control::{InitControl, install_signals};
 use madb_app::use_cases::initialize::*;
 use madb_app::{ErrorKind, QueryError, Result};
 use madb_contracts::project_init::ProjectInitAdapter;
-use madb_host::initialization::LocalProjectCreator;
+use madb_host::initialization::{LocalInitEvidence, LocalProjectCreator};
 use madb_host::initialization_source::{
     FrozenInitializationTool, normalize_output, observe_initialization_host,
 };
 use madb_plan::project::{CheckLevel, Version};
-use std::sync::{
-    Arc,
-    atomic::{AtomicBool, Ordering},
-};
 
 pub struct InitializationService {
     format: ProjectInitAdapter,
@@ -57,7 +55,7 @@ impl InitializationService {
         progress.output = Some(output.clone());
         Version::parse(&self.tool.identity().version).map_err(|_|invalid("tool.version",format!(
             "actual MadB version {} is not a formal N.N.N initialization version; no compatibility substitution is permitted",self.tool.identity().version)))?;
-        let record = catalog::installed(self.tool.identity())?;
+        let record = catalog::installed(self.tool.identity(), options.template.as_deref())?;
         record.select(options.template.as_deref())?;
         let (template, package) = prepare::load(&record, &self.format)?;
         control.checkpoint()?;
@@ -80,6 +78,7 @@ impl InitializationService {
         )?;
         progress.request = Some(frozen.clone());
         preflight(&frozen)?;
+        let recipe = recipe::ReadyRecipe::preflight(&frozen)?;
         control.checkpoint()?;
         self.tool.revalidate()?;
         let project = prepare::project(&record, &package, &frozen, &self.format)?;
@@ -112,32 +111,73 @@ impl InitializationService {
             &mut store,
             committed.as_ref(),
         )?;
+        progress.saved = Some(EvidenceProgress {
+            project: project.clone(),
+            observations,
+            store,
+        });
         control.checkpoint()?;
         self.tool.revalidate()?;
+        let saved = progress.saved.as_mut().expect("observations retained");
+        if let Some(recipe) = &recipe {
+            recipe.execute(
+                &project,
+                &self.tool,
+                control,
+                &mut saved.observations,
+                &mut saved.store,
+                &mut progress.retained,
+            )?;
+        }
         let completed = complete_initialization(
             &frozen,
             &project,
             committed.as_ref(),
-            observations,
+            saved.observations.clone(),
             &self.format,
-            &mut store,
+            &mut saved.store,
         )?;
         self.tool.revalidate()?;
         control.checkpoint()?;
         Ok(completed)
     }
-    fn failure(&self, progress: Progress, error: AttemptError) -> InitReport {
+    fn failure(&self, mut progress: Progress, error: AttemptError) -> InitReport {
+        let cleanup = settle_owners(&mut progress.retained);
+        let mut retained_checks = Vec::new();
+        let preservation_error = if let Some(mut saved) = progress.saved.take() {
+            retained_checks = saved.observations.checks.clone();
+            let preservation = (|| {
+                if saved.store.result_was_saved() {
+                    saved.store = saved.store.fork_verified()?;
+                    saved.observations.evidence_root = saved.store.root().clone();
+                }
+                if let Some(bytes) = cleanup {
+                    let file =
+                        evidence::save_file(&mut saved.store, "cleanup/final-poll.txt", &bytes)?;
+                    saved.observations.logs.push(file);
+                }
+                preserve_initialization_failure(
+                    &saved.project,
+                    progress.created.as_ref(),
+                    saved.observations.clone(),
+                    error.observation(),
+                    &self.format,
+                    &mut saved.store,
+                )
+            })();
+            match preservation {
+                Ok(report) => return report,
+                Err(error) => Some(error),
+            }
+        } else {
+            None
+        };
         let mut report = evidence::empty_report(self.tool.identity());
         report.output = progress.output.map(DisplayPath::Absolute);
         if let Some(request) = &progress.request {
             report.open = OpenObservation::skipped(request.projection().open.clone());
         }
-        let failure = match error {
-            AttemptError::Stage(error) => {
-                InitializationFailure::Stage(evidence::bounded_error(error))
-            }
-            AttemptError::Cancelled => InitializationFailure::Cancelled,
-        };
+        let failure = error.observation();
         let mut report = match failure_report(
             report,
             progress.request.as_ref(),
@@ -151,6 +191,15 @@ impl InitializationService {
                 return report;
             }
         };
+        if let Some(error) = preservation_error {
+            evidence::append_failure(&mut report, error);
+            // Keep observed stage facts even when their saved attachments can
+            // no longer be proved. The failed report carries no phantom refs.
+            for check in &mut retained_checks {
+                check.attachments.clear();
+            }
+            report.checks = retained_checks;
+        }
         if progress.created.is_some() {
             report.recovery.push(Recovery{kind:RecoveryKind::Inspect,
                 message:"The project was created and has been preserved. Inspect the recorded diagnostic and existing project; do not initialize over it.".into(),arguments:None});
@@ -193,24 +242,31 @@ struct Progress {
     request: Option<FrozenInitRequest>,
     created: Option<CreatedProject>,
     output: Option<AbsolutePath>,
+    saved: Option<EvidenceProgress>,
+    retained: Vec<crate::bootstrap::execution::RetainedExecution>,
 }
-#[derive(Clone, Default)]
-struct InitControl {
-    commit: CommitControl,
-    requested: Arc<AtomicBool>,
+struct EvidenceProgress {
+    project: PreparedProject,
+    observations: SuccessObservations,
+    store: LocalInitEvidence,
 }
-impl InitControl {
-    fn checkpoint(&self) -> AttemptResult<()> {
-        if self.requested.load(Ordering::Acquire) {
-            Err(AttemptError::Cancelled)
-        } else {
-            Ok(())
-        }
-    }
-}
+#[derive(Debug)]
 enum AttemptError {
     Stage(QueryError),
     Cancelled,
+}
+impl AttemptError {
+    fn observation(&self) -> InitializationFailure {
+        match self {
+            Self::Stage(error) => {
+                InitializationFailure::Stage(evidence::bounded_error(QueryError {
+                    kind: error.kind,
+                    findings: error.findings.clone(),
+                }))
+            }
+            Self::Cancelled => InitializationFailure::Cancelled,
+        }
+    }
 }
 impl From<QueryError> for AttemptError {
     fn from(value: QueryError) -> Self {
@@ -218,23 +274,6 @@ impl From<QueryError> for AttemptError {
     }
 }
 type AttemptResult<T> = std::result::Result<T, AttemptError>;
-#[cfg(unix)]
-fn install_signals(control: &InitControl) -> Result<madb_host::cancellation::CancellationSignals> {
-    let control = control.clone();
-    madb_host::cancellation::CancellationSignals::install_action(move || {
-        control.requested.store(true, Ordering::Release);
-        control.commit.cancel();
-    })
-}
-#[cfg(not(unix))]
-fn install_signals(_: &InitControl) -> Result<madb_host::cancellation::CancellationSignals> {
-    Err(QueryError::new(
-        ErrorKind::Host,
-        "HOST006",
-        "initialization",
-        "signal delivery is not implemented on this host",
-    ))
-}
 fn preflight(request: &FrozenInitRequest) -> Result<()> {
     let selected = request.selected();
     let requirements = &selected.profile().requirements.structure;
@@ -253,22 +292,50 @@ fn preflight(request: &FrozenInitRequest) -> Result<()> {
             "this installed structure recipe has no external tool or IDE preparation",
         ));
     }
-    if !request.projection().dry_run && request.projection().verify != VerifyLevel::Structure {
-        return Err(invalid(
-            "verify",
-            "this producer supports initialization structure and dry-run only; build/run execution is an unsupported initialization mode, not a tool or SDK availability result",
-        ));
+    let level = if request.projection().dry_run {
+        CheckLevel::Structure
+    } else {
+        match request.projection().verify {
+            VerifyLevel::Structure => CheckLevel::Structure,
+            VerifyLevel::Build => CheckLevel::Build,
+            VerifyLevel::Run => CheckLevel::Run,
+        }
+    };
+    let mut sets = vec![&selected.profile().requirements.structure];
+    if level >= CheckLevel::Build {
+        sets.push(&selected.profile().requirements.build);
     }
-    for check in selected
-        .required_checks(CheckLevel::Structure)
-        .map_err(|e| invalid(&e.subject, e.message))?
-    {
-        if check.id.as_str() != "structure"
-            || check.minimum_evidence != madb_model::evidence::EvidenceLevel::Static
+    if level >= CheckLevel::Run {
+        sets.push(&selected.profile().requirements.run);
+    }
+    for set in sets {
+        if !set.hosts.iter().any(|entry| {
+            entry.os == host.os && entry.arch == host.arch && entry.versions.contains(host.version)
+        }) || !set.ide_entries.is_empty()
         {
             return Err(invalid(
+                "requirements",
+                "requested verification has no supported host/IDE recipe",
+            ));
+        }
+    }
+    for check in selected
+        .required_checks(level)
+        .map_err(|e| invalid(&e.subject, e.message))?
+    {
+        if !matches!(
+            (check.id.as_str(), check.minimum_evidence),
+            ("structure", madb_model::evidence::EvidenceLevel::Static)
+                | (
+                    "native-generate",
+                    madb_model::evidence::EvidenceLevel::Generated
+                )
+                | ("c-link", madb_model::evidence::EvidenceLevel::Linked)
+                | ("ordinary-run", madb_model::evidence::EvidenceLevel::HostRun)
+        ) {
+            return Err(invalid(
                 check.id.as_str(),
-                "selected required check has no installed structure implementation",
+                "selected required check has no installed finite implementation",
             ));
         }
     }
@@ -276,4 +343,99 @@ fn preflight(request: &FrozenInitRequest) -> Result<()> {
 }
 fn invalid(subject: &str, message: impl Into<String>) -> QueryError {
     QueryError::new(ErrorKind::InvalidInput, "PLAN001", subject, message)
+}
+
+fn settle_owners(owners: &mut [crate::bootstrap::execution::RetainedExecution]) -> Option<Vec<u8>> {
+    if !owners.iter().any(|owner| owner.pending()) {
+        return None;
+    }
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(2);
+    let mut observations = String::new();
+    loop {
+        for (index, owner) in owners
+            .iter_mut()
+            .enumerate()
+            .filter(|(_, owner)| owner.pending())
+        {
+            for result in owner.poll() {
+                observations.push_str(&format!("owner={index} {result}\n"));
+            }
+        }
+        let pending = owners.iter().filter(|owner| owner.pending()).count();
+        observations.push_str(&format!("pending_owners={pending}\n"));
+        if pending == 0 || std::time::Instant::now() >= deadline {
+            break;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+    Some(observations.into_bytes())
+}
+
+#[cfg(all(test, target_os = "macos"))]
+mod late_failure_tests {
+    use super::*;
+    use std::collections::BTreeMap;
+    #[test]
+    fn saved_completion_then_cancel_or_drift_preserves_actual_stage_evidence() {
+        let parent = madb_host::locations::temporary_parent()
+            .unwrap()
+            .join(madb_host::locations::unique_run_name().as_str());
+        std::fs::create_dir(&parent).unwrap();
+        let service = InitializationService::new().unwrap();
+        for (index, error) in [
+            AttemptError::Cancelled,
+            AttemptError::Stage(QueryError::new(
+                ErrorKind::Conflict,
+                "FILE001",
+                "tool",
+                "actual frozen tool drift",
+            )),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let mut progress = Progress::default();
+            let control = InitControl::default();
+            let options = InitOptions {
+                template: None,
+                profile: None,
+                parameters: BTreeMap::new(),
+                targets: None,
+                verify: VerifyLevel::Structure,
+                open: None,
+                dry_run: false,
+                offline: true,
+                output: parent.join(format!("late_{index}")),
+            };
+            let completed = service.attempt(options, &control, &mut progress).unwrap();
+            let old = progress.saved.as_ref().unwrap().store.root().clone();
+            assert_eq!(completed.report().exit_code, 0);
+            let report = service.failure(progress, error);
+            assert_eq!(report.creation, Creation::Created);
+            assert_eq!(report.exit_code, if index == 0 { 1 } else { 4 });
+            assert_eq!(report.checks.len(), 1);
+            assert_eq!(report.checks[0].id.as_str(), "structure");
+            assert!(!report.checks[0].attachments.is_empty());
+            let Some(DisplayPath::Absolute(new)) = &report.evidence_root else {
+                panic!("saved failure root")
+            };
+            assert_ne!(new, &old);
+            assert_eq!(
+                std::fs::read(std::path::Path::new(new.as_str()).join("init-result.json")).unwrap(),
+                service.encode(&report).unwrap()
+            );
+            let old_bytes =
+                std::fs::read(std::path::Path::new(old.as_str()).join("init-result.json")).unwrap();
+            assert_eq!(old_bytes, completed.bytes());
+            for file in &report.checks[0].attachments {
+                let bytes =
+                    std::fs::read(std::path::Path::new(new.as_str()).join(file.path.as_str()))
+                        .unwrap();
+                assert_eq!(madb_app::Digest::of_bytes(&bytes), file.sha256);
+            }
+            std::fs::remove_dir_all(old.as_str()).unwrap();
+            std::fs::remove_dir_all(new.as_str()).unwrap();
+        }
+        std::fs::remove_dir_all(parent).unwrap();
+    }
 }

@@ -338,3 +338,109 @@ fn malformed_port_diagnostic_rejects_without_panicking() {
         .is_err()
     );
 }
+
+#[test]
+fn failed_execution_preserves_committed_project_predecessors_and_actual_evidence_root() {
+    let (a, r, p) = prepared(false);
+    let attempt = commit_new(&mut MockCommit, &r, &p).unwrap();
+    let mut observed = observations(&r, &p);
+    let log = file("native-failure.log", b"actual model subprocess stderr");
+    observed.logs.push(log.clone());
+    let expected_root = observed.evidence_root.clone();
+    let report = preserve_initialization_failure(
+        &p,
+        Some(attempt.created()),
+        observed,
+        InitializationFailure::Stage(QueryError::new(
+            ErrorKind::CheckFailed,
+            "EXEC010",
+            "native-generate",
+            "model compiler returned a nonzero exit",
+        )),
+        &a,
+        &mut sink(),
+    )
+    .unwrap();
+    assert_eq!(report.creation, Creation::Created);
+    assert_eq!(report.termination, Termination::Failed);
+    assert_eq!(report.exit_code, 1);
+    assert_eq!(
+        report.evidence_root,
+        Some(DisplayPath::Absolute(expected_root))
+    );
+    assert_eq!(report.logs, vec![log]);
+    assert_eq!(report.checks[0].id.as_str(), "structure");
+    assert!(report.template.is_some() && report.template_package.is_some());
+    assert_eq!(report.recovery.len(), 1);
+    assert_eq!(
+        a.decode_result(&a.encode_result(&report).unwrap()).unwrap(),
+        report
+    );
+}
+
+#[test]
+fn cancellation_and_stage_failure_remain_distinct_with_saved_progress() {
+    let (a, r, p) = prepared(false);
+    let attempt = commit_new(&mut MockCommit, &r, &p).unwrap();
+    for (failure, termination, exit) in [
+        (InitializationFailure::Cancelled, Termination::Cancelled, 1),
+        (
+            InitializationFailure::Stage(QueryError::new(
+                ErrorKind::Host,
+                "FILE001",
+                "evidence",
+                "original host failure",
+            )),
+            Termination::Failed,
+            3,
+        ),
+        (
+            InitializationFailure::Stage(QueryError::new(
+                ErrorKind::Conflict,
+                "FILE001",
+                "input",
+                "input changed",
+            )),
+            Termination::Failed,
+            4,
+        ),
+    ] {
+        let report = preserve_initialization_failure(
+            &p,
+            Some(attempt.created()),
+            observations(&r, &p),
+            failure,
+            &a,
+            &mut sink(),
+        )
+        .unwrap();
+        assert_eq!((report.termination, report.exit_code), (termination, exit));
+        assert_eq!(report.creation, Creation::Created);
+        assert_eq!(report.request_digest.as_ref(), Some(r.digest()));
+    }
+}
+
+#[test]
+fn failed_progress_does_not_accept_corrupt_saved_bytes_or_an_in_project_evidence_root() {
+    let (a, r, p) = prepared(false);
+    for corrupt in [false, true] {
+        let mut observed = observations(&r, &p);
+        let mut evidence = sink();
+        if corrupt {
+            evidence.corrupt = true;
+        } else {
+            observed.evidence_root = p.root().clone();
+        }
+        assert!(
+            preserve_initialization_failure(
+                &p,
+                None,
+                observed,
+                InitializationFailure::Cancelled,
+                &a,
+                &mut evidence
+            )
+            .is_err()
+        );
+    }
+}

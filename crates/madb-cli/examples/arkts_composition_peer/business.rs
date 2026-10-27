@@ -1,6 +1,6 @@
-use super::{COMPONENT, ExtensionFrame, PACKAGE_ROOT, Result};
+use super::{ExtensionFrame, Operation, PACKAGE_ROOT, Result};
 use madb_protocol::{
-    DocumentKind, SchemaRegistry, Value, byte_digest,
+    SchemaRegistry, Value, byte_digest,
     extension_author::{AuthorEvent, AuthorSession},
     strict_json,
 };
@@ -45,6 +45,7 @@ impl std::fmt::Display for Failure {
 impl std::error::Error for Failure {}
 
 struct Prepared {
+    operation: Operation,
     request_path: String,
     request_bytes: Vec<u8>,
     config_bytes: Vec<u8>,
@@ -58,11 +59,12 @@ struct Prepared {
 }
 
 pub fn run(
+    operation: Operation,
     invoke: &Value,
     incoming: &Receiver<std::result::Result<ExtensionFrame, String>>,
     session: &mut AuthorSession,
 ) -> std::result::Result<Outcome, Failure> {
-    let prepared = prepare(invoke).map_err(|e| Failure::new("InputInvalid", e))?;
+    let prepared = prepare(operation, invoke).map_err(|e| Failure::new("InputInvalid", e))?;
     let mut cancelled = false;
     receive_pending(incoming, session, &mut cancelled)?;
     if cancelled {
@@ -74,6 +76,8 @@ pub fn run(
     let mut child = Command::new(&prepared.python_path)
         .args(PYTHON_ARGS)
         .arg(&prepared.script_path)
+        .arg("--operation")
+        .arg(operation.name())
         .arg("--input-root")
         .arg(&prepared.input_root)
         .arg("--output-root")
@@ -161,7 +165,7 @@ pub fn run(
     if !exit.expect("reaped child").success() {
         return Err(Failure::new(
             "ToolFailed",
-            "ordinary generator business process failed",
+            "selected component business process failed",
         ));
     }
     let result =
@@ -217,22 +221,23 @@ fn read_bounded(mut stream: impl Read) -> std::io::Result<BoundedBytes> {
     }
 }
 
-fn prepare(invoke: &Value) -> Result<Prepared> {
-    if invoke["operation"] != "generate" || invoke["component"] != COMPONENT {
-        return Err("ordinary peer only serves its fixed generator component".into());
+fn prepare(operation: Operation, invoke: &Value) -> Result<Prepared> {
+    let component = format!("madb.local.c07-composition/{}", operation.component());
+    if invoke["operation"] != operation.name() || invoke["component"] != component {
+        return Err("peer only serves its selected fixed component".into());
     }
     let input = invoke["input"]["path"]
         .as_str()
         .ok_or("missing request path")?;
-    if input != "inputs/generate-request.json"
-        || invoke["input"]["schema"] != "madb.generate-request/1"
+    if input != format!("inputs/{}", operation.request_file())
+        || invoke["input"]["schema"] != operation.request_kind().schema_id()
     {
-        return Err("ordinary peer requires its fixed GenerateRequest location".into());
+        return Err("peer requires the selected request schema and fixed location".into());
     }
     let request_bytes = read_relative(input, DOCUMENT_LIMIT)?;
     check_reference(&invoke["input"], &request_bytes)?;
-    let request = SchemaRegistry::new()?.decode(DocumentKind::GenerateRequest, &request_bytes)?;
-    if request.value()["component"]["id"] != COMPONENT
+    let request = SchemaRegistry::new()?.decode(operation.request_kind(), &request_bytes)?;
+    if request.value()["component"]["id"] != component
         || request.value()["profile"]["schema"] != "madb.profile/2"
         || request.value()["output_root"] != invoke["output_root"]
     {
@@ -272,7 +277,8 @@ fn prepare(invoke: &Value) -> Result<Prepared> {
     ));
     check_path(&script_path, false)?;
     Ok(Prepared {
-        request_path: "generate-request.json".into(),
+        operation,
+        request_path: operation.request_file().into(),
         request_bytes,
         config_bytes,
         python_path,
@@ -285,24 +291,34 @@ fn prepare(invoke: &Value) -> Result<Prepared> {
     })
 }
 fn validate_result(prepared: &Prepared, stdout: &[u8]) -> Result<Value> {
-    if read_relative("inputs/generate-request.json", DOCUMENT_LIMIT)? != prepared.request_bytes
+    if read_relative(&format!("inputs/{}", prepared.request_path), DOCUMENT_LIMIT)?
+        != prepared.request_bytes
         || read_relative("inputs/backend.json", DOCUMENT_LIMIT)? != prepared.config_bytes
         || byte_digest(&read_file(&prepared.python_path, prepared.python_size)?)
             != prepared.python_digest
     {
         return Err("request, backend or Python image changed during execution".into());
     }
-    let output = SchemaRegistry::new()?.decode(DocumentKind::OutputSet, stdout)?;
-    if output.value()["manifest_path"] != "outputs.json" {
-        return Err("ordinary output manifest location differs".into());
+    let output = SchemaRegistry::new()?.decode(prepared.operation.result_kind(), stdout)?;
+    let result_file = prepared.operation.result_file();
+    if prepared.operation == Operation::Generate && output.value()["manifest_path"] != result_file {
+        return Err("output manifest location differs".into());
     }
-    let path = prepared.output_root.join("outputs.json");
+    if prepared.operation == Operation::Read {
+        let mut files = fs::read_dir(&prepared.output_root)?;
+        if files.next().transpose()?.map(|entry| entry.file_name()) != Some(result_file.into())
+            || files.next().transpose()?.is_some()
+        {
+            return Err("reader output must contain only contract.json".into());
+        }
+    }
+    let path = prepared.output_root.join(result_file);
     if read_file(&path, DOCUMENT_LIMIT)? != stdout {
         return Err("stdout and actual output manifest bytes differ".into());
     }
     Ok(
-        json!({"path":format!("{}/outputs.json",prepared.output_name),
-        "schema":"madb.output-set/1","sha256":byte_digest(stdout),"size":stdout.len()}),
+        json!({"path":format!("{}/{result_file}",prepared.output_name),
+        "schema":prepared.operation.result_kind().schema_id(),"sha256":byte_digest(stdout),"size":stdout.len()}),
     )
 }
 fn check_reference(reference: &Value, bytes: &[u8]) -> Result<()> {

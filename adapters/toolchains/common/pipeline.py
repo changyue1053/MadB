@@ -184,14 +184,19 @@ class FrozenPipeline:
         index = load(self.root / "domain/current.json")
         return self.root / "domain/batches" / index[layer].removeprefix("sha256:") / "files"
 
-    def metadata(self):
+    def plan_metadata(self):
+        """Prepare the existing execution document; only the Host may execute it."""
         recipe = self.recipe("metadata", "read.json", self.common_inputs(True), "contract.json")
-        output = self.execute("build", self.bundle("metadata", recipe), "--task", "metadata")
+        return self.bundle("metadata", recipe)
+
+    def metadata(self):
+        output = self.execute("build", self.plan_metadata(), "--task", "metadata")
         manifest = next(line.split(":", 1)[1].strip() for line in output.splitlines() if line.startswith("Manifest:"))
         shutil.copyfile(manifest, self.root / "contract.json")
         self.contract = load(self.root / "contract.json")
 
-    def generate(self):
+    def plan_generation(self):
+        """Prepare a generation without invoking another MadB process."""
         request = deepcopy(self.read)
         request.update(schema="madb.generate-request/1", contract=ref(self.root, "contract.json", "madb.contract-ir/1"),
                        input_digest=self.contract["source_digest"], task_digest="sha256:" + "0" * 64,
@@ -202,8 +207,20 @@ class FrozenPipeline:
         request["task_digest"] = generation_task(request, recipe)
         save(self.root, "generate-request.json", request)
         recipe["request"] = ref(self.root, "generate-request.json", "madb.generate-request/1")
-        preparation_inputs = deepcopy(recipe["inputs"])
-        self.execute("generate", self.bundle("generate", recipe))
+        return self.bundle("generate", recipe)
+
+    def generate(self):
+        execution = self.plan_generation()
+        self.execute("generate", execution)
+        self.accept_generation(execution["recipe"]["inputs"])
+
+    def accept_generation(self, preparation_inputs):
+        """Retain a Host-committed generation for checked build preparation.
+
+        This restores preparation data only, never a commit capability. The
+        caller must have completed the matching Host generation. Preparation
+        and the subsequent Host execution independently validate its lineage.
+        """
         self.source = self.layer("source")
         self.outputs = load(self.source / "outputs.json")
         # Only a successful host generation establishes this preparation context.
@@ -213,7 +230,7 @@ class FrozenPipeline:
             profile=ref(self.root, "profile.json", "madb.profile/1"),
             contract=ref(self.root, "contract.json", "madb.contract-ir/1"),
             output_set=ref(self.source, "outputs.json"),
-            preparation_inputs=preparation_inputs,
+            preparation_inputs=deepcopy(preparation_inputs),
             metadata_digest=sha_file(self.source.parent / "metadata.json"))
 
     def checked_build_phases(self):
@@ -259,7 +276,7 @@ class FrozenPipeline:
             raise ValueError("build phase plan must match the profile's complete linear chain: " + ", ".join(expected))
         return phases
 
-    def build(self):
+    def plan_build(self):
         # Preparation executes code, including at import time. Validate the whole
         # plan and its already host-checked lineage before loading any helper.
         phases = self.checked_build_phases()
@@ -311,10 +328,13 @@ class FrozenPipeline:
             tasks.append(dict(request=ref(self.root, "tasks/" + phase + ".json", "madb.build-task/1"), installed_tool=self.installed))
             previous = [ref(work, name) for name in output_names]
             previous_root = work
-        self.execute("build", self.bundle("build", tasks=tasks))
+        return self.bundle("build", tasks=tasks)
+
+    def build(self):
+        self.execute("build", self.plan_build())
         self.built = self.layer("build")
 
-    def package(self, destination, producer_revision, required_cases, provisional=False):
+    def plan_package(self, producer_revision, required_cases, provisional=False):
         build_metadata = load(self.built.parent / "metadata.json")
         evidence = committed_build_evidence(build_metadata)
         request = dict(schema="madb.package-request/1", selector=self.read["selector"],
@@ -327,7 +347,10 @@ class FrozenPipeline:
         save(self.root, "provenance.json", dict(schema="madb.native-provenance/1", producer_revision=producer_revision,
               input_digest=self.contract["source_digest"], tool_digest=self.host_digest, provisional=provisional))
         for name in ("LICENSE", "NOTICE"):
-            shutil.copyfile(self.repo / name, self.root / name)
+            # Installed recipes already carry these frozen bytes in their
+            # private root. Producer workspaces still copy the source files.
+            if (self.repo / name).resolve() != (self.root / name).resolve():
+                shutil.copyfile(self.repo / name, self.root / name)
         names = ["toolchain.json", "profile.json", "project.json", "madb.lock", "contract.json", "provenance.json", "LICENSE", "NOTICE"]
         inventory = [ref(self.root, name) for name in names]
         inventory += [ref(self.source, item["path"]) for item in self.public_generated()]
@@ -339,7 +362,10 @@ class FrozenPipeline:
                         [request["output_set"], ref(self.root, "package-files.json")])
         inputs = [dict(item, schema=item.get("schema", "madb.source-input/1")) for item in inputs]
         recipe = self.recipe("package", "package-request.json", inputs, "candidate.json")
-        self.execute("package", self.bundle("package", recipe))
+        return self.bundle("package", recipe)
+
+    def package(self, destination, producer_revision, required_cases, provisional=False):
+        self.execute("package", self.plan_package(producer_revision, required_cases, provisional))
         candidate = self.layer("candidate")
         manifest = load(candidate / "candidate.json")
         destination.mkdir()

@@ -80,3 +80,41 @@ fn source_and_build_advance_invalidate_descendants_and_detect_overflow() {
         "STORE007"
     );
 }
+
+#[test]
+fn cancellation_fact_requires_an_actual_veto_not_a_read_or_unrelated_failure() {
+    let control = CommitControl::default();
+    let permit = control.begin().unwrap();
+    control.cancel();
+    assert!(permit.cancelled());
+    assert!(!control.rejected_by_cancellation());
+    drop(permit);
+    assert!(!control.rejected_by_cancellation());
+    let control = CommitControl::default();
+    let mut permit = control.begin().unwrap();
+    control.cancel();
+    permit.reject_if_cancelled().unwrap_err();
+    assert!(control.rejected_by_cancellation());
+    let control = CommitControl::default();
+    let permit = control.begin().unwrap();
+    control.cancel();
+    permit.publish(|| panic!("veto")).unwrap_err();
+    assert!(control.rejected_by_cancellation());
+    let control = CommitControl::default();
+    control
+        .begin()
+        .unwrap()
+        .publish(|| {
+            Err(madb_app::QueryError::new(
+                madb_app::ErrorKind::Host,
+                "TEST",
+                "write",
+                "actual IO failure",
+            ))
+        })
+        .unwrap_err();
+    assert_eq!(control.cancel(), CancelDecision::AlreadyFinished);
+    assert!(!control.rejected_by_cancellation());
+    assert!(control.begin().is_err());
+    assert!(!control.rejected_by_cancellation());
+}

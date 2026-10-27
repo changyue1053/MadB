@@ -84,7 +84,7 @@ impl<'a> HostSession<'a> {
         options: SessionOptions<'_>,
         on_output: impl FnMut(&Value) -> ProcessResult<()> + 'a,
     ) -> ProcessResult<Self> {
-        if files.composition_recipe().is_some() {
+        if files.composition_pins().is_some() {
             return Err(fail(
                 "CapabilityUnsupported",
                 "legacy session requires the explicit composition constructor",
@@ -98,10 +98,9 @@ impl<'a> HostSession<'a> {
         options: SessionOptions<'_>,
         on_output: impl FnMut(&Value) -> ProcessResult<()> + 'a,
     ) -> ProcessResult<Self> {
-        let recipe = files
-            .composition_recipe()
+        let pins = files
+            .composition_pins()
             .ok_or_else(|| fail("InputInvalid", "missing checked composition recipe"))?;
-        let pins = recipe.pins();
         if options.component_id != pins.component_id()
             || options.required_features.to_vec()
                 != pins

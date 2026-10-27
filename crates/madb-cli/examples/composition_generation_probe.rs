@@ -90,7 +90,7 @@ fn main() -> Result<()> {
         return Ok(());
     }
     let input = Inputs::load(&root)?;
-    let recipe = recipe();
+    let recipe = selected_recipe(&input)?;
     let bound = input.bind(&recipe)?;
     match args[1].as_str() {
         "metadata" => {
@@ -159,6 +159,36 @@ pub(crate) fn recipe() -> RecipeRequirements {
             paths: SOURCE_PATHS.iter().map(|v| path(v)).collect(),
         }],
     }
+}
+pub(crate) fn selected_recipe(input: &Inputs) -> Result<RecipeRequirements> {
+    let profile = input
+        .registry
+        .decode(DocumentKind::ProfileV2, &input.profile_bytes)?;
+    let name = profile.value()["id"].as_str().ok_or("profile id")?;
+    let mut selected = recipe();
+    if name == "c07-c-arkts-composition-aarch64-ohos23" {
+        return Ok(selected);
+    }
+    let mode = match name {
+        "c07-c-arkts-chain-ordinary-aarch64-ohos23" => "ordinary",
+        "c07-c-arkts-chain-enhanced-aarch64-ohos23" => "enhanced",
+        "c07-c-arkts-chain-disabled-aarch64-ohos23" => "disabled",
+        _ => return Err("unsupported fixed composition profile".into()),
+    };
+    selected.id = id(&format!("madb.local.c07-c-arkts/chain-{mode}@1"));
+    selected.selection.profile_id = id(name);
+    selected.components.push(ComponentRequirement {
+        id: id("madb.local.c07-composition/reader"),
+        port: id("contract-reader"),
+        interprets_composition: true,
+    });
+    if mode == "enhanced" {
+        selected.generated_slots[0].paths.extend([
+            path("generated/facade/StateObservation.ets"),
+            path("generated/facade/ArkUIStateModel.ets"),
+        ]);
+    }
+    Ok(selected)
 }
 pub(crate) fn schemas() -> CompositionSchemaPaths {
     CompositionSchemaPaths {
@@ -642,15 +672,16 @@ pub(crate) fn required_roles(
         package: digest.clone(),
         paths: vec![path(NATIVE)],
     });
-    let mut generated_paths: Vec<_> = SOURCE_PATHS.iter().map(|p| path(p)).collect();
+    let selected = selected_recipe(input)?;
+    let mut generated_paths = selected.generated_slots[0].paths.clone();
     generated_paths.sort();
     let facade_owner = ResolvedOwner::SdkAsset(AssetOrigin::Generated {
-        package: digest,
+        package: digest.clone(),
         producer: id(COMPONENT),
         slot: id(SLOT),
         paths: generated_paths,
     });
-    let required: Vec<_> = [
+    let mut required: Vec<_> = [
         (
             "Engine.roundtrip",
             "projection",
@@ -709,5 +740,74 @@ pub(crate) fn required_roles(
         },
     )
     .collect();
+    if selected.selection.profile_id.as_str() == "c07-c-arkts-chain-enhanced-aarch64-ohos23" {
+        for (source, hash, asset, member, stage, anchor, layer) in [
+            (
+                "sdk/arkts/observation/StateObservation.ets",
+                "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+                "state",
+                "StateObservation.requestStop",
+                "stop",
+                "StateObservation.attach",
+                "receiver",
+            ),
+            (
+                "sdk/arkts/observation/StateObservation.ets",
+                "sha256:1e26f847c8e37d7c65b236188d86c6ee3ad6dcc53c033d4304049a7ab7531534",
+                "state",
+                "StateObservation.close",
+                "async-bridge",
+                "StateObservation.attach",
+                "receiver",
+            ),
+            (
+                "sdk/arkts/observation/ArkUIStateModel.ets",
+                "sha256:7e62d7352ded16641e560f9230b65576d524caa8ac847dc65715e7e877ad77ef",
+                "arkui",
+                "ArkUIStateModel.attach",
+                "projection",
+                "ArkUIStateModel.attach",
+                "view-model",
+            ),
+        ] {
+            let (_, bytes) = input
+                .frozen
+                .files()
+                .find(|(f, _)| f.path.as_str() == source)
+                .ok_or("fixed optional SDK source missing")?;
+            let package_file = package["source"]["files"]
+                .as_array()
+                .expect("source files")
+                .iter()
+                .find(|f| f["path"] == source)
+                .ok_or("optional package source missing")?;
+            if Digest::of_bytes(bytes).as_str() != hash || package_file["sha256"] != hash {
+                return Err(format!("unsupported optional semantic source: {asset}").into());
+            }
+            let origin = AssetOrigin::Source {
+                package: digest.clone(),
+                paths: vec![path(source)],
+            };
+            required.push(ResolvedResponsibility {
+                key: ResponsibilityKey {
+                    boundary: id("c-arkts"),
+                    subject: ResolvedSubject::SdkExport {
+                        origin: origin.clone(),
+                        member: id(member),
+                    },
+                    stage: id(stage),
+                    scope: ResolvedScope {
+                        kind: id("receiver"),
+                        anchor: ResolvedSubject::SdkExport {
+                            origin: origin.clone(),
+                            member: id(anchor),
+                        },
+                        layer: id(layer),
+                    },
+                },
+                owner: ResolvedOwner::SdkAsset(origin),
+            });
+        }
+    }
     Ok(required)
 }

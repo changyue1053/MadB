@@ -77,6 +77,45 @@ impl LocalInitEvidence {
     pub fn root(&self) -> &AbsolutePath {
         &self.binding.root
     }
+    pub fn result_was_saved(&self) -> bool {
+        self.saved
+    }
+    /// Copy only registered, independently reread evidence into a new private
+    /// root. A previous immutable result is never copied or overwritten.
+    pub fn fork_verified(&self) -> Result<Self> {
+        use madb_app::ports::ReadWorkspace;
+        self.verify_root()?;
+        let parent = std::path::Path::new(self.root().as_str())
+            .parent()
+            .and_then(|p| p.to_str())
+            .ok_or_else(|| conflict("evidence", "evidence parent is absent"))?;
+        let mut fork = Self::allocate(&AbsolutePath::new(parent)?)?;
+        let reader = crate::LocalWorkspace {
+            root: self
+                .directory
+                .try_clone()
+                .map_err(|e| host("evidence", e))?,
+        };
+        for reference in self.stored.values() {
+            fs::read_reference(&self.directory, reference)?;
+            let bytes = reader
+                .read(&reference.path, reference.size as usize)?
+                .ok_or_else(|| {
+                    conflict(reference.path.as_str(), "registered evidence is missing")
+                })?;
+            if bytes.len() as u64 != reference.size || Digest::of_bytes(&bytes) != reference.digest
+            {
+                return Err(conflict(
+                    reference.path.as_str(),
+                    "evidence changed while copying",
+                ));
+            }
+            fs::read_reference(&self.directory, reference)?;
+            fork.store_file(reference, &bytes)?;
+        }
+        self.verify_root()?;
+        Ok(fork)
+    }
     fn verify_root(&self) -> Result<()> {
         self.binding.verify()?;
         if fs::entry_identity(&self.binding.parent, self.binding.root.basename())? != self.identity

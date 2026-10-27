@@ -26,7 +26,7 @@ pub fn command() -> Command {
     Command::new("init")
         .version(env!("CARGO_PKG_VERSION"))
         .about("Initialize a new project from an installed, pinned template")
-        .after_help("This producer implements --verify structure and --dry-run. The default --verify build, --verify run, and IDE opening are not yet supported.")
+        .after_help("The installed 0.1.1 template supports structure and dry-run, plus default build and run on the fixed macOS ARM64 installation with a source-bound tool. Explicit 0.1.0 retains structure/dry-run only. IDE opening and other execution targets are unsupported.")
         .arg(
             Arg::new("template")
                 .long("template")

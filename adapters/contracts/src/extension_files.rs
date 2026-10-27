@@ -4,7 +4,10 @@
 use crate::{
     Document, DocumentKind, FormatError, SchemaRegistry,
     artifacts::{ProvidedFile, validate_port_pair, verify_files, verify_reference},
-    composition::execution::BoundCompositionGeneration,
+    composition::{
+        admission::CheckedCompositionPins, execution::BoundCompositionGeneration,
+        read::BoundCompositionRead,
+    },
     execution::{BoundArtifactRecipe, ExecutionOperation},
     wire::Wire,
 };
@@ -27,6 +30,7 @@ pub struct BoundExtensionFiles {
     registry: SchemaRegistry,
     artifact: Option<BoundArtifactRecipe>,
     composition: Option<BoundCompositionGeneration>,
+    composition_read: Option<BoundCompositionRead>,
 }
 
 impl BoundExtensionFiles {
@@ -120,7 +124,52 @@ impl BoundExtensionFiles {
             registry,
             artifact: None,
             composition: Some(recipe),
+            composition_read: None,
         })
+    }
+    pub fn from_composition_read(
+        input_ref: &Value,
+        inputs: FrozenInputs,
+        recipe: BoundCompositionRead,
+    ) -> Result<Self, FormatError> {
+        let reference = control_reference(input_ref, "inputs", DocumentKind::ReadRequest)?;
+        recipe.check_session_inputs(&inputs)?;
+        if frozen_bytes(&inputs, &reference)? != recipe.invocation().process.stdin {
+            return Err(invalid(
+                "/request",
+                "checked reader and session request bytes differ",
+            ));
+        }
+        let output_root = recipe.output_root().as_str().to_owned();
+        domain_root(&output_root)?;
+        let registry = SchemaRegistry::new()?;
+        let request = registry.decode(
+            DocumentKind::ReadRequest,
+            frozen_bytes(&inputs, &reference)?,
+        )?;
+        if request.value()["output_root"] != output_root {
+            return Err(invalid("/output_root", "reader output domain differs"));
+        }
+        Ok(Self {
+            operation: "read".into(),
+            input_ref: input_ref.clone(),
+            output_root,
+            inputs,
+            request,
+            registry,
+            artifact: None,
+            composition: None,
+            composition_read: Some(recipe),
+        })
+    }
+    pub fn composition_read_recipe(&self) -> Option<&BoundCompositionRead> {
+        self.composition_read.as_ref()
+    }
+    pub fn composition_pins(&self) -> Option<&CheckedCompositionPins> {
+        self.composition
+            .as_ref()
+            .map(|r| r.pins())
+            .or_else(|| self.composition_read.as_ref().map(|r| r.pins()))
     }
     pub fn composition_recipe(&self) -> Option<&BoundCompositionGeneration> {
         self.composition.as_ref()
@@ -154,6 +203,7 @@ impl BoundExtensionFiles {
             registry,
             artifact: None,
             composition: None,
+            composition_read: None,
         };
         bound.check_inputs()?;
         Ok(bound)
@@ -179,6 +229,11 @@ impl BoundExtensionFiles {
             .as_ref()
             .map(|artifact| &artifact.invocation().process)
             .or_else(|| self.composition.as_ref().map(|r| &r.invocation().process))
+            .or_else(|| {
+                self.composition_read
+                    .as_ref()
+                    .map(|r| &r.invocation().process)
+            })
     }
 
     fn check_inputs(&self) -> Result<(), FormatError> {
@@ -356,7 +411,18 @@ impl BoundExtensionFiles {
                 .validate_result(frozen_bytes(&manifest, &manifest_ref)?)
                 .map_err(|e| invalid("/output", e))?;
         }
-        if response_kind == DocumentKind::ContractIr {
+        if let Some(recipe) = &self.composition_read {
+            if manifest_ref.path != recipe.invocation().response_path {
+                return Err(invalid(
+                    "/output",
+                    "reader output path differs from fixed recipe",
+                ));
+            }
+            recipe
+                .validate_result(frozen_bytes(&manifest, &manifest_ref)?)
+                .map_err(|e| invalid("/output", e))?;
+        }
+        if response_kind == DocumentKind::ContractIr && self.composition_read.is_none() {
             let profile =
                 self.input_document(&self.request.value()["profile"], DocumentKind::Profile)?;
             crate::check_contract(&document, &profile).map_err(|e| invalid("/output", e))?;

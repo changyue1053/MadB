@@ -79,6 +79,9 @@ pub struct BoundCompositionInputs {
     responsibilities: Vec<ResolvedResponsibility>,
 }
 impl BoundCompositionInputs {
+    pub(super) fn boundary_id(&self) -> &str {
+        &self.boundary
+    }
     pub fn composition(&self) -> &Document {
         &self.composition
     }

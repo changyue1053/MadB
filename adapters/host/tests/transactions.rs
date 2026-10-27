@@ -239,6 +239,7 @@ fn cancel_before_index_replace_leaves_previous_index_and_collectible_orphan() {
         },
     );
     assert_eq!(code(result), "STORE002");
+    assert!(control.rejected_by_cancellation());
     assert_eq!(store.snapshot().unwrap(), IndexSnapshot::default());
     assert_eq!(store.recover().unwrap().removed_batches.len(), 1);
 }
@@ -579,4 +580,40 @@ fn first_openers_coordinate_initialization_without_holding_lock_for_store_lifeti
             handle.join().unwrap();
         }
     });
+}
+
+#[test]
+fn cancellation_fact_covers_early_veto_but_not_a_concurrent_host_error() {
+    for early in [true, false] {
+        let tmp = Temp::new();
+        let store = LocalBatchStore::open(&tmp.0).unwrap();
+        let control = CommitControl::default();
+        let staged = store
+            .stage(&batch(Layer::Source, None, b"A", b"A"))
+            .unwrap();
+        if early {
+            control.cancel();
+        }
+        let result = store.commit_with(
+            staged,
+            &IndexSnapshot::default(),
+            &control,
+            || Ok(()),
+            |point| {
+                if !early && point == TransactionPoint::BeforeIndexReplace {
+                    control.cancel();
+                    return Err(QueryError::new(
+                        ErrorKind::Host,
+                        "TEST",
+                        "publication",
+                        "actual host failure before admission",
+                    ));
+                }
+                Ok(())
+            },
+        );
+        assert!(result.is_err());
+        assert_eq!(control.rejected_by_cancellation(), early);
+        assert_eq!(store.snapshot().unwrap(), IndexSnapshot::default());
+    }
 }
