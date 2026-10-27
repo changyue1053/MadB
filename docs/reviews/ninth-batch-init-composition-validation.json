@@ -1,0 +1,112 @@
+{
+  "scope": "I01-P structure/dry-run and I02 shared CommitNew slice; ordinary C-to-ArkTS profile/2 Source session, not whole packages",
+  "code_candidate": "2c3d9bb208b3aeafcf2201868d5a107be7dd6ac3",
+  "full_gate_candidate": "7edd8884b1763836401ff68d61e4195c6fe13c51",
+  "full_gate_exit": 0,
+  "incremental_validation": "Only macOS/non-macOS test applicability and non-macOS unused helper guard differ; focused checks and review bound separately. OHOS check/clippy is type checking only.",
+  "archive": {
+    "result": "passed",
+    "manifest": "/Users/changyue/Desktop/MadB/.local/evidence/round9-init-composition/validation/manifest.json",
+    "sha256": "dca52c0eef957c6277514d49e669afb9afe355e6b7d60f7588ea7e325740d535",
+    "entries_excluding_manifest": 8068,
+    "bytes_excluding_manifest": 1627766510,
+    "symlinks": 8
+  },
+  "evidence_paths_relative_to_archive": {
+    "full-gate-001.json": {
+      "sha256": "24f3963ba9b28056fc1da1860d2c5a9f4dc8747931b7f233d76c015b9828fb84",
+      "size": 667
+    },
+    "full-gate-002.json": {
+      "sha256": "3edc19997fed8dc3d0d92faa4ed188ceeaac4ed49a03152eb4e62c2dbb54db9c",
+      "size": 667
+    },
+    "final-platform-validation.json": {
+      "sha256": "a484f9089d49075171ce2831922b74564274ab4d4ebdc1660727aec96a28a53e",
+      "size": 1776
+    },
+    "check-environment.json": {
+      "sha256": "10acaf8ba27b94c88a41597a2222ffc382c8798d2ef16d4b246eac830e1df881",
+      "size": 325
+    },
+    "implementation-source.json": {
+      "sha256": "669f825407960cabeb63f560fa57b185b8c97d7ebe17f5922dec758b866a2aef",
+      "size": 283619
+    },
+    "final-implementation-source.json": {
+      "sha256": "ac3b7184e648c85a771d41b10547dfa4517222400c0ab8d05b75e6327a2a2aba",
+      "size": 283620
+    },
+    "root-scope-check.json": {
+      "sha256": "1ea5428b341afe7dffb381d0884d76065d707f9049c8b554a4ad7d540b7586a3",
+      "size": 25482
+    },
+    "version-final-build-result.json": {
+      "sha256": "5e71b6e56317d9331e49db677660bf31b7d4ab3c2a58b748f85a663109fecbcc",
+      "size": 3039
+    },
+    "final-cli-replay-result.json": {
+      "sha256": "7a044984495a4a49f67baa9d57ceb3486b96b22103bb535d3ecded56eca213dc",
+      "size": 17114
+    },
+    "review-cli-independent.md": {
+      "sha256": "a9bbe1771a2ac1100a610b3596844a931f3756cb253ea324a1a6fefa51f30fa5",
+      "size": 6922
+    },
+    "review-cli-clean-evidence-index.json": {
+      "sha256": "74cdb73755ee4ac4e88cf1a2fe50999c5cf8d31f200ccb0dced12b50d42c1436",
+      "size": 1084
+    },
+    "review-host-independent.md": {
+      "sha256": "97dcfd174b01d4c56cc80b2f4c136815e435eb180a2b00392201687dd97f16d0",
+      "size": 6132
+    },
+    "review-host-result-002.json": {
+      "sha256": "9dd12e20ef792aeb231ec2c61fc271be8434323a3e14ba4f3ade00e9da1bd567",
+      "size": 141435
+    },
+    "review-source-assets/final-review.md": {
+      "sha256": "819310c69dddfde5c7d64350d15c05cc339c4d08eb4cca33a7143833bcd8b5bf",
+      "size": 3614
+    },
+    "review-e-final-independent.json": {
+      "sha256": "5e9d24697e282392f33a200e478cda25adea63af80fad6230543e62e69e7c0f0",
+      "size": 14320
+    },
+    "review-e-final-independent.md": {
+      "sha256": "55c88cefdf85c90474c268fefedbe4b1a5f79b3cb91b3e39adcd906f0b11ab7d",
+      "size": 1675
+    },
+    "review-cross-platform-test-boundary.md": {
+      "sha256": "96decc4fc0cb34071c54937dc6a5e3a5467de94fc4f1dd2b0c3d3abaf073269c",
+      "size": 3200
+    },
+    "review-version-linkage.md": {
+      "sha256": "1df6a35ae546019af12cc297196765f5ef5f7a4d89ac5b91a808cbdeefd6e8b3",
+      "size": 2020
+    },
+    "version-cli-install-result.json": {
+      "sha256": "668eb7fc87825f48d46a1dcc17b971bb62b6d73c3cc751eb86fe1c4b87920fa1",
+      "size": 1255
+    },
+    "init-version-decision.md": {
+      "sha256": "d9921cdf2d5dec40f8ec878060d7677dc918c92a8672ec2f40a9a7367ce8b0ee",
+      "size": 15256
+    },
+    "review-init-version-decision.md": {
+      "sha256": "098875564ef3eb1875e6b0bba9adc5fad90acf0317ce2cbfc24f97f057179f48",
+      "size": 3328
+    },
+    "round9-code.bundle": {
+      "sha256": "f8c8981918bc0c51e41f6db4bc9982cb73f202a0795803475a062e3f817a8724",
+      "size": 263607
+    }
+  },
+  "not_claimed": [
+    "init SDK generation/build/run/IDE",
+    "complete E configurations/multiple component sessions",
+    "new SDK/platform certification",
+    "GitHub Actions pass",
+    "release"
+  ]
+}
