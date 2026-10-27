@@ -149,3 +149,9 @@ C07 的 `core.external-runtime-verification@1` 复用 profile.required_features 
 `DigestDomain::InitRequest` 使用 `madb.init-request/1` 域。内部投影精确为 `{template_selector,template_profile_selector,parameter_values,targets,verify,open,dry_run,offline,output_path}`；合法默认先展开，targets 为完整排序唯一 family，output_path 纯词法绝对规范化。它不是新增 InitRequest wire。摘要为空不改变真实阶段错误类别；原包/工具身份也不能由请求摘要代替。
 
 普通成功必须由同根同计划 Host 创建事实和独立配方必需检查支撑；dry-run 只保存独立证据和计划，不创建工程或运行工具。`InitResult` 的结构与语义校验不对第三方自报创建背书。首配方仅按已批准的 profile/1、macOS/aarch64 与精确工具集合准入，当前开发版本不能伪装成正式兼容版本。格式与纯规则结果不等同于工程/IDE运行。
+
+## I02 doctor结果
+
+[ADR-0025](../adr/0025-doctor-preflight-contract.md)采用[doctor-result/1](doctor-result.schema.json)。三档仅表示静态前提检查范围，scope固定为`preflight-only`；不存在DoctorRequest wire。工具身份、请求、局部配置引用和检查事实分别允许适用的空值，不据空值重分类错误。输出预算DOCTOR001的缩减结果保留实际更高优先级错误。
+
+[共用格式向量](../../tests/fixtures/contracts/doctor-format-vectors.json)由Rust和独立Python校验器消费；模型夹具不构成实际预检证据。schema检查严格形状、字段及局部状态关系；app/contracts仍须验证必需行全集、唯一ID、向前的blocked依赖、完整输入关系、实际观察与返回前重验，不能由schema有效推导预检成功。

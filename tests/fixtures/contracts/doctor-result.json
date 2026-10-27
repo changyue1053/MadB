@@ -1,0 +1,18 @@
+{
+  "schema": "madb.doctor-result/1",
+  "tool": null,
+  "request": null,
+  "context": null,
+  "scope": "preflight-only",
+  "truncated": false,
+  "checks": [],
+  "recovery": [],
+  "diagnostics": [
+    {
+      "code": "PLAN001",
+      "message": "Design fixture: invalid command syntax",
+      "location": null
+    }
+  ],
+  "exit_code": 2
+}

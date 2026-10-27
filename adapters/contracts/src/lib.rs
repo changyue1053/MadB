@@ -189,3 +189,5 @@ fn check_resolved_policies(
     }
     Ok(())
 }
+
+pub mod doctor;

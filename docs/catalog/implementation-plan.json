@@ -703,8 +703,8 @@
       "depends_on": [
         "C02"
       ],
-      "status": "in_progress",
-      "verification": "missing",
+      "status": "implemented",
+      "verification": "passed",
       "evidence": [
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-third-batch.md",
@@ -712,7 +712,9 @@
         "reviews/2026-10-26-chief-architect-fifth-batch.md",
         "reviews/2026-10-26-chief-architect-sixth-batch.md",
         "reviews/2026-10-26-chief-architect-ninth-batch.md",
-        "reviews/2026-10-26-chief-architect-tenth-batch.md"
+        "reviews/2026-10-26-chief-architect-tenth-batch.md",
+        "reviews/2026-10-27-chief-architect-eleventh-batch.md",
+        "reviews/eleventh-batch-extension-final-independent-review.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -739,7 +741,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "本次优化由 L01 先收敛所需公共边界；E01 随后与 I01、E02/E03 按接口依赖推进有限组合、清单与注册。不等待全部语言便利层完成；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批已实现既有 v1 清单解码及显式包集合注册检查；来源/权限、精确锁、版本/目标组合与独立消费仍未完成。 接管第三批新增既有 v1 单镜像组件的精确锁准入；清单、文件字节、工具完整元组及权限申请有正反例和独立复核。完整包来源认证、依赖闭包、组合格式与独立消费仍未完成。 接管第四批按已批准 ADR-0018 实现 composition/1、profile/2 及显式 feature；纯绑定检查真实 schema/包源/清单/锁字节、固定配方选择、生成位置和来源别名。返回只读观察；执行镜像准入、真实包闭包、生成后资产和独立消费仍须完成。 接管第五批新增实际生成请求/OutputSet/完整生成槽的只读字节与血缘绑定，13项本地测试和29项独立反例通过；真实包注册、执行镜像准入及独立组合消费仍缺。 接管第六批普通 ArkTS 已实际经过 profile/2 finalizer、生产生成体和1槽15文件绑定；131输入/10schema闭包和独立重生成通过。真实扩展包注册、执行准入、组合会话及独立消费仍未完成。 第九批开工普通C→ArkTS的profile/2包源/镜像分别准入、公开JSONL生成会话与C04 Source提交；增强/替代/禁用、完整组合及目标运行不由此推定完成。 第九批普通C→ArkTS Source子片完成真实公开JSONL生成及C04提交，最终9项主链和7项同镜像进程独审通过；同镜像逻辑工具替换与取消断言漏洞已修。仅单generator+SDK资产，完整配置/禁用、SDK/HAR/目标消费与整包仍未验收。 第十批补充真实reader/generator组件与普通/增强/禁用配置的源/镜像/锁准入及Source证据，替代选择以固定官方研究来源和实际拒绝缺口对账。E02的协议收口不自动关闭本包来源注册、所有受承诺组合与完整消费出口。"
+      "notes": "本次优化由 L01 先收敛所需公共边界；E01 随后与 I01、E02/E03 按接口依赖推进有限组合、清单与注册。不等待全部语言便利层完成；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批已实现既有 v1 清单解码及显式包集合注册检查；来源/权限、精确锁、版本/目标组合与独立消费仍未完成。 接管第三批新增既有 v1 单镜像组件的精确锁准入；清单、文件字节、工具完整元组及权限申请有正反例和独立复核。完整包来源认证、依赖闭包、组合格式与独立消费仍未完成。 接管第四批按已批准 ADR-0018 实现 composition/1、profile/2 及显式 feature；纯绑定检查真实 schema/包源/清单/锁字节、固定配方选择、生成位置和来源别名。返回只读观察；执行镜像准入、真实包闭包、生成后资产和独立消费仍须完成。 接管第五批新增实际生成请求/OutputSet/完整生成槽的只读字节与血缘绑定，13项本地测试和29项独立反例通过；真实包注册、执行镜像准入及独立组合消费仍缺。 接管第六批普通 ArkTS 已实际经过 profile/2 finalizer、生产生成体和1槽15文件绑定；131输入/10schema闭包和独立重生成通过。真实扩展包注册、执行准入、组合会话及独立消费仍未完成。 第九批开工普通C→ArkTS的profile/2包源/镜像分别准入、公开JSONL生成会话与C04 Source提交；增强/替代/禁用、完整组合及目标运行不由此推定完成。 第九批普通C→ArkTS Source子片完成真实公开JSONL生成及C04提交，最终9项主链和7项同镜像进程独审通过；同镜像逻辑工具替换与取消断言漏洞已修。仅单generator+SDK资产，完整配置/禁用、SDK/HAR/目标消费与整包仍未验收。 第十批补充真实reader/generator组件与普通/增强/禁用配置的源/镜像/锁准入及Source证据，替代选择以固定官方研究来源和实际拒绝缺口对账。E02的协议收口不自动关闭本包来源注册、所有受承诺组合与完整消费出口。 第十一批按现行六条验收收口：干净fe75241与13个冻结镜像，完整本地门禁002及最终独审通过。固定宿主配方完整核对依赖用途，未注册toolchain/generator依赖（含同名已锁工具）准确拒绝；真实源包/镜像分别绑定，三种新组合与旧双会话、旧单generator均完成公开Source消费。原四漏拒、额外同名依赖及七项共同准入反例通过。限当前有限注册和组合机制，不宣称任意外部包映射、SDK/HAR/页面或X后端支持；其他L/I/C/X及E04承诺继续各自验收，Actions未执行。"
     },
     {
       "id": "E02",
@@ -800,8 +802,8 @@
       "depends_on": [
         "C02"
       ],
-      "status": "in_progress",
-      "verification": "missing",
+      "status": "implemented",
+      "verification": "passed",
       "evidence": [
         "reviews/2026-10-25-chief-architect-first-batch.md",
         "reviews/2026-10-26-chief-architect-third-batch.md",
@@ -809,7 +811,9 @@
         "reviews/2026-10-26-chief-architect-fifth-batch.md",
         "reviews/2026-10-26-chief-architect-sixth-batch.md",
         "reviews/2026-10-26-chief-architect-ninth-batch.md",
-        "reviews/2026-10-26-chief-architect-tenth-batch.md"
+        "reviews/2026-10-26-chief-architect-tenth-batch.md",
+        "reviews/2026-10-27-chief-architect-eleventh-batch.md",
+        "reviews/eleventh-batch-extension-final-independent-review.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -832,7 +836,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "本次优化由 L01 先收敛所需公共边界；E03 随后与 I01、E01/E02 按接口依赖推进语义协商、责任与兼容检查。保持既有未知必需语义拒绝规则；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批仅落实当前核心功能目录上的必需语义拒绝检查，不静默映射旧设计样例的功能 ID；模型版本/证据失效及按符号/阶段/实例的完整责任协商仍未完成。 接管第三批进一步收敛包源/生成资产/责任与摘要协商的具体提案，独立审查发现的样例漏拒绝和生命周期责任混淆在设计稿修正；未将新字段或 feature 写入现行生产格式。 接管第四批已按 ADR-0018 落地新格式与独立摘要域、必需 feature 拒绝和规范来源上的责任集合比较；旧 profile/1 保持独立且拒绝新组合语义。必需集合当前由宿主显式传入，真实声明/SDK/接线派生与完整组合执行协商仍未交付。 接管第五批从固定 C07 真实 AST、生产声明投影与公开观察源码派生普通/增强的5/8项有限责任，禁用重新生成普通闭包；29项检查及路径隔离修复独审通过。该来源观察未产生 profile/2 OutputSet、未接入完整组合执行，不覆盖全 C07 语义责任或整包验收。 接管第六批有限真实责任贯通 profile/2 finalizer/IR/task/OutputSet，旧 /1 拒绝新语义；新增说明目录字节闭包、双责任缺失和独立重生成通过。完整组合责任及执行协商继续按原验收交付。 第九批开工普通C→ArkTS的profile/2包源/镜像分别准入、公开JSONL生成会话与C04 Source提交；增强/替代/禁用、完整组合及目标运行不由此推定完成。 第九批普通C→ArkTS Source子片完成真实公开JSONL生成及C04提交，最终9项主链和7项同镜像进程独审通过；同镜像逻辑工具替换与取消断言漏洞已修。仅单generator+SDK资产，完整配置/禁用、SDK/HAR/目标消费与整包仍未验收。 第十批在真实双会话中验证有限普通/增强/禁用责任与未知配置准确拒绝；具名替代后端缺项不伪造成已解析profile或兼容承诺。E02收口仅提供协议证据，本包其余模型演进/证据失效及完整责任出口继续逐条对账。"
+      "notes": "本次优化由 L01 先收敛所需公共边界；E03 随后与 I01、E01/E02 按接口依赖推进语义协商、责任与兼容检查。保持既有未知必需语义拒绝规则；未授权的具体扩展仍由项目所有者决定启动；当前已授权 Swift/ArkTS 范围分别按 ADR-0015/0017 推进。 接管首批仅落实当前核心功能目录上的必需语义拒绝检查，不静默映射旧设计样例的功能 ID；模型版本/证据失效及按符号/阶段/实例的完整责任协商仍未完成。 接管第三批进一步收敛包源/生成资产/责任与摘要协商的具体提案，独立审查发现的样例漏拒绝和生命周期责任混淆在设计稿修正；未将新字段或 feature 写入现行生产格式。 接管第四批已按 ADR-0018 落地新格式与独立摘要域、必需 feature 拒绝和规范来源上的责任集合比较；旧 profile/1 保持独立且拒绝新组合语义。必需集合当前由宿主显式传入，真实声明/SDK/接线派生与完整组合执行协商仍未交付。 接管第五批从固定 C07 真实 AST、生产声明投影与公开观察源码派生普通/增强的5/8项有限责任，禁用重新生成普通闭包；29项检查及路径隔离修复独审通过。该来源观察未产生 profile/2 OutputSet、未接入完整组合执行，不覆盖全 C07 语义责任或整包验收。 接管第六批有限真实责任贯通 profile/2 finalizer/IR/task/OutputSet，旧 /1 拒绝新语义；新增说明目录字节闭包、双责任缺失和独立重生成通过。完整组合责任及执行协商继续按原验收交付。 第九批开工普通C→ArkTS的profile/2包源/镜像分别准入、公开JSONL生成会话与C04 Source提交；增强/替代/禁用、完整组合及目标运行不由此推定完成。 第九批普通C→ArkTS Source子片完成真实公开JSONL生成及C04提交，最终9项主链和7项同镜像进程独审通过；同镜像逻辑工具替换与取消断言漏洞已修。仅单generator+SDK资产，完整配置/禁用、SDK/HAR/目标消费与整包仍未验收。 第十批在真实双会话中验证有限普通/增强/禁用责任与未知配置准确拒绝；具名替代后端缺项不伪造成已解析profile或兼容承诺。E02收口仅提供协议证据，本包其余模型演进/证据失效及完整责任出口继续逐条对账。 第十一批按现行四条验收收口：干净fe75241、新source-semantics三配置复用composition/1与profile/2，基于真实16call、有效policy及固定机制来源派生95/107/95责任和5/10/5依赖用途，最终31项真实/分层反例、旧三配置及旧单generator兼容、模型演进/证据失效、完整本地门禁002与独审通过。旧@1保留5/8/5观察责任而不继承新@2保证；额外物理装配、未知/替代配置准确拒绝。结论限有限Source语义协商与消费，不扩大SDK/HAR/原生目标、页面或X认证；C06/C07旧候选、历史失败与Actions缺项保持。"
     },
     {
       "id": "E04",
@@ -1028,7 +1032,8 @@
       "verification": "missing",
       "evidence": [
         "reviews/2026-10-26-chief-architect-ninth-batch.md",
-        "reviews/2026-10-26-chief-architect-tenth-batch.md"
+        "reviews/2026-10-26-chief-architect-tenth-batch.md",
+        "reviews/2026-10-27-chief-architect-eleventh-batch.md"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1042,7 +1047,8 @@
         "architecture/14-project-initialization.md",
         "validation/06-project-initialization.md",
         "architecture/17-extension-composition.md",
-        "reviews/2026-10-25-chief-architect-first-batch.md"
+        "reviews/2026-10-25-chief-architect-first-batch.md",
+        "adr/0025-doctor-preflight-contract.md"
       ],
       "requirements": [
         "REQ-01",
@@ -1051,7 +1057,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 第九批提前实施与I01-P共用的真实CommitNew/取消/证据保存子范围；不代表I01前置或I02整包验收已满足，doctor及后续Build/Verify/恢复仍须各自交付。 提前子范围已完成no-replace创建、取消/提交后证据失败事实保留与独立Host70断言；不是doctor、最终根Build/Verify或I02整包验收。 第十批与I01共享的最终根Build/Verify、实际配置失败与SIGINT取消、已创建工程和真实证据保留已验证；真实veto、pending owner和保存尾窗经独审。仅首个Rust→C值配方子范围，doctor、已有工程接入/升级/禁用及其他配方仍未交付，I01整包前置未解除。"
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 第九批提前实施与I01-P共用的真实CommitNew/取消/证据保存子范围；不代表I01前置或I02整包验收已满足，doctor及后续Build/Verify/恢复仍须各自交付。 提前子范围已完成no-replace创建、取消/提交后证据失败事实保留与独立Host70断言；不是doctor、最终根Build/Verify或I02整包验收。 第十批与I01共享的最终根Build/Verify、实际配置失败与SIGINT取消、已创建工程和真实证据保留已验证；真实veto、pending owner和保存尾窗经独审。仅首个Rust→C值配方子范围，doctor、已有工程接入/升级/禁用及其他配方仍未交付，I01整包前置未解除。 第十一批项目所有者采用doctor现有冻结上下文的只读CLI及doctor-result/1具体契约，见ADR-0025；进入实现，三档仅检查静态前提，不执行构建/运行/安装。模板模式、已有工程升级/禁用及I01/I02整包前置保持，批准不计实现或验收。"
     },
     {
       "id": "I03",

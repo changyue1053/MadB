@@ -1,0 +1,65 @@
+{
+  "scope": "round11 finite E01/E03 acceptance; status only in catalog",
+  "as_of": "2026-10-27",
+  "producer_revision": "fe75241697469292d7af06ff6bb4e1ce47cc4018",
+  "evidence_root": "/private/tmp/madb-chief-round11",
+  "records": {
+    "frozen-extensions-001/receipt.json": {
+      "sha256": "e3da7d727d7b3bcde226c5b52eee9c96212af96d110b294980de6760657605c1",
+      "size": 7384
+    },
+    "e01-frozen-rejections-001/checks.json": {
+      "sha256": "ff329974ec7483feed0217ead074aa44fec9ea970597adaf6ff4bb9feab9b7f6",
+      "size": 4719
+    },
+    "e03-final-001/runs/checks.json": {
+      "sha256": "010db8278d88d28d46cbdfc860995f85b1407549c49d96bf35fb6957c66162b7",
+      "size": 6412
+    },
+    "e03-legacy-final-001/runs/checks.json": {
+      "sha256": "ebd072ec685b6523b816aea4814f631a164cc950c323a4578b553cb93e6aec65",
+      "size": 759
+    },
+    "e03-final-validation-001.json": {
+      "sha256": "1ae7d5d38278b4ab351126712fb0f7a0d21acd894e908f1c661783dc83ab3dd5",
+      "size": 21710
+    },
+    "extension-independent-003/facts.json": {
+      "sha256": "02dabc9f74f246e401dad6f723b36b6637dfe8d13605095d1fa099868ee6bea6",
+      "size": 4439
+    },
+    "extension-independent-003/negative-raw-audit.json": {
+      "sha256": "0aa45fcf4aa3d27ba81522cc32a58d7918c40524a279eb1e14748d1ff906ea4b",
+      "size": 3382
+    },
+    "extension-independent-admission-004/checks.json": {
+      "sha256": "52c73e8e33bed8aad9680ca96150a70f734757699d51e1d2b244989afd3cdc2f",
+      "size": 6375
+    },
+    "extension-independent-single-005/summary.json": {
+      "sha256": "390c7ba69f9dee47b8600cada5589ead1f928933e141db6ded8ab0c294019994",
+      "size": 671
+    },
+    "extensions-full-gate-002.json": {
+      "sha256": "ae0bb1ebeaa00b7560406d828f6d4ea2d49911aabaa9192608078d037e0e1db1",
+      "size": 1389
+    },
+    "extension-final-independent-review.md": {
+      "sha256": "7da5238053c6927904ab3b94336bc150b97519f62d29514f546633416777f17d",
+      "size": 12399
+    }
+  },
+  "results": {
+    "E01_acceptance_rows": 6,
+    "E03_acceptance_rows": 4,
+    "source_semantics_checks": 31,
+    "legacy_two_session_configurations": 3,
+    "legacy_single_generator_checks": 9,
+    "repaired_historical_rejections": 4,
+    "independent_same_name_dependency_rejections": 2,
+    "independent_admission_rejections": 7,
+    "full_local_gate_exit": 0,
+    "remote_actions_executed": false,
+    "sdk_har_target_or_page_certification": false
+  }
+}

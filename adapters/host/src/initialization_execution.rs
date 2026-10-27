@@ -4,7 +4,7 @@
 mod installation;
 mod runtime;
 use crate::{LocalWorkspace, process::LocalProcessRunner};
-pub use installation::InstalledValuesTools;
+pub use installation::{InstallationObserver, InstalledValuesTools};
 use madb_app::{
     Digest, ErrorKind, LogicalPath, QueryError, Result,
     ports::{FileReference, ReadWorkspace},

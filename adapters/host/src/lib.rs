@@ -222,3 +222,5 @@ fn limit_error(path: &LogicalPath) -> QueryError {
         "file exceeds the bounded read limit",
     )
 }
+
+pub mod doctor;

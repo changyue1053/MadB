@@ -108,6 +108,22 @@
       ]
     },
     {
+      "code": "DOCTOR001",
+      "meaning": "The complete read-only doctor report exceeded its output budget.",
+      "triggers": [
+        "The canonical doctor result, including its trailing newline, exceeds 1 MiB."
+      ],
+      "repairs": [
+        {
+          "kind": "inspect-configuration",
+          "instruction": "Preserve the highest-priority reported failure and inspect the supported input scope manually. The reduced report is not a complete check inventory."
+        }
+      ],
+      "limits": [
+        "Doctor did not install, repair, build or run anything. A truncated result is always nonzero; an existing Conflict retains exit code 4."
+      ]
+    },
+    {
       "code": "EXPLAIN001",
       "meaning": "This tool version has no explanation entry for the exact code.",
       "triggers": [

@@ -16,6 +16,7 @@
 | I01 请求错误、创建结果、引用根/SDK 与目标默认四项增量 | 项目所有者确认；剩余格式另由 ADR-0023 采用，不重复裁定 | [ADR-0019](../adr/0019-project-init-incremental-contracts.md) |
 | I01 完整模板/结果、原包库存与有限 renderer/首配方 | 项目所有者采用具体提案；格式、Host 创建与最终根执行分别取证，正式版本与工具镜像未齐不得执行准入 | [ADR-0023](../adr/0023-project-template-and-init-result.md) |
 | 内部工具候选真实版本 0.1.0 | 项目所有者采用；九个工具 crate 重建，publish=false，SDK/历史候选不变；版本符合不等于执行通过 | [ADR-0024](../adr/0024-internal-tool-candidate-version.md) |
+| doctor只读前提检查与机器结果 | 项目所有者采用具体CLI、doctor-result/1及DOCTOR001预算规则；三档只检查前提，实施和验收另留证 | [ADR-0025](../adr/0025-doctor-preflight-contract.md) |
 | 语言特性作为薄入口，普通 API 可用，诊断与必要保护分离 | 设计采用，随各平台验证工具和语义组合 | [ADR-0006](../adr/0006-developer-ergonomics.md) |
 | explain 只读查询、来源核对及机器结果 | 项目所有者已确认具体格式；实现与运行证据另验 | [ADR-0020](../adr/0020-explain-query-contracts.md) |
 | 首链生产诊断与普通 checked constructor | 项目所有者已采用单条 pull 修订2；默认7/诊断9导出分开固定和消费 | [ADR-0021](../adr/0021-native-diagnostics-and-checked-constructor.md) |

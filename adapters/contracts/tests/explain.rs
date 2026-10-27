@@ -78,7 +78,14 @@ fn all_finite_codes_explain_without_any_workspace_access() {
         reads: Cell::new(0),
         change: None,
     };
-    assert_eq!(catalog["entries"].as_array().unwrap().len(), 51);
+    assert_eq!(catalog["entries"].as_array().unwrap().len(), 52);
+    assert!(
+        catalog["entries"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|entry| entry["code"] == "DOCTOR001")
+    );
     for entry in catalog["entries"].as_array().unwrap() {
         let code = id(entry["code"].as_str().unwrap());
         let result = explain(

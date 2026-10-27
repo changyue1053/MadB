@@ -44,6 +44,7 @@ impl ExplainAdapter {
             ("ID", 6),
             ("NUM", 1),
             ("EXPLAIN", 4),
+            ("DOCTOR", 1),
         ] {
             for number in 1..=count {
                 expected.push(format!("{prefix}{number:03}"));

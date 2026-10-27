@@ -1,9 +1,9 @@
 //! Installed initialization composition. Format/plan/rendering remain pure;
 //! only Host obtains identities, creates directories, and saves evidence.
-mod catalog;
+pub(crate) mod catalog;
 mod control;
 mod evidence;
-mod prepare;
+pub(crate) mod prepare;
 mod recipe;
 
 use crate::init::InitOptions;

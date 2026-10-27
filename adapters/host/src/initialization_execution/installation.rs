@@ -13,7 +13,7 @@ const NATIVE: &[u8] = include_bytes!("data/native-observation.json");
 const RECORD_LIMIT: usize = 8 * 1024 * 1024;
 const INSTALLATION_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 
-pub struct InstalledValuesTools {
+struct InstallationRecord {
     tools: BTreeMap<String, LockedInitializationTool>,
     sdk: Vec<LockedInitializationFile>,
     installation: Value,
@@ -22,11 +22,8 @@ pub struct InstalledValuesTools {
     sdk_root: PathBuf,
     environment: BTreeMap<String, String>,
 }
-impl InstalledValuesTools {
-    pub fn capture() -> Result<Self> {
-        Self::from_record(RECORD)
-    }
-    fn from_record(bytes: &[u8]) -> Result<Self> {
+impl InstallationRecord {
+    fn parse(bytes: &[u8]) -> Result<Self> {
         if bytes.len() > RECORD_LIMIT {
             return Err(invalid(
                 "installation",
@@ -108,34 +105,7 @@ impl InstalledValuesTools {
             sdk_root,
             environment,
         };
-        result.verify()?;
         Ok(result)
-    }
-    pub fn tool(&self, name: &str) -> Result<&LockedInitializationTool> {
-        self.tools
-            .get(name)
-            .ok_or_else(|| invalid("tool", format!("finite recipe tool is absent: {name}")))
-    }
-    pub fn observations(&self) -> Vec<ToolObservation> {
-        self.tools
-            .values()
-            .map(|tool| tool.observation.clone())
-            .collect()
-    }
-    pub fn native_observation(&self) -> &'static [u8] {
-        NATIVE
-    }
-    pub fn execution_resources(&self) -> &'static [u8] {
-        RECORD
-    }
-    pub fn sdk_root(&self) -> &Path {
-        &self.sdk_root
-    }
-    pub fn environment(&self) -> BTreeMap<String, String> {
-        self.environment.clone()
-    }
-    pub fn revalidate(&self) -> Result<()> {
-        self.verify().map_err(|e| conflict("installation", e))
     }
     fn verify(&self) -> Result<()> {
         for tool in self.tools.values() {
@@ -149,6 +119,52 @@ impl InstalledValuesTools {
         verify_compiler(&self.compiler_runtime)
     }
 }
+/// Execution-capable installation: construction still requires every original
+/// verification. The doctor observer below never exposes this type.
+pub struct InstalledValuesTools {
+    record: InstallationRecord,
+}
+impl InstalledValuesTools {
+    pub fn capture() -> Result<Self> {
+        let record = InstallationRecord::parse(RECORD)?;
+        record.verify()?;
+        Ok(Self { record })
+    }
+    pub fn tool(&self, name: &str) -> Result<&LockedInitializationTool> {
+        self.record
+            .tools
+            .get(name)
+            .ok_or_else(|| invalid("tool", format!("finite recipe tool is absent: {name}")))
+    }
+    pub fn observations(&self) -> Vec<ToolObservation> {
+        self.record
+            .tools
+            .values()
+            .map(|tool| tool.observation.clone())
+            .collect()
+    }
+    pub fn native_observation(&self) -> &'static [u8] {
+        NATIVE
+    }
+    pub fn execution_resources(&self) -> &'static [u8] {
+        RECORD
+    }
+    pub fn sdk_root(&self) -> &Path {
+        &self.record.sdk_root
+    }
+    pub fn environment(&self) -> BTreeMap<String, String> {
+        self.record.environment.clone()
+    }
+    pub fn revalidate(&self) -> Result<()> {
+        self.record
+            .verify()
+            .map_err(|e| conflict("installation", e))
+    }
+}
+
+mod observation;
+pub use observation::InstallationObserver;
+
 fn locked(value: &Value) -> Result<LockedInitializationFile> {
     Ok(LockedInitializationFile {
         path: PathBuf::from(text(value, "path")?),

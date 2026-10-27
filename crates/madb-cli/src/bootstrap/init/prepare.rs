@@ -11,7 +11,7 @@ use madb_plan::project::{CheckedTemplate, FileOwnership};
 use madb_templates::{AssetError, AssetErrorKind, CheckedInventory, parse_archive, render_asset};
 use std::collections::BTreeMap;
 
-pub(super) fn load(
+pub(crate) fn load(
     record: &TrustedTemplateRecord,
     adapter: &ProjectInitAdapter,
 ) -> Result<(CheckedTemplate, CheckedInventory)> {
@@ -50,7 +50,7 @@ pub(super) fn load(
     Ok((template, inventory))
 }
 
-pub(super) fn project(
+pub(crate) fn project(
     record: &TrustedTemplateRecord,
     package: &CheckedInventory,
     request: &FrozenInitRequest,

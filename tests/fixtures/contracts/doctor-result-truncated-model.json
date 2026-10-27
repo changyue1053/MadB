@@ -1,0 +1,36 @@
+{
+  "schema": "madb.doctor-result/1",
+  "tool": null,
+  "request": null,
+  "context": null,
+  "scope": "preflight-only",
+  "truncated": true,
+  "checks": [
+    {
+      "id": "tool.ninja",
+      "kind": "tool",
+      "subject": "ninja",
+      "status": "error",
+      "error_kind": "conflict",
+      "expected": null,
+      "observed": null,
+      "diagnostics": [
+        {
+          "code": "LOCK005",
+          "message": "Design fixture: captured image changed during recheck.",
+          "location": null
+        }
+      ],
+      "blocked_by": []
+    }
+  ],
+  "recovery": [],
+  "diagnostics": [
+    {
+      "code": "DOCTOR001",
+      "message": "Design fixture: report exceeds budget.",
+      "location": null
+    }
+  ],
+  "exit_code": 4
+}

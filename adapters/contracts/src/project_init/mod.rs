@@ -4,7 +4,7 @@ mod decode;
 mod diagnostic;
 mod inputs;
 mod report;
-mod wire;
+pub(crate) mod wire;
 pub use inputs::*;
 use madb_app::use_cases::initialize::{
     InitReport, InitRequestDigest, InitResultFormat, ResolvedRequest,

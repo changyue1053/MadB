@@ -6,25 +6,25 @@ use madb_plan::project::{
     VersionRange,
 };
 use madb_protocol::Value;
-pub(super) fn string(v: &Value) -> Result<&str> {
+pub(crate) fn string(v: &Value) -> Result<&str> {
     v.as_str()
         .ok_or_else(|| invalid("value", "expected string"))
 }
-pub(super) fn array(v: &Value) -> Result<&[Value]> {
+pub(crate) fn array(v: &Value) -> Result<&[Value]> {
     v.as_array()
         .map(Vec::as_slice)
         .ok_or_else(|| invalid("value", "expected array"))
 }
-pub(super) fn id(v: &Value) -> Result<Id> {
+pub(crate) fn id(v: &Value) -> Result<Id> {
     Id::new(string(v)?).map_err(|e| invalid("id", e.to_string()))
 }
-pub(super) fn path(v: &Value) -> Result<LogicalPath> {
+pub(crate) fn path(v: &Value) -> Result<LogicalPath> {
     LogicalPath::new(string(v)?).map_err(|e| invalid("path", e.to_string()))
 }
-pub(super) fn digest(v: &Value) -> Result<Digest> {
+pub(crate) fn digest(v: &Value) -> Result<Digest> {
     Digest::new(string(v)?).map_err(|e| invalid("digest", e.to_string()))
 }
-pub(super) fn uint(v: &Value) -> Result<u64> {
+pub(crate) fn uint(v: &Value) -> Result<u64> {
     v.as_u64()
         .ok_or_else(|| invalid("value", "expected safe unsigned integer"))
 }
@@ -32,20 +32,20 @@ pub(super) fn integer(v: &Value) -> Result<i64> {
     v.as_i64()
         .ok_or_else(|| invalid("value", "expected safe integer"))
 }
-pub(super) fn boolean(v: &Value) -> Result<bool> {
+pub(crate) fn boolean(v: &Value) -> Result<bool> {
     v.as_bool()
         .ok_or_else(|| invalid("value", "expected boolean"))
 }
-pub(super) fn ids(v: &Value) -> Result<Vec<Id>> {
+pub(crate) fn ids(v: &Value) -> Result<Vec<Id>> {
     array(v)?.iter().map(id).collect()
 }
-pub(super) fn strings(v: &Value) -> Result<Vec<String>> {
+pub(crate) fn strings(v: &Value) -> Result<Vec<String>> {
     array(v)?
         .iter()
         .map(|v| Ok(string(v)?.to_owned()))
         .collect()
 }
-pub(super) fn optional<T>(v: &Value, parse: impl FnOnce(&Value) -> Result<T>) -> Result<Option<T>> {
+pub(crate) fn optional<T>(v: &Value, parse: impl FnOnce(&Value) -> Result<T>) -> Result<Option<T>> {
     if v.is_null() {
         Ok(None)
     } else {
@@ -63,20 +63,20 @@ pub(super) fn versions(v: &Value) -> Result<VersionRange> {
     r.validate().map_err(|e| invalid(e.subject, e.message))?;
     Ok(r)
 }
-pub(super) fn file(v: &Value) -> Result<FileIdentity> {
+pub(crate) fn file(v: &Value) -> Result<FileIdentity> {
     Ok(FileIdentity {
         path: path(&v["path"])?,
         sha256: digest(&v["sha256"])?,
         size: uint(&v["size"])?,
     })
 }
-pub(super) fn reference(v: &Value) -> Result<FileReference> {
+pub(crate) fn reference(v: &Value) -> Result<FileReference> {
     Ok(FileReference {
         file: file(v)?,
         schema: id(&v["schema"])?,
     })
 }
-pub(super) fn component(v: &Value) -> Result<ComponentIdentity> {
+pub(crate) fn component(v: &Value) -> Result<ComponentIdentity> {
     Ok(ComponentIdentity {
         id: id(&v["id"])?,
         version: string(&v["version"])?.into(),
@@ -114,7 +114,7 @@ pub(super) fn evidence(v: &Value) -> Result<EvidenceLevel> {
         _ => Err(invalid("evidence", "unknown evidence level")),
     }
 }
-pub(super) fn location(v: &Value) -> Result<Location> {
+pub(crate) fn location(v: &Value) -> Result<Location> {
     Ok(Location {
         path: path(&v["path"])?,
         line: uint(&v["line"])?,

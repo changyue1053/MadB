@@ -18,6 +18,7 @@ fn shared_format_vectors_cover_every_payload() {
     let original = fixture("format-vectors.json");
     let composition = fixture("composition-format-vectors.json");
     let explain = fixture("explain-format-vectors.json");
+    let doctor = fixture("doctor-format-vectors.json");
     let init = fixture("../project-init/format-vectors.json");
     let mut init_vectors = init["vectors"].as_array().unwrap().clone();
     for vector in &mut init_vectors {
@@ -33,6 +34,7 @@ fn shared_format_vectors_cover_every_payload() {
         .iter()
         .chain(composition["vectors"].as_array().unwrap())
         .chain(explain["vectors"].as_array().unwrap())
+        .chain(doctor["vectors"].as_array().unwrap())
         .chain(init_vectors.iter())
     {
         let kind = DocumentKind::ALL

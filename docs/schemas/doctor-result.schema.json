@@ -1,0 +1,794 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.doctor-result/1"
+    },
+    "tool": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/component"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "request": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/request"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "context": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/context"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "scope": {
+      "const": "preflight-only"
+    },
+    "truncated": {
+      "type": "boolean"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/check"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "recovery": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recovery"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "tool",
+    "request",
+    "context",
+    "scope",
+    "truncated",
+    "checks",
+    "recovery",
+    "diagnostics",
+    "exit_code"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:doctor-result:1",
+  "$defs": {
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "argv": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 0,
+        "maxLength": 4096,
+        "not": {
+          "pattern": "\\u0000"
+        }
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "not": {
+            "pattern": "\\u0000"
+          }
+        }
+      ]
+    },
+    "recovery": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "retry",
+            "manual",
+            "inspect"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "arguments": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/argv"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "message",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "tool_observation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "host": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "target": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "host",
+        "target",
+        "source",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "root": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "not": {
+            "pattern": "[\\u0000-\\u001f\\u007f]"
+          },
+          "pattern": "^/"
+        },
+        "redacted": {
+          "const": false
+        }
+      },
+      "required": [
+        "path",
+        "redacted"
+      ],
+      "additionalProperties": false
+    },
+    "request": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "$ref": "#/$defs/root"
+        },
+        "project": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        "read_request": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        "snapshot": {
+          "$ref": "urn:madb:schema:common:1#/$defs/path"
+        },
+        "verify": {
+          "enum": [
+            "structure",
+            "build",
+            "run"
+          ]
+        }
+      },
+      "required": [
+        "root",
+        "project",
+        "read_request",
+        "snapshot",
+        "verify"
+      ],
+      "additionalProperties": false
+    },
+    "context": {
+      "type": "object",
+      "properties": {
+        "project": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file"
+        },
+        "project_format": {
+          "enum": [
+            "json",
+            "toml"
+          ]
+        },
+        "read_request": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "lock": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "profile": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+        },
+        "snapshot": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/file_ref"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selector": {
+          "$ref": "urn:madb:schema:common:1#/$defs/selector"
+        },
+        "recipe": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/component"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "project",
+        "project_format",
+        "read_request",
+        "lock",
+        "profile",
+        "snapshot",
+        "selector",
+        "recipe"
+      ],
+      "additionalProperties": false
+    },
+    "fact": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "bytes"
+            },
+            "sha256": {
+              "$ref": "urn:madb:schema:common:1#/$defs/digest"
+            },
+            "size": {
+              "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+            }
+          },
+          "required": [
+            "kind",
+            "sha256",
+            "size"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "digest"
+            },
+            "domain": {
+              "enum": [
+                "madb.project/1",
+                "madb.profile/1",
+                "madb.source/1"
+              ]
+            },
+            "sha256": {
+              "$ref": "urn:madb:schema:common:1#/$defs/digest"
+            }
+          },
+          "required": [
+            "kind",
+            "domain",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "tool"
+            },
+            "method": {
+              "const": "locked-bytes"
+            },
+            "value": {
+              "$ref": "#/$defs/tool_observation"
+            }
+          },
+          "required": [
+            "kind",
+            "method",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "host"
+            },
+            "os": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "arch": {
+              "$ref": "urn:madb:schema:common:1#/$defs/id"
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "not": {
+                    "pattern": "[\\u0000-\\u001f\\u007f]"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "build": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "not": {
+                    "pattern": "[\\u0000-\\u001f\\u007f]"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "os",
+            "arch",
+            "version",
+            "build"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "state"
+            },
+            "value": {
+              "enum": [
+                "checked",
+                "supported",
+                "missing",
+                "unsupported",
+                "not-checked"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "value"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "check": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "kind": {
+          "enum": [
+            "configuration",
+            "input",
+            "recipe",
+            "host",
+            "tool",
+            "sdk",
+            "resource"
+          ]
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "not": {
+            "pattern": "[\\u0000-\\u001f\\u007f]"
+          }
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "error",
+            "unsupported",
+            "blocked"
+          ]
+        },
+        "error_kind": {
+          "anyOf": [
+            {
+              "enum": [
+                "check-failed",
+                "invalid-input",
+                "host",
+                "conflict"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/fact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "blocked_by": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4096,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "subject",
+        "status",
+        "error_kind",
+        "expected",
+        "observed",
+        "diagnostics",
+        "blocked_by"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "passed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_kind": {
+                "type": "null"
+              },
+              "observed": {
+                "type": "object"
+              },
+              "blocked_by": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "blocked"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_kind": {
+                "type": "null"
+              },
+              "expected": {
+                "type": "null"
+              },
+              "observed": {
+                "type": "null"
+              },
+              "blocked_by": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "failed",
+                  "error",
+                  "unsupported"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "diagnostics": {
+                "minItems": 1
+              },
+              "blocked_by": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "failed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_kind": {
+                "enum": [
+                  "check-failed",
+                  "invalid-input"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "error"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_kind": {
+                "enum": [
+                  "host",
+                  "conflict"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "unsupported"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "error_kind": {
+                "const": "invalid-input"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "tool": {
+            "type": "object"
+          },
+          "request": {
+            "type": "object"
+          },
+          "context": {
+            "type": "object",
+            "properties": {
+              "snapshot": {
+                "type": "object"
+              },
+              "recipe": {
+                "type": "object"
+              }
+            }
+          },
+          "truncated": {
+            "const": false
+          },
+          "checks": {
+            "minItems": 1,
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "passed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "request": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "context": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "truncated": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "enum": [
+              3,
+              4
+            ]
+          },
+          "diagnostics": {
+            "contains": {
+              "properties": {
+                "code": {
+                  "const": "DOCTOR001"
+                }
+              }
+            },
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ]
+}

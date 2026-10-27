@@ -3,7 +3,7 @@
 use madb_app::{Digest, ErrorKind, Id, LogicalPath, QueryError, Result};
 use madb_plan::project::{ComponentIdentity, FileIdentity, FileReference, VALUES_RECIPE, Version};
 
-pub(super) struct TrustedTemplateRecord {
+pub(crate) struct TrustedTemplateRecord {
     pub id: Id,
     pub version: Version,
     pub archive: FileIdentity,
@@ -12,7 +12,7 @@ pub(super) struct TrustedTemplateRecord {
     pub recipes: Vec<ComponentIdentity>,
     bytes: &'static [u8],
 }
-pub(super) enum BundledSource {
+pub(crate) enum BundledSource {
     Bundled,
 }
 
@@ -67,7 +67,7 @@ impl TrustedTemplateRecord {
             .ok_or_else(|| invalid("selected recipe is not installed by this tool image"))
     }
 }
-pub(super) fn path(value: &str) -> LogicalPath {
+pub(crate) fn path(value: &str) -> LogicalPath {
     LogicalPath::new(value).expect("fixed installed logical path")
 }
 fn invalid(message: impl Into<String>) -> QueryError {
@@ -81,7 +81,7 @@ fn invalid(message: impl Into<String>) -> QueryError {
 
 /// Fixed package shipped in this producer. The build records these raw bytes;
 /// no runtime filesystem path or remote catalog can replace the installation.
-pub(super) fn installed(
+pub(crate) fn installed(
     tool: &ComponentIdentity,
     selector: Option<&str>,
 ) -> Result<TrustedTemplateRecord> {

@@ -1,0 +1,118 @@
+{
+  "schema": "madb.doctor-result/1",
+  "tool": {
+    "id": "madb",
+    "version": "0.1.0",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "request": {
+    "root": {
+      "path": "/design-only/医生 项目",
+      "redacted": false
+    },
+    "project": "madb.json",
+    "read_request": "read.json",
+    "snapshot": "ir.json",
+    "verify": "structure"
+  },
+  "context": {
+    "project": {
+      "path": "madb.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1
+    },
+    "project_format": "json",
+    "read_request": {
+      "path": "read.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.read-request/1"
+    },
+    "lock": {
+      "path": "lock.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.lock/1"
+    },
+    "profile": {
+      "path": "profile.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.profile/1"
+    },
+    "snapshot": {
+      "path": "ir.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.contract-ir/1"
+    },
+    "selector": {
+      "route": "rust-c-sdk",
+      "profile_id": "design-only-profile",
+      "profile_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": "aarch64-apple-darwin",
+      "direction": "consumer-to-provider"
+    },
+    "recipe": {
+      "id": "madb.init.rust-c-sdk.values@1",
+      "version": "0.1.0",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "scope": "preflight-only",
+  "truncated": false,
+  "checks": [
+    {
+      "id": "tool.missing",
+      "kind": "tool",
+      "subject": "tool.missing",
+      "status": "error",
+      "error_kind": "host",
+      "expected": null,
+      "observed": {
+        "kind": "state",
+        "value": "missing"
+      },
+      "diagnostics": [
+        {
+          "code": "HOST001",
+          "message": "Design fixture: required file missing",
+          "location": null
+        }
+      ],
+      "blocked_by": []
+    },
+    {
+      "id": "resource.dependent",
+      "kind": "resource",
+      "subject": "resource.dependent",
+      "status": "blocked",
+      "error_kind": null,
+      "expected": null,
+      "observed": null,
+      "diagnostics": [],
+      "blocked_by": [
+        "tool.missing"
+      ]
+    }
+  ],
+  "recovery": [
+    {
+      "kind": "manual",
+      "message": "Restore the locked installation.",
+      "arguments": [
+        "madb",
+        "doctor",
+        "--json"
+      ]
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": "HOST001",
+      "message": "Design fixture: required file missing",
+      "location": null
+    }
+  ],
+  "exit_code": 3
+}

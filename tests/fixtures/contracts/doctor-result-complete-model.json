@@ -1,0 +1,167 @@
+{
+  "schema": "madb.doctor-result/1",
+  "tool": {
+    "id": "madb",
+    "version": "0.1.0",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "request": {
+    "root": {
+      "path": "/design-only/医生 项目",
+      "redacted": false
+    },
+    "project": "madb.json",
+    "read_request": "read.json",
+    "snapshot": "ir.json",
+    "verify": "structure"
+  },
+  "context": {
+    "project": {
+      "path": "madb.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1
+    },
+    "project_format": "json",
+    "read_request": {
+      "path": "read.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.read-request/1"
+    },
+    "lock": {
+      "path": "lock.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.lock/1"
+    },
+    "profile": {
+      "path": "profile.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.profile/1"
+    },
+    "snapshot": {
+      "path": "ir.json",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1,
+      "schema": "madb.contract-ir/1"
+    },
+    "selector": {
+      "route": "rust-c-sdk",
+      "profile_id": "design-only-profile",
+      "profile_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "target": "aarch64-apple-darwin",
+      "direction": "consumer-to-provider"
+    },
+    "recipe": {
+      "id": "madb.init.rust-c-sdk.values@1",
+      "version": "0.1.0",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "scope": "preflight-only",
+  "truncated": false,
+  "checks": [
+    {
+      "id": "context.declared-inputs",
+      "kind": "input",
+      "subject": "context.declared-inputs",
+      "status": "passed",
+      "error_kind": null,
+      "expected": null,
+      "observed": {
+        "kind": "bytes",
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "size": 1
+      },
+      "diagnostics": [],
+      "blocked_by": []
+    },
+    {
+      "id": "context.snapshot",
+      "kind": "input",
+      "subject": "context.snapshot",
+      "status": "passed",
+      "error_kind": null,
+      "expected": null,
+      "observed": {
+        "kind": "state",
+        "value": "checked"
+      },
+      "diagnostics": [],
+      "blocked_by": []
+    },
+    {
+      "id": "context.configuration",
+      "kind": "configuration",
+      "subject": "context.configuration",
+      "status": "passed",
+      "error_kind": null,
+      "expected": null,
+      "observed": {
+        "kind": "digest",
+        "domain": "madb.project/1",
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "diagnostics": [],
+      "blocked_by": []
+    },
+    {
+      "id": "recipe",
+      "kind": "recipe",
+      "subject": "recipe",
+      "status": "passed",
+      "error_kind": null,
+      "expected": null,
+      "observed": {
+        "kind": "state",
+        "value": "supported"
+      },
+      "diagnostics": [],
+      "blocked_by": []
+    },
+    {
+      "id": "tool.madb",
+      "kind": "tool",
+      "subject": "tool.madb",
+      "status": "passed",
+      "error_kind": null,
+      "expected": null,
+      "observed": {
+        "kind": "tool",
+        "method": "locked-bytes",
+        "value": {
+          "id": "madb",
+          "version": "0.1.0",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "host": "aarch64-apple-darwin",
+          "target": "aarch64-apple-darwin",
+          "source": "design-only",
+          "arguments": []
+        }
+      },
+      "diagnostics": [],
+      "blocked_by": []
+    },
+    {
+      "id": "host",
+      "kind": "host",
+      "subject": "host",
+      "status": "passed",
+      "error_kind": null,
+      "expected": null,
+      "observed": {
+        "kind": "host",
+        "os": "macos",
+        "arch": "aarch64",
+        "version": "26.6.2",
+        "build": null
+      },
+      "diagnostics": [],
+      "blocked_by": []
+    }
+  ],
+  "recovery": [],
+  "diagnostics": [],
+  "exit_code": 0
+}

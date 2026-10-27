@@ -8,6 +8,9 @@ use std::path::Path;
 
 pub fn run() -> u8 {
     let arguments: Vec<_> = std::env::args_os().collect();
+    if arguments.get(1).is_some_and(|value| value == "doctor") {
+        return super::doctor::run(arguments, cli());
+    }
     if arguments.get(1).is_some_and(|value| value == "init") {
         return super::init::run(arguments, cli());
     }
@@ -141,7 +144,8 @@ fn cli() -> Command {
         .about("Cross-language SDK engineering tools")
         .after_help("Read-only snapshot queries and explicit frozen execution recipes are available. Route certification requires independent consumer evidence.")
         .subcommand_required(true).arg_required_else_help(true)
-        .subcommand(super::init::command());
+        .subcommand(super::init::command())
+        .subcommand(super::doctor::command());
     for (name, help) in [
         (
             "inspect",

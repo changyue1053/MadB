@@ -1,0 +1,601 @@
+{
+  "kind": "E03 finite source semantics final author validation; not public SDK Report or whole-task status",
+  "recorded_at": "2026-10-27T06:12:06.230897+00:00",
+  "source": {
+    "root": "/private/tmp/madb-chief-round11/extensions-source",
+    "head": "fe75241697469292d7af06ff6bb4e1ce47cc4018",
+    "clean_before_and_after": true,
+    "owned_current": {
+      "adapters/contracts/src/composition/semantics.rs": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/adapters/contracts/src/composition/semantics.rs",
+        "sha256": "966a1d169b6da2dc5ac7c7b4c426c7b578ef0c4412d4175f18d694238459ced8",
+        "size": 33481
+      },
+      "adapters/contracts/tests/composition_semantics.rs": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/adapters/contracts/tests/composition_semantics.rs",
+        "sha256": "fbfffa8267f973fb34ff36450e87b38e975902de19762ea6f7d717d92c9456a6",
+        "size": 10316
+      },
+      "adapters/contracts/tests/evolution.rs": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/adapters/contracts/tests/evolution.rs",
+        "sha256": "bd5a3480871deb2d9445e8b3d4354a3b3c0a8ac65fff91d9b0b453bf3023e487",
+        "size": 13770
+      },
+      "crates/madb-cli/examples/composition_generation_probe.rs": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/crates/madb-cli/examples/composition_generation_probe.rs",
+        "sha256": "0722b8ef339b19914799dcdb565eb9a949a772cc26f6cddb6edc104f91304004",
+        "size": 34343
+      },
+      "tests/integration/e03_semantics/inputs.py": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/tests/integration/e03_semantics/inputs.py",
+        "sha256": "07ab333d831e45709d532821cfabe7eaf7c5653f8d5355f346601558a8ed0b61",
+        "size": 8231
+      },
+      "tests/integration/e03_semantics/check.py": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/tests/integration/e03_semantics/check.py",
+        "sha256": "4652b01f535b6e536c2f324ca0b8371c71ee415399d3ff816250c9e1b2edd982",
+        "size": 16146
+      },
+      "tests/integration/e03_semantics/README.md": {
+        "path": "/private/tmp/madb-chief-round11/extensions-source/tests/integration/e03_semantics/README.md",
+        "sha256": "97bf672fa0f1293a429d8ee2387f144aedfb43994bd815fb499b3a423869f2e5",
+        "size": 3594
+      }
+    },
+    "all_tracked_before": {
+      "path": "/private/tmp/madb-chief-round11/e03-final-001/inputs-before.json",
+      "sha256": "a5fa2f728da77c20918f8ad15582e70214b5da068c1eb2b2811d0cc54359f792",
+      "size": 387807
+    },
+    "all_tracked_after": {
+      "path": "/private/tmp/madb-chief-round11/e03-final-001/inputs-after.json",
+      "sha256": "a5fa2f728da77c20918f8ad15582e70214b5da068c1eb2b2811d0cc54359f792",
+      "size": 387807
+    },
+    "note": "selected clean extension commit excludes concurrent doctor work; shared CLI differs from development owned freeze only by coordinator rustfmt; final current bytes and newly built images used"
+  },
+  "frozen_tool_receipt": {
+    "path": "/private/tmp/madb-chief-round11/frozen-extensions-001/receipt.json",
+    "sha256": "e3da7d727d7b3bcde226c5b52eee9c96212af96d110b294980de6760657605c1",
+    "size": 7384
+  },
+  "used_images": {
+    "composition_generation_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-extensions-001/images/composition_generation_probe",
+      "sha256": "8d14fd2f2e0f347eb36610095755fe14682d58aa1fc5655158fbae6e28a6eb6b",
+      "size": 26504048
+    },
+    "composition_chain_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-extensions-001/images/composition_chain_probe",
+      "sha256": "04d8af1f3f5cf5c1bf11399ab9ed5f42f9ebecd24e121330665b5cd1caf0f748",
+      "size": 29531912
+    },
+    "arkts_composition_peer": {
+      "path": "/private/tmp/madb-chief-round11/frozen-extensions-001/images/arkts_composition_peer",
+      "sha256": "9b21c4f1136158cb36d01deae106587491314bc648deb76a0bffde895f1f8bdb",
+      "size": 19090856
+    }
+  },
+  "python": {
+    "path": "/opt/homebrew/Cellar/python@3.14/3.14.4_1/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+    "sha256": "02a8df1726463faedb3adef289b3d1bdeabb7785c837fd8c174023aeeeb4d312",
+    "size": 52448
+  },
+  "tool_observation": {
+    "path": "/private/tmp/madb-c07-public-generation-rename-record-003/tool-observation.json",
+    "sha256": "385aecaedd40ed48162127569e32cd82de2f5351a039226bb007995944f8aaa2",
+    "size": 19722
+  },
+  "replay_script": {
+    "path": "/private/tmp/madb-chief-round11/e03-final-replay.py",
+    "sha256": "c09ec55723adafbeb8e70ba029b03c89dfbd8e9d92a6815b45fb1c7b3189014e",
+    "size": 5345
+  },
+  "e03": {
+    "exit_code": 0,
+    "checks": 31,
+    "classification": {
+      "real_two_session_source_success": 3,
+      "coherent_repin_metadata_refusal": 25,
+      "duplicate_key_before_semantic_digest": 1,
+      "real_reader_refusal_no_downstream_or_commit": 2
+    },
+    "records": [
+      {
+        "assets": [
+          "facade",
+          "native-gateway",
+          "native-provider",
+          "native-runtime",
+          "native-worker"
+        ],
+        "case": "ordinary-two-session-source",
+        "declared_roles": 95,
+        "dependencies": 5,
+        "payloads": 15,
+        "physical_assembly": false,
+        "result": "passed",
+        "symbols": 16
+      },
+      {
+        "assets": [
+          "arkui",
+          "facade",
+          "native-gateway",
+          "native-provider",
+          "native-runtime",
+          "native-worker",
+          "state"
+        ],
+        "case": "enhanced-two-session-source",
+        "declared_roles": 107,
+        "dependencies": 10,
+        "payloads": 17,
+        "physical_assembly": false,
+        "result": "passed",
+        "symbols": 16
+      },
+      {
+        "assets": [
+          "facade",
+          "native-gateway",
+          "native-provider",
+          "native-runtime",
+          "native-worker"
+        ],
+        "case": "disabled-two-session-source",
+        "declared_roles": 95,
+        "dependencies": 5,
+        "payloads": 15,
+        "physical_assembly": false,
+        "result": "passed",
+        "symbols": 16
+      },
+      {
+        "case": "missing-type-read",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-abi-lowering",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-projection",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-async-bridge",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-dispatch",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-subscription",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-stop",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-drain",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-cancel",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-release",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-release-reader-no-commit",
+        "result": "passed",
+        "scope": "real AuthorSession reader refusal; no generator or Source commit"
+      },
+      {
+        "case": "missing-input-release",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-source-retirement",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-residual-release",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "wrong-release-owner",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "wrong-subscription-anchor",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "duplicate-key-other-owner",
+        "expected": [
+          "HASH004",
+          "duplicate collection identity"
+        ],
+        "result": "passed",
+        "scope": "duplicate semantic key rejected before a new composition digest can be pinned"
+      },
+      {
+        "case": "physical-assembly",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "physical-assembly is outside"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "api22",
+        "expected": [
+          "CapabilityUnsupported",
+          "deployment_target"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-abi",
+        "expected": [
+          "CapabilityUnsupported",
+          "abi"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-consumer",
+        "expected": [
+          "CapabilityUnsupported",
+          "consumer"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-frame-layout",
+        "expected": [
+          "InputInvalid",
+          "frame-layout.json",
+          "unsupported finite semantic source bytes"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-validator",
+        "expected": [
+          "InputInvalid",
+          "validate_snapshot.h",
+          "unsupported finite semantic source bytes"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "unclaimed-source-asset",
+        "expected": [
+          "InputInvalid",
+          "assets",
+          "finite source asset closure differs"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "disabled-optional-source",
+        "expected": [
+          "InputInvalid",
+          "assets",
+          "disabled source recipe contains optional SDK bytes"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-snapshot",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-snapshot-reader-no-commit",
+        "result": "passed",
+        "scope": "real AuthorSession reader refusal; no generator or Source commit"
+      },
+      {
+        "case": "weakened-cancel-policy",
+        "expected": [
+          "CapabilityUnsupported",
+          "policies",
+          "finite source ownership"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      }
+    ],
+    "checks_file": {
+      "path": "/private/tmp/madb-chief-round11/e03-final-001/runs/checks.json",
+      "sha256": "010db8278d88d28d46cbdfc860995f85b1407549c49d96bf35fb6957c66162b7",
+      "size": 6412
+    },
+    "execution": {
+      "path": "/private/tmp/madb-chief-round11/e03-final-001/execution.json",
+      "sha256": "c97d8d408639c80fc9e2242ff31e92f084f15cf0a25192b90e7e7d14cca58797",
+      "size": 1193
+    },
+    "stdout": {
+      "path": "/private/tmp/madb-chief-round11/e03-final-001/stdout.log",
+      "sha256": "8e4d2e1b6d75acedea924d08ed69a237dd1755413d0d807457ff019157913a2b",
+      "size": 79
+    },
+    "stderr": {
+      "path": "/private/tmp/madb-chief-round11/e03-final-001/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0
+    },
+    "reader_failures": [
+      {
+        "case": "missing-release",
+        "result": {
+          "path": "/private/tmp/madb-chief-round11/e03-final-001/runs/missing-release/reader.stdout",
+          "sha256": "daac7d4fbd45dc2c99f962f61fbf2b6cff647ca48ef4f6d7ce749efbd1b888aa",
+          "size": 4316
+        },
+        "stage_count": 1,
+        "sequence_status": "Failed",
+        "reader_admission": "Unavailable",
+        "error_code": "ToolFailed",
+        "committed": false,
+        "index_unchanged": true,
+        "cleanup": {
+          "group_kill_attempted": true,
+          "leader_reaped": true,
+          "locally_complete": true,
+          "signal_failed": false,
+          "stderr_eof": true,
+          "stdout_eof": true
+        }
+      },
+      {
+        "case": "missing-snapshot",
+        "result": {
+          "path": "/private/tmp/madb-chief-round11/e03-final-001/runs/missing-snapshot/reader.stdout",
+          "sha256": "f7f4cce6cbaa6add77541410ad37282b617d2447d95a8274ae771eda0b0bef65",
+          "size": 4322
+        },
+        "stage_count": 1,
+        "sequence_status": "Failed",
+        "reader_admission": "Unavailable",
+        "error_code": "ToolFailed",
+        "committed": false,
+        "index_unchanged": true,
+        "cleanup": {
+          "group_kill_attempted": true,
+          "leader_reaped": true,
+          "locally_complete": true,
+          "signal_failed": false,
+          "stderr_eof": true,
+          "stdout_eof": true
+        }
+      }
+    ],
+    "source_and_images_unchanged": true
+  },
+  "old_v1_local_recipe_compatibility": {
+    "exit_code": 0,
+    "scope": "old @1 local composition recipe, still profile/2 wire; not legacy Profile1 conversion",
+    "checks": 3,
+    "records": [
+      {
+        "mode": "ordinary",
+        "result": "passed",
+        "recipe": "madb.local.c07-c-arkts/chain-ordinary@1",
+        "responsibilities": 5,
+        "payloads": 15,
+        "scope": "unchanged @1 observation recipe; not @2 complete finite source requirements"
+      },
+      {
+        "mode": "enhanced",
+        "result": "passed",
+        "recipe": "madb.local.c07-c-arkts/chain-enhanced@1",
+        "responsibilities": 8,
+        "payloads": 17,
+        "scope": "unchanged @1 observation recipe; not @2 complete finite source requirements"
+      },
+      {
+        "mode": "disabled",
+        "result": "passed",
+        "recipe": "madb.local.c07-c-arkts/chain-disabled@1",
+        "responsibilities": 5,
+        "payloads": 15,
+        "scope": "unchanged @1 observation recipe; not @2 complete finite source requirements"
+      }
+    ],
+    "checks_file": {
+      "path": "/private/tmp/madb-chief-round11/e03-legacy-final-001/runs/checks.json",
+      "sha256": "ebd072ec685b6523b816aea4814f631a164cc950c323a4578b553cb93e6aec65",
+      "size": 759
+    },
+    "execution": {
+      "path": "/private/tmp/madb-chief-round11/e03-legacy-final-001/execution.json",
+      "sha256": "842097b755a5bbe9c9e1d0aa3e020fda45e81c10b8fe9e782a5d3ab67a9b1991",
+      "size": 178
+    },
+    "before": {
+      "path": "/private/tmp/madb-chief-round11/e03-legacy-final-001/inputs-before.json",
+      "sha256": "a5fa2f728da77c20918f8ad15582e70214b5da068c1eb2b2811d0cc54359f792",
+      "size": 387807
+    },
+    "after": {
+      "path": "/private/tmp/madb-chief-round11/e03-legacy-final-001/inputs-after.json",
+      "sha256": "a5fa2f728da77c20918f8ad15582e70214b5da068c1eb2b2811d0cc54359f792",
+      "size": 387807
+    },
+    "source_and_images_unchanged": true
+  },
+  "focused_tests": {
+    "evolution": {
+      "path": "/private/tmp/madb-chief-round11/e03-evolution-validation.json",
+      "sha256": "e73d92112d32f00d2c3bdb54a1ed170ffb498729cb17e272c2f640f7767a1988",
+      "size": 5549
+    },
+    "finite_capability_boundary": {
+      "path": "/private/tmp/madb-chief-round11/e03-composition-semantics-validation.json",
+      "sha256": "3e38de8fbf526e50ca5ba65c293436f8afc888f8777bf33277264bd6c4c6fc0c",
+      "size": 4457
+    },
+    "development": {
+      "path": "/private/tmp/madb-chief-round11/e03-development-validation.json",
+      "sha256": "d4fe751d693e35902426f284ed67952f90112593ede1bca38de20b1c1906acf3",
+      "size": 5120
+    }
+  },
+  "independent_static_review": {
+    "path": "/private/tmp/madb-chief-round11/e03-semantic-independent-review.md",
+    "sha256": "ee510a40b7f072f66b11c6ead600e164060e65306e95a38e4ec7b5081f35b263",
+    "size": 6316
+  },
+  "acceptance_mapping": [
+    {
+      "item": 1,
+      "evidence": "evolution six actual tests: unknown required, independent protocol/IR schema versions, Profile1 rejects ProfileV2, semantic/byte separation, six EvidenceIdentity changes and repinned catalog old case rejection",
+      "status": "focused evidence supplied; coordinator integrated gate/final independent review remain authoritative"
+    },
+    {
+      "item": 2,
+      "evidence": "same official decoder/projections reused; no schema change; actual complete read IR and generated 15/17 payload OutputSet/Source plus independent consumer; existing common vectors belong to coordinator full gate",
+      "status": "source-chain evidence supplied"
+    },
+    {
+      "item": 3,
+      "evidence": "independent required collection from 19 fixed mechanism sources + actual 16-call IR/effective policy; exact capabilities/owners/scopes/asset set; 95 normal/107 enhanced rows; source/payload cleanup and snapshot rows separately mapped; re-pinned refusals and no-commit outcomes",
+      "status": "finite source recipe evidence supplied"
+    },
+    {
+      "item": 4,
+      "evidence": "new local source-semantics @2 ordinary/enhanced/disabled through same reader/generator/ports/Source path; @1 existing meaning retained. Named alternative backend missing facts and exact admission gates are inherited E02/E01 evidence, not X backend execution",
+      "status": "finite modes supplied; coordinator must bind alternative-facts and E01 final evidence"
+    }
+  ],
+  "not_claimed": [
+    "native compilation or physical assembly",
+    "SDK or HAR build",
+    "API23 target or real UI execution",
+    "new lifecycle or ABI semantics",
+    "replacement backend implementation/certification",
+    "public package publication",
+    "remote Actions run",
+    "whole E03 acceptance before coordinator decision"
+  ],
+  "preserved_history": {
+    "development_positive": "/private/tmp/madb-chief-round11/e03-source-dev-001",
+    "development_negative_failure": "/private/tmp/madb-chief-round11/e03-rejections-dev-001",
+    "development_negative_corrected": "/private/tmp/madb-chief-round11/e03-rejections-dev-002",
+    "note": "original duplicate-key oracle failure retained; no old report upgraded or overwritten"
+  }
+}

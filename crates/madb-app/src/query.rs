@@ -3,8 +3,8 @@ use crate::{Digest, ErrorKind, Finding, Id, LogicalPath, QueryError, Result, Tas
 use madb_model::contract::Contract;
 use std::collections::{BTreeMap, BTreeSet};
 
-const DOCUMENT_LIMIT: usize = 1024 * 1024;
-const SOURCE_LIMIT: usize = 32 * 1024 * 1024;
+pub(crate) const DOCUMENT_LIMIT: usize = 1024 * 1024;
+pub(crate) const SOURCE_LIMIT: usize = 32 * 1024 * 1024;
 const QUERY_LIMIT: usize = 128 * 1024 * 1024;
 
 pub struct QueryRequest {
@@ -151,24 +151,24 @@ pub fn query<W: ReadWorkspace, F: SnapshotFormat>(
     })
 }
 
-fn matches(reference: &FileReference, bytes: &[u8]) -> bool {
+pub(crate) fn matches(reference: &FileReference, bytes: &[u8]) -> bool {
     reference.size == bytes.len() as u64 && reference.digest == Digest::of_bytes(bytes)
 }
 
-struct Reads<'a, W> {
+pub(crate) struct Reads<'a, W> {
     workspace: &'a W,
     observed: BTreeMap<LogicalPath, Option<Vec<u8>>>,
     bytes: usize,
 }
 impl<'a, W: ReadWorkspace> Reads<'a, W> {
-    fn new(workspace: &'a W) -> Self {
+    pub(crate) fn new(workspace: &'a W) -> Self {
         Self {
             workspace,
             observed: BTreeMap::new(),
             bytes: 0,
         }
     }
-    fn optional(&mut self, path: &LogicalPath, limit: usize) -> Result<Option<Vec<u8>>> {
+    pub(crate) fn optional(&mut self, path: &LogicalPath, limit: usize) -> Result<Option<Vec<u8>>> {
         if let Some(bytes) = self.observed.get(path) {
             if bytes.as_ref().is_some_and(|b| b.len() > limit) {
                 return Err(budget(path));
@@ -187,7 +187,7 @@ impl<'a, W: ReadWorkspace> Reads<'a, W> {
         self.observed.insert(path.clone(), bytes.clone());
         Ok(bytes)
     }
-    fn required(&mut self, path: &LogicalPath, limit: usize) -> Result<Vec<u8>> {
+    pub(crate) fn required(&mut self, path: &LogicalPath, limit: usize) -> Result<Vec<u8>> {
         self.optional(path, limit)?.ok_or_else(|| {
             QueryError::new(
                 ErrorKind::InvalidInput,
@@ -197,7 +197,7 @@ impl<'a, W: ReadWorkspace> Reads<'a, W> {
             )
         })
     }
-    fn recheck(&self) -> Result<()> {
+    pub(crate) fn recheck(&self) -> Result<()> {
         for (path, expected) in &self.observed {
             // Read only one byte beyond the first observation to detect growth.
             let actual = self

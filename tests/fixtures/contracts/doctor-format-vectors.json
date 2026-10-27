@@ -1,0 +1,747 @@
+{
+  "note": "Design wire fixtures only; they do not record preflight execution or acceptance.",
+  "vectors": [
+    {
+      "id": "doctor-syntax-error",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-required-schema",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/schema"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "doctor-required-tool",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/tool"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-request",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/request"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-context",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/context"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-scope",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/scope"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-truncated",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/truncated"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-checks",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/checks"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-recovery",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/recovery"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-diagnostics",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/diagnostics"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-required-exit_code",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "remove",
+          "path": "/exit_code"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unknown-field",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/unapproved",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-wrong-version",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/schema",
+          "value": "madb.doctor-result/2"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT003"
+    },
+    {
+      "id": "doctor-not-runtime-result",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/scope",
+          "value": "target-run"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-zero-needs-facts",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 0
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unknown-exit",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 5
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-truncated-needs-limit-error",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/truncated",
+          "value": true
+        },
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 3
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-diagnostic-message-bound",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/diagnostics/0/message",
+          "value": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-null-tool-does-not-reclassify",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/exit_code",
+          "value": 4
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-diagnostic-code-bounded",
+      "kind": "doctor-result",
+      "file": "doctor-result.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/diagnostics/0/code",
+          "value": "bad code"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-complete-model",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-absolute-root",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/root/path",
+          "value": "relative"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-control-root",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/root/path",
+          "value": "/a\nb"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-redacted-root",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/root/redacted",
+          "value": true
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unbounded-root",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/root/path",
+          "value": "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unknown-level",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/verify",
+          "value": "execute"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-null-success-snapshot",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context/snapshot",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-null-success-recipe",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context/recipe",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unknown-project-format",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/context/project_format",
+          "value": "yaml"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-no-passed-observation",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/observed",
+          "value": null
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-passed-with-error",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/error_kind",
+          "value": "host"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-passed-with-blocker",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/blocked_by",
+          "value": [
+            "host"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unknown-fact",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/observed/kind",
+          "value": "source"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-unknown-domain",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/2/observed/domain",
+          "value": "madb.private/1"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-false-tool-method",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/4/observed/method",
+          "value": "version-command"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-host-control-version",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/5/observed/version",
+          "value": "26\n6"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-subject-control",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/subject",
+          "value": "a\tb"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-error-and-blocked",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-error-without-diagnostic",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/diagnostics",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-error-wrong-class",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/error_kind",
+          "value": "invalid-input"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-blocked-without-parent",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/1/blocked_by",
+          "value": []
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-blocked-with-duplicate-parent",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/1/blocked_by",
+          "value": [
+            "tool.missing",
+            "tool.missing"
+          ]
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-blocked-with-observation",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/1/observed",
+          "value": {
+            "kind": "state",
+            "value": "checked"
+          }
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-blocked-error-kind",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/1/error_kind",
+          "value": "host"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-recovery-nul",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/recovery/0/arguments/1",
+          "value": "a\u0000b"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-empty-command",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/recovery/0/arguments/0",
+          "value": ""
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-failed-invalid-input",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/status",
+          "value": "failed"
+        },
+        {
+          "op": "replace",
+          "path": "/checks/0/error_kind",
+          "value": "invalid-input"
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-failed-check-failed",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/status",
+          "value": "failed"
+        },
+        {
+          "op": "replace",
+          "path": "/checks/0/error_kind",
+          "value": "check-failed"
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-unsupported-invalid-input",
+      "kind": "doctor-result",
+      "file": "doctor-result-errors-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/status",
+          "value": "unsupported"
+        },
+        {
+          "op": "replace",
+          "path": "/checks/0/error_kind",
+          "value": "invalid-input"
+        }
+      ],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-limit-preserves-conflict",
+      "kind": "doctor-result",
+      "file": "doctor-result-truncated-model.json",
+      "patch": [],
+      "expected": "valid"
+    },
+    {
+      "id": "doctor-root-terminal-lf",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/request/root/path",
+          "value": "/design\n"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-subject-terminal-lf",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/0/subject",
+          "value": "input\n"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-host-terminal-lf",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/5/observed/version",
+          "value": "26.6.2\n"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "doctor-host-terminal-del",
+      "kind": "doctor-result",
+      "file": "doctor-result-complete-model.json",
+      "patch": [
+        {
+          "op": "replace",
+          "path": "/checks/5/observed/build",
+          "value": "26A425"
+        }
+      ],
+      "expected": "invalid",
+      "code": "FMT004"
+    }
+  ]
+}
