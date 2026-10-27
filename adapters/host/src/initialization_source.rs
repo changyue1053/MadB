@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 mod mapped_macos;
 
 const IMAGE_LIMIT: usize = 128 * 1024 * 1024;
+const PROJECT_IMAGE_LIMIT: usize = 256 * 1024 * 1024;
 
 pub struct FrozenInitializationTool {
     identity: ComponentIdentity,
@@ -15,19 +16,32 @@ pub struct FrozenInitializationTool {
     file: std::fs::File,
     stamp: Stamp,
     running_image: bool,
+    image_limit: usize,
 }
 impl FrozenInitializationTool {
     pub fn capture(version: &str) -> Result<Self> {
+        Self::capture_running(version, IMAGE_LIMIT)
+    }
+    /// The approved project-build recipe has its own fixed image bound. The
+    /// older initialization API retains its original 128 MiB limit.
+    pub fn capture_project(version: &str) -> Result<Self> {
+        Self::capture_running(version, PROJECT_IMAGE_LIMIT)
+    }
+    fn capture_running(version: &str, limit: usize) -> Result<Self> {
         let path = std::env::current_exe().map_err(|e| host("tool", e))?;
-        let mut captured = Self::capture_path(path, version)?;
+        let mut captured = Self::capture_bounded(path, version, limit)?;
         require_running_image(&captured.stamp)?;
         captured.running_image = true;
         captured.revalidate()?;
         Ok(captured)
     }
+    #[cfg(test)]
     fn capture_path(path: PathBuf, version: &str) -> Result<Self> {
+        Self::capture_bounded(path, version, IMAGE_LIMIT)
+    }
+    fn capture_bounded(path: PathBuf, version: &str, limit: usize) -> Result<Self> {
         let file = open_regular(&path)?;
-        let (bytes, stamp) = read_stable(&file, IMAGE_LIMIT)?;
+        let (bytes, stamp) = read_stable(&file, limit)?;
         Ok(Self {
             identity: ComponentIdentity {
                 id: Id::new("org.madb/cli").expect("fixed tool identity"),
@@ -38,6 +52,7 @@ impl FrozenInitializationTool {
             file,
             stamp,
             running_image: false,
+            image_limit: limit,
         })
     }
     pub fn identity(&self) -> &ComponentIdentity {
@@ -60,7 +75,7 @@ impl FrozenInitializationTool {
                 require_running_image(&self.stamp)?;
             }
             for file in [&self.file, &open_regular(&self.path)?] {
-                let (bytes, stamp) = read_stable(file, IMAGE_LIMIT)?;
+                let (bytes, stamp) = read_stable(file, self.image_limit)?;
                 if stamp != self.stamp || Digest::of_bytes(&bytes) != self.identity.sha256 {
                     return Err(conflict("installed tool image changed"));
                 }
@@ -383,6 +398,46 @@ mod tests {
                 "{inner}"
             );
         }
+    }
+    #[test]
+    fn project_image_limit_is_separate_and_legacy_limit_is_preserved() {
+        let root = crate::locations::temporary_parent()
+            .unwrap()
+            .join(crate::locations::unique_run_name().as_str());
+        std::fs::create_dir(&root).unwrap();
+        let path = root.join("bounded-image");
+        let file = std::fs::File::create(&path).unwrap();
+        // These are actual sparse regular files, read and hashed through the
+        // same held-inode helper. They are not executable identity evidence.
+        file.set_len(IMAGE_LIMIT as u64).unwrap();
+        file.sync_all().unwrap();
+        let old = FrozenInitializationTool::capture_path(path.clone(), "0.1.0").unwrap();
+        assert_eq!(old.image_size(), IMAGE_LIMIT as u64);
+        drop(old);
+        file.set_len(IMAGE_LIMIT as u64 + 1).unwrap();
+        file.sync_all().unwrap();
+        assert!(FrozenInitializationTool::capture_path(path.clone(), "0.1.0").is_err());
+        let new =
+            FrozenInitializationTool::capture_bounded(path.clone(), "0.1.0", PROJECT_IMAGE_LIMIT)
+                .unwrap();
+        new.revalidate().unwrap();
+        drop(new);
+        file.set_len(PROJECT_IMAGE_LIMIT as u64).unwrap();
+        file.sync_all().unwrap();
+        let new =
+            FrozenInitializationTool::capture_bounded(path.clone(), "0.1.0", PROJECT_IMAGE_LIMIT)
+                .unwrap();
+        assert_eq!(new.image_size(), PROJECT_IMAGE_LIMIT as u64);
+        drop(new);
+        file.set_len(PROJECT_IMAGE_LIMIT as u64 + 1).unwrap();
+        file.sync_all().unwrap();
+        assert!(
+            FrozenInitializationTool::capture_bounded(path.clone(), "0.1.0", PROJECT_IMAGE_LIMIT)
+                .is_err()
+        );
+        assert!(FrozenInitializationTool::capture_path(path, "0.1.0").is_err());
+        drop(file);
+        std::fs::remove_dir_all(root).unwrap();
     }
     #[test]
     fn held_and_named_image_must_remain_identical() {

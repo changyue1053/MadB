@@ -22,6 +22,9 @@ pub enum DigestDomain {
     Catalog,
     Project,
     InitRequest,
+    ProjectBuildRequest,
+    ProjectBuildInput,
+    ProjectBuildOutput,
 }
 impl DigestDomain {
     pub const fn as_str(self) -> &'static str {
@@ -40,6 +43,9 @@ impl DigestDomain {
             Self::Catalog => "madb.catalog/1",
             Self::Project => "madb.project/1",
             Self::InitRequest => "madb.init-request/1",
+            Self::ProjectBuildRequest => "madb.project-build-request/1",
+            Self::ProjectBuildInput => "madb.project-build-input/1",
+            Self::ProjectBuildOutput => "madb.project-build-output/1",
         }
     }
 }

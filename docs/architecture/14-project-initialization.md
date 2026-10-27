@@ -6,6 +6,8 @@
 
 已确认的四项格式增量见 [ADR-0019](../adr/0019-project-init-incremental-contracts.md)：请求摘要与错误类别独立，普通成功绑定真实创建且 dry-run 单列，报告显式保存模板原输入根并复用 profile/配方的 SDK 检查，显式 profile 的默认 targets 取完整集合。剩余 envelope、原包/库存、有限 renderer、结果事实及首个 Rust/C 值接口分片已由 [ADR-0023](../adr/0023-project-template-and-init-result.md)采用；具体实现和真实执行仍分别验收，格式批准不等于 init 或 IDE 已交付。
 
+[ADR-0027](../adr/0027-project-rebuild-contract.md)进一步采用显式0.2.0有限Rust/C工程的日常重建契约：Wrapper与CLI共用一次完整快照/C04执行/工程结果CAS入口，工程来源与作者字节分别冻结，安装及发布尾窗保留真实副作用。两个新格式和固定配方按该决定绑定提案实施；旧模板、默认0.1.1及原init/doctor语义保留。该子范围不代替已有工程接入/升级/禁用、完整P09或IDE验收。
+
 ## 1 模块和数据流
 
 ```mermaid

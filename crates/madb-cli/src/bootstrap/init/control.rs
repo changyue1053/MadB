@@ -1,6 +1,7 @@
 //! One initialization signal listener forwards to the currently owned C04
 //! admission gate. It never executes IO while holding the registration lock.
 use super::{AttemptError, AttemptResult};
+use crate::bootstrap::project::control::BuildControl;
 use madb_app::{
     ErrorKind, QueryError, Result, pipeline::PipelineControl, process::ExecutionControl,
     transaction::CommitControl,
@@ -11,7 +12,7 @@ use std::sync::{
 };
 
 #[derive(Clone, Default)]
-pub(super) struct InitControl {
+pub(in crate::bootstrap) struct InitControl {
     pub commit: CommitControl,
     requested: Arc<AtomicBool>,
     active: Arc<Mutex<Option<Active>>>,
@@ -20,6 +21,7 @@ pub(super) struct InitControl {
 enum Active {
     Pipeline(PipelineControl),
     Process(ExecutionControl),
+    Project(BuildControl),
 }
 impl Active {
     fn cancel(&self) {
@@ -28,6 +30,9 @@ impl Active {
                 control.cancel();
             }
             Self::Process(control) => {
+                control.cancel();
+            }
+            Self::Project(control) => {
                 control.cancel();
             }
         }
@@ -71,6 +76,9 @@ impl InitControl {
             active,
         })
     }
+    pub fn project(&self) -> AttemptResult<Stage<'_>> {
+        self.register(Active::Project(BuildControl::default()))
+    }
     pub fn process(&self) -> AttemptResult<Stage<'_>> {
         self.register(Active::Process(ExecutionControl::default()))
     }
@@ -78,11 +86,18 @@ impl InitControl {
         self.register(Active::Pipeline(PipelineControl::default()))
     }
 }
-pub(super) struct Stage<'a> {
+pub(in crate::bootstrap) struct Stage<'a> {
     owner: &'a InitControl,
     active: Active,
 }
 impl Stage<'_> {
+    pub fn project(&self) -> &BuildControl {
+        match &self.active {
+            Active::Project(control) => control,
+            _ => unreachable!("project stage"),
+        }
+    }
+
     pub fn process(&self) -> &ExecutionControl {
         match &self.active {
             Active::Process(control) => control,
@@ -124,6 +139,48 @@ pub(super) fn install_signals(
 mod tests {
     use super::*;
     use madb_app::process::CancelDecision;
+    #[test]
+    fn outer_signal_rejects_the_current_project_commit_gate() {
+        let control = InitControl::default();
+        let step = control.project().unwrap();
+        let permit = step.project().commit.begin().unwrap();
+        control.cancel();
+        assert!(permit.publish(|| Ok(())).is_err());
+        assert!(step.project().commit.rejected_by_cancellation());
+    }
+    #[test]
+    fn accepted_project_step_keeps_its_fact_but_outer_cancel_blocks_next_step() {
+        let control = InitControl::default();
+        let stage = control.project().unwrap();
+        stage
+            .project()
+            .commit
+            .begin()
+            .unwrap()
+            .publish(|| Ok(()))
+            .unwrap();
+        control.cancel();
+        assert!(stage.project().checkpoint().is_ok());
+        assert!(!stage.project().commit.rejected_by_cancellation());
+        drop(stage);
+        assert!(matches!(control.project(), Err(AttemptError::Cancelled)));
+        assert!(matches!(control.process(), Err(AttemptError::Cancelled)));
+    }
+    #[test]
+    fn cancel_between_project_steps_is_sticky_before_registration() {
+        let control = InitControl::default();
+        let stage = control.project().unwrap();
+        stage
+            .project()
+            .commit
+            .begin()
+            .unwrap()
+            .publish(|| Ok(()))
+            .unwrap();
+        drop(stage);
+        control.cancel();
+        assert!(matches!(control.project(), Err(AttemptError::Cancelled)));
+    }
     #[test]
     fn cancellation_before_registration_closes_every_stage() {
         let control = InitControl::default();

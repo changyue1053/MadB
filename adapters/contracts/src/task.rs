@@ -3,7 +3,7 @@
 use crate::{
     Document, DocumentKind,
     artifacts::validate_port_pair,
-    query::{PreparedQuery, SnapshotAdapter, format_error, reference},
+    query::{SnapshotAdapter, format_error, reference},
 };
 use madb_app::{
     Digest, ErrorKind, Id, LogicalPath, Phase, QueryError, Result,
@@ -12,6 +12,8 @@ use madb_app::{
     process::{MAX_STDIN_BYTES, MAX_TOOL_BYTES, ProcessRequest},
     task::{BuildRecipe, TaskFileReferences, TaskInvocation},
 };
+use madb_model::build::BuildCompletionPolicy;
+use madb_protocol::Value;
 use std::{collections::BTreeMap, sync::Arc};
 
 const MAX_GRAPH_TASKS: usize = 4096;
@@ -40,7 +42,7 @@ impl BoundBuildTask {
         installed_tool: FileReference,
     ) -> Result<Self> {
         check_task_size(task)?;
-        let context = CheckedContext::new(configuration, snapshot)?;
+        let context = CheckedBuildContext::new(configuration, snapshot)?;
         let bound = context.bind(task, installed_tool)?;
         if !bound.dependencies.is_empty() {
             return Err(invalid(
@@ -72,6 +74,11 @@ pub fn bind_graph(
     target: Option<&Id>,
     active: &[Id],
 ) -> Result<ExecutionGraph<BoundBuildTask>> {
+    check_graph_bindings(&tasks)?;
+    CheckedBuildContext::new(configuration, snapshot)?.graph(tasks, target, active)
+}
+
+fn check_graph_bindings(tasks: &[TaskBinding<'_>]) -> Result<()> {
     if tasks.is_empty() || tasks.len() > MAX_GRAPH_TASKS {
         return Err(invalid(
             "TASK001",
@@ -80,7 +87,7 @@ pub fn bind_graph(
         ));
     }
     let mut bytes = 0usize;
-    for binding in &tasks {
+    for binding in tasks {
         check_task_size(binding.task)?;
         // The count and per-task limit above also bound this addition.
         bytes += binding.task.len();
@@ -92,22 +99,20 @@ pub fn bind_graph(
             ));
         }
     }
-    let context = CheckedContext::new(configuration, snapshot)?;
-    let recipes = tasks
-        .into_iter()
-        .map(|binding| context.bind(binding.task, binding.installed_tool))
-        .collect::<Result<Vec<_>>>()?;
-    ExecutionGraph::new(recipes, target, active)
+    Ok(())
 }
 
 /// Configuration and schema compilation are shared across the whole binding;
 /// each retained recipe needs only the registry, its own document and invocation.
-struct CheckedContext {
+pub(crate) struct CheckedBuildContext {
     adapter: Arc<SnapshotAdapter>,
-    prepared: PreparedQuery,
+    profile: Document,
+    lock: Document,
+    selector: Value,
     source_digest: Digest,
+    policy: BuildCompletionPolicy,
 }
-impl CheckedContext {
+impl CheckedBuildContext {
     fn new(configuration: ConfigurationBytes<'_>, snapshot: &[u8]) -> Result<Self> {
         let adapter = Arc::new(SnapshotAdapter::new()?);
         let references = adapter.request_files(configuration.request)?;
@@ -127,22 +132,49 @@ impl CheckedContext {
         let contract = adapter.check(&prepared, snapshot)?;
         Ok(Self {
             adapter,
-            prepared,
+            policy: crate::build_completion_policy(&prepared.profile).map_err(format_error)?,
+            selector: prepared.request.value()["selector"].clone(),
+            profile: prepared.profile,
+            lock: prepared.lock,
             source_digest: contract.source_digest,
         })
     }
 
-    fn bind(&self, task: &[u8], installed_tool: FileReference) -> Result<BoundBuildTask> {
-        let adapter = &self.adapter;
-        let prepared = &self.prepared;
-        let document = adapter.decode(DocumentKind::BuildTask, task)?;
+    /// Only an explicit checked /1 or bound /2 adapter constructs this internal
+    /// context; no public byte decoder can create a prepared query from it.
+    pub(crate) fn from_checked(
+        profile: Document,
+        lock: Document,
+        selector: Value,
+        source_digest: Digest,
+        policy: BuildCompletionPolicy,
+    ) -> Result<Self> {
+        Ok(Self {
+            adapter: Arc::new(SnapshotAdapter::new()?),
+            profile,
+            lock,
+            selector,
+            source_digest,
+            policy,
+        })
+    }
+    pub(crate) fn graph(
+        &self,
+        tasks: Vec<TaskBinding<'_>>,
+        target: Option<&Id>,
+        active: &[Id],
+    ) -> Result<ExecutionGraph<BoundBuildTask>> {
+        check_graph_bindings(&tasks)?;
+        let recipes = tasks
+            .into_iter()
+            .map(|binding| self.bind(binding.task, binding.installed_tool))
+            .collect::<Result<Vec<_>>>()?;
+        ExecutionGraph::new(recipes, target, active)
+    }
+    pub(crate) fn validate_document(&self, document: &Document) -> Result<Phase> {
         let value = document.value();
         if value["task_digest"].as_str()
-            != Some(
-                crate::task_digest(&document)
-                    .map_err(format_error)?
-                    .as_str(),
-            )
+            != Some(crate::task_digest(document).map_err(format_error)?.as_str())
         {
             return Err(invalid(
                 "PLAN002",
@@ -150,7 +182,7 @@ impl CheckedContext {
                 "task content digest differs",
             ));
         }
-        if value["selector"] != prepared.request.value()["selector"] {
+        if value["selector"] != self.selector {
             return Err(invalid(
                 "PLAN002",
                 "selector",
@@ -171,7 +203,30 @@ impl CheckedContext {
                 "task recipes require work/",
             ));
         }
-        bind_tool(prepared, &document, &installed_tool)?;
+        check_locked_tool(&self.profile, &self.lock, document)?;
+        let phase = match value["phase"].as_str().expect("validated") {
+            "metadata" => Phase::Metadata,
+            "generate" => Phase::Generate,
+            "compile" => Phase::Compile,
+            "link" => Phase::Link,
+            "run" => Phase::Run,
+            _ => unreachable!("schema validated phase"),
+        };
+        if !self.policy.allows(phase) {
+            return Err(invalid(
+                "EXECUTION003",
+                "phase",
+                "selected build policy forbids this phase before execution",
+            ));
+        }
+        Ok(phase)
+    }
+    fn bind(&self, task: &[u8], installed_tool: FileReference) -> Result<BoundBuildTask> {
+        let adapter = &self.adapter;
+        let document = adapter.decode(DocumentKind::BuildTask, task)?;
+        let phase = self.validate_document(&document)?;
+        bind_tool(&self.profile, &self.lock, &document, &installed_tool)?;
+        let value = document.value();
         let invocation = TaskInvocation {
             id: Id::new(value["id"].as_str().expect("validated"))
                 .map_err(|e| invalid("TASK001", "id", e.to_string()))?,
@@ -211,24 +266,6 @@ impl CheckedContext {
                     .map_err(|e| invalid("TASK001", "dependencies", e.to_string()))
             })
             .collect::<Result<_>>()?;
-        let phase = match value["phase"].as_str().expect("validated") {
-            "metadata" => Phase::Metadata,
-            "generate" => Phase::Generate,
-            "compile" => Phase::Compile,
-            "link" => Phase::Link,
-            "run" => Phase::Run,
-            _ => unreachable!("schema validated phase"),
-        };
-        if !crate::build_completion_policy(&prepared.profile)
-            .map_err(format_error)?
-            .allows(phase)
-        {
-            return Err(invalid(
-                "EXECUTION003",
-                "phase",
-                "selected build policy forbids this phase before execution",
-            ));
-        }
         Ok(BoundBuildTask {
             adapter: Arc::clone(adapter),
             task: document,
@@ -293,9 +330,9 @@ fn check_task_size(task: &[u8]) -> Result<()> {
     Ok(())
 }
 
-fn bind_tool(prepared: &PreparedQuery, task: &Document, installed: &FileReference) -> Result<()> {
+fn check_locked_tool(profile: &Document, lock: &Document, task: &Document) -> Result<()> {
     let component = &task.value()["tool"];
-    let tool = prepared.profile.value()["tools"]
+    let tool = profile.value()["tools"]
         .as_array()
         .expect("validated")
         .iter()
@@ -311,7 +348,7 @@ fn bind_tool(prepared: &PreparedQuery, task: &Document, installed: &FileReferenc
                 "task tool is not an image in the selected profile",
             )
         })?;
-    if !prepared.lock.value()["tools"]
+    if !lock.value()["tools"]
         .as_array()
         .expect("validated")
         .contains(tool)
@@ -322,6 +359,16 @@ fn bind_tool(prepared: &PreparedQuery, task: &Document, installed: &FileReferenc
             "selected tool image is not exactly locked",
         ));
     }
+    Ok(())
+}
+fn bind_tool(
+    profile: &Document,
+    lock: &Document,
+    task: &Document,
+    installed: &FileReference,
+) -> Result<()> {
+    check_locked_tool(profile, lock, task)?;
+    let component = &task.value()["tool"];
     if installed.size == 0
         || installed.size > MAX_TOOL_BYTES
         || component["sha256"].as_str() != Some(installed.digest.as_str())

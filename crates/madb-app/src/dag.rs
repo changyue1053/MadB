@@ -13,6 +13,9 @@ use crate::{
     task::{BuildRecipe, ValidatedTaskResult},
 };
 
+mod sequence;
+pub use sequence::GraphSequence;
+
 const NODE_LIMIT: usize = 64;
 const GRAPH_BYTES_LIMIT: usize = 256 * 1024 * 1024;
 
@@ -251,6 +254,30 @@ fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     observation: Option<ObservationRequest<'_>>,
 ) -> Result<GraphRun<E::Run>> {
     let guard = control.begin()?;
+    let mut run = execute_graph_step(
+        graph,
+        source,
+        executor,
+        &guard,
+        observation,
+        GRAPH_BYTES_LIMIT,
+    );
+    if guard.finish() {
+        run.status = GraphStatus::Cancelled;
+        run.results = None;
+        run.inputs = None;
+    }
+    Ok(run)
+}
+
+fn execute_graph_step<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
+    graph: &ExecutionGraph<R>,
+    source: &W,
+    executor: &mut E,
+    guard: &GraphGuard<'_>,
+    observation: Option<ObservationRequest<'_>>,
+    budget: usize,
+) -> GraphRun<E::Run> {
     let mut run = GraphRun {
         status: GraphStatus::Validated,
         failure: None,
@@ -263,7 +290,15 @@ fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     let results = if guard.cancelled() {
         BTreeMap::new()
     } else {
-        match run_graph(graph, source, executor, &guard, &mut run, observation) {
+        match run_graph(
+            graph,
+            source,
+            executor,
+            guard,
+            &mut run,
+            observation,
+            budget,
+        ) {
             Ok(results) => results,
             Err(error) => {
                 run.failure = Some(error);
@@ -278,9 +313,9 @@ fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
         .filter(|task| !completed.contains(&task.id))
         .map(|task| task.id.clone())
         .collect();
-    // Both execution and optional source/watch rechecks precede this common
-    // cancellation/acceptance linearization point. No filesystem IO holds it.
-    run.status = if guard.finish() {
+    // A step observes cancellation after execution and optional rechecks.
+    // The outer graph/sequence guard still owns the final linearization point.
+    run.status = if guard.cancelled() {
         GraphStatus::Cancelled
     } else if run.failure.is_some() {
         GraphStatus::Failed
@@ -292,7 +327,7 @@ fn execute_graph_inner<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     } else {
         run.inputs = None;
     }
-    Ok(run)
+    run
 }
 
 fn run_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
@@ -302,7 +337,15 @@ fn run_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     guard: &GraphGuard<'_>,
     run: &mut GraphRun<E::Run>,
     observation: Option<ObservationRequest<'_>>,
+    budget: usize,
 ) -> Result<BTreeMap<Id, ValidatedTaskResult>> {
+    let mut result_limit = budget.checked_sub(graph.reserved_bytes).ok_or_else(|| {
+        graph_error(
+            "DAG002",
+            "graph",
+            "retained sequence inputs exceed remaining byte budget",
+        )
+    })?;
     let observation = observation
         .map(|request| {
             // All structure checks precede even an exists/list operation.
@@ -324,7 +367,6 @@ fn run_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
     }
     run.inputs = frozen.clone();
     let mut results = BTreeMap::new();
-    let mut result_limit = GRAPH_BYTES_LIMIT - graph.reserved_bytes;
     for recipe in &graph.recipes {
         if guard.cancelled() {
             break;
@@ -335,8 +377,17 @@ fn run_graph<R: GraphRecipe, W: ReadWorkspace, E: GraphExecutor<R>>(
         let Some(node_control) = guard.activate() else {
             break;
         };
-        let mut node = executor.execute(recipe, inputs, &node_control, result_limit);
-        guard.deactivate();
+        let active = ActiveGraphNode {
+            guard,
+            control: Some(node_control),
+        };
+        let mut node = executor.execute(
+            recipe,
+            inputs,
+            active.control.as_ref().expect("active node"),
+            result_limit,
+        );
+        active.complete();
         // Drain unconditionally before any cancellation/failure path retains
         // this owner, including optional final observation failures below.
         let value = node.take_value();
@@ -476,4 +527,25 @@ fn graph_error(
     message: impl Into<String>,
 ) -> QueryError {
     QueryError::new(ErrorKind::InvalidInput, code, subject, message)
+}
+
+// A caught executor panic must not leave an active child registered in a
+// retained sequence. This guard makes the original one-graph path identical.
+struct ActiveGraphNode<'a, 'g> {
+    guard: &'a GraphGuard<'g>,
+    control: Option<ExecutionControl>,
+}
+impl ActiveGraphNode<'_, '_> {
+    fn complete(mut self) {
+        self.guard.deactivate();
+        self.control.take();
+    }
+}
+impl Drop for ActiveGraphNode<'_, '_> {
+    fn drop(&mut self) {
+        if let Some(control) = self.control.take() {
+            control.cancel();
+            self.guard.deactivate();
+        }
+    }
 }

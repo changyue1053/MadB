@@ -106,6 +106,8 @@ components 与 routes 至少有一项非空：包可以只提供可复用组件�
 
 E04 的必需结果是通过公开扩展契约得到可独立消费的 Dart FFI 包及真实同步行为证据；build_runner、元数据注解和扩展方法按该配方需要选择，不要求把语言特性表中的每种技术全部启用。原型、正式集成和发布的设计深度按[定稿节点](../delivery/04-design-readiness-and-first-route.md)区分。
 
+[ADR-0026](../adr/0026-dart-sync-extension-contract.md)已采用首个macOS Arm64同步包的普通API、单包装配/实际镜像核对、单isolate资源所有权与显式关闭契约。正式组件通过公开端口复用，受检同步视图保留原native身份；具体格式、类型/错误和拒绝边界以该决定绑定提案为准。采用契约不表示注册、生成链、独立包或目标验收已完成。
+
 Rust 或 C++ 只有在明确提供相应 C ABI、原生适配及行为契约后才能复用这条消费机制。不能从 Dart→C 样例推导 Dart→任意 Rust/C++ API 或 Dart→Kotlin/Swift/ArkTS 已支持。
 
 ## 8 扩展性验收原则

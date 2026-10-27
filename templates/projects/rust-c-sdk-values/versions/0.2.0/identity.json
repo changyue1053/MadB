@@ -1,0 +1,13 @@
+{
+  "archive": {
+    "path": "template-package.tar",
+    "sha256": "sha256:8c82b7e7322bb79afd3f227ce5ef58a0aff97f5127078c8a4000c36c8ec98701",
+    "size": 52224
+  },
+  "manifest": {
+    "path": "meta/template.json",
+    "sha256": "sha256:f72071092f208abc3e298cc00f973cd9182eb93539a3175abaa7aad228736b4c",
+    "size": 14435,
+    "schema": "madb.project-template/1"
+  }
+}

@@ -9,7 +9,7 @@ use madb_protocol::Value;
 use serde_json::json;
 use std::collections::BTreeSet;
 
-pub(super) fn check_bytes(file: &FileReference, bytes: &[u8]) -> Result<()> {
+pub(crate) fn check_bytes(file: &FileReference, bytes: &[u8]) -> Result<()> {
     if file.size != bytes.len() as u64 || file.digest != Digest::of_bytes(bytes) {
         return Err(invalid(
             "FILE004",
@@ -19,7 +19,7 @@ pub(super) fn check_bytes(file: &FileReference, bytes: &[u8]) -> Result<()> {
     }
     Ok(())
 }
-pub(super) fn require_file<'a>(
+pub(crate) fn require_file<'a>(
     provided: &'a FrozenInputs,
     expected: &FileReference,
 ) -> Result<&'a [u8]> {
@@ -42,10 +42,10 @@ pub(super) fn require_file<'a>(
     }
     Ok(bytes)
 }
-pub(super) fn file_value(file: &FileReference) -> Value {
+pub(crate) fn file_value(file: &FileReference) -> Value {
     json!({"path":file.path.as_str(),"sha256":file.digest.as_str(),"size":file.size})
 }
-pub(super) fn references(value: &Value) -> Result<Vec<FileReference>> {
+pub(crate) fn references(value: &Value) -> Result<Vec<FileReference>> {
     let files = value
         .as_array()
         .ok_or_else(|| invalid("DTO001", "files", "expected file array"))?
@@ -65,7 +65,7 @@ pub(super) fn references(value: &Value) -> Result<Vec<FileReference>> {
     Ok(files)
 }
 
-pub(super) fn reference_schema(value: &Value, kind: DocumentKind) -> Result<()> {
+pub(crate) fn reference_schema(value: &Value, kind: DocumentKind) -> Result<()> {
     if value["schema"].as_str() != Some(kind.schema_id().as_str()) {
         return Err(invalid(
             "EXECUTION001",
@@ -76,7 +76,7 @@ pub(super) fn reference_schema(value: &Value, kind: DocumentKind) -> Result<()> 
     Ok(())
 }
 
-pub(super) fn declared_file(files: &[FileReference], expected: &FileReference) -> Result<()> {
+pub(crate) fn declared_file(files: &[FileReference], expected: &FileReference) -> Result<()> {
     if !files.contains(expected) {
         return Err(invalid(
             "FILE003",
@@ -87,7 +87,7 @@ pub(super) fn declared_file(files: &[FileReference], expected: &FileReference) -
     Ok(())
 }
 
-pub(super) fn validate_output_set(output_set: &Document, provided: &FrozenInputs) -> Result<()> {
+pub(crate) fn validate_output_set(output_set: &Document, provided: &FrozenInputs) -> Result<()> {
     let v = output_set.value();
     if v["generation_id"].as_str()
         != Some(

@@ -1,7 +1,7 @@
 //! Installed initialization composition. Format/plan/rendering remain pure;
 //! only Host obtains identities, creates directories, and saves evidence.
 pub(crate) mod catalog;
-mod control;
+pub(super) mod control;
 mod evidence;
 pub(crate) mod prepare;
 mod recipe;
@@ -26,6 +26,12 @@ impl InitializationService {
         Ok(Self {
             format: ProjectInitAdapter::new()?,
             tool: FrozenInitializationTool::capture(env!("CARGO_PKG_VERSION"))?,
+        })
+    }
+    pub fn new_project() -> Result<Self> {
+        Ok(Self {
+            format: ProjectInitAdapter::new()?,
+            tool: FrozenInitializationTool::capture_project(env!("CARGO_PKG_VERSION"))?,
         })
     }
     pub fn encode(&self, report: &InitReport) -> Result<Vec<u8>> {
@@ -78,10 +84,35 @@ impl InitializationService {
         )?;
         progress.request = Some(frozen.clone());
         preflight(&frozen)?;
-        let recipe = recipe::ReadyRecipe::preflight(&frozen)?;
+        let project_recipe = record.version == Version::parse("0.2.0").expect("fixed version");
+        if project_recipe {
+            super::project::bootstrap_check()?;
+        }
+        let recipe = if project_recipe {
+            None
+        } else {
+            recipe::ReadyRecipe::preflight(&frozen)?
+        };
         control.checkpoint()?;
         self.tool.revalidate()?;
-        let project = prepare::project(&record, &package, &frozen, &self.format)?;
+        let project = if project_recipe {
+            let actual = self.tool.identity();
+            prepare::project_with_tool(
+                &record,
+                &package,
+                &frozen,
+                &self.format,
+                madb_app::use_cases::project_build::ToolIdentity {
+                    id: actual.id.clone(),
+                    version: actual.version.clone(),
+                    sha256: actual.sha256.clone(),
+                    size: self.tool.image_size(),
+                    source_revision: super::project::source_revision()?.into(),
+                },
+            )?
+        } else {
+            prepare::project(&record, &package, &frozen, &self.format)?
+        };
         control.checkpoint()?;
         self.tool.revalidate()?;
         let committed = if frozen.projection().dry_run {
@@ -128,6 +159,24 @@ impl InitializationService {
                 &mut saved.store,
                 &mut progress.retained,
             )?;
+        }
+        if project_recipe && !frozen.projection().dry_run {
+            let outcome = super::project::initialize::execute(
+                &project,
+                &mut saved.observations,
+                &mut saved.store,
+                &mut progress.retained,
+                control,
+            );
+            match outcome {
+                Ok(()) => (),
+                Err(madb_app::use_cases::project_build::BuildFailure::Cancelled) => {
+                    return Err(AttemptError::Cancelled);
+                }
+                Err(madb_app::use_cases::project_build::BuildFailure::Error(error)) => {
+                    return Err(error.into());
+                }
+            }
         }
         let completed = complete_initialization(
             &frozen,
@@ -251,7 +300,7 @@ struct EvidenceProgress {
     store: LocalInitEvidence,
 }
 #[derive(Debug)]
-enum AttemptError {
+pub(in crate::bootstrap) enum AttemptError {
     Stage(QueryError),
     Cancelled,
 }
@@ -273,7 +322,7 @@ impl From<QueryError> for AttemptError {
         Self::Stage(value)
     }
 }
-type AttemptResult<T> = std::result::Result<T, AttemptError>;
+pub(in crate::bootstrap) type AttemptResult<T> = std::result::Result<T, AttemptError>;
 fn preflight(request: &FrozenInitRequest) -> Result<()> {
     let selected = request.selected();
     let requirements = &selected.profile().requirements.structure;

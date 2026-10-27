@@ -1,0 +1,31 @@
+{
+  "schema": "madb.project-build-result/1",
+  "operation": "build",
+  "root": null,
+  "recipe": null,
+  "request_digest": null,
+  "tool": null,
+  "artifact_root": null,
+  "inputs": {
+    "files": [],
+    "directories": []
+  },
+  "stages": [],
+  "result": null,
+  "installed_tool": null,
+  "previous": null,
+  "published": false,
+  "publication_durability": "not-applicable",
+  "termination": "complete",
+  "exit_code": 2,
+  "evidence_root": null,
+  "logs": [],
+  "diagnostics": [
+    {
+      "code": "PLAN001",
+      "message": "Design fixture: invalid request",
+      "location": null
+    }
+  ],
+  "recovery": []
+}

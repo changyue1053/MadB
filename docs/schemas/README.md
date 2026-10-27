@@ -19,6 +19,9 @@
 | [explain-result](explain-result.schema.json) | 只读解释结果或明确失败 | 稳定说明目录、0/2/3/4退出及只读边界；ADR-0020 |
 | [project-template](project-template.schema.json) | 完整模板、库存、模块/目标、有限参数与 renderer | 原包字节/完整库存、跨引用、计划/配方及工具准入；ADR-0023 |
 | [init-result](init-result.schema.json) | 初始化结果、原包/证据根及初始内容计划 | 冻结请求、真实同根 CommitNew、独立必需检查与证据保存事实；不能信任外来 created |
+| [doctor-result](doctor-result.schema.json) | 只读静态前提观察及机器结果 | 实际来源/工具核对、必需检查与错误优先级；不授予执行许可 |
+| [project-build](project-build.schema.json) | 有限工程日常重建的冻结来源和作者入口 | 实际初始化来源、完整输入库存、工具/SDK/模板与工程owner核对；ADR-0027 |
+| [project-build-result](project-build-result.schema.json) | 构建/工具恢复的真实阶段、完整输出及发布事实 | 完整快照、原子提交/取消、已发生副作用与尾窗错误；不能信任外来published或installed_tool |
 | [report](report.schema.json) | 固定候选的执行结果、清理、附件和资源观察 | 独立预期、六项身份、最低证据层级、资源计数 |
 | [read-request](read-request.schema.json) | reader 的已锁输入和目标 | 输入与返回 IR 的对应关系 |
 | [generate-request](generate-request.schema.json) | 固定快照与输入、任务身份 | 返回批次、源输入和 profile 一致性 |
@@ -55,7 +58,7 @@ madb-model：Symbol / Type / Policy / Capability / CaseResult
 Findings 或受检结果 → C04 应用请求与端口
 ```
 
-不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python 运行同一组 22 类文档格式正反例（原 16 类、composition/profile-v2、diagnostic-context/explain-result 及 project-template/init-result），领域规则另测，不用 schema 通过替代语义通过。Python 参考校验验证结构向量，timestamp 的 RFC 3339 format 校验由 Rust 主解码器承担。
+不同时手写各套 DTO 字段镜像。`Document` 封装 schema 验证后的值，私有转换器检查具体字段并构造领域类型；不能把任意 JSON 传进核心。Rust/Python运行同一组25类文档格式正反例（原16类、composition/profile-v2、diagnostic-context/explain-result、project-template/init-result、doctor-result及project-build/project-build-result），领域规则另测，不用schema通过替代语义通过。Python参考校验验证结构向量，timestamp的RFC 3339 format校验由Rust主解码器承担。
 
 应用请求与 wire 文件不是一个类型：C02 固定端口 payload；C04 按用例构造纯应用请求，并通过适配器转换。C02 没有空执行器、成功占位后端或伪造的 `build/verify` 命令。
 
@@ -94,6 +97,9 @@ Finding 带稳定 code、subject、message 和来源位置；格式错误带路�
 | madb.composition/1 | 完整组合输入 | 包/组件/资产按 id、文件按 path、依赖与责任按规定键；重复/别名拒绝，args 保序 |
 | madb.project/1 | 工程与选择、策略、策略族、制品声明 | boundary/族按 ID；策略按规范 JSON 字节排序、族引用排序；排除 origin/extensions |
 | madb.source/1 | path、文件原始 sha256、size | 按逻辑路径；schema 标记不改变源字节身份 |
+| madb.project-build-request/1 | operation、root、frozen、descriptor原字节引用 | root为已解析绝对路径字符串；不完整时不求摘要 |
+| madb.project-build-input/1 | descriptor、完整files的source/sha256/size、完整directories集合 | 按UTF-16路径排序；不含快照副本路径；缺失目录与空目录不同 |
+| madb.project-build-output/1 | recipe、tool、snapshot_digest、candidate、consumer、outputs | outputs按路径排序；排除自身identity、发布状态、绝对根、耗时和日志 |
 | madb.task/1 | BuildTask 或带 operation 的阶段投影 | 去掉自身 task_digest；输入/环境/依赖/输出排序；参数顺序保留 |
 | madb.generation/1 | task/input/profile 摘要与文件清单 | 文件按路径、sources 按 ID；清单不能包含自身 |
 | madb.candidate/1 | 完整候选、锁/契约/策略/生成身份及公开要求 | 去掉 candidate_digest；文件/依赖/证据按路径、符号/案例按 ID；禁止清单自引用 |

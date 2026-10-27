@@ -1,0 +1,42 @@
+#!/bin/sh
+# Fixed Darwin launcher for the explicitly selected finite project recipe.
+set -eu
+fail() { printf '%s\n' "$2" >&2; exit "$1"; }
+case "$0" in */*) script_dir=${0%/*} ;; *) fail 2 'Invoke madbw by an explicit path.' ;; esac
+root=$(CDPATH= cd -P -- "$script_dir" && pwd -P) || fail 3 'Cannot resolve project root.'
+[ "$#" -eq 2 ] || [ "$#" -eq 3 ] || fail 2 'Supported invocation: madbw build --frozen [--json]'
+[ "$1" = build ] && [ "$2" = --frozen ] || fail 2 'Supported invocation: madbw build --frozen [--json]'
+machine=0
+if [ "$#" -eq 3 ]; then
+    [ "$3" = --json ] || fail 2 'Supported invocation: madbw build --frozen [--json]'
+    machine=1
+fi
+descriptor=$root/.madb/project-build.json
+origin=$root/.madb/project-origin.json
+tool=$root/.madb/wrapper/madb
+[ -f "$descriptor" ] && [ ! -L "$descriptor" ] || fail 3 'Project descriptor is missing or redirected.'
+[ -f "$origin" ] && [ ! -L "$origin" ] || fail 3 'Project origin is missing or redirected; restore its original source record.'
+[ -d "$root/.madb" ] && [ ! -L "$root/.madb" ] || fail 4 'Project state directory is redirected.'
+[ -d "$root/.madb/wrapper" ] && [ ! -L "$root/.madb/wrapper" ] || fail 3 'Tool directory is missing or redirected; use project install-tool.'
+[ -f "$tool" ] && [ ! -L "$tool" ] && [ -x "$tool" ] || fail 3 'Project tool is missing or redirected; use project install-tool.'
+read_digest() {
+    value=$(/usr/bin/env -i LC_ALL=C /usr/bin/plutil -extract "$2" raw -expect string -o - -- "$1") || fail 2 'Cannot read pinned digest.'
+    case "$value" in sha256:*) value=${value#sha256:} ;; *) fail 2 'Invalid pinned digest.' ;; esac
+    [ "${#value}" -eq 64 ] || fail 2 'Invalid pinned digest length.'
+    case "$value" in *[!0-9a-f]*) fail 2 'Invalid pinned digest spelling.' ;; esac
+    printf '%s' "$value"
+}
+file_digest() {
+    value=$(/usr/bin/env -i LC_ALL=C OPENSSL_CONF=/dev/null /usr/bin/openssl dgst -sha256 -r "$1") || fail 3 'Cannot hash project file.'
+    printf '%s' "${value%% *}"
+}
+origin_digest=$(read_digest "$origin" descriptor.sha256) || fail 2 'Cannot read source baseline.'
+descriptor_digest=$(file_digest "$descriptor") || fail 3 'Cannot verify source baseline.'
+[ "$origin_digest" = "$descriptor_digest" ] || fail 4 'Project descriptor differs from its original source baseline.'
+expected=$(read_digest "$descriptor" tool.sha256) || fail 2 'Cannot read pinned tool digest.'
+observed=$(file_digest "$tool") || fail 3 'Cannot hash project tool.'
+[ "$observed" = "$expected" ] || fail 4 'Project tool bytes differ from the pinned image; no execution performed.'
+if [ "$machine" = 1 ]; then
+    exec /usr/bin/env -i PATH= LC_ALL=C LANG=C HOME="${HOME:-}" TMPDIR="${TMPDIR:-/tmp}" "$tool" project build --root "$root" --frozen --json
+fi
+exec /usr/bin/env -i PATH= LC_ALL=C LANG=C HOME="${HOME:-}" TMPDIR="${TMPDIR:-/tmp}" "$tool" project build --root "$root" --frozen

@@ -10,6 +10,7 @@ pub const MAX_TEMPLATE_FILE_BYTES: u64 = 32 * 1024 * 1024;
 pub const MAX_TEMPLATE_CONTENT_BYTES: u64 = 128 * 1024 * 1024;
 pub const MAX_TEMPLATE_DIRECTORIES: usize = 8192;
 pub const VALUES_RECIPE: &str = "madb.init.rust-c-sdk.values@1";
+pub(crate) const PROJECT_VALUES_RECIPE: &str = "madb.project.rust-c-values@1";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct Version {
@@ -333,6 +334,21 @@ impl SelectedTemplate {
                 path: output,
                 ownership: super::FileOwnership::Provenance,
             });
+        }
+        if self.template().version == Version::parse("0.2.0").expect("fixed version")
+            && self
+                .template()
+                .task_roots
+                .iter()
+                .any(|t| t.recipe.as_str() == PROJECT_VALUES_RECIPE)
+        {
+            for name in [".madb/project-build.json", ".madb/project-origin.json"] {
+                files.push(super::ProjectFile {
+                    module: root.id.clone(),
+                    path: LogicalPath::new(name).expect("fixed provenance path"),
+                    ownership: super::FileOwnership::Provenance,
+                });
+            }
         }
         ProjectPlan::new(self.plan().modules().to_vec(), files)
     }

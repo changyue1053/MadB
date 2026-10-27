@@ -18,6 +18,8 @@ pub use explain::ExplanationService;
 
 mod init;
 pub use init::InitializationService;
+mod project;
+pub use project::ProjectService;
 
 mod doctor;
 pub use doctor::DoctorService;

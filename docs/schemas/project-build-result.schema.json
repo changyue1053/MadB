@@ -1,0 +1,1188 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.project-build-result/1"
+    },
+    "operation": {
+      "enum": [
+        "build",
+        "install-tool"
+      ]
+    },
+    "root": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/root"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "recipe": {
+      "anyOf": [
+        {
+          "const": "madb.project.rust-c-values@1"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "request_digest": {
+      "anyOf": [
+        {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "tool": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/tool"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "artifact_root": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/root"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "inputs": {
+      "$ref": "#/$defs/inputs"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/stage"
+      },
+      "minItems": 0,
+      "maxItems": 10
+    },
+    "result": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/result"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "installed_tool": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/installed_tool"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "previous": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/previous"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "published": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "publication_durability": {
+      "enum": [
+        "not-applicable",
+        "confirmed",
+        "uncertain"
+      ]
+    },
+    "termination": {
+      "enum": [
+        "complete",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "exit_code": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        130
+      ]
+    },
+    "evidence_root": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/root"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "logs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:madb:schema:common:1#/$defs/file"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/diagnostic"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    },
+    "recovery": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/recovery"
+      },
+      "minItems": 0,
+      "maxItems": 128
+    }
+  },
+  "required": [
+    "schema",
+    "operation",
+    "root",
+    "recipe",
+    "request_digest",
+    "tool",
+    "artifact_root",
+    "inputs",
+    "stages",
+    "result",
+    "installed_tool",
+    "previous",
+    "published",
+    "publication_durability",
+    "termination",
+    "exit_code",
+    "evidence_root",
+    "logs",
+    "diagnostics",
+    "recovery"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:project-build-result:1",
+  "$defs": {
+    "root": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "redacted": {
+          "const": false
+        }
+      },
+      "required": [
+        "path",
+        "redacted"
+      ],
+      "additionalProperties": false
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "org.madb/cli"
+        },
+        "version": {
+          "const": "0.1.0"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "size",
+        "source_revision"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "urn:madb:schema:common:1#/$defs/id"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "urn:madb:schema:common:1#/$defs/location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "directory": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "enum": [
+            "rust/src",
+            "consumer/include"
+          ]
+        },
+        "present": {
+          "type": "boolean"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "$ref": "urn:madb:schema:common:1#/$defs/path"
+              },
+              "kind": {
+                "enum": [
+                  "file",
+                  "directory"
+                ]
+              }
+            },
+            "required": [
+              "path",
+              "kind"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 16384
+        }
+      },
+      "required": [
+        "path",
+        "present",
+        "members"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "present": {
+                "const": false
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "members": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "inputs": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "$ref": "urn:madb:schema:common:1#/$defs/path"
+              },
+              "file": {
+                "$ref": "urn:madb:schema:common:1#/$defs/file"
+              }
+            },
+            "required": [
+              "source",
+              "file"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "directories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/directory"
+          },
+          "minItems": 0,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "files",
+        "directories"
+      ],
+      "additionalProperties": false
+    },
+    "stage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "enum": [
+            "capture",
+            "preflight",
+            "prepare",
+            "metadata",
+            "generate",
+            "build",
+            "package",
+            "consumer-link",
+            "publish",
+            "install"
+          ]
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "error",
+            "blocked",
+            "skipped",
+            "unsupported"
+          ]
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/diagnostic"
+          },
+          "minItems": 0,
+          "maxItems": 128
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file"
+          },
+          "minItems": 0,
+          "maxItems": 4096
+        },
+        "blocked_by": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "capture",
+              "preflight",
+              "prepare",
+              "metadata",
+              "generate",
+              "build",
+              "package",
+              "consumer-link"
+            ]
+          },
+          "minItems": 0,
+          "maxItems": 9
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "diagnostics",
+        "attachments",
+        "blocked_by"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "blocked"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "blocked_by": {
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "not": {
+                  "const": "blocked"
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "blocked_by": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "result": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "snapshot_digest": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "candidate": {
+          "type": "object",
+          "properties": {
+            "root": {
+              "$ref": "urn:madb:schema:common:1#/$defs/path"
+            },
+            "manifest": {
+              "$ref": "urn:madb:schema:common:1#/$defs/file"
+            }
+          },
+          "required": [
+            "root",
+            "manifest"
+          ],
+          "additionalProperties": false
+        },
+        "consumer": {
+          "$ref": "urn:madb:schema:common:1#/$defs/file"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:madb:schema:common:1#/$defs/file"
+          },
+          "minItems": 3,
+          "maxItems": 16384
+        }
+      },
+      "required": [
+        "identity",
+        "snapshot_digest",
+        "candidate",
+        "consumer",
+        "outputs"
+      ],
+      "additionalProperties": false
+    },
+    "previous": {
+      "type": "object",
+      "properties": {
+        "artifact_root": {
+          "$ref": "#/$defs/root"
+        },
+        "identity": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        }
+      },
+      "required": [
+        "artifact_root",
+        "identity"
+      ],
+      "additionalProperties": false
+    },
+    "installed_tool": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/root"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "recovery": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "retry",
+            "manual",
+            "inspect"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 8192
+        },
+        "arguments": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/argv"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "message",
+        "arguments"
+      ],
+      "additionalProperties": false
+    },
+    "argv": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 0,
+        "maxLength": 4096
+      },
+      "minItems": 1,
+      "maxItems": 4096,
+      "prefixItems": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      ]
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "bundled"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "https"
+            },
+            "url": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "format": "uri",
+              "pattern": "^https://(?:\\[[0-9A-Fa-f:.]+\\]|[^:/?#@\\s]+)(?::[0-9]+)?(?:/[^?#\\s]*)?$",
+              "not": {
+                "pattern": "\\s"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "url"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "build"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "installed_tool": {
+            "type": "null"
+          },
+          "stages": {
+            "anyOf": [
+              {
+                "maxItems": 0
+              },
+              {
+                "minItems": 9,
+                "maxItems": 9,
+                "prefixItems": [
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "capture"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "preflight"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "prepare"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "metadata"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "generate"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "build"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "package"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "consumer-link"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "publish"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "operation": {
+            "const": "install-tool"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "published": {
+            "const": false
+          },
+          "result": {
+            "type": "null"
+          },
+          "previous": {
+            "type": "null"
+          },
+          "artifact_root": {
+            "type": "null"
+          },
+          "inputs": {
+            "properties": {
+              "files": {
+                "maxItems": 0
+              },
+              "directories": {
+                "maxItems": 0
+              }
+            }
+          },
+          "stages": {
+            "anyOf": [
+              {
+                "maxItems": 0
+              },
+              {
+                "minItems": 3,
+                "maxItems": 3,
+                "prefixItems": [
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "capture"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "preflight"
+                      }
+                    }
+                  },
+                  {
+                    "properties": {
+                      "id": {
+                        "const": "install"
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "published": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "build"
+          },
+          "result": {
+            "type": "object"
+          },
+          "artifact_root": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "published": {
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "type": "null"
+          },
+          "publication_durability": {
+            "const": "not-applicable"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "published": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "publication_durability": {
+            "enum": [
+              "confirmed",
+              "uncertain"
+            ]
+          },
+          "exit_code": {
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "stages": {
+            "minItems": 9
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "published": {
+            "const": true
+          },
+          "publication_durability": {
+            "const": "confirmed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "stages": {
+            "prefixItems": [
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "published": {
+            "const": true
+          },
+          "publication_durability": {
+            "const": "uncertain"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "stages": {
+            "prefixItems": [
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {
+                "properties": {
+                  "status": {
+                    "const": "error"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "published": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "result": {
+            "type": "null"
+          },
+          "publication_durability": {
+            "const": "uncertain"
+          },
+          "exit_code": {
+            "const": 3
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "publication_durability": {
+            "const": "uncertain"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "const": 3
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "termination": {
+            "const": "complete"
+          },
+          "tool": {
+            "type": "object"
+          },
+          "root": {
+            "type": "object"
+          },
+          "recipe": {
+            "type": "string"
+          },
+          "request_digest": {
+            "type": "string"
+          },
+          "stages": {
+            "minItems": 1,
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "passed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 130
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "termination": {
+            "const": "cancelled"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "termination": {
+            "const": "failed"
+          },
+          "diagnostics": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "const": "complete"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "termination": {
+            "const": "cancelled"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "exit_code": {
+            "const": 130
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          },
+          "operation": {
+            "const": "build"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "published": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "exit_code": {
+            "const": 0
+          },
+          "operation": {
+            "const": "install-tool"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "installed_tool": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "installed_tool": {
+            "type": "object"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "install-tool"
+          },
+          "exit_code": {
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          "stages": {
+            "minItems": 3,
+            "prefixItems": [
+              {},
+              {},
+              {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "passed",
+                      "error"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

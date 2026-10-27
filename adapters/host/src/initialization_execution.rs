@@ -12,7 +12,7 @@ use madb_app::{
         ExecutionControl, ProcessError, ProcessExecution, ProcessPolicy, ProcessRequest,
         ProcessRun, execute_process_validated,
     },
-    use_cases::initialize::{PreparedProject, ToolObservation},
+    use_cases::initialize::{AbsolutePath, PreparedProject, ToolObservation},
 };
 use std::{
     collections::BTreeMap,
@@ -104,6 +104,7 @@ pub struct InitializationProcessResult {
 /// stage from silently adopting a different project root or author byte set.
 pub struct FinalProjectExecution {
     root: PathBuf,
+    native_relative: &'static str,
     directory: File,
     initial: Vec<FileReference>,
     runtime: std::cell::RefCell<Vec<FileReference>>,
@@ -115,6 +116,7 @@ impl FinalProjectExecution {
         let this = Self {
             directory: open_absolute_directory(&root)?,
             root,
+            native_relative: ".madb/build/native",
             initial: project.references(),
             runtime: std::cell::RefCell::new(Vec::new()),
         };
@@ -128,6 +130,32 @@ impl FinalProjectExecution {
             "initialization execution requires a Unix host",
         ))
     }
+    /// Open an already-owned project-build attempt; its Host owner created the
+    /// native directory and supplies the complete captured input identities.
+    #[cfg(unix)]
+    pub fn open_frozen(root: &AbsolutePath, initial: Vec<FileReference>) -> Result<Self> {
+        let root = PathBuf::from(root.as_str());
+        let this = Self {
+            directory: open_absolute_directory(&root)?,
+            root,
+            native_relative: "native",
+            initial,
+            runtime: std::cell::RefCell::new(Vec::new()),
+        };
+        this.verify_initial()?;
+        child_directory(&this.directory, "native", false)?;
+        Ok(this)
+    }
+    #[cfg(not(unix))]
+    pub fn open_frozen(_: &AbsolutePath, _: Vec<FileReference>) -> Result<Self> {
+        Err(invalid(
+            "platform",
+            "project execution requires a Unix host",
+        ))
+    }
+    pub fn materialize_project_runtime(&self) -> Result<()> {
+        runtime::materialize_project(self)
+    }
     pub fn root(&self) -> &Path {
         &self.root
     }
@@ -135,7 +163,7 @@ impl FinalProjectExecution {
         runtime::materialize(self)
     }
     pub fn native_root(&self) -> PathBuf {
-        self.root.join(".madb/build/native")
+        self.root.join(self.native_relative)
     }
     pub fn verify_initial(&self) -> Result<()> {
         self.verify_root()?;
@@ -201,7 +229,7 @@ impl FinalProjectExecution {
     pub fn write_native_new(&self, path: &LogicalPath, bytes: &[u8]) -> Result<FileReference> {
         use rustix::fs::{Mode, OFlags, openat};
         self.verify_root()?;
-        let native = child_directory(&self.directory, ".madb/build/native", false)?;
+        let native = child_directory(&self.directory, self.native_relative, false)?;
         let (parent, name) = match path.as_str().rsplit_once('/') {
             Some((parent, name)) => (child_directory(&native, parent, true)?, name),
             None => (native, path.as_str()),
@@ -219,7 +247,7 @@ impl FinalProjectExecution {
         file.sync_all().map_err(|e| host(path.as_str(), e))?;
         self.verify_root()?;
         let reference = FileReference {
-            path: LogicalPath::new(format!(".madb/build/native/{}", path.as_str()))
+            path: LogicalPath::new(format!("{}/{}", self.native_relative, path.as_str()))
                 .map_err(|e| invalid("path", e.to_string()))?,
             digest: Digest::of_bytes(bytes),
             size: bytes.len() as u64,

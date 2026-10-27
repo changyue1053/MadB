@@ -82,16 +82,25 @@ impl Stage {
         Ok(())
     }
     pub fn write(&mut self, path: &str, bytes: &[u8]) -> Result<()> {
+        self.write_mode(path, bytes, fs::FILE_MODE)
+    }
+    pub fn write_project_wrapper(&mut self, bytes: &[u8]) -> Result<()> {
+        self.write_mode("madbw", bytes, rustix::fs::Mode::from_bits_retain(0o755))
+    }
+    fn write_mode(&mut self, path: &str, bytes: &[u8], mode: rustix::fs::Mode) -> Result<()> {
         let (parent, name) = fs::parent_and_name(&self.directory, path)?;
         let mut file = File::from(
             openat(
                 &parent,
                 name.as_str(),
                 OFlags::WRONLY | OFlags::CREATE | OFlags::EXCL | OFlags::NOFOLLOW | OFlags::CLOEXEC,
-                fs::FILE_MODE,
+                mode,
             )
             .map_err(|e| conflict(path, e))?,
         );
+        if path == "madbw" && mode == rustix::fs::Mode::from_bits_retain(0o755) {
+            rustix::fs::fchmod(&file, mode).map_err(|e| host(path, e))?;
+        }
         self.files.insert(path.to_owned(), fs::identity(&file)?);
         file.write_all(bytes).map_err(|e| host(path, e))?;
         file.sync_all().map_err(|e| host(path, e))

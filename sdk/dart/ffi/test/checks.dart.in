@@ -1,0 +1,209 @@
+part of '../madb_dart_ffi.dart';
+
+void require(bool condition, String message) {
+  if (!condition) throw StateError(message);
+}
+
+T rejects<T extends Object>(void Function() action) {
+  try { action(); } catch (error) {
+    if (error is T) return error;
+    rethrow;
+  }
+  throw StateError('expected $T');
+}
+
+const _ok = (status: 0, domain: 0, code: 0);
+const _testInterface = 'sha256:0000000000000000000000000000000000000000000000000000000000000000';
+const _testProfile = 'sha256:0000000000000000000000000000000000000000000000000000000000000000';
+
+final class _FakeCalls implements _EngineNativeCalls {
+  final events = <String>[];
+  String? failure;
+  bool throwBinding = false;
+  _IdentityResult identity = (status: 0, domain: 0, code: 0, identity: Uint8List(64));
+  _CreateResult creation = (kind: 0, status: 0, domain: 0, code: 0, handle: 42);
+  @override
+  String nativePath(int index) => throw UnsupportedError('policy only');
+  @override
+  _IdentityResult bootstrap() => identity;
+  @override
+  _CreateResult createChecked() { events.add('create'); return creation; }
+  @override
+  _ScalarResult checksum(int handle, Uint8List bytes) =>
+      (status: 0, domain: 0, code: 0, value: bytes.fold(0, (a,b) => a+b));
+  _StatusResult phase(String name, int code) {
+    events.add(name);
+    if (failure == name) {
+      if (throwBinding) throw StateError('injected binding exception');
+      return (status: code, domain: 0, code: 0);
+    }
+    return _ok;
+  }
+  @override
+  _StatusResult requestClose(int handle) => phase('requestClose', 9);
+  @override
+  _StatusResult awaitClosed(int handle, int timeoutMilliseconds) => phase('awaitClosed', 6);
+  @override
+  _StatusResult releaseHandle(int handle) => phase('releaseHandle', 5);
+}
+
+_NativeLibrary fakeLibrary(_FakeCalls calls, {String interfaceDigest = _testInterface,
+    String profileDigest = _testProfile}) => _NativeLibrary._(
+        DynamicLibrary.process(), calls, 'policy-only', interfaceDigest, profileDigest);
+
+void checkPolicy() {
+  final boot = _FakeCalls();
+  final bootLibrary = fakeLibrary(boot);
+  bootLibrary._verifyIdentity('MadbLibrary.open');
+  for (final status in [0,11]) {
+    boot.identity = (status:status,domain:0,code:0,identity:Uint8List(63));
+    require(rejects<MadbContractException>(() => bootLibrary._verifyIdentity('MadbLibrary.open')).reason ==
+      'invalidIdentityLength', 'bootstrap length checked on success and failure');
+  }
+  boot.identity = (status:11,domain:0,code:0,identity:Uint8List(64)..[63]=1);
+  require(rejects<MadbContractException>(() => bootLibrary._verifyIdentity('MadbLibrary.open')).reason ==
+    'invalidOutput', 'failed bootstrap clears every byte');
+  boot.identity = (status:11,domain:0,code:0,identity:Uint8List(64));
+  final bootError = rejects<MadbCallException>(() => bootLibrary._verifyIdentity('MadbLibrary.open'));
+  require(bootError.operation == 'MadbLibrary.open' && bootError.stage == 'bootstrap' &&
+    bootError.status == 11 && bootError.domain == 0 && bootError.code == 0,
+    'valid zero failure retains typed native status');
+  for (final stage in ['requestClose', 'awaitClosed', 'releaseHandle']) {
+    for (final bindingFailure in [false, true]) {
+      final calls = _FakeCalls()..failure = stage..throwBinding = bindingFailure;
+      final owner = _EngineOwner.create(fakeLibrary(calls));
+      calls.events.clear();
+      if (bindingFailure) {
+        rejects<StateError>(() => owner.close());
+      } else {
+        final error = rejects<MadbCallException>(() => owner.close());
+        require(error.operation == 'close' && error.stage == stage && error.domain == 0 && error.code == 0,
+            'close failure carries exact phase');
+      }
+      final expected = ['requestClose', 'awaitClosed', 'releaseHandle'];
+      require(calls.events.join(',') == expected.take(expected.indexOf(stage)+1).join(','),
+          'failure stops later phases');
+      require(owner.state == EngineState.closing && owner.handle == 42,
+          'failure retains closing owner and handle');
+      rejects<StateError>(() => owner.checkOpen('checksum'));
+      calls.failure = null;
+      calls.events.clear();
+      owner.close(timeoutMilliseconds: 0);
+      require(owner.state == EngineState.closed && calls.events.join(',') == expected.join(','),
+          'retry starts request and completes all phases');
+      owner.close();
+      require(calls.events.length == 3, 'closed close is native no-op');
+      rejects<RangeError>(() => owner.close(timeoutMilliseconds: -1));
+      require(calls.events.length == 3, 'invalid timeout never invokes native');
+    }
+  }
+  final calls = _FakeCalls();
+  final owner = _EngineOwner.create(fakeLibrary(calls));
+  calls.events.clear();
+  for (final timeout in [-1, 0x100000000]) {
+    rejects<RangeError>(() => owner.close(timeoutMilliseconds: timeout));
+  }
+  require(owner.state == EngineState.open && calls.events.isEmpty, 'invalid timeout preserves open');
+  owner.close(timeoutMilliseconds: 0xffffffff);
+  for (var status = 1; status <= 11; status++) {
+    final error = rejects<MadbCallException>(() => _validateCall('x','invoke',
+      (status: status, domain: status == 10 ? 7 : 0, code: status == 10 ? -3 : 0)));
+    require(error.status == status && error.stage == 'invoke' && error.operation == 'x',
+      'typed status preserves original');
+  }
+  require(rejects<MadbContractException>(() => _validateCall('x','invoke',
+      (status: 12, domain: 0, code: 0))).reason == 'invalidStatus', 'unknown status');
+  for (final result in [(status: 0, domain: 1, code: 0),
+      (status: 10, domain: 0, code: 0), (status: 1, domain: 0, code: 1)]) {
+    require(rejects<MadbContractException>(() => _validateCall('x','invoke', result)).reason ==
+      'invalidErrorPayload', 'malformed error');
+  }
+  for (final kind in [1,4]) {
+    final failed = _FakeCalls()..creation = (kind: kind, status: 9, domain: 0, code: 0, handle: 0);
+    final error = rejects<MadbCallException>(() => _EngineOwner.create(fakeLibrary(failed)));
+    require(error.stage == (kind == 1 ? 'bootstrap' : 'create'), 'create stage preserved');
+  }
+  final mismatch = _FakeCalls()..creation = (kind: 2,status: 0,domain: 0,code: 0,handle: 0);
+  final identity = rejects<MadbIdentityException>(() => _EngineOwner.create(fakeLibrary(mismatch,
+    interfaceDigest: 'sha256:${'1' * 64}')));
+  require(identity.kind == 'interfaceMismatch' && identity.actualInterfaceDigest == _testInterface,
+    'mismatch obtains actual same-bridge identity');
+  mismatch.creation = (kind: 3,status: 0,domain: 0,code: 0,handle: 0);
+  rejects<MadbContractException>(() => _EngineOwner.create(fakeLibrary(mismatch,
+    interfaceDigest: 'sha256:${'1' * 64}')));
+  final unicode = 'A\u0000汉😀';
+  final encoded = _encodeUtf8(unicode,64,'text');
+  final buffer = Uint8List(64)..setAll(0,encoded);
+  require(_decodeUtf8(buffer,encoded.length,64,'text') == unicode, 'strict UTF8 including NUL');
+  require(_encodeUtf8('x' * 64,64,'text').length == 64, 'boundary UTF8');
+  rejects<RangeError>(() => _encodeUtf8('x' * 65,64,'text'));
+  rejects<FormatException>(() => _encodeUtf8(String.fromCharCode(0xd800),64,'text'));
+  rejects<FormatException>(() => _encodeUtf8(String.fromCharCode(0xdc00),64,'text'));
+  rejects<MadbContractException>(() => _decodeUtf8(Uint8List(64)..[0]=255,1,64,'text'));
+  rejects<MadbContractException>(() => _decodeUtf8(Uint8List(64)..[1]=1,1,64,'text'));
+  rejects<MadbContractException>(() => _decodeUtf8(Uint8List(63),1,64,'text'));
+  _checkIntRange(-0x80000000,-0x80000000,0x7fffffff,'i32');
+  _checkIntRange(0x7fffffff,-0x80000000,0x7fffffff,'i32');
+  _checkIntRange(0xffffffff,0,0xffffffff,'u32');
+  rejects<RangeError>(() => _checkIntRange(0x80000000,-0x80000000,0x7fffffff,'i32'));
+  rejects<RangeError>(() => _checkIntRange(-1,0,0xffffffff,'u32'));
+}
+
+void receiveOwner(SendPort parent) {
+  final port = ReceivePort();
+  parent.send(port.sendPort);
+  port.listen((message) { if (message == 'stop') port.close(); });
+}
+
+Future<void> checkNative(String mode,String directory,String indexDigest,
+    String interfaceDigest,String profileDigest) async {
+  _NativeLibrary open() => _NativeLibrary.open(directory, installDigest:indexDigest,
+    interfaceDigest:interfaceDigest,profileDigest:profileDigest,symbolCount:6);
+  if (mode.startsWith('load:')) {
+    final error = rejects<MadbLoadException>(open);
+    require(error.kind == mode.substring(5), 'expected $mode; got ${error.kind}');
+    print(jsonEncode({'mode':mode,'result':'passed','kind':error.kind,'path':error.path}));
+    return;
+  }
+  if (mode.startsWith('identity:')) {
+    final error = rejects<MadbIdentityException>(open);
+    require(error.kind == mode.substring(9), 'identity kind');
+    print(jsonEncode({'mode':mode,'result':'passed','kind':error.kind,
+      'actualInterfaceDigest':error.actualInterfaceDigest,'actualProfileDigest':error.actualProfileDigest}));
+    return;
+  }
+  require(mode == 'normal', 'unknown native test mode');
+  final paths = <List<String>>[];
+  for (var repetition=0; repetition<2; repetition++) {
+    final library = open();
+    final owner = _EngineOwner.create(library);
+    final calls = owner.calls;
+    paths.add(List.generate(6,(i)=>File(calls.nativePath(i)).resolveSymbolicLinksSync()));
+    for (final bytes in [Uint8List(0), Uint8List.fromList([1,2,255]),
+        Uint8List(65536)..fillRange(0,65536,255)]) {
+      owner.checkOpen('checksum');
+      final result = calls.checksum(owner.handle,bytes);
+      _validateCall('checksum','invoke',(status:result.status,domain:result.domain,code:result.code));
+      require(result.value == bytes.fold(0,(a,b)=>a+b),'actual native checksum');
+    }
+    final overlong = calls.checksum(owner.handle,Uint8List(65537));
+    require(overlong.status == 1 && overlong.value == 0, 'native oversize status/output');
+    final port = ReceivePort();
+    final exit = ReceivePort();
+    await Isolate.spawn(receiveOwner,port.sendPort,onExit:exit.sendPort);
+    final target = await port.first as SendPort;
+    rejects<ArgumentError>(() => target.send(library));
+    rejects<ArgumentError>(() => target.send(owner));
+    target.send('stop');
+    await exit.first;
+    port.close(); exit.close();
+    owner.close();
+    require(owner.state == EngineState.closed,'native close completed');
+    owner.close();
+    rejects<StateError>(()=>owner.checkOpen('checksum'));
+    require(calls.checksum(owner.handle,Uint8List(0)).status == 2,'retired native token');
+  }
+  require(paths[0][0] != paths[1][0],'sequential opens use distinct staging');
+  print(jsonEncode({'mode':mode,'result':'passed','nativePaths':paths,
+    'checksums':[0,258,16711680],'isolateSendRejected':true,'nativeClose':'passed'}));
+}

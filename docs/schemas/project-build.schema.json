@@ -1,0 +1,184 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "madb.project-build/1"
+    },
+    "recipe": {
+      "const": "madb.project.rust-c-values@1"
+    },
+    "template": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "org.madb.template/rust-c-sdk"
+        },
+        "version": {
+          "const": "0.2.0"
+        },
+        "archive": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "const": ".madb/template-package.tar"
+            },
+            "sha256": {
+              "$ref": "urn:madb:schema:common:1#/$defs/digest"
+            },
+            "size": {
+              "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "size"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "archive"
+      ],
+      "additionalProperties": false
+    },
+    "namespace": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_]{0,47}$",
+      "maxLength": 48
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "const": ".madb/template-input/profile.json"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        },
+        "schema": {
+          "const": "madb.profile/1"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size",
+        "schema"
+      ],
+      "additionalProperties": false
+    },
+    "sdk": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "const": ".madb/template-input/toolchain.json"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        },
+        "schema": {
+          "const": "madb.native-toolchain/1"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "size",
+        "schema"
+      ],
+      "additionalProperties": false
+    },
+    "tool": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "const": "org.madb/cli"
+        },
+        "version": {
+          "const": "0.1.0"
+        },
+        "sha256": {
+          "$ref": "urn:madb:schema:common:1#/$defs/digest"
+        },
+        "size": {
+          "$ref": "urn:madb:schema:common:1#/$defs/safe_uint"
+        },
+        "source_revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "sha256",
+        "size",
+        "source_revision"
+      ],
+      "additionalProperties": false
+    },
+    "author": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "const": "rust"
+        },
+        "entry": {
+          "const": "rust/src/lib.rs"
+        }
+      },
+      "required": [
+        "language",
+        "entry"
+      ],
+      "additionalProperties": false
+    },
+    "consumer": {
+      "type": "object",
+      "properties": {
+        "language": {
+          "const": "c"
+        },
+        "entry": {
+          "const": "consumer/main.c"
+        },
+        "headers": {
+          "const": "consumer/include"
+        }
+      },
+      "required": [
+        "language",
+        "entry",
+        "headers"
+      ],
+      "additionalProperties": false
+    },
+    "configuration": {
+      "const": "debug"
+    }
+  },
+  "required": [
+    "schema",
+    "recipe",
+    "template",
+    "namespace",
+    "profile",
+    "sdk",
+    "tool",
+    "author",
+    "consumer",
+    "configuration"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:madb:schema:project-build:1"
+}

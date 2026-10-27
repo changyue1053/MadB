@@ -56,6 +56,24 @@ pub(crate) fn project(
     request: &FrozenInitRequest,
     adapter: &ProjectInitAdapter,
 ) -> Result<PreparedProject> {
+    project_inner(record, package, request, adapter, None)
+}
+pub(crate) fn project_with_tool(
+    record: &TrustedTemplateRecord,
+    package: &CheckedInventory,
+    request: &FrozenInitRequest,
+    adapter: &ProjectInitAdapter,
+    tool: madb_app::use_cases::project_build::ToolIdentity,
+) -> Result<PreparedProject> {
+    project_inner(record, package, request, adapter, Some(tool))
+}
+fn project_inner(
+    record: &TrustedTemplateRecord,
+    package: &CheckedInventory,
+    request: &FrozenInitRequest,
+    adapter: &ProjectInitAdapter,
+    tool: Option<madb_app::use_cases::project_build::ToolIdentity>,
+) -> Result<PreparedProject> {
     let selected = request.selected();
     for task in selected
         .template()
@@ -105,6 +123,66 @@ pub(crate) fn project(
         if let Some(bytes) = bytes {
             rendered.insert(asset.output.clone(), bytes);
         }
+    }
+    if selected.template().version
+        == madb_plan::project::Version::parse("0.2.0").expect("fixed version")
+    {
+        use madb_app::use_cases::project_build::{
+            Descriptor, ProjectBuildFormat, TemplateIdentity,
+        };
+        let tool = tool.ok_or_else(|| {
+            invalid(
+                "tool",
+                "the project template needs its actual source-bound image identity",
+            )
+        })?;
+        let namespace = match request
+            .projection()
+            .parameter_values
+            .get(&madb_app::Id::new("namespace").expect("fixed parameter"))
+        {
+            Some(madb_plan::project::ParameterValue::String(value)) => value.clone(),
+            _ => return Err(invalid("namespace", "resolved namespace is absent")),
+        };
+        let reference = |name: &str, schema: &str| -> Result<madb_plan::project::FileReference> {
+            let mut file = selected
+                .template()
+                .files
+                .iter()
+                .find(|f| f.path.as_str() == name)
+                .cloned()
+                .ok_or_else(|| invalid(name, "original input is absent"))?;
+            file.path = LogicalPath::new(format!(".madb/template-input/{name}"))
+                .map_err(|e| invalid(name, e.to_string()))?;
+            Ok(madb_plan::project::FileReference {
+                file,
+                schema: madb_app::Id::new(schema).expect("fixed schema"),
+            })
+        };
+        let mut archive = record.archive.clone();
+        archive.path = LogicalPath::new(".madb/template-package.tar").expect("fixed path");
+        let descriptor = Descriptor {
+            template: TemplateIdentity {
+                id: record.id.clone(),
+                version: record.version.to_string(),
+                archive,
+            },
+            namespace,
+            profile: reference("profile.json", "madb.profile/1")?,
+            sdk: reference("toolchain.json", "madb.native-toolchain/1")?,
+            tool,
+        };
+        let format = madb_contracts::project_build::ProjectBuildAdapter::new()?;
+        let bytes = format.encode_descriptor(&descriptor)?;
+        let origin = madb_host::project_build::origin_bytes(&descriptor, &bytes)?;
+        rendered.insert(
+            LogicalPath::new(".madb/project-build.json").expect("fixed path"),
+            bytes,
+        );
+        rendered.insert(
+            LogicalPath::new(".madb/project-origin.json").expect("fixed path"),
+            origin,
+        );
     }
     let plan = selected
         .plan_with_provenance(&record.manifest.file)

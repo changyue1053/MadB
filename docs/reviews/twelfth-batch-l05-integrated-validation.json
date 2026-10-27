@@ -1,0 +1,46 @@
+{
+  "scope": "fresh build and complete target run from integrated actual Lab root",
+  "report_sha256": "fd1074c945a685c6b92771d1fe4beb1e42b810a10d99b7a1d065381f7837b5b9",
+  "report_size": 13923,
+  "source": {
+    "root": "/Users/changyue/Desktop/MadB/madb_lab",
+    "head": "f6f1d1bf071616d68cf68441adf9ded85e64b91b",
+    "status": "",
+    "tracked_files": 550
+  },
+  "phases": {
+    "result": "passed",
+    "compile": "passed",
+    "target_execution": "passed",
+    "native": "passed",
+    "ui": "passed",
+    "runtime_close": "confirmed",
+    "cleanup": "passed"
+  },
+  "candidate_digest": "sha256:7fce7dc8b8befbb985694ca08dfecff0b769fef5d0443608b61cc79edf1d921a",
+  "pid": "29366",
+  "nonce": "l05-bg-2a658bd5a7da438f8b565d2b47d0b130",
+  "frames": 21,
+  "ui_phases": [
+    "READY_0",
+    "PUBLISHED_0",
+    "READY_1",
+    "PUBLISHED_1",
+    "READY_2",
+    "PUBLISHED_2",
+    "READY_3",
+    "PUBLISHED_3",
+    "FINISHED"
+  ],
+  "commands": 88,
+  "hap": {
+    "path": "l05-bg-2a658bd5a7da438f8b565d2b47d0b130.hap",
+    "sha256": "sha256:f3ac54cf18e555d7a23b86411e69cad540de09ee1c8edd1d9362782ff28bfc4d",
+    "size": 2107485
+  },
+  "source_archive": {
+    "path": "l05-bg-2a658bd5a7da438f8b565d2b47d0b130-sources.tar",
+    "sha256": "sha256:1950e843d8821b1e1fbbf0f88978fc38fd661cdae9640d585a96ca7b194a5a8f",
+    "size": 81920
+  }
+}

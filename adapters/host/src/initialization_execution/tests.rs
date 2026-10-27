@@ -27,6 +27,7 @@ impl Tree {
     fn final_project(&self) -> FinalProjectExecution {
         let file = self.file("author.rs", b"original author");
         FinalProjectExecution {
+            native_relative: ".madb/build/native",
             root: self.0.clone(),
             directory: open_absolute_directory(&self.0).unwrap(),
             initial: vec![FileReference {

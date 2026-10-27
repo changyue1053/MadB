@@ -12,6 +12,7 @@ pub mod inputs;
 pub mod locations;
 mod observation;
 pub mod process;
+pub mod project_build;
 pub mod task;
 pub mod transaction;
 use madb_app::{ErrorKind, LogicalPath, QueryError, Result, ports::ReadWorkspace};

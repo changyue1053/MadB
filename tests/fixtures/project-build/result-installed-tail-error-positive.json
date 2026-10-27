@@ -1,0 +1,69 @@
+{
+  "schema": "madb.project-build-result/1",
+  "operation": "install-tool",
+  "root": {
+    "path": "/example/project",
+    "redacted": false
+  },
+  "recipe": "madb.project.rust-c-values@1",
+  "request_digest": "sha256:2246d8336afe22a51145d44aff5e1f8a1be2e0c33b163bdf6a1cd6805396bf9f",
+  "tool": {
+    "id": "org.madb/cli",
+    "version": "0.1.0",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1,
+    "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "artifact_root": null,
+  "inputs": {
+    "files": [],
+    "directories": []
+  },
+  "stages": [
+    {
+      "id": "capture",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "preflight",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "install",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    }
+  ],
+  "result": null,
+  "installed_tool": {
+    "path": {
+      "path": "/example/project/.madb/wrapper/madb",
+      "redacted": false
+    },
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1
+  },
+  "previous": null,
+  "published": false,
+  "publication_durability": "not-applicable",
+  "termination": "failed",
+  "exit_code": 3,
+  "evidence_root": null,
+  "logs": [],
+  "diagnostics": [
+    {
+      "code": "HOST001",
+      "message": "Design fixture: installation completed; receipt write failed",
+      "location": null
+    }
+  ],
+  "recovery": []
+}

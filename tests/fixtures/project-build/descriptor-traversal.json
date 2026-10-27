@@ -1,0 +1,43 @@
+{
+  "schema": "madb.project-build/1",
+  "recipe": "madb.project.rust-c-values@1",
+  "template": {
+    "id": "org.madb.template/rust-c-sdk",
+    "version": "0.2.0",
+    "archive": {
+      "path": ".madb/template-package.tar",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1
+    }
+  },
+  "namespace": "reading_demo",
+  "profile": {
+    "path": ".madb/template-input/profile.json",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1,
+    "schema": "madb.profile/1"
+  },
+  "sdk": {
+    "path": ".madb/template-input/toolchain.json",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1,
+    "schema": "madb.native-toolchain/1"
+  },
+  "tool": {
+    "id": "org.madb/cli",
+    "version": "0.1.0",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1,
+    "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "author": {
+    "language": "rust",
+    "entry": "../author.rs"
+  },
+  "consumer": {
+    "language": "c",
+    "entry": "consumer/main.c",
+    "headers": "consumer/include"
+  },
+  "configuration": "debug"
+}

@@ -12,7 +12,16 @@ pub(super) fn bind_tool(
     component: &ExecutionTool,
     installed: &FileReference,
 ) -> Result<()> {
-    let tool = prepared.profile.value()["tools"]
+    bind_tool_values(&prepared.profile, &prepared.lock, component, installed)
+}
+
+pub(crate) fn bind_tool_values(
+    profile: &crate::Document,
+    lock: &crate::Document,
+    component: &ExecutionTool,
+    installed: &FileReference,
+) -> Result<()> {
+    let tool = profile.value()["tools"]
         .as_array()
         .expect("validated")
         .iter()
@@ -28,7 +37,7 @@ pub(super) fn bind_tool(
                 "recipe tool is not an exact selected profile image",
             )
         })?;
-    if !prepared.lock.value()["tools"]
+    if !lock.value()["tools"]
         .as_array()
         .expect("validated")
         .contains(tool)

@@ -1,0 +1,13 @@
+// Generated ordinary API. The private package pins are produced and owned by
+// the declared Build task, after its bridge image is complete.
+library;
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
+import 'package:ffi/ffi.dart' as ffi;
+import 'src/raw_bindings.dart' as raw;
+part 'src/madb_runtime.dart';
+part 'src/generated.dart';
+part 'src/package_pins.dart';

@@ -2,3 +2,4 @@
 pub mod initialize;
 
 pub mod doctor;
+pub mod project_build;

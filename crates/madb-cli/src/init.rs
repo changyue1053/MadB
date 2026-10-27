@@ -85,12 +85,6 @@ pub fn run(arguments: Vec<OsString>, command: Command) -> u8 {
     {
         return if error.print().is_ok() { 0 } else { 3 };
     }
-    let service = match InitializationService::new() {
-        Ok(service) => service,
-        Err(error) => {
-            return present_error(error);
-        }
-    };
     let options = matches
         .map_err(|error| invalid("arguments", error.to_string()))
         .and_then(|matches| {
@@ -99,6 +93,16 @@ pub fn run(arguments: Vec<OsString>, command: Command) -> u8 {
                 .expect("init dispatch selected a subcommand");
             options(args)
         });
+    let service = match if options.as_ref().is_ok_and(|options| {
+        options.template.as_deref() == Some("org.madb.template/rust-c-sdk@0.2.0")
+    }) {
+        InitializationService::new_project()
+    } else {
+        InitializationService::new()
+    } {
+        Ok(service) => service,
+        Err(error) => return present_error(error),
+    };
     let report = service.initialize(options);
     present(&service, &report, json)
 }

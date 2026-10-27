@@ -74,6 +74,9 @@ class ContractFormats(unittest.TestCase):
         for vector in read("../project-init/format-vectors.json")["vectors"]:
             vector["file"] = "../project-init/" + vector["file"]
             vectors.append(vector)
+        for vector in read("../project-build/format-vectors.json")["vectors"]:
+            vector["file"] = "../project-build/" + vector["file"]
+            vectors.append(vector)
         for vector in vectors:
             with self.subTest(vector=vector["id"]):
                 value = copy.deepcopy(read(vector["file"]))
@@ -90,7 +93,17 @@ class ContractFormats(unittest.TestCase):
                 validator = Draft202012Validator(schemas[vector["kind"]], registry=registry)
                 self.assertEqual(validator.is_valid(value), vector["expected"] == "valid")
                 seen.add(vector["kind"])
-        self.assertEqual(len(seen), 23)
+        self.assertEqual(len(seen), 25)
+
+    def test_project_build_exact_projection_domains(self):
+        for vector in read("../project-build/digest-vectors.json")["vectors"]:
+            with self.subTest(vector=vector["id"]):
+                encoded = canonical(vector["projection"])
+                self.assertEqual(encoded, vector["canonical_projection"])
+                preimage = (vector["domain"] + "\n" + encoded).encode()
+                self.assertEqual(preimage.hex(), vector["preimage_hex"])
+                self.assertEqual(len(preimage), vector["preimage_size"])
+                self.assertEqual("sha256:" + hashlib.sha256(preimage).hexdigest(), vector["digest"])
 
     def test_jcs_bytes_and_hashes(self):
         vectors = read("canonical-vectors.json")

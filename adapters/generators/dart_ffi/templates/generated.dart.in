@@ -1,0 +1,80 @@
+// Generated finite synchronous resource projection; raw pointers never escape.
+part of '../madb_dart_ffi.dart';
+
+final class MadbLibrary {
+  final _NativeLibrary _library;
+  MadbLibrary._(this._library);
+  factory MadbLibrary.open(String packageDirectory) => MadbLibrary._(
+    _NativeLibrary.open(packageDirectory, installDigest: _installDigest,
+      interfaceDigest: _interfaceDigest, profileDigest: _profileDigest, symbolCount: 6));
+  Engine createEngine() => Engine._(_EngineOwner.create(_library));
+}
+final class Engine {
+  final _EngineOwner _owner;
+  Engine._(this._owner);
+  EngineState get state => _owner.state;
+  int checksum(Uint8List bytes) {
+    _owner.checkOpen('checksum');
+    _checkIntRange(bytes.length, 0, 65536, 'bytes.length');
+    final result = _owner.calls.checksum(_owner.handle, bytes);
+    if (result.status > 0 && result.status <= 11) {
+      _checkOutput(result.value == 0, 'checksum');
+    }
+    _validateCall('checksum', 'invoke', (status: result.status, domain: result.domain, code: result.code));
+    _checkOutput(result.value >= 0 && result.value <= 16711680, 'checksum');
+    return result.value;
+  }
+  void close({int timeoutMilliseconds = 1000}) => _owner.close(timeoutMilliseconds: timeoutMilliseconds);
+}
+
+_NativeCalls _generatedCalls(DynamicLibrary bridge) => _EngineCalls(bridge);
+final class _EngineCalls implements _EngineNativeCalls {
+  final raw.RawNative _raw;
+  _EngineCalls(DynamicLibrary bridge) : _raw = raw.RawNative(bridge);
+  @override
+  String nativePath(int index) {
+    final value = _raw.madb_dart_native_path(index);
+    return value == nullptr ? '' : value.cast<ffi.Utf8>().toDartString();
+  }
+  @override
+  ({int status, int domain, int code, Uint8List identity}) bootstrap() => ffi.using((arena) {
+    final bytes = arena<Uint8>(64);
+    final status = _raw.madb_dart_bootstrap(bytes);
+    final identity = Uint8List.fromList(bytes.asTypedList(64));
+    return (status: status, domain: 0, code: 0, identity: identity);
+  });
+  @override
+  ({int kind, int status, int domain, int code, int handle}) createChecked() => ffi.using((arena) {
+    final result = arena<raw.MadbCheckedEngineCreateResult>();
+    _raw.madb_dart_create_checked(result);
+    return (kind: result.ref.kind, status: result.ref.native_status, domain: result.ref.native_error.domain,
+      code: result.ref.native_error.code, handle: result.ref.handle);
+  });
+  @override
+  ({int status, int domain, int code, int value}) checksum(int handle, Uint8List bytes) => ffi.using((arena) {
+    final data = bytes.isEmpty ? nullptr.cast<Uint8>() : arena<Uint8>(bytes.length);
+    if (bytes.isNotEmpty) data.asTypedList(bytes.length).setAll(0, bytes);
+    final out = arena<Uint64>();
+    final error = arena<raw.MadbError>();
+    final status = _raw.madb_dart_checksum(handle, data, bytes.length, out, error);
+    return (status: status, domain: error.ref.domain, code: error.ref.code, value: out.value);
+  });
+  @override
+  ({int status, int domain, int code}) requestClose(int handle) => ffi.using((arena) {
+    final error = arena<raw.MadbError>();
+    final status = _raw.madb_dart_request_close(handle, error);
+    return (status: status, domain: error.ref.domain, code: error.ref.code);
+  });
+  @override
+  ({int status, int domain, int code}) awaitClosed(int handle, int milliseconds) => ffi.using((arena) {
+    final error = arena<raw.MadbError>();
+    final status = _raw.madb_dart_await_closed(handle, milliseconds, error);
+    return (status: status, domain: error.ref.domain, code: error.ref.code);
+  });
+  @override
+  ({int status, int domain, int code}) releaseHandle(int handle) => ffi.using((arena) {
+    final error = arena<raw.MadbError>();
+    final status = _raw.madb_dart_release_handle(handle, error);
+    return (status: status, domain: error.ref.domain, code: error.ref.code);
+  });
+}

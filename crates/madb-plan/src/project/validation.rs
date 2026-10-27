@@ -599,7 +599,11 @@ impl SelectedTemplate {
             .iter()
             .filter(|t| profile.task_roots.contains(&t.id))
             .collect();
-        if tasks.is_empty() || tasks.iter().any(|t| t.recipe.as_str() != VALUES_RECIPE) {
+        if tasks.is_empty()
+            || tasks
+                .iter()
+                .any(|t| t.recipe.as_str() != finite_values_recipe(template))
+        {
             return err(
                 profile.id.as_str(),
                 "unknown or missing finite initialization recipe",
@@ -713,7 +717,7 @@ impl SelectedTemplate {
                 .task_roots
                 .iter()
                 .filter(|t| profile.task_roots.contains(&t.id))
-                .any(|t| t.recipe.as_str() != VALUES_RECIPE)
+                .any(|t| t.recipe.as_str() != finite_values_recipe(template))
         {
             return err(
                 profile.id.as_str(),
@@ -929,4 +933,14 @@ fn subset(values: &[Id], allowed: &[Id], message: &'static str) -> Result<(), Pr
 }
 fn err<T>(subject: impl Into<String>, message: &'static str) -> Result<T, ProjectPlanError> {
     Err(ProjectPlanError::new(subject, message))
+}
+
+fn finite_values_recipe(template: &Template) -> &'static str {
+    if template.id.as_str() == "org.madb.template/rust-c-sdk"
+        && template.version == Version::parse("0.2.0").expect("fixed version")
+    {
+        super::template::PROJECT_VALUES_RECIPE
+    } else {
+        VALUES_RECIPE
+    }
 }

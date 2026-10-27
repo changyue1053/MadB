@@ -1,0 +1,126 @@
+{
+  "scope": "design-only structural vectors; fake identities are not runnable evidence",
+  "vectors": [
+    {
+      "id": "descriptor-wrong-recipe",
+      "kind": "project-build",
+      "file": "descriptor-wrong-recipe.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "descriptor-dev-tool",
+      "kind": "project-build",
+      "file": "descriptor-dev-tool.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "descriptor-traversal",
+      "kind": "project-build",
+      "file": "descriptor-traversal.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "descriptor-shell",
+      "kind": "project-build",
+      "file": "descriptor-shell.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-success-no-publish",
+      "kind": "project-build-result",
+      "file": "result-success-no-publish.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-install-with-build",
+      "kind": "project-build-result",
+      "file": "result-install-with-build.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-absent-directory-members",
+      "kind": "project-build-result",
+      "file": "result-absent-directory-members.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-false-complete",
+      "kind": "project-build-result",
+      "file": "result-false-complete.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-uncertain-success",
+      "kind": "project-build-result",
+      "file": "result-uncertain-success.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-published-cancelled",
+      "kind": "project-build-result",
+      "file": "result-published-cancelled.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-stages-missing",
+      "kind": "project-build-result",
+      "file": "result-stages-missing.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "result-installed-cancelled",
+      "kind": "project-build-result",
+      "file": "result-installed-cancelled.json",
+      "expected": "invalid",
+      "code": "FMT004"
+    },
+    {
+      "id": "descriptor-positive",
+      "kind": "project-build",
+      "file": "descriptor-positive.json",
+      "expected": "valid"
+    },
+    {
+      "id": "result-invalid-request-positive",
+      "kind": "project-build-result",
+      "file": "result-invalid-request-positive.json",
+      "expected": "valid"
+    },
+    {
+      "id": "result-structural-positive",
+      "kind": "project-build-result",
+      "file": "result-structural-positive.json",
+      "expected": "valid"
+    },
+    {
+      "id": "result-published-uncertain-positive",
+      "kind": "project-build-result",
+      "file": "result-published-uncertain-positive.json",
+      "expected": "valid"
+    },
+    {
+      "id": "result-publication-unknown-positive",
+      "kind": "project-build-result",
+      "file": "result-publication-unknown-positive.json",
+      "expected": "valid"
+    },
+    {
+      "id": "result-installed-tail-error-positive",
+      "kind": "project-build-result",
+      "file": "result-installed-tail-error-positive.json",
+      "expected": "valid"
+    }
+  ],
+  "proposal_sha256": "ebd8e133eaac9898db37fb3ad4789e46b972d0e3a8adf46da95afba0e96f6b3e"
+}

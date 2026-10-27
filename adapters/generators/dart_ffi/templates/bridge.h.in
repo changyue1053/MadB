@@ -1,0 +1,13 @@
+/* Generated public-C adapter. Native ownership remains in the original SDK. */
+#ifndef MADB_DART_SYNC_BRIDGE_H
+#define MADB_DART_SYNC_BRIDGE_H
+#include "madb_rust_client.h"
+const char *madb_dart_native_path(uint32_t which);
+MadbStatus madb_dart_bootstrap(uint8_t *out_identity);
+void madb_dart_create_checked(MadbCheckedEngineCreateResult *out);
+MadbStatus madb_dart_checksum(MadbHandle handle, const uint8_t *data, uint64_t length,
+                            uint64_t *out, MadbError *error);
+MadbStatus madb_dart_request_close(MadbHandle handle, MadbError *error);
+MadbStatus madb_dart_await_closed(MadbHandle handle, uint32_t timeout_ms, MadbError *error);
+MadbStatus madb_dart_release_handle(MadbHandle handle, MadbError *error);
+#endif

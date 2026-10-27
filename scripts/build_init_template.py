@@ -70,7 +70,7 @@ def products(bundle=BUNDLE):
 def bundles():
     # Explicit supported versions prevent an unrelated folder from becoming an
     # installed artifact merely because it appeared beside authored sources.
-    return [BUNDLE, BUNDLE / "versions/0.1.1"]
+    return [BUNDLE, BUNDLE / "versions/0.1.1", BUNDLE / "versions/0.2.0"]
 
 
 def main():

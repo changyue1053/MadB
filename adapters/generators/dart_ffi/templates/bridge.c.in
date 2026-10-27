@@ -1,0 +1,22 @@
+/* Generated from the admitted six semantic roles; all calls use one SDK image. */
+#include "bridge.h"
+#include <dlfcn.h>
+#include <stddef.h>
+const char *madb_dart_native_path(uint32_t which) {
+    const void *symbols[] = {
+        (const void *)@bootstrap@, (const void *)@create@,
+        (const void *)@checksum@, (const void *)@request_close@,
+        (const void *)@await_closed@, (const void *)@release_handle@
+    };
+    Dl_info info;
+    if (which >= sizeof(symbols)/sizeof(symbols[0]) || dladdr(symbols[which], &info) == 0) return NULL;
+    return info.dli_fname;
+}
+MadbStatus madb_dart_bootstrap(uint8_t *out) { return @bootstrap@(1, out, 64); }
+void madb_dart_create_checked(MadbCheckedEngineCreateResult *out) { *out = madb_engine_create_checked(); }
+MadbStatus madb_dart_checksum(MadbHandle handle, const uint8_t *data, uint64_t length, uint64_t *out, MadbError *error) {
+    return @checksum@(handle, data, length, out, error);
+}
+MadbStatus madb_dart_request_close(MadbHandle handle, MadbError *error) { return @request_close@(handle, error); }
+MadbStatus madb_dart_await_closed(MadbHandle handle, uint32_t timeout_ms, MadbError *error) { return @await_closed@(handle, timeout_ms, error); }
+MadbStatus madb_dart_release_handle(MadbHandle handle, MadbError *error) { return @release_handle@(handle, error); }

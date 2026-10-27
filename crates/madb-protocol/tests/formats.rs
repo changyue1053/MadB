@@ -20,6 +20,14 @@ fn shared_format_vectors_cover_every_payload() {
     let explain = fixture("explain-format-vectors.json");
     let doctor = fixture("doctor-format-vectors.json");
     let init = fixture("../project-init/format-vectors.json");
+    let project_build = fixture("../project-build/format-vectors.json");
+    let mut project_build_vectors = project_build["vectors"].as_array().unwrap().clone();
+    for vector in &mut project_build_vectors {
+        vector["file"] = Value::String(format!(
+            "../project-build/{}",
+            vector["file"].as_str().unwrap()
+        ));
+    }
     let mut init_vectors = init["vectors"].as_array().unwrap().clone();
     for vector in &mut init_vectors {
         vector["file"] = Value::String(format!(
@@ -36,6 +44,7 @@ fn shared_format_vectors_cover_every_payload() {
         .chain(explain["vectors"].as_array().unwrap())
         .chain(doctor["vectors"].as_array().unwrap())
         .chain(init_vectors.iter())
+        .chain(project_build_vectors.iter())
     {
         let kind = DocumentKind::ALL
             .into_iter()

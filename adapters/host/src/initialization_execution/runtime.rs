@@ -16,6 +16,28 @@ pub fn materialize(execution: &FinalProjectExecution) -> Result<()> {
     Ok(())
 }
 
+pub fn materialize_project(execution: &FinalProjectExecution) -> Result<()> {
+    materialize(execution)?;
+    const SOURCE: &[u8] = include_bytes!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../adapters/toolchains/rust_c/project_build_values.py"
+    ));
+    if Digest::of_bytes(SOURCE).as_str()
+        != "sha256:3e1ca6e822e09b2636f05dcc0462cb16f35f8d5cb5d37dce0d4f9c19134afb36"
+    {
+        return Err(super::invalid(
+            "runtime",
+            "compiled project helper differs from its reviewed source pin",
+        ));
+    }
+    execution.write_native_new(
+        &LogicalPath::new("adapters/toolchains/rust_c/project_build_values.py")
+            .expect("fixed path"),
+        SOURCE,
+    )?;
+    Ok(())
+}
+
 const SOURCES: &[(&str, &[u8], &str)] = &[
     (
         "LICENSE",

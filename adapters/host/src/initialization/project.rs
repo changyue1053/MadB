@@ -54,12 +54,31 @@ impl LocalProjectCreator {
         for file in project.files() {
             fs::add_parents(file.path().as_str(), &mut directories);
         }
-        self.commit_files(project.files(), directories, hook)
+        let executable_wrapper = project.request().selected().template().version
+            == madb_app::use_cases::initialize::Version::parse("0.2.0").expect("fixed version")
+            && project
+                .request()
+                .selected()
+                .template()
+                .task_roots
+                .iter()
+                .any(|t| t.recipe.as_str() == madb_app::use_cases::project_build::RECIPE);
+        self.commit_files_mode(project.files(), directories, executable_wrapper, hook)
     }
+    #[cfg(test)]
     fn commit_files(
         &mut self,
         files: &[InitialFile],
         directories: BTreeSet<String>,
+        hook: impl FnMut(InitializationEvent<'_>) -> Result<()>,
+    ) -> Result<HostCommitObservation> {
+        self.commit_files_mode(files, directories, false, hook)
+    }
+    fn commit_files_mode(
+        &mut self,
+        files: &[InitialFile],
+        directories: BTreeSet<String>,
+        executable_wrapper: bool,
         mut hook: impl FnMut(InitializationEvent<'_>) -> Result<()>,
     ) -> Result<HostCommitObservation> {
         let permit = self.control.begin()?;
@@ -75,7 +94,11 @@ impl LocalProjectCreator {
             for file in files {
                 check_cancelled(&permit, &mut self.cancellation_observed)?;
                 if let Some(bytes) = file.bytes() {
-                    stage.write(file.path().as_str(), bytes)?;
+                    if executable_wrapper && file.path().as_str() == "madbw" {
+                        stage.write_project_wrapper(bytes)?;
+                    } else {
+                        stage.write(file.path().as_str(), bytes)?;
+                    }
                     event(&mut hook, InitializationPoint::FileWritten, &stage)?;
                 }
             }

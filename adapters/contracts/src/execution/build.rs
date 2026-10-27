@@ -72,10 +72,22 @@ pub fn assemble_build_files(
     let profile = adapter.decode(DocumentKind::Profile, profile)?;
     let policy = crate::build_completion_policy(&profile).map_err(format_error)?;
     let profile_digest = crate::profile_digest(&profile).map_err(format_error)?;
+    assemble_build_files_checked(tasks, results, &profile_digest, policy)
+}
+
+/// Common result assembly after an explicit adapter checked its profile and
+/// context. Profile/2 uses this seam without re-encoding a legacy profile.
+pub(crate) fn assemble_build_files_checked(
+    tasks: &[Vec<u8>],
+    results: &BTreeMap<Id, ValidatedTaskResult>,
+    profile_digest: &str,
+    policy: madb_model::build::BuildCompletionPolicy,
+) -> Result<BuildArtifacts> {
+    let adapter = SnapshotAdapter::new()?;
     let mut documents = BTreeMap::new();
     for bytes in tasks {
         let task = adapter.decode(DocumentKind::BuildTask, bytes)?;
-        if task.value()["selector"]["profile_digest"].as_str() != Some(profile_digest.as_str()) {
+        if task.value()["selector"]["profile_digest"].as_str() != Some(profile_digest) {
             return Err(invalid(
                 "EXECUTION002",
                 "profile_digest",

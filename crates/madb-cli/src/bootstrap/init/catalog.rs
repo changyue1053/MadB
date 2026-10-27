@@ -41,7 +41,14 @@ impl TrustedTemplateRecord {
             manifest,
             source: BundledSource::Bundled,
             recipes: vec![ComponentIdentity {
-                id: Id::new(VALUES_RECIPE).expect("fixed recipe id"),
+                id: Id::new(
+                    if version == Version::parse("0.2.0").expect("fixed version") {
+                        madb_app::use_cases::project_build::RECIPE
+                    } else {
+                        VALUES_RECIPE
+                    },
+                )
+                .expect("fixed recipe id"),
                 version: tool.version.clone(),
                 sha256: tool.sha256.clone(),
             }],
@@ -85,6 +92,9 @@ pub(crate) fn installed(
     tool: &ComponentIdentity,
     selector: Option<&str>,
 ) -> Result<TrustedTemplateRecord> {
+    if selector == Some("org.madb.template/rust-c-sdk@0.2.0") {
+        return installed_project(tool);
+    }
     if selector == Some("org.madb.template/rust-c-sdk@0.1.0") {
         return installed_legacy(tool);
     }
@@ -145,6 +155,36 @@ fn installed_legacy(tool: &ComponentIdentity) -> Result<TrustedTemplateRecord> {
                 size: 8_850,
             },
             schema: Id::new("madb.project-template/1").expect("fixed template schema"),
+        },
+    )
+}
+
+fn installed_project(tool: &ComponentIdentity) -> Result<TrustedTemplateRecord> {
+    TrustedTemplateRecord::bundled(
+        tool,
+        include_bytes!(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../templates/projects/rust-c-sdk-values/versions/0.2.0/package.tar"
+        )),
+        Version::parse("0.2.0").expect("fixed version"),
+        FileIdentity {
+            path: path("templates/projects/rust-c-sdk-values/versions/0.2.0/package.tar"),
+            sha256: Digest::new(
+                "sha256:8c82b7e7322bb79afd3f227ce5ef58a0aff97f5127078c8a4000c36c8ec98701",
+            )
+            .expect("fixed hash"),
+            size: 52224,
+        },
+        FileReference {
+            file: FileIdentity {
+                path: path("meta/template.json"),
+                sha256: Digest::new(
+                    "sha256:f72071092f208abc3e298cc00f973cd9182eb93539a3175abaa7aad228736b4c",
+                )
+                .expect("fixed hash"),
+                size: 14435,
+            },
+            schema: Id::new("madb.project-template/1").expect("fixed schema"),
         },
     )
 }

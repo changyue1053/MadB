@@ -1,0 +1,207 @@
+{
+  "schema": "madb.project-build-result/1",
+  "operation": "build",
+  "root": {
+    "path": "/example/project",
+    "redacted": false
+  },
+  "recipe": "madb.project.rust-c-values@1",
+  "request_digest": "sha256:e688fdeb1d0166fb024db8c95078a5cf3a7b6232c62324a0e75ab84751bc49fa",
+  "tool": {
+    "id": "org.madb/cli",
+    "version": "0.1.0",
+    "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 1,
+    "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "artifact_root": {
+    "path": "/example/project/.madb/build/attempts/design",
+    "redacted": false
+  },
+  "inputs": {
+    "files": [
+      {
+        "source": ".madb/project-build.json",
+        "file": {
+          "path": "inputs/.madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        }
+      },
+      {
+        "source": ".madb/project-origin.json",
+        "file": {
+          "path": "inputs/.madb/project-origin.json",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      },
+      {
+        "source": ".madb/template-package.tar",
+        "file": {
+          "path": "inputs/.madb/template-package.tar",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      },
+      {
+        "source": ".madb/template-input/profile.json",
+        "file": {
+          "path": "inputs/.madb/template-input/profile.json",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      },
+      {
+        "source": ".madb/template-input/toolchain.json",
+        "file": {
+          "path": "inputs/.madb/template-input/toolchain.json",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      },
+      {
+        "source": "consumer/main.c",
+        "file": {
+          "path": "inputs/consumer/main.c",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      },
+      {
+        "source": "rust/src/lib.rs",
+        "file": {
+          "path": "inputs/rust/src/lib.rs",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        }
+      }
+    ],
+    "directories": [
+      {
+        "path": "consumer/include",
+        "present": false,
+        "members": []
+      },
+      {
+        "path": "rust/src",
+        "present": true,
+        "members": [
+          {
+            "path": "lib.rs",
+            "kind": "file"
+          }
+        ]
+      }
+    ]
+  },
+  "stages": [
+    {
+      "id": "capture",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "preflight",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "prepare",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "metadata",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "generate",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "build",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "package",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "consumer-link",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    },
+    {
+      "id": "publish",
+      "status": "passed",
+      "diagnostics": [],
+      "attachments": [],
+      "blocked_by": []
+    }
+  ],
+  "result": {
+    "identity": "sha256:32ae4fead50bcbd78380cc59707bb6c4eab2fb8e419ed0ba8beb6e193c328811",
+    "snapshot_digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599",
+    "candidate": {
+      "root": "native/candidate",
+      "manifest": {
+        "path": "native/candidate/candidate.json",
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "size": 1
+      }
+    },
+    "consumer": {
+      "path": "consumer/madb_demo",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size": 1
+    },
+    "outputs": [
+      {
+        "path": "native/candidate/candidate.json",
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "size": 1
+      },
+      {
+        "path": "native/candidate/include/example.h",
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "size": 1
+      },
+      {
+        "path": "consumer/madb_demo",
+        "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "size": 1
+      }
+    ]
+  },
+  "installed_tool": null,
+  "previous": null,
+  "published": true,
+  "publication_durability": "confirmed",
+  "termination": "cancelled",
+  "exit_code": 130,
+  "evidence_root": null,
+  "logs": [],
+  "diagnostics": [],
+  "recovery": []
+}

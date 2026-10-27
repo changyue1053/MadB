@@ -25,6 +25,52 @@ pub(super) fn validate_package(
     symbols: &BTreeSet<String>,
     materialized: &[FileReference],
 ) -> Result<Option<FileReference>> {
+    let context = PackageContext {
+        profile: &prepared.profile,
+        lock: &prepared.lock,
+        policy: crate::build_completion_policy(&prepared.profile)
+            .map_err(crate::query::format_error)?,
+    };
+    let outputs = validate_package_files(
+        adapter,
+        context,
+        request,
+        provided,
+        input,
+        symbols,
+        materialized,
+    )?;
+    let v = outputs.value();
+    // Anchor preservation to bytes in the Source input digest: a new reader
+    // label can still repackage the same pinned Source batch. This preserves an
+    // existing table, without certifying another reader or requiring a table in
+    // historical Source batches that never generated one.
+    let responsibilities = if uses_first_route_sdk(prepared, provided)? {
+        references(&v["files"])?
+            .into_iter()
+            .find(|file| file.path.as_str() == "responsibilities.md")
+    } else {
+        None
+    };
+    Ok(responsibilities)
+}
+
+/// Profile versions are admitted by their separate checked constructors.
+/// This shared validator consumes their common tool/lineage values only.
+pub(crate) struct PackageContext<'a> {
+    pub profile: &'a Document,
+    pub lock: &'a Document,
+    pub policy: madb_model::build::BuildCompletionPolicy,
+}
+pub(crate) fn validate_package_files(
+    adapter: &SnapshotAdapter,
+    context: PackageContext<'_>,
+    request: &Document,
+    provided: &FrozenInputs,
+    input: &Digest,
+    symbols: &BTreeSet<String>,
+    materialized: &[FileReference],
+) -> Result<Document> {
     let q = request.value();
     reference_schema(&q["output_set"], DocumentKind::OutputSet)?;
     let output_ref = reference(&q["output_set"])?;
@@ -100,7 +146,7 @@ pub(super) fn validate_package(
             digest: digest(&e["tool"]["sha256"])?,
         };
         // Evidence carries tool identity, not a second executable path.
-        let selected = prepared.profile.value()["tools"]
+        let selected = context.profile.value()["tools"]
             .as_array()
             .expect("validated")
             .iter()
@@ -110,7 +156,7 @@ pub(super) fn validate_package(
                     && item["sha256"] == e["tool"]["sha256"]
             });
         if selected.is_none_or(|tool| {
-            !prepared.lock.value()["tools"]
+            !context.lock.value()["tools"]
                 .as_array()
                 .expect("validated")
                 .contains(tool)
@@ -126,9 +172,7 @@ pub(super) fn validate_package(
             require_file(provided, &output)?;
         }
     }
-    let policy =
-        crate::build_completion_policy(&prepared.profile).map_err(crate::query::format_error)?;
-    if !policy.is_complete(phases) {
+    if !context.policy.is_complete(phases) {
         return Err(invalid(
             "EXECUTION003",
             "build_evidence",
@@ -139,18 +183,7 @@ pub(super) fn validate_package(
         declared_file(materialized, &dependency)?;
         require_file(provided, &dependency)?;
     }
-    // Anchor preservation to bytes in the Source input digest: a new reader
-    // label can still repackage the same pinned Source batch. This preserves an
-    // existing table, without certifying another reader or requiring a table in
-    // historical Source batches that never generated one.
-    let responsibilities = if uses_first_route_sdk(prepared, provided)? {
-        references(&v["files"])?
-            .into_iter()
-            .find(|file| file.path.as_str() == "responsibilities.md")
-    } else {
-        None
-    };
-    Ok(responsibilities)
+    Ok(outputs)
 }
 
 fn uses_first_route_sdk(prepared: &PreparedQuery, provided: &FrozenInputs) -> Result<bool> {

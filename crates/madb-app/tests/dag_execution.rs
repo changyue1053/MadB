@@ -1341,3 +1341,197 @@ fn accepted_external_snapshot_detects_change_after_graph_before_publication() {
     source.put("src/seed", b"y");
     assert_eq!(code(&inputs.verify(&source).unwrap_err()), "INPUT004");
 }
+
+#[test]
+fn graph_sequence_binds_later_input_from_real_result_and_keeps_one_admission() {
+    use madb_app::dag::GraphSequence;
+    let source = Workspace::source();
+    let control = GraphControl::default();
+    let mut sequence = GraphSequence::begin(&control).unwrap();
+    let mut executor = Executor::new(transform);
+    let first = sequence
+        .run(
+            &graph(vec![recipe(
+                "first",
+                &[("src/seed", b"x")],
+                &[],
+                b"A",
+                b"xA",
+            )]),
+            &source,
+            &mut executor,
+        )
+        .unwrap();
+    assert_eq!(first.status, GraphStatus::Validated);
+    let actual = output(&first, "first");
+    assert_eq!(actual, b"xA");
+    let next_source = Workspace::default();
+    next_source.put("out/first", actual);
+    let second = sequence
+        .run(
+            &graph(vec![recipe(
+                "second",
+                &[("out/first", actual)],
+                &[],
+                b"B",
+                b"xAB",
+            )]),
+            &next_source,
+            &mut executor,
+        )
+        .unwrap();
+    assert_eq!(output(&second, "second"), b"xAB");
+    assert!(executor.limits[1] < executor.limits[0]);
+    assert_eq!(executor.owners.get(), 2);
+    assert_eq!(sequence.finish(), GraphStatus::Validated);
+    assert_eq!(control.cancel(), CancelDecision::AlreadyFinished);
+    assert!(GraphSequence::begin(&control).is_err());
+    drop((first, second));
+    assert_eq!(executor.owners.get(), 0);
+}
+
+#[test]
+fn graph_sequence_cancellation_between_binding_steps_cannot_reopen_admission() {
+    use madb_app::dag::GraphSequence;
+    for cancel_before_first in [false, true] {
+        let source = Workspace::source();
+        let control = GraphControl::default();
+        let mut sequence = GraphSequence::begin(&control).unwrap();
+        let mut executor = Executor::new(transform);
+        if !cancel_before_first {
+            assert_eq!(
+                sequence
+                    .run(&graph(vec![leaf("first")]), &source, &mut executor)
+                    .unwrap()
+                    .status,
+                GraphStatus::Validated
+            );
+        }
+        let read_count = source.reads.borrow().len();
+        assert_eq!(control.cancel(), CancelDecision::Requested);
+        let mut cancelled = sequence
+            .run(&graph(vec![leaf("second")]), &source, &mut executor)
+            .unwrap();
+        assert_eq!(cancelled.status, GraphStatus::Cancelled);
+        assert_drained(&mut cancelled);
+        assert_eq!(source.reads.borrow().len(), read_count);
+        assert_eq!(executor.calls.len(), usize::from(!cancel_before_first));
+        assert_eq!(sequence.finish(), GraphStatus::Cancelled);
+    }
+}
+
+#[test]
+fn graph_sequence_failure_stays_closed_even_if_caller_ignores_failed_run() {
+    use madb_app::dag::GraphSequence;
+    let source = Workspace::source();
+    let control = GraphControl::default();
+    let mut sequence = GraphSequence::begin(&control).unwrap();
+    let mut executor = Executor::new(transform);
+    let mut bad = leaf("bad");
+    bad.invalid_payload = true;
+    let first = sequence
+        .run(&graph(vec![bad]), &source, &mut executor)
+        .unwrap();
+    assert_eq!(first.status, GraphStatus::Failed);
+    let read_count = source.reads.borrow().len();
+    assert!(
+        sequence
+            .run(&graph(vec![leaf("later")]), &source, &mut executor)
+            .is_err()
+    );
+    assert_eq!(source.reads.borrow().len(), read_count);
+    assert_eq!(executor.calls.len(), 1);
+    assert_eq!(sequence.finish(), GraphStatus::Failed);
+}
+
+#[test]
+fn graph_sequence_caught_executor_panic_cancels_child_and_remains_failed() {
+    use madb_app::dag::GraphSequence;
+    let source = Workspace::source();
+    let control = GraphControl::default();
+    let mut sequence = GraphSequence::begin(&control).unwrap();
+    let child = RefCell::new(None);
+    let mut executor = Executor::new(
+        |_: &Recipe,
+         _: &FrozenInputs,
+         c: &ExecutionControl,
+         _: usize|
+         -> Result<ValidatedTaskResult> {
+            child.replace(Some(c.clone()));
+            panic!("caught sequence fixture panic")
+        },
+    );
+    assert!(
+        catch_unwind(AssertUnwindSafe(|| sequence.run(
+            &graph(vec![leaf("first")]),
+            &source,
+            &mut executor
+        )))
+        .is_err()
+    );
+    assert_eq!(
+        child.borrow().as_ref().unwrap().cancel(),
+        CancelDecision::AlreadyRequested
+    );
+    assert_eq!(executor.owners.get(), 0);
+    assert!(
+        sequence
+            .run(&graph(vec![leaf("second")]), &source, &mut executor)
+            .is_err()
+    );
+    assert_eq!(sequence.finish(), GraphStatus::Failed);
+}
+
+#[test]
+fn graph_sequence_rejects_duplicate_or_excess_nodes_before_capture() {
+    use madb_app::dag::GraphSequence;
+    for duplicate in [false, true] {
+        let source = Workspace::source();
+        let control = GraphControl::default();
+        let mut sequence = GraphSequence::begin(&control).unwrap();
+        let mut executor = Executor::new(transform);
+        let count = if duplicate { 1 } else { 64 };
+        for i in 0..count {
+            assert_eq!(
+                sequence
+                    .run(
+                        &graph(vec![leaf(&format!("node-{i}"))]),
+                        &source,
+                        &mut executor
+                    )
+                    .unwrap()
+                    .status,
+                GraphStatus::Validated
+            );
+        }
+        let reads = source.reads.borrow().len();
+        let next = if duplicate { "node-0" } else { "overflow" };
+        assert!(
+            sequence
+                .run(&graph(vec![leaf(next)]), &source, &mut executor)
+                .is_err()
+        );
+        assert_eq!(source.reads.borrow().len(), reads);
+        assert_eq!(executor.calls.len(), count);
+        assert_eq!(sequence.finish(), GraphStatus::Failed);
+    }
+}
+
+#[test]
+fn graph_sequence_final_cancel_and_drop_do_not_publish_acceptance() {
+    use madb_app::dag::GraphSequence;
+    let source = Workspace::source();
+    let control = GraphControl::default();
+    let mut sequence = GraphSequence::begin(&control).unwrap();
+    let mut executor = Executor::new(transform);
+    let run = sequence
+        .run(&graph(vec![leaf("first")]), &source, &mut executor)
+        .unwrap();
+    assert_eq!(run.status, GraphStatus::Validated);
+    assert_eq!(control.cancel(), CancelDecision::Requested);
+    assert_eq!(sequence.finish(), GraphStatus::Cancelled);
+    let other = GraphControl::default();
+    drop(GraphSequence::begin(&other).unwrap());
+    assert!(GraphSequence::begin(&other).is_err());
+    assert_eq!(other.cancel(), CancelDecision::AlreadyFinished);
+}

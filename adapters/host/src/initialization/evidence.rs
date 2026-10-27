@@ -186,6 +186,27 @@ impl InitEvidencePort for LocalInitEvidence {
         result_bytes: &[u8],
         required_files: &[FileIdentity],
     ) -> Result<SavedEvidenceObservation> {
+        self.save_named_result("init-result.json", root, result_bytes, required_files)
+    }
+}
+impl LocalInitEvidence {
+    /// Fixed project result path; retains the initializer's complete reread,
+    /// non-overwrite, and post-publication durability checks.
+    pub fn save_project_result(
+        &mut self,
+        root: &AbsolutePath,
+        result_bytes: &[u8],
+        required_files: &[FileIdentity],
+    ) -> Result<SavedEvidenceObservation> {
+        self.save_named_result("project-result.json", root, result_bytes, required_files)
+    }
+    fn save_named_result(
+        &mut self,
+        result_name: &str,
+        root: &AbsolutePath,
+        result_bytes: &[u8],
+        required_files: &[FileIdentity],
+    ) -> Result<SavedEvidenceObservation> {
         if self.saved || root != self.root() {
             return Err(conflict(
                 "evidence",
@@ -196,7 +217,7 @@ impl InitEvidencePort for LocalInitEvidence {
         let mut seen = BTreeSet::new();
         for expected in required_files {
             let path = expected.path.as_str();
-            if !seen.insert(path) || path.eq_ignore_ascii_case("init-result.json") {
+            if !seen.insert(path) || path.eq_ignore_ascii_case(result_name) {
                 return Err(failure(
                     ErrorKind::InvalidInput,
                     path,
@@ -222,11 +243,11 @@ impl InitEvidencePort for LocalInitEvidence {
         let all: Vec<_> = self.stored.values().cloned().collect();
         fs::verify_tree(&self.directory, &all, &self.directories)?;
         let result = FileReference {
-            path: fs::logical("init-result.json")?,
+            path: fs::logical(result_name)?,
             digest: Digest::of_bytes(result_bytes),
             size: result_bytes.len() as u64,
         };
-        write_new(&self.directory, "init-result.json", result_bytes)?;
+        write_new(&self.directory, result_name, result_bytes)?;
         self.saved = true; // Even a subsequent verification failure never retries/overwrites.
         let mut observed = Vec::new();
         for expected in required_files {

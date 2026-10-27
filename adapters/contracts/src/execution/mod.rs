@@ -3,7 +3,7 @@ mod artifact;
 pub(crate) use artifact::validate_sources;
 mod build;
 mod dependencies;
-mod files;
+pub(crate) mod files;
 mod package;
 mod spec;
 
@@ -79,3 +79,7 @@ fn digest(value: &Value) -> Result<Digest> {
 fn invalid(code: &'static str, subject: &str, message: impl Into<String>) -> QueryError {
     QueryError::new(ErrorKind::InvalidInput, code, subject, message)
 }
+
+pub(crate) use build::assemble_build_files_checked;
+pub(crate) use dependencies::bind_tool_values;
+pub(crate) use package::{PackageContext, validate_package_files};

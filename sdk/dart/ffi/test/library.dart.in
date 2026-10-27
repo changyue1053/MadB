@@ -1,0 +1,23 @@
+// Test composition only; not the generated public business facade.
+import 'dart:convert';
+import 'dart:ffi';
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:typed_data';
+import 'package:crypto/crypto.dart';
+import 'package:ffi/ffi.dart' as ffi;
+
+part 'src/madb_runtime.dart';
+part 'src/madb_value_runtime.dart';
+part 'src/test_calls.dart';
+part 'src/checks.dart';
+
+Future<void> main(List<String> arguments) async {
+  final mode = arguments[0];
+  if (mode == 'policy') {
+    checkPolicy();
+    print(jsonEncode({'scope': 'Dart runtime policy only; injected call records', 'result': 'passed'}));
+  } else {
+    await checkNative(mode, arguments[1], arguments[2], arguments[3], arguments[4]);
+  }
+}

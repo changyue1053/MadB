@@ -1,0 +1,513 @@
+{
+  "scope": "design-only exact projection and known SHA-256; not target evidence",
+  "vectors": [
+    {
+      "id": "request-build",
+      "domain": "madb.project-build-request/1",
+      "projection": {
+        "operation": "build",
+        "root": "/example/project",
+        "frozen": true,
+        "descriptor": {
+          "path": ".madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        }
+      },
+      "canonical_projection": "{\"descriptor\":{\"path\":\".madb/project-build.json\",\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237},\"frozen\":true,\"operation\":\"build\",\"root\":\"/example/project\"}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d726571756573742f310a7b2264657363726970746f72223a7b2270617468223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e222c22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233377d2c2266726f7a656e223a747275652c226f7065726174696f6e223a226275696c64222c22726f6f74223a222f6578616d706c652f70726f6a656374227d",
+      "preimage_size": 234,
+      "digest": "sha256:e688fdeb1d0166fb024db8c95078a5cf3a7b6232c62324a0e75ab84751bc49fa"
+    },
+    {
+      "id": "request-install",
+      "domain": "madb.project-build-request/1",
+      "projection": {
+        "operation": "install-tool",
+        "root": "/example/project",
+        "frozen": true,
+        "descriptor": {
+          "path": ".madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        }
+      },
+      "canonical_projection": "{\"descriptor\":{\"path\":\".madb/project-build.json\",\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237},\"frozen\":true,\"operation\":\"install-tool\",\"root\":\"/example/project\"}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d726571756573742f310a7b2264657363726970746f72223a7b2270617468223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e222c22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233377d2c2266726f7a656e223a747275652c226f7065726174696f6e223a22696e7374616c6c2d746f6f6c222c22726f6f74223a222f6578616d706c652f70726f6a656374227d",
+      "preimage_size": 241,
+      "digest": "sha256:2246d8336afe22a51145d44aff5e1f8a1be2e0c33b163bdf6a1cd6805396bf9f"
+    },
+    {
+      "id": "input-base",
+      "domain": "madb.project-build-input/1",
+      "projection": {
+        "descriptor": {
+          "path": ".madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        },
+        "files": [
+          {
+            "source": ".madb/project-build.json",
+            "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+            "size": 1237
+          },
+          {
+            "source": ".madb/project-origin.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/profile.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/toolchain.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-package.tar",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "consumer/main.c",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "rust/src/lib.rs",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ],
+        "directories": [
+          {
+            "path": "consumer/include",
+            "present": false,
+            "members": []
+          },
+          {
+            "path": "rust/src",
+            "present": true,
+            "members": [
+              {
+                "path": "lib.rs",
+                "kind": "file"
+              }
+            ]
+          }
+        ]
+      },
+      "canonical_projection": "{\"descriptor\":{\"path\":\".madb/project-build.json\",\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237},\"directories\":[{\"members\":[],\"path\":\"consumer/include\",\"present\":false},{\"members\":[{\"kind\":\"file\",\"path\":\"lib.rs\"}],\"path\":\"rust/src\",\"present\":true}],\"files\":[{\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237,\"source\":\".madb/project-build.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/project-origin.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/profile.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/toolchain.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-package.tar\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"consumer/main.c\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"rust/src/lib.rs\"}]}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d696e7075742f310a7b2264657363726970746f72223a7b2270617468223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e222c22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233377d2c226469726563746f72696573223a5b7b226d656d62657273223a5b5d2c2270617468223a22636f6e73756d65722f696e636c756465222c2270726573656e74223a66616c73657d2c7b226d656d62657273223a5b7b226b696e64223a2266696c65222c2270617468223a226c69622e7273227d5d2c2270617468223a22727573742f737263222c2270726573656e74223a747275657d5d2c2266696c6573223a5b7b22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233372c22736f75726365223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f70726f6a6563742d6f726967696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f70726f66696c652e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f746f6f6c636861696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d7061636b6167652e746172227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22636f6e73756d65722f6d61696e2e63227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22727573742f7372632f6c69622e7273227d5d7d",
+      "preimage_size": 1252,
+      "digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599"
+    },
+    {
+      "id": "input-author-change",
+      "domain": "madb.project-build-input/1",
+      "projection": {
+        "descriptor": {
+          "path": ".madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        },
+        "files": [
+          {
+            "source": ".madb/project-build.json",
+            "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+            "size": 1237
+          },
+          {
+            "source": ".madb/project-origin.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/profile.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/toolchain.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-package.tar",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "consumer/main.c",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "rust/src/lib.rs",
+            "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "size": 1
+          }
+        ],
+        "directories": [
+          {
+            "path": "consumer/include",
+            "present": false,
+            "members": []
+          },
+          {
+            "path": "rust/src",
+            "present": true,
+            "members": [
+              {
+                "path": "lib.rs",
+                "kind": "file"
+              }
+            ]
+          }
+        ]
+      },
+      "canonical_projection": "{\"descriptor\":{\"path\":\".madb/project-build.json\",\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237},\"directories\":[{\"members\":[],\"path\":\"consumer/include\",\"present\":false},{\"members\":[{\"kind\":\"file\",\"path\":\"lib.rs\"}],\"path\":\"rust/src\",\"present\":true}],\"files\":[{\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237,\"source\":\".madb/project-build.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/project-origin.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/profile.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/toolchain.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-package.tar\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"consumer/main.c\"},{\"sha256\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"size\":1,\"source\":\"rust/src/lib.rs\"}]}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d696e7075742f310a7b2264657363726970746f72223a7b2270617468223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e222c22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233377d2c226469726563746f72696573223a5b7b226d656d62657273223a5b5d2c2270617468223a22636f6e73756d65722f696e636c756465222c2270726573656e74223a66616c73657d2c7b226d656d62657273223a5b7b226b696e64223a2266696c65222c2270617468223a226c69622e7273227d5d2c2270617468223a22727573742f737263222c2270726573656e74223a747275657d5d2c2266696c6573223a5b7b22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233372c22736f75726365223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f70726f6a6563742d6f726967696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f70726f66696c652e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f746f6f6c636861696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d7061636b6167652e746172227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22636f6e73756d65722f6d61696e2e63227d2c7b22736861323536223a227368613235363a62626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c2273697a65223a312c22736f75726365223a22727573742f7372632f6c69622e7273227d5d7d",
+      "preimage_size": 1252,
+      "digest": "sha256:1dcffa01d6b698b788d3a9b0cc643f63780b82a6ad550d624711a4c37fa423ac"
+    },
+    {
+      "id": "input-empty-header-directory",
+      "domain": "madb.project-build-input/1",
+      "projection": {
+        "descriptor": {
+          "path": ".madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        },
+        "files": [
+          {
+            "source": ".madb/project-build.json",
+            "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+            "size": 1237
+          },
+          {
+            "source": ".madb/project-origin.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/profile.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/toolchain.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-package.tar",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "consumer/main.c",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "rust/src/lib.rs",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ],
+        "directories": [
+          {
+            "path": "consumer/include",
+            "present": true,
+            "members": []
+          },
+          {
+            "path": "rust/src",
+            "present": true,
+            "members": [
+              {
+                "path": "lib.rs",
+                "kind": "file"
+              }
+            ]
+          }
+        ]
+      },
+      "canonical_projection": "{\"descriptor\":{\"path\":\".madb/project-build.json\",\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237},\"directories\":[{\"members\":[],\"path\":\"consumer/include\",\"present\":true},{\"members\":[{\"kind\":\"file\",\"path\":\"lib.rs\"}],\"path\":\"rust/src\",\"present\":true}],\"files\":[{\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237,\"source\":\".madb/project-build.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/project-origin.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/profile.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/toolchain.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-package.tar\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"consumer/main.c\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"rust/src/lib.rs\"}]}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d696e7075742f310a7b2264657363726970746f72223a7b2270617468223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e222c22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233377d2c226469726563746f72696573223a5b7b226d656d62657273223a5b5d2c2270617468223a22636f6e73756d65722f696e636c756465222c2270726573656e74223a747275657d2c7b226d656d62657273223a5b7b226b696e64223a2266696c65222c2270617468223a226c69622e7273227d5d2c2270617468223a22727573742f737263222c2270726573656e74223a747275657d5d2c2266696c6573223a5b7b22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233372c22736f75726365223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f70726f6a6563742d6f726967696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f70726f66696c652e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f746f6f6c636861696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d7061636b6167652e746172227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22636f6e73756d65722f6d61696e2e63227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22727573742f7372632f6c69622e7273227d5d7d",
+      "preimage_size": 1251,
+      "digest": "sha256:d5c6a697b511002d9694d1153338abf13e2c81fa7de2cb89273128e0399d4fe1"
+    },
+    {
+      "id": "input-reordered",
+      "domain": "madb.project-build-input/1",
+      "projection": {
+        "descriptor": {
+          "path": ".madb/project-build.json",
+          "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+          "size": 1237
+        },
+        "files": [
+          {
+            "source": ".madb/project-build.json",
+            "sha256": "sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846",
+            "size": 1237
+          },
+          {
+            "source": ".madb/project-origin.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/profile.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-input/toolchain.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": ".madb/template-package.tar",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "consumer/main.c",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "source": "rust/src/lib.rs",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ],
+        "directories": [
+          {
+            "path": "consumer/include",
+            "present": false,
+            "members": []
+          },
+          {
+            "path": "rust/src",
+            "present": true,
+            "members": [
+              {
+                "path": "lib.rs",
+                "kind": "file"
+              }
+            ]
+          }
+        ]
+      },
+      "canonical_projection": "{\"descriptor\":{\"path\":\".madb/project-build.json\",\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237},\"directories\":[{\"members\":[],\"path\":\"consumer/include\",\"present\":false},{\"members\":[{\"kind\":\"file\",\"path\":\"lib.rs\"}],\"path\":\"rust/src\",\"present\":true}],\"files\":[{\"sha256\":\"sha256:cdacb97114c9b9ae72aee3660d9e93d3ba8c8f1773e574d17e030b6ec790f846\",\"size\":1237,\"source\":\".madb/project-build.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/project-origin.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/profile.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-input/toolchain.json\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\".madb/template-package.tar\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"consumer/main.c\"},{\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source\":\"rust/src/lib.rs\"}]}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d696e7075742f310a7b2264657363726970746f72223a7b2270617468223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e222c22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233377d2c226469726563746f72696573223a5b7b226d656d62657273223a5b5d2c2270617468223a22636f6e73756d65722f696e636c756465222c2270726573656e74223a66616c73657d2c7b226d656d62657273223a5b7b226b696e64223a2266696c65222c2270617468223a226c69622e7273227d5d2c2270617468223a22727573742f737263222c2270726573656e74223a747275657d5d2c2266696c6573223a5b7b22736861323536223a227368613235363a63646163623937313134633962396165373261656533363630643965393364336261386338663137373365353734643137653033306236656337393066383436222c2273697a65223a313233372c22736f75726365223a222e6d6164622f70726f6a6563742d6275696c642e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f70726f6a6563742d6f726967696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f70726f66696c652e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d696e7075742f746f6f6c636861696e2e6a736f6e227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a222e6d6164622f74656d706c6174652d7061636b6167652e746172227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22636f6e73756d65722f6d61696e2e63227d2c7b22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f75726365223a22727573742f7372632f6c69622e7273227d5d7d",
+      "preimage_size": 1252,
+      "digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599"
+    },
+    {
+      "id": "output-base",
+      "domain": "madb.project-build-output/1",
+      "projection": {
+        "recipe": "madb.project.rust-c-values@1",
+        "tool": {
+          "id": "org.madb/cli",
+          "version": "0.1.0",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1,
+          "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "snapshot_digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599",
+        "candidate": {
+          "root": "native/candidate",
+          "manifest": {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        },
+        "consumer": {
+          "path": "consumer/madb_demo",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        },
+        "outputs": [
+          {
+            "path": "consumer/madb_demo",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/include/example.h",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ]
+      },
+      "canonical_projection": "{\"candidate\":{\"manifest\":{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"root\":\"native/candidate\"},\"consumer\":{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"outputs\":[{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/include/example.h\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1}],\"recipe\":\"madb.project.rust-c-values@1\",\"snapshot_digest\":\"sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599\",\"tool\":{\"id\":\"org.madb/cli\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source_revision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"version\":\"0.1.0\"}}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d6f75747075742f310a7b2263616e646964617465223a7b226d616e6966657374223a7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c22726f6f74223a226e61746976652f63616e646964617465227d2c22636f6e73756d6572223a7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c226f757470757473223a5b7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f696e636c7564652f6578616d706c652e68222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d5d2c22726563697065223a226d6164622e70726f6a6563742e727573742d632d76616c7565734031222c22736e617073686f745f646967657374223a227368613235363a64383037633339343637303537663831363562303139376362636366643166373638383932613634376536613862666333666231643738616361363135353939222c22746f6f6c223a7b226964223a226f72672e6d6164622f636c69222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f757263655f7265766973696f6e223a2261616161616161616161616161616161616161616161616161616161616161616161616161616161222c2276657273696f6e223a22302e312e30227d7d",
+      "preimage_size": 1087,
+      "digest": "sha256:32ae4fead50bcbd78380cc59707bb6c4eab2fb8e419ed0ba8beb6e193c328811"
+    },
+    {
+      "id": "output-tool-change",
+      "domain": "madb.project-build-output/1",
+      "projection": {
+        "recipe": "madb.project.rust-c-values@1",
+        "tool": {
+          "id": "org.madb/cli",
+          "version": "0.1.0",
+          "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "size": 1,
+          "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "snapshot_digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599",
+        "candidate": {
+          "root": "native/candidate",
+          "manifest": {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        },
+        "consumer": {
+          "path": "consumer/madb_demo",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        },
+        "outputs": [
+          {
+            "path": "consumer/madb_demo",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/include/example.h",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ]
+      },
+      "canonical_projection": "{\"candidate\":{\"manifest\":{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"root\":\"native/candidate\"},\"consumer\":{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"outputs\":[{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/include/example.h\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1}],\"recipe\":\"madb.project.rust-c-values@1\",\"snapshot_digest\":\"sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599\",\"tool\":{\"id\":\"org.madb/cli\",\"sha256\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"size\":1,\"source_revision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"version\":\"0.1.0\"}}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d6f75747075742f310a7b2263616e646964617465223a7b226d616e6966657374223a7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c22726f6f74223a226e61746976652f63616e646964617465227d2c22636f6e73756d6572223a7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c226f757470757473223a5b7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f696e636c7564652f6578616d706c652e68222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d5d2c22726563697065223a226d6164622e70726f6a6563742e727573742d632d76616c7565734031222c22736e617073686f745f646967657374223a227368613235363a64383037633339343637303537663831363562303139376362636366643166373638383932613634376536613862666333666231643738616361363135353939222c22746f6f6c223a7b226964223a226f72672e6d6164622f636c69222c22736861323536223a227368613235363a62626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c2273697a65223a312c22736f757263655f7265766973696f6e223a2261616161616161616161616161616161616161616161616161616161616161616161616161616161222c2276657273696f6e223a22302e312e30227d7d",
+      "preimage_size": 1087,
+      "digest": "sha256:dbfbc11b5ec63920aed8375cc372be83bdd3cff4f74bf1d278fae79027babd0f"
+    },
+    {
+      "id": "output-bytes-change",
+      "domain": "madb.project-build-output/1",
+      "projection": {
+        "recipe": "madb.project.rust-c-values@1",
+        "tool": {
+          "id": "org.madb/cli",
+          "version": "0.1.0",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1,
+          "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "snapshot_digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599",
+        "candidate": {
+          "root": "native/candidate",
+          "manifest": {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        },
+        "consumer": {
+          "path": "consumer/madb_demo",
+          "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "size": 1
+        },
+        "outputs": [
+          {
+            "path": "consumer/madb_demo",
+            "sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/include/example.h",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ]
+      },
+      "canonical_projection": "{\"candidate\":{\"manifest\":{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"root\":\"native/candidate\"},\"consumer\":{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"size\":1},\"outputs\":[{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"size\":1},{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/include/example.h\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1}],\"recipe\":\"madb.project.rust-c-values@1\",\"snapshot_digest\":\"sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599\",\"tool\":{\"id\":\"org.madb/cli\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source_revision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"version\":\"0.1.0\"}}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d6f75747075742f310a7b2263616e646964617465223a7b226d616e6966657374223a7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c22726f6f74223a226e61746976652f63616e646964617465227d2c22636f6e73756d6572223a7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a62626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c2273697a65223a317d2c226f757470757473223a5b7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a62626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f696e636c7564652f6578616d706c652e68222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d5d2c22726563697065223a226d6164622e70726f6a6563742e727573742d632d76616c7565734031222c22736e617073686f745f646967657374223a227368613235363a64383037633339343637303537663831363562303139376362636366643166373638383932613634376536613862666333666231643738616361363135353939222c22746f6f6c223a7b226964223a226f72672e6d6164622f636c69222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f757263655f7265766973696f6e223a2261616161616161616161616161616161616161616161616161616161616161616161616161616161222c2276657273696f6e223a22302e312e30227d7d",
+      "preimage_size": 1087,
+      "digest": "sha256:12197b4ac7addc50a3eb36011b7470c5d1b2728d702629e5493680b3b3f8d41f"
+    },
+    {
+      "id": "output-reordered",
+      "domain": "madb.project-build-output/1",
+      "projection": {
+        "recipe": "madb.project.rust-c-values@1",
+        "tool": {
+          "id": "org.madb/cli",
+          "version": "0.1.0",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1,
+          "source_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        "snapshot_digest": "sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599",
+        "candidate": {
+          "root": "native/candidate",
+          "manifest": {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        },
+        "consumer": {
+          "path": "consumer/madb_demo",
+          "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "size": 1
+        },
+        "outputs": [
+          {
+            "path": "consumer/madb_demo",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/candidate.json",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          },
+          {
+            "path": "native/candidate/include/example.h",
+            "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "size": 1
+          }
+        ]
+      },
+      "canonical_projection": "{\"candidate\":{\"manifest\":{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"root\":\"native/candidate\"},\"consumer\":{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},\"outputs\":[{\"path\":\"consumer/madb_demo\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/candidate.json\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1},{\"path\":\"native/candidate/include/example.h\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1}],\"recipe\":\"madb.project.rust-c-values@1\",\"snapshot_digest\":\"sha256:d807c39467057f8165b0197cbccfd1f768892a647e6a8bfc3fb1d78aca615599\",\"tool\":{\"id\":\"org.madb/cli\",\"sha256\":\"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"size\":1,\"source_revision\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"version\":\"0.1.0\"}}",
+      "preimage_hex": "6d6164622e70726f6a6563742d6275696c642d6f75747075742f310a7b2263616e646964617465223a7b226d616e6966657374223a7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c22726f6f74223a226e61746976652f63616e646964617465227d2c22636f6e73756d6572223a7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c226f757470757473223a5b7b2270617468223a22636f6e73756d65722f6d6164625f64656d6f222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f63616e6469646174652e6a736f6e222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d2c7b2270617468223a226e61746976652f63616e6469646174652f696e636c7564652f6578616d706c652e68222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a317d5d2c22726563697065223a226d6164622e70726f6a6563742e727573742d632d76616c7565734031222c22736e617073686f745f646967657374223a227368613235363a64383037633339343637303537663831363562303139376362636366643166373638383932613634376536613862666333666231643738616361363135353939222c22746f6f6c223a7b226964223a226f72672e6d6164622f636c69222c22736861323536223a227368613235363a61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161222c2273697a65223a312c22736f757263655f7265766973696f6e223a2261616161616161616161616161616161616161616161616161616161616161616161616161616161222c2276657273696f6e223a22302e312e30227d7d",
+      "preimage_size": 1087,
+      "digest": "sha256:32ae4fead50bcbd78380cc59707bb6c4eab2fb8e419ed0ba8beb6e193c328811"
+    }
+  ]
+}

@@ -87,6 +87,14 @@ mod unsupported {
         pub fn store_file(&mut self, _: &FileReference, _: &[u8]) -> Result<()> {
             Err(unavailable())
         }
+        pub fn save_project_result(
+            &mut self,
+            _: &AbsolutePath,
+            _: &[u8],
+            _: &[FileIdentity],
+        ) -> Result<SavedEvidenceObservation> {
+            Err(unavailable())
+        }
     }
     impl InitEvidencePort for LocalInitEvidence {
         fn save_result(
