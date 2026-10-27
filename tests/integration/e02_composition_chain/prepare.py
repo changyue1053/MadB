@@ -179,6 +179,7 @@ def prepare_rejection(args, baseline_root, baseline_tools, output, gate):
         path = tools / "arkts-peer"
         changed = bytearray(path.read_bytes())
         changed[-1] ^= 1
+        path.chmod(path.stat().st_mode | 0o200)
         path.write_bytes(changed)
     d.save(root, "composition.json", composition)
     repin(root, args.bridge, read)
