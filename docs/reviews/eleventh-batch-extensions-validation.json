@@ -2,7 +2,7 @@
   "scope": "round11 finite E01/E03 acceptance; status only in catalog",
   "as_of": "2026-10-27",
   "producer_revision": "fe75241697469292d7af06ff6bb4e1ce47cc4018",
-  "evidence_root": "/private/tmp/madb-chief-round11",
+  "evidence_root": "/Users/changyue/Desktop/MadB/.local/evidence/round11-extensions-doctor-swift/validation",
   "records": {
     "frozen-extensions-001/receipt.json": {
       "sha256": "e3da7d727d7b3bcde226c5b52eee9c96212af96d110b294980de6760657605c1",
@@ -47,6 +47,22 @@
     "extension-final-independent-review.md": {
       "sha256": "7da5238053c6927904ab3b94336bc150b97519f62d29514f546633416777f17d",
       "size": 12399
+    },
+    "post-integration-e01-001/checks.json": {
+      "sha256": "176d36a512ffd3d4aab5427768fb00ad6412edbbf6796c5bb6f62ed1a453fcfa",
+      "size": 4687
+    },
+    "post-integration-e03-validation-001.json": {
+      "sha256": "9d1400c95d07b12321124c5b6257751efe333560095a8476b8c8c565ebbf3c5f",
+      "size": 21703
+    },
+    "e03-post-integration-guard-review.json": {
+      "sha256": "87fd5b1bca3d05d256f7ab08f01dfe588db37bf3ad38af6f14457ea352c0f6ad",
+      "size": 5236
+    },
+    "madb-stage-push.json": {
+      "sha256": "e3c1a901524b58275caee90cc7e619f557523de62f9d51ca2a8cad7ed13be51a",
+      "size": 1112
     }
   },
   "results": {
@@ -61,5 +77,13 @@
     "full_local_gate_exit": 0,
     "remote_actions_executed": false,
     "sdk_har_target_or_page_certification": false
+  },
+  "post_integration_revision": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+  "original_evidence_root": "/private/tmp/madb-chief-round11",
+  "archive_manifest": {
+    "path": "/Users/changyue/Desktop/MadB/.local/evidence/round11-extensions-doctor-swift/manifest.json",
+    "sha256": "aa1569be29189e809d6746a365b4a2df6b7ba63f446d846f247b58485914c6b1",
+    "size": 14259389,
+    "entries": 60939
   }
 }

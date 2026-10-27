@@ -1,0 +1,27 @@
+{
+  "repository": "changyue1053/MadB",
+  "branch": "codex/c07-arkts",
+  "before": "9a72a6417858b7ee1a141ce8b13fa47ba7ef2f94",
+  "after": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+  "commits": [
+    "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4\tfeat: add read-only doctor preflight and record extension acceptance [skip ci]",
+    "fe75241697469292d7af06ff6bb4e1ce47cc4018\tfix: bind finite extension dependencies and source semantics [skip ci]"
+  ],
+  "actions_checks": [
+    {
+      "head": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+      "total_count": 0,
+      "runs": 0,
+      "record": "madb-stage-actions-e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4.json",
+      "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915"
+    },
+    {
+      "head": "fe75241697469292d7af06ff6bb4e1ce47cc4018",
+      "total_count": 0,
+      "runs": 0,
+      "record": "madb-stage-actions-fe75241697469292d7af06ff6bb4e1ce47cc4018.json",
+      "sha256": "a2790a384d7d281e7395679000c35d27768d89dbd7052f725b8f4688beb59915"
+    }
+  ],
+  "scope": "stage push only; no PR, tags, release, dispatch or certification"
+}

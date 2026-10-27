@@ -1033,7 +1033,9 @@
       "evidence": [
         "reviews/2026-10-26-chief-architect-ninth-batch.md",
         "reviews/2026-10-26-chief-architect-tenth-batch.md",
-        "reviews/2026-10-27-chief-architect-eleventh-batch.md"
+        "reviews/2026-10-27-chief-architect-eleventh-batch.md",
+        "reviews/eleventh-batch-doctor-final-independent-review.md",
+        "reviews/eleventh-batch-doctor-validation.json"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1057,7 +1059,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 第九批提前实施与I01-P共用的真实CommitNew/取消/证据保存子范围；不代表I01前置或I02整包验收已满足，doctor及后续Build/Verify/恢复仍须各自交付。 提前子范围已完成no-replace创建、取消/提交后证据失败事实保留与独立Host70断言；不是doctor、最终根Build/Verify或I02整包验收。 第十批与I01共享的最终根Build/Verify、实际配置失败与SIGINT取消、已创建工程和真实证据保留已验证；真实veto、pending owner和保存尾窗经独审。仅首个Rust→C值配方子范围，doctor、已有工程接入/升级/禁用及其他配方仍未交付，I01整包前置未解除。 第十一批项目所有者采用doctor现有冻结上下文的只读CLI及doctor-result/1具体契约，见ADR-0025；进入实现，三档仅检查静态前提，不执行构建/运行/安装。模板模式、已有工程升级/禁用及I01/I02整包前置保持，批准不计实现或验收。"
+      "notes": " 本次接管已获项目所有者确认目标 CLI 归属及输出/拒绝验收，见 reviews/2026-10-25-chief-architect-first-batch.md；新增 wire 字段仍按格式流程审查，本次责任决定不表示命令已实现，不撤销 C04 原范围验收。 第九批提前实施与I01-P共用的真实CommitNew/取消/证据保存子范围；不代表I01前置或I02整包验收已满足，doctor及后续Build/Verify/恢复仍须各自交付。 提前子范围已完成no-replace创建、取消/提交后证据失败事实保留与独立Host70断言；不是doctor、最终根Build/Verify或I02整包验收。 第十批与I01共享的最终根Build/Verify、实际配置失败与SIGINT取消、已创建工程和真实证据保留已验证；真实veto、pending owner和保存尾窗经独审。仅首个Rust→C值配方子范围，doctor、已有工程接入/升级/禁用及其他配方仍未交付，I01整包前置未解除。 第十一批项目所有者采用doctor现有冻结上下文的只读CLI及doctor-result/1具体契约，见ADR-0025；进入实现，三档仅检查静态前提，不执行构建/运行/安装。模板模式、已有工程升级/禁用及I01/I02整包前置保持，批准不计实现或验收。 第十一批在干净e26a73b实现已批准现有冻结工程上下文的doctor首片，正式13镜像与独立17项按15+2原始证据通过；structure/build/run分别核6/23/24个静态前提，空/污染PATH、机器错误、缺snapshot、输出预算/漂移及DOCTOR001解释按各层证据核对。完整集成本地门禁通过。返回0只表示preflight-only，不执行生成/构建/运行/安装，部分观察不能成为执行凭据；仅当前macOS Arm64固定0.1.1值配方。模板模式、已有工程升级/禁用、其他配方及I01整包前置继续保留，I02整包仍未验收。"
     },
     {
       "id": "I03",
@@ -1439,7 +1441,9 @@
       "evidence": [
         "reviews/2026-10-25-swift-extension-delivery.md",
         "reviews/2026-10-25-chief-architect-first-batch.md",
-        "reviews/2026-10-26-chief-architect-sixth-batch.md"
+        "reviews/2026-10-26-chief-architect-sixth-batch.md",
+        "reviews/2026-10-27-chief-architect-eleventh-batch.md",
+        "reviews/eleventh-batch-l04-native-validation.json"
       ],
       "planned_start": null,
       "planned_finish": null,
@@ -1479,7 +1483,7 @@
       ],
       "routes": [],
       "probes": [],
-      "notes": "承接 L01 的 Swift 契约并复用 C06/C08 对应后端能力；按本次执行授权已启动 sdk/swift/observation 的普通观察与 Observation macOS 子范围实现，再补 SwiftUI/UIKit、工程与便利语法配置。C06/L01 依赖是整体验收前置，允许在明确契约下提前独立原型；本机原型不授予 iOS 或发行资格。Combine/Rx 的 Kotlin 正式桥接组合归 X01，X02 独立实验，L08 深改写不在默认交付内。 evidence 仅导航到已交付契约/开发首片的历史报告，不表示当前整包或目标认证；verification 保持 missing。 项目所有者在本次接管中确认通用 Swift 与后续原生组合分责，具体 acceptance 已补齐；阶段和依赖保持原样，决定见 reviews/2026-10-25-chief-architect-first-batch.md。 接管首批补充真实 SKIE Engine 双观察模型共享 owner 消费检查；仅 macOS Arm64 开发组合，不覆盖 iOS/UI 或正式分发。 接管第六批补齐独立 Swift 源包的真实 iOS 模拟器 SwiftUI/UIKit 各三轮进出、共享源持续工作及停止完成屏障；最终003和独审通过。该 UI 子范围不含 C06 native 接线、全部便利配置或整包验收。"
+      "notes": "承接 L01 的 Swift 契约并复用 C06/C08 对应后端能力；按本次执行授权已启动 sdk/swift/observation 的普通观察与 Observation macOS 子范围实现，再补 SwiftUI/UIKit、工程与便利语法配置。C06/L01 依赖是整体验收前置，允许在明确契约下提前独立原型；本机原型不授予 iOS 或发行资格。Combine/Rx 的 Kotlin 正式桥接组合归 X01，X02 独立实验，L08 深改写不在默认交付内。 evidence 仅导航到已交付契约/开发首片的历史报告，不表示当前整包或目标认证；verification 保持 missing。 项目所有者在本次接管中确认通用 Swift 与后续原生组合分责，具体 acceptance 已补齐；阶段和依赖保持原样，决定见 reviews/2026-10-25-chief-architect-first-batch.md。 接管首批补充真实 SKIE Engine 双观察模型共享 owner 消费检查；仅 macOS Arm64 开发组合，不覆盖 iOS/UI 或正式分发。 接管第六批补齐独立 Swift 源包的真实 iOS 模拟器 SwiftUI/UIKit 各三轮进出、共享源持续工作及停止完成屏障；最终003和独审通过。该 UI 子范围不含 C06 native 接线、全部便利配置或整包验收。 接管第十一批在独立Lab实现C06原生SKIE与公开Observation源的macOS SwiftUI页面接线；clean Lab 153edd12的构建、本地ad-hoc签名及仓库门禁通过，GUI004因启用UI自动化认证等待超时而退出65，页面尚未启动、无32帧及native关闭证据。原GUI001/002/003启动超时失败及独审均保留；实际Lab集成后540项源码一致、仓库门禁通过，不将其视作目标运行通过。随后用户在场完成认证，GUI005暴露并修正macOS AX value读取及同一可执行文件路径别名的Lab问题；旧失败原样保留。实际Lab根新clean 7a25209的GUI006通过1项XCTest（0失败/0跳过），完整32帧、三轮新页面、六次普通发布、native owner正常关闭和应用正常退出均有目标证据。只完成该macOS原生SwiftUI切片，L04整包仍未验收，不扩大C06或iOS/UIKit范围。"
     },
     {
       "id": "L05",

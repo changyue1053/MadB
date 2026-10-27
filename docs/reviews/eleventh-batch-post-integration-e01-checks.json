@@ -1,0 +1,133 @@
+{
+  "scope": "E01 four historical admission counterexamples, before any peer/session/Source execution",
+  "producer_revision": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+  "receipt": {
+    "sha256": "f312f465260147733d6cf3f802d72819f14b653bb2b60b817fa81c67e8a26977",
+    "size": 7192,
+    "mode": 420
+  },
+  "cases": [
+    {
+      "case": "ordinary-empty-dependencies",
+      "result": "passed",
+      "exit_code": 1,
+      "expected": [
+        "InputInvalid",
+        "dependencies"
+      ],
+      "argv": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_chain_probe",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-empty-dependencies/inputs",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-empty-dependencies/tools",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-empty-dependencies/run",
+        "ok"
+      ],
+      "started_ns": 1793084412015119000,
+      "finished_ns": 1793084413383122000,
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420
+      },
+      "stderr": {
+        "sha256": "743e86b6439f8b65febd81fb9682817c916ca98bf91a16b696fc89739e97bfbd",
+        "size": 153,
+        "mode": 420
+      },
+      "no_run_allocation": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "case": "enhanced-wrong-scope",
+      "result": "passed",
+      "exit_code": 1,
+      "expected": [
+        "InputInvalid",
+        "dependencies"
+      ],
+      "argv": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_chain_probe",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/enhanced-wrong-scope/inputs",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/enhanced-wrong-scope/tools",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/enhanced-wrong-scope/run",
+        "ok"
+      ],
+      "started_ns": 1793084421053589000,
+      "finished_ns": 1793084421551072000,
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420
+      },
+      "stderr": {
+        "sha256": "743e86b6439f8b65febd81fb9682817c916ca98bf91a16b696fc89739e97bfbd",
+        "size": 153,
+        "mode": 420
+      },
+      "no_run_allocation": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "case": "ordinary-missing-toolchain",
+      "result": "passed",
+      "exit_code": 1,
+      "expected": [
+        "CapabilityUnsupported",
+        "dependencies/missing.toolchain",
+        "host mapping"
+      ],
+      "argv": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_chain_probe",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-missing-toolchain/inputs",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-missing-toolchain/tools",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-missing-toolchain/run",
+        "ok"
+      ],
+      "started_ns": 1793084429201597000,
+      "finished_ns": 1793084429700566000,
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420
+      },
+      "stderr": {
+        "sha256": "ec88ba10334be523df25321e22a1ff72eebde1f5d025288e662bd32eea7adf75",
+        "size": 188,
+        "mode": 420
+      },
+      "no_run_allocation": true,
+      "input_bytes_unchanged": true
+    },
+    {
+      "case": "ordinary-missing-generator",
+      "result": "passed",
+      "exit_code": 1,
+      "expected": [
+        "CapabilityUnsupported",
+        "dependencies/missing.generator",
+        "host mapping"
+      ],
+      "argv": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_chain_probe",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-missing-generator/inputs",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-missing-generator/tools",
+        "/private/tmp/madb-chief-round11/post-integration-e01-001/ordinary-missing-generator/run",
+        "ok"
+      ],
+      "started_ns": 1793084437399244000,
+      "finished_ns": 1793084437896120000,
+      "stdout": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420
+      },
+      "stderr": {
+        "sha256": "f7e326f7df9f1fdb16f4ee65bf1e45f3ed35d7755c690b06f94497ba0d23a666",
+        "size": 188,
+        "mode": 420
+      },
+      "no_run_allocation": true,
+      "input_bytes_unchanged": true
+    }
+  ]
+}

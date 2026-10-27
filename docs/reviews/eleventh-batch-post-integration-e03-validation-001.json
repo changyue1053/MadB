@@ -1,0 +1,636 @@
+{
+  "kind": "post-integration E03 and unchanged @1 local recipe verification; not SDK report or new acceptance decision",
+  "recorded_at": "2026-10-27T07:09:19.246959+00:00",
+  "actual_product_root": "/Users/changyue/Desktop/MadB/madb",
+  "source_revision": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+  "integration_record": {
+    "path": "/private/tmp/madb-chief-round11/integration-madb-code.json",
+    "sha256": "5eb4ccbc3ed6dcbf1fc358a2f3e036ea890fa02afdc46d31cf080ff426bea59a",
+    "size": 662,
+    "mode": "0o644"
+  },
+  "tracked_file_count_from_integration_record": 1401,
+  "receipt": {
+    "path": "/private/tmp/madb-chief-round11/frozen-tools-001/receipt.json",
+    "sha256": "f312f465260147733d6cf3f802d72819f14b653bb2b60b817fa81c67e8a26977",
+    "size": 7192,
+    "mode": "0o644"
+  },
+  "receipt_provisional": false,
+  "all_images_guarded": {
+    "package_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/package_probe",
+      "sha256": "6fd1669b5340a8436efc11a66d1f2c213063bc5ca05de7d66f28cdb32ff4d492",
+      "size": 3000496,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "extension_chain_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/extension_chain_probe",
+      "sha256": "6d6ee57c562c649aa649af1e3297d9fb61bbc984f31397a141cbd7e1e4e9d699",
+      "size": 26608888,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "dag_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/dag_probe",
+      "sha256": "8ee771b4a6314586c10f1ffb67a31ef6d207fe9b7891f2041b4522fc09eabecc",
+      "size": 26432424,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "madb": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/madb",
+      "sha256": "ca285dcface93ed83e448ca08d86d6b9c7bb04a5f3a2637d0c1d50f5235252c6",
+      "size": 59302088,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "composition_generation_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_generation_probe",
+      "sha256": "a73d9532ae67f554dfab6d8bb0f69e9de897d295548d16e6f4a69cbac473097c",
+      "size": 26532848,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "madb-native-finalize": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/madb-native-finalize",
+      "sha256": "ec9146200b0e03528a2395342d10bfe2645c3698d8fab36a06cf955e47b5a771",
+      "size": 21452360,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "arkts_composition_peer": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/arkts_composition_peer",
+      "sha256": "4884824ac8dbee21a94c1f41165425bd956906aa73702f54afb0c323aca717ea",
+      "size": 19102808,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "task_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/task_probe",
+      "sha256": "05aba837189ae757d569e3872d1dfd2aa95044f8e8a9f739f53b1a5d50475627",
+      "size": 24751112,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "extension_session_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/extension_session_probe",
+      "sha256": "9fdd7639ebb11a21de0b008c407888892c225051a1220a8b3416ed17cd4977ec",
+      "size": 26040824,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "dependency_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/dependency_probe",
+      "sha256": "79b7da2dee2571a4cfec4b9d0d1dc641800f95e0f32b0af2e906b56b232427f8",
+      "size": 22013168,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "composition_session_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_session_probe",
+      "sha256": "335ee78f01f89387421374737a42c3c0a2b66e0852a8e583c8fbfb8f4b1759eb",
+      "size": 29137784,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "madb-native-values-read": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/madb-native-values-read",
+      "sha256": "ec7aff1094b5f411c7aeee2e6a1f774732a1dac4a894dcc598dab1debd3a0511",
+      "size": 5788456,
+      "mode": "0o500",
+      "symlink_target": null
+    },
+    "composition_chain_probe": {
+      "path": "/private/tmp/madb-chief-round11/frozen-tools-001/images/composition_chain_probe",
+      "sha256": "9bd55bfb1b45c9a05f7abb3325ae47837fc5cb56f3231d6857412502dd5c1e11",
+      "size": 29527992,
+      "mode": "0o500",
+      "symlink_target": null
+    }
+  },
+  "actually_used_images": [
+    "composition_generation_probe",
+    "composition_chain_probe",
+    "arkts_composition_peer"
+  ],
+  "runner": {
+    "path": "/private/tmp/madb-chief-round11/post-integration-e03-replay.py",
+    "sha256": "a96d92adb2a87e3ccc160ceb1fa8f589ed0b23d25e7d131ff11eb60c971b9c46",
+    "size": 6321,
+    "mode": "0o644"
+  },
+  "run_guards": {
+    "e03": {
+      "started_at": "2026-10-27T07:02:33.138364+00:00",
+      "finished_at": "2026-10-27T07:05:41.660326+00:00",
+      "exit_code": 0,
+      "source_head": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+      "tracked_files": 1401,
+      "frozen_images": 13,
+      "before": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/inputs-before.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644"
+      },
+      "after": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/inputs-after.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644"
+      },
+      "execution": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/execution.json",
+        "sha256": "9fd2e070e459cdd8be7879b47dd4b23082975e026319205691a593d581f7bb6e",
+        "size": 1293,
+        "mode": "0o644"
+      },
+      "source_image_hash_size_mode_and_symlink_targets_unchanged": true
+    },
+    "legacy": {
+      "started_at": "2026-10-27T07:02:52.045514+00:00",
+      "finished_at": "2026-10-27T07:05:10.416622+00:00",
+      "exit_code": 0,
+      "source_head": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+      "tracked_files": 1401,
+      "frozen_images": 13,
+      "before": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/inputs-before.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644"
+      },
+      "after": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/inputs-after.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644"
+      },
+      "execution": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/execution.json",
+        "sha256": "cd11d7c8ea22ab3c1a019800c67dfbf8c7845702c2aecedc9c75ac8ada7b4d8a",
+        "size": 178,
+        "mode": "0o644"
+      },
+      "source_image_hash_size_mode_and_symlink_targets_unchanged": true
+    }
+  },
+  "e03": {
+    "checks": 31,
+    "result": "passed",
+    "breakdown": {
+      "real_profile2_reader_generator_Source_success": 3,
+      "coherent_repin_metadata_refusals": 25,
+      "duplicate_key_projection_refusal": 1,
+      "real_reader_refusals_no_generator_no_commit": 2
+    },
+    "checks_file": {
+      "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/runs/checks.json",
+      "sha256": "010db8278d88d28d46cbdfc860995f85b1407549c49d96bf35fb6957c66162b7",
+      "size": 6412,
+      "mode": "0o644"
+    },
+    "stdout": {
+      "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/stdout.log",
+      "sha256": "d6a0a7df25615b0a38f3d85f2f58baaa8343aba7e8b389104fd61f2ce6636187",
+      "size": 90,
+      "mode": "0o644"
+    },
+    "stderr": {
+      "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "mode": "0o644"
+    },
+    "records": [
+      {
+        "assets": [
+          "facade",
+          "native-gateway",
+          "native-provider",
+          "native-runtime",
+          "native-worker"
+        ],
+        "case": "ordinary-two-session-source",
+        "declared_roles": 95,
+        "dependencies": 5,
+        "payloads": 15,
+        "physical_assembly": false,
+        "result": "passed",
+        "symbols": 16
+      },
+      {
+        "assets": [
+          "arkui",
+          "facade",
+          "native-gateway",
+          "native-provider",
+          "native-runtime",
+          "native-worker",
+          "state"
+        ],
+        "case": "enhanced-two-session-source",
+        "declared_roles": 107,
+        "dependencies": 10,
+        "payloads": 17,
+        "physical_assembly": false,
+        "result": "passed",
+        "symbols": 16
+      },
+      {
+        "assets": [
+          "facade",
+          "native-gateway",
+          "native-provider",
+          "native-runtime",
+          "native-worker"
+        ],
+        "case": "disabled-two-session-source",
+        "declared_roles": 95,
+        "dependencies": 5,
+        "payloads": 15,
+        "physical_assembly": false,
+        "result": "passed",
+        "symbols": 16
+      },
+      {
+        "case": "missing-type-read",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-abi-lowering",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-projection",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-async-bridge",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-dispatch",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-subscription",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-stop",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-drain",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-cancel",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-release",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-release-reader-no-commit",
+        "result": "passed",
+        "scope": "real AuthorSession reader refusal; no generator or Source commit"
+      },
+      {
+        "case": "missing-input-release",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-source-retirement",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-residual-release",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "wrong-release-owner",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "wrong-subscription-anchor",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "duplicate-key-other-owner",
+        "expected": [
+          "HASH004",
+          "duplicate collection identity"
+        ],
+        "result": "passed",
+        "scope": "duplicate semantic key rejected before a new composition digest can be pinned"
+      },
+      {
+        "case": "physical-assembly",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "physical-assembly is outside"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "api22",
+        "expected": [
+          "CapabilityUnsupported",
+          "deployment_target"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-abi",
+        "expected": [
+          "CapabilityUnsupported",
+          "abi"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-consumer",
+        "expected": [
+          "CapabilityUnsupported",
+          "consumer"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-frame-layout",
+        "expected": [
+          "InputInvalid",
+          "frame-layout.json",
+          "unsupported finite semantic source bytes"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "changed-validator",
+        "expected": [
+          "InputInvalid",
+          "validate_snapshot.h",
+          "unsupported finite semantic source bytes"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "unclaimed-source-asset",
+        "expected": [
+          "InputInvalid",
+          "assets",
+          "finite source asset closure differs"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "disabled-optional-source",
+        "expected": [
+          "InputInvalid",
+          "assets",
+          "disabled source recipe contains optional SDK bytes"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-snapshot",
+        "expected": [
+          "InputInvalid",
+          "responsibilities",
+          "missing, extra, or mismatched responsibility"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      },
+      {
+        "case": "missing-snapshot-reader-no-commit",
+        "result": "passed",
+        "scope": "real AuthorSession reader refusal; no generator or Source commit"
+      },
+      {
+        "case": "weakened-cancel-policy",
+        "expected": [
+          "CapabilityUnsupported",
+          "policies",
+          "finite source ownership"
+        ],
+        "result": "passed",
+        "scope": "coherently repinned metadata/semantic boundary rejection"
+      }
+    ],
+    "raw_reader_failures": [
+      {
+        "case": "missing-release",
+        "raw_result": {
+          "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/runs/missing-release/reader.stdout",
+          "sha256": "bd9caaa7a46a4493a7518fc41faf3a69e0187dc66d46d33fb29dff75585a4dd3",
+          "size": 4382,
+          "mode": "0o644"
+        },
+        "sequence_status": "Failed",
+        "admission": "Unavailable",
+        "error": "ToolFailed",
+        "generator_started": false,
+        "source_committed": false,
+        "baseline_index_unchanged": true,
+        "cleanup": {
+          "group_kill_attempted": true,
+          "leader_reaped": true,
+          "locally_complete": true,
+          "signal_failed": false,
+          "stderr_eof": true,
+          "stdout_eof": true
+        }
+      },
+      {
+        "case": "missing-snapshot",
+        "raw_result": {
+          "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/runs/missing-snapshot/reader.stdout",
+          "sha256": "0c5db9e5f461b63e7ae662ae963765ea71abdc77b9fdd99307d72febbc256ba0",
+          "size": 4388,
+          "mode": "0o644"
+        },
+        "sequence_status": "Failed",
+        "admission": "Unavailable",
+        "error": "ToolFailed",
+        "generator_started": false,
+        "source_committed": false,
+        "baseline_index_unchanged": true,
+        "cleanup": {
+          "group_kill_attempted": true,
+          "leader_reaped": true,
+          "locally_complete": true,
+          "signal_failed": false,
+          "stderr_eof": true,
+          "stdout_eof": true
+        }
+      }
+    ]
+  },
+  "legacy": {
+    "checks": 3,
+    "result": "passed",
+    "wire": "madb.composition/1 + madb.profile/2",
+    "scope": "unchanged local chain-*@1 recipe observation scope; not old Profile1 accepting Profile2",
+    "checks_file": {
+      "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/runs/checks.json",
+      "sha256": "ebd072ec685b6523b816aea4814f631a164cc950c323a4578b553cb93e6aec65",
+      "size": 759,
+      "mode": "0o644"
+    },
+    "records": [
+      {
+        "mode": "ordinary",
+        "result": "passed",
+        "recipe": "madb.local.c07-c-arkts/chain-ordinary@1",
+        "responsibilities": 5,
+        "payloads": 15,
+        "scope": "unchanged @1 observation recipe; not @2 complete finite source requirements"
+      },
+      {
+        "mode": "enhanced",
+        "result": "passed",
+        "recipe": "madb.local.c07-c-arkts/chain-enhanced@1",
+        "responsibilities": 8,
+        "payloads": 17,
+        "scope": "unchanged @1 observation recipe; not @2 complete finite source requirements"
+      },
+      {
+        "mode": "disabled",
+        "result": "passed",
+        "recipe": "madb.local.c07-c-arkts/chain-disabled@1",
+        "responsibilities": 5,
+        "payloads": 15,
+        "scope": "unchanged @1 observation recipe; not @2 complete finite source requirements"
+      }
+    ]
+  },
+  "preserved_failed_attempt": {
+    "directory": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-001",
+    "log": {
+      "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-001.log",
+      "sha256": "2b6fc6b185e2ed55e77b9ee7fbedca994801be3da9ea204d4ed7481a7e4b9543",
+      "size": 2102,
+      "mode": "0o644"
+    },
+    "exit_code": 1,
+    "stage": "initial git source guard",
+    "cause": "Operator invocation typo in --source: /Users/changue/Desktop/MadB/madb; actual user directory is changyue",
+    "business_process_started": false,
+    "source_or_images_changed": false,
+    "replacement_output": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002"
+  },
+  "product_or_catalog_edits": false,
+  "commit_or_push": false,
+  "limits": [
+    "Only the requested 31 checks and three @1 compatibility configurations were re-executed in this task",
+    "Full integrated repository gate is separately owned by parent coordinator",
+    "No native build, SDK/HAR assembly, target lifecycle, real page, alternative backend execution, certification or publication is implied",
+    "Prior fe75241 development/formal evidence and initial typo failure were not rewritten",
+    "Catalog remains the sole task status authority"
+  ]
+}

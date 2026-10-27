@@ -1,0 +1,1426 @@
+{
+  "scope": "L04 macOS Arm64 native SKIE + public Observation + actual SwiftUI lifecycle",
+  "result": "failed",
+  "compile": "passed",
+  "target": "failed",
+  "owner_close": "not_confirmed",
+  "certifies_l04": false,
+  "certifies_c06": false,
+  "certifies_release": false,
+  "limitations": [
+    "no iOS/UIKit or physical/minimum-OS evidence",
+    "no new native candidate certification",
+    "no native fault/late-callback injection",
+    "no background/rotation or simultaneous-page evidence",
+    "public source supplement, not a C10 distribution release"
+  ],
+  "nonce": "f2aca52d16054ec2aca09315dedecb5e",
+  "lab_revision": "153edd12d76bf416e075a0430f18a2eaeabaa92d",
+  "lab_status": "",
+  "provisional": false,
+  "lab_inputs": {
+    ".python-version": {
+      "sha256": "bb90877c5ee8c4703cfd03421e92ef2a17a10b67ecc822524baeea4c8da3dc9f",
+      "size": 7
+    },
+    "AGENTS.md": {
+      "sha256": "d0a66ebd522f1d2a6da4c686081ca299b4c01337f754da8248be0692509e58f5",
+      "size": 1596
+    },
+    "cases/c06/kotlin-jvm-rust/async.json": {
+      "sha256": "93f0ecf61887ea10ec2e7236c0c65a55d056eaee45f1b6c6eb655651f230ab61",
+      "size": 1368
+    },
+    "cases/c06/kotlin-jvm-rust/cancel.json": {
+      "sha256": "4adf3697587b4dde3b18c852a1262d7fb055f5b8543cbd97d18059783b4a1290",
+      "size": 1371
+    },
+    "cases/c06/kotlin-jvm-rust/capacity.json": {
+      "sha256": "e29b71da52b5074aaa2527107f18a95076b23f618db5158d23a80824c0937ee1",
+      "size": 1373
+    },
+    "cases/c06/kotlin-jvm-rust/data.json": {
+      "sha256": "8c825057b53a30c70bd218aa0344bd10ebfbd0d4e0bea579ac3c776621d8e602",
+      "size": 1367
+    },
+    "cases/c06/kotlin-jvm-rust/distribution.json": {
+      "sha256": "2c41cd45bbdd88e8ef1704b0e22c44cad8ded388bbc777f58e961d242e453ba0",
+      "size": 1385
+    },
+    "cases/c06/kotlin-jvm-rust/errors.json": {
+      "sha256": "2fa0b63df0c8bf83ba91b9361123d75d692da5aa880de3c322bea5e05b834369",
+      "size": 1369
+    },
+    "cases/c06/kotlin-jvm-rust/identity.json": {
+      "sha256": "f6581656cadb8845c82ac560384d0f5b9ac06774202c1f9406848c2dc29bca2f",
+      "size": 1376
+    },
+    "cases/c06/kotlin-jvm-rust/late-callback.json": {
+      "sha256": "e291300fd9553f6c5e1bb5050cd8b801c48f68bab5d8ca4ca618e85b7ba449b0",
+      "size": 1385
+    },
+    "cases/c06/kotlin-jvm-rust/objects.json": {
+      "sha256": "44af9c81927214949e2cf886fe950c397e1079d8b0e575f22f60fc3e2d78de01",
+      "size": 1373
+    },
+    "cases/c06/kotlin-jvm-rust/shutdown.json": {
+      "sha256": "e95a5e2f7d8247d21277969e3340effcd44bc4146b19541e44cf63ed6a256f32",
+      "size": 1374
+    },
+    "cases/c06/kotlin-jvm-rust/wrong-abi.json": {
+      "sha256": "6a036124b9a495cda469ee834aa32d567ffeb27b38aeb1ff22a7c74bab0a075e",
+      "size": 1428
+    },
+    "cases/c06/kotlin-jvm-rust/wrong-profile.json": {
+      "sha256": "cd7f2de7f7781cef55b940e17524ad17bd3b45490d3c47d99e6074ff36b179b4",
+      "size": 1440
+    },
+    "cases/c06/kotlin-native-rust/async.json": {
+      "sha256": "75be58e260dabbf7fbef61e460ff2cf44a6d7e134895345ce1d389c0e7f6e23d",
+      "size": 1371
+    },
+    "cases/c06/kotlin-native-rust/callback-throw.json": {
+      "sha256": "e07fa86bdd67e22ff71d2587e60904cecfad005dc47957ddb3a19f2fc2fc4a54",
+      "size": 1393
+    },
+    "cases/c06/kotlin-native-rust/cancel-late-result.json": {
+      "sha256": "a0f3032c24d357b259311d15ad32456430c69f0641615810829d1192be63554a",
+      "size": 1402
+    },
+    "cases/c06/kotlin-native-rust/cancel.json": {
+      "sha256": "88397f9de04ce55aa0da64c6230f6a6ebf50710cfadb392be4174506cff6f398",
+      "size": 1374
+    },
+    "cases/c06/kotlin-native-rust/capacity.json": {
+      "sha256": "6605544f074500194b78e967cbd13874d05e7d1dd099e7d07bb319537a8d0c5d",
+      "size": 1376
+    },
+    "cases/c06/kotlin-native-rust/data.json": {
+      "sha256": "e6adf334513feb7eb7594bdbc0700cbd66ef45678168250ccf337993c6bb00e2",
+      "size": 1370
+    },
+    "cases/c06/kotlin-native-rust/distribution.json": {
+      "sha256": "847b89eee7cc4a7157efd7f15c9da24a6bb6aa220114ca17d83016652230c481",
+      "size": 1388
+    },
+    "cases/c06/kotlin-native-rust/errors.json": {
+      "sha256": "81e2f62759e2ef56c1e7d861e2dd36ab5440bd35576c00b2a57940560568d802",
+      "size": 1372
+    },
+    "cases/c06/kotlin-native-rust/foreign-future-once.json": {
+      "sha256": "9dbc8a2d7adae1a6b9cdae37f5ee0888f35f5a5e9aeb6dee692967392738a46e",
+      "size": 1388
+    },
+    "cases/c06/kotlin-native-rust/identity.json": {
+      "sha256": "b1bfd8c3b567ac7e3e4fff5b071c12c7f7d03ba8efe1d99802278fff2253c7d7",
+      "size": 1379
+    },
+    "cases/c06/kotlin-native-rust/late-callback.json": {
+      "sha256": "e151961b8018482e5d59e474568222213fe0687df8dc15a05820848fc0083c0d",
+      "size": 1388
+    },
+    "cases/c06/kotlin-native-rust/objects.json": {
+      "sha256": "ab584ab2f1a60f5b239a173c669e96ddf4b5904f4728ad8937799092c1263912",
+      "size": 1376
+    },
+    "cases/c06/kotlin-native-rust/shutdown.json": {
+      "sha256": "b13190d0c9e68ec01ab5bb777ddf39259460b0db2b956d658e52bc5c8bca581e",
+      "size": 1377
+    },
+    "cases/c06/kotlin-native-rust/wrong-abi.json": {
+      "sha256": "18ab7069e92f5492a17585d1bafb45e308c060730e0dd4c5192e9b2eb38c6818",
+      "size": 1431
+    },
+    "cases/c06/kotlin-native-rust/wrong-profile.json": {
+      "sha256": "3148d362cb3ad5796b0b9b6d24c623ae6919a6664181fa5d5b0825c477f65d7a",
+      "size": 1443
+    },
+    "cases/c06/swift-kotlin/async.json": {
+      "sha256": "35bcaf6df2f81e3cd409decc0d713cf2d735566e5a80d7ab910e765cb3132e23",
+      "size": 1360
+    },
+    "cases/c06/swift-kotlin/cancel.json": {
+      "sha256": "0c04cf3d091b16215e5d69b2a9c98e93c0b3df26da971a384869e3f7bb37293f",
+      "size": 1363
+    },
+    "cases/c06/swift-kotlin/capacity.json": {
+      "sha256": "7e042f2e03eec1aed50d7842e0b0bea22725f8730c8995bdc5d01b4bfc9deb0e",
+      "size": 1365
+    },
+    "cases/c06/swift-kotlin/data.json": {
+      "sha256": "08a0a018244457eb6710c5a3d662d25f11d37cac2f771f2e18163763d4520ab9",
+      "size": 1359
+    },
+    "cases/c06/swift-kotlin/distribution.json": {
+      "sha256": "be3bf21ce22766be900ccbbef349678ee6752ec4fbf7f946b382bc0e31255292",
+      "size": 1377
+    },
+    "cases/c06/swift-kotlin/enhanced-api.json": {
+      "sha256": "c6024a893211476bdf4818d4e226641d4e85c0f258895e14b301ed30e3a2aba0",
+      "size": 1375
+    },
+    "cases/c06/swift-kotlin/errors.json": {
+      "sha256": "d9e4b855a47153b5e47811bef297d26a7cfcc7b5fbb16aff65f4a9e2b08a9a53",
+      "size": 1361
+    },
+    "cases/c06/swift-kotlin/generic-lambda.json": {
+      "sha256": "ba57fa4d3f88dabb617122da5518a3eb36537da2a7af61726f0dae91cfc3abf4",
+      "size": 1443
+    },
+    "cases/c06/swift-kotlin/identity.json": {
+      "sha256": "831f27c958522df2a0488527ebe40168ee69cb257cd5cc80d5d94f8953a5a501",
+      "size": 1368
+    },
+    "cases/c06/swift-kotlin/late-callback.json": {
+      "sha256": "c6bf0057f7a274b974080c735eee5e509127fbf1bfc18b55e2e3f8375281a152",
+      "size": 1377
+    },
+    "cases/c06/swift-kotlin/missing-cinterop-origin.json": {
+      "sha256": "9abebb23bb1658854ccc6ff453080f4ffc4e6fe476cb5a4b2c096d8997809c5c",
+      "size": 1469
+    },
+    "cases/c06/swift-kotlin/objects.json": {
+      "sha256": "ea00e244250edeb72168561b1b19d8c18fa89c65f08a8a1b3c5eea7f4a9e14ee",
+      "size": 1365
+    },
+    "cases/c06/swift-kotlin/shutdown.json": {
+      "sha256": "6e96f05f575cc6b2496568e7154c8970149c08331d6592d7176b25cce1979648",
+      "size": 1366
+    },
+    "cases/c06/swift-kotlin/wrong-abi.json": {
+      "sha256": "aadf92371402ad11e1e3bde6920305d47a1dc33d5389898943f47431247b5260",
+      "size": 1420
+    },
+    "cases/c06/swift-kotlin/wrong-profile.json": {
+      "sha256": "0780d84f689be236ff65f30f7fedf398bf639705ba7c4cf97d504212e11a5ce8",
+      "size": 1432
+    },
+    "cases/c06/swift-rust/async.json": {
+      "sha256": "ad126c42efc5bf84c1b6248532064ca037edc778c0a5978ccfda773c3b2d3a07",
+      "size": 1363
+    },
+    "cases/c06/swift-rust/cancel.json": {
+      "sha256": "cf3ef0655727be2e3d941256817353cbe3167088ef42b02924fc9bab2a28f1af",
+      "size": 1366
+    },
+    "cases/c06/swift-rust/capacity.json": {
+      "sha256": "1cf9a4cfbaf7d7e286d10193de7e789a3f25c367d8c395b5bb1b7a3230177e53",
+      "size": 1368
+    },
+    "cases/c06/swift-rust/data.json": {
+      "sha256": "c485262cc59e22473cf5f2c77811de128f72cd198b5fc20e2718977258c5c93f",
+      "size": 1362
+    },
+    "cases/c06/swift-rust/distribution.json": {
+      "sha256": "cd120d41c1929b80551555d4302bed75d11befafcb9e008567f008e1d21c294b",
+      "size": 1380
+    },
+    "cases/c06/swift-rust/errors.json": {
+      "sha256": "9aa4e2ec4c426ab8678625f95c78b41c12452575e8c4f5c9990554e7e034bec3",
+      "size": 1364
+    },
+    "cases/c06/swift-rust/identity.json": {
+      "sha256": "1fac871b1de96784cbb505666da5ea807a6d68bf0ca8e33b9307c57e78f2b400",
+      "size": 1371
+    },
+    "cases/c06/swift-rust/late-callback.json": {
+      "sha256": "c9ec2a023e0c116daece8838acb7949f00cc987c32564f45881419c9b4e9de57",
+      "size": 1380
+    },
+    "cases/c06/swift-rust/objects.json": {
+      "sha256": "68f6dfcdd3d460e546909fb1ed862d7bee47b77e11304c9a18124f88852a42c5",
+      "size": 1368
+    },
+    "cases/c06/swift-rust/shutdown.json": {
+      "sha256": "87316246c9c7b485cbcf8cd6f15c418be5686e9ea1605801ddac44fe24a299b2",
+      "size": 1369
+    },
+    "cases/c06/swift-rust/wrong-abi.json": {
+      "sha256": "577cf4097763f68b76b6d37c95018432726f968c9264fe447bb29bd5f7025253",
+      "size": 1423
+    },
+    "cases/c06/swift-rust/wrong-profile.json": {
+      "sha256": "76320e534085f2f0f5a67f15a60a7a73f175b6f1c1662c7b50925d20d17d8882",
+      "size": 1435
+    },
+    "consumers/swift/l04_native_ui/App.swift": {
+      "sha256": "0b56277e9b412befcb422de9fe0452628da0a50f025712c97b12117984cc46c4",
+      "size": 5793
+    },
+    "consumers/swift/l04_native_ui/LifecycleUITests.swift": {
+      "sha256": "7baa1f8afc0dcb3d1674dbc011cc1b74b3c9b27667435c8079732810445783cc",
+      "size": 4976
+    },
+    "consumers/swift/l04_native_ui/MadBL04NativeUI.xcscheme": {
+      "sha256": "ca211001b2741b53435a43dab1e35952af777b162732a726e723c4518d28681b",
+      "size": 2234
+    },
+    "consumers/swift/l04_native_ui/NativeOwner.swift": {
+      "sha256": "404a3bad0b823d6632f24c2e74fdc5baba8659eeefb7b3d0a7264f4a94cb9c50",
+      "size": 15486
+    },
+    "consumers/swift/l04_native_ui/README.md": {
+      "sha256": "deab86bd71466530e568be667c6046dee1a7a1cdbd6ad00f5241a8716362194d",
+      "size": 5929
+    },
+    "consumers/swift/l04_native_ui/project.pbxproj": {
+      "sha256": "fe970e08d4cc41e1c67ccc120257e44f09b0524c48e2e08cb4b972d88b30bbaf",
+      "size": 7093
+    },
+    "docs/reference/README.md": {
+      "sha256": "a3a9b22e78167146a1aef3ca30bffd660d06fdf7ff377b9b387df4da790423c1",
+      "size": 1365
+    },
+    "docs/reference/REVISION": {
+      "sha256": "ba987c7572c627a0788660f6c925ab4a917a9f7dd83432dd9b9992684421a438",
+      "size": 41
+    },
+    "docs/reference/SHA256SUMS": {
+      "sha256": "3c9c451ef32d4c12005acfa0d0175dcd742370f8d7fb643b87c4df51959032a1",
+      "size": 704
+    },
+    "docs/reference/delivery/01-implementation-plan.md": {
+      "sha256": "e63b5409850dff5a74581dab311b129d91560d30d3fd351d3ba4cbcf8ae2fd94",
+      "size": 17894
+    },
+    "docs/reference/engineering/02-clean-code.md": {
+      "sha256": "a2b1c17cbd3c056584951932ee518b6385ceb409d9d0889ab05e822ae0190a66",
+      "size": 4858
+    },
+    "docs/reference/engineering/05-review-and-quality-gates.md": {
+      "sha256": "fde78f8b191c55c3bed24b8f56937780391518a82d34bca4eee55372c3f9dfe8",
+      "size": 9746
+    },
+    "docs/reference/engineering/07-agent-development.md": {
+      "sha256": "7500aa8b6ae82e3fec5954ca40885d96515fa7f273401f52adb0b94ce1deb8ac",
+      "size": 7321
+    },
+    "docs/reference/examples/first-route/README.md": {
+      "sha256": "d127de7cc7b706056a6f421d721bfa92b42074e85dc41efaaa902dc27fc84326",
+      "size": 10190
+    },
+    "docs/reference/examples/managed-routes/README.md": {
+      "sha256": "c23d03379ddf624f3635a0c3000fca8800e5be9ede97c3fea657e0df1ed00ce3",
+      "size": 13912
+    },
+    "docs/reference/validation/02-lab-architecture.md": {
+      "sha256": "e359fa2868c967d90b7e99852f610b8e3a2033ec02be09d011c78c3d82cc5c77",
+      "size": 10617
+    },
+    "harness/c06_candidate.py": {
+      "sha256": "1151c6b567081d1cd6b9f5a8034a6039bb2b16845d18430ccf0b79f16f9b922b",
+      "size": 4209
+    },
+    "harness/c06_contract.py": {
+      "sha256": "377a7e8e8ca08635e6a4e8e3e2e8bea95b6ea68c74b0ea4d8cc5c925560b142b",
+      "size": 1144
+    },
+    "harness/candidate.py": {
+      "sha256": "bc3bf6ffb5357215319b6eae630622bf243e1bed7945b1f874a6dccf33932162",
+      "size": 26456
+    },
+    "harness/l04_native_ui.py": {
+      "sha256": "c56c3d04bb5d0dc07479e9334b02be95dbced1f628274e8a72e03344d75a8f4e",
+      "size": 11337
+    },
+    "scripts/test_l04_native_ui.py": {
+      "sha256": "43322b6ebde0f6a737e116e6be8ef572fecd2e1ab6bafe5d2f01b373934ad16e",
+      "size": 16636
+    },
+    "scripts/verify_l04_native_ui.py": {
+      "sha256": "b43118afbcb3d69a56d79654af439af8abbabdb1edff754e81df2f4e7f00e818",
+      "size": 21819
+    }
+  },
+  "public_source": {
+    "pin": {
+      "path": "/private/tmp/madb-chief-round11/public-inputs/swift-observation-export.json",
+      "sha256": "58fe0a1e2634947f87a2311f7a0cdb5efd0eaf98cc8c28cfe16f22e4a623b00b",
+      "size": 2042
+    },
+    "scope": "byte-identical public Swift source supplement for L04 Lab; not a new C06 candidate or release",
+    "product_revision": "9a72a6417858b7ee1a141ce8b13fa47ba7ef2f94",
+    "source_prefix": "sdk/swift/observation",
+    "files": [
+      {
+        "path": ".gitignore",
+        "size": 18,
+        "sha256": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+        "mode": 420
+      },
+      {
+        "path": "Integration/SKIE/MadBSkieStateSource.swift",
+        "size": 1526,
+        "sha256": "e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+        "mode": 420
+      },
+      {
+        "path": "LICENSE",
+        "size": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "mode": 420
+      },
+      {
+        "path": "NOTICE",
+        "size": 223,
+        "sha256": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+        "mode": 420
+      },
+      {
+        "path": "Package.swift",
+        "size": 411,
+        "sha256": "43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46",
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 6092,
+        "sha256": "d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329",
+        "mode": 420
+      },
+      {
+        "path": "Sources/MadBObservation/MadBStateModel.swift",
+        "size": 6338,
+        "sha256": "425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7",
+        "mode": 420
+      },
+      {
+        "path": "Sources/MadBObservation/MadBStateSource.swift",
+        "size": 1122,
+        "sha256": "6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83",
+        "mode": 420
+      },
+      {
+        "path": "Tests/MadBObservationTests/ControlledSource.swift",
+        "size": 4808,
+        "sha256": "90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179",
+        "mode": 420
+      },
+      {
+        "path": "Tests/MadBObservationTests/MadBStateModelTests.swift",
+        "size": 8894,
+        "sha256": "e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6",
+        "mode": 420
+      }
+    ]
+  },
+  "candidate": {
+    "manifest": {
+      "build_evidence": [
+        {
+          "path": "evidence/task-0000.json",
+          "schema": "madb.build-evidence/1",
+          "sha256": "sha256:e16c9c13692ed39aaf76efc4f03adfd3db428ee430b5634072da3f0bf88f245b",
+          "size": 8788
+        },
+        {
+          "path": "evidence/task-0001.json",
+          "schema": "madb.build-evidence/1",
+          "sha256": "sha256:21c2b4ff4ec0fd18788ded7f2ba1adf6d9521e49c1214db986a3429e8fca08fe",
+          "size": 8434
+        },
+        {
+          "path": "evidence/task-0002.json",
+          "schema": "madb.build-evidence/1",
+          "sha256": "sha256:1ef29b6c9ee8f0df3a47c2d203fcee9d8ea10cced460cefd3427d8faf7eb39f3",
+          "size": 879
+        }
+      ],
+      "candidate_digest": "sha256:872d0cbd49bee21d442f24be6536334a7cc8dff3a525839f2a889a7776ac908c",
+      "contract_digest": "sha256:aa82c92c325634d99d2b3e2cada8e1ee37485d4c5a50a6ebb21bce45e6750357",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "LICENSE",
+          "sha256": "sha256:cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "size": 11358
+        },
+        {
+          "path": "NOTICE",
+          "sha256": "sha256:f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+          "size": 223
+        },
+        {
+          "path": "contract.json",
+          "sha256": "sha256:252b24d2b78b4e93512d25cc1308dd1bc8e02d25c11bc137e7c32084944d72d2",
+          "size": 70529
+        },
+        {
+          "path": "declarations.json",
+          "sha256": "sha256:577534501f717a08fa58c7240e8d8e4c4c3aa32135b473fa1ff63819f7d5a875",
+          "size": 10858
+        },
+        {
+          "path": "derivation.json",
+          "sha256": "sha256:761cc4e4bf5b0a719238f31639f576cc920461b10f4e89e4f1898ed18f61b9c7",
+          "size": 4815
+        },
+        {
+          "path": "evidence/task-0000.json",
+          "sha256": "sha256:e16c9c13692ed39aaf76efc4f03adfd3db428ee430b5634072da3f0bf88f245b",
+          "size": 8788
+        },
+        {
+          "path": "evidence/task-0001.json",
+          "sha256": "sha256:21c2b4ff4ec0fd18788ded7f2ba1adf6d9521e49c1214db986a3429e8fca08fe",
+          "size": 8434
+        },
+        {
+          "path": "evidence/task-0002.json",
+          "sha256": "sha256:1ef29b6c9ee8f0df3a47c2d203fcee9d8ea10cced460cefd3427d8faf7eb39f3",
+          "size": 879
+        },
+        {
+          "path": "fixtures/p04/Custom.framework/Custom",
+          "sha256": "sha256:5776d91bfe8ef739ec27c4ca4d62b234876b4f1e0beafe4697f6182476eb160b",
+          "size": 50280
+        },
+        {
+          "path": "fixtures/p04/Custom.framework/Headers/Custom.h",
+          "sha256": "sha256:f91380027e7a32b118261af2e8cea435b2d52694e23d1238aa8f3bf13540c759",
+          "size": 73
+        },
+        {
+          "path": "fixtures/p04/Custom.framework/Modules/module.modulemap",
+          "sha256": "sha256:bd11cafa200c74360aa8d6732a8458e5c546c2834e5cabf14e924dc1b22af9bd",
+          "size": 64
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Headers/MadBSkieGaps-Swift.h",
+          "sha256": "sha256:1d1e01bf356c34a5bd9e67e72c0587f99412d9c348a1d9367f5423ac55aa5cc8",
+          "size": 12916
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Headers/MadBSkieGaps.apinotes",
+          "sha256": "sha256:faff61daa21b50a5721e2baf9898cd983a9f77b124422fc5bb177ae801ef25c4",
+          "size": 29142
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Headers/MadBSkieGaps.h",
+          "sha256": "sha256:78ce92c0576faa33d43101b355eeebece3a46518e3b1e52236e20424e939f168",
+          "size": 68060
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/MadBSkieGaps",
+          "sha256": "sha256:61af8dad9979220ea4d425c3489adfc2878d219f06a84fa2fbf9feffabf4deeb",
+          "size": 4396784
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.abi.json",
+          "sha256": "sha256:902f5d014e899bb12d68a6a07ce6e544adcb92e0c381c642ce04ee823e05ced0",
+          "size": 811529
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.private.swiftinterface",
+          "sha256": "sha256:dc0df6be5496671b66a0d4b2df8ed88a08d4cb247ccb9f0695c205990277ddc1",
+          "size": 57063
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.swiftdoc",
+          "sha256": "sha256:90c7fc40611cf76ce89dd8be30c89301096475a47b9cb49917e5f8ec97d0d64f",
+          "size": 412
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.swiftinterface",
+          "sha256": "sha256:cb784af05ada2decff5db6f0816c839343963843f9b82ca94ddf63bbaade2b87",
+          "size": 56071
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.swiftmodule",
+          "sha256": "sha256:cc790382af0a29caf41f6c75e642d2d67d05bdbc269df6a2ddc29ca18af5f9f5",
+          "size": 149340
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Modules/module.modulemap",
+          "sha256": "sha256:73a5f65de73aec72f19fc9ab5b4488d9650b19f3543ecb443c535f68f40df32f",
+          "size": 213
+        },
+        {
+          "path": "fixtures/p04/MadBSkieGaps.framework/Resources/Info.plist",
+          "sha256": "sha256:63fdab17c0a4607f4dd5284d2a1c9315e19465596765ce352fa597b660981a38",
+          "size": 736
+        },
+        {
+          "path": "fixtures/wrong-profile/derivation.json",
+          "sha256": "sha256:8074064512fb35fc5a6f93f3c636bd353b7373c5c5e4fcc9cd3d5c22375ff741",
+          "size": 4815
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Headers/MadBSkie-Swift.h",
+          "sha256": "sha256:c68a8b6924a0580e29437ada32883203818833f778433a80a52e94663aade45a",
+          "size": 12900
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Headers/MadBSkie.apinotes",
+          "sha256": "sha256:3720e054c41f61a35b927487994efe5e67c4d80cedd58ac01647ff5d8c9f0f9b",
+          "size": 43792
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Headers/MadBSkie.h",
+          "sha256": "sha256:bb1f4733db54fab999d214f25119533b478a7e7f19561cc664cde7ae0965e9b9",
+          "size": 81805
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/MadBSkie",
+          "sha256": "sha256:e3dff720251308f82f14c96ff2a1421a45e90aafbe71dc3655b9c32dede67296",
+          "size": 4943664
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.abi.json",
+          "sha256": "sha256:49075e9145acf1a4abd075b4791c5dfa9553475fecc32f0b3893deeb9b9d8d8d",
+          "size": 834013
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.private.swiftinterface",
+          "sha256": "sha256:e6d7d0a1eccc2198518ec29c71909ff6163ba7914deadb22d07aa20d2fcf78ca",
+          "size": 55402
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftdoc",
+          "sha256": "sha256:17596d98b02cbff74b4e6bc7de3e722797bbcfb7b523df7b418103ebe90ff78e",
+          "size": 700
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftinterface",
+          "sha256": "sha256:73831da6c7ec0032a81a6a527a7840ccd91feed17e68d54a52d355c18715f008",
+          "size": 54450
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftmodule",
+          "sha256": "sha256:44dbba315774e949de791d885beea326373da34bc1992e8e50c8d98c1a17ca51",
+          "size": 155256
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Modules/module.modulemap",
+          "sha256": "sha256:702ffeba73ada90867fec5a1a341d7e3f038e9d87d5c1d1353b68759324048a4",
+          "size": 197
+        },
+        {
+          "path": "fixtures/wrong-profile/framework/MadBSkie.framework/Resources/Info.plist",
+          "sha256": "sha256:07ad6cf1d2cc40c97f1a3c8004cf6d07c0a276503e5fb4093317902384d034e9",
+          "size": 729
+        },
+        {
+          "path": "fixtures/wrong-profile/public-api.json",
+          "sha256": "sha256:d6cbeeaca187a20be5d8fe411c6500f029d6d1f9d6698322cb9158a3ebe32e15",
+          "size": 357566
+        },
+        {
+          "path": "fixtures/wrong-profile/swift/MadBSkieConcurrency.swift",
+          "sha256": "sha256:24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+          "size": 8590
+        },
+        {
+          "path": "framework/MadBSkie.framework/Headers/MadBSkie-Swift.h",
+          "sha256": "sha256:c68a8b6924a0580e29437ada32883203818833f778433a80a52e94663aade45a",
+          "size": 12900
+        },
+        {
+          "path": "framework/MadBSkie.framework/Headers/MadBSkie.apinotes",
+          "sha256": "sha256:3720e054c41f61a35b927487994efe5e67c4d80cedd58ac01647ff5d8c9f0f9b",
+          "size": 43792
+        },
+        {
+          "path": "framework/MadBSkie.framework/Headers/MadBSkie.h",
+          "sha256": "sha256:bb1f4733db54fab999d214f25119533b478a7e7f19561cc664cde7ae0965e9b9",
+          "size": 81805
+        },
+        {
+          "path": "framework/MadBSkie.framework/MadBSkie",
+          "sha256": "sha256:f09be92acaa1f6726b24ef497b5f4f6394ad7dfea818f317338009e42d0a3342",
+          "size": 4943664
+        },
+        {
+          "path": "framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.abi.json",
+          "sha256": "sha256:49075e9145acf1a4abd075b4791c5dfa9553475fecc32f0b3893deeb9b9d8d8d",
+          "size": 834013
+        },
+        {
+          "path": "framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.private.swiftinterface",
+          "sha256": "sha256:e6d7d0a1eccc2198518ec29c71909ff6163ba7914deadb22d07aa20d2fcf78ca",
+          "size": 55402
+        },
+        {
+          "path": "framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftdoc",
+          "sha256": "sha256:17596d98b02cbff74b4e6bc7de3e722797bbcfb7b523df7b418103ebe90ff78e",
+          "size": 700
+        },
+        {
+          "path": "framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftinterface",
+          "sha256": "sha256:73831da6c7ec0032a81a6a527a7840ccd91feed17e68d54a52d355c18715f008",
+          "size": 54450
+        },
+        {
+          "path": "framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftmodule",
+          "sha256": "sha256:44dbba315774e949de791d885beea326373da34bc1992e8e50c8d98c1a17ca51",
+          "size": 155256
+        },
+        {
+          "path": "framework/MadBSkie.framework/Modules/module.modulemap",
+          "sha256": "sha256:702ffeba73ada90867fec5a1a341d7e3f038e9d87d5c1d1353b68759324048a4",
+          "size": 197
+        },
+        {
+          "path": "framework/MadBSkie.framework/Resources/Info.plist",
+          "sha256": "sha256:07ad6cf1d2cc40c97f1a3c8004cf6d07c0a276503e5fb4093317902384d034e9",
+          "size": 729
+        },
+        {
+          "path": "generated/facade/MadBSkieConcurrency.swift",
+          "sha256": "sha256:24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+          "size": 8590
+        },
+        {
+          "path": "generated/skie/public-api.json",
+          "sha256": "sha256:9be05a6bb33576bb8cfdea70f64a1dae36c6c81a1d272301a5e83786c0cf47a2",
+          "size": 187576
+        },
+        {
+          "path": "identity.json",
+          "sha256": "sha256:493c4dff5ee9b3ada3ccb8a839c98aa685e04c8e40ccef7af994c8e43f5e5a4d",
+          "size": 242
+        },
+        {
+          "path": "madb.lock",
+          "sha256": "sha256:6452207fac220df4aeda83141ac3417f86f6745c237d9722fafa88425b435c13",
+          "size": 29846
+        },
+        {
+          "path": "profile.json",
+          "sha256": "sha256:c5ac9d3a43b10e0b006ddb9f07b039c38c50ff2e265dbaafa6a3d6dc180e4558",
+          "size": 6655
+        },
+        {
+          "path": "project.json",
+          "sha256": "sha256:f312f4d644b603977e9b5057f974be17ef2566489de119f2751c262579b4b467",
+          "size": 22918
+        },
+        {
+          "path": "provenance.json",
+          "sha256": "sha256:e644bec6dfde9771a4833b9ae070dd7eb3914436ad6bff8728ab8d8497c3a04d",
+          "size": 298
+        },
+        {
+          "path": "public-api.json",
+          "sha256": "sha256:d6cbeeaca187a20be5d8fe411c6500f029d6d1f9d6698322cb9158a3ebe32e15",
+          "size": 357566
+        },
+        {
+          "path": "runtime-protocol.json",
+          "sha256": "sha256:8bec386435bc4c9872e194dcd79a739dccb5f56af96058ce3692db984230deec",
+          "size": 5484
+        },
+        {
+          "path": "swift/MadBSkieConcurrency.swift",
+          "sha256": "sha256:24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+          "size": 8590
+        },
+        {
+          "path": "toolchain.json",
+          "sha256": "sha256:571c80a5e12105e80dd66fa4cad6cfdcbcd401611fa1145f3824c99c7d28d996",
+          "size": 18711
+        }
+      ],
+      "generation_id": "sha256:f621cc2a7b674a98140f9bf7cfc58f1ae95f92acf135680e0d3356f612e2d8af",
+      "lock_digest": "sha256:6452207fac220df4aeda83141ac3417f86f6745c237d9722fafa88425b435c13",
+      "manifest_path": "candidate.json",
+      "policy_digest": "sha256:77aaf97ca20d60fd5d54a6721aac2906e0ea5fecdb80363bffc65c7c049dcb36",
+      "public_symbols": [
+        "madb.c06.madb_skie.Engine.awaitClosed.v1",
+        "madb.c06.madb_skie.Engine.phase.v1",
+        "madb.c06.madb_skie.Engine.publish.v1",
+        "madb.c06.madb_skie.Engine.requestClose.v1",
+        "madb.c06.madb_skie.Engine.roundtrip.v1",
+        "madb.c06.madb_skie.Engine.startOperation.v1",
+        "madb.c06.madb_skie.Engine.stats.v1",
+        "madb.c06.madb_skie.Engine.subscribeEvents.v1",
+        "madb.c06.madb_skie.Engine.subscribeState.v1",
+        "madb.c06.madb_skie.Operation.requestCancel.v1",
+        "madb.c06.madb_skie.Operation.run.v1",
+        "madb.c06.madb_skie.Subscription.awaitStopped.v1",
+        "madb.c06.madb_skie.Subscription.events.v1",
+        "madb.c06.madb_skie.Subscription.requestStop.v1",
+        "madb.c06.madb_skie.bootstrapVersion.v1",
+        "madb.c06.madb_skie.failureEvent.v1",
+        "madb.c06.madb_skie.interfaceIdentity.v1",
+        "madb.c06.madb_skie.nativeAbiVersion.v1",
+        "madb.c06.madb_skie.openEngine.v1",
+        "madb.c06.madb_skie.profileIdentity.v1"
+      ],
+      "required_cases": [
+        "c06.swift-kotlin.async",
+        "c06.swift-kotlin.cancel",
+        "c06.swift-kotlin.capacity",
+        "c06.swift-kotlin.data",
+        "c06.swift-kotlin.distribution",
+        "c06.swift-kotlin.enhanced-api",
+        "c06.swift-kotlin.errors",
+        "c06.swift-kotlin.generic-lambda",
+        "c06.swift-kotlin.identity",
+        "c06.swift-kotlin.late-callback",
+        "c06.swift-kotlin.missing-cinterop-origin",
+        "c06.swift-kotlin.objects",
+        "c06.swift-kotlin.shutdown",
+        "c06.swift-kotlin.wrong-abi",
+        "c06.swift-kotlin.wrong-profile"
+      ],
+      "schema": "madb.candidate/1",
+      "selector": {
+        "direction": "consumer-to-provider",
+        "profile_digest": "sha256:ce30af78d0d01274ed121f93763a66c21562fa4b96a06d69ab1de720a1539a5c",
+        "profile_id": "c06-swift-kotlin-aarch64-apple-darwin",
+        "route": "KN-SWIFT-OBJC",
+        "target": "aarch64-apple-darwin"
+      }
+    },
+    "identity": {
+      "bootstrap_version": 1,
+      "interface_digest": "sha256:339ac91482ef3eacdb077ae89857a406ae7e6f74ced08c956ece4c55c25eeb2d",
+      "profile_digest": "sha256:ce30af78d0d01274ed121f93763a66c21562fa4b96a06d69ab1de720a1539a5c",
+      "schema": "madb.native-identity/1"
+    },
+    "provenance": {
+      "input_digest": "sha256:e49b56fa92c013a9090c2606d8d87833472d4d200a736f0e207e42f828b5a093",
+      "producer_revision": "b19d48f5f6fda584a6c47f2e0dc7059f5a080d01",
+      "provisional": false,
+      "schema": "madb.native-provenance/1",
+      "tool_digest": "sha256:464448c7d4b307867e1a0ea4aa76aa8b157d7bd7b6e36964d8890c132d5992c6"
+    }
+  },
+  "tools": {
+    "xcode": "Xcode 27.0\nBuild version 27A266a",
+    "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx26.0",
+    "sdk_version": "27.0",
+    "sdk_build": "26A425",
+    "sdk_settings": {
+      "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/SDKSettings.plist",
+      "sha256": "90a738dbf3fd88e7f6d35646e19d3a8a716923b9773ce1b67260466d9ceed370",
+      "size": 5538
+    },
+    "signing_inputs": [
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk/SDKSettings.json",
+        "sha256": "7b93ad7e534cc4b31c6a4e39d19b5e0288acf2168c2649479a796d1cb51939fb",
+        "size": 7948
+      },
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Xcode/Agents/XCTRunner.app/Contents/Resources/RunnerEntitlements.plist",
+        "sha256": "7c8de4afe35d0467eea755e66351afeb8d43da6b1ca054151fcda338d38fbbab",
+        "size": 1119
+      },
+      {
+        "path": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Xcode/PrivatePlugIns/IDEOSXSupportCore.ideplugin/Contents/Resources/BaseEntitlements.plist",
+        "sha256": "87a3e7fcd67af748b28d049449185056b8b076b8bd65c82720f48c99883022be",
+        "size": 243
+      }
+    ],
+    "images": {
+      "swiftc": {
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend",
+        "sha256": "cf81104bf554eef05e28a8bb5285c763f1323b4511b944d755d8bdd6cb8db717",
+        "size": 173118384
+      },
+      "clang": {
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang",
+        "sha256": "1590ac950a3d627817d09ade5cb60b2115f17a72182a3141e010b4bcc482a0c9",
+        "size": 124676976
+      },
+      "ld": {
+        "path": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld",
+        "sha256": "374d9f0713bce2c8a9e1e82bde51615d5433516a10d99b63107eb6ee70542e4c",
+        "size": 2749664
+      },
+      "xcodebuild": {
+        "path": "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "sha256": "c493a97b720c6afabad03b00577d4387fe9b01d44e57be26caae81511e5820bb",
+        "size": 100736
+      },
+      "codesign": {
+        "path": "/usr/bin/codesign",
+        "sha256": "844d30a12929b59c9f2215e2a308c3e1db572831a478f35906e452a54025603e",
+        "size": 458576
+      }
+    },
+    "host": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83"
+  },
+  "consumer_inputs": {
+    "App.swift": {
+      "sha256": "0b56277e9b412befcb422de9fe0452628da0a50f025712c97b12117984cc46c4",
+      "size": 5793
+    },
+    "LifecycleUITests.swift": {
+      "sha256": "a4fd401c8eb73d061b11a5907b4b33c789dc830f4b9a9069c3c2b200707d36a8",
+      "size": 5177
+    },
+    "MadBL04NativeUI.xcodeproj/project.pbxproj": {
+      "sha256": "fe970e08d4cc41e1c67ccc120257e44f09b0524c48e2e08cb4b972d88b30bbaf",
+      "size": 7093
+    },
+    "MadBL04NativeUI.xcodeproj/xcshareddata/xcschemes/MadBL04NativeUI.xcscheme": {
+      "sha256": "ca211001b2741b53435a43dab1e35952af777b162732a726e723c4518d28681b",
+      "size": 2234
+    },
+    "NativeOwner.swift": {
+      "sha256": "404a3bad0b823d6632f24c2e74fdc5baba8659eeefb7b3d0a7264f4a94cb9c50",
+      "size": 15486
+    },
+    "PublicCandidate/LICENSE": {
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    "PublicCandidate/NOTICE": {
+      "sha256": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+      "size": 223
+    },
+    "PublicCandidate/candidate.json": {
+      "sha256": "c4df80e91cc60ddf6a18f27b0abc6816a7d994d8a3977b67749bc738d1c8db7d",
+      "size": 12049
+    },
+    "PublicCandidate/contract.json": {
+      "sha256": "252b24d2b78b4e93512d25cc1308dd1bc8e02d25c11bc137e7c32084944d72d2",
+      "size": 70529
+    },
+    "PublicCandidate/declarations.json": {
+      "sha256": "577534501f717a08fa58c7240e8d8e4c4c3aa32135b473fa1ff63819f7d5a875",
+      "size": 10858
+    },
+    "PublicCandidate/derivation.json": {
+      "sha256": "761cc4e4bf5b0a719238f31639f576cc920461b10f4e89e4f1898ed18f61b9c7",
+      "size": 4815
+    },
+    "PublicCandidate/evidence/task-0000.json": {
+      "sha256": "e16c9c13692ed39aaf76efc4f03adfd3db428ee430b5634072da3f0bf88f245b",
+      "size": 8788
+    },
+    "PublicCandidate/evidence/task-0001.json": {
+      "sha256": "21c2b4ff4ec0fd18788ded7f2ba1adf6d9521e49c1214db986a3429e8fca08fe",
+      "size": 8434
+    },
+    "PublicCandidate/evidence/task-0002.json": {
+      "sha256": "1ef29b6c9ee8f0df3a47c2d203fcee9d8ea10cced460cefd3427d8faf7eb39f3",
+      "size": 879
+    },
+    "PublicCandidate/fixtures/p04/Custom.framework/Custom": {
+      "sha256": "5776d91bfe8ef739ec27c4ca4d62b234876b4f1e0beafe4697f6182476eb160b",
+      "size": 50280
+    },
+    "PublicCandidate/fixtures/p04/Custom.framework/Headers/Custom.h": {
+      "sha256": "f91380027e7a32b118261af2e8cea435b2d52694e23d1238aa8f3bf13540c759",
+      "size": 73
+    },
+    "PublicCandidate/fixtures/p04/Custom.framework/Modules/module.modulemap": {
+      "sha256": "bd11cafa200c74360aa8d6732a8458e5c546c2834e5cabf14e924dc1b22af9bd",
+      "size": 64
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Headers/MadBSkieGaps-Swift.h": {
+      "sha256": "1d1e01bf356c34a5bd9e67e72c0587f99412d9c348a1d9367f5423ac55aa5cc8",
+      "size": 12916
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Headers/MadBSkieGaps.apinotes": {
+      "sha256": "faff61daa21b50a5721e2baf9898cd983a9f77b124422fc5bb177ae801ef25c4",
+      "size": 29142
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Headers/MadBSkieGaps.h": {
+      "sha256": "78ce92c0576faa33d43101b355eeebece3a46518e3b1e52236e20424e939f168",
+      "size": 68060
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/MadBSkieGaps": {
+      "sha256": "61af8dad9979220ea4d425c3489adfc2878d219f06a84fa2fbf9feffabf4deeb",
+      "size": 4396784
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.abi.json": {
+      "sha256": "902f5d014e899bb12d68a6a07ce6e544adcb92e0c381c642ce04ee823e05ced0",
+      "size": 811529
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.private.swiftinterface": {
+      "sha256": "dc0df6be5496671b66a0d4b2df8ed88a08d4cb247ccb9f0695c205990277ddc1",
+      "size": 57063
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.swiftdoc": {
+      "sha256": "90c7fc40611cf76ce89dd8be30c89301096475a47b9cb49917e5f8ec97d0d64f",
+      "size": 412
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.swiftinterface": {
+      "sha256": "cb784af05ada2decff5db6f0816c839343963843f9b82ca94ddf63bbaade2b87",
+      "size": 56071
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Modules/MadBSkieGaps.swiftmodule/arm64-apple-macos.swiftmodule": {
+      "sha256": "cc790382af0a29caf41f6c75e642d2d67d05bdbc269df6a2ddc29ca18af5f9f5",
+      "size": 149340
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Modules/module.modulemap": {
+      "sha256": "73a5f65de73aec72f19fc9ab5b4488d9650b19f3543ecb443c535f68f40df32f",
+      "size": 213
+    },
+    "PublicCandidate/fixtures/p04/MadBSkieGaps.framework/Resources/Info.plist": {
+      "sha256": "63fdab17c0a4607f4dd5284d2a1c9315e19465596765ce352fa597b660981a38",
+      "size": 736
+    },
+    "PublicCandidate/fixtures/wrong-profile/derivation.json": {
+      "sha256": "8074064512fb35fc5a6f93f3c636bd353b7373c5c5e4fcc9cd3d5c22375ff741",
+      "size": 4815
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Headers/MadBSkie-Swift.h": {
+      "sha256": "c68a8b6924a0580e29437ada32883203818833f778433a80a52e94663aade45a",
+      "size": 12900
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Headers/MadBSkie.apinotes": {
+      "sha256": "3720e054c41f61a35b927487994efe5e67c4d80cedd58ac01647ff5d8c9f0f9b",
+      "size": 43792
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Headers/MadBSkie.h": {
+      "sha256": "bb1f4733db54fab999d214f25119533b478a7e7f19561cc664cde7ae0965e9b9",
+      "size": 81805
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/MadBSkie": {
+      "sha256": "e3dff720251308f82f14c96ff2a1421a45e90aafbe71dc3655b9c32dede67296",
+      "size": 4943664
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.abi.json": {
+      "sha256": "49075e9145acf1a4abd075b4791c5dfa9553475fecc32f0b3893deeb9b9d8d8d",
+      "size": 834013
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.private.swiftinterface": {
+      "sha256": "e6d7d0a1eccc2198518ec29c71909ff6163ba7914deadb22d07aa20d2fcf78ca",
+      "size": 55402
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftdoc": {
+      "sha256": "17596d98b02cbff74b4e6bc7de3e722797bbcfb7b523df7b418103ebe90ff78e",
+      "size": 700
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftinterface": {
+      "sha256": "73831da6c7ec0032a81a6a527a7840ccd91feed17e68d54a52d355c18715f008",
+      "size": 54450
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftmodule": {
+      "sha256": "44dbba315774e949de791d885beea326373da34bc1992e8e50c8d98c1a17ca51",
+      "size": 155256
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Modules/module.modulemap": {
+      "sha256": "702ffeba73ada90867fec5a1a341d7e3f038e9d87d5c1d1353b68759324048a4",
+      "size": 197
+    },
+    "PublicCandidate/fixtures/wrong-profile/framework/MadBSkie.framework/Resources/Info.plist": {
+      "sha256": "07ad6cf1d2cc40c97f1a3c8004cf6d07c0a276503e5fb4093317902384d034e9",
+      "size": 729
+    },
+    "PublicCandidate/fixtures/wrong-profile/public-api.json": {
+      "sha256": "d6cbeeaca187a20be5d8fe411c6500f029d6d1f9d6698322cb9158a3ebe32e15",
+      "size": 357566
+    },
+    "PublicCandidate/fixtures/wrong-profile/swift/MadBSkieConcurrency.swift": {
+      "sha256": "24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+      "size": 8590
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Headers/MadBSkie-Swift.h": {
+      "sha256": "c68a8b6924a0580e29437ada32883203818833f778433a80a52e94663aade45a",
+      "size": 12900
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Headers/MadBSkie.apinotes": {
+      "sha256": "3720e054c41f61a35b927487994efe5e67c4d80cedd58ac01647ff5d8c9f0f9b",
+      "size": 43792
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Headers/MadBSkie.h": {
+      "sha256": "bb1f4733db54fab999d214f25119533b478a7e7f19561cc664cde7ae0965e9b9",
+      "size": 81805
+    },
+    "PublicCandidate/framework/MadBSkie.framework/MadBSkie": {
+      "sha256": "f09be92acaa1f6726b24ef497b5f4f6394ad7dfea818f317338009e42d0a3342",
+      "size": 4943664
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.abi.json": {
+      "sha256": "49075e9145acf1a4abd075b4791c5dfa9553475fecc32f0b3893deeb9b9d8d8d",
+      "size": 834013
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.private.swiftinterface": {
+      "sha256": "e6d7d0a1eccc2198518ec29c71909ff6163ba7914deadb22d07aa20d2fcf78ca",
+      "size": 55402
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftdoc": {
+      "sha256": "17596d98b02cbff74b4e6bc7de3e722797bbcfb7b523df7b418103ebe90ff78e",
+      "size": 700
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftinterface": {
+      "sha256": "73831da6c7ec0032a81a6a527a7840ccd91feed17e68d54a52d355c18715f008",
+      "size": 54450
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftmodule": {
+      "sha256": "44dbba315774e949de791d885beea326373da34bc1992e8e50c8d98c1a17ca51",
+      "size": 155256
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Modules/module.modulemap": {
+      "sha256": "702ffeba73ada90867fec5a1a341d7e3f038e9d87d5c1d1353b68759324048a4",
+      "size": 197
+    },
+    "PublicCandidate/framework/MadBSkie.framework/Resources/Info.plist": {
+      "sha256": "07ad6cf1d2cc40c97f1a3c8004cf6d07c0a276503e5fb4093317902384d034e9",
+      "size": 729
+    },
+    "PublicCandidate/generated/facade/MadBSkieConcurrency.swift": {
+      "sha256": "24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+      "size": 8590
+    },
+    "PublicCandidate/generated/skie/public-api.json": {
+      "sha256": "9be05a6bb33576bb8cfdea70f64a1dae36c6c81a1d272301a5e83786c0cf47a2",
+      "size": 187576
+    },
+    "PublicCandidate/identity.json": {
+      "sha256": "493c4dff5ee9b3ada3ccb8a839c98aa685e04c8e40ccef7af994c8e43f5e5a4d",
+      "size": 242
+    },
+    "PublicCandidate/madb.lock": {
+      "sha256": "6452207fac220df4aeda83141ac3417f86f6745c237d9722fafa88425b435c13",
+      "size": 29846
+    },
+    "PublicCandidate/profile.json": {
+      "sha256": "c5ac9d3a43b10e0b006ddb9f07b039c38c50ff2e265dbaafa6a3d6dc180e4558",
+      "size": 6655
+    },
+    "PublicCandidate/project.json": {
+      "sha256": "f312f4d644b603977e9b5057f974be17ef2566489de119f2751c262579b4b467",
+      "size": 22918
+    },
+    "PublicCandidate/provenance.json": {
+      "sha256": "e644bec6dfde9771a4833b9ae070dd7eb3914436ad6bff8728ab8d8497c3a04d",
+      "size": 298
+    },
+    "PublicCandidate/public-api.json": {
+      "sha256": "d6cbeeaca187a20be5d8fe411c6500f029d6d1f9d6698322cb9158a3ebe32e15",
+      "size": 357566
+    },
+    "PublicCandidate/runtime-protocol.json": {
+      "sha256": "8bec386435bc4c9872e194dcd79a739dccb5f56af96058ce3692db984230deec",
+      "size": 5484
+    },
+    "PublicCandidate/swift/MadBSkieConcurrency.swift": {
+      "sha256": "24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+      "size": 8590
+    },
+    "PublicCandidate/toolchain.json": {
+      "sha256": "571c80a5e12105e80dd66fa4cad6cfdcbcd401611fa1145f3824c99c7d28d996",
+      "size": 18711
+    },
+    "PublicObservation/.gitignore": {
+      "sha256": "acc718146d21aae829cba1761475e05de39d73209d83af2ab8487a74843cead0",
+      "size": 18
+    },
+    "PublicObservation/Integration/SKIE/MadBSkieStateSource.swift": {
+      "sha256": "e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+      "size": 1526
+    },
+    "PublicObservation/LICENSE": {
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "size": 11358
+    },
+    "PublicObservation/NOTICE": {
+      "sha256": "f80b89a9e5a5f5b8abcf6b2ee485bbe4774367a89023baada8776b81ebef1aab",
+      "size": 223
+    },
+    "PublicObservation/Package.swift": {
+      "sha256": "43ca7df1c62f3d29ea75b8d5ab1a8a92cb26289d678c9be5fada7792b0a5cc46",
+      "size": 411
+    },
+    "PublicObservation/README.md": {
+      "sha256": "d646101c7a3712e8075e1dfd7dbf1e84da6fa7f27009d294d6e9976557ad3329",
+      "size": 6092
+    },
+    "PublicObservation/Sources/MadBObservation/MadBStateModel.swift": {
+      "sha256": "425c731bfe1fb1f0b972da5e67d64fd6127f8ec38a1ac1e1d5d68d385b1103e7",
+      "size": 6338
+    },
+    "PublicObservation/Sources/MadBObservation/MadBStateSource.swift": {
+      "sha256": "6db7556634f0781f8d7299d5d36ba15d65f427d86b60d640c83d72c9ccef0a83",
+      "size": 1122
+    },
+    "PublicObservation/Tests/MadBObservationTests/ControlledSource.swift": {
+      "sha256": "90ea653e14b9d80e7992f714059b8f53aa9cbe66f98558819e87bfe6118b0179",
+      "size": 4808
+    },
+    "PublicObservation/Tests/MadBObservationTests/MadBStateModelTests.swift": {
+      "sha256": "e110753f165e8126a9789a23763bd5b29152051a2065bca81daa11711e2df8f6",
+      "size": 8894
+    },
+    "PublicSkie/MadBSkie.framework/Headers/MadBSkie-Swift.h": {
+      "sha256": "c68a8b6924a0580e29437ada32883203818833f778433a80a52e94663aade45a",
+      "size": 12900
+    },
+    "PublicSkie/MadBSkie.framework/Headers/MadBSkie.apinotes": {
+      "sha256": "3720e054c41f61a35b927487994efe5e67c4d80cedd58ac01647ff5d8c9f0f9b",
+      "size": 43792
+    },
+    "PublicSkie/MadBSkie.framework/Headers/MadBSkie.h": {
+      "sha256": "bb1f4733db54fab999d214f25119533b478a7e7f19561cc664cde7ae0965e9b9",
+      "size": 81805
+    },
+    "PublicSkie/MadBSkie.framework/MadBSkie": {
+      "sha256": "f09be92acaa1f6726b24ef497b5f4f6394ad7dfea818f317338009e42d0a3342",
+      "size": 4943664
+    },
+    "PublicSkie/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.abi.json": {
+      "sha256": "49075e9145acf1a4abd075b4791c5dfa9553475fecc32f0b3893deeb9b9d8d8d",
+      "size": 834013
+    },
+    "PublicSkie/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.private.swiftinterface": {
+      "sha256": "e6d7d0a1eccc2198518ec29c71909ff6163ba7914deadb22d07aa20d2fcf78ca",
+      "size": 55402
+    },
+    "PublicSkie/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftdoc": {
+      "sha256": "17596d98b02cbff74b4e6bc7de3e722797bbcfb7b523df7b418103ebe90ff78e",
+      "size": 700
+    },
+    "PublicSkie/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftinterface": {
+      "sha256": "73831da6c7ec0032a81a6a527a7840ccd91feed17e68d54a52d355c18715f008",
+      "size": 54450
+    },
+    "PublicSkie/MadBSkie.framework/Modules/MadBSkie.swiftmodule/arm64-apple-macos.swiftmodule": {
+      "sha256": "44dbba315774e949de791d885beea326373da34bc1992e8e50c8d98c1a17ca51",
+      "size": 155256
+    },
+    "PublicSkie/MadBSkie.framework/Modules/module.modulemap": {
+      "sha256": "702ffeba73ada90867fec5a1a341d7e3f038e9d87d5c1d1353b68759324048a4",
+      "size": 197
+    },
+    "PublicSkie/MadBSkie.framework/Resources/Info.plist": {
+      "sha256": "07ad6cf1d2cc40c97f1a3c8004cf6d07c0a276503e5fb4093317902384d034e9",
+      "size": 729
+    },
+    "PublicSkie/MadBSkieConcurrency.swift": {
+      "sha256": "24a51d0ddee1962ad0e69d90975a4a6b53b179168ee6f7a8d55d78f1aba05e0b",
+      "size": 8590
+    },
+    "PublicSkie/MadBSkieStateSource.swift": {
+      "sha256": "e410085e73f23ad1920d43b39823e3647748d9440fe4eee46c3c7412d1b3b2cf",
+      "size": 1526
+    }
+  },
+  "consumer_configuration": {
+    "sha256": "563aad47955545bdda84afbd736e4f91647d8b64cacc0d84f0de71230a86b47f",
+    "size": 334
+  },
+  "app_files": {
+    "Contents/Info.plist": {
+      "sha256": "665356c50afe2d749b0c4d5020809abd78f7d493f64681946c5f4e09e33736a8",
+      "size": 1281
+    },
+    "Contents/MacOS/MadBL04NativeUI": {
+      "sha256": "268fcb5a2a4355eddc61bde30a2b2a56151b0dd960947358422aab0da551d727",
+      "size": 3014624
+    },
+    "Contents/PkgInfo": {
+      "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+      "size": 8
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "sha256": "6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+      "size": 2200
+    }
+  },
+  "signing": {
+    "mode": "local-ad-hoc-development-only",
+    "distribution_signature": false,
+    "products": [
+      {
+        "name": "application",
+        "path": "/private/tmp/madb-chief-round11/l04-formal-gui-004/DerivedData/Build/Products/Release/MadBL04NativeUI.app",
+        "entitlements": {
+          "com.apple.security.get-task-allow": true,
+          "com.apple.security.temporary-exception.files.absolute-path.read-only": [
+            "/"
+          ],
+          "com.apple.security.temporary-exception.mach-lookup.global-name": [
+            "com.apple.testmanagerd",
+            "com.apple.dt.testmanagerd.runner",
+            "com.apple.coresymbolicationd"
+          ]
+        }
+      },
+      {
+        "name": "test-runner",
+        "path": "/private/tmp/madb-chief-round11/l04-formal-gui-004/DerivedData/Build/Products/Release/MadBL04NativeUITests-Runner.app",
+        "entitlements": {
+          "com.apple.application-identifier": "org.madb.lab.l04nativeui.tests.xctrunner",
+          "com.apple.security.app-sandbox": true,
+          "com.apple.security.get-task-allow": true,
+          "com.apple.security.network.client": true,
+          "com.apple.security.temporary-exception.files.absolute-path.read-only": [
+            "/",
+            "/"
+          ],
+          "com.apple.security.temporary-exception.mach-lookup.global-name": [
+            "com.apple.testmanagerd",
+            "com.apple.dt.testmanagerd.runner",
+            "com.apple.coresymbolicationd",
+            "com.apple.coredevice.version",
+            "com.apple.coredevice.service",
+            "com.apple.remoted",
+            "com.apple.testmanagerd",
+            "com.apple.dt.testmanagerd.runner",
+            "com.apple.coresymbolicationd"
+          ],
+          "com.apple.security.temporary-exception.mach-lookup.local-name": [
+            "com.apple.axserver"
+          ],
+          "com.apple.security.temporary-exception.sbpl": [
+            "(allow hid-control)",
+            "(allow signal)"
+          ]
+        }
+      },
+      {
+        "name": "test-bundle",
+        "path": "/private/tmp/madb-chief-round11/l04-formal-gui-004/DerivedData/Build/Products/Release/MadBL04NativeUITests-Runner.app/Contents/PlugIns/MadBL04NativeUITests.xctest",
+        "entitlements": {}
+      }
+    ]
+  },
+  "linked_images": "/private/tmp/madb-chief-round11/l04-formal-gui-004/DerivedData/Build/Products/Release/MadBL04NativeUI.app/Contents/MacOS/MadBL04NativeUI:\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2775.10.103)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/SwiftUI.framework/Versions/A/SwiftUI (compatibility version 1.0.0, current version 8.0.84)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreAudio.dylib (compatibility version 1.0.0, current version 482.102.10, weak)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)\n\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 3.0.0, weak)\n\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 428.0.10)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.0.2, weak)\n\t/usr/lib/swift/libswiftIOKit.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 382.5.3, weak)\n\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0)\n\t/usr/lib/swift/libswiftObservation.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)\n\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 917.0.1, weak)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)\n\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.0.0, weak)\n\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)\n",
+  "error": "command failed: /private/tmp/madb-chief-round11/l04-formal-gui-004/logs/023.json",
+  "xctest_runner_cleanup": {
+    "state": "exited",
+    "processes": [],
+    "meaning": "XCTest control-process cleanup; separate from native application close"
+  },
+  "cleanup": {
+    "state": "not_observed",
+    "forced": false,
+    "recovered": [],
+    "reason": "process receipt unavailable; no normal application completion claim"
+  },
+  "commands": [
+    {
+      "path": "logs/000.json",
+      "sha256": "e6942fdcca5795c14417f38a1aa08310d962aab51de31e5e6f1b6211d6c84807",
+      "size": 296
+    },
+    {
+      "path": "logs/001.json",
+      "sha256": "22fedf51fc29967306b1bbe1334a083939eb5cdeb00e230052787e7f385de504",
+      "size": 258
+    },
+    {
+      "path": "logs/002.json",
+      "sha256": "ec81877318baf532b24da93f1abcf9896d5d3f1c9e66068c2dc664b11078cee5",
+      "size": 230
+    },
+    {
+      "path": "logs/003.json",
+      "sha256": "a738448a891b3b2a972ec9ea4b4c6809bf259db5a5457b292ee61f5d28ba3eba",
+      "size": 333
+    },
+    {
+      "path": "logs/004.json",
+      "sha256": "4119693ac20666d0cb0cdda1eed51c481975d1b30bc3271374bff42a44be3094",
+      "size": 233
+    },
+    {
+      "path": "logs/005.json",
+      "sha256": "2fac2134fc3350afcc38f9514b7719d604078bb57cf73d4c98d1131fdabd1d4b",
+      "size": 241
+    },
+    {
+      "path": "logs/006.json",
+      "sha256": "81a1c5da647402aa04f207e3254292feb30e833af518ad70bdd1f05112064806",
+      "size": 297
+    },
+    {
+      "path": "logs/007.json",
+      "sha256": "0ddbeccfd3265fa6c05e06b4b145e4d07d4ce36692d9494bc980a1dec86e1879",
+      "size": 295
+    },
+    {
+      "path": "logs/008.json",
+      "sha256": "cd5fa27c62b963b994c28907477e2f49080bf0816c3aaf5a2b642e278f52bd68",
+      "size": 289
+    },
+    {
+      "path": "logs/009.json",
+      "sha256": "61ef0e93ca38c63ffc56d29566cd7b162dde552692dcaaff22c0f319cbfbc42b",
+      "size": 269
+    },
+    {
+      "path": "logs/010.json",
+      "sha256": "1a7c251f8a3c4571bab1f94532aad6db77e18bfcbe5045fc6b98f3199a13f863",
+      "size": 324
+    },
+    {
+      "path": "logs/011.json",
+      "sha256": "c684262e4a049c5fb0fa1193c3a59c642420c9843b893ec4c03f4d3fe3e0185b",
+      "size": 250
+    },
+    {
+      "path": "logs/012.json",
+      "sha256": "e3a46314440ae434549363b122014942f6588d7cea0b609eba98664f037cf981",
+      "size": 198933
+    },
+    {
+      "path": "logs/013.json",
+      "sha256": "df585bd341c6345cb036048979e6daa7fdc7009c640dde4529fb79c41c25d5a4",
+      "size": 622
+    },
+    {
+      "path": "logs/014.json",
+      "sha256": "eb2aed54a1058802cf3ad9c88b66a3b29dc0d78658188f231f7a34a3f6c9f438",
+      "size": 1291
+    },
+    {
+      "path": "logs/015.json",
+      "sha256": "84ff75fee6b5ff110611f1f893d96c8e328033cdc04f2d0e2b63c3c2a73cc35e",
+      "size": 1072
+    },
+    {
+      "path": "logs/016.json",
+      "sha256": "d15e969cc92aa7a67c7cf74b6449d20a92def8ccf1221255c6e8b1c782f04434",
+      "size": 1009
+    },
+    {
+      "path": "logs/017.json",
+      "sha256": "4e0c04f2507df671f85c519c89ae59fb8be74b517cd2843f136c3125c6b4325a",
+      "size": 1343
+    },
+    {
+      "path": "logs/018.json",
+      "sha256": "e0f427f4bc5a265523a710ed6e23684d8ed31b7865818ce6c93c49517db82182",
+      "size": 1840
+    },
+    {
+      "path": "logs/019.json",
+      "sha256": "17f117e8d30b823326ed1e42ce79014da010d9a7609b90871bb0edf9afdb3eca",
+      "size": 793
+    },
+    {
+      "path": "logs/020.json",
+      "sha256": "2b6cad3e48e22287d2825f87eee259d13dfa831fa3a3b70adcc07bed5fe0ce69",
+      "size": 1407
+    },
+    {
+      "path": "logs/021.json",
+      "sha256": "0c4f02eea51ead9d43ad79d0726338c75e791a7f88961fff96ed141e2608ee01",
+      "size": 612
+    },
+    {
+      "path": "logs/022.json",
+      "sha256": "890102e63bc8a59831246cdbc962ec89c176a21ca96a4dfe8ae5fc1c32ba6705",
+      "size": 3038
+    },
+    {
+      "path": "logs/023.json",
+      "sha256": "e9c1592ec700cabf19aaa5d02dc1cff656e2181b6c7b4c0d0da156b3b28256cf",
+      "size": 3483
+    },
+    {
+      "path": "logs/024.json",
+      "sha256": "d01fa00e97bcc0800d5cbb0c9d6fe7074fb991904a0f376b06b076e8bb2210b2",
+      "size": 484
+    },
+    {
+      "path": "logs/025.json",
+      "sha256": "d01fa00e97bcc0800d5cbb0c9d6fe7074fb991904a0f376b06b076e8bb2210b2",
+      "size": 484
+    },
+    {
+      "path": "logs/026.json",
+      "sha256": "0d659126d368dbef3d1392d1a4f25d65d33759294e9817720634f3527f64f822",
+      "size": 460
+    }
+  ]
+}

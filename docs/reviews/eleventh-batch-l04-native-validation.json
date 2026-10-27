@@ -1,0 +1,243 @@
+{
+  "scope": "L04 macOS C06 SKIE plus public Observation source native SwiftUI slice; whole-task state only in catalog",
+  "evidence_root": "/Users/changyue/Desktop/MadB/.local/evidence/round11-extensions-doctor-swift/validation",
+  "lab_revision": "7a252092a0b50850c961f7d617facce20fbc57a2",
+  "candidate_digest": "872d0cbd49bee21d442f24be6536334a7cc8dff3a525839f2a889a7776ac908c",
+  "records": {
+    "l04-files-009.json": {
+      "sha256": "bdf164237e7ac396b992580608b22e067d3e88367e8e754ebf554c191c40ff7f",
+      "size": 1724
+    },
+    "l04-lab-freeze-004.json": {
+      "sha256": "c2e88c981cf9569c19a7ddf401cbcbcc8c202ef59ed2877906c1312c37ec7c65",
+      "size": 590
+    },
+    "l04-lab-full-gate-005.json": {
+      "sha256": "c961102359672dcf6d619018d4735769d1e6aa7547bcf5d746bc04afdf48d168",
+      "size": 461
+    },
+    "integration-lab-code.json": {
+      "sha256": "51dc2fb2b6d4ebd2829d10dd9e7d8e3d4fdbca8adb3da35e244aad3ca3e0e844",
+      "size": 544
+    },
+    "post-integration-lab-gate-001.json": {
+      "sha256": "b7859e1af221de0461bfa7f6c66aafbc969708ffa43f75132ecd7fe10f20ad2f",
+      "size": 104715
+    },
+    "l04-native-independent-review.md": {
+      "sha256": "a0cf46be938d7dfe15eeb828f3a0dc41a27a250b39fcc7fab719bc4c5125f040",
+      "size": 6855
+    },
+    "l04-native-delta-review.md": {
+      "sha256": "a8e8c135351524bc3503a66ba16016ceba52ea06f5b3bc749793616aac4d4965",
+      "size": 5080
+    },
+    "l04-native-scheme-review.md": {
+      "sha256": "7d40a94d17f1c09abeefed5ea9c5e111889d79431a417f38acaaf45a9dbcf24a",
+      "size": 5773
+    },
+    "l04-native-gui003-review.md": {
+      "sha256": "e90c9b4682054b6fee6ae0f2791d3f65698cff81d696963f43511e8697cafdf4",
+      "size": 2415
+    },
+    "l04-native-signing-review.md": {
+      "sha256": "bbbb709024509d01770904aa98f0855c84170e2580f3e028a98ba6a742fcdd46",
+      "size": 3550
+    },
+    "public-inputs/swift-observation-export.json": {
+      "sha256": "58fe0a1e2634947f87a2311f7a0cdb5efd0eaf98cc8c28cfe16f22e4a623b00b",
+      "size": 2042
+    },
+    "l04-formal-gui-001/report.json": {
+      "sha256": "c2c38e3066df696c78d9115d705e99c872bc1b5987e3c24a1e25684833166ade",
+      "size": 55475
+    },
+    "l04-formal-gui-002/report.json": {
+      "sha256": "fc4bb4e9e2305c6c66df2e33276695abcba64bbe97a8ae7692347762791bcabf",
+      "size": 56890
+    },
+    "l04-formal-gui-003/report.json": {
+      "sha256": "a7b85ea9805a95141ee58fbd56a3131e0e85a43180e84bcef01b0e8ff93b7fbb",
+      "size": 56890
+    },
+    "l04-formal-gui-004/report.json": {
+      "sha256": "791026575f02ce77d277bfa106e058a9c261075e462509802a48f6d4a3569dc8",
+      "size": 61004
+    },
+    "l04-native-gui004-review.md": {
+      "sha256": "fcd96a01661448a956208d91c5f519a715534238890569569a445f288521d762",
+      "size": 3136
+    },
+    "l04-final-status.md": {
+      "sha256": "f0904380bfecff187ec98d96be1c227bbd987018d8c9a1e5a6ce98d7e9495657",
+      "size": 4399
+    },
+    "l04-gui004-diagnostics-index.json": {
+      "sha256": "72cf76b6f2e875fa0b2d68da491e13167b54a2c2f7ff950a6bf2ba7150b6f3e2",
+      "size": 230208
+    },
+    "l04-gui004-diagnostics/authentication-excerpt.json": {
+      "sha256": "25ab839137924c67e390511c5656fdaf0436d114e2822f4c5439b2ea0dca7399",
+      "size": 1404
+    }
+  },
+  "formal_runs": [
+    {
+      "report": "l04-formal-gui-001/report.json",
+      "result": "failed",
+      "compile": "passed",
+      "target": "failed",
+      "owner_close": "not_confirmed",
+      "lab_revision": "814bbd99681aff9b38a861ec96ba64e3ff434f8e",
+      "provisional": false
+    },
+    {
+      "report": "l04-formal-gui-002/report.json",
+      "result": "failed",
+      "compile": "passed",
+      "target": "failed",
+      "owner_close": "not_confirmed",
+      "lab_revision": "1891b1351efa48e17944679045d85159f1fe8eba",
+      "provisional": false
+    },
+    {
+      "report": "l04-formal-gui-003/report.json",
+      "result": "failed",
+      "compile": "passed",
+      "target": "failed",
+      "owner_close": "not_confirmed",
+      "lab_revision": "80118b4fb1ef617d2d789db53baaa2aea8dad512",
+      "provisional": false
+    },
+    {
+      "report": "l04-formal-gui-004/report.json",
+      "result": "failed",
+      "compile": "passed",
+      "target": "failed",
+      "owner_close": "not_confirmed",
+      "lab_revision": "153edd12d76bf416e075a0430f18a2eaeabaa92d",
+      "provisional": false
+    },
+    {
+      "followup_report": "gui005/report.json",
+      "result": "failed",
+      "compile": "passed",
+      "target": "failed",
+      "owner_close": "not_confirmed",
+      "lab_revision": "153edd12d76bf416e075a0430f18a2eaeabaa92d",
+      "provisional": false
+    },
+    {
+      "followup_report": "gui006/report.json",
+      "result": "passed",
+      "compile": "passed",
+      "target": "passed",
+      "owner_close": "confirmed",
+      "lab_revision": "7a252092a0b50850c961f7d617facce20fbc57a2",
+      "provisional": false
+    }
+  ],
+  "post_integration": {
+    "tracked_files_equal": 540,
+    "repository_gate_exit_code": 0,
+    "target_reexecution": true,
+    "target_report": "gui006/report.json",
+    "target_result": "passed",
+    "xctest": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    },
+    "observations": {
+      "frames": 32,
+      "pid": 60519,
+      "fresh_swiftui_pages": 3,
+      "ordinary_publications": 6,
+      "normal_owner_close": true,
+      "application_termination_callback": true
+    },
+    "normal_process_exit": true
+  },
+  "boundaries": {
+    "ui_runtime_passed": true,
+    "native_owner_close_confirmed": true,
+    "certifies_l04": false,
+    "certifies_c06": false,
+    "distribution_signature": false,
+    "system_security_settings_modified_by_assistant": false
+  },
+  "original_evidence_root": "/private/tmp/madb-chief-round11",
+  "archive_manifest": {
+    "path": "/Users/changyue/Desktop/MadB/.local/evidence/round11-extensions-doctor-swift/manifest.json",
+    "sha256": "aa1569be29189e809d6746a365b4a2df6b7ba63f446d846f247b58485914c6b1",
+    "size": 14259389,
+    "entries": 60939
+  },
+  "followup_evidence_root": "/Users/changyue/Desktop/MadB/.local/evidence/round11-extensions-doctor-swift/ui-auth",
+  "followup_records": {
+    "gui005/report.json": {
+      "sha256": "01c1220f1f59e6ab4cb94b85856e9d9262553a6104906477ee5d578a82c1a75d",
+      "size": 60744
+    },
+    "gui006/report.json": {
+      "sha256": "d293ea897b167bd6db801e744804422d51aeabad885c817390caa12d4947dc04",
+      "size": 62575
+    },
+    "gui005-fix-review.md": {
+      "sha256": "cdbee95464edc07d26e42a0f5b8235e0ff91d597c0ccc630bf734eea944abd06",
+      "size": 3348
+    },
+    "gui005-fix-files.json": {
+      "sha256": "7d358d03fe91cdecb7453ad6c4a82333ca806a20cf3562790efafe88b0945f42",
+      "size": 1739
+    },
+    "gui005-ax-observation.json": {
+      "sha256": "ccf3f39f065548d1831b1542288d4b8954241ea1861fe493aeb33a376f383a2a",
+      "size": 19058
+    },
+    "gui005-path-diagnosis.json": {
+      "sha256": "7aa8f55e8cfcad51a759759630607048a4faf5631b60c6239c61ffbd333e6737",
+      "size": 1517
+    },
+    "lab-freeze-gui006.json": {
+      "sha256": "592a5163d85f130e4015829b2ead62b78cde43799e9932d4d845a4b90d6ec622",
+      "size": 369
+    },
+    "integration-revised-lab.json": {
+      "sha256": "62ea10986abf9048ff0b1c7a1b29c9cb5890ec258e1590aaf378a31853c63a0c",
+      "size": 104501
+    },
+    "post-integration-lab-gate-002.json": {
+      "sha256": "040d0734de94b491f936bf4a8a5f904158bb498f34df232f8fc82aa85abfbe2b",
+      "size": 495
+    },
+    "source-archives/manifest.json": {
+      "sha256": "b58f04cf6675d90a4fb7cdbcd514be493c9226ab228caa49900c6c1c6d6d2dfa",
+      "size": 236
+    },
+    "gui006-independent-review.md": {
+      "sha256": "9fa26ea90082e2221e9cd3ad1f99f1792f693a137cc969751845bfd54880abbd",
+      "size": 4713
+    },
+    "l04-ui-auth-result.md": {
+      "sha256": "ddf1776c9873e62f416c96aa35f00beb7109c3f0c6b6f825f8ea902cbee98f2d",
+      "size": 4009
+    },
+    "l04-ui-auth-final-evidence.json": {
+      "sha256": "b0db3368ddae6f91c30e39f524fde97194fe352d2f9103f23f2190056cb81359",
+      "size": 2833
+    }
+  },
+  "independent_review": {
+    "scope": "macOS Arm64 SwiftUI SKIE plus public Observation source slice",
+    "result": "passed",
+    "path": "gui006-independent-review.md"
+  },
+  "original_followup_evidence_root": "/private/tmp/madb-chief-round11-ui-auth",
+  "followup_archive_manifest": {
+    "path": "/Users/changyue/Desktop/MadB/.local/evidence/round11-extensions-doctor-swift/ui-auth-manifest.json",
+    "sha256": "79105e88c57e7f691577b627b184d3819939b988c4d3898ed2bcc35811923305",
+    "size": 1108553,
+    "entries": 4045
+  }
+}

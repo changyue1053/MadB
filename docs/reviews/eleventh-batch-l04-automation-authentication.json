@@ -1,0 +1,29 @@
+{
+  "source": {
+    "path": "/private/tmp/madb-chief-round11/l04-gui004-diagnostics/000.json",
+    "sha256": "baf9eee7bb6de043fa34fc77f03411b420aa5fecd43d7031978631cc864819b3"
+  },
+  "scope": "Exact GUI004 PID41242 automation request and authentication requirement; no authentication performed or visible prompt claimed",
+  "lines": [
+    {
+      "stdout_line": 49,
+      "text": "2026-10-27 03:36:28.214 Df testmanagerd[83365:59b87f0] [com.apple.dt.xctest:Default] Test session with pid 41242 requesting automation mode"
+    },
+    {
+      "stdout_line": 50,
+      "text": "2026-10-27 03:36:28.214 Df testmanagerd[83365:59b87f0] [com.apple.dt.xctest:Default] Added Automation Mode client <XCTestSession: 0x9cece00e0> pid 41242. Total clients: 1"
+    },
+    {
+      "stdout_line": 51,
+      "text": "2026-10-27 03:36:28.214 Df testmanagerd[83365:59b87f0] [com.apple.dt.xctest:Default] Enabling Automation Mode..."
+    },
+    {
+      "stdout_line": 53,
+      "text": "2026-10-27 03:36:28.230 Df testmanagerd[83365:59b87f0] [com.apple.dt.automationmode:Default] Writer daemon requires authentication to enable automation mode."
+    },
+    {
+      "stdout_line": 54,
+      "text": "2026-10-27 03:36:28.232 Df testmanagerd[83365:59b87f0] [com.apple.LocalAuthentication:Client,Interactive,SPI] evaluatePolicy:2 options:{\n    2 = \"Enable UI Automation\";\n} on LAContext[1:865:757] (sync) cid:3"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "scope": "read-only post-integration guard and evidence spot review, no SDK/peer/cargo executed; not whole-package independent acceptance",
+  "reviewed_at": "2026-10-27T07:10:33.443353+00:00",
+  "head": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+  "script": {
+    "path": "/private/tmp/madb-chief-round11/post-integration-e03-replay.py",
+    "sha256": "a96d92adb2a87e3ccc160ceb1fa8f589ed0b23d25e7d131ff11eb60c971b9c46",
+    "size": 6321,
+    "mode": "0o644",
+    "symlink_target": null
+  },
+  "receipt": {
+    "path": "/private/tmp/madb-chief-round11/frozen-tools-001/receipt.json",
+    "sha256": "f312f465260147733d6cf3f802d72819f14b653bb2b60b817fa81c67e8a26977",
+    "size": 7192,
+    "mode": "0o644",
+    "symlink_target": null
+  },
+  "source_input_receipt": {
+    "path": "/private/tmp/madb-chief-round11/frozen-tools-001/source-inputs.json",
+    "sha256": "2a7a69d7b244ac7688b8fd62330620ba9174e44ca532060bec30460554b8d963",
+    "size": 260594,
+    "mode": "0o644",
+    "symlink_target": null
+  },
+  "integration": {
+    "path": "/private/tmp/madb-chief-round11/integration-madb-code.json",
+    "sha256": "5eb4ccbc3ed6dcbf1fc358a2f3e036ea890fa02afdc46d31cf080ff426bea59a",
+    "size": 662,
+    "mode": "0o644",
+    "symlink_target": null
+  },
+  "tracked_source_files": 1401,
+  "source_hash_size_mode_equal_to_receipt": true,
+  "image_count": 13,
+  "images_match_receipt_hash_size_path": true,
+  "images_current_and_run_modes": [
+    "0o500"
+  ],
+  "image_symlinks": false,
+  "runs": [
+    {
+      "root": "/private/tmp/madb-chief-round11/post-integration-e03-001",
+      "before": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/inputs-before.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "after": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/inputs-after.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "execution": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/execution.json",
+        "sha256": "9fd2e070e459cdd8be7879b47dd4b23082975e026319205691a593d581f7bb6e",
+        "size": 1293,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "checks": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-001/runs/checks.json",
+        "sha256": "010db8278d88d28d46cbdfc860995f85b1407549c49d96bf35fb6957c66162b7",
+        "size": 6412,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "observed_passed": 31,
+      "identities_equal": true
+    },
+    {
+      "root": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002",
+      "before": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/inputs-before.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "after": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/inputs-after.json",
+        "sha256": "26a59c897acea76e6921e3e5dd37aa55f58d271e080d08a206fb6a3e24b05c4c",
+        "size": 451370,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "execution": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/execution.json",
+        "sha256": "cd11d7c8ea22ab3c1a019800c67dfbf8c7845702c2aecedc9c75ac8ada7b4d8a",
+        "size": 178,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "checks": {
+        "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-002/runs/checks.json",
+        "sha256": "ebd072ec685b6523b816aea4814f631a164cc950c323a4578b553cb93e6aec65",
+        "size": 759,
+        "mode": "0o644",
+        "symlink_target": null
+      },
+      "observed_passed": 3,
+      "identities_equal": true
+    }
+  ],
+  "prior_failure": {
+    "path": "/private/tmp/madb-chief-round11/post-integration-e03-legacy-001.log",
+    "sha256": "2b6fc6b185e2ed55e77b9ee7fbedca994801be3da9ea204d4ed7481a7e4b9543",
+    "size": 2102,
+    "mode": "0o644",
+    "symlink_target": null
+  },
+  "limitations": [
+    "Receipt has no mode field: image modes and symlink targets are recorded before/after and independently observed unchanged, not compared with a receipt mode property.",
+    "Guard anchors source to exact clean HEAD and tracked file count; this review additionally compared all 1401 source hash/size/mode tuples with the source-inputs.json referenced by the fixed receipt.",
+    "E03 uses the committed 31-check oracle without positives-only; legacy calls the unchanged check_run/consume_source helpers only for three @1 successes, not the E02 fault matrix or @2 complete role guarantee.",
+    "Python and tool observation bytes are observed before/after, not selected by the 13-image receipt. No SDK/HAR/target/physical assembly or whole-package claim is established."
+  ],
+  "result": "no blocking issue in this bounded replay/evidence scope"
+}

@@ -1,0 +1,136 @@
+{
+  "source_revision": "e26a73b6bf8cbd9c6ffded3240ebb6f9e49a09c4",
+  "actual_product_root": "/Users/changyue/Desktop/MadB/madb",
+  "frozen_receipt": {
+    "sha256": "f312f465260147733d6cf3f802d72819f14b653bb2b60b817fa81c67e8a26977",
+    "size": 7192,
+    "mode": 420,
+    "device": 16777233,
+    "inode": 693868364
+  },
+  "cases": [
+    {
+      "level": "structure",
+      "command": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/madb",
+        "doctor",
+        "--root",
+        "/private/tmp/madb-chief-round10/review-cli-001/default-build/cwd/最终 中文 工程/.madb/build/native",
+        "--project",
+        "project.json",
+        "--request",
+        "read.json",
+        "--snapshot",
+        "contract.json",
+        "--verify",
+        "structure",
+        "--json"
+      ],
+      "started_ns": 1793084462302092000,
+      "finished_ns": 1793084464274810000,
+      "exit_code": 0,
+      "scope": "preflight-only",
+      "checks": 6,
+      "stdout": {
+        "sha256": "4527f5a03530b0eb7c69724afd25da1c1bfdc105ab394aa0729d53a9b267e106",
+        "size": 3333,
+        "mode": 420,
+        "device": 16777233,
+        "inode": 693937733
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420,
+        "device": 16777233,
+        "inode": 693937734
+      },
+      "context_unchanged": true
+    },
+    {
+      "level": "build",
+      "command": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/madb",
+        "doctor",
+        "--root",
+        "/private/tmp/madb-chief-round10/review-cli-001/default-build/cwd/最终 中文 工程/.madb/build/native",
+        "--project",
+        "project.json",
+        "--request",
+        "read.json",
+        "--snapshot",
+        "contract.json",
+        "--verify",
+        "build",
+        "--json"
+      ],
+      "started_ns": 1793084464407184000,
+      "finished_ns": 1793084533331510000,
+      "exit_code": 0,
+      "scope": "preflight-only",
+      "checks": 23,
+      "stdout": {
+        "sha256": "2490c000455d826f31195646f5913ae7d89a0dc643cfd981527d81c9d3620aaf",
+        "size": 15249,
+        "mode": 420,
+        "device": 16777233,
+        "inode": 693937846
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420,
+        "device": 16777233,
+        "inode": 693937847
+      },
+      "context_unchanged": true
+    },
+    {
+      "level": "run",
+      "command": [
+        "/private/tmp/madb-chief-round11/frozen-tools-001/images/madb",
+        "doctor",
+        "--root",
+        "/private/tmp/madb-chief-round10/review-cli-001/default-build/cwd/最终 中文 工程/.madb/build/native",
+        "--project",
+        "project.json",
+        "--request",
+        "read.json",
+        "--snapshot",
+        "contract.json",
+        "--verify",
+        "run",
+        "--json"
+      ],
+      "started_ns": 1793084533460149000,
+      "finished_ns": 1793084604362476000,
+      "exit_code": 0,
+      "scope": "preflight-only",
+      "checks": 24,
+      "stdout": {
+        "sha256": "6c8013ae71cd028bd3f27a2dc0204e2bff621e45e0fd60495a459e58c07c2bf0",
+        "size": 15525,
+        "mode": 420,
+        "device": 16777233,
+        "inode": 693940676
+      },
+      "stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "size": 0,
+        "mode": 420,
+        "device": 16777233,
+        "inode": 693940677
+      },
+      "context_unchanged": true
+    }
+  ],
+  "source_unchanged": true,
+  "tool_unchanged": true,
+  "context_original_unchanged": true,
+  "not_claimed": [
+    "SDK execution",
+    "I02 whole package",
+    "global system trace",
+    "remote Actions"
+  ]
+}
