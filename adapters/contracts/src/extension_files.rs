@@ -4,6 +4,7 @@
 use crate::{
     Document, DocumentKind, FormatError, SchemaRegistry,
     artifacts::{ProvidedFile, validate_port_pair, verify_files, verify_reference},
+    composition::execution::BoundCompositionGeneration,
     execution::{BoundArtifactRecipe, ExecutionOperation},
     wire::Wire,
 };
@@ -25,6 +26,7 @@ pub struct BoundExtensionFiles {
     request: Document,
     registry: SchemaRegistry,
     artifact: Option<BoundArtifactRecipe>,
+    composition: Option<BoundCompositionGeneration>,
 }
 
 impl BoundExtensionFiles {
@@ -85,6 +87,45 @@ impl BoundExtensionFiles {
         Ok(bound)
     }
 
+    /// Explicit /2 proof. Legacy constructors still reject composition inputs.
+    pub fn from_composition_recipe(
+        input_ref: &Value,
+        inputs: FrozenInputs,
+        recipe: BoundCompositionGeneration,
+    ) -> Result<Self, FormatError> {
+        let reference = control_reference(input_ref, "inputs", DocumentKind::GenerateRequest)?;
+        recipe.check_session_inputs(&inputs)?;
+        if frozen_bytes(&inputs, &reference)? != recipe.invocation().process.stdin {
+            return Err(invalid(
+                "/request",
+                "checked composition and session request bytes differ",
+            ));
+        }
+        let output_root = recipe.output_root().as_str().to_owned();
+        domain_root(&output_root)?;
+        let registry = SchemaRegistry::new()?;
+        let request = registry.decode(
+            DocumentKind::GenerateRequest,
+            frozen_bytes(&inputs, &reference)?,
+        )?;
+        if request.value()["output_root"] != output_root {
+            return Err(invalid("/output_root", "composition output domain differs"));
+        }
+        Ok(Self {
+            operation: "generate".into(),
+            input_ref: input_ref.clone(),
+            output_root,
+            inputs,
+            request,
+            registry,
+            artifact: None,
+            composition: Some(recipe),
+        })
+    }
+    pub fn composition_recipe(&self) -> Option<&BoundCompositionGeneration> {
+        self.composition.as_ref()
+    }
+
     fn bind(
         operation: &str,
         input_ref: &Value,
@@ -112,6 +153,7 @@ impl BoundExtensionFiles {
             request,
             registry,
             artifact: None,
+            composition: None,
         };
         bound.check_inputs()?;
         Ok(bound)
@@ -136,6 +178,7 @@ impl BoundExtensionFiles {
         self.artifact
             .as_ref()
             .map(|artifact| &artifact.invocation().process)
+            .or_else(|| self.composition.as_ref().map(|r| &r.invocation().process))
     }
 
     fn check_inputs(&self) -> Result<(), FormatError> {
@@ -308,6 +351,11 @@ impl BoundExtensionFiles {
                 .validate_result(frozen_bytes(&manifest, &manifest_ref)?)
                 .map_err(|e| invalid("/output", e))?;
         }
+        if let Some(recipe) = &self.composition {
+            recipe
+                .validate_result(frozen_bytes(&manifest, &manifest_ref)?)
+                .map_err(|e| invalid("/output", e))?;
+        }
         if response_kind == DocumentKind::ContractIr {
             let profile =
                 self.input_document(&self.request.value()["profile"], DocumentKind::Profile)?;
@@ -335,6 +383,9 @@ impl BoundExtensionFiles {
             DocumentKind::OutputSet | DocumentKind::Candidate
         ) {
             verify_manifest_snapshot(&document, &files)?;
+        }
+        if let Some(recipe) = &self.composition {
+            recipe.check_outputs(&files)?;
         }
         Ok(FrozenExtensionResult {
             document,

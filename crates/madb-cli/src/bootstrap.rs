@@ -15,3 +15,6 @@ mod execution;
 pub use execution::{ExecutionOptions, execute};
 mod explain;
 pub use explain::ExplanationService;
+
+mod init;
+pub use init::InitializationService;

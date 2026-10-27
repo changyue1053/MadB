@@ -7,7 +7,7 @@ rust-version.workspace = true
 license.workspace = true
 publish.workspace = true
 repository.workspace = true
-description = "Read-only command entry points and application composition root."
+description = "Command entry points and application composition root."
 
 [lints]
 workspace = true
@@ -21,7 +21,10 @@ clap.workspace = true
 madb-app.workspace = true
 madb-contracts.workspace = true
 madb-host.workspace = true
+madb-model.workspace = true
+madb-plan.workspace = true
+madb-templates.workspace = true
 
 [dev-dependencies]
 serde_json.workspace = true
-madb-templates.workspace = true
+madb-protocol.workspace = true

@@ -6,6 +6,7 @@ mod result;
 pub mod types;
 
 pub use files::*;
+pub use madb_plan::project::{ComponentIdentity, FileIdentity, FileOwnership, Version};
 pub use request::*;
 pub use result::*;
 pub use types::*;

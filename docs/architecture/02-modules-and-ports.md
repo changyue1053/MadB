@@ -114,7 +114,7 @@ C02 首个实际适配器包为 `adapters/contracts` 下的 `madb-contracts`：�
 
 C04 在 `adapters/host` 实现 `madb-host`，依赖 app 的公开读取/进程端口；提供目录描述符相对、有界、拒绝链接的文件读取，以及 Linux/macOS 的受控子进程。`madb-contracts` 实现 app 的格式端口；CLI `bootstrap.rs` 装配只读查询与显式执行用例。app 不导入适配器或 wire 类型，plan 只依赖 model。contracts 在共同受检上下文内绑定执行图；app 负责输入来源、串行依赖调度、图级取消和结果预算；host 只拥有私有图/节点目录与具体进程。图不会公开可独立绕过调度的节点配方，单任务入口仍拒绝依赖。正式执行入口通过 pipeline 管理 metadata、生成、构建与打包；它们不替代 C05 的语言配方实现。
 
-I01 按 [ADR-0023](../adr/0023-project-template-and-init-result.md)启用 `adapters/templates` 下的 `madb-templates`：依赖 model/plan/protocol，对完整原包字节作有界准入并确定性渲染；不读文件、下载、执行进程或取得 Host 提交权限。contracts 将新增模板/结果 wire 显式转换为 plan/app 值，因此增加向 plan 的直接依赖。CLI 组合根的开发依赖用于串接格式/计划/渲染回归，不新增 init 命令。六个核心 crate 的边界保持，app 不导入模板适配器；workspace 与依赖门禁正反例同时登记这一实际编译单元。
+I01 按 [ADR-0023](../adr/0023-project-template-and-init-result.md)启用 `adapters/templates` 下的 `madb-templates`：依赖 model/plan/protocol，对完整原包字节作有界准入并确定性渲染；不读文件、下载、执行进程或取得 Host 提交权限。contracts 将新增模板/结果 wire 显式转换为 plan/app 值，因此增加向 plan 的直接依赖。CLI 组合根直接依赖 model/plan/templates 装配真实 init；protocol 开发依赖仅供公开扩展 AuthorSession 示例。命令层不操作文件，Host 持有实际镜像观察、no-follow 父目录及 no-replace 创建权限；app 保留请求/创建/证据事实判定。六个核心 crate 的边界保持，app 不导入模板适配器；workspace 与依赖门禁正反例同时登记这一实际编译单元。
 
 `app/process` 负责一次性执行准入、取消与结果接收的原子先后；`host/process` 负责启动、管道、信号和回收。`ProcessRunner` 返回观察与未回收资源的 owner，`PendingProcess` 允许继续非阻塞回收。app 不把进程零退出当成契约验证、E02 终态或输出提交；状态与预算见[受控进程规范](07-code-generation.md)。
 

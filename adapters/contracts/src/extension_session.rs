@@ -84,11 +84,53 @@ impl<'a> HostSession<'a> {
         options: SessionOptions<'_>,
         on_output: impl FnMut(&Value) -> ProcessResult<()> + 'a,
     ) -> ProcessResult<Self> {
+        if files.composition_recipe().is_some() {
+            return Err(fail(
+                "CapabilityUnsupported",
+                "legacy session requires the explicit composition constructor",
+            ));
+        }
+        Self::checked(manifest, files, options, on_output, false)
+    }
+    /// New composition semantics are only reachable through a checked /2 recipe.
+    pub fn from_composition(
+        files: &BoundExtensionFiles,
+        options: SessionOptions<'_>,
+        on_output: impl FnMut(&Value) -> ProcessResult<()> + 'a,
+    ) -> ProcessResult<Self> {
+        let recipe = files
+            .composition_recipe()
+            .ok_or_else(|| fail("InputInvalid", "missing checked composition recipe"))?;
+        let pins = recipe.pins();
+        if options.component_id != pins.component_id()
+            || options.required_features.to_vec()
+                != pins
+                    .required_features()
+                    .iter()
+                    .map(String::as_str)
+                    .collect::<Vec<_>>()
+        {
+            return Err(fail(
+                "ExtensionIdentityMismatch",
+                "session component or mandatory semantics differ from checked pins",
+            ));
+        }
+        Self::checked(pins.manifest(), files, options, on_output, true)
+    }
+    fn checked(
+        manifest: &ExtensionManifest,
+        files: &BoundExtensionFiles,
+        options: SessionOptions<'_>,
+        on_output: impl FnMut(&Value) -> ProcessResult<()> + 'a,
+        composition: bool,
+    ) -> ProcessResult<Self> {
         if manifest.value()["example"] == true {
             return Err(fail("InputInvalid", "design manifest cannot execute"));
         }
-        require_component_features(manifest, options.component_id, options.required_features)
-            .map_err(format_error)?;
+        if !composition {
+            require_component_features(manifest, options.component_id, options.required_features)
+                .map_err(format_error)?;
+        }
         let component = manifest.value()["components"]
             .as_array()
             .expect("checked components")
@@ -163,7 +205,14 @@ impl<'a> HostSession<'a> {
                 .iter()
                 .map(|v| v.as_str().expect("feature").to_owned())
                 .collect(),
-            entrypoint: component["entrypoint"].clone(),
+            entrypoint: if composition {
+                let process = files
+                    .artifact_process()
+                    .expect("checked composition process");
+                json!({"path":process.tool.path.as_str(), "args":process.arguments})
+            } else {
+                component["entrypoint"].clone()
+            },
             allowed_environment: manifest.value()["execution"]["env"]
                 .as_array()
                 .expect("checked env")

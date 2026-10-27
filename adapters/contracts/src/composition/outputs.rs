@@ -226,6 +226,52 @@ pub fn bind_generated_outputs(
     })
 }
 
+/// Preflight uses the same request/recipe checks as post-generation binding.
+/// It intentionally observes no output and grants no result/commit authority.
+pub(super) fn check_generation_request(
+    inputs: &BoundCompositionInputs,
+    context: &GenerationBindingContext<'_>,
+    observation: &GenerationStepObservation<'_>,
+) -> Result<()> {
+    let registry = SchemaRegistry::new()?;
+    check_schemas(inputs, context.schema_paths)?;
+    let lock = registry.decode(DocumentKind::Lock, context.lock.bytes)?;
+    if lock.value() != inputs.locked_document.value() {
+        return Err(invalid(
+            "LOCK003",
+            "lock",
+            "generation uses a different bound lock",
+        ));
+    }
+    check_file(&inputs.profile_reference, &context.profile)?;
+    let snapshot = registry.decode(DocumentKind::ContractIr, context.contract.bytes)?;
+    check_composition_snapshot_binding(inputs, &snapshot)?;
+    check_ir_identities(&snapshot)?;
+    let expected_inputs = generation_inputs(inputs, context)?;
+    let slots = declared_slots(inputs)?;
+    let requirements = bind_requirements(&slots, context.required_steps)?;
+    if requirements.len() != 1 {
+        return Err(invalid(
+            "InputInvalid",
+            "steps",
+            "single-session generation requires one complete fixed step",
+        ));
+    }
+    let required = requirements
+        .get(observation.step_id.as_str())
+        .ok_or_else(|| invalid("InputInvalid", "step", "observation is not the fixed step"))?;
+    let components = index(&inputs.composition().value()["components"], "id")?;
+    let binding = RequestBinding {
+        inputs,
+        context,
+        snapshot: &snapshot,
+        expected_inputs: &expected_inputs,
+        components: &components,
+    };
+    let request = registry.decode(DocumentKind::GenerateRequest, observation.request.bytes)?;
+    check_request(&binding, required, observation, &request)
+}
+
 fn check_schemas(inputs: &BoundCompositionInputs, paths: &GenerationSchemaPaths) -> Result<()> {
     let expected = [
         (

@@ -41,6 +41,7 @@ def main():
     os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
     node = require_environment()
     commands = [
+        [sys.executable, "scripts/build_init_template.py", "--check"],
         ["cargo", "fmt", "--all", "--", "--check"],
         ["cargo", "check", "--workspace", "--locked"],
         ["cargo", "clippy", "--workspace", "--all-targets", "--all-features", "--locked", "--", "-D", "warnings"],

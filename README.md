@@ -21,7 +21,14 @@ cargo run --locked -p madb-cli -- --help
 cargo run --locked -p madb-cli -- --version
 ```
 
-`init`、`verify` 尚未交付；当前 `generate/build/package` 必须提供显式锁定配方，不会为任意项目自动推导后端。
+`init` 当前仅提供 macOS 26.6.2 / arm64 内部 Rust/C 值工程的结构级创建与 dry-run；工具真实版本为 0.1.0，仍禁止发布。输出目录须不存在，父目录须已存在且路径不含符号链接：
+
+```sh
+cargo run --locked -p madb-cli -- init --out ./ReadingDemo --name ReadingDemo --verify structure
+cargo run --locked -p madb-cli -- init --out ./ReadingPlan --name ReadingPlan --verify structure --dry-run
+```
+
+结果包含实际创建事实及独立证据目录。build/run/open 尚未登记执行，明确失败；默认 verify 仍是 build，使用本分片须显式选择 structure。结构检查不编译 SDK 或运行 C，也不替代 IDE 验收。固定模板与边界见 [内置模板](templates/projects/rust-c-sdk-values/README.md)。`verify` 尚未交付；当前 `generate/build/package` 仍要求显式锁定配方。
 
 ## 当前可运行的只读查询
 

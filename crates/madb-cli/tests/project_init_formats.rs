@@ -1,5 +1,6 @@
-//! I01-F composition tests. All roots and formal versions below are model
-//! inputs; no Host, user directory, compiler, or initialization CLI is run.
+//! I01-F composition tests. Roots and explicit fixture versions are model
+//! inputs; one test also checks the actual compiled package version. No Host,
+//! user directory, compiler, or initialization CLI is run.
 use madb_app::inputs::capture_inputs;
 use madb_app::ports::{FileReference, ReadWorkspace};
 use madb_app::use_cases::initialize::{
@@ -68,8 +69,8 @@ fn request() -> InitRequest {
 
 fn freeze_model(adapter: &ProjectInitAdapter) -> FrozenInitRequest {
     let template = adapter.decode_template(MANIFEST).unwrap();
-    // This is an explicitly modelled formal tool identity, never a mapping of
-    // the actual development build to a supported formal version.
+    // This fixture uses an explicit model identity. The compiled tool version
+    // is checked independently below, never normalized from a prerelease.
     freeze_request(&template, request(), "0.1.0", adapter)
         .unwrap()
         .0
@@ -240,10 +241,31 @@ fn original_package_selection_rendering_and_provenance_share_one_plan() {
 }
 
 #[test]
-fn current_development_version_is_not_silently_promoted_to_formal() {
+fn prerelease_and_build_versions_are_not_silently_promoted_to_formal() {
     let adapter = ProjectInitAdapter::new().unwrap();
     let template = adapter.decode_template(MANIFEST).unwrap();
-    assert!(freeze_request(&template, request(), env!("CARGO_PKG_VERSION"), &adapter).is_err());
+    for rejected in ["0.1.0-dev.0", "0.1.0-rc.1", "0.1.0+build"] {
+        let failure = freeze_request(&template, request(), rejected, &adapter).unwrap_err();
+        assert_eq!(failure.kind, madb_app::ErrorKind::InvalidInput);
+        assert!(
+            failure
+                .to_string()
+                .contains("expected a formal three-part version")
+        );
+    }
+}
+
+#[test]
+fn actual_compiled_tool_version_can_freeze_within_the_approved_template_range() {
+    assert_eq!(env!("CARGO_PKG_VERSION"), "0.1.0");
+    let adapter = ProjectInitAdapter::new().unwrap();
+    let template = adapter.decode_template(MANIFEST).unwrap();
+    let (frozen, selected) =
+        freeze_request(&template, request(), env!("CARGO_PKG_VERSION"), &adapter).unwrap();
+    assert_eq!(frozen.actual_madb_version(), "0.1.0");
+    assert_eq!(selected.profile_id().as_str(), "macos-arm64-values");
+    assert!(frozen.projection().dry_run);
+    // Pure request admission still does not produce a Host commit or result.
 }
 
 #[test]

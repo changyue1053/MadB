@@ -19,8 +19,11 @@ def main():
                         "--root", str(install)], cwd=ROOT, env=env, check=True, timeout=300)
         binary = install / "bin/madb"
         # Run outside the source tree, with no Cargo path, tool plugins or cache.
-        for args, expected_code, marker in [(["--version"], 0, "madb 0.1.0-dev.0"),
-                                             (["--help"], 0, "Read-only snapshot queries"),
+        version = subprocess.run([str(binary), "--version"], cwd=temporary,
+                                 env={"PATH": os.defpath, "HOME": temporary}, capture_output=True, text=True, timeout=10)
+        if version.returncode != 0 or version.stdout != "madb 0.1.0\n" or version.stderr:
+            raise RuntimeError(f"Isolated CLI version differs from the approved tool candidate: {version}")
+        for args, expected_code, marker in [(["--help"], 0, "Read-only snapshot queries"),
                                              (["verify"], 2, "unrecognized subcommand"),
                                              (["generate"], 2, "--execution")]:
             result = subprocess.run([str(binary), *args], cwd=temporary,

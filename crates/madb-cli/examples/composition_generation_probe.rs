@@ -28,10 +28,10 @@ use std::{
 };
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-const COMPONENT: &str = "madb.local.c07-composition/generator";
-const SLOT: &str = "ordinary-source";
-const STEP: &str = "generate-c07-composition";
-const SOURCE_PATHS: &[&str] = &[
+pub(crate) const COMPONENT: &str = "madb.local.c07-composition/generator";
+pub(crate) const SLOT: &str = "ordinary-source";
+pub(crate) const STEP: &str = "generate-c07-composition";
+pub(crate) const SOURCE_PATHS: &[&str] = &[
     "identity.json",
     "declarations.json",
     "generated/contract/runtime-policy.json",
@@ -59,8 +59,8 @@ const GENERATE_ARGS: &[&str] = &[
     "--config",
     "../inputs/backend.json",
 ];
-const DOCUMENT_LIMIT: usize = native::MAX_ENVELOPE_BYTES;
-const FILE_LIMIT: usize = 32 * 1024 * 1024;
+pub(crate) const DOCUMENT_LIMIT: usize = native::MAX_ENVELOPE_BYTES;
+pub(crate) const FILE_LIMIT: usize = 32 * 1024 * 1024;
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args().collect();
@@ -133,13 +133,13 @@ fn main() -> Result<()> {
     }
     Ok(())
 }
-fn path(value: &str) -> LogicalPath {
+pub(crate) fn path(value: &str) -> LogicalPath {
     LogicalPath::new(value).expect("fixed logical path")
 }
-fn id(value: &str) -> Id {
+pub(crate) fn id(value: &str) -> Id {
     Id::new(value).expect("fixed identity")
 }
-fn recipe() -> RecipeRequirements {
+pub(crate) fn recipe() -> RecipeRequirements {
     RecipeRequirements {
         id: id("madb.local.c07-c-arkts/ordinary@1"),
         selection: RecipeSelection {
@@ -160,7 +160,7 @@ fn recipe() -> RecipeRequirements {
         }],
     }
 }
-fn schemas() -> CompositionSchemaPaths {
+pub(crate) fn schemas() -> CompositionSchemaPaths {
     CompositionSchemaPaths {
         common: path("schemas/common.schema.json"),
         project: path("schemas/project.schema.json"),
@@ -171,21 +171,21 @@ fn schemas() -> CompositionSchemaPaths {
         contract_ir: path("schemas/contract-ir.schema.json"),
     }
 }
-struct Inputs {
-    root: PathBuf,
-    root_identity: (u64, u64),
-    workspace: LocalWorkspace,
-    registry: SchemaRegistry,
-    project: Document,
-    project_bytes: Vec<u8>,
-    lock: Document,
-    lock_bytes: Vec<u8>,
-    profile_bytes: Vec<u8>,
-    frozen: FrozenInputs,
-    schemas: CompositionSchemaPaths,
+pub(crate) struct Inputs {
+    pub(crate) root: PathBuf,
+    pub(crate) root_identity: (u64, u64),
+    pub(crate) workspace: LocalWorkspace,
+    pub(crate) registry: SchemaRegistry,
+    pub(crate) project: Document,
+    pub(crate) project_bytes: Vec<u8>,
+    pub(crate) lock: Document,
+    pub(crate) lock_bytes: Vec<u8>,
+    pub(crate) profile_bytes: Vec<u8>,
+    pub(crate) frozen: FrozenInputs,
+    pub(crate) schemas: CompositionSchemaPaths,
 }
 impl Inputs {
-    fn load(root: &Path) -> Result<Self> {
+    pub(crate) fn load(root: &Path) -> Result<Self> {
         let root_identity = directory_identity(root)?;
         let workspace = LocalWorkspace::open(root)?;
         let registry = SchemaRegistry::new()?;
@@ -214,7 +214,7 @@ impl Inputs {
             schemas: schemas(),
         })
     }
-    fn context(&self) -> CompositionInputContext<'_> {
+    pub(crate) fn context(&self) -> CompositionInputContext<'_> {
         CompositionInputContext {
             project: &self.project,
             lock: &self.lock,
@@ -227,7 +227,7 @@ impl Inputs {
             schema_paths: &self.schemas,
         }
     }
-    fn bind(&self, recipe: &RecipeRequirements) -> Result<BoundCompositionInputs> {
+    pub(crate) fn bind(&self, recipe: &RecipeRequirements) -> Result<BoundCompositionInputs> {
         let bound = bind_composition_inputs(self.context(), recipe)?;
         let value = bound.composition().value();
         let packages = value["packages"].as_array().expect("checked packages");
@@ -240,10 +240,10 @@ impl Inputs {
         }
         Ok(bound)
     }
-    fn read(&self, name: &str, limit: usize) -> Result<Vec<u8>> {
+    pub(crate) fn read(&self, name: &str, limit: usize) -> Result<Vec<u8>> {
         read(&self.workspace, name, limit)
     }
-    fn verify_context(&self) -> Result<()> {
+    pub(crate) fn verify_context(&self) -> Result<()> {
         if directory(&self.root)? != self.root
             || directory_identity(&self.root)? != self.root_identity
         {
@@ -266,14 +266,14 @@ fn read(workspace: &LocalWorkspace, name: &str, limit: usize) -> Result<Vec<u8>>
         .read(&LogicalPath::new(name)?, limit)?
         .ok_or_else(|| format!("missing input: {name}").into())
 }
-fn reference(v: &Value) -> Result<FileReference> {
+pub(crate) fn reference(v: &Value) -> Result<FileReference> {
     Ok(FileReference {
         path: LogicalPath::new(v["path"].as_str().ok_or("missing path")?)?,
         digest: Digest::new(v["sha256"].as_str().ok_or("missing digest")?)?,
         size: v["size"].as_u64().ok_or("missing size")?,
     })
 }
-fn actual_reference(name: &str, bytes: &[u8]) -> FileReference {
+pub(crate) fn actual_reference(name: &str, bytes: &[u8]) -> FileReference {
     FileReference {
         path: path(name),
         digest: Digest::of_bytes(bytes),
@@ -448,7 +448,7 @@ fn bind_outputs(input: &Inputs, bound: &BoundCompositionInputs, output: &Path) -
     );
     Ok(())
 }
-fn directory(path: &Path) -> Result<PathBuf> {
+pub(crate) fn directory(path: &Path) -> Result<PathBuf> {
     if !path.is_absolute()
         || path
             .components()
@@ -484,7 +484,7 @@ fn separate(input: &Path, output: &Path) -> Result<()> {
     }
     Ok(())
 }
-fn capture_tree(root: &Path) -> Result<FrozenInputs> {
+pub(crate) fn capture_tree(root: &Path) -> Result<FrozenInputs> {
     let original_root = directory_identity(root)?;
     let workspace = LocalWorkspace::open(root)?;
     let mut names = BTreeSet::new();
@@ -564,6 +564,15 @@ fn enumerate(
 /// whole C07 lifecycle coverage. Fixed source pins and actual IR symbols are
 /// prerequisites; submitted responsibility rows never define what is required.
 fn check_roles(input: &Inputs, bound: &BoundCompositionInputs, ir: &Document) -> Result<()> {
+    let required = required_roles(input, bound, ir)?;
+    compare_responsibility_sets(&required, bound.responsibilities())?;
+    Ok(())
+}
+pub(crate) fn required_roles(
+    input: &Inputs,
+    bound: &BoundCompositionInputs,
+    ir: &Document,
+) -> Result<Vec<ResolvedResponsibility>> {
     const NATIVE: &str = "sdk/arkts/native-runtime/src/protocol.cpp";
     for (name, digest) in [
         (
@@ -700,6 +709,5 @@ fn check_roles(input: &Inputs, bound: &BoundCompositionInputs, ir: &Document) ->
         },
     )
     .collect();
-    compare_responsibility_sets(&required, bound.responsibilities())?;
-    Ok(())
+    Ok(required)
 }

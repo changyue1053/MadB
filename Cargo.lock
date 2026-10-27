@@ -450,7 +450,7 @@ dependencies = [
 
 [[package]]
 name = "madb-app"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "madb-model",
  "madb-plan",
@@ -458,19 +458,22 @@ dependencies = [
 
 [[package]]
 name = "madb-cli"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "clap",
  "madb-app",
  "madb-contracts",
  "madb-host",
+ "madb-model",
+ "madb-plan",
+ "madb-protocol",
  "madb-templates",
  "serde_json",
 ]
 
 [[package]]
 name = "madb-contracts"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "madb-app",
  "madb-model",
@@ -485,7 +488,7 @@ dependencies = [
 
 [[package]]
 name = "madb-host"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "errno",
  "libproc",
@@ -498,21 +501,21 @@ dependencies = [
 
 [[package]]
 name = "madb-model"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "sha2",
 ]
 
 [[package]]
 name = "madb-plan"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "madb-model",
 ]
 
 [[package]]
 name = "madb-protocol"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "jsonschema",
  "serde",
@@ -523,14 +526,14 @@ dependencies = [
 
 [[package]]
 name = "madb-rules"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "madb-model",
 ]
 
 [[package]]
 name = "madb-templates"
-version = "0.1.0-dev.0"
+version = "0.1.0"
 dependencies = [
  "madb-model",
  "madb-plan",
